@@ -1,0 +1,491 @@
+html, body
+{
+	font-family: 'Ubuntu', 'Droid Sans', sans-serif;
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+	background: rgb(43,0,30);
+}
+
+/*# Loading screen #*/
+div#loadingScreen
+{
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	text-align: center;
+	background: rgb(43,0,30) url(img/ubuntuLogo.png) center center no-repeat;
+	color: white;
+	z-index: 49;
+}
+
+/*# Desktop #*/
+div#desktop
+{
+	display: none;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	bottom: 0px;
+	right: 0px;
+}
+	div#desktop div#wallpaper
+	{
+		z-index: -40;
+		position: fixed;
+		left: 0px;
+		top: 0px;
+		bottom: 0px;
+		right: 0px;
+		background: rgb(43,0,30) url(img/wallpaper/wartyFinal.jpg);
+		background-position: center center;
+		background-size: cover;
+	}
+div.unity.panel
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	height: 24px;
+	background: rgb(69,68,64) url(img/unity/panel.background.png);
+	background-repeat: repeat-x;
+	text-align: right;
+	overflow: hidden;
+}
+	div.unity.panel .indicator
+	{
+		width: 22px;
+		height: 22px;
+		padding: 1px;
+	}
+div.unity.launcher
+{
+	position: absolute;
+	top: 24px;
+	left: 0px;
+	bottom: 0px;
+	width: 64px;
+	/*background: transparent url(img/unity/launcher.background.png);*/
+	background: rgba(0,0,0,0.6);
+	border-right: 1px solid rgba(240,240,240,0.2);
+	padding: 3px 0px 3px 0px;
+}
+	.dashOpened div.unity.launcher
+	{
+		border-right: 0px;
+	}
+	div.launcherApps
+	{
+		position: absolute;
+		top: 62px;
+		bottom: 58px;
+		left: 0px;
+		right: 0px;
+		overflow-y: auto;
+		margin: 0px;
+		padding: 0px;
+	}
+	div.launcherIcon
+	{
+		/*display: none;*/
+		width: 52px;
+		height: 52px;
+		margin: 4px 6px 4px 6px;
+		border-radius: 5px;
+		background: transparent url(img/unity/launcher.iconbg.png);
+		background-position: center;
+		background-size: cover;
+		overflow: hidden;
+	}
+		.dashOpened div.unity.launcherIcon
+		{
+			background: grey !important;
+			opacity: 0.8;
+		}
+		div.launcherIcon.bfb
+		{
+			/*background-image: none;*/
+		}
+			div.launcherIcon.bfb img
+			{
+				width: 52px;
+				height: 52px;
+				margin: 0px;
+			}
+		div.launcherIcon.launcherSpinner
+		{
+			display: none;
+		}
+		div.launcherIcon.launchPreferences img
+		{
+			width: 42px;
+			height: 42px;
+			margin: 5px;
+		}
+		div.launcherIcon img
+		{
+			width: 46px;
+			height: 46px;
+			margin: 3px;
+		}
+		div.launcherIcon.launchPreferences
+		{
+			position: absolute;
+			bottom: 3px;
+			/*background-color: #303030;*/
+		}
+div.window
+{
+	display: none;
+	position: absolute;
+	top: 24px;
+	left: 64px;
+	right: 0px;
+	bottom: 0px;
+	background: rgb(242,241,239);
+	color: black;
+	padding: 4px;
+	overflow: auto;
+}
+	div.windowClose
+	{
+		position: fixed;
+		left: 0px;
+		top: 0px;
+		width: 64px;
+		height: 24px;
+		text-align: center;
+		background: url(img/window/close.png) center center no-repeat;
+	}
+	div.window div.windowPreferences
+	{
+		display: none;
+	}
+		div.window div.windowPreferences table
+		{
+			border: 0px;
+		}
+div.dash
+{
+	display: none;
+	position: absolute;
+	left: 64px;
+	top: 24px;
+	bottom: 0px;
+	right: 0px;
+	/*background: transparent url(img/unity/dashOpened.png);*/
+	padding: 0px 12px 48px 12px;
+	color: white;
+}
+	div.dash .dashClose
+	{
+		background: url(img/unity/dash.close.png) center center no-repeat;
+	}
+	.dashOpened div.dash
+	{
+		display: block;
+	}
+	div.dash *:link
+	{
+		color: white;
+		text-decoration: none;
+		text-shadow: 0px 0px 2px white;
+	}
+	div.dashContent
+	{
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		right: 0px;
+		bottom: 40px;
+		overflow-x: hidden;
+		overflow-y: scroll;
+		margin-right: -100px; /* Dirty hacks seem to be the only solution when the target CSS engine is a dirty piece of crap */
+	}
+		div.dashContent h2
+		{
+			font-size: 16px;
+			font-weight: normal;
+			text-shadow: 0px 0px 2px white;
+		}
+		div.dashSearch
+		{
+			position: absolute;
+			top: 0px;
+			right: 0px;
+			left: 0px;
+			height: 34px;
+			margin-right: 100px;
+			padding: 8px 8px 4px 8px;
+		}
+			body:.versionIcs div.dashSearch
+			{
+				padding-top: 4px;
+			}
+			div.dashSearch input
+			{
+				position: absolute;
+				top: 0px;
+				right: 0px;
+				bottom: 0px;
+				left: 0px;
+				margin: 4px;
+				border-radius: 3px;
+				background: rgba(0,0,0,0.2);
+				color: white;
+				border: 1px solid rgba(255,255,255,0.4);
+				font-size: 18px;
+			}
+				body.versionIcs div.dashSearch input
+				{
+					position: static;
+					margin-left: 1%;
+					margin-right: 1%;
+					width: 98%;
+					height: 32px;
+				}
+		div.dashPage
+		{
+			display: none;
+			position: absolute;
+			top: 42px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+			text-align: center;
+			background: transparent url(img/unity/dash.gradient.png);
+			background-repeat: no-repeat;
+			background-position: right top;
+			margin-right: 100px;
+		}
+			div.dashPage.dashAppInfo
+			{
+			}
+				div.dashPage.dashAppInfo .appInfoContainer
+				{
+					text-align: left;
+					display: inline-block;
+				}
+					div.dashPage.dashAppInfo .appInfoContainer > .buttons
+					{
+						clear: both;
+					}
+					div.dashPage.dashAppInfo .appInfoContainer > p
+					{
+						text-align: center;
+					}
+						div.dashPage.dashAppInfo .appInfoContainer > p.backButtonContainer
+						{
+							text-align: left;
+							margin-bottom: 8px;
+							padding-top: 8px;
+						}
+					div.dashPage.dashAppInfo .appInfo
+					{
+						text-align: left;
+						word-wrap: break-word;
+						word-break: break-all;
+					}
+						div.dashPage.dashAppInfo .appInfo h2
+						{
+							font-size: 1.2em;
+						}
+						div.dashPage.dashAppInfo .appInfo p img
+						{
+							float: left;
+							width: 64px;
+							margin-right: 12px;
+							margin-bottom: 4px;
+						}
+				@media (min-width: 720px)
+				{
+					div.dashPage.dashAppInfo .appInfoContainer > p.backButtonContainer
+					{
+						margin-bottom: 16px;
+						padding-top: 16px;
+					}
+					div.dashPage.dashAppInfo .appInfo h2
+					{
+						font-size: 1.4em;
+					}
+					div.dashPage.dashAppInfo .appInfo p img
+					{
+						width: 128px;
+						margin-right: 24px;
+						margin-bottom: 8px;
+					}
+				}
+	div.dashRibbon
+	{
+		position: absolute;
+		bottom: 0px;
+		left: 0px;
+		right: 0px;
+		height: 40px;
+		text-align: center;
+	}
+		div.dashRibbon img
+		{
+			width: 24px;
+			height: 24px;
+			padding: 8px;
+		}
+			div.dashRibbon img.activeRibbonItem
+			{
+				background: rgba(255,255,255,0.08);
+				border-radius: 3px 3px 0px 0px;
+			}
+	.dashButton
+	{
+		padding: 8px 12px 8px 12px;
+		color: white;
+		font-size: 1.1em;
+		border: 2px solid rgba(255,255,255,0.6);
+		border-radius: 5px;
+	}
+div.appList
+{
+	text-shadow: 2px 2px 3px #404040;
+}
+	.dashContent div.appLauncher
+	{
+		width: 74px;
+		height: 94px;
+		display: inline-block;
+		padding: 2px;
+		/*word-wrap: break-word;*/
+		overflow: hidden;
+		vertical-align: top;
+	}
+		.dashContent div.appLauncher img
+		{
+			display: block;
+			margin: 0px auto 2px auto;
+			width: 48px;
+			max-height: 48px;
+		}
+	@media (min-width: 720px)
+	{
+		.dashContent div.appLauncher
+		{
+			width: 94px;
+			height: 114px;
+			padding: 8px;
+		}
+			.dashContent div.appLauncher img
+			{
+				width: 68px;
+				max-height: 68px;
+			}
+	}
+div.recentApps
+{
+}
+div.fileList
+{
+}
+	div.fileList div.fileIcon
+	{
+		width: 74px;
+		height: 94px;
+		display: inline-block;
+		margin: 2px;
+		word-wrap: break-word;
+	}
+		div.fileList div.fileIcon img
+		{
+			width: 48px;
+			max-height: 48px;
+		}
+		div.fileList div.fileIcon span
+		{
+			margin-top: -8px;
+		}
+
+/*# Applications #*/
+div.appWindow
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+}
+
+/*# Clock #*/
+/*.clockWrapper
+{
+	display: none;
+	position: absolute;
+	top: 24px;
+	right: 0px;
+	bottom: 0px;
+	left: 72px;
+	text-align: center;
+}
+	.clockWrapper:before
+	{
+		height: 100%;
+		vertical-align:middle;
+		display: inline-block;
+		content: '';
+	}
+	.clock
+	{
+		display: inline-block;
+		vertical-align: middle;
+		color: white;
+	}
+		.clock .clockTime
+		{
+			background: none repeat scroll 0 0 rgba(44,0,30,0.6);
+			border-radius: 150px 150px 150px 150px;
+			float: left;
+			height: 180px;
+			position: absolute;
+			width: 180px;
+			margin-top: -90px;
+			margin-left: -45px;
+		}
+			.clock .clockTime span
+			{
+				display: block;
+				font-size: 36px;
+				margin-top: 62px;
+			}
+		.clock .clockTimeLabels
+		{
+			color: white;
+			font-size: 14px;
+			opacity: 0.6;
+			margin-top: 8px;
+			margin-left: -19px;
+		}
+			.clock .clockTimeLabels span
+			{
+				margin: 0px 6px 0px 6px;
+			}
+		.clock .clockBubbles
+		{
+			display: none;
+		}*/
+
+/*# System #*/
+#exception
+{
+	display: none;
+	position: fixed;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	height: auto;
+	background: rgba(255,0,0,0.8);
+	color: white;
+	font-size: 12px;
+	z-index: 50;
+	padding: 4px;
+	text-align: center;
+}

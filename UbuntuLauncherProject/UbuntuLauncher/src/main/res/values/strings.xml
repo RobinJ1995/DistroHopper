@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Ubuntu Launcher</string>
+    <string name="menuPreferences">Preferences</string>
+    <string name="menuSettings">Settings</string>
+
+</resources>

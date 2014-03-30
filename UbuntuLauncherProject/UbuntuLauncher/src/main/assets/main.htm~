@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link type="text/css" rel="stylesheet" href="stylesheet.css" />
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="script.js"></script>
+</head>
+<body ontouchstart="">
+	<div id="loadingScreen">
+	</div>
+	<div id="desktop">
+		<div id="wallpaper">
+		</div>
+		<div class="unity panel">
+			<img src="img/unity/panel.powerCog.png" alt="" class="indicator powerCog" />
+		</div>
+		<div class="unity launcher chameleonicLight" id="launcher">
+			<div class="launcherIcon bfb chameleonic">
+				<img src="img/unity/launcher.bfb.png" alt="Dash Home" />
+			</div>
+			<div class="launcherIcon launcherSpinner chameleonic">
+				<img src="img/unity/launcher.spinner.gif" alt="Loading..." />
+			</div>
+			<div class="launcherApps" id="launcherApps">
+			</div>
+			<div class="launcherIcon launchTrash chameleonic">
+				<img src="img/apps/trash.icon.png" alt="Rubbish Bin" />
+			</div>
+		</div>
+		<div class="window">
+			<div class="windowClose">
+			</div>
+			<div class="windowContent">
+				<div class="windowPreferences">
+					<table>
+						<tr>
+							<td>
+								<input type="checkbox" id="prefSwapDashTrash" />
+							</td>
+							<td>
+								<label for="prefSwapDashTrash"> Swap Dash and Launcher Edit button</label>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="unity dash chameleonicLight">
+			<div class="windowClose dashClose">
+			</div>
+			<div class="dashContent">
+				<div class="dashSearch">
+					<input type="text" placeholder="Search installed applications" />
+				</div>
+				<div class="dashRecent dashPage" id="dashRecent">
+					<!--<h2>Recently used</h2>
+					<div class="recentApps"></div>-->
+					<h2>Applications</h2>
+					<div class="appList"></div>
+				</div>
+				<div class="dashApps dashPage" id="dashApps">
+					<h2>Applications</h2>
+					<div class="appList"></div>
+				</div>
+				<div class="dashFiles dashPage">
+					<h2>Files</h2>
+					<div class="fileList"></div>
+				</div>
+				<div class="dashSearchResults dashPage">
+					<h2>Search results</h2>
+					<div class="appList"></div>
+				</div>
+				<div class="dashAppInfo dashPage">
+					<div class="appInfoContainer">
+						<p class="backButtonContainer">
+							<span class="appInfoBack dashButton chameleonic">Back</span>
+						</p>
+						<div class="appInfo">
+							<h2></h2>
+							<p></p>
+						</div>
+						<p>
+							<span class="dashInfoPin dashButton chameleonic">Pin to Launcher</span>
+							<span class="dashInfoLaunch dashButton chameleonic">Launch</span>
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="dashRibbon chameleonicVeryLight">
+				<img src="img/unity/lenses/home.png" alt="Recent" class="activeRibbonItem ribbonRecent" />
+				<img src="img/unity/lenses/apps.png" alt="Applications" class="ribbonApps" />
+				<!--<img src="img/unity/lenses/files.png" alt="Files" class="ribbonFiles" />-->
+			</div>
+		</div>
+	</div>
+	<div id="exception">
+	</div>
+</body>
+</html>
