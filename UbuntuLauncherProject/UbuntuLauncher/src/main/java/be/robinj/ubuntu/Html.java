@@ -62,7 +62,7 @@ public class Html
         StringBuilder buildStr = new StringBuilder ();
         if (app.getDescription () != null)
             buildStr.append ("<strong>Description:</strong> ").append (app.getDescription ()).append ("<br />");
-        //buildStr.append ("<strong>Times launched:</strong> ").append (app.getTimesLaunched ()).append ("<br />");
+        buildStr.append ("<strong>Times launched:</strong> ").append (app.getTimesLaunched ()).append ("<br />");
         buildStr.append ("<strong>Data folder:</strong> ").append (app.getDataFolder ()).append ("<br />");
         buildStr.append ("<strong>Target SDK:</strong> ").append(app.getTargetSdk());
 

@@ -23,5 +23,6 @@ android {
 }
 
 dependencies {
+    compile 'com.google.code.gson:gson:2.2.4'
     compile files('libs/libGoogleAnalyticsServices.jar')
 }

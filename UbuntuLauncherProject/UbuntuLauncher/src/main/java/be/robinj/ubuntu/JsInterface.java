@@ -1,6 +1,7 @@
 package be.robinj.ubuntu;
 
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Build;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -35,6 +36,7 @@ public class JsInterface
         this.wallpaper = new WallpaperExt (parent);
         this.installedApps = AppManager.installedApps (parent);
         this.pinnedApps = new AppManager (parent);
+        this.savePinnedApps ();
     }
 
     @JavascriptInterface
@@ -132,6 +134,8 @@ public class JsInterface
 
         this.showToast (app.getLabel () + " was pinned to the Launcher.");
 
+        this.savePinnedApps ();
+
         return this.pinnedApps.indexOf (app);
     }
 
@@ -141,7 +145,19 @@ public class JsInterface
         AppLauncher app = this.pinnedApps.get (index);
         this.pinnedApps.remove (index);
 
+        this.savePinnedApps ();
+
         this.showToast (app.getLabel () + " was unpinned from the Launcher.");
+    }
+
+    @JavascriptInterface
+    public void savePinnedApps ()
+    {
+        String json = this.pinnedApps.toJson ();
+
+        Editor editor = this.prefs.edit ();
+        editor.putString ("pinnedApps", json);
+        editor.apply (); // apply () async (= faster) but ignores failures, commit sync (= slower) but returns false on failure //
     }
 
     @JavascriptInterface

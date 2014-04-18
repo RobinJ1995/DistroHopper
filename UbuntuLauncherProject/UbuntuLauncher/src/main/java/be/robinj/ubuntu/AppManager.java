@@ -12,6 +12,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.webkit.JavascriptInterface;
 
+import com.google.gson.Gson;
+
 public class AppManager
 {
 	private Context context;
@@ -304,6 +306,16 @@ public class AppManager
         
         return buildStr.toString ();
 	}
+
+    @JavascriptInterface
+    public String toJson ()
+    {
+        // I have a bad feeling about this... //
+        Gson gson = new Gson ();
+        String json = gson.toJson (this);
+
+        return json;
+    }
 
     @JavascriptInterface
 	public static AppManager installedApps (Context context)

@@ -125,39 +125,75 @@ $(document).ready
 		$('.appList').on ('click', '.appLauncher',
 			function (e)
 			{
-				var id = parseInt ($(this).attr ('data-index'));
-				launchApp (id);
+				try
+				{
+					var id = parseInt ($(this).attr ('data-index'));
+					launchApp (id);
+				}
+				catch (ex)
+				{
+					handleException (ex);
+				}
+				
 			}
 		);
 		
 		$('.recentApps').on ('click', '.appLauncher',
 			function (e)
 			{
-				var id = parseInt ($(this).attr ('data-index'));
-				launchRecentApp (id);
+				try
+				{
+					var id = parseInt ($(this).attr ('data-index'));
+					launchRecentApp (id);
+				}
+				catch (ex)
+				{
+					handleException (ex);
+				}
 			}
 		);
 		
 		$('.appList').on ('touchstart', '.appLauncher',
 			function (e)
 			{
-				hoverAppIndex = parseInt ($(this).attr ('data-index'));
-				hoverAppPinned = false;
+				try
+				{
+					hoverAppIndex = parseInt ($(this).attr ('data-index'));
+					hoverAppPinned = false;
+				}
+				catch (ex)
+				{
+					handleException (ex);
+				}
 			}
 		);
 		
 		$('.launcherApps').on ('touchstart', '.appLauncher',
 			function (e)
 			{
-				hoverAppIndex = parseInt ($(this).attr ('data-index'));
-				hoverAppPinned = true;
+				try
+				{
+					hoverAppIndex = parseInt ($(this).attr ('data-index'));
+					hoverAppPinned = true;
+				}
+				catch (ex)
+				{
+					handleException (ex);
+				}
 			}
 		);
 		
 		$('.unity.launcher .launcherApps').on ('click', '.appLauncher',
 			function (e)
 			{
-				android.launchPinnedApp (parseInt ($(this).attr ('data-index')));
+				try
+				{
+					android.launchPinnedApp (parseInt ($(this).attr ('data-index')));
+				}
+				catch (ex)
+				{
+					handleException (ex);
+				}
 			}
 		);
 		
@@ -193,39 +229,62 @@ $(document).ready
 		$('.dashAppInfo').on ('click', '.appInfoBack',
 			function (e)
 			{
-				openDashApps ();
+				try
+				{
+					openDashApps ();
+				}
+				catch (ex)
+				{
+					handleException (ex);
+				}
+				
 			}
 		);
 		
 		$('.dashAppInfo').on ('click', '.appInfoPin',
 			function (e)
 			{
-				if (! dashAppInfoPinned)
+				try
 				{
-					dashAppInfoIndex = android.pinApp (dashAppInfoIndex);
-					dashAppInfoPinned = true;
+					if (! dashAppInfoPinned)
+					{
+						dashAppInfoIndex = android.pinApp (dashAppInfoIndex);
+						dashAppInfoPinned = true;
 					
-					openDashAppInfo (dashAppInfoIndex, dashAppInfoPinned);
+						openDashAppInfo (dashAppInfoIndex, dashAppInfoPinned);
+					}
+					else
+					{
+						android.unpinApp (dashAppInfoIndex);
+						dashAppInfoPinned = false;
+					
+						$('.dashAppInfo .appInfoBack').trigger ('click');
+					}
+				
+					refreshPinnedApps ();
 				}
-				else
+				catch (ex)
 				{
-					android.unpinApp (dashAppInfoIndex);
-					dashAppInfoPinned = false;
-					
-					$('.dashAppInfo .appInfoBack').trigger ('click');
+					handleException (ex);
 				}
 				
-				refreshPinnedApps ();
 			}
 		);
 		
 		$('.dashAppInfo').on ('click', '.appInfoLaunch',
 			function (e)
 			{
-				if (dashAppInfoPinned)
-					android.launchPinnedApp (parseInt (dashAppInfoIndex));
-				else
-					android.launchApp (parseInt (dashAppInfoIndex));
+				try
+				{
+					if (dashAppInfoPinned)
+						android.launchPinnedApp (parseInt (dashAppInfoIndex));
+					else
+						android.launchApp (parseInt (dashAppInfoIndex));
+				}
+				catch (ex)
+				{
+					handleException (ex);
+				}
 			}
 		);
 		
@@ -249,7 +308,14 @@ $(document).ready
 		$('.indicator.powerCog').on ('click',
 			function ()
 			{
-				android.openMenu ();
+				try
+				{
+					android.openMenu ();
+				}
+				catch (ex)
+				{
+					handleException (ex);
+				}
 			}
 		);
 	}
