@@ -154,6 +154,13 @@ $(document).ready
 			}
 		);
 		
+		$('.unity.launcher .launcherApps').on ('click', '.appLauncher',
+			function (e)
+			{
+				android.launchPinnedApp (parseInt ($(this).attr ('data-index')));
+			}
+		);
+		
 		$('.dashSearch input').keyup
 		(
 			function (e)
@@ -215,7 +222,10 @@ $(document).ready
 		$('.dashAppInfo').on ('click', '.appInfoLaunch',
 			function (e)
 			{
-				android.launchApp (dashAppInfoIndex);
+				if (dashAppInfoPinned)
+					android.launchPinnedApp (parseInt (dashAppInfoIndex));
+				else
+					android.launchApp (parseInt (dashAppInfoIndex));
 			}
 		);
 		
@@ -525,4 +535,10 @@ function getCached (code)
 function refreshPinnedApps ()
 {
 	$('div.unity.launcher div.launcherApps').html (android.getPinnedAppsHtml ('launcherIcon'));
+}
+
+function updateRecentApps ()
+{
+	//TODO//
+	return void 0;
 }
