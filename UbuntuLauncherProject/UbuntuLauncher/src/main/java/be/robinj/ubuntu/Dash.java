@@ -5,15 +5,15 @@ package be.robinj.ubuntu;
  */
 public class Dash
 {
-    private DashApps dashApps;
+	private DashApps dashApps;
 
-    public Dash (AppManager manager)
-    {
-        this.dashApps = new DashApps (manager);
-    }
+	public Dash (AppManager manager)
+	{
+		this.dashApps = new DashApps (manager);
+	}
 
-    public DashApps dashApps ()
-    {
-        return this.dashApps;
-    }
+	public DashApps dashApps ()
+	{
+		return this.dashApps;
+	}
 }

@@ -9,7 +9,7 @@ public class AppLauncherComparatorAlphabetical implements Comparator<AppLauncher
 	{
 		String label1 = app1.getLabel ();
 		String label2 = app2.getLabel ();
-		
+
 		return label1.compareToIgnoreCase (label2);
 	}
 }

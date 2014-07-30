@@ -38,6 +38,8 @@ $(document).ready
 			var style = '.chameleonic { background-color: rgba(' + avgColour + ',0.6) !important; } .chameleonicLight { background-color: rgba(' + launcherColour + ',0.2) !important; } .chameleonicVeryLight { background-color: rgba(' + avgColour + ',0.1) !important; } .dashOpened div.unity.panel{ background-color: rgba(' + launcherColour + ',0.2) !important; background-image: none; } .dashOpened div.unity.launcher { background-color: rgba(' + launcherColour + ',0.2) !important; }';
 			$('html head').append ('<style type="text/css">' + style + '</style>');
 			
+			refreshPinnedApps ();
+			
 			$('div#loadingScreen').hide (0);
 			$('div#desktop').show (0);
 		}
@@ -469,7 +471,11 @@ function openDashAppInfo (index, pinned)
 	dashAppInfoPinned = pinned;
 	dashAppInfoIndex = parseInt (index);
 	
-	var info = (pinned ? android.getPinnedApps () : android.getInstalledApps ()).get (parseInt (index)).infoToHtml (); // Without parseInt (), index would always be 0 on the Java side //
+	// Without parseInt (), index would always be 0 on the Java side //
+	if (pinned)
+		var info = android.getPinnedAppInfoHtml (parseInt (index));
+	else
+		var info = android.getInstalledAppInfoHtml (parseInt (index));
 	
 	$('div.dashPage.dashAppInfo .appInfo').html (info);
 	$('div.dashContent div.dashPage.dashAppInfo').show (0);

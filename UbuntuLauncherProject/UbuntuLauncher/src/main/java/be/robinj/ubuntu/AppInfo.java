@@ -9,19 +9,19 @@ import android.webkit.JavascriptInterface;
  */
 public class AppInfo extends AppLauncher
 {
-    public AppInfo (Context context)
-    {
-        super (context);
-    }
+	public AppInfo ()
+	{
+		super ();
+	}
 
-    public AppInfo (Context context, ResolveInfo resInf)
-    {
-        super (context, resInf);
-    }
+	public AppInfo (ResolveInfo resInf)
+	{
+		super (resInf);
+	}
 
-    @JavascriptInterface
-    public String toHtml ()
-    {
-        return Html.appInfo (this);
-    }
+	@JavascriptInterface
+	public String toHtml ()
+	{
+		return Html.appInfo (this);
+	}
 }

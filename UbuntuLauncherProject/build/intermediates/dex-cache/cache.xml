@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncherProject/UbuntuLauncher/build/intermediates/pre-dexed/debug/gson-2.2.4-819811d23f62ab6e378ed1592ed5d306c742f40a.jar"
+        jar="/home/robin/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.2.4/a60a5e993c98c864010053cb901b7eab25306568/gson-2.2.4.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="a60a5e993c98c864010053cb901b7eab25306568"/>
+    <item
+        dex="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncherProject/UbuntuLauncher/build/intermediates/pre-dexed/debug/libGoogleAnalyticsServices-1f322bdc0907bf8a4f4742ee346c8c47ada5738f.jar"
+        jar="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncherProject/UbuntuLauncher/libs/libGoogleAnalyticsServices.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="e887c6c9b31b39a39b0eaba981448b78902ea813"/>
+
+</pre-dex-items>

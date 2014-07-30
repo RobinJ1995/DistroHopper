@@ -10,24 +10,24 @@ import java.util.List;
  */
 public class DebugBenchmark
 {
-    private List<Long> checkpoints = new ArrayList<Long>();
+	private List<Long> checkpoints = new ArrayList<Long> ();
 
-    public DebugBenchmark ()
-    {
-        this.checkpoints.add (System.currentTimeMillis ());
-    }
+	public DebugBenchmark ()
+	{
+		this.checkpoints.add (System.currentTimeMillis ());
+	}
 
-    @JavascriptInterface
-    public void checkpoint ()
-    {
-        this.checkpoints.add (System.currentTimeMillis ());
-    }
+	@JavascriptInterface
+	public void checkpoint ()
+	{
+		this.checkpoints.add (System.currentTimeMillis ());
+	}
 
-    @JavascriptInterface
-    public List<Long> end ()
-    {
-        this.checkpoints.add (System.currentTimeMillis ());
+	@JavascriptInterface
+	public List<Long> end ()
+	{
+		this.checkpoints.add (System.currentTimeMillis ());
 
-        return this.checkpoints;
-    }
+		return this.checkpoints;
+	}
 }

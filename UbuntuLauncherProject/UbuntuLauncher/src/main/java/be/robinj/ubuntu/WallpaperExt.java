@@ -10,22 +10,22 @@ public class WallpaperExt extends ImageExt
 {
 	private WallpaperManager manager;
 
-	public WallpaperExt (Context context)
+	public WallpaperExt ()
 	{
-		super (context);
-		
-		this.manager = WallpaperManager.getInstance (context);
+		super ();
+
+		this.manager = WallpaperManager.getInstance (MainActivity.getContext ());
 	}
-	
+
 	@Override
-    @JavascriptInterface
+	@JavascriptInterface
 	public Drawable get ()
 	{
 		return this.manager.getDrawable ();
 	}
-	
+
 	@Override
-    @JavascriptInterface
+	@JavascriptInterface
 	public String getPath ()
 	{
 		return this.getPath ("wallpaper.jpg", 100, CompressFormat.JPEG);

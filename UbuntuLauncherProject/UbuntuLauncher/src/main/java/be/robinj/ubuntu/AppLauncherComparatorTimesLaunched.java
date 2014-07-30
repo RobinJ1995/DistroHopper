@@ -9,7 +9,7 @@ public class AppLauncherComparatorTimesLaunched implements Comparator<AppLaunche
 	{
 		Long timesLaunched1 = app1.getTimesLaunched ();
 		Long timesLaunched2 = app2.getTimesLaunched ();
-		
+
 		return timesLaunched1.compareTo (timesLaunched2);
 	}
 }

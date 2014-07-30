@@ -10,195 +10,230 @@ import android.webkit.JavascriptInterface;
 
 public class AppLauncher
 {
-    private Context context;
-    private String label;
-    private AppIcon icon;
-    private long timesLaunched = 0;
-    private String packageName;
-    private String activityName;
-    private ResolveInfo resInf;
-    private ApplicationInfo info;
-	
-	public AppLauncher (Context context)
+	private String label;
+
+	private AppIcon icon;
+	private String description;
+	private long timesLaunched = 0;
+
+	private String packageName;
+	private String activityName;
+	private String dataDir;
+	private int targetSdk;
+
+	public AppLauncher ()
 	{
-		this.context = context;
-	}
-	
-	public AppLauncher (Context context, ResolveInfo resInf)
-	{
-		this.context = context;
-		this.loadFromResolveInfo (resInf);
-        this.info = this.resInf.activityInfo.applicationInfo;
 	}
 
-    @JavascriptInterface
+	public AppLauncher (ResolveInfo resInf)
+	{
+		this.loadFromResolveInfo (resInf);
+	}
+
+	@JavascriptInterface
+	public String getPackageName ()
+	{
+		return packageName;
+	}
+
+	@JavascriptInterface
+	public void setPackageName (String packageName)
+	{
+		this.packageName = packageName;
+	}
+
+	@JavascriptInterface
+	public String getActivityName ()
+	{
+		return activityName;
+	}
+
+	@JavascriptInterface
+	public void setActivityName (String activityName)
+	{
+		this.activityName = activityName;
+	}
+
+	@JavascriptInterface
 	public String getLabel ()
 	{
 		return this.label;
 	}
 
-    @JavascriptInterface
+	@JavascriptInterface
 	public AppIcon getIcon ()
 	{
 		return this.icon;
 	}
 
-    @JavascriptInterface
+	@JavascriptInterface
+	public void setIcon (AppIcon icon)
+	{
+		this.icon = icon;
+	}
+
+	@JavascriptInterface
+	public void setLabel (String label)
+	{
+		this.label = label;
+	}
+
+	@JavascriptInterface
 	public long getTimesLaunched ()
 	{
 		return this.timesLaunched;
 	}
 
-    @JavascriptInterface
-    public ResolveInfo getResolveInfo () // Returns null if this.resInf is not set //
-    {
-        return this.resInf;
-    }
+	@JavascriptInterface
+	public void setTimesLaunched (long timesLaunched)
+	{
+		this.timesLaunched = timesLaunched;
+	}
 
-    @JavascriptInterface
-    public String getDataFolder ()
-    {
-        return this.info.dataDir;
-    }
+	@JavascriptInterface
+	public String getDataFolder ()
+	{
+		return this.dataDir;
+	}
 
-    @JavascriptInterface
-    public String getDescription ()
-    {
-        PackageManager pacMan = this.context.getPackageManager ();
-        CharSequence description = pacMan.getText(this.resInf.activityInfo.packageName, this.info.descriptionRes, this.info);
+	@JavascriptInterface
+	public String getDescription ()
+	{
+		return this.description;
+	}
 
-        return (description == null ? null : description.toString ());
-    }
+	@JavascriptInterface
+	public void setDescription (String description)
+	{
+		this.description = description;
+	}
 
-    @JavascriptInterface
-    public int getTargetSdk ()
-    {
-        return this.info.targetSdkVersion;
-    }
+	@JavascriptInterface
+	public String getDataDir ()
+	{
+		return dataDir;
+	}
 
-    @JavascriptInterface
+	@JavascriptInterface
+	public void setDataDir (String dataDir)
+	{
+		this.dataDir = dataDir;
+	}
+
+	@JavascriptInterface
+	public int getTargetSdk ()
+	{
+		return targetSdk;
+	}
+
+	@JavascriptInterface
+	public void setTargetSdk (int targetSdk)
+	{
+		this.targetSdk = targetSdk;
+	}
+
+	@JavascriptInterface
 	public void launch ()
 	{
 		this.launch (true);
 	}
 
-    @JavascriptInterface
+	@JavascriptInterface
 	public void launch (boolean countLaunch)
 	{
 		if (countLaunch)
 			this.timesLaunched++;
-		
+
 		ComponentName compName = new ComponentName (this.packageName, this.activityName);
 		Intent intent = new Intent (Intent.ACTION_MAIN);
 		intent.addCategory (Intent.CATEGORY_LAUNCHER);
 		intent.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 		intent.setComponent (compName);
-		
-		this.context.startActivity (intent);
+
+		MainActivity.getContext ().startActivity (intent);
 	}
 
-    @JavascriptInterface
-    public String serialize ()
-    {
-        return this.serialize (true, true);
-    }
-
-    @JavascriptInterface
-    public String serialize (boolean includeIcon, boolean includeTimesLaunched)
-    {
-        String splitter = "::";
-
-        StringBuilder builder = new StringBuilder ("-[");
-        builder.append (this.packageName);
-        builder.append (splitter);
-        builder.append (this.activityName);
-        builder.append (splitter);
-        builder.append (this.label);
-        builder.append (splitter);
-        builder.append ((includeTimesLaunched ? this.timesLaunched : "#"));
-        builder.append (splitter);
-        builder.append ((includeIcon ? this.icon.getPath () : "#")); // Might cause trouble when the user clears cache //
-        builder.append ("]-");
-
-        return builder.toString ();
-    }
-	
 	@Override
-    @JavascriptInterface
-    public int hashCode ()
-    {
-        return this.hashCode (true, true);
-    }
+	@JavascriptInterface
+	public int hashCode ()
+	{
+		return this.hashCode (true);
+	}
 
-    @JavascriptInterface
-    public int hashCode (boolean includeIcon, boolean includeTimesLaunched)
-    {
-        return this.serialize (includeIcon, includeTimesLaunched).hashCode ();
-    }
+	@JavascriptInterface
+	public int hashCode (boolean withIcon)
+	{
+		return new AppLauncherSimplified (this, withIcon).hashCode ();
+	}
 
-    @JavascriptInterface
+	@JavascriptInterface
 	public boolean equals (AppLauncher compareTo)
 	{
 		boolean equal = false;
-		
+
 		if (this.hashCode () == compareTo.hashCode ())
 			equal = true;
-		
+
 		return equal;
 	}
 
-    @JavascriptInterface
+	@JavascriptInterface
 	public String toHtml (String htmlClass)
 	{
 		return this.toHtml (htmlClass, null, false);
 	}
 
-    @JavascriptInterface
+	@JavascriptInterface
 	public String toHtml (String[][] data)
 	{
 		return this.toHtml ("", data, false);
 	}
 
-    @JavascriptInterface
-    public String toHtml (String htmlClass, String[][] data)
-    {
-        return this.toHtml (htmlClass, data, false);
-    }
+	@JavascriptInterface
+	public String toHtml (String htmlClass, String[][] data)
+	{
+		return this.toHtml (htmlClass, data, false);
+	}
 
-    @JavascriptInterface
-    public String toHtml (String htmlClass, String[][] data, boolean backgroundColour)
-    {
-        return Html.appLauncher (this, htmlClass, data, backgroundColour);
-    }
+	@JavascriptInterface
+	public String toHtml (String htmlClass, String[][] data, boolean backgroundColour)
+	{
+		return Html.appLauncher (this, htmlClass, data, backgroundColour);
+	}
 
-    @JavascriptInterface
-    public String infoToHtml ()
-    {
-        return Html.appInfo (this);
-    }
+	@JavascriptInterface
+	public String infoToHtml ()
+	{
+		return Html.appInfo (this);
+	}
 
-    @JavascriptInterface
+	@JavascriptInterface
 	protected void loadFromResolveInfo (ResolveInfo resInf)
 	{
-        this.resInf = resInf;
 		this.loadFromResolveInfo (resInf, false);
 	}
 
-    @JavascriptInterface
-    protected void loadFromResolveInfo (ResolveInfo resInf, boolean respectPreferredOrder)
+	@JavascriptInterface
+	protected void loadFromResolveInfo (ResolveInfo resInf, boolean respectPreferredOrder)
 	{
-		this.label = resInf.loadLabel (this.context.getPackageManager ()).toString ();
-        if (respectPreferredOrder)
-            this.timesLaunched = resInf.preferredOrder;
-        this.packageName = resInf.activityInfo.applicationInfo.packageName;
-        this.activityName = resInf.activityInfo.name;
-        this.resInf = resInf;
-		this.icon = new AppIcon (this.context, resInf, this);
+		ApplicationInfo info = resInf.activityInfo.applicationInfo;
+		PackageManager pacMan = MainActivity.getContext ().getPackageManager ();
+		CharSequence description = pacMan.getText (resInf.activityInfo.packageName, info.descriptionRes, info);
+
+		this.label = resInf.loadLabel (MainActivity.getContext ().getPackageManager ()).toString ();
+		if (respectPreferredOrder)
+			this.timesLaunched = resInf.preferredOrder;
+		this.packageName = resInf.activityInfo.applicationInfo.packageName;
+		this.activityName = resInf.activityInfo.name;
+		this.icon = new AppIcon (resInf, this);
+		this.description = (description == null ? "" : description.toString ());
+		this.dataDir = info.dataDir;
+		this.targetSdk = info.targetSdkVersion;
 	}
 
-    @JavascriptInterface
-    public int getId ()
-    {
-        return this.hashCode (false, false);
-    }
+	@JavascriptInterface
+	public int getId ()
+	{
+		return this.hashCode (false);
+	}
 }
