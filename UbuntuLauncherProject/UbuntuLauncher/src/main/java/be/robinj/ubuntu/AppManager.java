@@ -24,17 +24,17 @@ public class AppManager
 	{
 	}
 
-	public static AppManager installedApps (Context context)
+	public static AppManager installedApps ()
 	{
-		return AppManager.installedApps (context, true);
+		return AppManager.installedApps (true);
 	}
 
-	public static AppManager installedApps (Context context, boolean sorted)
+	public static AppManager installedApps (boolean sorted)
 	{
-		return AppManager.installedApps (context, true, true);
+		return AppManager.installedApps (true, true);
 	}
 
-	public static AppManager installedApps (Context context, boolean sorted, boolean mostUsedFirst)
+	public static AppManager installedApps (boolean sorted, boolean mostUsedFirst)
 	{
 		AppManager manager = new AppManager ();
 		manager.addInstalledApps ();
@@ -331,7 +331,8 @@ public class AppManager
 	@JavascriptInterface
 	public void sort ()
 	{
-		this.sort (true);
+		boolean mostUsedFirst = MainActivity.getPrefs ().getBoolean ("sortAppsTimesLaunched", true);
+		this.sort (mostUsedFirst);
 	}
 
 	@JavascriptInterface

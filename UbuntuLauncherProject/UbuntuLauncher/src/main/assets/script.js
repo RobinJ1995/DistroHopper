@@ -1,9 +1,6 @@
 var bootscreenDelay = 200;
-var launcherEdit = false;
-var scrollable = new Array ();
 var runningAndroid4x = true;
 var cached = new Array ();
-var dragging = false;
 var avgColour;
 var runningJellyBean = false;
 var dashOpened = false;
@@ -39,6 +36,9 @@ $(document).ready
 			var launcherColour = avgColour;
 			var style = '.chameleonic { background-color: rgba(' + avgColour + ',0.6) !important; } .chameleonicLight { background-color: rgba(' + launcherColour + ',0.2) !important; } .chameleonicVeryLight { background-color: rgba(' + avgColour + ',0.1) !important; } .dashOpened div.unity.panel{ background-color: rgba(' + launcherColour + ',0.2) !important; background-image: none; } .dashOpened div.unity.launcher { background-color: rgba(' + launcherColour + ',0.2) !important; }';
 			$('html head').append ('<style type="text/css">' + style + '</style>');
+			
+			if (android.hasAsyncGetInstalledAppsCompleted ()) // The task might have completed before the DOM was loaded //
+				asyncGetInstalledAppsCompleted ();
 			
 			refreshPinnedApps ();
 			
@@ -489,8 +489,7 @@ function closeDash ()
 	$('div.dashApps').hide (0,
 		function ()
 		{
-			$('body').removeClass ('dashOpened');
-			disableLauncherEdit ();
+ 			$('body').removeClass ('dashOpened');
 			$('div.dashContent div.dashPage').hide (0);
 			setDashOpened (false);
 		}
@@ -536,24 +535,6 @@ function addRecentAppToLauncher (id, showInLauncher)
 	
 	if (showInLauncher)
 		$('#appLauncher' + launcherId).show (0);
-}
-
-function enableLauncherEdit ()
-{
-	var previousState = launcherEdit;
-	launcherEdit = true;
-	$('*').addClass ('launcherEditEnabled');
-	if (! previousState)
-		android.showToast ('Launcher Edit mode enabled');
-}
-
-function disableLauncherEdit ()
-{
-	var previousState = launcherEdit;
-	launcherEdit = false;
-	$('*').removeClass ('launcherEditEnabled');
-	if (previousState)
-		android.showToast ('Launcher Edit mode disabled');
 }
 
 function openPreferences ()
@@ -654,4 +635,10 @@ function dashSearch (pattern)
 	
 	var $apps = $(selector).clone ();
 	$('.dashSearchResults .appList').html ($apps);
+}
+
+function asyncGetInstalledAppsCompleted ()
+{
+	$('.launcherIcon.launcherSpinner').hide ();
+	$('.launcherIcon.bfb').show ();
 }

@@ -25,6 +25,7 @@ public class JsInterface
 	private Dash dash;
 	private DebugBenchmark bench = new DebugBenchmark ();
 	private KeyValuePair cache = new KeyValuePair ();
+	private boolean asyncGetInstalledAppsCompleted = false;
 
 	public JsInterface (MainActivity parent, WebView webView, SharedPreferences prefs)
 	{
@@ -33,9 +34,32 @@ public class JsInterface
 		this.prefs = prefs;
 
 		this.wallpaper = new WallpaperExt ();
-		this.installedApps = AppManager.installedApps (parent);
+		//this.installedApps = AppManager.installedApps (); //ASYNC//
 		this.pinnedApps = new AppManager ();
 		this.loadPinnedApps ();
+
+		final JsInterface me = this;
+
+		AsyncTask taskGetInstalledApps = new AsyncTask
+		(
+			new Runnable ()
+			{
+				@Override
+				public void run ()
+				{
+					me.installedApps = AppManager.installedApps ();
+					me.getInstalledAppsHtml (false); // Will be cached //
+					me.asyncGetInstalledAppsCompleted = true; // The task can finish before the DOM is loaded, in which case the function call won't be handled. For this case I need a way to check whether the task has already completed or not. //
+				}
+			},
+			"asyncGetInstalledAppsCompleted ();"
+		);
+		taskGetInstalledApps.start ();
+	}
+
+	public MainActivity getParentActivity ()
+	{
+		return this.parent;
 	}
 
 	@JavascriptInterface
@@ -86,7 +110,13 @@ public class JsInterface
 	@JavascriptInterface
 	public String getInstalledAppsHtml ()
 	{
-		if (this.cache.exists ("installedAppsHtml"))
+		return this.getInstalledAppsHtml (true);
+	}
+
+	@JavascriptInterface
+	public String getInstalledAppsHtml (boolean fromCache)
+	{
+		if (fromCache && this.cache.exists ("installedAppsHtml"))
 		{
 			return this.cache.get ("installedAppsHtml");
 		}
@@ -195,12 +225,16 @@ public class JsInterface
 	public void launchPinnedApp (int index)
 	{
 		this.pinnedApps.get (index).launch ();
+
+		this.sortPinnedAppsAsync ();
 	}
 
 	@JavascriptInterface
 	public void launchApp (int index)
 	{
 		this.installedApps.get (index).launch ();
+
+		this.sortPinnedAppsAsync ();
 	}
 
 	@JavascriptInterface
@@ -219,6 +253,31 @@ public class JsInterface
 	public void showToast (String toast)
 	{
 		Toast.makeText (this.parent, toast, Toast.LENGTH_SHORT).show ();
+	}
+
+	@JavascriptInterface
+	public boolean hasAsyncGetInstalledAppsCompleted ()
+	{
+		return this.asyncGetInstalledAppsCompleted;
+	}
+
+	@JavascriptInterface
+	public void sortPinnedAppsAsync ()
+	{
+		final JsInterface me = this;
+
+		new AsyncTask
+		(
+			new Runnable ()
+			{
+				@Override
+				public void run ()
+				{
+					me.getInstalledApps ().sort ();
+					me.getInstalledAppsHtml (false);
+				}
+			}
+		).start ();
 	}
 
 	@JavascriptInterface
