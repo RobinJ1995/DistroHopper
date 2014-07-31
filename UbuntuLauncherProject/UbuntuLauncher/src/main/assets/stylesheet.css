@@ -342,6 +342,7 @@ div.dash
 					div.dashPage.dashAppInfo .appInfoContainer > .buttons
 					{
 						clear: both;
+						padding-top: 6px;
 					}
 					div.dashPage.dashAppInfo .appInfoContainer > p
 					{
@@ -410,6 +411,7 @@ div.dash
 			}
 	.dashButton
 	{
+		display: inline-block;
 		padding: 8px 12px 8px 12px;
 		color: white;
 		font-size: 1.1em;

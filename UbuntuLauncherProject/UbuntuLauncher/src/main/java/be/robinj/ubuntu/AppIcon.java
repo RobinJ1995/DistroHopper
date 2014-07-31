@@ -54,8 +54,9 @@ public class AppIcon extends ImageExt
 	@JavascriptInterface
 	public String getPath ()
 	{
+		SharedPreferences prefs = MainActivity.getPrefs ();
 		String name = "app" + Integer.toString (this.app.getId ());
-		String path = MainActivity.prefs.getString ("icon:" + name, null);
+		String path = prefs.getString ("icon:" + name, null);
 		boolean changed = false;
 
 		if (path == null)
@@ -73,7 +74,7 @@ public class AppIcon extends ImageExt
 
 		if (changed)
 		{
-			SharedPreferences.Editor editor = MainActivity.prefs.edit ();
+			SharedPreferences.Editor editor = prefs.edit ();
 			editor.putString ("icon:" + name, path);
 
 			editor.apply ();

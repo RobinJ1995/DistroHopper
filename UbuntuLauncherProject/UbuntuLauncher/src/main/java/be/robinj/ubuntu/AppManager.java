@@ -13,28 +13,27 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Queue;
 
 public class AppManager
 {
 	private ArrayList<AppLauncher> appLaunchers = new ArrayList<AppLauncher> ();
+	private static QueueExt<AppLauncher> recent = new QueueExt<AppLauncher> ((short) 5);
 
 	public AppManager ()
 	{
 	}
 
-	@JavascriptInterface
 	public static AppManager installedApps (Context context)
 	{
 		return AppManager.installedApps (context, true);
 	}
 
-	@JavascriptInterface
 	public static AppManager installedApps (Context context, boolean sorted)
 	{
 		return AppManager.installedApps (context, true, true);
 	}
 
-	@JavascriptInterface
 	public static AppManager installedApps (Context context, boolean sorted, boolean mostUsedFirst)
 	{
 		AppManager manager = new AppManager ();
@@ -42,6 +41,17 @@ public class AppManager
 		manager.sort (mostUsedFirst);
 
 		return manager;
+	}
+
+	public static QueueExt<AppLauncher> getRecentStatic ()
+	{
+		return AppManager.recent;
+	}
+
+	@JavascriptInterface
+	public QueueExt<AppLauncher> getRecent () // The Javascript side can't call static methods (AFAIK) //
+	{
+		return AppManager.recent;
 	}
 
 	@JavascriptInterface

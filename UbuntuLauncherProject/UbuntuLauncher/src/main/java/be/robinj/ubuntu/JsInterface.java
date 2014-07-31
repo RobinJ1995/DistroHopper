@@ -124,6 +124,12 @@ public class JsInterface
 	}
 
 	@JavascriptInterface
+	public String getRecentAppsHtml (String htmlClass)
+	{
+		return this.pinnedApps.toHtml (htmlClass, true);
+	}
+
+	@JavascriptInterface
 	public void makeDash ()
 	{
 		this.dash = new Dash (this.getInstalledApps ());

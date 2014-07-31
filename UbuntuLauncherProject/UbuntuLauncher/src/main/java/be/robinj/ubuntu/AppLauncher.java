@@ -3,6 +3,7 @@ package be.robinj.ubuntu;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -14,7 +15,6 @@ public class AppLauncher
 
 	private AppIcon icon;
 	private String description;
-	private long timesLaunched = 0;
 
 	private String packageName;
 	private String activityName;
@@ -81,13 +81,9 @@ public class AppLauncher
 	@JavascriptInterface
 	public long getTimesLaunched ()
 	{
-		return this.timesLaunched;
-	}
+		SharedPreferences prefs = MainActivity.getPrefs ();
 
-	@JavascriptInterface
-	public void setTimesLaunched (long timesLaunched)
-	{
-		this.timesLaunched = timesLaunched;
+		return prefs.getLong ("launched:" + this.getId (), 0);
 	}
 
 	@JavascriptInterface
@@ -142,7 +138,16 @@ public class AppLauncher
 	public void launch (boolean countLaunch)
 	{
 		if (countLaunch)
-			this.timesLaunched++;
+		{
+			SharedPreferences prefs = MainActivity.getPrefs ();
+			SharedPreferences.Editor editor = prefs.edit ();
+
+			editor.putLong ("launched:" + this.getId (), prefs.getLong ("launched:" + this.getId (), 0) + 1);
+
+			editor.apply ();
+		}
+
+		//AppManager.getRecentStatic ().shift (this);
 
 		ComponentName compName = new ComponentName (this.packageName, this.activityName);
 		Intent intent = new Intent (Intent.ACTION_MAIN);
@@ -221,8 +226,6 @@ public class AppLauncher
 		CharSequence description = pacMan.getText (resInf.activityInfo.packageName, info.descriptionRes, info);
 
 		this.label = resInf.loadLabel (MainActivity.getContext ().getPackageManager ()).toString ();
-		if (respectPreferredOrder)
-			this.timesLaunched = resInf.preferredOrder;
 		this.packageName = resInf.activityInfo.applicationInfo.packageName;
 		this.activityName = resInf.activityInfo.name;
 		this.icon = new AppIcon (resInf, this);

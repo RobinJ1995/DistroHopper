@@ -21,10 +21,11 @@ import com.google.analytics.tracking.android.EasyTracker;
 
 public class MainActivity extends Activity
 {
-	public static SharedPreferences prefs;
 	private WebView webView;
 	private GestureDetector gestureDetector;
 	private static Context context;
+	private static SharedPreferences prefs;
+	private static JsInterface jsInterface;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
@@ -40,7 +41,7 @@ public class MainActivity extends Activity
 		this.webView = (WebView) this.findViewById (R.id.web);
 		WebSettings webSettings = this.webView.getSettings ();
 		MainActivity.prefs = this.getPreferences (MODE_PRIVATE);
-		JsInterface jsInterface = new JsInterface (this, this.webView, MainActivity.prefs);
+		MainActivity.jsInterface = new JsInterface (this, this.webView, MainActivity.prefs);
 		this.gestureDetector = new GestureDetector (this, new GestureListenerExt (this));
 
 		webSettings.setJavaScriptEnabled (true);
@@ -50,13 +51,23 @@ public class MainActivity extends Activity
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) //DEBUG//
 			WebView.setWebContentsDebuggingEnabled (true);
 		this.webView.setOnLongClickListener (new LongPressListenerExt (this));
-		this.webView.addJavascriptInterface (jsInterface, "android");
+		this.webView.addJavascriptInterface (MainActivity.jsInterface, "android");
 		this.webView.loadUrl ("file:///android_asset/main.htm");
 	}
 
 	public static Context getContext ()
 	{
 		return MainActivity.context;
+	}
+
+	public static SharedPreferences getPrefs ()
+	{
+		return MainActivity.prefs;
+	}
+
+	public static JsInterface getJsInterface ()
+	{
+		return MainActivity.jsInterface;
 	}
 
 	@Override

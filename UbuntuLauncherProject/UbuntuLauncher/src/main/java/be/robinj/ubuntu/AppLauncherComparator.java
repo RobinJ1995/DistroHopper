@@ -24,7 +24,7 @@ public class AppLauncherComparator implements Comparator<AppLauncher>
 			AppLauncherComparatorTimesLaunched timesLaunchedComparator = new AppLauncherComparatorTimesLaunched ();
 			int timesLaunched = timesLaunchedComparator.compare (app1, app2);
 			if (timesLaunched != 0)
-				return timesLaunched;
+				return -timesLaunched;
 		}
 
 		AppLauncherComparatorAlphabetical alphabeticalComparator = new AppLauncherComparatorAlphabetical ();

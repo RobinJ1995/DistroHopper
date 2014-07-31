@@ -1,6 +1,7 @@
 package be.robinj.ubuntu;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 
