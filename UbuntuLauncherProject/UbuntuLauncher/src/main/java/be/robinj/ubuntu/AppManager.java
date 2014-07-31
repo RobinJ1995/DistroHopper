@@ -84,8 +84,8 @@ public class AppManager
 
 		Intent mainIntent = new Intent (Intent.ACTION_MAIN);
 		mainIntent.addCategory (Intent.CATEGORY_LAUNCHER);
-		PackageManager pkgMan = MainActivity.getContext ().getPackageManager ();
-		List<ResolveInfo> apps = pkgMan.queryIntentActivities (mainIntent, 0);
+		PackageManager pacMan = MainActivity.getContext ().getPackageManager ();
+		List<ResolveInfo> apps = pacMan.queryIntentActivities (mainIntent, 0);
 
 		for (ResolveInfo app : apps)
 			this.add (new AppLauncher (app));
@@ -355,7 +355,7 @@ public class AppManager
 		StringBuilder buildStr = new StringBuilder ();
 
 		for (int i = 0; i < this.size (); i++)
-			buildStr.append (this.appLaunchers.get (i).toHtml (htmlClass, new String[][]{{"index", Integer.toString (i)}}, backgroundColour));
+			buildStr.append (this.appLaunchers.get (i).toHtml (htmlClass, new String[][] {{"index", Integer.toString (i)}}, backgroundColour));
 
 		return buildStr.toString ();
 	}

@@ -24,6 +24,13 @@ public class AppIcon extends ImageExt
 		this.setDrawable (drawable);
 	}
 
+	public AppIcon (Drawable drawable)
+	{
+		super ();
+
+		this.setDrawable (drawable);
+	}
+
 	public AppIcon (ResolveInfo resInf, AppLauncher app)
 	{
 		super (resInf.loadIcon (MainActivity.getContext ().getPackageManager ()));
@@ -60,11 +67,8 @@ public class AppIcon extends ImageExt
 		{
 			File file = new File (path);
 
-			if (! file.exists ())
-			{
+			if (! file.exists () || file.length () == 0) // Sometimes the file might exist, but it's 0 bytes //
 				path = this.getPath (name);
-				changed = true;
-			}
 		}
 
 		if (changed)

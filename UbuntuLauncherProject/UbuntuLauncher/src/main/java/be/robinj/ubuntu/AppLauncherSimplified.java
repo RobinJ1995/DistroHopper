@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 
+import java.io.File;
+
 /**
  * Created by robin on 7/30/14.
  */
@@ -48,9 +50,22 @@ public class AppLauncherSimplified // AppLauncher, but safe to serialize to JSON
 
 		if (this.icon != null)
 		{
-			AppIcon appIcon = new AppIcon (this.icon);
-			appIcon.setApp (appLauncher);
+			File file = new File (this.icon);
 
+			AppIcon appIcon = null;
+
+			if (! file.exists () || file.length () == 0)
+			{
+				PackageManagerExt pacMan = new PackageManagerExt ();
+
+				appIcon = new AppIcon (pacMan.recoverIcon (this.packageName));
+			}
+			else
+			{
+				appIcon = new AppIcon (this.icon);
+			}
+
+			appIcon.setApp (appLauncher);
 			appLauncher.setIcon (appIcon);
 		}
 
