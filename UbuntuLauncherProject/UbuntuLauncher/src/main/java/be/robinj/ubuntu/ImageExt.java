@@ -72,9 +72,6 @@ public class ImageExt
 		BitmapDrawable bitmapDrawable = (BitmapDrawable) image;
 		Bitmap bitmap = bitmapDrawable.getBitmap ();
 
-		if (bitmap == null)
-			return new int[] { 0, 0, 0 };
-
 		int[] colours = new int[6];
 		colours[0] = bitmap.getPixel (bitmap.getWidth () / 2, bitmap.getHeight () / 2);
 		colours[1] = colours[0];

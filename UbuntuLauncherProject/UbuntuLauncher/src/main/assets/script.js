@@ -15,6 +15,8 @@ var dashAppInfoIndex = -1;
 var hoverAppIndex = -1;
 var hoverAppPinned = false;
 
+var dashSearchPattern = '';
+
 $(document).ready
 (
 	function ()
@@ -22,7 +24,7 @@ $(document).ready
 		try
 		{
 			runningJellyBean = android.isRunningJellyBean ();
-
+			
 			if (runningJellyBean)
 				$('body').addClass ('versionJb');
 			else
@@ -199,27 +201,28 @@ $(document).ready
 			}
 		);
 		
-		$('.dashSearch input').keyup
+		$('.dashSearch input').focus // keyUp no longer detects backspace because of a bug in Android //
 		(
 			function (e)
 			{
 				try
 				{
-					openDashSearchResults ();
-				
-					var pattern = $(this).val ();
-					var results = android.searchApps (pattern);
-					
-					var selector = '';
-					for (var i = 0; i < results.size (); i++)
-					{
-						if (i > 0)
-							selector += ', '
-						selector += '.dashRecent .appList .appLauncher[data-index=' + results.getString (i) + ']';
-					}
-					
-					var $apps = $(selector).clone ();
-					$('.dashSearchResults .appList').html ($apps);
+					startDashSearch ();
+				}
+				catch (ex)
+				{
+					handleException (ex);
+				}
+			}
+		);
+		
+		$('.dashSearch input').blur
+		(
+			function (e)
+			{
+				try
+				{
+					dashSearchPattern = '';
 				}
 				catch (ex)
 				{
@@ -613,4 +616,42 @@ function updateRecentApps ()
 {
 	//TODO//
 	return void 0;
+}
+
+
+function startDashSearch ()
+{
+	window.setTimeout (dashSearchIteration, 100);
+}
+
+function dashSearchIteration ()
+{
+	var newVal = $('.dashSearch input').val ();
+	
+	if (newVal != dashSearchPattern)
+	{
+		dashSearchPattern = newVal;
+		dashSearch (newVal);
+	}
+	
+	if ($('.dashSearch input').is (':focus'))
+		window.setTimeout (dashSearchIteration, 50);
+}
+
+function dashSearch (pattern)
+{
+	openDashSearchResults ();
+	
+	var results = android.searchApps (pattern);
+	
+	var selector = '';
+	for (var i = 0; i < results.size (); i++)
+	{
+		if (i > 0)
+			selector += ', '
+		selector += '.dashRecent .appList .appLauncher[data-index=' + results.getString (i) + ']';
+	}
+	
+	var $apps = $(selector).clone ();
+	$('.dashSearchResults .appList').html ($apps);
 }

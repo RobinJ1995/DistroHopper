@@ -43,6 +43,11 @@ div#desktop
 		background-position: center center;
 		background-size: cover;
 	}
+		.dashOpened div#desktop div#wallpaper
+		{
+			filter: blur(3px);
+			-webkit-filter: blur(3px);
+		}
 div.unity.panel
 {
 	position: absolute;
@@ -88,6 +93,11 @@ div.unity.launcher
 		margin: 0px;
 		padding: 0px;
 	}
+		.dashOpened div.unity.launcher .launcherApps
+		{
+			filter: grayscale(0.8) opacity(0.8);
+			-webkit-filter: grayscale(0.8) opacity(0.8);
+		}
 	div.launcherIcon
 	{
 		/*display: none;*/
@@ -119,12 +129,6 @@ div.unity.launcher
 		{
 			display: none;
 		}
-		div.launcherIcon.launchPreferences img
-		{
-			width: 42px;
-			height: 42px;
-			margin: 5px;
-		}
 		div.launcherIcon img
 		{
 			width: 46px;
@@ -137,6 +141,64 @@ div.unity.launcher
 			bottom: 3px;
 			/*background-color: #303030;*/
 		}
+			.dashOpened div.launcherIcon.launchPreferences
+			{
+				filter: grayscale(0.8) opacity(0.8);
+				-webkit-filter: grayscale(0.8) opacity(0.8);
+			}
+		div.launcherIcon.launchPreferences img
+		{
+			width: 42px;
+			height: 42px;
+			margin: 5px;
+		}
+		div.launcherIcon span
+		{
+			display: none;
+		}
+	@media (min-width: 540px)
+	{
+		div.unity.launcher
+		{
+			width: 96px;
+			padding: 4px 0px 4px 0px;
+		}
+		div.launcherApps
+		{
+			position: absolute;
+			top: 87px;
+			bottom: 87px;
+		}
+		div.launcherIcon
+		{
+			width: 80px;
+			height: 80px;
+			margin: 6px 8px 6px 8px;
+			border-radius: 6px;
+		}
+			div.launcherIcon.bfb
+			{
+				margin-top: 3px;
+			}
+			div.launcherIcon.bfb img
+			{
+				width: 80px;
+				height: 80px;
+				margin: 0px;
+			}
+			div.launcherIcon img
+			{
+				width: 71px;
+				height: 71px;
+				margin: 5px;
+			}
+			div.launcherIcon.launchPreferences img
+			{
+				width: 66px;
+				height: 66px;
+				margin: 7px;
+			}
+	}
 div.window
 {
 	display: none;
@@ -168,6 +230,17 @@ div.window
 		{
 			border: 0px;
 		}
+	@media (min-width: 540px)
+	{
+		div.window
+		{
+			left: 96px;
+		}
+			div.windowClose
+			{
+				width: 96px;
+			}
+	}
 div.dash
 {
 	display: none;
@@ -227,11 +300,8 @@ div.dash
 			}
 			div.dashSearch input
 			{
-				position: absolute;
-				top: 0px;
-				right: 0px;
-				bottom: 0px;
-				left: 0px;
+				width: 100%;
+				height: 100%;
 				margin: 4px;
 				border-radius: 3px;
 				background: rgba(0,0,0,0.2);
@@ -251,7 +321,7 @@ div.dash
 		{
 			display: none;
 			position: absolute;
-			top: 42px;
+			top: 50px;
 			left: 0px;
 			right: 0px;
 			bottom: 0px;
@@ -300,7 +370,7 @@ div.dash
 							margin-right: 12px;
 							margin-bottom: 4px;
 						}
-				@media (min-width: 720px)
+				@media (min-width: 540px)
 				{
 					div.dashPage.dashAppInfo .appInfoContainer > p.backButtonContainer
 					{
@@ -346,6 +416,13 @@ div.dash
 		border: 2px solid rgba(255,255,255,0.6);
 		border-radius: 5px;
 	}
+	@media (min-width: 540px)
+	{
+		div.dash
+		{
+			left: 96px;
+		}
+	}
 div.appList
 {
 	text-shadow: 2px 2px 3px #404040;
@@ -367,7 +444,7 @@ div.appList
 			width: 48px;
 			max-height: 48px;
 		}
-	@media (min-width: 720px)
+	@media (min-width: 540px)
 	{
 		.dashContent div.appLauncher
 		{
