@@ -36,8 +36,6 @@ $(document).ready
 				asyncGetInstalledAppsCompleted ();
 			if (android.hasAsyncLoadPinnedAppsCompleted ())
 				asyncLoadPinnedAppsCompleted ();
-			
-			$('div#desktop').show (0);
 		}
 		catch (ex)
 		{

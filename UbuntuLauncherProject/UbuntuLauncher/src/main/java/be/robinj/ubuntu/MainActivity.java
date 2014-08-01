@@ -52,7 +52,7 @@ public class MainActivity extends Activity
 			WebView.setWebContentsDebuggingEnabled (true);
 		this.webView.setOnLongClickListener (new LongPressListenerExt (this)); //BENCH//14//
 		this.webView.addJavascriptInterface (MainActivity.jsInterface, "android");
-		this.webView.loadUrl ("file:///android_asset/main.htm"); //BENCH//48//
+		this.webView.loadUrl ("file:///android_asset/loading.htm"); //BENCH//48//
 	}
 
 	public static Context getContext ()

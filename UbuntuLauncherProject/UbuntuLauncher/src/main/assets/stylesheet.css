@@ -7,24 +7,9 @@ html, body
 	background: rgb(43,0,30);
 }
 
-/*# Loading screen #*/
-div#loadingScreen
-{
-	position: fixed;
-	left: 0px;
-	top: 0px;
-	right: 0px;
-	bottom: 0px;
-	text-align: center;
-	background: rgb(43,0,30) url(img/ubuntuLogo.png) center center no-repeat;
-	color: white;
-	z-index: 49;
-}
-
 /*# Desktop #*/
 div#desktop
 {
-	display: none;
 	position: fixed;
 	left: 0px;
 	top: 0px;
