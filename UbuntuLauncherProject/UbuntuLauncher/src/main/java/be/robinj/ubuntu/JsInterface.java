@@ -37,38 +37,41 @@ public class JsInterface
 
 		this.wallpaper = new WallpaperExt (); //BENCH//11//
 		this.pinnedApps = new AppManager (); //BENCH//10//
+	}
 
+	public void startAsyncConstructTasks () // This was originally part of the constructor, but sometimes these would execute before the constructor had finished, resulting in MainActivity.jsInterface being NULL ==> NullPointerException //
+	{
 		final JsInterface me = this;
 
 		AsyncTask taskLoadPinnedApps = new AsyncTask
-		(
-			new Runnable ()
-			{
-				@Override
-				public void run ()
+			(
+				new Runnable ()
 				{
-					me.loadPinnedApps (); //BENCH//513//
-					me.asyncLoadPinnedAppsCompleted = true;
-				}
-			},
-			"asyncLoadPinnedAppsCompleted ();"
-		);
+					@Override
+					public void run ()
+					{
+						me.loadPinnedApps (); //BENCH//513//
+						me.asyncLoadPinnedAppsCompleted = true;
+					}
+				},
+				"asyncLoadPinnedAppsCompleted ();"
+			);
 		taskLoadPinnedApps.start ();
 
 		AsyncTask taskGetInstalledApps = new AsyncTask
-		(
-			new Runnable ()
-			{
-				@Override
-				public void run ()
+			(
+				new Runnable ()
 				{
-					me.installedApps = AppManager.installedApps ();
-					me.getInstalledAppsHtml (false); // Will be cached //
-					me.asyncGetInstalledAppsCompleted = true; // The task can finish before the DOM is loaded, in which case the function call won't be handled. For this case I need a way to check whether the task has already completed or not. //
-				}
-			},
-			"asyncGetInstalledAppsCompleted ();"
-		);
+					@Override
+					public void run ()
+					{
+						me.installedApps = AppManager.installedApps ();
+						me.getInstalledAppsHtml (false); // Will be cached //
+						me.asyncGetInstalledAppsCompleted = true; // The task can finish before the DOM is loaded, in which case the function call won't be handled. For this case I need a way to check whether the task has already completed or not. //
+					}
+				},
+				"asyncGetInstalledAppsCompleted ();"
+			);
 		taskGetInstalledApps.start (); //BENCH//12//
 	}
 

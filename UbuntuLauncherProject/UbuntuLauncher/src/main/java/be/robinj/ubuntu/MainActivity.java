@@ -42,6 +42,7 @@ public class MainActivity extends Activity
 		WebSettings webSettings = this.webView.getSettings ();
 		MainActivity.prefs = this.getPreferences (MODE_PRIVATE);
 		MainActivity.jsInterface = new JsInterface (this, this.webView, MainActivity.prefs); //BENCH//294//
+		MainActivity.jsInterface.startAsyncConstructTasks ();
 		this.gestureDetector = new GestureDetector (this, new GestureListenerExt (this));
 
 		webSettings.setJavaScriptEnabled (true);

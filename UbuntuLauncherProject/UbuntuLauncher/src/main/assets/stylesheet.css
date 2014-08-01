@@ -111,6 +111,10 @@ div.unity.launcher
 				height: 52px;
 				margin: 0px;
 			}
+			div.launcheIcon.bfb img.size96
+			{
+				display: none;
+			}
 		div.launcherIcon.launcherSpinner
 		{
 			display: block;
@@ -172,6 +176,14 @@ div.unity.launcher
 				height: 80px;
 				margin: 0px;
 			}
+				div.launcherIcon.bfb img.sizeNormal
+				{
+					display: none;
+				}
+				div.launcheIcon.bfb img.size96
+				{
+					display: block;
+				}
 			div.launcherIcon img
 			{
 				width: 71px;
