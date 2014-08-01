@@ -25,7 +25,9 @@ public class JsInterface
 	private Dash dash;
 	private DebugBenchmark bench = new DebugBenchmark ();
 	private KeyValuePair cache = new KeyValuePair ();
+
 	private boolean asyncGetInstalledAppsCompleted = false;
+	private boolean asyncLoadPinnedAppsCompleted = false;
 
 	public JsInterface (MainActivity parent, WebView webView, SharedPreferences prefs)
 	{
@@ -33,12 +35,25 @@ public class JsInterface
 		this.webView = webView;
 		this.prefs = prefs;
 
-		this.wallpaper = new WallpaperExt ();
-		//this.installedApps = AppManager.installedApps (); //ASYNC//
-		this.pinnedApps = new AppManager ();
-		this.loadPinnedApps ();
+		this.wallpaper = new WallpaperExt (); //BENCH//11//
+		this.pinnedApps = new AppManager (); //BENCH//10//
 
 		final JsInterface me = this;
+
+		AsyncTask taskLoadPinnedApps = new AsyncTask
+		(
+			new Runnable ()
+			{
+				@Override
+				public void run ()
+				{
+					me.loadPinnedApps (); //BENCH//513//
+					me.asyncLoadPinnedAppsCompleted = true;
+				}
+			},
+			"asyncLoadPinnedAppsCompleted ();"
+		);
+		taskLoadPinnedApps.start ();
 
 		AsyncTask taskGetInstalledApps = new AsyncTask
 		(
@@ -54,7 +69,7 @@ public class JsInterface
 			},
 			"asyncGetInstalledAppsCompleted ();"
 		);
-		taskGetInstalledApps.start ();
+		taskGetInstalledApps.start (); //BENCH//12//
 	}
 
 	public MainActivity getParentActivity ()
@@ -259,6 +274,12 @@ public class JsInterface
 	public boolean hasAsyncGetInstalledAppsCompleted ()
 	{
 		return this.asyncGetInstalledAppsCompleted;
+	}
+
+	@JavascriptInterface
+	public boolean hasAsyncLoadPinnedAppsCompleted ()
+	{
+		return this.asyncLoadPinnedAppsCompleted;
 	}
 
 	@JavascriptInterface

@@ -31,7 +31,7 @@ public class AsyncTask
 			{
 				try
 				{
-					runnable.run ();
+					me.runnable.run ();
 				}
 				catch (Exception ex)
 				{

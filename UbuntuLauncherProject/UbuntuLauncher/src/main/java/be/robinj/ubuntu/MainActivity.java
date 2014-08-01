@@ -31,7 +31,7 @@ public class MainActivity extends Activity
 	protected void onCreate (Bundle savedInstanceState)
 	{
 		super.onCreate (savedInstanceState);
-		setContentView (R.layout.activity_main);
+		setContentView (R.layout.activity_main); //BENCH//608//
 
 		MainActivity.context = this;
 
@@ -41,7 +41,7 @@ public class MainActivity extends Activity
 		this.webView = (WebView) this.findViewById (R.id.web);
 		WebSettings webSettings = this.webView.getSettings ();
 		MainActivity.prefs = this.getPreferences (MODE_PRIVATE);
-		MainActivity.jsInterface = new JsInterface (this, this.webView, MainActivity.prefs);
+		MainActivity.jsInterface = new JsInterface (this, this.webView, MainActivity.prefs); //BENCH//294//
 		this.gestureDetector = new GestureDetector (this, new GestureListenerExt (this));
 
 		webSettings.setJavaScriptEnabled (true);
@@ -50,9 +50,9 @@ public class MainActivity extends Activity
 		this.webView.setWebChromeClient (new WebChromeClient ());
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) //DEBUG//
 			WebView.setWebContentsDebuggingEnabled (true);
-		this.webView.setOnLongClickListener (new LongPressListenerExt (this));
+		this.webView.setOnLongClickListener (new LongPressListenerExt (this)); //BENCH//14//
 		this.webView.addJavascriptInterface (MainActivity.jsInterface, "android");
-		this.webView.loadUrl ("file:///android_asset/main.htm");
+		this.webView.loadUrl ("file:///android_asset/main.htm"); //BENCH//48//
 	}
 
 	public static Context getContext ()

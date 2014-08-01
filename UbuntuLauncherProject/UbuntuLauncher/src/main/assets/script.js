@@ -1,6 +1,3 @@
-var bootscreenDelay = 200;
-var runningAndroid4x = true;
-var cached = new Array ();
 var avgColour;
 var runningJellyBean = false;
 var dashOpened = false;
@@ -27,8 +24,6 @@ $(document).ready
 			else
 				$('body').addClass ('versionIcs');
 			
-			var windowWidth = $(window).width ();
-			
 			$('div#desktop div#wallpaper').css ('background-image', 'url(' + android.getWallpaper ().getPath () + ')');
 			avgColour = android.getWallpaper ().getAverageColourRgb ();
 			
@@ -39,10 +34,9 @@ $(document).ready
 			
 			if (android.hasAsyncGetInstalledAppsCompleted ()) // The task might have completed before the DOM was loaded //
 				asyncGetInstalledAppsCompleted ();
+			if (android.hasAsyncLoadPinnedAppsCompleted ())
+				asyncLoadPinnedAppsCompleted ();
 			
-			refreshPinnedApps ();
-			
-			$('div#loadingScreen').hide (0);
 			$('div#desktop').show (0);
 		}
 		catch (ex)
@@ -574,20 +568,6 @@ function getDashOpened ()
 	return dashOpened;
 }
 
-function getCached (code)
-{
-	var result = '';
-	
-	if (typeof cached[code] !== 'undefined')
-		result = cached[code];
-	else
-		result = eval (code);
-	
-	cached[code] = result;
-	
-	return result;
-}
-
 function refreshPinnedApps ()
 {
 	$('div.unity.launcher div.launcherApps').html (android.getPinnedAppsHtml ('launcherIcon'));
@@ -641,4 +621,9 @@ function asyncGetInstalledAppsCompleted ()
 {
 	$('.launcherIcon.launcherSpinner').hide ();
 	$('.launcherIcon.bfb').show ();
+}
+
+function asyncLoadPinnedAppsCompleted ()
+{
+	refreshPinnedApps ();
 }

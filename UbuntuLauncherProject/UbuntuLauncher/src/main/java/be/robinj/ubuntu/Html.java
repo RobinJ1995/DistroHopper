@@ -60,7 +60,8 @@ public class Html
 		StringBuilder html = new StringBuilder (Html.tplAppInfo);
 
 		StringBuilder buildStr = new StringBuilder ();
-		if (app.getDescription () != null)
+		String description = app.getDescription ();
+		if (! (description == null || description.equals ("")))
 			buildStr.append ("<strong>Description:</strong> ").append (app.getDescription ()).append ("<br />");
 		buildStr.append ("<strong>Times launched:</strong> ").append (app.getTimesLaunched ()).append ("<br />");
 		buildStr.append ("<strong>Data folder:</strong> ").append (app.getDataFolder ()).append ("<br />");
