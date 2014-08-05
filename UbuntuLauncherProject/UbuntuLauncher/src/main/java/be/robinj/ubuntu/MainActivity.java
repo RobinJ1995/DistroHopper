@@ -122,12 +122,12 @@ public class MainActivity extends Activity
 
 				return true;
 			}
-	    /*else if (item.getItemId () == R.id.menuDeveloper)
-            {
-                this.openInBrowser ("http://www.robinj.be/");
+			/*else if (item.getItemId () == R.id.menuDeveloper)
+			{
+				this.openInBrowser ("http://www.robinj.be/");
 
-                return true;
-            }*/
+				return true;
+			}*/
 			else
 			{
 				return super.onOptionsItemSelected (item);

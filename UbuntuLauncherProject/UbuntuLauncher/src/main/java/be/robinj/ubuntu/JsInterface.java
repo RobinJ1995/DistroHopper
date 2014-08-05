@@ -98,7 +98,8 @@ public class JsInterface
 	@JavascriptInterface
 	public void openMenu ()
 	{
-		this.parent.openOptionsMenu ();
+		//this.parent.openOptionsMenu ();
+		this.parent.openAndroidSettings ();
 	}
 
 	@JavascriptInterface
