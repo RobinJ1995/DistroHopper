@@ -353,7 +353,7 @@ function event_longPress ()
 {
 	try
 	{
-		if (typeof hoverAppIndex !== 'undefined')
+		if (typeof hoverAppIndex !== 'undefined' && hoverAppIndex !== -1)
 		{
 			if (! $('body').hasClass ('dashOpened'))
 				openDash (false);
@@ -474,6 +474,8 @@ function openDashAppInfo (index, pinned)
 	
 	$('div.dashPage.dashAppInfo .appInfo').html (info);
 	$('div.dashContent div.dashPage.dashAppInfo').show (0);
+	
+	hoverAppIndex = -1;
 }
 
 function closeDash ()
@@ -486,6 +488,7 @@ function closeDash ()
 			setDashOpened (false);
 		}
 	);
+	hoverAppIndex = -1;
 }
 
 function launchApp (i)
