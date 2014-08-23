@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="button_back">Back</string>
+    <string name="button_about">About</string>
+
+    <string name="title_preferences">Preferences</string>
+
+    <string name="category_colourcalc">Dominant colour calculation</string>
+
+    <string name="option_launchericon_opacity">Launcher icon background opacity</string>
+    <string name="hint_launchericon_opacity">How opaque the background colour of icons in the Launcher should be.</string>
+
+    <string name="option_unitybackground_dynamic">Dynamic Unity background colour</string>
+    <string name="hint_unitybackground_dynamic">Dynamically pick the background colour of transparent Unity components (Launcher, and the Dash and Panel when the Dash is opened) based on the dominant colour of the wallpaper.</string>
+
+    <string name="option_unitybackground_colour">Unity background colour</string>
+    <string name="hint_unitybackground_colour">The background colour that should be used for transparent Unity components.</string>
+
+    <string name="option_unitybackground_opacity">Unity background opacity</string>
+    <string name="hint_unitybackground_opacity">How opaque the background colour of transparent Unity components should be.</string>
+
+    <string name="option_colourcalc_advanced">Take more samples</string>
+    <string name="hint_colourscalc_advanced">Taking more samples greatly increases accuracy but can result in longer loading times on slower devices. In general, enabling this won\'t result in any noticeable delays.</string>
+
+    <string name="option_colourcalc_hsv">Use HSV</string>
+    <string name="hint_colourcalc_hsv">Using HSV (Hue, Saturation, Value) instead of plain RGB (Red, Green, Blue) will result in colours being much more vibrant, but the calculations that are being preformed are more complicated which can result in longer loading times on slower devices.</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dash_applauncher_width">112dp</dimen>
+    <dimen name="dash_applauncher_height">112dp</dimen>
+    <dimen name="dash_applauncher_textsize">16dp</dimen>
+</resources>

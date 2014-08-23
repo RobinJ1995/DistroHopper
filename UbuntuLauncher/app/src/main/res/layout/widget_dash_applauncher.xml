@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:orientation="vertical"
+      android:layout_width="@dimen/dash_applauncher_width"
+      android:layout_height="@dimen/dash_applauncher_height"
+      android:padding="8dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imgIcon"
+        android:src="@drawable/ic_launcher"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="[Label]"
+        android:id="@+id/tvLabel"
+        android:textColor="@android:color/white"
+        android:layout_weight="0"
+        android:gravity="center"
+        android:textSize="@dimen/dash_applauncher_textsize"
+        android:maxLines="@integer/dash_applauncher_label_maxlines"
+        android:ellipsize="marquee"
+        android:textAppearance="@style/textshadow_2px_black"/>
+
+</LinearLayout>

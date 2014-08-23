@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="2" >
+
+    <dataSet config="main" >
+        <source path="/home/robin/AndroidStudioProjects/UbuntuLauncher/colormixer/assets" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="/home/robin/AndroidStudioProjects/UbuntuLauncher/colormixer/build-types/debug/assets" />
+    </dataSet>
+
+</merger>

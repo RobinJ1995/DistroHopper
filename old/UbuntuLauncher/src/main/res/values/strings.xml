@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Ubuntu Launcher</string>
+    <string name="menuPreferences">Preferences</string>
+    <string name="menuSettings">Settings</string>
+    <string name="title_activity_home">Ubuntu Launcher</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+</resources>

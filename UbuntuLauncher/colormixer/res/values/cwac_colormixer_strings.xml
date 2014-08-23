@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="cwac_colormixer_red">Red</string>
+  <string name="cwac_colormixer_green">Green</string>
+  <string name="cwac_colormixer_blue">Blue</string>
+  <string name="cwac_colormixer_set">Set</string>
+  <string name="cwac_colormixer_cancel">Cancel</string>
+</resources>
