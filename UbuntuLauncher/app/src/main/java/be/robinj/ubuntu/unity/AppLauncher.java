@@ -8,14 +8,12 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import be.robinj.ubuntu.App;
 import be.robinj.ubuntu.R;
-import be.robinj.ubuntu.unity.AppIcon;
 
 /**
  * Created by robin on 8/20/14.

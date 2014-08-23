@@ -2,10 +2,10 @@
 <merger version="2" >
 
     <dataSet config="main" >
-        <source path="/home/robin/AndroidStudioProjects/UbuntuLauncher/colormixer/assets" />
+        <source path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/assets" />
     </dataSet>
     <dataSet config="release" >
-        <source path="/home/robin/AndroidStudioProjects/UbuntuLauncher/colormixer/build-types/release/assets" />
+        <source path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/build-types/release/assets" />
     </dataSet>
 
 </merger>

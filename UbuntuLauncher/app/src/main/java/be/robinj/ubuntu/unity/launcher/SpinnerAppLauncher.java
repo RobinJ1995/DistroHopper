@@ -2,7 +2,6 @@ package be.robinj.ubuntu.unity.launcher;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.ProgressBar;
 
 import be.robinj.ubuntu.R;
 import be.robinj.ubuntu.thirdparty.ProgressWheel;

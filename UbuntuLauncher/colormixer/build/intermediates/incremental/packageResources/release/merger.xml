@@ -2,9 +2,9 @@
 <merger version="2" >
 
     <dataSet config="main" >
-        <source path="/home/robin/AndroidStudioProjects/UbuntuLauncher/colormixer/res" >
+        <source path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/res" >
             <file
-                path="/home/robin/AndroidStudioProjects/UbuntuLauncher/colormixer/res/values/cwac_colormixer_attrs.xml"
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/res/values/cwac_colormixer_attrs.xml"
                 qualifiers="" >
                 <declare-styleable name="ColorMixer" >
                     <attr
@@ -13,7 +13,7 @@
                 </declare-styleable>
             </file>
             <file
-                path="/home/robin/AndroidStudioProjects/UbuntuLauncher/colormixer/res/values/cwac_colormixer_strings.xml"
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/res/values/cwac_colormixer_strings.xml"
                 qualifiers="" >
                 <string name="cwac_colormixer_cancel" >Cancel
                 </string>
@@ -28,20 +28,20 @@
             </file>
             <file
                 name="cwac_colormixer_main"
-                path="/home/robin/AndroidStudioProjects/UbuntuLauncher/colormixer/res/layout/cwac_colormixer_main.xml"
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/res/layout/cwac_colormixer_main.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="cwac_colormixer_activity"
-                path="/home/robin/AndroidStudioProjects/UbuntuLauncher/colormixer/res/layout/cwac_colormixer_activity.xml"
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/res/layout/cwac_colormixer_activity.xml"
                 qualifiers=""
                 type="layout" />
         </source>
-        <source path="/home/robin/AndroidStudioProjects/UbuntuLauncher/colormixer/build/generated/res/rs/release" />
-        <source path="/home/robin/AndroidStudioProjects/UbuntuLauncher/colormixer/build/generated/res/generated/release" />
+        <source path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/build/generated/res/rs/release" />
+        <source path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/build/generated/res/generated/release" />
     </dataSet>
     <dataSet config="release" >
-        <source path="/home/robin/AndroidStudioProjects/UbuntuLauncher/colormixer/build-types/release/res" />
+        <source path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/build-types/release/res" />
     </dataSet>
 
 </merger>

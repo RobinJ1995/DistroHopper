@@ -1,8 +1,6 @@
 package be.robinj.ubuntu;
 
-import android.content.Context;
 import android.os.AsyncTask;
-import android.view.View;
 
 import be.robinj.ubuntu.unity.Wallpaper;
 

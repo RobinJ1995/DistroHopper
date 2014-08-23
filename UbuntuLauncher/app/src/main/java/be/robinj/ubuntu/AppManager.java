@@ -5,22 +5,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.webkit.JavascriptInterface;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
 
 import be.robinj.ubuntu.thirdparty.ExpandableHeightGridView;
-import be.robinj.ubuntu.unity.AppLauncher;
 import be.robinj.ubuntu.unity.dash.GridAdapter;
 import be.robinj.ubuntu.unity.launcher.AppLauncherClickListener;
 import be.robinj.ubuntu.unity.launcher.AppLauncherLongClickListener;
