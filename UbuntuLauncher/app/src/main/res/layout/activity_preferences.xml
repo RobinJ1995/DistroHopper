@@ -6,7 +6,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="be.robinj.ubuntu.PreferencesActivity">
+    tools:context="be.robinj.ubuntu.PreferencesActivity"
+    android:background="@color/transparentblack20">
 
 
     <ScrollView
@@ -72,10 +73,39 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@string/option_launchericon_width"
+                    android:textColor="@android:color/white"
+                    android:textSize="16dp"/>
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sbLauncherIcon_width"
+                    android:max="72"
+                    android:progress="36"
+                    android:indeterminate="false"
+                    android:tag="launchericon_width"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/hint_launchericon_width"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="@string/option_launchericon_opacity"
                     android:textColor="@android:color/white"
-                    android:textSize="16dp"
-                    android:tag="launchericon_opacity"/>
+                    android:textSize="16dp"/>
 
                 <SeekBar
                     android:layout_width="match_parent"
@@ -96,8 +126,59 @@
 
             <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Switch
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/option_panel_show"
+                    android:id="@+id/swPanel_show"
+                    android:checked="true"
+                    android:tag="panel_show"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/hint_panel_show" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llPanel_opacity"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/option_panel_opacity"
+                    android:textColor="@android:color/white"
+                    android:textSize="16dp"/>
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sbPanel_opacity"
+                    android:max="100"
+                    android:progress="100"
+                    android:indeterminate="false"
+                    android:tag="panel_opacity"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/hint_panel_opacity"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
                 <Switch
                     android:layout_width="match_parent"
@@ -111,7 +192,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="@string/hint_colourscalc_advanced" />
+                    android:text="@string/hint_unitybackground_dynamic" />
 
             </LinearLayout>
 

@@ -30,7 +30,10 @@ public class PreferencesActivity extends Activity
 
 		try
 		{
+			SeekBar sbLauncherIcon_width = (SeekBar) this.findViewById (R.id.sbLauncherIcon_width);
 			SeekBar sbLauncherIcon_opacity = (SeekBar) this.findViewById (R.id.sbLauncherIcon_opacity);
+			Switch swPanel_show = (Switch) this.findViewById (R.id.swPanel_show);
+			SeekBar sbPanel_opacity = (SeekBar) this.findViewById (R.id.sbPanel_opacity);
 			Switch swUnityBackground_dynamic = (Switch) this.findViewById (R.id.swUnityBackground_dynamic);
 			ColorMixer cmUnityBackground_colour = (ColorMixer) this.findViewById (R.id.cmUnityBackground_colour);
 			SeekBar sbUnityBackground_opacity = (SeekBar) this.findViewById (R.id.sbUnityBackgrond_opacity);
@@ -38,7 +41,10 @@ public class PreferencesActivity extends Activity
 			Switch swColourCalc_hsv  = (Switch) this.findViewById (R.id.swColourCalc_hsv);
 
 			this.prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+			sbLauncherIcon_width.setProgress (this.prefs.getInt ((String) sbLauncherIcon_width.getTag (), 36));
 			sbLauncherIcon_opacity.setProgress (this.prefs.getInt ((String) sbLauncherIcon_opacity.getTag (), 204));
+			swPanel_show.setChecked (this.prefs.getBoolean ((String) swPanel_show.getTag (), true));
+			sbPanel_opacity.setProgress (this.prefs.getInt ((String) sbPanel_opacity.getTag (), 100));
 			swUnityBackground_dynamic.setChecked (this.prefs.getBoolean ((String) swUnityBackground_dynamic.getTag (), true));
 			cmUnityBackground_colour.setColor (this.prefs.getInt ((String) cmUnityBackground_colour.getTag (), Color.WHITE));
 			sbUnityBackground_opacity.setProgress (this.prefs.getInt ((String) sbUnityBackground_opacity.getTag (), 50));
@@ -48,7 +54,10 @@ public class PreferencesActivity extends Activity
 			SeekBarChangeListener seekBarChangeListener = new SeekBarChangeListener ();
 			CheckedChangeListener checkedChangeListener = new CheckedChangeListener ();
 
+			sbLauncherIcon_width.setOnSeekBarChangeListener (seekBarChangeListener);
 			sbLauncherIcon_opacity.setOnSeekBarChangeListener (seekBarChangeListener);
+			swPanel_show.setOnCheckedChangeListener (checkedChangeListener);
+			sbPanel_opacity.setOnSeekBarChangeListener (seekBarChangeListener);
 			swUnityBackground_dynamic.setOnCheckedChangeListener (checkedChangeListener);
 			cmUnityBackground_colour.setOnColorChangedListener (new ColorChangeListener (cmUnityBackground_colour));
 			sbUnityBackground_opacity.setOnSeekBarChangeListener (seekBarChangeListener);
@@ -123,6 +132,12 @@ public class PreferencesActivity extends Activity
 		llUnityBackground_colour.setVisibility (enabled ? View.GONE : View.VISIBLE);
 	}
 
+	private void panel_show_changed (boolean enabled)
+	{
+		LinearLayout llPanel_opacity = (LinearLayout) this.findViewById (R.id.llPanel_opacity);
+		llPanel_opacity.setVisibility (enabled ? View.VISIBLE : View.GONE);
+	}
+
 	private class SeekBarChangeListener implements SeekBar.OnSeekBarChangeListener
 	{
 		@Override
@@ -169,6 +184,8 @@ public class PreferencesActivity extends Activity
 
 				if ("unitybackground_dynamic".equals (property))
 					PreferencesActivity.this.unityBackground_dynamic_changed (isChecked);
+				else if ("panel_show".equals (property))
+					PreferencesActivity.this.panel_show_changed (isChecked);
 
 				editor.apply ();
 			}

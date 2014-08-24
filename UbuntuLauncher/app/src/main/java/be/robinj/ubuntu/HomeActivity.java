@@ -4,15 +4,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -42,8 +48,21 @@ public class HomeActivity extends Activity
 			ExpandableHeightGridView gvDashHomeApps = (ExpandableHeightGridView) this.findViewById (R.id.gvDashHomeApps);
 			be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher lalSpinner = (be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher) this.findViewById (R.id.lalSpinner);
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalBfb);
+			be.robinj.ubuntu.unity.launcher.AppLauncher lalPreferences = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalPreferences);
 			LinearLayout llLauncherPinnedApps = (LinearLayout) this.findViewById (R.id.llLauncherPinnedApps);
 			Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
+			LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
+
+			lalBfb.init ();
+			lalSpinner.init ();
+			lalPreferences.init ();
+
+			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+			if (prefs.getBoolean ("panel_show", true))
+				llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
+			else
+				llPanel.setVisibility (View.GONE);
+
 
 			lalSpinner.getProgressWheel ().spin ();
 
@@ -144,15 +163,23 @@ public class HomeActivity extends Activity
 		{
 			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 
-			int colour = wpWallpaper.getAverageColour (prefs.getInt ("launchericon_opacity", 204));
+			int colour;
 			int colour_opacity = prefs.getInt ("launchericon_opacity", 204);
-			int bgColour_opacity = prefs.getInt ("unitybackground_opacity", 50);
 			int bgColour;
+			int bgColour_opacity = prefs.getInt ("unitybackground_opacity", 50);
 
 			if (prefs.getBoolean ("unitybackground_dynamic", true))
 			{
-				colour = wpWallpaper.getAverageColour (colour_opacity);
-				bgColour = wpWallpaper.getAverageColour (bgColour_opacity);
+				if (wpWallpaper.isLiveWallpaper ())
+				{
+					colour = Color.argb (40, 40, 40, 40);
+					bgColour = Color.argb (bgColour_opacity, 40, 40, 40);
+				}
+				else
+				{
+					colour = wpWallpaper.getAverageColour (colour_opacity);
+					bgColour = wpWallpaper.getAverageColour (bgColour_opacity);
+				}
 			}
 			else
 			{
@@ -255,6 +282,9 @@ public class HomeActivity extends Activity
 		etDashSearch.setText ("");
 		etDashSearch.clearFocus ();
 
+		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+		llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
+
 		InputMethodManager imm = (InputMethodManager) this.getSystemService (Context.INPUT_METHOD_SERVICE);
 		if (imm != null)
 			imm.hideSoftInputFromWindow (this.getWindow ().getDecorView ().getRootView ().getWindowToken (), 0);
@@ -271,5 +301,6 @@ public class HomeActivity extends Activity
 		llPanel.setBackgroundColor (this.chameleonicBgColour);
 		ibPanelDashClose.setVisibility (View.VISIBLE);
 		wpWallpaper.blur ();
+		llPanel.setAlpha (1F);
 	}
 }

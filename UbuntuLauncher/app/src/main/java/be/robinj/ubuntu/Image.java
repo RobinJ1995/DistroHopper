@@ -22,6 +22,12 @@ public class Image
 		this.drawable = drawable;
 	}
 
+	public Image (Bitmap bitmap)
+	{
+		BitmapDrawable bmd = new BitmapDrawable (bitmap);
+		this.drawable = bmd;
+	}
+
 	public Drawable getDrawable ()
 	{
 		return drawable;

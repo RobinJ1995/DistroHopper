@@ -1,14 +1,17 @@
 package be.robinj.ubuntu.unity;
 
+import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 
 import be.robinj.ubuntu.Image;
+import be.robinj.ubuntu.R;
 
 /**
  * Created by robin on 8/21/14.
@@ -18,6 +21,8 @@ public class Wallpaper extends ImageView
 	private Context context;
 	private Drawable img;
 	private Drawable blurred;
+
+	private boolean liveWallpaper = false;
 
 	public Wallpaper (Context context)
 	{
@@ -60,21 +65,51 @@ public class Wallpaper extends ImageView
 
 		bmdBlurred = new BitmapDrawable (bmBlurred);
 		this.blurred = bmdBlurred;
+
+		WallpaperInfo info = wpman.getWallpaperInfo ();
+		this.liveWallpaper = (info != null);
 	}
 
 	public void set ()
 	{
-		this.setImageDrawable (this.img);
+		if (this.liveWallpaper)
+		{
+			this.setImageDrawable (null);
+			this.setBackgroundColor (this.getResources ().getColor (R.color.transparent));
+		}
+		else
+		{
+			this.setImageDrawable (this.img);
+			this.setBackgroundDrawable (null); // setBackgroundDrawable is deprecated, but setBackground is unspported on older versions of Android //
+		}
 	}
 
 	public void blur ()
 	{
-		this.setImageDrawable (this.blurred);
+		if (this.liveWallpaper)
+		{
+			this.setImageDrawable (null);
+			this.setBackgroundColor (this.getResources ().getColor (R.color.transparentblack60));
+		}
+		else
+		{
+			this.setImageDrawable (this.blurred);
+			this.setBackgroundDrawable (null); // setBackgroundDrawable is deprecated, but setBackground is unspported on older versions of Android //
+		}
 	}
 
 	public void unblur ()
 	{
-		this.setImageDrawable (this.img);
+		if (this.liveWallpaper)
+		{
+			this.setImageDrawable (null);
+			this.setBackgroundColor (this.getResources ().getColor (R.color.transparent));
+		}
+		else
+		{
+			this.setImageDrawable (this.img);
+			this.setBackgroundDrawable (null); // setBackgroundDrawable is deprecated, but setBackground is unspported on older versions of Android //
+		}
 	}
 
 	public int getAverageColour (int alpha)
@@ -82,5 +117,16 @@ public class Wallpaper extends ImageView
 		Image image = new Image (this.img);
 
 		return image.getAverageColour (true, true, alpha);
+	}
+
+	public WallpaperInfo getLiveWallpaper ()
+	{
+		WallpaperManager wpman = WallpaperManager.getInstance (this.context);
+		return wpman.getWallpaperInfo ();
+	}
+
+	public boolean isLiveWallpaper ()
+	{
+		return this.liveWallpaper;
 	}
 }

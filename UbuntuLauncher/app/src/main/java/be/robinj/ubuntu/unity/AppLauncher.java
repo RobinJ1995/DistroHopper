@@ -63,6 +63,8 @@ public class AppLauncher extends LinearLayout
 
 		if (styleAttrs != null)
 			styleAttrs.recycle ();
+
+		this.init ();
 	}
 
 	@Override
@@ -72,6 +74,10 @@ public class AppLauncher extends LinearLayout
 		this.descriptionChanged ();
 		this.specialChanged ();
 		this.iconChanged ();
+	}
+
+	public void init ()
+	{
 	}
 
 	public String getLabel ()

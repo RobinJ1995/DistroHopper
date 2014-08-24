@@ -10,4 +10,14 @@
     <color name="transparent30">#B3FFFFFF</color>
     <color name="transparent20">#CCFFFFFF</color>
     <color name="transparent10">#E6FFFFFF</color>
+
+    <color name="transparentblack90">#1A000000</color>
+    <color name="transparentblack80">#33000000</color>
+    <color name="transparentblack70">#4D000000</color>
+    <color name="transparentblack60">#66000000</color>
+    <color name="transparentblack50">#80000000</color>
+    <color name="transparentblack40">#99000000</color>
+    <color name="transparentblack30">#B3000000</color>
+    <color name="transparentblack20">#CC000000</color>
+    <color name="transparentblack10">#E6000000</color>
 </resources>
