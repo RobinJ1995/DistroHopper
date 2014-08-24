@@ -64,7 +64,8 @@ public class AppLauncher extends LinearLayout
 		if (styleAttrs != null)
 			styleAttrs.recycle ();
 
-		this.init ();
+		if (! this.isInEditMode ()) // Don't run init method when rendering preview in IDE //
+			this.init ();
 	}
 
 	@Override
@@ -158,23 +159,26 @@ public class AppLauncher extends LinearLayout
 
 	protected void iconChanged ()
 	{
-		ImageView imgIcon = (ImageView) this.findViewById (R.id.imgIcon);
-		imgIcon.setImageDrawable (this.icon.getDrawable ());
-
-		LinearLayout llBackground = (LinearLayout) this.findViewById (R.id.llBackground);
-		if (llBackground != null && (! this.special))
+		if (! this.isInEditMode ())
 		{
-			SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
+			ImageView imgIcon = (ImageView) this.findViewById (R.id.imgIcon);
+			imgIcon.setImageDrawable (this.icon.getDrawable ());
 
-			int avgColour = this.icon.getAverageColour
-			(
-				prefs.getBoolean ("colourcalc_advanced", true),
-				prefs.getBoolean ("colourcalc_hsv", true),
-				prefs.getInt ("launchericon_opacity", 204)
-			);
+			LinearLayout llBackground = (LinearLayout) this.findViewById (R.id.llBackground);
+			if (llBackground != null && (!this.special))
+			{
+				SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
 
-			GradientDrawable gd = (GradientDrawable) llBackground.getBackground ();
-			gd.setColor (avgColour);
+				int avgColour = this.icon.getAverageColour
+				(
+					prefs.getBoolean ("colourcalc_advanced", true),
+					prefs.getBoolean ("colourcalc_hsv", true),
+					prefs.getInt ("launchericon_opacity", 204)
+				);
+
+				GradientDrawable gd = (GradientDrawable) llBackground.getBackground ();
+				gd.setColor (avgColour);
+			}
 		}
 	}
 

@@ -259,6 +259,18 @@
             </LinearLayout>
         </LinearLayout>
 
+        <GridLayout
+            android:id="@+id/glWidgets"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/llLauncher"
+            android:layout_below="@id/llPanel">
+
+
+
+        </GridLayout>
+
     </RelativeLayout>
 
 </RelativeLayout>

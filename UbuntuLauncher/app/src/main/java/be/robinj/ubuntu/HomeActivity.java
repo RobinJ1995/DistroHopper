@@ -1,8 +1,14 @@
 package be.robinj.ubuntu;
 
 import android.app.Activity;
+import android.appwidget.AppWidgetHost;
+import android.appwidget.AppWidgetHostView;
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -16,6 +22,7 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -23,14 +30,21 @@ import android.widget.RelativeLayout;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import be.robinj.ubuntu.thirdparty.ExpandableHeightGridView;
 import be.robinj.ubuntu.unity.Wallpaper;
+import be.robinj.ubuntu.unity.WidgetHostView;
+import be.robinj.ubuntu.unity.WidgetHost_LongClickListener;
 import be.robinj.ubuntu.unity.dash.SearchTextWatcher;
 
 
 public class HomeActivity extends Activity
 {
 	private AppManager apps;
+	private AppWidgetManager widgetManager;
+	private AppWidgetHost widgetHost;
 
 	private int chameleonicBgColour = Color.argb (25, 0, 0, 0);
 
@@ -52,17 +66,24 @@ public class HomeActivity extends Activity
 			LinearLayout llLauncherPinnedApps = (LinearLayout) this.findViewById (R.id.llLauncherPinnedApps);
 			Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
 			LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
+			ImageButton ibDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
+			GridLayout glWidgets = (GridLayout) this.findViewById (R.id.glWidgets);
 
 			lalBfb.init ();
 			lalSpinner.init ();
 			lalPreferences.init ();
 
 			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+			float density = this.getResources ().getDisplayMetrics ().density;
+
 			if (prefs.getBoolean ("panel_show", true))
 				llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
 			else
 				llPanel.setVisibility (View.GONE);
 
+			int ibDashClose_width = (int) ((float) (48 + prefs.getInt ("launchericon_width", 36)) * density);
+			LinearLayout.LayoutParams ibDashClose_layoutParams = new LinearLayout.LayoutParams (ibDashClose_width, LinearLayout.LayoutParams.MATCH_PARENT);
+			ibDashClose.setLayoutParams (ibDashClose_layoutParams);
 
 			lalSpinner.getProgressWheel ().spin ();
 
@@ -71,6 +92,11 @@ public class HomeActivity extends Activity
 
 			this.asyncLoadApps = new AsyncLoadApps (this, lalSpinner, lalBfb, gvDashHomeApps, llLauncherPinnedApps);
 			this.asyncLoadApps.execute (this.getApplicationContext ());
+
+			this.widgetManager = AppWidgetManager.getInstance (this);
+			this.widgetHost = new AppWidgetHost (this, R.id.glWidgets);
+
+			//glWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this));
 
 			Tracker tracker = ((Application) this.getApplication ()).getTracker (Application.TrackerName.APP_TRACKER);
 			tracker.send (new HitBuilders.AppViewBuilder ().build ());
@@ -112,7 +138,17 @@ public class HomeActivity extends Activity
 			super.onActivityResult (requestCode, resultCode, data);
 
 			if (requestCode == 1) // ActivityPreferences //
-				this.onCreate (null);
+				this.onCreate (null); // Reload activity //
+			else if (requestCode == 2) // Widget picked //
+				if (resultCode == RESULT_OK)
+					this.configureWidget (data);
+				else
+					this.removeWidget (data);
+			else if (requestCode == 3) // Widget configured //
+				if (resultCode == RESULT_OK)
+					this.createWidget (data);
+				else
+					this.removeWidget (data);
 		}
 		catch (Exception ex)
 		{
@@ -130,7 +166,7 @@ public class HomeActivity extends Activity
 
 			if (llDash.getVisibility () == View.VISIBLE)
 				this.closeDash ();
-			else
+			else if (! this.isDefaultLauncher ())
 				super.onBackPressed ();
 		}
 		catch (Exception ex)
@@ -138,6 +174,22 @@ public class HomeActivity extends Activity
 			ExceptionHandler exh = new ExceptionHandler (this, ex);
 			exh.show ();
 		}
+	}
+
+	@Override
+	protected void onStart ()
+	{
+		super.onStart();
+
+		this.widgetHost.startListening ();
+	}
+
+	@Override
+	protected void onStop ()
+	{
+		super.onStop();
+
+		this.widgetHost.stopListening ();
 	}
 
 	//# Callbacks #//
@@ -267,6 +319,7 @@ public class HomeActivity extends Activity
 		}
 	}
 
+	//# Dash #//
 	private void closeDash ()
 	{
 		LinearLayout llDash = (LinearLayout) this.findViewById (R.id.llDash);
@@ -302,5 +355,110 @@ public class HomeActivity extends Activity
 		ibPanelDashClose.setVisibility (View.VISIBLE);
 		wpWallpaper.blur ();
 		llPanel.setAlpha (1F);
+	}
+
+	//# Checks #//
+	private boolean isDefaultLauncher ()
+	{
+		String packageName = this.getPackageName ();
+
+		IntentFilter homeFilter = new IntentFilter (Intent.ACTION_MAIN);
+		homeFilter.addCategory (Intent.CATEGORY_HOME);
+
+		List<IntentFilter> filters = new ArrayList<IntentFilter> ();
+		filters.add (homeFilter);
+
+		List<ComponentName> activities = new ArrayList<ComponentName> ();
+
+		this.getPackageManager ().getPreferredActivities (filters, activities, packageName);
+
+		for (ComponentName activity : activities)
+		{
+			if (packageName.equals (activity.getPackageName ()))
+				return true;
+		}
+
+		return false;
+	}
+
+	//# Widgets #//
+	public void selectWidget ()
+	{
+		int id = this.widgetHost.allocateAppWidgetId ();
+
+		Intent intent = new Intent (AppWidgetManager.ACTION_APPWIDGET_PICK);
+		intent.putExtra (AppWidgetManager.EXTRA_APPWIDGET_ID, id);
+
+		/*
+		ArrayList customInfo = new ArrayList();
+		pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_INFO, customInfo);
+		ArrayList customExtras = new ArrayList();
+		pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_EXTRAS, customExtras);
+
+		addEmptyData (pickIntent);
+		*/
+
+		this.startActivityForResult (intent, 2);
+	}
+
+	private void configureWidget (Intent data) throws Exception
+	{
+		Bundle bundle = data.getExtras ();
+		int id = bundle.getInt (AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+
+		AppWidgetProviderInfo info = this.widgetManager.getAppWidgetInfo (id);
+
+		if (id == -1)
+			throw new Exception ("Didn't receive a widget ID");
+
+		if (info.configure == null)
+		{
+			this.createWidget (data);
+		}
+		else
+		{
+			Intent intent = new Intent (AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
+			intent.setComponent (info.configure);
+			intent.putExtra (AppWidgetManager.EXTRA_APPWIDGET_ID, id);
+
+			this.startActivityForResult (intent, 3);
+		}
+	}
+
+	private void createWidget (Intent data) throws Exception
+	{
+		Bundle bundle = data.getExtras ();
+		int id = bundle.getInt (AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+
+		if (id == -1)
+			throw new Exception ("Didn't receive a widget ID");
+
+		AppWidgetProviderInfo info = this.widgetManager.getAppWidgetInfo (id);
+		WidgetHostView hostView = (WidgetHostView) this.widgetHost.createView (this, id, info);
+
+		GridLayout glWidgets = (GridLayout) this.findViewById (R.id.glWidgets);
+		glWidgets.addView (hostView);
+	}
+
+	public void removeWidget (WidgetHostView hostView)
+	{
+		this.widgetHost.deleteAppWidgetId (hostView.getAppWidgetId ());
+
+		GridLayout glWidgets = (GridLayout) this.findViewById (R.id.glWidgets);
+		glWidgets.removeView (hostView);
+	}
+
+	private void removeWidget (Intent data) throws Exception
+	{
+		if (data != null)
+		{
+			Bundle bundle = data.getExtras ();
+			int id = bundle.getInt (AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+
+			if (id == -1)
+				throw new Exception ("Didn't receive a widget ID");
+
+			this.widgetHost.deleteAppWidgetId (id);
+		}
 	}
 }

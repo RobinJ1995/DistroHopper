@@ -40,7 +40,7 @@ public class AppLauncher extends be.robinj.ubuntu.unity.AppLauncher
 		float density = this.getResources ().getDisplayMetrics ().density;
 
 		SharedPreferences prefs = this.getContext ().getSharedPreferences ("prefs", Context.MODE_PRIVATE);
-		int width = (int) ((float) (48 + prefs.getInt ("launchericon_width", 52)) * density);
+		int width = (int) ((float) (48 + prefs.getInt ("launchericon_width", 36)) * density);
 		int height = width - (int) (4F * density);
 
 		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams (width, height);

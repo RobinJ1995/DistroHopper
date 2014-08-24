@@ -187,11 +187,11 @@ public class Image
 					}
 
 					if ((grey > white && grey > black) || white == black)
-						return Color.rgb (150, 150, 150);
+						return Color.argb (alpha, 150, 150, 150);
 					else if (white >= grey && white >= black)
-						return Color.rgb (240, 240, 240);
+						return Color.argb (alpha, 240, 240, 240);
 					else
-						return Color.rgb (50, 50, 50);
+						return Color.argb (alpha, 50, 50, 50);
 				}
 			}
 
