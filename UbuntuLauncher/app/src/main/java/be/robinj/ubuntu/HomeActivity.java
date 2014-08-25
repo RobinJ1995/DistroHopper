@@ -32,7 +32,6 @@ import be.robinj.ubuntu.unity.Wallpaper;
 import be.robinj.ubuntu.unity.WidgetHost;
 import be.robinj.ubuntu.unity.WidgetHostView;
 import be.robinj.ubuntu.unity.WidgetHostView_LongClickListener;
-import be.robinj.ubuntu.unity.WidgetHost_LongClickListener;
 import be.robinj.ubuntu.unity.dash.SearchTextWatcher;
 
 

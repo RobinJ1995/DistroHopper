@@ -1,8 +1,6 @@
 package be.robinj.ubuntu.unity;
 
-import android.appwidget.AppWidgetHostView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.GridLayout;
 
 import be.robinj.ubuntu.HomeActivity;

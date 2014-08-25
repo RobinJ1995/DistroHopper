@@ -5,7 +5,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
-import android.view.ViewGroup;
 
 /**
  * Created by robin on 8/25/14.
@@ -58,7 +57,7 @@ public class WidgetHostView extends AppWidgetHostView
 			@Override
 			public void run ()
 			{
-				if (getParent () != null && hasWindowFocus () && windowAttachCount == getWindowAttachCount () && cancelLongPress == false)
+				if (getParent () != null && hasWindowFocus () && windowAttachCount == getWindowAttachCount () && (! cancelLongPress))
 					performLongClick ();
 				else
 					cancelLongPress = false;

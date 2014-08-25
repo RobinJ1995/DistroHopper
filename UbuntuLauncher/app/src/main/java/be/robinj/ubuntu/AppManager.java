@@ -226,7 +226,6 @@ public class AppManager implements Iterable<App>
 	{
 		AppComparatorAlphabetical comparator = new AppComparatorAlphabetical ();
 		Collections.sort (this.apps, comparator);
-		String x=  ";";
 	}
 
 	public boolean unpin (App app)

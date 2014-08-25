@@ -1,0 +1,10 @@
+<resources>
+
+    <style name="textshadow_2px_black" parent="android:TextAppearance.Holo.Widget.TextView">
+        <item name="android:shadowColor">@android:color/black</item>
+        <item name="android:shadowDx">2</item>
+        <item name="android:shadowDy">2</item>
+        <item name="android:shadowRadius">5</item>
+    </style>
+
+</resources>

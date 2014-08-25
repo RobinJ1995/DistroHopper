@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
-import android.widget.Switch;
 
 import com.commonsware.cwac.colormixer.ColorMixer;
 import com.google.analytics.tracking.android.EasyTracker;
@@ -34,13 +33,13 @@ public class PreferencesActivity extends Activity
 
 			SeekBar sbLauncherIcon_width = (SeekBar) this.findViewById (R.id.sbLauncherIcon_width);
 			SeekBar sbLauncherIcon_opacity = (SeekBar) this.findViewById (R.id.sbLauncherIcon_opacity);
-			Switch swPanel_show = (Switch) this.findViewById (R.id.swPanel_show);
+			CompoundButton swPanel_show = (CompoundButton) this.findViewById (R.id.swPanel_show);
 			SeekBar sbPanel_opacity = (SeekBar) this.findViewById (R.id.sbPanel_opacity);
-			Switch swUnityBackground_dynamic = (Switch) this.findViewById (R.id.swUnityBackground_dynamic);
+			CompoundButton swUnityBackground_dynamic = (CompoundButton) this.findViewById (R.id.swUnityBackground_dynamic);
 			ColorMixer cmUnityBackground_colour = (ColorMixer) this.findViewById (R.id.cmUnityBackground_colour);
 			SeekBar sbUnityBackground_opacity = (SeekBar) this.findViewById (R.id.sbUnityBackgrond_opacity);
-			Switch swColourCalc_advanced  = (Switch) this.findViewById (R.id.swColourCalc_advanced);
-			Switch swColourCalc_hsv  = (Switch) this.findViewById (R.id.swColourCalc_hsv);
+			CompoundButton swColourCalc_advanced  = (CompoundButton) this.findViewById (R.id.swColourCalc_advanced);
+			CompoundButton swColourCalc_hsv  = (CompoundButton) this.findViewById (R.id.swColourCalc_hsv);
 
 			this.prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 			sbLauncherIcon_width.setProgress (this.prefs.getInt ((String) sbLauncherIcon_width.getTag (), 36));

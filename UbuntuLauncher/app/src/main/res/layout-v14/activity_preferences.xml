@@ -129,7 +129,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <CheckBox
+                <Switch
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/option_panel_show"
@@ -180,7 +180,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <CheckBox
+                <Switch
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/option_unitybackground_dynamic"
@@ -304,7 +304,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent">
 
-                    <CheckBox
+                    <Switch
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/option_colourcalc_advanced"
@@ -324,7 +324,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent">
 
-                    <CheckBox
+                    <Switch
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/option_colourcalc_hsv"

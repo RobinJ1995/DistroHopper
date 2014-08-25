@@ -1,4 +1,4 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="be.robinj.ubuntu.AboutActivity" >
+    tools:context="be.robinj.ubuntu.AboutActivity">
 </menu>
