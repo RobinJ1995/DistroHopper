@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Ubuntu Launcher</string>
+    <string name="action_settings">Настройки</string>
+    <string name="dash_search_hint">Поиск установленных приложений</string>
+    <string name="dash_lens_apps_title">Приложения</string>
+    <string name="title_activity_preferences">Предпочтения</string>
+    <string name="title_activity_about">О нас</string>
+
+</resources>

@@ -28,8 +28,11 @@
     <string name="option_unitybackground_opacity">Unity background opacity</string>
     <string name="hint_unitybackground_opacity">How opaque the background colour of transparent Unity components should be.</string>
 
+    <string name="option_wallpaper">Wallpaper</string>
+    <string name="hint_wallpaper">Change wallpaper</string>
+
     <string name="option_colourcalc_advanced">Take more samples</string>
-    <string name="hint_colourscalc_advanced">Taking more samples greatly increases accuracy but can result in longer loading times on slower devices. In general, enabling this won\'t result in any noticeable delays.</string>
+    <string name="hint_colourscalc_advanced">Taking more samples greatly increases accuracy but can result in longer loading times on slower devices.</string>
 
     <string name="option_colourcalc_hsv">Use HSV</string>
     <string name="hint_colourcalc_hsv">Using HSV (Hue, Saturation, Value) instead of plain RGB (Red, Green, Blue) will result in colours being much more vibrant, but the calculations that are being preformed are more complicated which can result in longer loading times on slower devices.</string>

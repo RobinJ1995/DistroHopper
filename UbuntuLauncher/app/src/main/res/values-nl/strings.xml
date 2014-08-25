@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Ubuntu Launcher</string>
+    <string name="action_settings">Instellingen</string>
+    <string name="dash_search_hint">Geïnstalleerde apps doorzoeken</string>
+    <string name="dash_lens_apps_title">Toepassingen</string>
+    <string name="title_activity_preferences">Voorkeuren</string>
+    <string name="title_activity_about">Over</string>
+
+    <string name="pinned">is vastgemaakt aan de Launcher</string>
+    <string name="unpinned">is losgemaakt van de Launcher</string>
+    <string name="notpinned">is niet vastgemaakt aan de Launcher</string>
+
+</resources>

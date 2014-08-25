@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.Build;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -96,7 +97,7 @@ public class AppManager implements Iterable<App>
 			boolean returnValue = this.pinned.add (app);
 
 			if (showToast)
-				Toast.makeText (this.context, app.getLabel () + " has been pinned to the Launcher", Toast.LENGTH_SHORT).show ();
+				Toast.makeText (this.context, app.getLabel () + " " + this.context.getResources ().getString (R.string.pinned), Toast.LENGTH_SHORT).show ();
 
 			if (save)
 				this.savePinnedApps ();
@@ -159,7 +160,10 @@ public class AppManager implements Iterable<App>
 			editor.putString (Integer.toString (i), packageAndActivityName.toString ());
 		}
 
-		editor.apply ();
+		if (Build.VERSION.SDK_INT >= 9)
+			editor.apply ();
+		else
+			editor.commit ();
 	}
 
 	public List<App> search (String pattern)
@@ -171,7 +175,7 @@ public class AppManager implements Iterable<App>
 	{
 		List<App> results;
 
-		if (pattern.isEmpty ())
+		if (pattern.length () == 0)
 		{
 			results = new ArrayList<App> (this.apps);
 		}
@@ -231,9 +235,9 @@ public class AppManager implements Iterable<App>
 
 		String message;
 		if (modified)
-			message = " has been unpinned from the Launcher";
+			message = " " + this.context.getResources ().getString (R.string.unpinned);
 		else
-			message = " isn't pinned";
+			message = " " + this.context.getResources ().getString (R.string.notpinned);
 
 		Toast.makeText (this.context, app.getLabel () + message, Toast.LENGTH_SHORT).show ();
 

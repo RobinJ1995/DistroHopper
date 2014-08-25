@@ -1,7 +1,6 @@
 package be.robinj.ubuntu;
 
 import android.app.Activity;
-import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -10,32 +9,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import be.robinj.ubuntu.thirdparty.ExpandableHeightGridView;
 import be.robinj.ubuntu.unity.Wallpaper;
+import be.robinj.ubuntu.unity.WidgetHost;
 import be.robinj.ubuntu.unity.WidgetHostView;
+import be.robinj.ubuntu.unity.WidgetHostView_LongClickListener;
 import be.robinj.ubuntu.unity.WidgetHost_LongClickListener;
 import be.robinj.ubuntu.unity.dash.SearchTextWatcher;
 
@@ -44,7 +40,7 @@ public class HomeActivity extends Activity
 {
 	private AppManager apps;
 	private AppWidgetManager widgetManager;
-	private AppWidgetHost widgetHost;
+	private WidgetHost widgetHost;
 
 	private int chameleonicBgColour = Color.argb (25, 0, 0, 0);
 
@@ -54,11 +50,11 @@ public class HomeActivity extends Activity
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
-		super.onCreate (savedInstanceState);
-		setContentView (R.layout.activity_home);
-
 		try
 		{
+			super.onCreate (savedInstanceState);
+			setContentView (R.layout.activity_home);
+
 			ExpandableHeightGridView gvDashHomeApps = (ExpandableHeightGridView) this.findViewById (R.id.gvDashHomeApps);
 			be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher lalSpinner = (be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher) this.findViewById (R.id.lalSpinner);
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalBfb);
@@ -66,8 +62,8 @@ public class HomeActivity extends Activity
 			LinearLayout llLauncherPinnedApps = (LinearLayout) this.findViewById (R.id.llLauncherPinnedApps);
 			Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
 			LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
-			ImageButton ibDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
-			GridLayout glWidgets = (GridLayout) this.findViewById (R.id.glWidgets);
+			ImageButton ibPanelDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
+			//GridLayout glWidgets = (GridLayout) this.findViewById (R.id.glWidgets);
 
 			lalBfb.init ();
 			lalSpinner.init ();
@@ -77,13 +73,18 @@ public class HomeActivity extends Activity
 			float density = this.getResources ().getDisplayMetrics ().density;
 
 			if (prefs.getBoolean ("panel_show", true))
-				llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
+			{
+				if (Build.VERSION.SDK_INT >= 11)
+					llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
+			}
 			else
+			{
 				llPanel.setVisibility (View.GONE);
+			}
 
 			int ibDashClose_width = (int) ((float) (48 + prefs.getInt ("launchericon_width", 36)) * density);
 			LinearLayout.LayoutParams ibDashClose_layoutParams = new LinearLayout.LayoutParams (ibDashClose_width, LinearLayout.LayoutParams.MATCH_PARENT);
-			ibDashClose.setLayoutParams (ibDashClose_layoutParams);
+			ibPanelDashClose.setLayoutParams (ibDashClose_layoutParams);
 
 			lalSpinner.getProgressWheel ().spin ();
 
@@ -93,13 +94,10 @@ public class HomeActivity extends Activity
 			this.asyncLoadApps = new AsyncLoadApps (this, lalSpinner, lalBfb, gvDashHomeApps, llLauncherPinnedApps);
 			this.asyncLoadApps.execute (this.getApplicationContext ());
 
-			this.widgetManager = AppWidgetManager.getInstance (this);
-			this.widgetHost = new AppWidgetHost (this, R.id.glWidgets);
+			//this.widgetManager = AppWidgetManager.getInstance (this);
+			//this.widgetHost = new WidgetHost (this, R.id.vgWidgets);
 
 			//glWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this));
-
-			Tracker tracker = ((Application) this.getApplication ()).getTracker (Application.TrackerName.APP_TRACKER);
-			tracker.send (new HitBuilders.AppViewBuilder ().build ());
 		}
 		catch (Exception ex)
 		{
@@ -181,7 +179,9 @@ public class HomeActivity extends Activity
 	{
 		super.onStart();
 
-		this.widgetHost.startListening ();
+		//this.widgetHost.startListening ();
+
+		EasyTracker.getInstance (this).activityStart (this);
 	}
 
 	@Override
@@ -189,7 +189,9 @@ public class HomeActivity extends Activity
 	{
 		super.onStop();
 
-		this.widgetHost.stopListening ();
+		//this.widgetHost.stopListening ();
+
+		EasyTracker.getInstance (this).activityStop (this);
 	}
 
 	//# Callbacks #//
@@ -335,8 +337,11 @@ public class HomeActivity extends Activity
 		etDashSearch.setText ("");
 		etDashSearch.clearFocus ();
 
-		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
-		llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
+		if (Build.VERSION.SDK_INT >= 11)
+		{
+			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+			llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
+		}
 
 		InputMethodManager imm = (InputMethodManager) this.getSystemService (Context.INPUT_METHOD_SERVICE);
 		if (imm != null)
@@ -354,7 +359,8 @@ public class HomeActivity extends Activity
 		llPanel.setBackgroundColor (this.chameleonicBgColour);
 		ibPanelDashClose.setVisibility (View.VISIBLE);
 		wpWallpaper.blur ();
-		llPanel.setAlpha (1F);
+		if (Build.VERSION.SDK_INT >= 11)
+			llPanel.setAlpha (1F);
 	}
 
 	//# Checks #//
@@ -436,16 +442,18 @@ public class HomeActivity extends Activity
 		AppWidgetProviderInfo info = this.widgetManager.getAppWidgetInfo (id);
 		WidgetHostView hostView = (WidgetHostView) this.widgetHost.createView (this, id, info);
 
-		GridLayout glWidgets = (GridLayout) this.findViewById (R.id.glWidgets);
-		glWidgets.addView (hostView);
+		ViewGroup vgWidgets = (GridLayout) this.findViewById (R.id.vgWidgets);
+		vgWidgets.addView (hostView);
+
+		hostView.setOnLongClickListener (new WidgetHostView_LongClickListener (this));
 	}
 
-	public void removeWidget (WidgetHostView hostView)
+	public void removeWidget (AppWidgetHostView hostView)
 	{
 		this.widgetHost.deleteAppWidgetId (hostView.getAppWidgetId ());
 
-		GridLayout glWidgets = (GridLayout) this.findViewById (R.id.glWidgets);
-		glWidgets.removeView (hostView);
+		GridLayout vgWidgets = (GridLayout) this.findViewById (R.id.vgWidgets);
+		vgWidgets.removeView (hostView);
 	}
 
 	private void removeWidget (Intent data) throws Exception

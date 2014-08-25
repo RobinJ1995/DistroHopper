@@ -49,22 +49,30 @@ public class Wallpaper extends ImageView
 	{
 		WallpaperManager wpman = WallpaperManager.getInstance (this.context);
 		this.img = wpman.getDrawable ();
-		Drawable blurred = wpman.getDrawable ();
 
-		BitmapDrawable bmdBlurred = (BitmapDrawable) blurred;
-		Bitmap bmBlurred = bmdBlurred.getBitmap ();
+		try
+		{
+			Drawable blurred = wpman.getDrawable ();
 
-		float origWidth = bmBlurred.getWidth ();
-		float origHeight = bmBlurred.getHeight ();
+			BitmapDrawable bmdBlurred = (BitmapDrawable) blurred;
+			Bitmap bmBlurred = bmdBlurred.getBitmap ();
 
-		int width = 200;
-		int height = (int) (origHeight * (200F / origWidth));
+			float origWidth = bmBlurred.getWidth ();
+			float origHeight = bmBlurred.getHeight ();
 
-		bmBlurred = Bitmap.createScaledBitmap (bmBlurred, width, height, true);
-		bmBlurred = Bitmap.createScaledBitmap (bmBlurred, (int) origWidth, (int) origHeight, true);
+			int width = 200;
+			int height = (int) (origHeight * (200F / origWidth));
 
-		bmdBlurred = new BitmapDrawable (bmBlurred);
-		this.blurred = bmdBlurred;
+			bmBlurred = Bitmap.createScaledBitmap (bmBlurred, width, height, true);
+			bmBlurred = Bitmap.createScaledBitmap (bmBlurred, (int) origWidth, (int) origHeight, true);
+
+			bmdBlurred = new BitmapDrawable (bmBlurred);
+			this.blurred = bmdBlurred;
+		}
+		catch (OutOfMemoryError ex) // I'd prefer the image not being blurred over the app craching //
+		{
+			 this.blurred = null;
+		}
 
 		WallpaperInfo info = wpman.getWallpaperInfo ();
 		this.liveWallpaper = (info != null);
@@ -72,7 +80,7 @@ public class Wallpaper extends ImageView
 
 	public void set ()
 	{
-		if (this.liveWallpaper)
+		if (this.liveWallpaper || this.blurred == null)
 		{
 			this.setImageDrawable (null);
 			this.setBackgroundColor (this.getResources ().getColor (R.color.transparent));
@@ -86,7 +94,7 @@ public class Wallpaper extends ImageView
 
 	public void blur ()
 	{
-		if (this.liveWallpaper)
+		if (this.liveWallpaper || this.blurred == null)
 		{
 			this.setImageDrawable (null);
 			this.setBackgroundColor (this.getResources ().getColor (R.color.transparentblack60));
@@ -100,7 +108,7 @@ public class Wallpaper extends ImageView
 
 	public void unblur ()
 	{
-		if (this.liveWallpaper)
+		if (this.liveWallpaper || this.blurred == null)
 		{
 			this.setImageDrawable (null);
 			this.setBackgroundColor (this.getResources ().getColor (R.color.transparent));
@@ -117,12 +125,6 @@ public class Wallpaper extends ImageView
 		Image image = new Image (this.img);
 
 		return image.getAverageColour (true, true, alpha);
-	}
-
-	public WallpaperInfo getLiveWallpaper ()
-	{
-		WallpaperManager wpman = WallpaperManager.getInstance (this.context);
-		return wpman.getWallpaperInfo ();
 	}
 
 	public boolean isLiveWallpaper ()

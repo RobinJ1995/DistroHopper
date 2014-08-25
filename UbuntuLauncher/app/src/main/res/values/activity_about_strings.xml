@@ -7,6 +7,9 @@
     <string name="hm_timvdstaaij_why">* Testing (If he doesn\'t manage to wreck it then it\'s probably safe for consumption by the rest of the world.)\n
         * Help with the dominant colour calculation function.</string>
 
+    <string name="hm_markisayan_name">Mark Isayan</string>
+    <string name="hm_markisayan_why">* Russian translation</string>
+
     <string name="hm_todddavies_name">Todd Davies</string>
     <string name="hm_todddavies_why">* I used his ProgressWheel component, since the default (round) Android ProgressBar component can\'t actually indicate progress.\n
         https://github.com/Todd-Davies/ProgressWheel/</string>

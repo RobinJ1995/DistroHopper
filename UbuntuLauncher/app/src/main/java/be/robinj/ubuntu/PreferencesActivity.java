@@ -1,9 +1,12 @@
 package be.robinj.ubuntu;
 
 import android.app.Activity;
+import android.app.WallpaperInfo;
+import android.app.WallpaperManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,8 +17,7 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 
 import com.commonsware.cwac.colormixer.ColorMixer;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+import com.google.analytics.tracking.android.EasyTracker;
 
 
 public class PreferencesActivity extends Activity
@@ -25,11 +27,11 @@ public class PreferencesActivity extends Activity
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
-		super.onCreate (savedInstanceState);
-		setContentView (R.layout.activity_preferences);
-
 		try
 		{
+			super.onCreate (savedInstanceState);
+			setContentView (R.layout.activity_preferences);
+
 			SeekBar sbLauncherIcon_width = (SeekBar) this.findViewById (R.id.sbLauncherIcon_width);
 			SeekBar sbLauncherIcon_opacity = (SeekBar) this.findViewById (R.id.sbLauncherIcon_opacity);
 			Switch swPanel_show = (Switch) this.findViewById (R.id.swPanel_show);
@@ -65,9 +67,7 @@ public class PreferencesActivity extends Activity
 			swColourCalc_hsv.setOnCheckedChangeListener (checkedChangeListener);
 
 			this.unityBackground_dynamic_changed (swUnityBackground_dynamic.isChecked ());
-
-			Tracker tracker = ((Application) this.getApplication ()).getTracker (Application.TrackerName.APP_TRACKER);
-			tracker.send (new HitBuilders.AppViewBuilder ().build ());
+			this.panel_show_changed (swPanel_show.isChecked ());
 		}
 		catch (Exception ex)
 		{
@@ -75,7 +75,6 @@ public class PreferencesActivity extends Activity
 			exh.show ();
 		}
 	}
-
 
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu)
@@ -97,6 +96,47 @@ public class PreferencesActivity extends Activity
 			return true;
 		}*/
 		return super.onOptionsItemSelected (item);
+	}
+
+	@Override
+	protected void onStart ()
+	{
+		super.onStart();
+
+		EasyTracker.getInstance (this).activityStart (this);
+	}
+
+	@Override
+	protected void onStop ()
+	{
+		super.onStop();
+
+		EasyTracker.getInstance (this).activityStop (this);
+	}
+
+	@Override
+	public void onResume ()
+	{
+		try
+		{
+			super.onResume ();
+
+			WallpaperManager wpman = WallpaperManager.getInstance (this.getApplicationContext ());
+
+			WallpaperInfo info = wpman.getWallpaperInfo ();
+			boolean liveWallpaper = (info != null);
+
+			LinearLayout llWallpaper = (LinearLayout) this.findViewById (R.id.llWallpaper);
+			if (liveWallpaper)
+				llWallpaper.setBackgroundResource (android.R.drawable.btn_default);
+			else
+				llWallpaper.setBackgroundDrawable (wpman.getFastDrawable ());
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (this, ex);
+			exh.show ();
+		}
 	}
 
 	public void btnBack_clicked (View view)
@@ -126,6 +166,20 @@ public class PreferencesActivity extends Activity
 		}
 	}
 
+	public void btnWallpaper_clicked (View view)
+	{
+		try
+		{
+			Intent intent = new Intent (Intent.ACTION_SET_WALLPAPER);
+			this.startActivity (Intent.createChooser (intent, this.getResources ().getString (R.string.option_wallpaper)));
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (this, ex);
+			exh.show ();
+		}
+	}
+
 	private void unityBackground_dynamic_changed (boolean enabled)
 	{
 		LinearLayout llUnityBackground_colour = (LinearLayout) this.findViewById (R.id.llUnityBackground_colour);
@@ -135,7 +189,7 @@ public class PreferencesActivity extends Activity
 	private void panel_show_changed (boolean enabled)
 	{
 		LinearLayout llPanel_opacity = (LinearLayout) this.findViewById (R.id.llPanel_opacity);
-		llPanel_opacity.setVisibility (enabled ? View.VISIBLE : View.GONE);
+		llPanel_opacity.setVisibility (enabled && Build.VERSION.SDK_INT >= 11 ? View.VISIBLE : View.GONE);
 	}
 
 	private class SeekBarChangeListener implements SeekBar.OnSeekBarChangeListener
@@ -150,7 +204,10 @@ public class PreferencesActivity extends Activity
 					SharedPreferences.Editor editor = PreferencesActivity.this.prefs.edit ();
 					editor.putInt ((String) seekBar.getTag (), progress);
 
-					editor.apply ();
+					if (Build.VERSION.SDK_INT >= 9)
+						editor.apply ();
+					else
+						editor.commit ();
 				}
 			}
 			catch (Exception ex)
@@ -187,7 +244,10 @@ public class PreferencesActivity extends Activity
 				else if ("panel_show".equals (property))
 					PreferencesActivity.this.panel_show_changed (isChecked);
 
-				editor.apply ();
+				if (Build.VERSION.SDK_INT >= 9)
+					editor.apply ();
+				else
+					editor.commit ();
 			}
 			catch (Exception ex)
 			{
@@ -212,7 +272,10 @@ public class PreferencesActivity extends Activity
 			SharedPreferences.Editor editor = PreferencesActivity.this.prefs.edit ();
 			editor.putInt ((String) this.colorMixer.getTag (), argb);
 
-			editor.apply ();
+			if (Build.VERSION.SDK_INT >= 9)
+				editor.apply ();
+			else
+				editor.commit ();
 		}
 	}
 }

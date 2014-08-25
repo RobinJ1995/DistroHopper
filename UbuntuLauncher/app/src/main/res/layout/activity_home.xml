@@ -98,7 +98,8 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/llLauncherPinnedApps">
+                    android:id="@+id/llLauncherPinnedApps"
+                    android:layout_gravity="top">
                 </LinearLayout>
             </ScrollView>
 
@@ -259,17 +260,8 @@
             </LinearLayout>
         </LinearLayout>
 
-        <GridLayout
-            android:id="@+id/glWidgets"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@id/llLauncher"
-            android:layout_below="@id/llPanel">
-
-
-
-        </GridLayout>
+        <!-- Doesn't look like I'm going to get widget support working properly any time soon -->
+        <include layout="@layout/activity_home_widgets"/>
 
     </RelativeLayout>
 

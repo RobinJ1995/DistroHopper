@@ -1,6 +1,8 @@
 package be.robinj.ubuntu.unity;
 
+import android.appwidget.AppWidgetHostView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.GridLayout;
 
 import be.robinj.ubuntu.HomeActivity;
@@ -11,6 +13,7 @@ import be.robinj.ubuntu.HomeActivity;
 public class WidgetHost_LongClickListener implements GridLayout.OnLongClickListener
 {
 	private HomeActivity parent;
+	boolean x = false;
 
 	public WidgetHost_LongClickListener (HomeActivity parent)
 	{

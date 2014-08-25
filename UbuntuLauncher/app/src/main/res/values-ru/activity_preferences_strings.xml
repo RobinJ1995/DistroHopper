@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="button_back">Назад</string>
+    <string name="button_about">О нас</string>
+
+    <string name="title_preferences">Предпочтения</string>
+
+    <string name="category_colourcalc">Расчет доминирующего цвета</string>
+
+    <string name="option_launchericon_width">Ширина лаунчера</string>
+    <string name="hint_launchericon_width">Настройка ширины лаунчера и икон. Минимальное значение 48dip, максимальное 120dip, стандартное(среднее) 84dip.</string>
+
+    <string name="option_launchericon_opacity">Непрозрачность фона икон</string>
+    <string name="hint_launchericon_opacity">Настройка уровня непрозрачности фона икон.</string>
+
+    <string name="option_panel_show">Показать панель</string>
+    <string name="hint_panel_show">Показать панель в верхней части экрана.</string>
+
+    <string name="option_panel_opacity">Непрозрачности панели</string>
+    <string name="hint_panel_opacity">Настройка уровня непрозрачности панели.</string>
+
+    <string name="option_unitybackground_dynamic">Автоматический выбор цвета фона Unity</string>
+    <string name="hint_unitybackground_dynamic">Автоматический выбор цвета фона компонентов Unity а также лаунчера, дэша и панели (если дэш отркыт). Программa выбирает цвет фона ориентируясь на доминантный цвет обоев. Однако это не расчитано на работу с живыми обоями. В этом случае используется стандартный черный прозрачный фон.</string>
+
+    <string name="option_unitybackground_colour">Цвет фона Unity</string>
+    <string name="hint_unitybackground_colour">Настройка цвета фона компонентов Unity.</string>
+
+    <string name="option_unitybackground_opacity">Непрозрачность фона Unity</string>
+    <string name="hint_unitybackground_opacity">Настройка уровня непрозрачности компонентов Unity.</string>
+
+    <string name="option_wallpaper">обои</string>
+    <string name="hint_wallpaper">Изменить обои</string>
+
+    <string name="option_colourcalc_advanced">Использование большего количества образцов цвета</string>
+    <string name="hint_colourscalc_advanced">Использование большего количества образцов цвета увеличевает точность расчета цвета но может также привести к увеличению времени заргрузки на медленных устройствах.</string>
+
+    <string name="option_colourcalc_hsv">Использовать HSV</string>
+    <string name="hint_colourcalc_hsv">Использование HSV вместо обычной RGB приводит к получению гораздо более ярких цветов, но сама функция является сложной что может также привести к увеличению времени загрузки на медленных устройствах.</string>
+</resources>

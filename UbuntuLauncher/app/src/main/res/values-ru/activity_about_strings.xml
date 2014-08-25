@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="developedBy">Разработчик: Робин Якобс</string>
+    <string name="honourableMentions">Oсобая благодарность</string>
+
+    <string name="hm_timvdstaaij_name">Тиму ван дер Стайу</string>
+    <string name="hm_timvdstaaij_why">* Тестирование\n
+* Помощь с функцией расчета доминирующего цвета</string>
+
+    <string name="hm_markisayan_name">Марку Исаяну</string>
+    <string name="hm_markisayan_why">* Перевод на русский язык</string>
+
+    <string name="hm_todddavies_name">Тоду Дэвису</string>
+    <string name="hm_todddavies_why">* Я использовал его компонент ProgressWheel, потому что стандартный компонент Android ProgressBar не хорошо работает.\n
+https://github.com/Todd-Davies/ProgressWheel/</string>
+
+    <string name="hm_tacone_name">tacone-у (пользователь Stack Overflow)</string>
+    <string name="hm_tacone_why">* Я использовал его компонент ExpandableHeightGridView.\n
+http://stackoverflow.com/a/8483078/521361</string>
+
+    <string name="hm_commonsguy_name">Марку Мерфи (Commonsware)</string>
+    <string name="hm_commonsguy_why">* Я использовал его компонент ColorMixer в окне настроек.\n
+https://github.com/commonsguy/cwac-colormixer</string>
+</resources>
