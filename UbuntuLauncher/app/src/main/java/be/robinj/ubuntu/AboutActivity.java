@@ -17,11 +17,11 @@ public class AboutActivity extends Activity
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
+		super.onCreate (savedInstanceState);
+		setContentView (R.layout.activity_about);
+
 		try
 		{
-			super.onCreate (savedInstanceState);
-			setContentView (R.layout.activity_about);
-
 			PackageInfo pkgInfo = this.getPackageManager ().getPackageInfo (this.getPackageName (), 0);
 
 			TextView tvDevUrl = (TextView) this.findViewById (R.id.tvDevUrl);

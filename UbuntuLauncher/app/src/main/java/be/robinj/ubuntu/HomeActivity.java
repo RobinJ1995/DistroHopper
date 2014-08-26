@@ -1,5 +1,6 @@
 package be.robinj.ubuntu;
 
+import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -49,11 +50,11 @@ public class HomeActivity extends Activity
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
+		super.onCreate (savedInstanceState);
+		setContentView (R.layout.activity_home);
+
 		try
 		{
-			super.onCreate (savedInstanceState);
-			setContentView (R.layout.activity_home);
-
 			ExpandableHeightGridView gvDashHomeApps = (ExpandableHeightGridView) this.findViewById (R.id.gvDashHomeApps);
 			be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher lalSpinner = (be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher) this.findViewById (R.id.lalSpinner);
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalBfb);
@@ -97,6 +98,18 @@ public class HomeActivity extends Activity
 			//this.widgetHost = new WidgetHost (this, R.id.vgWidgets);
 
 			//glWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this));
+
+			if (Build.VERSION.SDK_INT >= 11)
+			{
+				LayoutTransition gvDashHomeApps_transition = new LayoutTransition ();
+				gvDashHomeApps_transition.setDuration (180);
+				gvDashHomeApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
+				gvDashHomeApps.setLayoutTransition (gvDashHomeApps_transition);
+
+				LayoutTransition llLauncherPinnedApps_transition = new LayoutTransition ();
+				llLauncherPinnedApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
+				llLauncherPinnedApps.setLayoutTransition (llLauncherPinnedApps_transition);
+			}
 		}
 		catch (Exception ex)
 		{
@@ -128,24 +141,32 @@ public class HomeActivity extends Activity
 	}
 
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data)
+	public void onActivityResult (int requestCode, int resultCode, Intent data)
 	{
 		try
 		{
 			super.onActivityResult (requestCode, resultCode, data);
 
 			if (requestCode == 1) // ActivityPreferences //
+			{
 				this.onCreate (null); // Reload activity //
+
+				//this.overridePendingTransition (R.anim.home_to_preferences_in, R.anim.home_to_preferences_out);
+			}
 			else if (requestCode == 2) // Widget picked //
+			{
 				if (resultCode == RESULT_OK)
 					this.configureWidget (data);
 				else
 					this.removeWidget (data);
+			}
 			else if (requestCode == 3) // Widget configured //
+			{
 				if (resultCode == RESULT_OK)
 					this.createWidget (data);
 				else
 					this.removeWidget (data);
+			}
 		}
 		catch (Exception ex)
 		{
@@ -191,6 +212,22 @@ public class HomeActivity extends Activity
 		//this.widgetHost.stopListening ();
 
 		EasyTracker.getInstance (this).activityStop (this);
+	}
+
+	@Override
+	public void onResume ()
+	{
+		super.onResume ();
+
+		this.overridePendingTransition (R.anim.app_to_home_out, R.anim.app_to_home_in);
+	}
+
+	@Override
+	public void onPause ()
+	{
+		super.onPause ();
+
+		this.overridePendingTransition (R.anim.home_to_app_in, R.anim.home_to_app_out);
 	}
 
 	//# Callbacks #//
@@ -312,6 +349,8 @@ public class HomeActivity extends Activity
 
 			Intent intent = new Intent (this, PreferencesActivity.class);
 			this.startActivityForResult (intent, 1);
+
+			//this.overridePendingTransition (R.anim.home_to_preferences_in, R.anim.home_to_preferences_out);
 		}
 		catch (Exception ex)
 		{

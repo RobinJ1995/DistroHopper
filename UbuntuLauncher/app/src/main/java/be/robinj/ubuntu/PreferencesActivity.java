@@ -26,11 +26,11 @@ public class PreferencesActivity extends Activity
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
+		super.onCreate (savedInstanceState);
+		setContentView (R.layout.activity_preferences);
+
 		try
 		{
-			super.onCreate (savedInstanceState);
-			setContentView (R.layout.activity_preferences);
-
 			SeekBar sbLauncherIcon_width = (SeekBar) this.findViewById (R.id.sbLauncherIcon_width);
 			SeekBar sbLauncherIcon_opacity = (SeekBar) this.findViewById (R.id.sbLauncherIcon_opacity);
 			CompoundButton swPanel_show = (CompoundButton) this.findViewById (R.id.swPanel_show);

@@ -8,4 +8,7 @@
     <string name="title_activity_preferences">Предпочтения</string>
     <string name="title_activity_about">О нас</string>
 
+    <string name="pinned">был прикреплен к лаунчеру</string>
+    <string name="unpinned">был отсоединен от лаунчера</string>
+    <string name="notpinned">не прикреплен</string>
 </resources>

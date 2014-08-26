@@ -207,8 +207,7 @@
                                     android:id="@+id/gvDashHomeApps"
                                     android:choiceMode="singleChoice"
                                     android:numColumns="auto_fit"
-                                    android:columnWidth="@dimen/dash_applauncher_width"
-                                    />
+                                    android:columnWidth="@dimen/dash_applauncher_width" />
                             </LinearLayout>
                         </LinearLayout>
                     </ScrollView>
