@@ -3,6 +3,7 @@ package be.robinj.ubuntu.unity;
 import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -121,9 +122,15 @@ public class Wallpaper extends ImageView
 
 	public int getAverageColour (int alpha)
 	{
-		Image image = new Image (this.img);
+		SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
 
-		return image.getAverageColour (true, true, alpha);
+		Image image = new Image (this.img);
+		return image.getAverageColour
+		(
+			prefs.getBoolean ("colourcalc_advanced", true),
+			prefs.getBoolean ("colourcalc_hsv", true),
+			alpha
+		);
 	}
 
 	public boolean isLiveWallpaper ()

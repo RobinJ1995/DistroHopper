@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
@@ -34,6 +36,8 @@ import be.robinj.ubuntu.unity.WidgetHost;
 import be.robinj.ubuntu.unity.WidgetHostView;
 import be.robinj.ubuntu.unity.WidgetHostView_LongClickListener;
 import be.robinj.ubuntu.unity.dash.SearchTextWatcher;
+import be.robinj.ubuntu.unity.launcher.AppLauncher;
+import be.robinj.ubuntu.unity.launcher.service.LauncherService;
 
 
 public class HomeActivity extends Activity
@@ -46,6 +50,8 @@ public class HomeActivity extends Activity
 
 	private AsyncInitWallpaper asyncInitWallpaper;
 	private AsyncLoadApps asyncLoadApps;
+
+	private boolean openDashWhenReady = false;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
@@ -64,6 +70,7 @@ public class HomeActivity extends Activity
 			LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
 			ImageButton ibPanelDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
 			//GridLayout glWidgets = (GridLayout) this.findViewById (R.id.glWidgets);
+			ScrollView scrLauncherAppsContainer = (ScrollView) this.findViewById (R.id.scrLauncherAppsContainer);
 
 			lalBfb.init ();
 			lalSpinner.init ();
@@ -110,6 +117,10 @@ public class HomeActivity extends Activity
 				llLauncherPinnedApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
 				llLauncherPinnedApps.setLayoutTransition (llLauncherPinnedApps_transition);
 			}
+
+			Intent intent = this.getIntent ();
+			if (intent != null)
+				this.openDashWhenReady = intent.getBooleanExtra ("openDash", false);
 		}
 		catch (Exception ex)
 		{
@@ -195,23 +206,47 @@ public class HomeActivity extends Activity
 	}
 
 	@Override
+	public void onNewIntent (Intent intent)
+	{
+		super.onNewIntent (intent);
+
+		this.setIntent (intent);
+	}
+
+	@Override
 	protected void onStart ()
 	{
-		super.onStart();
+		super.onStart ();
 
-		//this.widgetHost.startListening ();
+		try
+		{
+			//this.widgetHost.startListening ();
 
-		EasyTracker.getInstance (this).activityStart (this);
+			EasyTracker.getInstance (this).activityStart (this);
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (this, ex);
+			exh.show ();
+		}
 	}
 
 	@Override
 	protected void onStop ()
 	{
-		super.onStop();
+		super.onStop ();
 
-		//this.widgetHost.stopListening ();
+		try
+		{
+			//this.widgetHost.stopListening ();
 
-		EasyTracker.getInstance (this).activityStop (this);
+			EasyTracker.getInstance (this).activityStop (this);
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (this, ex);
+			exh.show ();
+		}
 	}
 
 	@Override
@@ -219,7 +254,23 @@ public class HomeActivity extends Activity
 	{
 		super.onResume ();
 
-		this.overridePendingTransition (R.anim.app_to_home_out, R.anim.app_to_home_in);
+		try
+		{
+			this.overridePendingTransition (R.anim.app_to_home_out, R.anim.app_to_home_in);
+
+			Intent intent = this.getIntent ();
+			boolean openDash = intent.getBooleanExtra ("openDash", false);
+
+			if (openDash)
+				this.openDash ();
+
+			this.showLauncherService (false);
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (this, ex);
+			exh.show ();
+		}
 	}
 
 	@Override
@@ -227,7 +278,57 @@ public class HomeActivity extends Activity
 	{
 		super.onPause ();
 
-		this.overridePendingTransition (R.anim.home_to_app_in, R.anim.home_to_app_out);
+		try
+		{
+			this.overridePendingTransition (R.anim.home_to_app_in, R.anim.home_to_app_out);
+
+			this.showLauncherService (true);
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (this, ex);
+			exh.show ();
+		}
+	}
+
+	private void startLauncherService (boolean show)
+	{
+		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+
+		if (prefs.getBoolean ("launcherservice_enabled", false))
+		{
+			AppLauncher lalbfb = (AppLauncher) this.findViewById (R.id.lalBfb);
+
+			Intent intent = new Intent (this, LauncherService.class);
+			intent.putParcelableArrayListExtra ("pinned", (ArrayList<App>) this.apps.getPinned ());
+			intent.putExtra ("bgColour", this.chameleonicBgColour);
+			intent.putExtra ("colour", lalbfb.getColour ());
+			intent.putExtra ("start", true);
+			intent.putExtra ("show", show);
+			intent.putExtra ("visible", false);
+
+			this.startService (intent);
+		}
+		else
+		{
+			Intent intent = new Intent (this, LauncherService.class);
+
+			this.stopService (intent);
+		}
+	}
+
+	private void showLauncherService (boolean show)
+	{
+		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+
+		if (prefs.getBoolean ("launcherservice_enabled", false))
+		{
+			Intent intent = new Intent (this, LauncherService.class);
+			intent.putExtra ("show", show);
+			intent.putExtra ("visible", false);
+
+			this.startService (intent);
+		}
 	}
 
 	//# Callbacks #//
@@ -239,6 +340,11 @@ public class HomeActivity extends Activity
 
 			EditText etDashSearch = (EditText) this.findViewById (R.id.etDashSearch);
 			etDashSearch.addTextChangedListener (new SearchTextWatcher (installedApps));
+
+			this.startLauncherService (false);
+
+			if (this.openDashWhenReady)
+				this.openDash ();
 		}
 		catch (Exception ex)
 		{
@@ -304,6 +410,11 @@ public class HomeActivity extends Activity
 			ExceptionHandler exh = new ExceptionHandler (this, ex);
 			exh.show ();
 		}
+	}
+
+	public void pinnedAppsChanged ()
+	{
+		this.startLauncherService (false);
 	}
 
 	//# Event handlers #//

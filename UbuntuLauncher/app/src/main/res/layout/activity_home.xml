@@ -162,9 +162,11 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/imageView"
                         android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
                         android:layout_centerHorizontal="true"
                         android:src="@drawable/dash_background_gradient"
-                        android:scaleType="centerInside"
+                        android:scaleType="centerCrop"
                         android:adjustViewBounds="true"/>
 
                     <ScrollView
@@ -198,8 +200,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:orientation="vertical"
-                                android:focusableInTouchMode="false"
-                                >
+                                android:focusableInTouchMode="false">
 
                                 <be.robinj.ubuntu.thirdparty.ExpandableHeightGridView
                                     android:layout_width="match_parent"

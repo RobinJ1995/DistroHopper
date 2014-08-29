@@ -33,6 +33,7 @@ public class PreferencesActivity extends Activity
 		{
 			SeekBar sbLauncherIcon_width = (SeekBar) this.findViewById (R.id.sbLauncherIcon_width);
 			SeekBar sbLauncherIcon_opacity = (SeekBar) this.findViewById (R.id.sbLauncherIcon_opacity);
+			CompoundButton swLauncherService_enabled = (CompoundButton) this.findViewById (R.id.swLauncherService_enabled);
 			CompoundButton swPanel_show = (CompoundButton) this.findViewById (R.id.swPanel_show);
 			SeekBar sbPanel_opacity = (SeekBar) this.findViewById (R.id.sbPanel_opacity);
 			CompoundButton swUnityBackground_dynamic = (CompoundButton) this.findViewById (R.id.swUnityBackground_dynamic);
@@ -44,6 +45,7 @@ public class PreferencesActivity extends Activity
 			this.prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 			sbLauncherIcon_width.setProgress (this.prefs.getInt ((String) sbLauncherIcon_width.getTag (), 36));
 			sbLauncherIcon_opacity.setProgress (this.prefs.getInt ((String) sbLauncherIcon_opacity.getTag (), 204));
+			swLauncherService_enabled.setChecked (this.prefs.getBoolean ((String) swLauncherService_enabled.getTag (), false));
 			swPanel_show.setChecked (this.prefs.getBoolean ((String) swPanel_show.getTag (), true));
 			sbPanel_opacity.setProgress (this.prefs.getInt ((String) sbPanel_opacity.getTag (), 100));
 			swUnityBackground_dynamic.setChecked (this.prefs.getBoolean ((String) swUnityBackground_dynamic.getTag (), true));
@@ -57,6 +59,7 @@ public class PreferencesActivity extends Activity
 
 			sbLauncherIcon_width.setOnSeekBarChangeListener (seekBarChangeListener);
 			sbLauncherIcon_opacity.setOnSeekBarChangeListener (seekBarChangeListener);
+			swLauncherService_enabled.setOnCheckedChangeListener (checkedChangeListener);
 			swPanel_show.setOnCheckedChangeListener (checkedChangeListener);
 			sbPanel_opacity.setOnSeekBarChangeListener (seekBarChangeListener);
 			swUnityBackground_dynamic.setOnCheckedChangeListener (checkedChangeListener);

@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -14,35 +16,31 @@ import be.robinj.ubuntu.unity.AppIcon;
 /**
  * Created by robin on 8/20/14.
  */
-public class App
+public class App implements Parcelable
 {
 	private String label;
-	private transient AppIcon icon;
+	private AppIcon icon;
 	private String description;
 	private String packageName;
 	private String activityName;
 
-	private transient Context context;
-	private transient AppManager appManager;
+	private Context context;
+	private AppManager appManager;
 
 	public static App fromResolveInfo (Context context, AppManager appManager, ResolveInfo resInf)
 	{
-		ApplicationInfo info = resInf.activityInfo.applicationInfo;
 		PackageManager pacMan = context.getPackageManager ();
-		CharSequence csDescription = pacMan.getText (resInf.activityInfo.packageName, info.descriptionRes, info);
 
 		String label = resInf.loadLabel (pacMan).toString ();
 		String packageName = resInf.activityInfo.applicationInfo.packageName;
 		String activityName = resInf.activityInfo.name;
 		AppIcon icon = new AppIcon (resInf.loadIcon (pacMan));
-		String description = (csDescription == null ? "" : csDescription.toString ());
 
 		App app = new App (context, appManager);
 		app.setLabel (label);
 		app.setPackageName (packageName);
 		app.setActivityName (activityName);
 		app.setIcon (icon);
-		app.setDescription (description);
 
 		return app;
 	}
@@ -51,6 +49,19 @@ public class App
 	{
 		this.context = context;
 		this.appManager = appManager;
+	}
+
+	private App (Context context)
+	{
+		this.context = context;
+	}
+
+	private App (Parcel parcel)
+	{
+		this.activityName = parcel.readString ();
+		this.description = parcel.readString ();
+		this.label = parcel.readString ();
+		this.packageName = parcel.readString ();
 	}
 
 	public void launch ()
@@ -118,5 +129,47 @@ public class App
 	public AppManager getAppManager ()
 	{
 		return appManager;
+	}
+
+	//# Parcelable #//
+	@Override
+	public int describeContents ()
+	{
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel (Parcel dest, int flags)
+	{
+		dest.writeString (this.activityName);
+		dest.writeString (this.description);
+		dest.writeString (this.label);
+		dest.writeString (this.packageName);
+	}
+
+	public static final Parcelable.Creator<App> CREATOR = new Parcelable.Creator <App> ()
+	{
+		public App createFromParcel (Parcel parcel)
+		{
+			return new App (parcel);
+		}
+
+		public App[] newArray (int size)
+		{
+			return new App[size];
+		}
+	};
+
+	public void fixAfterUnpackingFromParcel (Context context)
+	{
+		this.context = context;
+
+		PackageManager pacMan = context.getPackageManager ();
+
+		Intent intent = new Intent ();
+		intent.setComponent (new ComponentName (this.packageName, this.activityName));
+		ResolveInfo resInf = pacMan.resolveActivity (intent, 0);
+
+		this.icon = new AppIcon (resInf.loadIcon (pacMan));
 	}
 }

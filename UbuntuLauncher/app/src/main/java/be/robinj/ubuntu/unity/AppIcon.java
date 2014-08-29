@@ -1,6 +1,8 @@
 package be.robinj.ubuntu.unity;
 
 import android.graphics.drawable.Drawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import be.robinj.ubuntu.Image;
 

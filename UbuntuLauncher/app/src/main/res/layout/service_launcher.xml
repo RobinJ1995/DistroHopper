@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:custom="http://schemas.android.com/apk/res-auto"
+              android:orientation="horizontal"
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/llLauncher"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/transparentblack80"
+        android:visibility="gone">
+
+        <be.robinj.ubuntu.unity.launcher.AppLauncher
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            custom:icon="@drawable/launcher_bfb"
+            custom:special="true"
+            android:onClick="lalBfb_clicked"
+            android:id="@+id/lalBfb"
+            android:layout_marginTop="2dp"
+            android:tag="partOfLauncher" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scrLauncherAppsContainer"
+            android:scrollbars="none"
+            android:layout_weight="1"
+            android:fillViewport="false"
+            android:tag="partOfLauncher">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/llLauncherPinnedApps"
+                android:layout_gravity="top"
+                android:tag="partOfLauncher">
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llListenerContainer"
+        android:orientation="vertical"
+        android:layout_width="8dp"
+        android:layout_height="match_parent"
+        android:weightSum="2"
+        android:gravity="bottom">
+
+        <LinearLayout
+            android:id="@+id/llListener"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#FF0000">
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llShadow"
+        android:orientation="vertical"
+        android:layout_width="160dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/launcherservice_shadow"
+        android:visibility="gone"
+        android:tag="shadow">
+    </LinearLayout>
+</LinearLayout>

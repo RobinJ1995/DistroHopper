@@ -248,6 +248,9 @@ public class Image
 				}
 			}
 
+			if (total <= 0)
+				return Color.argb (alpha, 40, 40, 40);
+
 			average[0] /= total;
 			average[1] /= total;
 			average[2] /= total;

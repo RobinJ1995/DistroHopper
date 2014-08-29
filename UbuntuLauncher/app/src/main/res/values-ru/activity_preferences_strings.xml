@@ -13,6 +13,9 @@
     <string name="option_launchericon_opacity">Непрозрачность фона икон</string>
     <string name="hint_launchericon_opacity">Настройка уровня непрозрачности фона икон.</string>
 
+    <string name="option_launcherservice_enabled">Сделать лаунчер доступным из других приложений</string>
+    <string name="hint_launcherservice_enabled">При проведении пальцем по нижней левой части экрана появится лаунчер который позволит запустить программы прикрепленные к нему без надобности возврата на главный экран.</string>
+
     <string name="option_panel_show">Показать панель</string>
     <string name="hint_panel_show">Показать панель в верхней части экрана.</string>
 

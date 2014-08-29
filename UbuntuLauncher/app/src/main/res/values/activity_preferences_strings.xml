@@ -13,6 +13,9 @@
     <string name="option_launchericon_opacity">Launcher icon background opacity</string>
     <string name="hint_launchericon_opacity">How opaque the background colour of icons in the Launcher should be.</string>
 
+    <string name="option_launcherservice_enabled">Make the Launcher available inside other apps</string>
+    <string name="hint_launcherservice_enabled">When you swipe from the bottom half of the left edge of the screen, the Launcher will appear, allowing you to launch apps which you have pinned to the Launcher without having to go to the home screen.\n(EXPERIMENTAL)</string>
+
     <string name="option_panel_show">Show Panel</string>
     <string name="hint_panel_show">Whether the Panel at the top of the screen should be shown or not.</string>
 

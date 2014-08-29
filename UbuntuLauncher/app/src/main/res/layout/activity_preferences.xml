@@ -100,6 +100,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/option_launcherservice_enabled"
+                    android:id="@+id/swLauncherService_enabled"
+                    android:checked="false"
+                    android:tag="launcherservice_enabled"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/hint_launcherservice_enabled" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
 
                 <TextView
                     android:layout_width="match_parent"

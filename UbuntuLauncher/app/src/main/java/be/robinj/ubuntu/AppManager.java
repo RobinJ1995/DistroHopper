@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -30,11 +32,13 @@ public class AppManager implements Iterable<App>
 	private LinearLayout llLauncherPinnedApps;
 	private ExpandableHeightGridView gvDashHomeApps;
 
+	private HomeActivity parent;
 	private Context context;
 
 	public AppManager (Context context, HomeActivity parent)
 	{
 		this.context = context;
+		this.parent = parent;
 		this.llLauncherPinnedApps = (LinearLayout) parent.findViewById (R.id.llLauncherPinnedApps);
 		this.gvDashHomeApps = (ExpandableHeightGridView) parent.findViewById (R.id.gvDashHomeApps);
 	}
@@ -73,6 +77,16 @@ public class AppManager implements Iterable<App>
 	public Context getContext ()
 	{
 		return this.context;
+	}
+
+	public HomeActivity getParent ()
+	{
+		return this.parent;
+	}
+
+	public List<App> getPinned ()
+	{
+		return this.pinned;
 	}
 
 	public boolean isPinned (App app)
@@ -164,6 +178,8 @@ public class AppManager implements Iterable<App>
 			editor.apply ();
 		else
 			editor.commit ();
+
+		this.parent.pinnedAppsChanged ();
 	}
 
 	public List<App> search (String pattern)

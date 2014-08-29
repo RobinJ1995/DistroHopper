@@ -13,6 +13,9 @@
     <string name="option_launchericon_opacity">Transparantie van Launcher-pictogrammen</string>
     <string name="hint_launchericon_opacity" formatted="false">De transparantie van de achtergrondkleur van pictogrammen die vastgemaakt zijn aan de Launcher. 100% is volledig zichtbaar en 0% is volledig transparant.</string>
 
+    <string name="option_launcherservice_enabled">Maak de Launcher beschikbaar binnen andere apps</string>
+    <string name="hint_launcherservice_enabled">Bij een swipe van de onderste helft van de linkerkant van het scherm zal de Launcher verschijnen, zodat u apps kan starten zonder eerst naar de home screen te moeten gaan.\n(EXPERIMENTEEL)</string>
+
     <string name="option_panel_show">Panel tonen</string>
     <string name="hint_panel_show">Of het Panel aan de bovenkant van het scherm getoond moet worden of niet.</string>
 
