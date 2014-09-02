@@ -18,11 +18,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.google.analytics.tracking.android.EasyTracker;
@@ -121,6 +123,21 @@ public class HomeActivity extends Activity
 			Intent intent = this.getIntent ();
 			if (intent != null)
 				this.openDashWhenReady = intent.getBooleanExtra ("openDash", false);
+
+			if (Build.VERSION.SDK_INT >= 19)
+			{
+				LinearLayout llStatusBar = (LinearLayout) this.findViewById (R.id.llStatusBar);
+
+				int llStatusBar_height = llStatusBar.getHeight ();
+				int statusBarHeight_resource = this.getResources ().getIdentifier ("status_bar_height", "dimen", "android");
+
+				if (statusBarHeight_resource > 0)
+					llStatusBar_height = this.getResources ().getDimensionPixelSize (statusBarHeight_resource);
+
+				RelativeLayout.LayoutParams llStatusBar_layoutParams = new RelativeLayout.LayoutParams (ViewGroup.LayoutParams.MATCH_PARENT, llStatusBar_height);
+				llStatusBar.setLayoutParams (llStatusBar_layoutParams);
+				llStatusBar.setVisibility (View.VISIBLE);
+			}
 		}
 		catch (Exception ex)
 		{
@@ -289,6 +306,17 @@ public class HomeActivity extends Activity
 			ExceptionHandler exh = new ExceptionHandler (this, ex);
 			exh.show ();
 		}
+	}
+
+	@Override
+	public void onDestroy ()
+	{
+		if (this.asyncInitWallpaper != null)
+			this.asyncInitWallpaper.cancel (true);
+		if (this.asyncLoadApps != null)
+			this.asyncLoadApps.cancel (true);
+
+		super.onDestroy ();
 	}
 
 	private void startLauncherService (boolean show)
@@ -492,6 +520,12 @@ public class HomeActivity extends Activity
 			llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
 		}
 
+		if (Build.VERSION.SDK_INT >= 19)
+		{
+			LinearLayout llStatusBar = (LinearLayout) this.findViewById (R.id.llStatusBar);
+			llStatusBar.setBackgroundColor (this.getResources ().getColor (android.R.color.black));
+		}
+
 		InputMethodManager imm = (InputMethodManager) this.getSystemService (Context.INPUT_METHOD_SERVICE);
 		if (imm != null)
 			imm.hideSoftInputFromWindow (this.getWindow ().getDecorView ().getRootView ().getWindowToken (), 0);
@@ -510,6 +544,12 @@ public class HomeActivity extends Activity
 		wpWallpaper.blur ();
 		if (Build.VERSION.SDK_INT >= 11)
 			llPanel.setAlpha (1F);
+
+		if (Build.VERSION.SDK_INT >= 19)
+		{
+			LinearLayout llStatusBar = (LinearLayout) this.findViewById (R.id.llStatusBar);
+			llStatusBar.setBackgroundColor (this.chameleonicBgColour);
+		}
 	}
 
 	//# Checks #//

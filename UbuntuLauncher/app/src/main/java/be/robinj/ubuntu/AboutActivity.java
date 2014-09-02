@@ -17,6 +17,8 @@ public class AboutActivity extends Activity
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
+		super.setTheme (R.style.DialogTheme);
+
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_about);
 

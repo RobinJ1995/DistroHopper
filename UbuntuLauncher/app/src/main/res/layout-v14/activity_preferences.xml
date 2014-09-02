@@ -292,8 +292,7 @@
                     android:id="@+id/llWallpaper"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="96dp"
-                    android:background="@drawable/wallpaper">
+                    android:layout_height="96dp">
 
                     <Button
                         android:id="@+id/btnWallpaper"

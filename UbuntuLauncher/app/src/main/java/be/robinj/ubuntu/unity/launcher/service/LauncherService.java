@@ -118,7 +118,7 @@ public class LauncherService extends Service
 			}
 
 			this.layout.setVisibility (intent.getBooleanExtra ("show", true) ? View.VISIBLE : View.GONE);
-			if (!intent.getBooleanExtra ("visible", false))
+			if (! intent.getBooleanExtra ("visible", false))
 				this.swipeLeft ();
 		}
 

@@ -23,8 +23,21 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="28dp"
+            android:layout_height="25dp"
             android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="false"
+            android:background="@android:color/black"
+            android:id="@+id/llStatusBar"
+            android:visibility="gone">
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="28dp"
+            android:layout_below="@+id/llStatusBar"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="false"

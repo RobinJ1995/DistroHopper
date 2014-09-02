@@ -13,7 +13,8 @@ public class TouchListener implements View.OnTouchListener
 {
 	private LauncherService parent;
 
-	private float llLauncher_x;
+	float llListener_x = -1;
+	private float llLauncher_x = -1;
 
 	public TouchListener (LauncherService parent)
 	{
@@ -28,7 +29,20 @@ public class TouchListener implements View.OnTouchListener
 
 		if (id == R.id.llListener)
 		{
-			this.parent.swipeRight ();
+			if (this.llListener_x == -1)
+				this.llListener_x = event.getX (0);
+			float x = event.getX (event.getPointerCount () - 1);
+
+			if (x > this.llListener_x)
+			{
+				this.parent.swipeRight ();
+
+				this.llListener_x = -1;
+			}
+			else if (x < this.llListener_x || event.getAction () == MotionEvent.ACTION_CANCEL || event.getAction () == MotionEvent.ACTION_UP)
+			{
+				this.llListener_x = -1;
+			}
 
 			return true;
 		}

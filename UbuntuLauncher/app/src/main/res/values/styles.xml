@@ -2,7 +2,9 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Wallpaper.NoTitleBar">
-        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="DialogTheme" parent="android:Theme.Wallpaper">
     </style>
 
     <style name="textshadow_2px_black" parent="android:TextAppearance.Widget.TextView">

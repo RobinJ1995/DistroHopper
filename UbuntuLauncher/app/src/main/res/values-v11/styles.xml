@@ -2,7 +2,15 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Wallpaper.NoTitleBar">
-        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="DialogTheme" parent="android:Theme.Holo.Wallpaper">
+        <item name="android:actionBarStyle">@style/actionbar_solid</item>
+    </style>
+
+    <style name="actionbar_solid" parent="android:Widget.ActionBar">
+        <item name="android:background">@color/transparentblack10</item>
+        <item name="android:icon">@color/transparent</item>
     </style>
 
 </resources>

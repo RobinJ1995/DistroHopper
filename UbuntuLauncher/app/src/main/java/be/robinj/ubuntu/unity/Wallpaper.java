@@ -71,7 +71,9 @@ public class Wallpaper extends ImageView
 		}
 		catch (OutOfMemoryError ex) // I'd prefer the image not being blurred over the app craching //
 		{
-			 this.blurred = null;
+			this.blurred = null;
+
+			ex.printStackTrace ();
 		}
 
 		WallpaperInfo info = wpman.getWallpaperInfo ();
