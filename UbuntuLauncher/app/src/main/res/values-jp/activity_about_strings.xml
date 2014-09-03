@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="developedBy">Robin Jacobsが開発したアプリです。</string>
+    <string name="honourableMentions">謝辞</string>
+
+    <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
+    <string name="hm_timvdstaaij_why">＊ βテスト（彼がアプリを破壊できないなら絶対無理だと思います）\n
+        ＊ 優性色の算定方式での手伝い
+        ＊ 日本語版</string>
+
+    <string name="hm_markisayan_name">Mark Isayan</string>
+    <string name="hm_markisayan_why">＊ ロシア語版</string>
+
+    <string name="hm_todddavies_name">Todd Davies</string>
+    <string name="hm_todddavies_why">＊ 彼が開発したProgressWheelというコンポーネントを利用しました。\n
+        https://github.com/Todd-Davies/ProgressWheel/</string>
+
+    <string name="hm_tacone_name">tacone (Stack Overflowから)</string>
+    <string name="hm_tacone_why">＊ 彼が開発したExpandableHeightGridViewというコンポーネントを利用しました。\n
+        http://stackoverflow.com/a/8483078/521361</string>
+
+    <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
+    <string name="hm_commonsguy_why">＊ 彼が開発したColorMixerというコンポーネントを設定画面のために利用しました。\n
+        https://github.com/commonsguy/cwac-colormixer</string>
+</resources>
