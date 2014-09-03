@@ -19,6 +19,7 @@ import java.util.List;
 import be.robinj.ubuntu.App;
 import be.robinj.ubuntu.ExceptionHandler;
 import be.robinj.ubuntu.R;
+import be.robinj.ubuntu.unity.launcher.service.RunningAppLauncher;
 import be.robinj.ubuntu.unity.launcher.service.AppLauncher;
 import be.robinj.ubuntu.unity.launcher.service.AppLauncherClickListener;
 
@@ -34,6 +35,9 @@ public class LauncherService extends Service
 	private LinearLayout llListener;
 	private LinearLayout llLauncher;
 	private LinearLayout llShadow;
+
+	private int chameleonicBgColour;
+	private List<App> pinned;
 
 	@Override
 	public IBinder onBind (Intent intent)
@@ -93,13 +97,16 @@ public class LauncherService extends Service
 	{
 		if (intent != null) // http://stackoverflow.com/a/20686768/521361 //
 		{
+			LinearLayout llLauncherPinnedApps = (LinearLayout) this.llLauncher.findViewById (R.id.llLauncherPinnedApps);
+
 			if (intent.getBooleanExtra ("start", false))
 			{
-				LinearLayout llLauncherPinnedApps = (LinearLayout) this.llLauncher.findViewById (R.id.llLauncherPinnedApps);
 				be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.llLauncher.findViewById (R.id.lalBfb);
 				lalBfb.init ();
 
-				this.llLauncher.setBackgroundColor (intent.getIntExtra ("bgColour", Color.argb (40, 40, 40, 40)));
+				this.chameleonicBgColour = intent.getIntExtra ("bgColour", Color.argb (40, 40, 40, 40));
+
+				this.llLauncher.setBackgroundColor (this.chameleonicBgColour);
 				lalBfb.setColour (intent.getIntExtra ("colour", Color.argb (40, 40, 40, 40)));
 
 				List<App> pinned = intent.getParcelableArrayListExtra ("pinned");
@@ -111,18 +118,58 @@ public class LauncherService extends Service
 					AppLauncher appLauncher = new AppLauncher (this, app);
 
 					appLauncher.setOnClickListener (new AppLauncherClickListener ());
+					appLauncher.setTag (app.getPackageName () + "\n" + app.getActivityName ());
 
-					appLauncher.setTag ("partOfLauncher");
 					llLauncherPinnedApps.addView (appLauncher);
 				}
+
+				this.pinned = pinned;
 			}
 
 			this.layout.setVisibility (intent.getBooleanExtra ("show", true) ? View.VISIBLE : View.GONE);
 			if (! intent.getBooleanExtra ("visible", false))
 				this.swipeLeft ();
+
+			List<App> running = intent.getParcelableArrayListExtra ("running");
+			if (running != null)
+			{
+				LinearLayout llLauncherRunningApps = (LinearLayout) this.llLauncher.findViewById (R.id.llLauncherRunningApps);
+				llLauncherRunningApps.removeAllViews ();
+
+				for (App app : running)
+				{
+					app.fixAfterUnpackingFromParcel (this);
+
+					if (this.isPinned (app))
+					{
+						AppLauncher appLauncher = (AppLauncher) llLauncherPinnedApps.findViewWithTag (app.getPackageName () + "\n" + app.getActivityName ());
+						appLauncher.setRunning (true);
+					}
+					else
+					{
+						RunningAppLauncher appLauncher = new RunningAppLauncher (this, app);
+
+						appLauncher.setOnClickListener (new AppLauncherClickListener ());
+						appLauncher.setColour (this.chameleonicBgColour);
+
+						llLauncherRunningApps.addView (appLauncher);
+					}
+				}
+			}
 		}
 
 		return super.onStartCommand (intent, flags, id);
+	}
+
+	private boolean isPinned (App app) // this.pinned.contains () won't work because it's a different instance //
+	{
+		for (App pinnedApp : this.pinned)
+		{
+			if (app.getPackageName ().equals (pinnedApp.getPackageName ()) && app.getActivityName ().equals (pinnedApp.getActivityName ()))
+				return true;
+		}
+
+		return false;
 	}
 
 	@Override

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import be.robinj.ubuntu.App;
@@ -15,6 +17,7 @@ import be.robinj.ubuntu.R;
 public class AppLauncher extends be.robinj.ubuntu.unity.AppLauncher
 {
 	private int colour;
+	private boolean running;
 
 	public AppLauncher (Context context, AttributeSet attrs)
 	{
@@ -59,10 +62,33 @@ public class AppLauncher extends be.robinj.ubuntu.unity.AppLauncher
 		this.colourChanged ();
 	}
 
-	private void colourChanged ()
+	protected void colourChanged ()
 	{
 		LinearLayout llBackground = (LinearLayout) this.findViewById (R.id.llBackground);
 		GradientDrawable gd = (GradientDrawable) llBackground.getBackground ();
 		gd.setColor (this.colour);
+	}
+
+	public boolean isRunning ()
+	{
+		return running;
+	}
+
+	public void setRunning (boolean running)
+	{
+		this.running = running;
+
+		this.runningChanged ();
+	}
+
+	private void runningChanged ()
+	{
+		ImageView imgRunning = (ImageView) this.findViewById (R.id.imgRunning);
+		imgRunning.setVisibility (this.running ? View.VISIBLE : View.INVISIBLE);
+	}
+
+	public void checkRunning ()
+	{
+
 	}
 }

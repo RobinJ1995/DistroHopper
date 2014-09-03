@@ -33,12 +33,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.robinj.ubuntu.thirdparty.ExpandableHeightGridView;
+import be.robinj.ubuntu.unity.ReturnFalseDragListener;
 import be.robinj.ubuntu.unity.Wallpaper;
 import be.robinj.ubuntu.unity.WidgetHost;
 import be.robinj.ubuntu.unity.WidgetHostView;
 import be.robinj.ubuntu.unity.WidgetHostView_LongClickListener;
 import be.robinj.ubuntu.unity.dash.SearchTextWatcher;
 import be.robinj.ubuntu.unity.launcher.AppLauncher;
+import be.robinj.ubuntu.unity.launcher.LauncherDragListener;
+import be.robinj.ubuntu.unity.launcher.TrashDragListener;
 import be.robinj.ubuntu.unity.launcher.service.LauncherService;
 
 
@@ -67,16 +70,19 @@ public class HomeActivity extends Activity
 			be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher lalSpinner = (be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher) this.findViewById (R.id.lalSpinner);
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalBfb);
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalPreferences = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalPreferences);
+			be.robinj.ubuntu.unity.launcher.AppLauncher lalTrash = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalTrash);
 			LinearLayout llLauncherPinnedApps = (LinearLayout) this.findViewById (R.id.llLauncherPinnedApps);
+			LinearLayout llLauncherRunningApps = (LinearLayout) this.findViewById (R.id.llLauncherRunningApps);
 			Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
 			LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
 			ImageButton ibPanelDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
 			//GridLayout glWidgets = (GridLayout) this.findViewById (R.id.glWidgets);
-			ScrollView scrLauncherAppsContainer = (ScrollView) this.findViewById (R.id.scrLauncherAppsContainer);
+			//ScrollView scrLauncherAppsContainer = (ScrollView) this.findViewById (R.id.scrLauncherAppsContainer);
 
 			lalBfb.init ();
 			lalSpinner.init ();
 			lalPreferences.init ();
+			lalTrash.init ();
 
 			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 			float density = this.getResources ().getDisplayMetrics ().density;
@@ -118,6 +124,10 @@ public class HomeActivity extends Activity
 				LayoutTransition llLauncherPinnedApps_transition = new LayoutTransition ();
 				llLauncherPinnedApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
 				llLauncherPinnedApps.setLayoutTransition (llLauncherPinnedApps_transition);
+
+				LayoutTransition llLauncherRunningApps_transition = new LayoutTransition ();
+				llLauncherRunningApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
+				llLauncherRunningApps.setLayoutTransition (llLauncherRunningApps_transition);
 			}
 
 			Intent intent = this.getIntent ();
@@ -138,6 +148,9 @@ public class HomeActivity extends Activity
 				llStatusBar.setLayoutParams (llStatusBar_layoutParams);
 				llStatusBar.setVisibility (View.VISIBLE);
 			}
+
+			//if (Build.VERSION.SDK_INT >= 11)
+				//lalBfb.setOnDragListener (new ReturnFalseDragListener ());
 		}
 		catch (Exception ex)
 		{
@@ -282,6 +295,9 @@ public class HomeActivity extends Activity
 				this.openDash ();
 
 			this.showLauncherService (false);
+
+			if (this.apps != null)
+				this.apps.addRunningApps (this.chameleonicBgColour);
 		}
 		catch (Exception ex)
 		{
@@ -354,6 +370,8 @@ public class HomeActivity extends Activity
 			Intent intent = new Intent (this, LauncherService.class);
 			intent.putExtra ("show", show);
 			intent.putExtra ("visible", false);
+			if (show && this.apps != null)
+				intent.putParcelableArrayListExtra ("running", (ArrayList<App>) this.apps.getRunningApps ());
 
 			this.startService (intent);
 		}
@@ -367,9 +385,19 @@ public class HomeActivity extends Activity
 			this.apps = installedApps;
 
 			EditText etDashSearch = (EditText) this.findViewById (R.id.etDashSearch);
+			LinearLayout llLauncher = (LinearLayout) this.findViewById (R.id.llLauncher);
+			be.robinj.ubuntu.unity.launcher.AppLauncher lalTrash = (be.robinj.ubuntu.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalTrash);
+
 			etDashSearch.addTextChangedListener (new SearchTextWatcher (installedApps));
+			if (Build.VERSION.SDK_INT >= 11)
+			{
+				llLauncher.setOnDragListener (new LauncherDragListener (this.apps));
+				lalTrash.setOnDragListener (new TrashDragListener (this.apps));
+			}
 
 			this.startLauncherService (false);
+
+			this.apps.addRunningApps (this.chameleonicBgColour);
 
 			if (this.openDashWhenReady)
 				this.openDash ();
@@ -420,6 +448,7 @@ public class HomeActivity extends Activity
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalBfb);
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalPreferences = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalPreferences);
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalSpinner = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalSpinner);
+			be.robinj.ubuntu.unity.launcher.AppLauncher lalTrash = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalTrash);
 
 			LinearLayout llLauncher = (LinearLayout) this.findViewById (R.id.llLauncher);
 			LinearLayout llDash = (LinearLayout) this.findViewById (R.id.llDash);
@@ -427,6 +456,7 @@ public class HomeActivity extends Activity
 			lalBfb.setColour (colour);
 			lalPreferences.setColour (colour);
 			lalSpinner.setColour (colour);
+			lalTrash.setColour (colour);
 
 			llLauncher.setBackgroundColor (bgColour);
 			llDash.setBackgroundColor (bgColour);
@@ -443,6 +473,7 @@ public class HomeActivity extends Activity
 	public void pinnedAppsChanged ()
 	{
 		this.startLauncherService (false);
+		this.apps.addRunningApps (this.chameleonicBgColour);
 	}
 
 	//# Event handlers #//

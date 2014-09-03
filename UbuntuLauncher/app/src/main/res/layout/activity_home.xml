@@ -108,11 +108,26 @@
                 android:fillViewport="false">
 
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/llLauncherPinnedApps"
-                    android:layout_gravity="top">
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/llLauncherPinnedApps"
+                        android:layout_gravity="top">
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/llLauncherRunningApps"
+                        android:layout_gravity="top">
+                    </LinearLayout>
+
                 </LinearLayout>
             </ScrollView>
 
@@ -124,6 +139,15 @@
                 android:id="@+id/lalPreferences"
                 android:layout_marginBottom="4dp"
                 android:onClick="lalPreferences_clicked" />
+
+            <be.robinj.ubuntu.unity.launcher.AppLauncher
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                custom:icon="@drawable/launcher_trash"
+                custom:special="false"
+                android:id="@+id/lalTrash"
+                android:layout_marginBottom="4dp"
+                android:visibility="gone" />
 
         </LinearLayout>
 

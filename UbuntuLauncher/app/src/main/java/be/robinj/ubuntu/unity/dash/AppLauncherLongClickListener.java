@@ -1,6 +1,7 @@
 package be.robinj.ubuntu.unity.dash;
 
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 
 import be.robinj.ubuntu.App;
@@ -14,18 +15,18 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 	@Override
 	public boolean onItemLongClick (AdapterView<?> parent, View view, int position, long id)
 	{
-		try
-		{
+		//try
+		//{
 			AppLauncher appLauncher = (AppLauncher) view.getTag ();
 			App app = appLauncher.getApp ();
 
 			app.getAppManager ().pin (app);
-		}
+		/*}
 		catch (Exception ex)
 		{
 			ExceptionHandler exh = new ExceptionHandler (view.getContext (), ex);
 			exh.show ();
-		}
+		}*/
 
 		return true;
 	}

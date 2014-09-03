@@ -12,15 +12,15 @@ public class AppLauncherClickListener implements View.OnClickListener
 	@Override
 	public void onClick (View view)
 	{
-		try
-		{
+		/*try
+		{*/
 			be.robinj.ubuntu.unity.launcher.service.AppLauncher appLauncher = (be.robinj.ubuntu.unity.launcher.service.AppLauncher) view;
 			appLauncher.launch ();
-		}
+		/*}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (view.getContext (), ex);
+			ExceptionHandler exh = new ExceptionHandler (view.getContext (), ex); // Doesn't work //
 			exh.show ();
-		}
+		}*/
 	}
 }

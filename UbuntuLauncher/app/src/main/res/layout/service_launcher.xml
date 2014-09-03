@@ -21,8 +21,7 @@
             custom:special="true"
             android:onClick="lalBfb_clicked"
             android:id="@+id/lalBfb"
-            android:layout_marginTop="2dp"
-            android:tag="partOfLauncher" />
+            android:layout_marginTop="2dp" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -30,16 +29,29 @@
             android:id="@+id/scrLauncherAppsContainer"
             android:scrollbars="none"
             android:layout_weight="1"
-            android:fillViewport="false"
-            android:tag="partOfLauncher">
+            android:fillViewport="false">
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/llLauncherPinnedApps"
-                android:layout_gravity="top"
-                android:tag="partOfLauncher">
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/llLauncherPinnedApps"
+                    android:layout_gravity="top">
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/llLauncherRunningApps"
+                    android:layout_gravity="top">
+                </LinearLayout>
+
             </LinearLayout>
         </ScrollView>
 
