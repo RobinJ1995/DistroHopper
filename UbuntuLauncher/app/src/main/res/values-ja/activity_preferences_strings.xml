@@ -10,17 +10,17 @@
     <string name="option_launchericon_width">ランチャー幅</string>
     <string name="hint_launchericon_width">ランチャーやそのアイコンの広さのことです。 スライダーは48dipから120dipに及びます。デフォルトでは84dipになります。</string>
 
-    <string name="option_launchericon_opacity">ランチャーアイコンの不透明度</string>
-    <string name="hint_launchericon_opacity">How opaque the background colour of icons in the Launcher should be.ことです。</string>
+    <string name="option_launchericon_opacity">ランチャーアイコンの背景の不透明度</string>
+    <string name="hint_launchericon_opacity">ランチャーに置いているアイコンの背景の不透明さの程度のことです。</string>
 
-    <string name="option_launcherservice_enabled">Make the Launcher available inside other apps</string>
-    <string name="hint_launcherservice_enabled">When you swipe from the bottom half of the left edge of the screen, the Launcher will appear, allowing you to launch apps which you have pinned to the Launcher without having to go to the home screen.\n(EXPERIMENTAL)</string>
+    <string name="option_launcherservice_enabled">ランチャーを他のアプリで利用可能する</string>
+    <string name="hint_launcherservice_enabled">べーた機能ですが、画面の下側で左端からスワイプすると、ランチャーが表示されて、ﾎｰﾑ画面に戻らずに留められたアプリを開始できます。</string>
 
     <string name="option_panel_show">パネルを表示する</string>
-    <string name="hint_panel_show">Whether the Panel at the top of the screen should be shown or not.</string>
+    <string name="hint_panel_show">画面の上端にパネルを表示するかどうか。</string>
 
-    <string name="option_panel_opacity">Panel opacity</string>
-    <string name="hint_panel_opacity">How opaque the Panel should be.</string>
+    <string name="option_panel_opacity">パネルの不透明度</string>
+    <string name="hint_panel_opacity">パネルの不透明さの程度のことです。</string>
 
     <string name="option_unitybackground_dynamic">Dynamic Unity background colour</string>
     <string name="hint_unitybackground_dynamic">Dynamically pick the background colour of transparent Unity components (Launcher, and the Dash and Panel when the Dash is opened) based on the dominant colour of the wallpaper. This won\'t work when a live wallpaper is set, in which case it will fall back to a transparent black.</string>
