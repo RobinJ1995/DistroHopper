@@ -24,4 +24,7 @@
     <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
     <string name="hm_commonsguy_why">* Użyłem jego komponentu ColorMixer na ekranie ustawień.\n
         https://github.com/commonsguy/cwac-colormixer</string>
+
+    <string name="hm_michaldudzinski_name">Michał Dudziński</string>
+    <string name="hm_michaldudzinski_why">* Przekład na język polski.</string>
 </resources>
