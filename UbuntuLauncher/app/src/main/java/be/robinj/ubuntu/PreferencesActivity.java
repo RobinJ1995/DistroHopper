@@ -41,6 +41,7 @@ public class PreferencesActivity extends Activity
 			CompoundButton swUnityBackground_dynamic = (CompoundButton) this.findViewById (R.id.swUnityBackground_dynamic);
 			ColorMixer cmUnityBackground_colour = (ColorMixer) this.findViewById (R.id.cmUnityBackground_colour);
 			SeekBar sbUnityBackground_opacity = (SeekBar) this.findViewById (R.id.sbUnityBackgrond_opacity);
+			CompoundButton swDashSearch_full = (CompoundButton) this.findViewById (R.id.swDashSearch_full);
 			CompoundButton swColourCalc_advanced  = (CompoundButton) this.findViewById (R.id.swColourCalc_advanced);
 			CompoundButton swColourCalc_hsv  = (CompoundButton) this.findViewById (R.id.swColourCalc_hsv);
 
@@ -53,6 +54,7 @@ public class PreferencesActivity extends Activity
 			swUnityBackground_dynamic.setChecked (this.prefs.getBoolean ((String) swUnityBackground_dynamic.getTag (), true));
 			cmUnityBackground_colour.setColor (this.prefs.getInt ((String) cmUnityBackground_colour.getTag (), Color.WHITE));
 			sbUnityBackground_opacity.setProgress (this.prefs.getInt ((String) sbUnityBackground_opacity.getTag (), 50));
+			swDashSearch_full.setChecked (this.prefs.getBoolean ((String) swDashSearch_full.getTag (), true));
 			swColourCalc_advanced.setChecked (this.prefs.getBoolean ((String) swColourCalc_advanced.getTag (), true));
 			swColourCalc_hsv.setChecked (this.prefs.getBoolean ((String) swColourCalc_hsv.getTag (), true));
 
@@ -67,6 +69,7 @@ public class PreferencesActivity extends Activity
 			swUnityBackground_dynamic.setOnCheckedChangeListener (checkedChangeListener);
 			cmUnityBackground_colour.setOnColorChangedListener (new ColorChangeListener (cmUnityBackground_colour));
 			sbUnityBackground_opacity.setOnSeekBarChangeListener (seekBarChangeListener);
+			swDashSearch_full.setOnCheckedChangeListener (checkedChangeListener);
 			swColourCalc_advanced.setOnCheckedChangeListener (checkedChangeListener);
 			swColourCalc_hsv.setOnCheckedChangeListener (checkedChangeListener);
 

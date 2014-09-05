@@ -44,7 +44,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 	{
 		this.context = params[0];
 
-		AppManager appManager = new AppManager (this.context, this.parent);
+		AppManager appManager = new AppManager (this.parent, this.parent);
 
 		List<ResolveInfo> resInfs = appManager.queryInstalledApps ();
 		float size = resInfs.size ();

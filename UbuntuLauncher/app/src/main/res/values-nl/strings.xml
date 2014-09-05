@@ -1,15 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
 
+<!-- Generated on Friday, 05. September 2014 01:01PM by lokaligo.com -->
+
+<resources>
     <string name="app_name">Ubuntu Launcher</string>
+
     <string name="action_settings">Instellingen</string>
+
     <string name="dash_search_hint">Geïnstalleerde apps doorzoeken</string>
+
     <string name="dash_lens_apps_title">Toepassingen</string>
+
     <string name="title_activity_preferences">Voorkeuren</string>
+
     <string name="title_activity_about">Over</string>
 
     <string name="pinned">is vastgemaakt aan de Launcher</string>
+
     <string name="unpinned">is losgemaakt van de Launcher</string>
+
     <string name="notpinned">is niet vastgemaakt aan de Launcher</string>
 
+    <string name="developed_by">Ontwikkeld door Robin Jacobs</string>
+
+    <string name="honourable_mentions">Eervolle vermeldingen</string>
+
+    <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
+
+    <string name="hm_timvdstaaij_why">* Testen (Als hij het niet kapot krijgt kan ik er meestal wel vanuit gaan dat het ook veilig is voor consumptie door de rest van de wereld.)\n
+        * Hulp met de kleursberekeningsfuncties.\n
+        * Japanse vertaling</string>
+
+    <string name="hm_markisayan_name">Mark Isayan</string>
+
+    <string name="hm_markisayan_why">* Russische vertaling</string>
+
+    <string name="hm_todddavies_name">Todd Davies</string>
+
+    <string name="hm_todddavies_why">* Ik heb zijn ProgressWheel-component gebruik aangezien Android\'s gewone (ronde) ProgressBar-component geen voortgang kan aangeven.\n
+        https://github.com/Todd-Davies/ProgressWheel/</string>
+
+    <string name="hm_tacone_name">tacone (van Stack Overflow)</string>
+
+    <string name="hm_tacone_why">* Ik heb zijn ExpandableHeightGridView-component gebruikt.\n
+        http://stackoverflow.com/a/8483078/521361</string>
+
+    <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
+
+    <string name="hm_commonsguy_why">* Ik heb zijn ColorMixer-component gebruik in het voorkeurenscherm.\n
+        https://github.com/commonsguy/cwac-colormixer</string>
+
+    <string name="button_back">Terug</string>
+
+    <string name="button_about">Over</string>
+
+    <string name="title_preferences">Voorkeuren</string>
+
+    <string name="category_colourcalc">Dominante kleurberekening</string>
+
+    <string name="option_launchericon_width">Launcher-breedte</string>
+
+    <string name="hint_launchericon_width">Hoe breed de Launcher en de pictogrammen die zich er in bevinden moeten zijn. De slider gaat van 48dip tot 120dip, met 48dip als standaardwaarde (in het midden).</string>
+
+    <string name="option_launchericon_opacity">Transparantie van Launcher-pictogrammen</string>
+
+    <string name="hint_launchericon_opacity">De transparantie van de achtergrondkleur van pictogrammen die vastgemaakt zijn aan de Launcher. 100 procent is volledig zichtbaar en 0 procent is volledig transparant.</string>
+
+    <string name="option_launcherservice_enabled">Maak de Launcher beschikbaar binnen andere apps</string>
+
+    <string name="hint_launcherservice_enabled">Bij een swipe van de onderste helft van de linkerkant van het scherm zal de Launcher verschijnen, zodat u apps kan starten zonder eerst naar de home screen te moeten gaan.\n(EXPERIMENTEEL)</string>
+
+    <string name="option_panel_show">Panel tonen</string>
+
+    <string name="hint_panel_show">Of het Panel aan de bovenkant van het scherm getoond moet worden of niet.</string>
+
+    <string name="option_panel_opacity">Panel-transparantie</string>
+
+    <string name="hint_panel_opacity">Hoe transparant de Panel moet zijn. 100 procent is volledig zichtbaar en 0 procent is volledig transparant.</string>
+
+    <string name="option_unitybackground_dynamic">Dynamisch achtergrondkleur berekenen</string>
+
+    <string name="hint_unitybackground_dynamic">De achtergrondkleur voor transparante Unity-componenten (Launcher, Dash en Panel) kan dynamisch berekend worden aan de hand van de ingestelde achtergrond. Dit zal niet werken wanneer er een live wallpaper is ingesteld, in welk geval er teruggevallen wordt op een transparante zwarte achtergrond.</string>
+
+    <string name="option_unitybackground_colour">Achtergrondkleur</string>
+
+    <string name="hint_unitybackground_colour">De achtergrondkleur die gebruikt moet worden voor transparante Unity-componenten.</string>
+
+    <string name="option_unitybackground_opacity">Transparantie van achtergrondkleur</string>
+
+    <string name="hint_unitybackground_opacity">Hoe transparant de achtergrondkleur van transparante Unity-componenten moet zijn. 100 procent is volledig zichtbaar en 0 procent is volledig transparant.</string>
+
+    <string name="option_wallpaper">Achtergrond</string>
+
+    <string name="hint_wallpaper">Andere achtergrond kiezen</string>
+
+    <string name="option_colourcalc_advanced">Meer stalen nemen</string>
+
+    <string name="hint_colourscalc_advanced">Waneer er meer stalen genomen worden zal de meer stalen nemen zal de uitkomst van kleurberekeningen veel nauwkeuriger zijn. Dit kan echter een impact hebben op de laadtijd als u gebruikmaakt van een ouder/trager apparaat.</string>
+
+    <string name="option_colourcalc_hsv">Gebruik HSV</string>
+
+    <string name="hint_colourcalc_hsv">Gebruik HSV (Hue, Saturation, Value) in plaats van RGB (Red, Green, Blue) voor kleurberekeningen. Dit zal de uitkomst van kleurberekeningen veel levendiger maken, maar de berekeningen die uitgevoerd worden zijn ingewikkelder waardoor dit een impact kan hebben op de laadtijd als u gebruikmaakt van een ouder/trager apparaat.</string>
+
+    <string name="hm_michaldudzinski_why">* Poolse vertaling</string>
 </resources>

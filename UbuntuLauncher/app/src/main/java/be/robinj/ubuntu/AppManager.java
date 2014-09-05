@@ -224,7 +224,7 @@ public class AppManager implements Iterable<App>
 			results = new ArrayList<App> ();
 
 			SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
-			boolean fullSearch = prefs.getBoolean ("fullSearch", false);
+			boolean fullSearch = prefs.getBoolean ("dashsearch_full", true);
 
 			pattern = pattern.toLowerCase ();
 
@@ -232,10 +232,13 @@ public class AppManager implements Iterable<App>
 			{
 				if (app.getLabel ().toLowerCase ().startsWith (pattern))
 					results.add (app);
+			}
 
-				if (fullSearch)
+			if (fullSearch)
+			{
+				for (App app : this.apps)
 				{
-					if ((! results.contains (app)) && (app.getLabel ().toLowerCase ().contains (pattern) || app.getDescription ().toLowerCase ().contains (pattern)))
+					if ((! results.contains (app)) && (app.getLabel ().toLowerCase ().contains (pattern)))
 						results.add (app);
 				}
 			}

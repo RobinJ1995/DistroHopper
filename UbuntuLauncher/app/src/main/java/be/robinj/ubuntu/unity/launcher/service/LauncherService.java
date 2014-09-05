@@ -130,6 +130,9 @@ public class LauncherService extends Service
 			if (! intent.getBooleanExtra ("visible", false))
 				this.swipeLeft ();
 
+			for (int i = 0; i < llLauncherPinnedApps.getChildCount (); i++)
+				((AppLauncher) llLauncherPinnedApps.getChildAt (i)).setRunning (false);
+
 			List<App> running = intent.getParcelableArrayListExtra ("running");
 			if (running != null)
 			{

@@ -276,6 +276,27 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/option_dashsearch_full"
+                    android:id="@+id/swDashSearch_full"
+                    android:checked="true"
+                    android:tag="dashsearch_full"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/hint_dashsearch_full" />
+
+            </LinearLayout>
+
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -288,21 +309,21 @@
                 android:textColor="@android:color/white"
                 android:textSize="16dp"/>
 
-                <LinearLayout
-                    android:id="@+id/llWallpaper"
-                    android:orientation="vertical"
+            <LinearLayout
+                android:id="@+id/llWallpaper"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="96dp">
+
+                <Button
+                    android:id="@+id/btnWallpaper"
                     android:layout_width="match_parent"
-                    android:layout_height="96dp">
+                    android:layout_height="match_parent"
+                    android:text="@string/hint_wallpaper"
+                    android:onClick="btnWallpaper_clicked"
+                    android:background="@color/transparentblack60"/>
 
-                    <Button
-                        android:id="@+id/btnWallpaper"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/hint_wallpaper"
-                        android:onClick="btnWallpaper_clicked"
-                        android:background="@color/transparentblack60"/>
-
-                </LinearLayout>
+            </LinearLayout>
 
             </LinearLayout>
 
