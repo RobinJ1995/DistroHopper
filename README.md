@@ -17,3 +17,4 @@ If you speak a non-English language, and your knowledge of the English language 
 * Dutch (Robin Jacobs)
 * Russian (Mark Isayan)
 * Japanese (Tim van der Staaij)
+* Polish (Michał Dudziński)
