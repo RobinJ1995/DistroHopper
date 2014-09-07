@@ -34,12 +34,18 @@ public class App implements Parcelable
 		String label = resInf.loadLabel (pacMan).toString ();
 		String packageName = resInf.activityInfo.applicationInfo.packageName;
 		String activityName = resInf.activityInfo.name;
-		AppIcon icon = new AppIcon (resInf.loadIcon (pacMan));
 
 		App app = new App (context, appManager);
 		app.setLabel (label);
 		app.setPackageName (packageName);
 		app.setActivityName (activityName);
+
+		AppIcon icon = null;
+		if (appManager.isIconPackLoaded ())
+			icon = appManager.getIconPack ().getIconForApp (app);
+		if (icon == null)
+			icon = appManager.getIconPack ().getFallbackIcon (resInf.loadIcon (pacMan));
+
 		app.setIcon (icon);
 
 		return app;

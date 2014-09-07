@@ -13,6 +13,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -34,6 +37,8 @@ public class AppManager implements Iterable<App>
 	private List<App> apps = new ArrayList<App> ();
 	private List<App> pinned = new ArrayList<App> ();
 
+	private IconPackHelper iconPack;
+
 	private LinearLayout llLauncher;
 	private LinearLayout llLauncherPinnedApps;
 	private LinearLayout llLauncherRunningApps;
@@ -46,6 +51,9 @@ public class AppManager implements Iterable<App>
 	{
 		this.context = context;
 		this.parent = parent;
+
+		this.iconPack = new IconPackHelper (context.getApplicationContext ());
+
 		this.llLauncher = (LinearLayout) parent.findViewById (R.id.llLauncher);
 		this.llLauncherPinnedApps = (LinearLayout) this.llLauncher.findViewById (R.id.llLauncherPinnedApps);
 		this.llLauncherRunningApps = (LinearLayout) this.llLauncher.findViewById (R.id.llLauncherRunningApps);
@@ -60,6 +68,31 @@ public class AppManager implements Iterable<App>
 	public void add (ResolveInfo resInf)
 	{
 		this.apps.add (App.fromResolveInfo (this.context, this, resInf));
+	}
+
+	public void addRunningApps (int colour)
+	{
+		this.llLauncherRunningApps.removeAllViews ();
+
+		for (int i = 0; i < this.llLauncherPinnedApps.getChildCount (); i++)
+			((AppLauncher) this.llLauncherPinnedApps.getChildAt (i)).setRunning (false);
+
+		for (App app : this.getRunningApps ())
+		{
+			if (this.isPinned (app))
+			{
+				AppLauncher appLauncher = (AppLauncher) this.llLauncherPinnedApps.findViewWithTag (app);
+				appLauncher.setRunning (true);
+			}
+			else
+			{
+				RunningAppLauncher appLauncher = new RunningAppLauncher (this.context, app);
+				appLauncher.setOnClickListener (new AppLauncherClickListener ());
+				appLauncher.setColour (colour);
+
+				this.llLauncherRunningApps.addView (appLauncher);
+			}
+		}
 	}
 
 	public void clear ()
@@ -88,9 +121,40 @@ public class AppManager implements Iterable<App>
 		return this.context;
 	}
 
+	public IconPackHelper getIconPack ()
+	{
+		return this.iconPack;
+	}
+
 	public HomeActivity getParent ()
 	{
 		return this.parent;
+	}
+
+	public List<App> getPinned ()
+	{
+		return this.pinned;
+	}
+
+	public List<App> getRunningApps ()
+	{
+		List<App> running = new ArrayList<App> ();
+
+		ActivityManager am = (ActivityManager) this.context.getSystemService (Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningTaskInfo> runningTasks =  am.getRunningTasks (16);
+
+		for (ActivityManager.RunningTaskInfo task : runningTasks)
+		{
+			String packageName = task.baseActivity.getPackageName ();
+			String activityName = task.baseActivity.getClassName ();
+
+			App app = this.findAppByPackageAndActivityName (packageName, activityName);
+
+			if (app != null)
+				running.add (app);
+		}
+
+		return running;
 	}
 
 	public int indexOfPinned (App app)
@@ -98,9 +162,9 @@ public class AppManager implements Iterable<App>
 		return this.pinned.indexOf (app);
 	}
 
-	public List<App> getPinned ()
+	public boolean isIconPackLoaded ()
 	{
-		return this.pinned;
+		return this.iconPack.isIconPackLoaded ();
 	}
 
 	public boolean isPinned (App app)
@@ -111,6 +175,11 @@ public class AppManager implements Iterable<App>
 	public Iterator<App> iterator ()
 	{
 		return this.apps.iterator ();
+	}
+
+	public void loadIconPack (String name) throws IOException, XmlPullParserException, PackageManager.NameNotFoundException
+	{
+		this.iconPack.loadIconPack (name);
 	}
 
 	public void movePinnedApp (AppLauncher appLauncher, int oldIndex, int newIndex)
@@ -294,52 +363,6 @@ public class AppManager implements Iterable<App>
 		this.savePinnedApps ();
 
 		return modified;
-	}
-
-	public List<App> getRunningApps ()
-	{
-		List<App> running = new ArrayList<App> ();
-
-		ActivityManager am = (ActivityManager) this.context.getSystemService (Context.ACTIVITY_SERVICE);
-		List<ActivityManager.RunningTaskInfo> runningTasks =  am.getRunningTasks (16);
-
-		for (ActivityManager.RunningTaskInfo task : runningTasks)
-		{
-			String packageName = task.baseActivity.getPackageName ();
-			String activityName = task.baseActivity.getClassName ();
-
-			App app = this.findAppByPackageAndActivityName (packageName, activityName);
-
-			if (app != null)
-				running.add (app);
-		}
-
-		return running;
-	}
-
-	public void addRunningApps (int colour)
-	{
-		this.llLauncherRunningApps.removeAllViews ();
-
-		for (int i = 0; i < this.llLauncherPinnedApps.getChildCount (); i++)
-			((AppLauncher) this.llLauncherPinnedApps.getChildAt (i)).setRunning (false);
-
-		for (App app : this.getRunningApps ())
-		{
-			if (this.isPinned (app))
-			{
-				AppLauncher appLauncher = (AppLauncher) this.llLauncherPinnedApps.findViewWithTag (app);
-				appLauncher.setRunning (true);
-			}
-			else
-			{
-				RunningAppLauncher appLauncher = new RunningAppLauncher (this.context, app);
-				appLauncher.setOnClickListener (new AppLauncherClickListener ());
-				appLauncher.setColour (colour);
-
-				this.llLauncherRunningApps.addView (appLauncher);
-			}
-		}
 	}
 
 	/*# Event handlers #*/

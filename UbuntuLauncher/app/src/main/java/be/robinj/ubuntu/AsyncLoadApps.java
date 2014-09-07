@@ -2,11 +2,15 @@ package be.robinj.ubuntu;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +49,19 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 		this.context = params[0];
 
 		AppManager appManager = new AppManager (this.parent, this.parent);
+
+		try
+		{
+			SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
+			String iconPack = prefs.getString ("iconpack", null);
+
+			if (iconPack != null)
+				appManager.loadIconPack ("com.numix.icons_circle");
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace ();
+		}
 
 		List<ResolveInfo> resInfs = appManager.queryInstalledApps ();
 		float size = resInfs.size ();

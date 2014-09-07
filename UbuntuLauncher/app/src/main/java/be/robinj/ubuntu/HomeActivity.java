@@ -149,10 +149,6 @@ public class HomeActivity extends Activity
 				llStatusBar.setVisibility (View.VISIBLE);
 			}
 
-			//DEBUG//
-			IconPackHelper iph = new IconPackHelper (this.getApplicationContext ());
-			iph.getIconPacks ();
-
 			//if (Build.VERSION.SDK_INT >= 11)
 				//lalBfb.setOnDragListener (new ReturnFalseDragListener ());
 		}
