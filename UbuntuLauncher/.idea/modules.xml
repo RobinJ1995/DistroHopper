@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Donations/Donations.iml" filepath="$PROJECT_DIR$/Donations/Donations.iml" />
       <module fileurl="file://$PROJECT_DIR$/UbuntuLauncher.iml" filepath="$PROJECT_DIR$/UbuntuLauncher.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/colormixer/colormixer.iml" filepath="$PROJECT_DIR$/colormixer/colormixer.iml" />
