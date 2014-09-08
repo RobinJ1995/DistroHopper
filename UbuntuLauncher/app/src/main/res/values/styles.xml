@@ -7,6 +7,11 @@
     <style name="DialogTheme" parent="android:Theme.Wallpaper">
     </style>
 
+    <style name="PreferencesTheme" parent="DialogTheme">
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.8</item>
+    </style>
+
     <style name="textshadow_2px_black" parent="android:TextAppearance.Widget.TextView">
         <item name="android:shadowColor">@android:color/black</item>
         <item name="android:shadowDx">2</item>

@@ -1,0 +1,29 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- These settings headers are only used on tablets. -->
+
+    <header
+        android:fragment="be.robinj.ubuntu.PreferencesActivity$GeneralPreferenceFragment"
+        android:title="@string/pref_header_general" />
+
+    <header
+        android:fragment="be.robinj.ubuntu.PreferencesActivity$UnityPreferenceFragment"
+        android:title="@string/pref_header_unity" />
+
+    <header
+        android:fragment="be.robinj.ubuntu.PreferencesActivity$LauncherPreferenceFragment"
+        android:title="@string/pref_header_launcher" />
+
+    <header
+        android:fragment="be.robinj.ubuntu.PreferencesActivity$DashPreferenceFragment"
+        android:title="@string/pref_header_panel" />
+
+    <header
+        android:fragment="be.robinj.ubuntu.PreferencesActivity$PanelPreferenceFragment"
+        android:title="@string/pref_header_dash" />
+
+    <header
+        android:fragment="be.robinj.ubuntu.PreferencesActivity$AdvancedPreferenceFragment"
+        android:title="@string/pref_header_advanced" />
+
+</preference-headers>

@@ -13,19 +13,16 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
@@ -33,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.robinj.ubuntu.thirdparty.ExpandableHeightGridView;
-import be.robinj.ubuntu.unity.ReturnFalseDragListener;
 import be.robinj.ubuntu.unity.Wallpaper;
 import be.robinj.ubuntu.unity.WidgetHost;
 import be.robinj.ubuntu.unity.WidgetHostView;

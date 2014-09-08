@@ -58,11 +58,11 @@
 
     <string name="category_colourcalc">Dominant colour calculation</string>
 
-    <string name="option_launchericon_width">Launcher width</string>
+    <string name="option_launchericon_width">Width</string>
 
     <string name="hint_launchericon_width">How wide the Launcher and the icons within it should be. The slider goes from 48dip to 120dip, with the default (right in the middle) being 84dip.</string>
 
-    <string name="option_launchericon_opacity">Launcher icon background opacity</string>
+    <string name="option_launchericon_opacity">Icon background opacity</string>
 
     <string name="hint_launchericon_opacity">How opaque the background colour of icons in the Launcher should be.</string>
 
@@ -70,23 +70,25 @@
 
     <string name="hint_launcherservice_enabled">When you swipe from the bottom half of the left edge of the screen, the Launcher will appear, allowing you to launch apps which you have pinned to the Launcher without having to go to the home screen.\n(EXPERIMENTAL)</string>
 
-    <string name="option_panel_show">Show Panel</string>
+    <string name="option_panel_show">Show</string>
 
     <string name="hint_panel_show">Whether the Panel at the top of the screen should be shown or not.</string>
 
-    <string name="option_panel_opacity">Panel opacity</string>
+    <string name="option_panel_opacity">Opacity</string>
 
     <string name="hint_panel_opacity">How opaque the Panel should be.</string>
 
-    <string name="option_unitybackground_dynamic">Dynamic Unity background colour</string>
+    <string name="option_unitybackground_dynamic">Dynamic background colour</string>
 
     <string name="hint_unitybackground_dynamic">Dynamically pick the background colour of transparent Unity components (Launcher, and the Dash and Panel when the Dash is opened) based on the dominant colour of the wallpaper. This won\'t work when a live wallpaper is set, in which case it will fall back to a transparent black.</string>
 
-    <string name="option_unitybackground_colour">Unity background colour</string>
+    <string name="option_unitybackground_colour">Background colour</string>
 
     <string name="hint_unitybackground_colour">The background colour that should be used for transparent Unity components.</string>
 
-    <string name="option_unitybackground_opacity">Unity background opacity</string>
+    <string name="message_unitybackground_colour">Use the sliders to pick a colour.</string>
+
+    <string name="option_unitybackground_opacity">Background opacity</string>
 
     <string name="hint_unitybackground_opacity">How opaque the background colour of transparent Unity components should be.</string>
 
@@ -102,7 +104,7 @@
 
     <string name="hint_colourcalc_hsv">Using HSV (Hue, Saturation, Value) instead of plain RGB (Red, Green, Blue) will result in colours being much more vibrant, but the calculations that are being preformed are more complicated which can result in longer loading times on slower devices.</string>
 
-    <string name="option_dashsearch_full">Advanced Dash search</string>
+    <string name="option_dashsearch_full">Advanced search</string>
 
     <string name="hint_dashsearch_full">Enabling this option will result in better Dash search results but will also affect performance on slower devices or devices with a lot of apps installed. If Dash search is slow for you, you might want to consider disabling this.</string>
 

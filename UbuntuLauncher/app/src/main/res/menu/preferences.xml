@@ -1,4 +1,4 @@
 <menu
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="be.robinj.ubuntu.PreferencesActivity">
+    tools:context="be.robinj.ubuntu.OldPreferencesActivity">
 </menu>

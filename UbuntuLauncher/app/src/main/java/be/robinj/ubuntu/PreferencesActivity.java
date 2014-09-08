@@ -1,288 +1,290 @@
 package be.robinj.ubuntu;
 
-import android.app.Activity;
-import android.app.WallpaperInfo;
-import android.app.WallpaperManager;
-import android.content.Intent;
+import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
+import android.content.res.Configuration;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Menu;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
+import android.preference.RingtonePreference;
+import android.support.v4.app.NavUtils;
+import android.text.TextUtils;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
 
-import com.commonsware.cwac.colormixer.ColorMixer;
-import com.google.analytics.tracking.android.EasyTracker;
+import java.util.List;
 
-
-public class PreferencesActivity extends Activity
+/**
+ * A {@link PreferenceActivity} that presents a set of application settings. On
+ * handset devices, settings are presented as a single list. On tablets,
+ * settings are split by category, with category headers shown to the left of
+ * the list of settings.
+ * <p/>
+ * See <a href="http://developer.android.com/design/patterns/settings.html">
+ * Android Design: Settings</a> for design guidelines and the <a
+ * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
+ * API Guide</a> for more information on developing a Settings UI.
+ */
+public class PreferencesActivity extends PreferenceActivity
 {
-	private SharedPreferences prefs;
+	/**
+	 * Determines whether to always show the simplified settings UI, where
+	 * settings are presented in a single list. When false, settings are shown
+	 * as a master/detail two-pane view on tablets. When true, a single pane is
+	 * shown on tablets.
+	 */
+	private static final boolean ALWAYS_SIMPLE_PREFS = false;
+
+	/**
+	 * Helper method to determine if the device has an extra-large screen. For
+	 * example, 10" tablets are extra-large.
+	 */
+	private static boolean isXLargeTablet (Context context)
+	{
+		return (context.getResources ().getConfiguration ().screenLayout
+			& Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
+	}
+
+	/**
+	 * Determines whether the simplified settings UI should be shown. This is
+	 * true if this is forced via {@link #ALWAYS_SIMPLE_PREFS}, or the device
+	 * doesn't have newer APIs like {@link PreferenceFragment}, or the device
+	 * doesn't have an extra-large screen. In these cases, a single-pane
+	 * "simplified" settings UI should be shown.
+	 */
+	private static boolean isSimplePreferences (Context context)
+	{
+		return ALWAYS_SIMPLE_PREFS
+			|| Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
+			|| !isXLargeTablet (context);
+	}
+
+	@Override
+	public SharedPreferences getSharedPreferences (String name, int mode) // I'll decide for myself which file I want to store the preferences in, thanks. //
+	{
+		return super.getSharedPreferences ("prefs", MODE_PRIVATE);
+	}
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
-		super.setTheme (R.style.DialogTheme);
-
+		super.setTheme (R.style.PreferencesTheme);
 		super.onCreate (savedInstanceState);
-		setContentView (R.layout.activity_preferences);
 
-		try
-		{
-			SeekBar sbLauncherIcon_width = (SeekBar) this.findViewById (R.id.sbLauncherIcon_width);
-			SeekBar sbLauncherIcon_opacity = (SeekBar) this.findViewById (R.id.sbLauncherIcon_opacity);
-			CompoundButton swLauncherService_enabled = (CompoundButton) this.findViewById (R.id.swLauncherService_enabled);
-			CompoundButton swPanel_show = (CompoundButton) this.findViewById (R.id.swPanel_show);
-			SeekBar sbPanel_opacity = (SeekBar) this.findViewById (R.id.sbPanel_opacity);
-			CompoundButton swUnityBackground_dynamic = (CompoundButton) this.findViewById (R.id.swUnityBackground_dynamic);
-			ColorMixer cmUnityBackground_colour = (ColorMixer) this.findViewById (R.id.cmUnityBackground_colour);
-			SeekBar sbUnityBackground_opacity = (SeekBar) this.findViewById (R.id.sbUnityBackgrond_opacity);
-			CompoundButton swDashSearch_full = (CompoundButton) this.findViewById (R.id.swDashSearch_full);
-			CompoundButton swColourCalc_advanced  = (CompoundButton) this.findViewById (R.id.swColourCalc_advanced);
-			CompoundButton swColourCalc_hsv  = (CompoundButton) this.findViewById (R.id.swColourCalc_hsv);
+		this.setupActionBar ();
 
-			this.prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
-			sbLauncherIcon_width.setProgress (this.prefs.getInt ((String) sbLauncherIcon_width.getTag (), 36));
-			sbLauncherIcon_opacity.setProgress (this.prefs.getInt ((String) sbLauncherIcon_opacity.getTag (), 204));
-			swLauncherService_enabled.setChecked (this.prefs.getBoolean ((String) swLauncherService_enabled.getTag (), false));
-			swPanel_show.setChecked (this.prefs.getBoolean ((String) swPanel_show.getTag (), true));
-			sbPanel_opacity.setProgress (this.prefs.getInt ((String) sbPanel_opacity.getTag (), 100));
-			swUnityBackground_dynamic.setChecked (this.prefs.getBoolean ((String) swUnityBackground_dynamic.getTag (), true));
-			cmUnityBackground_colour.setColor (this.prefs.getInt ((String) cmUnityBackground_colour.getTag (), Color.WHITE));
-			sbUnityBackground_opacity.setProgress (this.prefs.getInt ((String) sbUnityBackground_opacity.getTag (), 50));
-			swDashSearch_full.setChecked (this.prefs.getBoolean ((String) swDashSearch_full.getTag (), true));
-			swColourCalc_advanced.setChecked (this.prefs.getBoolean ((String) swColourCalc_advanced.getTag (), true));
-			swColourCalc_hsv.setChecked (this.prefs.getBoolean ((String) swColourCalc_hsv.getTag (), true));
 
-			SeekBarChangeListener seekBarChangeListener = new SeekBarChangeListener ();
-			CheckedChangeListener checkedChangeListener = new CheckedChangeListener ();
-
-			sbLauncherIcon_width.setOnSeekBarChangeListener (seekBarChangeListener);
-			sbLauncherIcon_opacity.setOnSeekBarChangeListener (seekBarChangeListener);
-			swLauncherService_enabled.setOnCheckedChangeListener (checkedChangeListener);
-			swPanel_show.setOnCheckedChangeListener (checkedChangeListener);
-			sbPanel_opacity.setOnSeekBarChangeListener (seekBarChangeListener);
-			swUnityBackground_dynamic.setOnCheckedChangeListener (checkedChangeListener);
-			cmUnityBackground_colour.setOnColorChangedListener (new ColorChangeListener (cmUnityBackground_colour));
-			sbUnityBackground_opacity.setOnSeekBarChangeListener (seekBarChangeListener);
-			swDashSearch_full.setOnCheckedChangeListener (checkedChangeListener);
-			swColourCalc_advanced.setOnCheckedChangeListener (checkedChangeListener);
-			swColourCalc_hsv.setOnCheckedChangeListener (checkedChangeListener);
-
-			this.unityBackground_dynamic_changed (swUnityBackground_dynamic.isChecked ());
-			this.panel_show_changed (swPanel_show.isChecked ());
-		}
-		catch (Exception ex)
-		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
-		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu (Menu menu)
+	/**
+	 * Set up the {@link android.app.ActionBar}, if the API is available.
+	 */
+	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
+	private void setupActionBar ()
 	{
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater ().inflate (R.menu.preferences, menu);
-		return true;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+		{
+			// Show the Up button in the action bar.
+			getActionBar ().setDisplayHomeAsUpEnabled (true);
+		}
 	}
 
 	@Override
 	public boolean onOptionsItemSelected (MenuItem item)
 	{
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId ();
-		/*if (id == R.id.action_settings)
+		if (id == android.R.id.home)
 		{
+			// This ID represents the Home or Up button. In the case of this
+			// activity, the Up button is shown. Use NavUtils to allow users
+			// to navigate up one level in the application structure. For
+			// more details, see the Navigation pattern on Android Design:
+			//
+			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+			//
+			// TODO: If Settings has multiple levels, Up should navigate up
+			// that hierarchy.
+			NavUtils.navigateUpFromSameTask (this);
 			return true;
-		}*/
+		}
 		return super.onOptionsItemSelected (item);
 	}
 
 	@Override
-	protected void onStart ()
+	protected void onPostCreate (Bundle savedInstanceState)
 	{
-		super.onStart();
+		super.onPostCreate (savedInstanceState);
 
-		EasyTracker.getInstance (this).activityStart (this);
+		setupSimplePreferencesScreen ();
+	}
+
+	/**
+	 * Shows the simplified settings UI if the device configuration if the
+	 * device configuration dictates that a simplified, single-pane UI should be
+	 * shown.
+	 */
+	private void setupSimplePreferencesScreen ()
+	{
+		if (! isSimplePreferences (this))
+			return;
+
+		// In the simplified UI, fragments are not used at all and we instead
+		// use the older PreferenceActivity APIs.
+
+		this.addPreferencesFromResource (R.xml.pref_general);
+
+		PreferenceCategory fakeHeader = new PreferenceCategory (this);
+		fakeHeader.setTitle (R.string.pref_header_unity);
+		this.getPreferenceScreen ().addPreference (fakeHeader);
+		this.addPreferencesFromResource (R.xml.pref_unity);
+
+		fakeHeader = new PreferenceCategory (this);
+		fakeHeader.setTitle (R.string.pref_header_launcher);
+		this.getPreferenceScreen ().addPreference (fakeHeader);
+		this.addPreferencesFromResource (R.xml.pref_launcher);
+
+		fakeHeader = new PreferenceCategory (this);
+		fakeHeader.setTitle (R.string.pref_header_dash);
+		this.getPreferenceScreen ().addPreference (fakeHeader);
+		this.addPreferencesFromResource (R.xml.pref_dash);
+
+		fakeHeader = new PreferenceCategory (this);
+		fakeHeader.setTitle (R.string.pref_header_panel);
+		this.getPreferenceScreen ().addPreference (fakeHeader);
+		this.addPreferencesFromResource (R.xml.pref_panel);
+
+		fakeHeader = new PreferenceCategory (this);
+		fakeHeader.setTitle (R.string.pref_header_advanced);
+		this.getPreferenceScreen ().addPreference (fakeHeader);
+		this.addPreferencesFromResource (R.xml.pref_advanced);
+
+		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
+		// their values. When their values change, their summaries are updated
+		// to reflect the new value, per the Android Design guidelines.
+		//this.bindPreferenceSummaryToValue (findPreference ("example_text"));
 	}
 
 	@Override
-	protected void onStop ()
+	public boolean onIsMultiPane ()
 	{
-		super.onStop();
-
-		EasyTracker.getInstance (this).activityStop (this);
+		return isXLargeTablet (this) && !isSimplePreferences (this);
 	}
 
 	@Override
-	public void onResume ()
+	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
+	public void onBuildHeaders (List<Header> target)
 	{
-		try
-		{
-			super.onResume ();
-
-			WallpaperManager wpman = WallpaperManager.getInstance (this.getApplicationContext ());
-
-			WallpaperInfo info = wpman.getWallpaperInfo ();
-			boolean liveWallpaper = (info != null);
-
-			LinearLayout llWallpaper = (LinearLayout) this.findViewById (R.id.llWallpaper);
-			if (liveWallpaper)
-				llWallpaper.setBackgroundResource (android.R.drawable.btn_default);
-			else
-				llWallpaper.setBackgroundDrawable (wpman.getFastDrawable ());
-		}
-		catch (Exception ex)
-		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
-		}
+		if (! isSimplePreferences (this))
+			loadHeadersFromResource (R.xml.pref_headers, target);
 	}
 
-	public void btnBack_clicked (View view)
-	{
-		try
-		{
-			this.onBackPressed ();
-		}
-		catch (Exception ex)
-		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
-		}
-	}
-
-	public void btnAbout_clicked (View view)
-	{
-		try
-		{
-			Intent intent = new Intent (this, AboutActivity.class);
-			this.startActivity (intent);
-		}
-		catch (Exception ex)
-		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
-		}
-	}
-
-	public void btnWallpaper_clicked (View view)
-	{
-		try
-		{
-			Intent intent = new Intent (Intent.ACTION_SET_WALLPAPER);
-			this.startActivity (Intent.createChooser (intent, this.getResources ().getString (R.string.option_wallpaper)));
-		}
-		catch (Exception ex)
-		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
-		}
-	}
-
-	private void unityBackground_dynamic_changed (boolean enabled)
-	{
-		LinearLayout llUnityBackground_colour = (LinearLayout) this.findViewById (R.id.llUnityBackground_colour);
-		llUnityBackground_colour.setVisibility (enabled ? View.GONE : View.VISIBLE);
-	}
-
-	private void panel_show_changed (boolean enabled)
-	{
-		LinearLayout llPanel_opacity = (LinearLayout) this.findViewById (R.id.llPanel_opacity);
-		llPanel_opacity.setVisibility (enabled && Build.VERSION.SDK_INT >= 11 ? View.VISIBLE : View.GONE);
-	}
-
-	private class SeekBarChangeListener implements SeekBar.OnSeekBarChangeListener
+	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
+	public static class GeneralPreferenceFragment extends PreferenceFragment
 	{
 		@Override
-		public void onProgressChanged (SeekBar seekBar, int progress, boolean fromUser)
+		public void onCreate (Bundle savedInstanceState)
 		{
-			try
-			{
-				if (fromUser)
-				{
-					SharedPreferences.Editor editor = PreferencesActivity.this.prefs.edit ();
-					editor.putInt ((String) seekBar.getTag (), progress);
+			super.onCreate (savedInstanceState);
+			addPreferencesFromResource (R.xml.pref_general);
 
-					if (Build.VERSION.SDK_INT >= 9)
-						editor.apply ();
-					else
-						editor.commit ();
-				}
-			}
-			catch (Exception ex)
-			{
-				ExceptionHandler exh = new ExceptionHandler (PreferencesActivity.this, ex);
-				exh.show ();
-			}
-		}
-
-		@Override
-		public void onStartTrackingTouch (SeekBar seekBar)
-		{
-		}
-
-		@Override
-		public void onStopTrackingTouch (SeekBar seekBar)
-		{
+			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
+			// to their values. When their values change, their summaries are
+			// updated to reflect the new value, per the Android Design
+			// guidelines.
+			//bindPreferenceSummaryToValue (findPreference ("example_text"));
 		}
 	}
 
-	private class CheckedChangeListener implements CompoundButton.OnCheckedChangeListener
+	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
+	public static class UnityPreferenceFragment extends PreferenceFragment
 	{
 		@Override
-		public void onCheckedChanged (CompoundButton buttonView, boolean isChecked)
+		public void onCreate (Bundle savedInstanceState)
 		{
-			try
-			{
-				SharedPreferences.Editor editor = PreferencesActivity.this.prefs.edit ();
-				String property = (String) buttonView.getTag ();
-				editor.putBoolean (property, isChecked);
+			super.onCreate (savedInstanceState);
+			addPreferencesFromResource (R.xml.pref_unity);
 
-				if ("unitybackground_dynamic".equals (property))
-					PreferencesActivity.this.unityBackground_dynamic_changed (isChecked);
-				else if ("panel_show".equals (property))
-					PreferencesActivity.this.panel_show_changed (isChecked);
-
-				if (Build.VERSION.SDK_INT >= 9)
-					editor.apply ();
-				else
-					editor.commit ();
-			}
-			catch (Exception ex)
-			{
-				ExceptionHandler exh = new ExceptionHandler (PreferencesActivity.this, ex);
-				exh.show ();
-			}
+			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
+			// to their values. When their values change, their summaries are
+			// updated to reflect the new value, per the Android Design
+			// guidelines.
+			//bindPreferenceSummaryToValue (findPreference ("notifications_new_message_ringtone"));
 		}
 	}
 
-	private class ColorChangeListener implements ColorMixer.OnColorChangedListener
+	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
+	public static class LauncherPreferenceFragment extends PreferenceFragment
 	{
-		private ColorMixer colorMixer;
-
-		public ColorChangeListener (ColorMixer colorMixer)
-		{
-			this.colorMixer = colorMixer;
-		}
-
 		@Override
-		public void onColorChange (int argb)
+		public void onCreate (Bundle savedInstanceState)
 		{
-			SharedPreferences.Editor editor = PreferencesActivity.this.prefs.edit ();
-			editor.putInt ((String) this.colorMixer.getTag (), argb);
+			super.onCreate (savedInstanceState);
+			addPreferencesFromResource (R.xml.pref_launcher);
 
-			if (Build.VERSION.SDK_INT >= 9)
-				editor.apply ();
-			else
-				editor.commit ();
+			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
+			// to their values. When their values change, their summaries are
+			// updated to reflect the new value, per the Android Design
+			// guidelines.
+			//bindPreferenceSummaryToValue (findPreference ("sync_frequency"));
+		}
+	}
+
+	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
+	public static class DashPreferenceFragment extends PreferenceFragment
+	{
+		@Override
+		public void onCreate (Bundle savedInstanceState)
+		{
+			super.onCreate (savedInstanceState);
+			addPreferencesFromResource (R.xml.pref_dash);
+
+			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
+			// to their values. When their values change, their summaries are
+			// updated to reflect the new value, per the Android Design
+			// guidelines.
+			//bindPreferenceSummaryToValue (findPreference ("sync_frequency"));
+		}
+	}
+
+	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
+	public static class PanelPreferenceFragment extends PreferenceFragment
+	{
+		@Override
+		public void onCreate (Bundle savedInstanceState)
+		{
+			super.onCreate (savedInstanceState);
+			addPreferencesFromResource (R.xml.pref_panel);
+
+			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
+			// to their values. When their values change, their summaries are
+			// updated to reflect the new value, per the Android Design
+			// guidelines.
+			//bindPreferenceSummaryToValue (findPreference ("sync_frequency"));
+		}
+	}
+
+	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
+	public static class AdvancedPreferenceFragment extends PreferenceFragment
+	{
+		@Override
+		public void onCreate (Bundle savedInstanceState)
+		{
+			super.onCreate (savedInstanceState);
+			addPreferencesFromResource (R.xml.pref_advanced);
+
+			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
+			// to their values. When their values change, their summaries are
+			// updated to reflect the new value, per the Android Design
+			// guidelines.
+			//bindPreferenceSummaryToValue (findPreference ("sync_frequency"));
 		}
 	}
 }
