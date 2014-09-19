@@ -9,7 +9,8 @@ The [Google Play Store](https://play.google.com/store/apps/details?id=be.robinj.
 
 ## How can I help?
 
-If you speak a non-English language, and your knowledge of the English language and Ubuntu-specific terms is sufficient, then you can help out by translating the project into your language. [Lokaligo](https://applokaligo.appspot.com/app/#/projects/40386002) is the platform that used for translating this project. If you want to help out and translate the project into a language that isn't listed yet, contact me at android-dev@robinj.be so I can add that language to the project.
+If you speak a non-English language, and your knowledge of the English language and Ubuntu-specific terms is sufficient, then you can help out by translating the project into your language.
+If you want to help out and translate the project into a language that isn't listed yet, contact me at android-dev@robinj.be so I can add that language to the project.
 
 ### Languages that the project has been translated into so far
 
@@ -18,3 +19,5 @@ If you speak a non-English language, and your knowledge of the English language 
 * Russian (Mark Isayan)
 * Japanese (Tim van der Staaij)
 * Polish (Michał Dudziński)
+* Portguguese (Maycon Santos)
+* Turkish (Yuşa Çetin)
