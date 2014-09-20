@@ -1,3 +1,3 @@
-* [ ] Merge Spanish translations
-* [ ] Merge Turkish translations
-* [ ] Update honourable mentions
+* [x] Merge Portuguese translations
+* [x] Merge Turkish translations
+* [x] Update honourable mentions
