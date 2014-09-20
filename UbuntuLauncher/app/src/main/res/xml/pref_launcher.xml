@@ -3,12 +3,16 @@
     <be.robinj.ubuntu.thirdparty.SeekBarPreference
         android:key="launchericon_width"
         android:title="@string/option_launchericon_width"
-        android:summary="@string/hint_launchericon_width" />
+        android:summary="@string/hint_launchericon_width"
+        max="72"
+        defaultValue="36" />
 
     <be.robinj.ubuntu.thirdparty.SeekBarPreference
         android:key="launchericon_opacity"
         android:title="@string/option_launchericon_opacity"
-        android:summary="@string/hint_launchericon_opacity" />
+        android:summary="@string/hint_launchericon_opacity"
+        max="255"
+        defaultValue="204" />
 
     <CheckBoxPreference
         android:key="launcherservice_enabled"

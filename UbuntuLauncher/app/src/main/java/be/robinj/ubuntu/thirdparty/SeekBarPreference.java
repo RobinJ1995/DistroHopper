@@ -17,6 +17,7 @@
 package be.robinj.ubuntu.thirdparty;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.preference.Preference;
 import android.util.AttributeSet;
@@ -42,11 +43,17 @@ import android.widget.*;
  * @author Ahmed Shakil
  * @date November 13th, 2011.
  */
+
+/*
+ * Patched by Robin Jacobs (RobinJ1995)
+ * * max and defautValue can be set by passing them as XML attributes
+ */
 public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarChangeListener {
 
 	private SeekBar seekbar;
 	private int progress;
 	private int max = 100;
+	private int defaultValue;
 
 	private TextView summary;
 
@@ -68,6 +75,8 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
 	 */
 	public SeekBarPreference (Context context, AttributeSet attrs, int defStyle) {
 		super( context, attrs, defStyle );
+
+		this.init (attrs);
 	}
 
 	/**
@@ -82,6 +91,17 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
 	 */
 	public SeekBarPreference (Context context, AttributeSet attrs) {
 		super( context, attrs );
+
+		this.init (attrs);
+	}
+
+	private void init (AttributeSet attrs)
+	{
+		if (attrs != null)
+		{
+			this.max = attrs.getAttributeIntValue (null, "max", 100);
+			this.defaultValue = attrs.getAttributeIntValue (null, "defaultValue", 0);
+		}
 	}
 
 	/**
@@ -113,7 +133,8 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
 
 		seekbar = new SeekBar( ctx );
 		seekbar.setId( android.R.id.progress );
-		seekbar.setMax( max );
+		seekbar.setMax (max);
+		seekbar.setProgress (this.defaultValue);
 		seekbar.setOnSeekBarChangeListener( this );
 		layout.addView( seekbar );
 

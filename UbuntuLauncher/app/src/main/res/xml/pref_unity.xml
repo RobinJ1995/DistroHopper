@@ -19,7 +19,9 @@
     <be.robinj.ubuntu.thirdparty.SeekBarPreference
         android:key="unitybackground_opacity"
         android:title="@string/option_unitybackground_opacity"
-        android:summary="@string/hint_unitybackground_opacity" />
+        android:summary="@string/hint_unitybackground_opacity"
+        max="255"
+        defaultValue="50" />
 
     <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
          dismiss it. -->

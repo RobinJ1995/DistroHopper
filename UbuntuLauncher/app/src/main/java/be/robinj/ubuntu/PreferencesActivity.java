@@ -2,6 +2,7 @@ package be.robinj.ubuntu;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
@@ -18,7 +19,9 @@ import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.util.List;
 
@@ -98,23 +101,47 @@ public class PreferencesActivity extends PreferenceActivity
 	}
 
 	@Override
+	public boolean onCreateOptionsMenu (Menu menu)
+	{
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater ().inflate (R.menu.preferences, menu);
+
+		return true;
+	}
+
+	@Override
 	public boolean onOptionsItemSelected (MenuItem item)
 	{
-		int id = item.getItemId ();
-		if (id == android.R.id.home)
+		try
 		{
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			// TODO: If Settings has multiple levels, Up should navigate up
-			// that hierarchy.
-			NavUtils.navigateUpFromSameTask (this);
-			return true;
+			int id = item.getItemId ();
+
+			if (id == android.R.id.home)
+			{
+				// This ID represents the Home or Up button. In the case of this
+				// activity, the Up button is shown. Use NavUtils to allow users
+				// to navigate up one level in the application structure. For
+				// more details, see the Navigation pattern on Android Design:
+				//
+				// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+				//
+				// TODO: If Settings has multiple levels, Up should navigate up
+				// that hierarchy.
+				NavUtils.navigateUpFromSameTask (this);
+				return true;
+			}
+			else if (id == R.id.menuAbout)
+			{
+				Intent intent = new Intent (this, AboutActivity.class);
+				this.startActivity (intent);
+			}
 		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (this, ex);
+			exh.show ();
+		}
+
 		return super.onOptionsItemSelected (item);
 	}
 
