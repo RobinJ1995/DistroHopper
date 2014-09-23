@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ubuntu Launcher</string>
+
+    <string name="translators">
+        <b>Dutch</b>\n
+        * Robin Jacobs (developer)\n
+        \n
+        <b>Russian</b>\n
+        * Mark Isayan\n
+        \n
+        <b>Japanese</b>\n
+        * Tim van der Staaij\n
+        \n
+        <b>Portuguese</b>\n
+        * Maycon Santos\n
+        \n
+        <b>Turkish</b>\n
+        * Yuşa Çetin\n
+        \n
+        <b>Polish</b>\n
+        * Michał Dudziński
+    </string>
+</resources>

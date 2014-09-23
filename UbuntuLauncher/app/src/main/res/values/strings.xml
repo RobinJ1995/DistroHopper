@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <string name="app_name">Ubuntu Launcher</string>
-
     <string name="action_settings">Settings</string>
 
     <string name="dash_search_hint">Search installed applications</string>
@@ -22,39 +20,6 @@
     <string name="developed_by">Developed by Robin Jacobs</string>
 
     <string name="honourable_mentions">Honourable mentions</string>
-
-    <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
-
-    <string name="hm_timvdstaaij_why">* Testing (If he doesn\'t manage to wreck it then it\'s probably safe for consumption by the rest of the world.)\n
-        * Help with the dominant colour calculation function.\n
-        *Japanese translation </string>
-
-    <string name="hm_markisayan_name">Mark Isayan</string>
-
-    <string name="hm_markisayan_why">* Russian translation</string>
-
-    <string name="hm_mayconsantos_name">Maycon Santos</string>
-
-    <string name="hm_mayconsantos_why">* Portuguese translation</string>
-
-    <string name="hm_yusacetin_name">Yuşa Çetin</string>
-
-    <string name="hm_yusacetin_why">* Turkish translation</string>
-
-    <string name="hm_todddavies_name">Todd Davies</string>
-
-    <string name="hm_todddavies_why">* I used his ProgressWheel component, since the default (round) Android ProgressBar component can\'t actually indicate progress.\n
-        https://github.com/Todd-Davies/ProgressWheel/</string>
-
-    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
-
-    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
-        http://stackoverflow.com/a/8483078/521361</string>
-
-    <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
-
-    <string name="hm_commonsguy_why">* I used his ColorMixer component in the Preferences screen.\n
-        https://github.com/commonsguy/cwac-colormixer</string>
 
     <string name="button_back">Back</string>
 
@@ -126,7 +91,25 @@
 
     <string name="hint_dashsearch_full">Enabling this option will result in better Dash search results but will also affect performance on slower devices or devices with a lot of apps installed. If Dash search is slow for you, you might want to consider disabling this.</string>
 
-    <string name="hm_michaldudzinski_name">Michał Dudziński</string>
+    <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
 
-    <string name="hm_michaldudzinski_why">* Polish translation</string>
+    <string name="hm_timvdstaaij_why">* Testing (If he doesn\'t manage to wreck it then it\'s probably safe for consumption by the rest of the world.)\n
+        * Help with the dominant colour calculation function.</string>
+
+    <string name="hm_todddavies_name">Todd Davies</string>
+
+    <string name="hm_todddavies_why">* I used his ProgressWheel component, since the default (round) Android ProgressBar component can\'t actually indicate progress.\n
+        https://github.com/Todd-Davies/ProgressWheel/</string>
+
+    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
+
+    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
+        http://stackoverflow.com/a/8483078/521361</string>
+
+    <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
+
+    <string name="hm_commonsguy_why">* I used his ColorMixer component in the Preferences screen.\n
+        https://github.com/commonsguy/cwac-colormixer</string>
+
+    <string name="translators_title">Translators</string>
 </resources>

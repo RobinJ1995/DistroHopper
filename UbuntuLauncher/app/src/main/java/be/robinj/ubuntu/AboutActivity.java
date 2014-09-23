@@ -29,10 +29,12 @@ public class AboutActivity extends Activity
 			TextView tvDevUrl = (TextView) this.findViewById (R.id.tvDevUrl);
 			TextView tvDevEmail = (TextView) this.findViewById (R.id.tvDevEmail);
 			TextView tvVersion = (TextView) this.findViewById (R.id.tvVersion);
+			TextView tvTranslators = (TextView) this.findViewById (R.id.tvTranslators);
 
 			tvDevUrl.setText (Html.fromHtml ("<a href=\"http://robinj.be/\">RobinJ.be</a>"));
 			tvDevEmail.setText (Html.fromHtml ("<a href=\"mailto:android-dev@robinj.be\">android-dev@robinj.be</a>"));
 			tvVersion.setText ("v" + pkgInfo.versionName);
+			tvTranslators.setText (Html.fromHtml (this.getString (R.string.translators, TextView.BufferType.SPANNABLE).replace ("\n", "<br />")));
 
 			tvDevUrl.setMovementMethod (LinkMovementMethod.getInstance ());
 			tvDevEmail.setMovementMethod (LinkMovementMethod.getInstance ());
