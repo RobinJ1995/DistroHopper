@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="action_settings">Ajustes</string>
+  <string name="dash_search_hint">Procurar por aplicativos instalados</string>
+  <string name="dash_lens_apps_title">Aplicativos</string>
+  <string name="title_activity_preferences">Preferências</string>
+  <string name="title_activity_about">Sobre</string>
+  <string name="pinned">foi fixado ao Launcher</string>
+  <string name="unpinned">foi removido do Launcher</string>
+  <string name="notpinned">não fixado</string>
+  <string name="developed_by">Desenvolvido por Robin Jacobs</string>
+  <string name="honourable_mentions">Menções honrosas</string>
+  <string name="button_back">Voltar</string>
+  <string name="button_about">Sobre</string>
+  <string name="title_preferences">Preferências</string>
+  <string name="pref_header_general">Geral</string>
+  <string name="pref_header_unity">Unity</string>
+  <string name="pref_header_launcher">Launcher</string>
+  <string name="pref_header_dash">Dash</string>
+  <string name="pref_header_panel">Painel</string>
+  <string name="pref_header_advanced">Avançado</string>
+  <string name="category_colourcalc">Cálculo de cor predominante</string>
+  <string name="option_launchericon_width">Tamanho do Launcher</string>
+  <string name="hint_launchericon_width">Ajustar tamanho do launcher e dos í­cones. O ajuste (de acordo com a barra) vai de 48px à  120px, com padrão em 84px.</string>
+  <string name="option_launchericon_opacity">Opacidade de fundo dos í­cones no Launcher</string>
+  <string name="hint_launchericon_opacity">Define a opacidade da cor de fundo dos ícones no Launcher.</string>
+  <string name="option_launcherservice_enabled">Tornar o Launcher acessível em outros aplicativos abertos.</string>
+  <string name="hint_launcherservice_enabled">Deslizando o dedo no canto inferior esquerdo da tela, o Launcher aparece, permitindo alternar entre os aplicativos fixados sem precisar voltar à tela inicial. (EXPERIMENTAL)</string>
+  <string name="option_panel_show">Exibir Painel</string>
+  <string name="hint_panel_show">Se o painel, no topo do Launcher, deve aparecer ou não.</string>
+  <string name="option_panel_opacity">Opacidade do painel</string>
+  <string name="hint_panel_opacity">Defina a opacidade do painel.</string>
+  <string name="option_unitybackground_dynamic">Cor de fundo dinâmica do Unity</string>
+  <string name="hint_unitybackground_dynamic">Escolher automaticamente a cor de fundo do Unity (Launcher, Dash e Painel) de acordo com o papel de parede utilizado. Esse recurso pode não funcionar em alguns papéis de parede animados.</string>
+  <string name="option_unitybackground_colour">Cor de fundo do Unity</string>
+  <string name="hint_unitybackground_colour">Cor de fundo que deve ser utilizada na composição do Unity.</string>
+  <string name="message_unitybackground_colour">Use as barras para definir uma cor.</string>
+  <string name="option_unitybackground_opacity">Opacidade de fundo do Unity</string>
+  <string name="hint_unitybackground_opacity">Defina a opacidade da cor de fundo na composição do Unity.</string>
+  <string name="option_wallpaper">Papel de Parede</string>
+  <string name="hint_wallpaper">Alterar papel de parede</string>
+  <string name="option_colourcalc_advanced">Aumentar amostragem</string>
+  <string name="hint_colourscalc_advanced">Ativando esse recurso, a precisão de amostragem de cores é aumentada, porém, pode resultar em um tempo de carregamento maior em dispositivos mais lentos.</string>
+  <string name="option_colourcalc_hsv">Ativar recurso HSV</string>
+  <string name="hint_colourcalc_hsv">Usando o recurso HSV (melhoria de saturação) ao invés do RGB comum, as cores se tornam muito mais vibrantes (Pode causar demora no carregamento em dispositivos mais lentos).</string>
+  <string name="option_dashsearch_full">Pesquisa avançada</string>
+  <string name="hint_dashsearch_full">A ativação desta opção proporcionará melhores resultados de busca \"Dash\", mas também afetará o desempenho em dispositivos mais lentos, ou em dispositivos com muitas aplicativos instalados. Recomenda-se desativar, caso haja instabilidade no recurso.</string>
+  <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
+  <string name="hm_timvdstaaij_why">* Testando (Se não consegue destruí­-lo, então é seguro pro resto do mundo) * Ajuda com cálculo de cor predominante.</string>
+  <string name="hm_todddavies_name">Todd Davies</string>
+  <string name="hm_todddavies_why">* Usei o componente ProgressWheel, uma vez que o componente padrão (round) ProgressBar Android não indica o progresso. \n         https://github.com/Todd-Davies/ProgressWheel/</string>
+  <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
+  <string name="hm_tacone_why">* Uso do componente ExpandableHeightGridView.\n
+        http://stackoverflow.com/a/8483078/521361</string>
+  <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
+  <string name="hm_commonsguy_why">* Uso do ColorMixer na tela de preferências.
+https://github.com/commonsguy/cwac-colormixer</string>
+  <string name="translators_title">Tradutores</string>
+</resources>
