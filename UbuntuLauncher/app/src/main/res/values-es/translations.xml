@@ -1,2 +1,61 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<resources/>
+<resources>
+  <string name="action_settings">Configuracion</string>
+  <string name="dash_search_hint">Buscar aplicaciones instaladas</string>
+  <string name="dash_lens_apps_title">Aplicaciones</string>
+  <string name="title_activity_preferences">Preferencias</string>
+  <string name="title_activity_about">Acerca de</string>
+  <string name="pinned">se ha anclado al Lanzador</string>
+  <string name="unpinned">se ha desanclado del Lanzador</string>
+  <string name="notpinned">no está anclado</string>
+  <string name="developed_by">Desarrollado por Robin Jacobs</string>
+  <string name="honourable_mentions">Menciones honorificas</string>
+  <string name="button_back">Volver</string>
+  <string name="button_about">Acerca de</string>
+  <string name="title_preferences">Preferencias</string>
+  <string name="pref_header_general">General</string>
+  <string name="pref_header_unity">Unity</string>
+  <string name="pref_header_launcher">Lanzador</string>
+  <string name="pref_header_dash">Dash</string>
+  <string name="pref_header_panel">Panel</string>
+  <string name="pref_header_advanced">Avanzado</string>
+  <string name="category_colourcalc">Cálculo del color dominante</string>
+  <string name="option_launchericon_width">Ancho</string>
+  <string name="hint_launchericon_width">Cual debe ser la anchura del lanzador y los iconos dentro de ella. El deslizador va de 48dip a 120dip, con el valor por defecto (en el centro) siendo 84dip.</string>
+  <string name="option_launchericon_opacity">Opacidad de fondo del icono</string>
+  <string name="hint_launchericon_opacity">Cual debe ser la opacidad del color de fondo de los iconos en el Lanzador.</string>
+  <string name="option_launcherservice_enabled">Hacer al Launcher disponible dentro de otras apps</string>
+  <string name="hint_launcherservice_enabled">Cuando usted pasa de la mitad inferior del borde izquierdo de la pantalla, aparecerá el Lanzador, y le permite ejecutar aplicaciones que has anclado al Launcher sin tener que ir a la pantalla principal.\n(EXPERIMENTAL)</string>
+  <string name="option_panel_show">Ver</string>
+  <string name="hint_panel_show">Si el panel en la parte superior de la pantalla se debe mostrar o no.</string>
+  <string name="option_panel_opacity">Opacidad</string>
+  <string name="hint_panel_opacity">Como debe ser la opacidad del Panel.</string>
+  <string name="option_unitybackground_dynamic">Color de fondo dinámico</string>
+  <string name="hint_unitybackground_dynamic">Elegir dinámicamente el color de fondo de los componentes transparentes de Unity (Lanzador, Dash y el panel cuando se abre el Dash) basado en el color dominante de la imagen de fondo. Esto no funcionará cuando un fondo de pantalla en vivo está establecido, en cuyo caso se recurrirá a un negro transparente.</string>
+  <string name="option_unitybackground_colour">Color de fondo</string>
+  <string name="hint_unitybackground_colour">El color de fondo que se debe utilizar para los componentes transparentes de Unity.</string>
+  <string name="message_unitybackground_colour">Utilice los deslizadores para elegir un color.</string>
+  <string name="option_unitybackground_opacity">Opacidad de fondo</string>
+  <string name="hint_unitybackground_opacity">Como debe ser la opacidad del color de fondo de los componentes transparentes de Unity.</string>
+  <string name="option_wallpaper">Fondo de pantalla</string>
+  <string name="hint_wallpaper">Cambiar fondo de pantalla</string>
+  <string name="option_colourcalc_advanced">Tomar mas muestras</string>
+  <string name="hint_colourscalc_advanced">Tomar más muestras aumenta en gran medida la precisión, pero puede dar lugar a tiempos de carga más largos en los dispositivos más lentos.</string>
+  <string name="option_colourcalc_hsv">Usar HSV</string>
+  <string name="hint_colourcalc_hsv">Usando HSV (Matiz, Saturación, Valor) en lugar de simple RGB (Rojo, Verde, Azul) dará como resultado a colores mucho más vibrantes, pero los cálculos que se realizan son más complicados y pueden dar lugar a tiempos de carga más largos en los dispositivos más lentos.</string>
+  <string name="option_dashsearch_full">Búsqueda avanzada</string>
+  <string name="hint_dashsearch_full">La activación de esta opción mostrará mejores resultados de búsqueda en el Dash pero también afectará el rendimiento en los dispositivos mas lentos o los dispositivos con mas aplicaciones instaladas. Si la búsqueda Dash es lento para usted, es posible que desee considerar desactivar esto.</string>
+  <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
+  <string name="hm_timvdstaaij_why">* Pruebas (Si no logra destruirlo, entonces es probable que sea seguro para el consumo por el resto del mundo.)\n
+* Funcion para ayudar el cálculo del color dominante.</string>
+  <string name="hm_todddavies_name">Todd Davies</string>
+  <string name="hm_todddavies_why">* He utilizado su componente ProgressWheel, ya que por defecto (round) el componente ProgressBar de Android no puede realmente indicar el progreso.\n
+https://github.com/Todd-Davies/ProgressWheel/</string>
+  <string name="hm_tacone_name">tacone (desde Stack Overflow)</string>
+  <string name="hm_tacone_why">* He utilizado su componente ExpandableHeightGridView.\n
+http://stackoverflow.com/a/8483078/521361</string>
+  <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
+  <string name="hm_commonsguy_why">* He utilizado su componente ColorMixer en la pantalla de Preferencias.\n
+https://github.com/commonsguy/cwac-colormixer</string>
+  <string name="translators_title">Traductores</string>
+</resources>
