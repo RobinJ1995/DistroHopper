@@ -101,6 +101,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
 		{
 			this.max = attrs.getAttributeIntValue (null, "max", 100);
 			this.defaultValue = attrs.getAttributeIntValue (null, "defaultValue", 0);
+            this.progress = this.defaultValue;
 		}
 	}
 

@@ -6,4 +6,3 @@ type = android
 file_filter = UbuntuLauncher/app/src/main/res/values-<lang>/translations.xml
 source_lang = en_GB
 type = ANDROID
-

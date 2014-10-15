@@ -10,8 +10,7 @@
         android:key="panel_opacity"
         android:title="@string/option_panel_opacity"
         android:summary="@string/hint_panel_opacity"
-        android:dependency="panel_show"
         max="255"
-        defaultValue="100" />
+        defaultValue="255" />
 
 </PreferenceScreen>
