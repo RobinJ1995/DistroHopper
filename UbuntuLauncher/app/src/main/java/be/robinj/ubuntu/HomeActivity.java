@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -29,7 +30,6 @@ import com.google.analytics.tracking.android.EasyTracker;
 import java.util.ArrayList;
 import java.util.List;
 
-import be.robinj.ubuntu.thirdparty.ExpandableHeightGridView;
 import be.robinj.ubuntu.unity.Wallpaper;
 import be.robinj.ubuntu.unity.WidgetHost;
 import be.robinj.ubuntu.unity.WidgetHostView;
@@ -62,7 +62,7 @@ public class HomeActivity extends Activity
 
 		try
 		{
-			ExpandableHeightGridView gvDashHomeApps = (ExpandableHeightGridView) this.findViewById (R.id.gvDashHomeApps);
+			GridView gvDashHomeApps = (GridView) this.findViewById (R.id.gvDashHomeApps);
 			be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher lalSpinner = (be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher) this.findViewById (R.id.lalSpinner);
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalBfb);
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalPreferences = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalPreferences);

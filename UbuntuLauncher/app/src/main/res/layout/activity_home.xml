@@ -206,49 +206,43 @@
                         android:scaleType="centerCrop"
                         android:adjustViewBounds="true"/>
 
-                    <ScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/scrollView">
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/dash_lens_apps_title"
+                            android:id="@+id/textView"
+                            android:layout_gravity="center_horizontal"
+                            android:textColor="@android:color/white"
+                            android:textAppearance="@style/textshadow_2px_black"/>
+
+                        <!--<LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:id="@+id/llDashHomeApps">
+                        </LinearLayout>-->
 
                         <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
                             android:orientation="vertical"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent">
+                            android:focusableInTouchMode="false">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/dash_lens_apps_title"
-                                android:id="@+id/textView"
-                                android:layout_gravity="center_horizontal"
-                                android:textColor="@android:color/white"
-                                android:textAppearance="@style/textshadow_2px_black"/>
-
-                            <!--<LinearLayout
-                                android:orientation="horizontal"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:id="@+id/llDashHomeApps">
-                            </LinearLayout>-->
-
-                            <LinearLayout
+                            <GridView
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:orientation="vertical"
-                                android:focusableInTouchMode="false">
-
-                                <be.robinj.ubuntu.thirdparty.ExpandableHeightGridView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/gvDashHomeApps"
-                                    android:choiceMode="singleChoice"
-                                    android:numColumns="auto_fit"
-                                    android:columnWidth="@dimen/dash_applauncher_width" />
-                            </LinearLayout>
+                                android:layout_height="match_parent"
+                                android:id="@+id/gvDashHomeApps"
+                                android:choiceMode="singleChoice"
+                                android:numColumns="auto_fit"
+                                android:columnWidth="@dimen/dash_applauncher_width" />
                         </LinearLayout>
-                    </ScrollView>
+                    </LinearLayout>
                 </RelativeLayout>
             </LinearLayout>
 

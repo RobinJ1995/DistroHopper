@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -21,7 +22,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import be.robinj.ubuntu.thirdparty.ExpandableHeightGridView;
 import be.robinj.ubuntu.unity.dash.GridAdapter;
 import be.robinj.ubuntu.unity.launcher.AppLauncher;
 import be.robinj.ubuntu.unity.launcher.AppLauncherClickListener;
@@ -42,7 +42,7 @@ public class AppManager implements Iterable<App>
 	private LinearLayout llLauncher;
 	private LinearLayout llLauncherPinnedApps;
 	private LinearLayout llLauncherRunningApps;
-	private ExpandableHeightGridView gvDashHomeApps;
+	private GridView gvDashHomeApps;
 
 	private HomeActivity parent;
 	private Context context;
@@ -57,7 +57,7 @@ public class AppManager implements Iterable<App>
 		this.llLauncher = (LinearLayout) parent.findViewById (R.id.llLauncher);
 		this.llLauncherPinnedApps = (LinearLayout) this.llLauncher.findViewById (R.id.llLauncherPinnedApps);
 		this.llLauncherRunningApps = (LinearLayout) this.llLauncher.findViewById (R.id.llLauncherRunningApps);
-		this.gvDashHomeApps = (ExpandableHeightGridView) parent.findViewById (R.id.gvDashHomeApps);
+		this.gvDashHomeApps = (GridView) parent.findViewById (R.id.gvDashHomeApps);
 	}
 
 	public void add (App app)

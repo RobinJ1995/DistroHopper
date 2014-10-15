@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -14,7 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import be.robinj.ubuntu.thirdparty.ExpandableHeightGridView;
 import be.robinj.ubuntu.thirdparty.ProgressWheel;
 import be.robinj.ubuntu.unity.dash.AppLauncher;
 import be.robinj.ubuntu.unity.dash.AppLauncherClickListener;
@@ -29,12 +29,12 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 {
 	private SpinnerAppLauncher lalSpinner;
 	private be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb;
-	private ExpandableHeightGridView gvDashHomeApps;
+	private GridView gvDashHomeApps;
 	private LinearLayout llLauncherPinnedApps;
 	private HomeActivity parent;
 	private Context context;
 
-	public AsyncLoadApps (HomeActivity parent, SpinnerAppLauncher lalSpinner, be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb, ExpandableHeightGridView gvDashHomeApps, LinearLayout llLauncherPinnedApps)
+	public AsyncLoadApps (HomeActivity parent, SpinnerAppLauncher lalSpinner, be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb, GridView gvDashHomeApps, LinearLayout llLauncherPinnedApps)
 	{
 		this.parent = parent;
 		this.lalSpinner = lalSpinner;
@@ -137,7 +137,6 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 		appManager.refreshPinnedView ();
 
 		this.gvDashHomeApps.setAdapter (new GridAdapter (this.context, (List<AppLauncher>) result[1]));
-		this.gvDashHomeApps.setExpanded (true);
 		this.gvDashHomeApps.setOnItemClickListener (new AppLauncherClickListener ());
 		this.gvDashHomeApps.setOnItemLongClickListener (new AppLauncherLongClickListener ());
 
