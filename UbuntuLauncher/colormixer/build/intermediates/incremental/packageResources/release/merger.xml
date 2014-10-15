@@ -4,15 +4,14 @@
     <dataSet config="main" >
         <source path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/res" >
             <file
-                name="cwac_colormixer_activity"
-                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/res/layout/cwac_colormixer_activity.xml"
-                qualifiers=""
-                type="layout" />
-            <file
-                name="cwac_colormixer_main"
-                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/res/layout/cwac_colormixer_main.xml"
-                qualifiers=""
-                type="layout" />
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/res/values/cwac_colormixer_attrs.xml"
+                qualifiers="" >
+                <declare-styleable name="ColorMixer" >
+                    <attr
+                        name="color"
+                        format="color" />
+                </declare-styleable>
+            </file>
             <file
                 path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/res/values/cwac_colormixer_strings.xml"
                 qualifiers="" >
@@ -28,14 +27,15 @@
                 </string>
             </file>
             <file
-                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/res/values/cwac_colormixer_attrs.xml"
-                qualifiers="" >
-                <declare-styleable name="ColorMixer" >
-                    <attr
-                        name="color"
-                        format="color" />
-                </declare-styleable>
-            </file>
+                name="cwac_colormixer_main"
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/res/layout/cwac_colormixer_main.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="cwac_colormixer_activity"
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/res/layout/cwac_colormixer_activity.xml"
+                qualifiers=""
+                type="layout" />
         </source>
         <source path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/build/generated/res/rs/release" />
         <source path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/colormixer/build/generated/res/generated/release" />

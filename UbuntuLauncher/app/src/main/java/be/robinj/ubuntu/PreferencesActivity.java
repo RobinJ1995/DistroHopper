@@ -44,7 +44,7 @@ public class PreferencesActivity extends PreferenceActivity
 	 * as a master/detail two-pane view on tablets. When true, a single pane is
 	 * shown on tablets.
 	 */
-	private static final boolean ALWAYS_SIMPLE_PREFS = false;
+	private static final boolean ALWAYS_SIMPLE_PREFS = true;
 
 	/**
 	 * Helper method to determine if the device has an extra-large screen. For
