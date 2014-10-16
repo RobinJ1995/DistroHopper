@@ -1,0 +1,15 @@
+# SHORT DESCRIPTION #
+The Ubuntu Unity desktop on your Android device
+
+# FULL DESCRIPTION #
+-- Description --
+Do you like Linux/Ubuntu? Does it seem awesome to you to be able to have the Unity desktop as your Android home screen? No? Ok, bye bye. In that case, this isn't for you.
+This work in progress will allow you to have the Unity desktop running as your Android home/launcher screen.
+
+-- Disclaimer --
+Ubuntu is a registered trademark of Canonical Ltd, which I am not associated with.
+I don't take any responsibility for... anything.
+
+-- Notice --
+It's a Beta, so if something doesn't work, or you have a suggestion, please let me know. Don't go drilling a Beta into the ground with 1 star reviews without actually telling me why you didn't like it, like some people are doing. Nobody's going to benefit from that.
+Feel free to leave bug reports and suggestions on Google+ (https://plus.google.com/communities/111207292310016778258) or Github (https://github.com/RobinJ1995/be.robinj.ubuntu/issues), or contact me by e-mail.
