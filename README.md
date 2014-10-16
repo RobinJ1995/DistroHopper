@@ -14,10 +14,13 @@ If you want to help out and translate the project into a language that isn't lis
 
 ### Languages that the project has been translated into so far
 
-* English (Robin Jacobs)
-* Dutch (Robin Jacobs)
-* Russian (Mark Isayan)
-* Japanese (Tim van der Staaij)
-* Polish (Michał Dudziński)
-* Portguguese (Maycon Santos)
-* Turkish (Yuşa Çetin)
+* English
+* Dutch
+* Russian
+* Japanese
+* Polish
+* Portuguese
+* Turkish
+* German
+* Italian
+* Spanish
