@@ -21,7 +21,7 @@
   <string name="pref_header_advanced">Avançado</string>
   <string name="category_colourcalc">Cálculo de cor predominante</string>
   <string name="option_launchericon_width">Tamanho do Launcher</string>
-  <string name="hint_launchericon_width">Ajustar tamanho do launcher e dos í­cones. O ajuste (de acordo com a barra) vai de 48px à  120px, com padrão em 84px.</string>
+  <string name="hint_launchericon_width">Ajustar tamanho do launcher e dos í­cones. O ajuste (de acordo com a barra) vai de 48px à 120px, com padrão em 84px.</string>
   <string name="option_launchericon_opacity">Opacidade de fundo dos í­cones no Launcher</string>
   <string name="hint_launchericon_opacity">Define a opacidade da cor de fundo dos ícones no Launcher.</string>
   <string name="option_launcherservice_enabled">Tornar o Launcher acessível em outros aplicativos abertos.</string>
@@ -29,7 +29,7 @@
   <string name="option_panel_show">Exibir Painel</string>
   <string name="hint_panel_show">Se o painel, no topo do Launcher, deve aparecer ou não.</string>
   <string name="option_panel_opacity">Opacidade do painel</string>
-  <string name="hint_panel_opacity">Defina a opacidade do painel.</string>
+  <string name="hint_panel_opacity">Define a opacidade do painel.</string>
   <string name="option_unitybackground_dynamic">Cor de fundo dinâmica do Unity</string>
   <string name="hint_unitybackground_dynamic">Escolher automaticamente a cor de fundo do Unity (Launcher, Dash e Painel) de acordo com o papel de parede utilizado. Esse recurso pode não funcionar em alguns papéis de parede animados.</string>
   <string name="option_unitybackground_colour">Cor de fundo do Unity</string>
@@ -44,7 +44,7 @@
   <string name="option_colourcalc_hsv">Ativar recurso HSV</string>
   <string name="hint_colourcalc_hsv">Usando o recurso HSV (melhoria de saturação) ao invés do RGB comum, as cores se tornam muito mais vibrantes (Pode causar demora no carregamento em dispositivos mais lentos).</string>
   <string name="option_dashsearch_full">Pesquisa avançada</string>
-  <string name="hint_dashsearch_full">A ativação desta opção proporcionará melhores resultados de busca \"Dash\", mas também afetará o desempenho em dispositivos mais lentos, ou em dispositivos com muitas aplicativos instalados. Recomenda-se desativar, caso haja instabilidade no recurso.</string>
+  <string name="hint_dashsearch_full">A ativação desta opção proporcionará melhores resultados de busca \"Dash\", mas também afetará o desempenho em dispositivos mais lentos, ou em dispositivos com muitos aplicativos instalados. Recomenda-se desativar, caso haja instabilidade no recurso.</string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Testando (Se não consegue destruí­-lo, então é seguro pro resto do mundo) * Ajuda com cálculo de cor predominante.</string>
   <string name="hm_todddavies_name">Todd Davies</string>
