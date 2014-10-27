@@ -8,8 +8,8 @@ android {
         applicationId "be.robinj.ubuntu"
         minSdkVersion 8
         targetSdkVersion 19
-        versionCode 66
-        versionName "0.5.9.1"
+        versionCode 67
+        versionName "0.5.10"
     }
     buildTypes {
         release {

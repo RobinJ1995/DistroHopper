@@ -35,4 +35,10 @@
         <b>Polish</b>\n
         * Michał Dudziński
     </string>
+
+    <string-array name="values_unitywallpaper_blur">
+        <item>no</item>
+        <item>darken</item>
+        <item>scale</item>
+    </string-array>
 </resources>

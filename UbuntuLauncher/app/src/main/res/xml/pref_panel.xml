@@ -11,6 +11,6 @@
         android:title="@string/option_panel_opacity"
         android:summary="@string/hint_panel_opacity"
         max="255"
-        defaultValue="255" />
+        android:defaultValue="255" />
 
 </PreferenceScreen>

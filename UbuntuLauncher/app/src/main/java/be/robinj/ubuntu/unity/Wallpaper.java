@@ -21,6 +21,7 @@ public class Wallpaper extends ImageView
 	private Context context;
 	private Drawable img;
 	private Drawable blurred;
+	private String mode;
 
 	private boolean liveWallpaper = false;
 
@@ -52,24 +53,30 @@ public class Wallpaper extends ImageView
 
 		try
 		{
-			Drawable blurred = wpman.getDrawable ();
+			SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
+			this.mode = prefs.getString ("unitywallpaper_blur", "darken");
 
-			BitmapDrawable bmdBlurred = (BitmapDrawable) blurred;
-			Bitmap bmBlurred = bmdBlurred.getBitmap ();
+			if (mode.equals ("scale"))
+			{
+				Drawable blurred = wpman.getDrawable ();
 
-			float origWidth = bmBlurred.getWidth ();
-			float origHeight = bmBlurred.getHeight ();
+				BitmapDrawable bmdBlurred = (BitmapDrawable) blurred;
+				Bitmap bmBlurred = bmdBlurred.getBitmap ();
 
-			int width = 200;
-			int height = (int) (origHeight * (200F / origWidth));
+				float origWidth = bmBlurred.getWidth ();
+				float origHeight = bmBlurred.getHeight ();
 
-			bmBlurred = Bitmap.createScaledBitmap (bmBlurred, width, height, true);
-			bmBlurred = Bitmap.createScaledBitmap (bmBlurred, (int) origWidth, (int) origHeight, true);
+				int width = 200;
+				int height = (int) (origHeight * (200F / origWidth));
 
-			bmdBlurred = new BitmapDrawable (bmBlurred);
-			this.blurred = bmdBlurred;
+				bmBlurred = Bitmap.createScaledBitmap (bmBlurred, width, height, true);
+				bmBlurred = Bitmap.createScaledBitmap (bmBlurred, (int) origWidth, (int) origHeight, true);
+
+				bmdBlurred = new BitmapDrawable (bmBlurred);
+				this.blurred = bmdBlurred;
+			}
 		}
-		catch (OutOfMemoryError ex) // I'd prefer the image not being blurred over the app craching //
+		catch (OutOfMemoryError ex) // I'd prefer the image not being blurred over the app crashing //
 		{
 			this.blurred = null;
 
@@ -82,43 +89,52 @@ public class Wallpaper extends ImageView
 
 	public void set ()
 	{
-		if (this.liveWallpaper || this.blurred == null)
+		if (! this.mode.equals ("no"))
 		{
-			this.setImageDrawable (null);
-			this.setBackgroundColor (this.getResources ().getColor (R.color.transparent));
-		}
-		else
-		{
-			this.setImageDrawable (this.img);
-			this.setBackgroundDrawable (null); // setBackgroundDrawable is deprecated, but setBackground is unspported on older versions of Android //
+			if (this.liveWallpaper || this.blurred == null || this.mode.equals ("darken"))
+			{
+				this.setImageDrawable (null);
+				this.setBackgroundColor (this.getResources ().getColor (R.color.transparent));
+			}
+			else
+			{
+				this.setImageDrawable (this.img);
+				this.setBackgroundDrawable (null); // setBackgroundDrawable is deprecated, but setBackground is unspported on older versions of Android //
+			}
 		}
 	}
 
 	public void blur ()
 	{
-		if (this.liveWallpaper || this.blurred == null)
+		if (! this.mode.equals ("no"))
 		{
-			this.setImageDrawable (null);
-			this.setBackgroundColor (this.getResources ().getColor (R.color.transparentblack60));
-		}
-		else
-		{
-			this.setImageDrawable (this.blurred);
-			this.setBackgroundDrawable (null); // setBackgroundDrawable is deprecated, but setBackground is unspported on older versions of Android //
+			if (this.liveWallpaper || this.blurred == null || this.mode.equals ("darken"))
+			{
+				this.setImageDrawable (null);
+				this.setBackgroundColor (this.getResources ().getColor (R.color.transparentblack60));
+			}
+			else
+			{
+				this.setImageDrawable (this.blurred);
+				this.setBackgroundDrawable (null); // setBackgroundDrawable is deprecated, but setBackground is unspported on older versions of Android //
+			}
 		}
 	}
 
 	public void unblur ()
 	{
-		if (this.liveWallpaper || this.blurred == null)
+		if (! this.mode.equals ("no"))
 		{
-			this.setImageDrawable (null);
-			this.setBackgroundColor (this.getResources ().getColor (R.color.transparent));
-		}
-		else
-		{
-			this.setImageDrawable (this.img);
-			this.setBackgroundDrawable (null); // setBackgroundDrawable is deprecated, but setBackground is unspported on older versions of Android //
+			if (this.liveWallpaper || this.blurred == null || this.mode.equals ("darken"))
+			{
+				this.setImageDrawable (null);
+				this.setBackgroundColor (this.getResources ().getColor (R.color.transparent));
+			}
+			else
+			{
+				this.setImageDrawable (this.img);
+				this.setBackgroundDrawable (null); // setBackgroundDrawable is deprecated, but setBackground is unspported on older versions of Android //
+			}
 		}
 	}
 

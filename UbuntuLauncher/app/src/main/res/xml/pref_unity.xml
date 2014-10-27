@@ -21,7 +21,17 @@
         android:title="@string/option_unitybackground_opacity"
         android:summary="@string/hint_unitybackground_opacity"
         max="255"
-        defaultValue="50" />
+        android:defaultValue="50" />
+
+    <ListPreference
+        android:key="unitywallpaper_blur"
+        android:title="@string/option_unitywallpaper_blur"
+        android:summary="@string/hint_unitywallpaper_blur"
+        android:entries="@array/keys_unitywallpaper_blur"
+        android:entryValues="@array/values_unitywallpaper_blur"
+        android:defaultValue="scale"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null" />
 
     <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
          dismiss it. -->
