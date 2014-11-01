@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,6 +76,9 @@ public class HomeActivity extends Activity
 			//GridLayout glWidgets = (GridLayout) this.findViewById (R.id.glWidgets);
 			//ScrollView scrLauncherAppsContainer = (ScrollView) this.findViewById (R.id.scrLauncherAppsContainer);
 
+			Intent launcherServiceIntent = new Intent (this, LauncherService.class);
+			this.stopService (launcherServiceIntent);
+
 			lalBfb.init ();
 			lalSpinner.init ();
 			lalPreferences.init ();
@@ -98,6 +102,21 @@ public class HomeActivity extends Activity
 			ibPanelDashClose.setLayoutParams (ibDashClose_layoutParams);
 
 			lalSpinner.getProgressWheel ().spin ();
+
+			if (prefs.getString ("launcher_edge", "left").equals ("right"))
+			{
+				LinearLayout llLauncherAndDashContainer = (LinearLayout) this.findViewById (R.id.llLauncherAndDashContainer);
+				LinearLayout llLauncher = (LinearLayout) this.findViewById (R.id.llLauncher);
+				LinearLayout llDash = (LinearLayout) this.findViewById (R.id.llDash);
+
+				llLauncherAndDashContainer.setGravity (Gravity.RIGHT);
+
+				llLauncherAndDashContainer.removeView (llLauncher);
+				llLauncherAndDashContainer.removeView (llDash);
+
+				llLauncherAndDashContainer.addView (llDash);
+				llLauncherAndDashContainer.addView (llLauncher);
+			}
 
 			this.asyncInitWallpaper = new AsyncInitWallpaper (this);
 			this.asyncInitWallpaper.execute (wpWallpaper);

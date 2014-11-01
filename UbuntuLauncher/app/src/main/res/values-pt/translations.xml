@@ -37,6 +37,13 @@
   <string name="message_unitybackground_colour">Use as barras para definir uma cor.</string>
   <string name="option_unitybackground_opacity">Opacidade de fundo do Unity</string>
   <string name="hint_unitybackground_opacity">Defina a opacidade da cor de fundo na composição do Unity.</string>
+  <string name="option_unitywallpaper_blur">Efeito de Papel de Parede </string>
+  <string name="hint_unitywallpaper_blur">Efeito de desfoque do fundo quando o Dash é aberto. Caso o modo \"Desfoque\" for definido e não funcionar corretamente (ou quando um papel de parede animado for usado), o modo \"Escurecido\" será usado como padrão automaticamente.</string>
+  <string-array name="keys_unitywallpaper_blur">
+    <item>Sem desfoque</item>
+    <item>Escurecido</item>
+    <item>Desfoque ativo (padrão)</item>
+  </string-array>
   <string name="option_wallpaper">Papel de Parede</string>
   <string name="hint_wallpaper">Alterar papel de parede</string>
   <string name="option_colourcalc_advanced">Aumentar amostragem</string>

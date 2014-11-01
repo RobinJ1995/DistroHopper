@@ -4,6 +4,7 @@ import android.animation.LayoutTransition;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Build;
@@ -75,7 +76,24 @@ public class LauncherService extends Service
 		lalBfb.setColour (R.color.transparentblack80);
 		lalBfb.init ();
 
-		this.touchListener = new TouchListener (this);
+		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+		boolean right = prefs.getString ("launcher_edge", "left").equals ("right");
+
+		this.touchListener = new TouchListener (this, right);
+		if (right)
+		{
+			params.gravity = Gravity.TOP | Gravity.RIGHT;
+
+			this.layout.removeView (this.llLauncher);
+			this.layout.removeView (this.llListenerContainer);
+			this.layout.removeView (this.llShadow);
+
+			this.llShadow.setBackgroundResource (R.drawable.launcherservice_shadow_right);
+
+			this.layout.addView (this.llShadow);
+			this.layout.addView (this.llListenerContainer);
+			this.layout.addView (this.llLauncher);
+		}
 
 		lalBfb.setOnTouchListener (this.touchListener);
 		this.llListener.setOnTouchListener (this.touchListener);

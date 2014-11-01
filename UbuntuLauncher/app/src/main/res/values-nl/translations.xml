@@ -37,6 +37,19 @@
   <string name="message_unitybackground_colour">Gebruik de schuifbalken om een kleur te kiezen.</string>
   <string name="option_unitybackground_opacity">Transparantie van achtergrondkleur</string>
   <string name="hint_unitybackground_opacity">Hoe transparant de achtergrondkleur van transparante Unity-componenten moet zijn. 100 procent is volledig zichtbaar en 0 procent is volledig transparant.</string>
+  <string name="option_unitywallpaper_blur">Achtergrond vervagen</string>
+  <string name="hint_unitywallpaper_blur">De methode die gebruikt zal worden om de achtergrond te vervagen wanneer het Dash geöpend wordt. Wanneer \"Verkleinen &amp; vergroten\" gekozen is en dit mislukt (of er een live wallpaper is ingesteld) zal er teruggevallen worden op \"Donker maken\".</string>
+  <string name="option_launcher_edge">Schermrand</string>
+  <string name="hint_launcher_edge">Tegen welke schermrand de Launcher zich bevindt.</string>
+  <string-array name="keys_unitywallpaper_blur">
+    <item>Niet vervagen</item>
+    <item>Donker maken</item>
+    <item>Verkleinen &amp; vergroten (standaard)</item>
+  </string-array>
+  <string-array name="keys_launcher_edge">
+    <item>Links (standaard)</item>
+    <item>Rechts</item>
+  </string-array>
   <string name="option_wallpaper">Achtergrond</string>
   <string name="hint_wallpaper">Andere achtergrond kiezen</string>
   <string name="option_colourcalc_advanced">Meer stalen nemen</string>

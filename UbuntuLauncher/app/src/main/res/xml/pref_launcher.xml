@@ -14,6 +14,16 @@
         max="255"
         android:defaultValue="204" />
 
+    <ListPreference
+        android:key="launcher_edge"
+        android:title="@string/option_launcher_edge"
+        android:summary="@string/hint_launcher_edge"
+        android:entries="@array/keys_launcher_edge"
+        android:entryValues="@array/values_launcher_edge"
+        android:defaultValue="left"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null" />
+
     <CheckBoxPreference
         android:key="launcherservice_enabled"
         android:title="@string/option_launcherservice_enabled"

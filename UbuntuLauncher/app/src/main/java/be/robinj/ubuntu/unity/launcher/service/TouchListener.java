@@ -12,13 +12,15 @@ import be.robinj.ubuntu.R;
 public class TouchListener implements View.OnTouchListener
 {
 	private LauncherService parent;
+	private boolean right = false;
 
 	float llListener_x = -1;
 	private float llLauncher_x = -1;
 
-	public TouchListener (LauncherService parent)
+	public TouchListener (LauncherService parent, boolean right)
 	{
 		this.parent = parent;
+		this.right = right;
 	}
 
 	@Override
@@ -30,8 +32,8 @@ public class TouchListener implements View.OnTouchListener
 		if (id == R.id.llListener)
 		{
 			if (this.llListener_x == -1)
-				this.llListener_x = event.getX (0);
-			float x = event.getX (event.getPointerCount () - 1);
+				this.llListener_x = (this.right ? -1 : 1) * event.getX (0);
+			float x = (this.right ? -1 : 1) * event.getX (event.getPointerCount () - 1);
 
 			if (x > this.llListener_x)
 			{
