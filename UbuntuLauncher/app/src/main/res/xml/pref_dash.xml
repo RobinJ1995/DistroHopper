@@ -6,4 +6,10 @@
         android:summary="@string/hint_dashsearch_full"
         android:defaultValue="true" />
 
+    <CheckBoxPreference
+        android:key="dash_ready_show"
+        android:title="@string/option_dash_ready_show"
+        android:summary="@string/hint_dash_ready_show"
+        android:defaultValue="false" />
+
 </PreferenceScreen>

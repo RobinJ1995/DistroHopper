@@ -114,6 +114,10 @@
 
     <string name="hint_dashsearch_full">Enabling this option will result in better Dash search results but will also affect performance on slower devices or devices with a lot of apps installed. If Dash search is slow for you, you might want to consider disabling this.</string>
 
+    <string name="option_dash_ready_show">Open Dash by default</string>
+
+    <string name="hint_dash_ready_show">The Dash will automatically be opened once apps are loaded.</string>
+
     <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
 
     <string name="hm_timvdstaaij_why">* Testing (If he doesn\'t manage to wreck it then it\'s probably safe for consumption by the rest of the world.)\n

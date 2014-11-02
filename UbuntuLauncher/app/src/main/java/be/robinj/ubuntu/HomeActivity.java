@@ -145,9 +145,11 @@ public class HomeActivity extends Activity
 				llLauncherRunningApps.setLayoutTransition (llLauncherRunningApps_transition);
 			}
 
+			this.openDashWhenReady = prefs.getBoolean ("dash_ready_show", this.openDashWhenReady);
+
 			Intent intent = this.getIntent ();
 			if (intent != null)
-				this.openDashWhenReady = intent.getBooleanExtra ("openDash", false);
+				this.openDashWhenReady = intent.getBooleanExtra ("openDash", this.openDashWhenReady);
 
 			if (Build.VERSION.SDK_INT >= 19)
 			{
