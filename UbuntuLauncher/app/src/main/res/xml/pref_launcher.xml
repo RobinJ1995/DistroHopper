@@ -14,6 +14,12 @@
         max="255"
         android:defaultValue="204" />
 
+    <CheckBoxPreference
+        android:key="launcher_running_show"
+        android:title="@string/option_launcher_running_show"
+        android:summary="@string/hint_launcher_running_show"
+        android:defaultValue="true" />
+
     <ListPreference
         android:key="launcher_edge"
         android:title="@string/option_launcher_edge"

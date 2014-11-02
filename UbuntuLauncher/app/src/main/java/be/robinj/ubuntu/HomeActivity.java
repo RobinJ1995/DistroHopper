@@ -312,7 +312,12 @@ public class HomeActivity extends Activity
 			this.showLauncherService (false);
 
 			if (this.apps != null)
-				this.apps.addRunningApps (this.chameleonicBgColour);
+			{
+				SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+
+				if (prefs.getBoolean ("launcher_running_show", true))
+					this.apps.addRunningApps (this.chameleonicBgColour);
+			}
 		}
 		catch (Exception ex)
 		{
@@ -385,7 +390,7 @@ public class HomeActivity extends Activity
 			Intent intent = new Intent (this, LauncherService.class);
 			intent.putExtra ("show", show);
 			intent.putExtra ("visible", false);
-			if (show && this.apps != null)
+			if (show && this.apps != null && prefs.getBoolean ("launcher_running_show", true))
 				intent.putParcelableArrayListExtra ("running", (ArrayList<App>) this.apps.getRunningApps ());
 
 			this.startService (intent);
@@ -412,7 +417,10 @@ public class HomeActivity extends Activity
 
 			this.startLauncherService (false);
 
-			this.apps.addRunningApps (this.chameleonicBgColour);
+			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+
+			if (prefs.getBoolean ("launcher_running_show", true))
+				this.apps.addRunningApps (this.chameleonicBgColour);
 
 			if (this.openDashWhenReady)
 				this.openDash ();
@@ -488,7 +496,11 @@ public class HomeActivity extends Activity
 	public void pinnedAppsChanged ()
 	{
 		this.startLauncherService (false);
-		this.apps.addRunningApps (this.chameleonicBgColour);
+
+		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+
+		if (prefs.getBoolean ("launcher_running_show", true))
+			this.apps.addRunningApps (this.chameleonicBgColour);
 	}
 
 	//# Event handlers #//
