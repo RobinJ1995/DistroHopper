@@ -41,7 +41,7 @@ public class ExceptionHandler
 			.append (stackTrace.toString ());
 
 		AlertDialog.Builder dlg = new AlertDialog.Builder (this.context);
-		dlg.setTitle ("Error");
+		dlg.setTitle ("(╯°□°）╯︵ ┻━┻");
 		dlg.setMessage (message.toString ());
 		dlg.setCancelable (true);
 		dlg.setNeutralButton ("OK", null);
