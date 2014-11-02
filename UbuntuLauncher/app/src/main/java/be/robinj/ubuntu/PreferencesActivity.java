@@ -135,6 +135,11 @@ public class PreferencesActivity extends PreferenceActivity
 				Intent intent = new Intent (this, AboutActivity.class);
 				this.startActivity (intent);
 			}
+			else if (id == R.id.menuContribute)
+			{
+				Intent intent = new Intent (this, ContributeActivity.class);
+				this.startActivity (intent);
+			}
 		}
 		catch (Exception ex)
 		{

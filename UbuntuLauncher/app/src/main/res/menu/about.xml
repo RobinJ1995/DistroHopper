@@ -1,4 +1,12 @@
 <menu
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     tools:context="be.robinj.ubuntu.AboutActivity">
+
+    <item
+        android:id="@+id/menuContribute"
+        android:icon="@android:drawable/btn_star"
+        android:title="@string/button_contribute"
+        android:showAsAction="always|withText" />
+
 </menu>

@@ -8,13 +8,13 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
 
     <application
-        android:name=".Application"
+        android:name="be.robinj.ubuntu.Application"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".HomeActivity"
+            android:name="be.robinj.ubuntu.HomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop"
@@ -32,32 +32,31 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".OldPreferencesActivity"
-            android:label="@string/title_activity_preferences"
-            android:parentActivityName=".HomeActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="be.robinj.ubuntu.HomeActivity" />
-        </activity>
-        <activity
-            android:name=".AboutActivity"
+            android:name="be.robinj.ubuntu.AboutActivity"
             android:label="@string/title_activity_about"
-            android:parentActivityName=".OldPreferencesActivity" >
+            android:parentActivityName="be.robinj.ubuntu.PreferencesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="be.robinj.ubuntu.PreferencesActivity" />
         </activity>
-
-        <service android:name=".unity.launcher.service.LauncherService" />
-
         <activity
-            android:name=".PreferencesActivity"
+            android:name="be.robinj.ubuntu.PreferencesActivity"
             android:label="@string/title_activity_preferences"
-            android:parentActivityName=".HomeActivity" >
+            android:parentActivityName="be.robinj.ubuntu.HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="be.robinj.ubuntu.HomeActivity" />
         </activity>
+        <activity
+            android:name="be.robinj.ubuntu.ContributeActivity"
+            android:label="@string/title_activity_contribute"
+            android:parentActivityName="be.robinj.ubuntu.AboutActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="be.robinj.ubuntu.AboutActivity" />
+        </activity>
+
+        <service android:name="be.robinj.ubuntu.unity.launcher.service.LauncherService" />
     </application>
 
 </manifest>

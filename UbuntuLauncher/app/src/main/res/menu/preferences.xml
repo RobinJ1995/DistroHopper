@@ -4,8 +4,14 @@
     tools:context="be.robinj.ubuntu.OldPreferencesActivity">
 
     <item
+        android:id="@+id/menuContribute"
+        android:icon="@android:drawable/btn_star"
+        android:title="@string/button_contribute"
+        android:showAsAction="ifRoom|withText" />
+    <item
         android:id="@+id/menuAbout"
         android:icon="@android:drawable/ic_menu_info_details"
         android:title="@string/button_about"
         android:showAsAction="ifRoom|withText" />
+
 </menu>
