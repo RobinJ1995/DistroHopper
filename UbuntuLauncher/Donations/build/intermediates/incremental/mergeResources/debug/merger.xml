@@ -1,0 +1,1178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="2" >
+
+    <dataSet config="20.0.0" >
+        <source path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/build/intermediates/exploded-aar/com.android.support/support-v4/20.0.0/res" />
+    </dataSet>
+    <dataSet config="main" >
+        <source path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res" >
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-mn/donations__strings.xml"
+                qualifiers="mn" >
+                <string name="donations__button_close" >Хаах
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-pt-rBR/donations__strings.xml"
+                qualifiers="pt-rBR" >
+                <string name="donations__google_android_market_not_supported" >Doações dentro do aplicativo não são suportadas. O Google Play Store foi instalado corretamente?
+                </string>
+                <string name="donations__button_close" >Fechar
+                </string>
+                <string name="donations__description" >Você achou esta aplicação útil?\nSuporte o seu desenvolvimento mandando uma doação programador!
+                </string>
+                <string name="donations__thanks_dialog_title" >Obrigado!
+                </string>
+                <string name="donations__flattr_description" >Flattr possui uma taxa mensal de 10%!
+                </string>
+                <string name="donations__google_android_market" >Google Play Store
+                </string>
+                <string name="donations__alert_dialog_no_browser" >Nenhum navegador foi encontrado para abrir um site!
+                </string>
+                <string name="donations__google_android_market_text" >Quanto?
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >Doações pelo aplicativo não são suportadas.
+                </string>
+                <string name="donations__google_android_market_donate_button" >Doar!
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__thanks_dialog" >Obrigado pela sua doação!
+                </string>
+                <string name="donations__paypal_description" >Você pode escolher quanto deseja doar após clicar no botão!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__google_android_market_description" >Google retém 30% de cada doação!
+                </string>
+                <string name="donations__alert_dialog_title" >Erro ocorrido
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-it/donations__strings.xml"
+                qualifiers="it" >
+                <string name="donations__alert_dialog_no_browser" >Non è stato trovato un browser per aprire un sito internet!
+                </string>
+                <string name="donations__description" >Pensi che questa applicazione sia utile?\nSupporta il suo sviluppo mandando una donazione allo sviluppatore!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__thanks_dialog" >Grazie per la donazione!\nLo apprezzo molto!
+                </string>
+                <string name="donations__paypal_description" >Puoi scegliere quanto donare dopo aver premuto il pulsante!
+                </string>
+                <string name="donations__thanks_dialog_title" >Grazie!
+                </string>
+                <string name="donations__google_android_market" >Google Play Store
+                </string>
+                <string name="donations__alert_dialog_title" >Si è verificato un errore
+                </string>
+                <string name="donations__button_close" >Chiudi
+                </string>
+                <string name="donations__google_android_market_not_supported" >Donazioni In-App non supportate. Google Play Store è installato correttamente?
+                </string>
+                <string name="donations__google_android_market_text" >Quanto?
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >Le donazioni in-app non sono supportate.
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__flattr_description" >Flattr riceve il 10% come canone mensile!
+                </string>
+                <string name="donations__google_android_market_donate_button" >Dona!
+                </string>
+                <string name="donations__google_android_market_description" >Google riceve il 30% di ogni donazione!
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-hu/donations__strings.xml"
+                qualifiers="hu" >
+                <string name="donations__google_android_market_description" >A Google része 30 % minden adományból!
+                </string>
+                <string name="donations__thanks_dialog" >Köszönjük a támogatást!\nNagyra értékeljük!
+                </string>
+                <string name="donations__google_android_market_not_supported" >Az alkalmazáson belüli adományozás nem támogatott. A Google Android Market megfelelően van telepítve?
+                </string>
+                <string name="donations__description" >Hasznosnak találod ezt az alkalmazást?⏎\nTámogasd a fejlesztését némi adomány küldésével a fejlesztőnek!
+                </string>
+                <string name="donations__flattr_description" >A Flattr 10 %-ot levesz havi díjként!
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__alert_dialog_no_browser" >Böngésző nem található a weboldal megnyitásához!
+                </string>
+                <string name="donations__google_android_market_donate_button" >Adományozok!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >A mikrotranzakciós adományozás nem támogatott.
+                </string>
+                <string name="donations__thanks_dialog_title" >Köszönöm!
+                </string>
+                <string name="donations__paypal_description" >Az adományozott összeget megválaszthatja a gombra való kattintás után.
+                </string>
+                <string name="donations__google_android_market_text" >Mennyi?
+                </string>
+                <string name="donations__button_close" >Bezár
+                </string>
+                <string name="donations__google_android_market" >Google Play Üzlet
+                </string>
+                <string name="donations__alert_dialog_title" >Hiba történt
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-da-rDK/donations__strings.xml"
+                qualifiers="da-rDK" >
+                <string name="donations__thanks_dialog" >Tak fordi du donerede!\nJeg sætter virkelig pris på dette!
+                </string>
+                <string name="donations__google_android_market_text" >Hvor meget?
+                </string>
+                <string name="donations__alert_dialog_title" >En fejl opstod
+                </string>
+                <string name="donations__google_android_market_not_supported" >In-App donationer er ikke supporteret. Er Google Play Store installeret korrekt?
+                </string>
+                <string name="donations__flattr_description" >Flattr tager 10% i månedlig gebyr!
+                </string>
+                <string name="donations__google_android_market_donate_button" >Donér!
+                </string>
+                <string name="donations__paypal_description" >Du kan vælge hvor meget du vil donere efter du har trykket på knappen
+                </string>
+                <string name="donations__button_close" >Luk
+                </string>
+                <string name="donations__description" >Finder du denne app brugbar?\nSupporter dets udvikling ved at sende en donation til udvikleren!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__google_android_market" >Google Play Store
+                </string>
+                <string name="donations__alert_dialog_no_browser" >Ingen browser blev fundet til at åbne en webside!
+                </string>
+                <string name="donations__google_android_market_description" >Google tager 30% fra hver donation!
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__thanks_dialog_title" >Tak!
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-ca/donations__strings.xml"
+                qualifiers="ca" >
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__google_android_market_description" >Google té unes comissions del 30 percent!
+                </string>
+                <string name="donations__google_android_market" >Google Play Store
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__thanks_dialog" >Gràcies per fer el donatiu!⏎ N\'estic molt agraït!
+                </string>
+                <string name="donations__google_android_market_not_supported" >No es poden fer donatius des de l\'aplicació. Heu instal·lat Google Play Store correctament?
+                </string>
+                <string name="donations__paypal_description" >Podeu escollir la quantitat del vostre donatiu tocant aquest botó.
+                </string>
+                <string name="donations__google_android_market_donate_button" >Fer un donatiu
+                </string>
+                <string name="donations__google_android_market_text" >Quant?
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >No es pot fer donatius des de l\'aplicació.
+                </string>
+                <string name="donations__alert_dialog_no_browser" >No s\'ha trobat cap navegador per obrir el lloc web!
+                </string>
+                <string name="donations__button_close" >Tanca
+                </string>
+                <string name="donations__alert_dialog_title" >S\'ha produït un error
+                </string>
+                <string name="donations__description" >Has trobat útil aquesta aplicació?\nAjuda al seu desenvolupament enviant una donació al creador!
+                </string>
+                <string name="donations__flattr_description" >Flattr té unes comissions mensuals del deu percent!
+                </string>
+                <string name="donations__thanks_dialog_title" >Gràcies!
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-iw-rIL/donations__strings.xml"
+                qualifiers="iw-rIL" >
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__google_android_market_donate_button" >תרומה!
+                </string>
+                <string name="donations__google_android_market" >אנדרואיד מרקט
+                </string>
+                <string name="donations__button_close" >לא נמצא Busybox. כדי להתקין אותו מהמרקט לחץ על הלחצן מתחת.
+                </string>
+                <string name="donations__google_android_market_text" >כמה?
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__flattr_description" >Flattr מספר הנחה של 10 % לתשלום החודשי!
+                </string>
+                <string name="donations__google_android_market_description" >גוגל מקבלת 30% מסך התרומה!
+                </string>
+                <string name="donations__thanks_dialog_title" >תודה!
+                </string>
+                <string name="donations__paypal_description" >אתה יכול לבחור כמה אתה רוצה לתרום על ידי לחיצה על הכפתור!
+                </string>
+                <string name="donations__google_android_market_not_supported" >תרומות לתוכנה אינם נתמכות. האם המרקט של גוגל אנדרואיד מותקן כראוי?
+                </string>
+                <string name="donations__thanks_dialog" >תודה על תרומתך!\nאני מאוד מעריך זאת!
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-ro-rRO/donations__strings.xml"
+                qualifiers="ro-rRO" >
+                <string name="donations__button_close" >Inchide
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-ru/donations__strings.xml"
+                qualifiers="ru" >
+                <string name="donations__paypal_description" >После нажатия на кнопку вы можете выбрать сколько хотите пожертвовать!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__thanks_dialog_title" >Благодарю!
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__thanks_dialog" >Благодарю за пожертвование! Я очень это ценю!
+                </string>
+                <string name="donations__alert_dialog_title" >Произошла ошибка
+                </string>
+                <string name="donations__button_close" >Закрыть
+                </string>
+                <string name="donations__description" >Считаете ли вы приложение полезным?\nПоддержите его развитие, отправив пожертвование для разработчиков!
+                </string>
+                <string name="donations__google_android_market_not_supported" >Пожертвования через приложение не поддерживаются. Google Play Store установлен правильно?
+                </string>
+                <string name="donations__alert_dialog_no_browser" >Не найден подходящий браузер для открытия этого веб-сайта!
+                </string>
+                <string name="donations__flattr_description" >Flattr взимает 10% в виде ежемесячной абонентской платы!
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >In-App пожертвования не поддерживаются.
+                </string>
+                <string name="donations__google_android_market" >Google Play Store
+                </string>
+                <string name="donations__google_android_market_description" >Google взимает 30% с каждого пожертвования!
+                </string>
+                <string name="donations__google_android_market_text" >Сколько?
+                </string>
+                <string name="donations__google_android_market_donate_button" >Пожертвовать!
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-sr/donations__strings.xml"
+                qualifiers="sr" >
+                <string name="donations__google_android_market_not_supported" >Donacije u aplikaciji nisu dostupne. Da li je Google Play prodavnica ispravno instalirana?
+                </string>
+                <string name="donations__paypal_description" >Možete odabrati koliko ćete donirati posle pritiska na dugme!
+                </string>
+                <string name="donations__flattr_description" >Flattr uzima 10 % provizije mesečno!
+                </string>
+                <string name="donations__thanks_dialog" >Hvala za donaciju!\nZaista cenim to!
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >Donacije u aplikaciji nisu dostupne.
+                </string>
+                <string name="donations__description" >Da li vam je ovo korisna aplikacija?\nPodržite njen razvitak slanjem donacije razvijaču!
+                </string>
+                <string name="donations__button_close" >Zatvori
+                </string>
+                <string name="donations__google_android_market_description" >Google uzima 30 % od svae donacije!
+                </string>
+                <string name="donations__alert_dialog_title" >Došlo je do greške
+                </string>
+                <string name="donations__google_android_market" >Google Play prodavnica
+                </string>
+                <string name="donations__google_android_market_donate_button" >Doniraj!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__google_android_market_text" >Koliko?
+                </string>
+                <string name="donations__thanks_dialog_title" >Hvala!
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__alert_dialog_no_browser" >Nije pronađen pretraživač koji može da otvori website!
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-fr/donations__strings.xml"
+                qualifiers="fr" >
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__google_android_market_text" >Combien ?
+                </string>
+                <string name="donations__description" >Cette application vous rend service ?\nParticiper à son développement en effectuant un don !
+                </string>
+                <string name="donations__google_android_market" >Google Play Store
+                </string>
+                <string name="donations__google_android_market_description" >Google prend 30% sur chaque don ! 
+                </string>
+                <string name="donations__flattr_description" >Flattr prend 10% de frais mensuels !
+                </string>
+                <string name="donations__alert_dialog_title" >Une erreur est survenue
+                </string>
+                <string name="donations__thanks_dialog" >Merci beaucoup pour votre don ! 
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >Don In-App indisponible.
+                </string>
+                <string name="donations__thanks_dialog_title" >Merci !
+                </string>
+                <string name="donations__google_android_market_not_supported" >Donations In-App non-supportées. L\'application Google Play Store est-elle correctement installée ?
+                </string>
+                <string name="donations__google_android_market_donate_button" >Faites un don !
+                </string>
+                <string name="donations__paypal_description" >Vous pouvez faire un don du montant  désiré en cliquant sur ce bouton !
+                </string>
+                <string name="donations__button_close" >Fermer
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__alert_dialog_no_browser" >Aucun navigateur web n\'a été trouvé pour ouvrir le site web !
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-bg/donations__strings.xml"
+                qualifiers="bg" >
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__alert_dialog_no_browser" >Не е намерен браузър, който да отвори сайта!
+                </string>
+                <string name="donations__thanks_dialog_title" >Благодаря!
+                </string>
+                <string name="donations__description" >Считате ли това приложение за полезно?\nПодкрепете неговото развитие като изпратите дарениe на разработчика!
+                </string>
+                <string name="donations__google_android_market_donate_button" >Дарете!
+                </string>
+                <string name="donations__thanks_dialog" >Благодаря ви за дарението!\nНаистина оценявам това!
+                </string>
+                <string name="donations__google_android_market_description" >Google взема 30% от всяко дарение!
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >Дарения чрез приложението не се поддържат.
+                </string>
+                <string name="donations__button_close" >Затвори
+                </string>
+                <string name="donations__alert_dialog_title" >Възникна грешка
+                </string>
+                <string name="donations__google_android_market" >Google Play магазин
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__google_android_market_not_supported" >Дарения чрез приложението не се поддържат. Инсталиран ли е правилно магазина Google Play?
+                </string>
+                <string name="donations__paypal_description" >Можете да изберете колко искате да дарите след натискане на бутона!
+                </string>
+                <string name="donations__google_android_market_text" >Колко?
+                </string>
+                <string name="donations__flattr_description" >Flattr взема 10% като месечна такса!
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-vi-rVN/donations__strings.xml"
+                qualifiers="vi-rVN" >
+                <string name="donations__thanks_dialog_title" >Xin cám ơn!
+                </string>
+                <string name="donations__google_android_market_donate_button" >Ủng hộ!
+                </string>
+                <string name="donations__button_close" >Đóng
+                </string>
+                <string name="donations__description" >Bạn có thấy ứng này hữu ích?\nHãy hỗ trợ việc phát triển của phần mềm bằng cách ủng hộ tài chính!
+                </string>
+                <string name="donations__alert_dialog_no_browser" >Không có trinnhf duyệt nào được tìm thấy để mở ra liên kết đến website!
+                </string>
+                <string name="donations__google_android_market_not_supported" >Không hỗ trợ chức năng ủng hộ trong ứng dụng. CH Google Play có hoạt động chính xác?
+                </string>
+                <string name="donations__flattr_description" >Đánh giá cao mất 10% như phí tháng! 
+                </string>
+                <string name="donations__google_android_market_text" >Bao nhiêu?
+                </string>
+                <string name="donations__thanks_dialog" >Cám ơn bạn đã ủng hộ!\nTôi thực sự cảm kích! 
+                </string>
+                <string name="donations__google_android_market" >CH Google Play
+                </string>
+                <string name="donations__paypal_description" >Bạn có thể bấm nút chọn số tiền cần ủng hộ!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__flattr" >Đánh giá
+                </string>
+                <string name="donations__alert_dialog_title" >Lỗi đã xảy ra
+                </string>
+                <string name="donations__google_android_market_description" >Google hưởng 30% giá trị ủng hộ!
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-es-rMX/donations__strings.xml"
+                qualifiers="es-rMX" >
+                <string name="donations__thanks_dialog" >Gracias por donar!\nRealmente aprecio esto!
+                </string>
+                <string name="donations__alert_dialog_title" >Ocurrió un error
+                </string>
+                <string name="donations__google_android_market" >Google Play Store
+                </string>
+                <string name="donations__google_android_market_not_supported" >Las donaciones In-App no están soportadas. ¿Está la Tienda de Google Play instalada correctamente?
+                </string>
+                <string name="donations__google_android_market_text" >¿Cuánto?
+                </string>
+                <string name="donations__google_android_market_description" >¡Google se queda con el 30% de cada donación!
+                </string>
+                <string name="donations__google_android_market_donate_button" >¡Donar!
+                </string>
+                <string name="donations__button_close" >Cerrar
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__flattr_description" >¡Flattr toma 10% como cargo mensual!
+                </string>
+                <string name="donations__thanks_dialog_title" >Gracias!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__paypal_description" >¡Puedes escoger cuánto deseas donar después de dar clic en el botón!
+                </string>
+                <string name="donations__description" >Encuentras útil esta aplicación ?\nApoya su desarrollo enviando una donación al desarrollador!
+                </string>
+                <string name="donations__alert_dialog_no_browser" >No se encontró un navegador para abrir el sitio web!
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-zh-rHK/donations__strings.xml"
+                qualifiers="zh-rHK" >
+                <string name="donations__alert_dialog_title" >發生錯誤
+                </string>
+                <string name="donations__flattr" >透過 Flattr 捐款
+                </string>
+                <string name="donations__button_close" >關閉
+                </string>
+                <string name="donations__flattr_description" >Flattr 會收取 10% 月費！
+                </string>
+                <string name="donations__paypal_description" >點擊按鈕您就可以選擇捐多少！
+                </string>
+                <string name="donations__google_android_market_not_supported" >捐款不支援 In-App 模式。您的 Google Play 是否安裝正確？
+                </string>
+                <string name="donations__thanks_dialog" >感謝您的捐款！\n真的非常感激！
+                </string>
+                <string name="donations__google_android_market" >透過 Google Play 捐款
+                </string>
+                <string name="donations__google_android_market_text" >要捐多少？
+                </string>
+                <string name="donations__google_android_market_donate_button" >按此進行捐款！
+                </string>
+                <string name="donations__google_android_market_description" >Google 會在每項捐款中收取 30% 手續費！
+                </string>
+                <string name="donations__description" >這個廣告攔截程式對您有用嗎？\n您可透過以下方式進行捐款去支持本程式及其開發者！
+                </string>
+                <string name="donations__alert_dialog_no_browser" >沒有找到任何瀏覽器去開啟網頁！
+                </string>
+                <string name="donations__thanks_dialog_title" >感謝！
+                </string>
+                <string name="donations__paypal" >透過 PayPal 捐款
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-sl-rSI/donations__strings.xml"
+                qualifiers="sl-rSI" >
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__google_android_market_donate_button" >Doniraj!
+                </string>
+                <string name="donations__flattr_description" >Flattr vzame 10% kot mesečni strošek!
+                </string>
+                <string name="donations__thanks_dialog" >Hvala za donacijo!\nRes cenim to!
+                </string>
+                <string name="donations__google_android_market_description" >Google vzame 30% od vsake donacije!
+                </string>
+                <string name="donations__google_android_market_not_supported" >Donacije znotraj aplikacije niso možne. Imate nameščeno Google Trgovino (Play Store)?
+                </string>
+                <string name="donations__google_android_market" >Google Trgovina (Play Store)
+                </string>
+                <string name="donations__button_close" >Zapri
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__thanks_dialog_title" >Hvala!
+                </string>
+                <string name="donations__paypal_description" >O velikosti donacije boste odločili po tem ko pritisnete gumb!
+                </string>
+                <string name="donations__google_android_market_text" >Koliko?
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-tr/donations__strings.xml"
+                qualifiers="tr" >
+                <string name="donations__thanks_dialog_title" >Teşekkürler!
+                </string>
+                <string name="donations__google_android_market_donate_button" >Bağış Yap!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__google_android_market_not_supported" >Uygulama içi bağışlar desteklenmez. Google Play Mağazası doğru şekilde kuruldu mu?
+                </string>
+                <string name="donations__alert_dialog_no_browser" >Web site açmak için tarayıcı bulunamadı!
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >Uygulama içi bağışlar desteklenmez.
+                </string>
+                <string name="donations__paypal_description" >Butona bastıktan sonra ne kadar bağış yapacağınızı seçebilirsiniz!
+                </string>
+                <string name="donations__google_android_market_text" >Ne kadar?
+                </string>
+                <string name="donations__alert_dialog_title" >Hata oluştu
+                </string>
+                <string name="donations__google_android_market" >Google Play Mağazası
+                </string>
+                <string name="donations__thanks_dialog" >Bağış için teşekkürler!\nBunu gerçekten takdir ediyorum!
+                </string>
+                <string name="donations__description" >Bu uygulamayı kullanışlı mı buluyorsunuz?\nGeliştiriciye bağış yaparak gelişmesine yardımcı olun!
+                </string>
+                <string name="donations__google_android_market_description" >Google her bağışın %30\'unu alıyor!
+                </string>
+                <string name="donations__button_close" >Kapat
+                </string>
+                <string name="donations__flattr_description" >Flattr takes 10 % as a monthly fee!
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-sv/donations__strings.xml"
+                qualifiers="sv" >
+                <string name="donations__thanks_dialog_title" >Tack!
+                </string>
+                <string name="donations__google_android_market_description" >Google tar 30% av varje donation
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__button_close" >Avsluta
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__google_android_market_text" >Hur mycket?
+                </string>
+                <string name="donations__google_android_market_donate_button" >Donera!
+                </string>
+                <string name="donations__google_android_market_not_supported" >In-App-donationer stödjs inte. Är Google Play Store installerad korrekt?
+                </string>
+                <string name="donations__google_android_market" >Google Play Store
+                </string>
+                <string name="donations__thanks_dialog" >Tack för donationen!\nDet uppskattas verkligen!
+                </string>
+                <string name="donations__flattr_description" >Flattr tar 10% som månadskostnad
+                </string>
+                <string name="donations__paypal_description" >Du kan välja hur mycket du vill donera efter du har tryckt på knappen!
+                </string>
+            </file>
+            <file
+                name="donations__fragment_flattr"
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/layout/donations__fragment_flattr.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="donations__fragment_paypal"
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/layout/donations__fragment_paypal.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="donations__fragment_google"
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/layout/donations__fragment_google.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="donations__fragment"
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/layout/donations__fragment.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="donations__fragment_bitcoin"
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/layout/donations__fragment_bitcoin.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-nl/donations__strings.xml"
+                qualifiers="nl" >
+                <string name="donations__paypal" >Paypal
+                </string>
+                <string name="donations__thanks_dialog_title" >Dank u wel
+                </string>
+                <string name="donations__button_close" >Sluiten
+                </string>
+                <string name="donations__paypal_description" >U kunt kiezen hoeveel u wilt doneren, na het klikken van de knop
+                </string>
+                <string name="donations__google_android_market_text" >Welke bedrag?
+                </string>
+                <string name="donations__google_android_market_donate_button" >Doneer!
+                </string>
+                <string name="donations__google_android_market_not_supported" >Helaas, in-App donaties worden niet ondersteund. Is Google Play Store correct geïnstalleerd?
+                </string>
+                <string name="donations__flattr_description" >Flattr neemt 10% als maandelijkse kosten
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__google_android_market" >Google  Play Store
+                </string>
+                <string name="donations__alert_dialog_no_browser" >Er is geen browser gevonden om een website te openen!
+                </string>
+                <string name="donations__alert_dialog_title" >Er is iets fout gegaan!
+                </string>
+                <string name="donations__thanks_dialog" >Bedankt voor uw donatie! Ik stel het heel erg op prijs.
+                </string>
+                <string name="donations__google_android_market_description" >Google houdt 30% van elke donatie in
+                </string>
+                <string name="donations__description" >Vindt u dit applicatie nuttig?\nDraag bij aan de ontwikkeling ervan door een donatie te sturen aan de ontwikkelaar!
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-uk/donations__strings.xml"
+                qualifiers="uk" >
+                <string name="donations__alert_dialog_no_browser" >Не знайдено жодного переглядача, щоб відкрити веб-сайт!
+                </string>
+                <string name="donations__google_android_market_description" >Google стягує 30% з кожного пожертвування!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__button_close" >Закрити
+                </string>
+                <string name="donations__description" >Ви вважаєте програму корисною?\n Підтримайте її розробку надіславши пожертву розробнику!
+                </string>
+                <string name="donations__thanks_dialog_title" >Дякую!
+                </string>
+                <string name="donations__google_android_market" >магазин Google Play
+                </string>
+                <string name="donations__google_android_market_donate_button" >Пожертвувати!
+                </string>
+                <string name="donations__flattr_description" >Flattr стягує 10% у вигляді щомісячної абонентської плати!
+                </string>
+                <string name="donations__thanks_dialog" >Дякую за пожертвування! Я дуже це ціную!
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >Програмні пожертви не підтримуються.
+                </string>
+                <string name="donations__alert_dialog_title" >Трапилася помилка
+                </string>
+                <string name="donations__google_android_market_text" >Скільки?
+                </string>
+                <string name="donations__paypal_description" >Після натискання на кнопку ви можете вибрати скільки хочете пожертвувати!
+                </string>
+                <string name="donations__google_android_market_not_supported" >Пожертвування через програму не підтримуються. Магазин Google Play встановлений правильно?
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-no-rNO/donations__strings.xml"
+                qualifiers="no-rNO" >
+                <string name="donations__button_close" >Lukk
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-hr/donations__strings.xml"
+                qualifiers="hr" >
+                <string name="donations__google_android_market_text" >Koliko?
+                </string>
+                <string name="donations__thanks_dialog" >Hvala za donaciju!\n Stvarno cijenim ovo!
+                </string>
+                <string name="donations__flattr_description" >Flatter uzima 10% iznosa donacije kao mjesečnu članarinu!
+                </string>
+                <string name="donations__google_android_market_donate_button" >Donirajte!
+                </string>
+                <string name="donations__thanks_dialog_title" >Hvala!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__paypal_description" >Možete izabrati koliko želite donirati nakon pritiska na gumb.
+                </string>
+                <string name="donations__google_android_market_description" >Google uzima 30% od svake donacije!
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__button_close" >Zatvori
+                </string>
+                <string name="donations__google_android_market_not_supported" >Donacije unutar aplikacije nisu podržane. Je li Google Play Trgovina ispravno instalirana?
+                </string>
+                <string name="donations__google_android_market" >Google Play Trgovina
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-cs/donations__strings.xml"
+                qualifiers="cs" >
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__google_android_market_description" >Google si strhává 30 % z každého příspěvku!
+                </string>
+                <string name="donations__description" >Je tato aplikace užitečná?⏎\nPodpořte její vývoj zasláním příspěvku vývojáři!
+                </string>
+                <string name="donations__alert_dialog_no_browser" >Nebyl nalezen webový prohlížeč pro otevření stránky!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__thanks_dialog" >Díky za darování!\nOpravdu si toho vážím!
+                </string>
+                <string name="donations__button_close" >Zavřít
+                </string>
+                <string name="donations__google_android_market" >Obchod Play
+                </string>
+                <string name="donations__google_android_market_not_supported" >Platby z aplikací nejsou podporovány. Jste si jisti, že je Obchod Play správně nainstalován?
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >Platby z aplikací nejsou podporovány.
+                </string>
+                <string name="donations__google_android_market_donate_button" >Podpořte nás!
+                </string>
+                <string name="donations__alert_dialog_title" >Nastala chyba
+                </string>
+                <string name="donations__google_android_market_text" >Kolik to stojí?
+                </string>
+                <string name="donations__thanks_dialog_title" >Díky!
+                </string>
+                <string name="donations__paypal_description" >Po kliknutí na tlačítko můžete zvolit, kolik chcete přispět!
+                </string>
+                <string name="donations__flattr_description" >Flattr si strhává na poplatcích 10 % měsíčně!
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-zh-rCN/donations__strings.xml"
+                qualifiers="zh-rCN" >
+                <string name="donations__google_android_market_description" >Google 要从捐赠中抽取3成！\n
+                </string>
+                <string name="donations__thanks_dialog" >谢谢捐赠！\n非常感谢您！
+                </string>
+                <string name="donations__google_android_market_not_supported" >不支持 In-App 捐赠。你的 Google Play 商店是否安装正确了呢？
+                </string>
+                <string name="donations__flattr" >Flattr®
+                </string>
+                <string name="donations__description" >喜欢这个应用程序？\n通过捐赠来支持我们！
+                </string>
+                <string name="donations__alert_dialog_title" >发生错误
+                </string>
+                <string name="donations__alert_dialog_no_browser" >未找到浏览器来打开网页
+                </string>
+                <string name="donations__google_android_market" >Google Play 商店
+                </string>
+                <string name="donations__google_android_market_donate_button" >捐赠！
+                </string>
+                <string name="donations__google_android_market_text" >捐赠多少？
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__paypal_description" >点击这个按钮之后选择你想要捐赠多少！
+                </string>
+                <string name="donations__button_close" >关闭
+                </string>
+                <string name="donations__flattr_description" >Flattr® 将从月费中提成10%！
+                </string>
+                <string name="donations__thanks_dialog_title" >谢谢！
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values/donations__strings.xml"
+                qualifiers="" >
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__alert_dialog_title" >Error occurred
+                </string>
+                <string name="donations__thanks_dialog_title" >Thanks!
+                </string>
+                <string name="donations__google_android_market" >Google Play Store
+                </string>
+                <string name="donations__bitcoin" >Bitcoin
+                </string>
+                <string name="donations__google_android_market_text" >How much?
+                </string>
+                <string name="donations__google_android_market_donate_button" >Donate!
+                </string>
+                <string name="donations__flattr_description" >Flattr takes 10 % as a monthly fee!
+                </string>
+                <string name="donations__bitcoin_send_bitcoin_button" >Send bitcoin!
+                </string>
+                <string name="donations__google_android_market_description" >Google takes 30 % off every donation!
+                </string>
+                <string name="donations__paypal_description" >You can choose how much you want to donate after clicking the button!
+                </string>
+                <string name="donations__bitcoin_description" >Send any amount of bitcoin to the developer. Press and hold button to copy address.
+                </string>
+                <string name="donations__alert_dialog_no_browser" >No browser was found to open a website!
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >In-App Donations are not supported.
+                </string>
+                <string name="donations__google_android_market_not_supported" >In-App Donations are not supported. Is Google Play Store installed correctly?
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__description" >Do you find this application useful?\nSupport it\'s development by sending a donation to the developer!
+                </string>
+                <string name="donations__thanks_dialog" >Thanks for donating!\nI really appreciate this!
+                </string>
+                <string name="donations__bitcoin_toast_copy" >Bitcoin address has been copied to the clipboard!
+                </string>
+                <string name="donations__button_close" >Close
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-pl/donations__strings.xml"
+                qualifiers="pl" >
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__google_android_market_description" >Google pobiera 30% kwoty z każdej darowizny!
+                </string>
+                <string name="donations__thanks_dialog_title" >Dzięki!
+                </string>
+                <string name="donations__description" >Czy aplikacja jest dla Ciebie przydatna?\nWspomóż jej rozwój poprzez dotację dla autora!
+                </string>
+                <string name="donations__google_android_market_text" >Kwota do przekazania?
+                </string>
+                <string name="donations__paypal_description" >Wybór kwoty do przekazania nastąpi po kliknięciu przycisku \"Przekaż\"!
+                </string>
+                <string name="donations__alert_dialog_title" >Wystąpił błąd
+                </string>
+                <string name="donations__google_android_market_not_supported" >Brak wsparcia dla wbudowanych płatności. Czy aplikacja Sklep Google Play jest zainstalowana prawidłowo?
+                </string>
+                <string name="donations__thanks_dialog" >Dziekuję za darowiznę!\nNaprawdę to doceniam!
+                </string>
+                <string name="donations__google_android_market_donate_button" >Przekaż!
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__google_android_market" >Sklep Google Play
+                </string>
+                <string name="donations__button_close" >Zamknij
+                </string>
+                <string name="donations__flattr_description" >Flattr pobiera 10% jako miesięczną opłatę!
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >Wsparcie poprzez płatność z aplikacji nie jest dostępne.
+                </string>
+                <string name="donations__alert_dialog_no_browser" >Brak przeglądarki! Nie można otworzyć strony www.
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-el/donations__strings.xml"
+                qualifiers="el" >
+                <string name="donations__google_android_market_not_supported" >Δεν υποστηρίζονται In-App δωρεές. Έχει εγκατασταθεί σωστά το Google Play Store;
+                </string>
+                <string name="donations__google_android_market_donate_button" >Δωρίστε!
+                </string>
+                <string name="donations__button_close" >Κλείσιμο
+                </string>
+                <string name="donations__google_android_market_description" >Το Google παίρνει το 30 % κάθε δωρεάς!
+                </string>
+                <string name="donations__thanks_dialog_title" >Ευχαριστώ!
+                </string>
+                <string name="donations__paypal_description" >Μπορείς να επιλέξεις πόσα θέλεις να δωρίσεις αφού πατήσεις το κουμπί!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__google_android_market" >Google Play Store
+                </string>
+                <string name="donations__thanks_dialog" >Ευχαριστώ για την δωρεά!\n\nΠραγματικά το εκτιμώ!
+                </string>
+                <string name="donations__google_android_market_text" >Πόσο;
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__flattr_description" >Το Flattr παίρνει 10 % σαν μηνιαίο τέλος!
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-et-rEE/donations__strings.xml"
+                qualifiers="et-rEE" >
+                <string name="donations__google_android_market_not_supported" >Annetused rakenduse sees ei ole toetatud. Kas Google Play pood on korrektselt paigaldatud?
+                </string>
+                <string name="donations__google_android_market" >Google Play pood
+                </string>
+                <string name="donations__google_android_market_description" >Google võtab 30% igalt annetuselt!
+                </string>
+                <string name="donations__paypal_description" >Sellel nupul klikates saad valida kui palju soovid annetada!
+                </string>
+                <string name="donations__button_close" >Sulge
+                </string>
+                <string name="donations__google_android_market_text" >Kui palju?
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__thanks_dialog_title" >Tänan!
+                </string>
+                <string name="donations__flattr_description" >Flattr võtab 10% igakuist tasu!
+                </string>
+                <string name="donations__thanks_dialog" >Tänan annetamast! \nHindan seda väga!
+                </string>
+                <string name="donations__google_android_market_donate_button" >Anneta!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-zh-rTW/donations__strings.xml"
+                qualifiers="zh-rTW" >
+                <string name="donations__alert_dialog_no_browser" >找不到瀏覽器來開啟網站
+                </string>
+                <string name="donations__description" >這個程式對你來說有用嗎?\n您可捐款給開發者以幫助程式發展!
+                </string>
+                <string name="donations__google_android_market" >Google Play 商店
+                </string>
+                <string name="donations__google_android_market_text" >多少？
+                </string>
+                <string name="donations__google_android_market_description" >Google 會從每筆資助金額中抽取3成！
+                </string>
+                <string name="donations__flattr" >Flattr®
+                </string>
+                <string name="donations__button_close" >關閉
+                </string>
+                <string name="donations__flattr_description" >Flattr®將從資助金額中扣取10%作為手續費！
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__google_android_market_not_supported" >不支援In-App資助。你的Google Play 商店是否正確安裝？
+                </string>
+                <string name="donations__thanks_dialog" >謝謝您的資助！\n真的很感謝您！
+                </string>
+                <string name="donations__thanks_dialog_title" >謝謝！
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >不支援程式內購買
+                </string>
+                <string name="donations__google_android_market_donate_button" >資助開發者！
+                </string>
+                <string name="donations__alert_dialog_title" >發生錯誤
+                </string>
+                <string name="donations__paypal_description" >你可以選擇你想資助多少後點擊按鈕！
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-fi/donations__strings.xml"
+                qualifiers="fi" >
+                <string name="donations__google_android_market_description" >Gogle ottaa 30% jokaisesta lahjoituksesta!
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__button_close" >Sulje
+                </string>
+                <string name="donations__thanks_dialog_title" >Kiitos!
+                </string>
+                <string name="donations__google_android_market_text" >Kuinka paljon?
+                </string>
+                <string name="donations__google_android_market" >Googlen Android Market
+                </string>
+                <string name="donations__google_android_market_donate_button" >Lahjoita!
+                </string>
+                <string name="donations__paypal_description" >Voit valita, kuinka paljon haluat lahjoittaa painikkeen napsauttamisen jälkeen!
+                </string>
+                <string name="donations__google_android_market_not_supported" >Sovelluksen sisäiset lahjoitukset eivät ole tuettu. Löytyykö laitteesta Android Market?
+                </string>
+                <string name="donations__thanks_dialog" >Kiitos lahjoituksestasi!\nArvostan sitä suuresti!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__flattr_description" >Flattr ottaa 10% kuukausipalkkiosta!
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-es-rES/donations__strings.xml"
+                qualifiers="es-rES" >
+                <string name="donations__google_android_market_text" >¿Cuánto?
+                </string>
+                <string name="donations__description" >¿Le resulta útil esta aplicación? \nApoye su desarrollo mediante el envío de una donación al desarrollador!
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >No se admiten Donaciones In-App
+                </string>
+                <string name="donations__flattr_description" >¡Flattr toma un 10% como cuota mensual!
+                </string>
+                <string name="donations__alert_dialog_no_browser" >No se encontró un navegador para abrir una página web!
+                </string>
+                <string name="donations__google_android_market_not_supported" >No se admiten Donaciones In-App. ¿Está Google Play Store instalado correctamente?
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__button_close" >Cerrar
+                </string>
+                <string name="donations__google_android_market" >Google Play Store
+                </string>
+                <string name="donations__google_android_market_donate_button" >¡Donar!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__alert_dialog_title" >Se produjó un error
+                </string>
+                <string name="donations__google_android_market_description" >¡Google se queda el 30% de todas las donaciones!
+                </string>
+                <string name="donations__thanks_dialog" >¡Gracias por donar!\n¡Te lo agradezco mucho!
+                </string>
+                <string name="donations__paypal_description" >¡Puedes elegir cuánto quieres donar después de pulsar el botón!
+                </string>
+                <string name="donations__thanks_dialog_title" >¡Gracias!
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-id/donations__strings.xml"
+                qualifiers="id" >
+                <string name="donations__description" >Apakah aplikasi ini berguna?\nDukung pengembangan aplikasi dengan memberikan donasi!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__google_android_market" >Google Play Store
+                </string>
+                <string name="donations__google_android_market_not_supported" >Donasi di dalam aplikasi tidak didukung. apakah Google Play Store terpasang dengan benar?
+                </string>
+                <string name="donations__alert_dialog_no_browser" >Tidak di temukan browser untuk membuka laman website
+                </string>
+                <string name="donations__flattr_description" >Flattr mengambil 10 % sebagai biaya bulanan!
+                </string>
+                <string name="donations__google_android_market_text" >Berapa banyak?
+                </string>
+                <string name="donations__button_close" >Tutup
+                </string>
+                <string name="donations__paypal_description" >Anda dapat memilih berapa banyak Anda ingin sumbangkan setelah mengklik tombol!
+                </string>
+                <string name="donations__google_android_market_donate_button" >Donasi!
+                </string>
+                <string name="donations__thanks_dialog_title" >Terima Kasih!
+                </string>
+                <string name="donations__alert_dialog_title" >Terjadi galat
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__google_android_market_description" >Google mengambil 30 % dari setiap donasi!
+                </string>
+                <string name="donations__thanks_dialog" >Terimkasih atas donasi anda!\n\nSaya sangat menghargai ini!
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-de-rDE/donations__strings.xml"
+                qualifiers="de-rDE" >
+                <string name="donations__paypal_description" >Du kannst auswählen wie viel Du spenden möchtest, nachdem Du auf den Button geklickt hast!
+                </string>
+                <string name="donations__google_android_market_donate_button" >Spende!
+                </string>
+                <string name="donations__google_android_market_description" >30 % jeder Spende geht an Google!
+                </string>
+                <string name="donations__google_android_market_text" >Wie viel?
+                </string>
+                <string name="donations__button_close" >Schließen
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__flattr_description" >Flattr behält 10 % als monatliche Gebühr ein!
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >In-App-Spenden werden nicht unterstützt
+                </string>
+                <string name="donations__google_android_market_not_supported" >In-App-Spenden werden nicht unterstützt. Ist der Google Play Store korrekt installiert?
+                </string>
+                <string name="donations__thanks_dialog" >Danke für die Spende!\nIch weiß es wirklich zu schätzen!
+                </string>
+                <string name="donations__alert_dialog_no_browser" >Kein Browser gefunden um eine Webseite zu öffnen!
+                </string>
+                <string name="donations__google_android_market" >Google Play Store
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__thanks_dialog_title" >Danke!
+                </string>
+                <string name="donations__description" >Findest Du diese Anwendung nützlich?\nUnterstütze die Entwicklung durch eine Spende!
+                </string>
+                <string name="donations__alert_dialog_title" >Fehler aufgetreten
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-vi/donations__strings.xml"
+                qualifiers="vi" >
+                <string name="donations__google_android_market" >kho tìm kiếm trò chơi
+                </string>
+                <string name="donations__google_android_market_text" >bao nhiêu?
+                </string>
+                <string name="donations__button_close" >Đóng
+                </string>
+                <string name="donations__alert_dialog_no_browser" >Không có trình duyệt được tìm thấy để mở một trang web!
+                </string>
+                <string name="donations__thanks_dialog_title" >cám ơn!
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >tài trợ trong ứng dụng không được hỗ trợ.
+                </string>
+                <string name="donations__alert_dialog_title" >đã xảy ra lỗi
+                </string>
+                <string name="donations__google_android_market_not_supported" >tài trợ trong ứng dụng không được hỗ trợ. kho tìm kiếm trò chơi đã cài đặt chính xác?
+                </string>
+                <string name="donations__flattr_description" >Flattr tốn 10% cho một khoản phí hàng tháng!
+                </string>
+                <string name="donations__google_android_market_donate_button" >Quyên góp
+                </string>
+                <string name="donations__google_android_market_description" >Google mất giá 30 % tất cả các đóng góp!
+                </string>
+                <string name="donations__paypal_description" >Bạn có thể lựa chọn bạn muốn tài trợ bao nhiêu sau khi nhấn vào nút!
+                </string>
+                <string name="donations__thanks_dialog" >cám ơn vì tài trợ!\ntôi thực sự đánh giá cao việc này!
+                </string>
+                <string name="donations__description" >Bạn tìm thấy ứng dụng hữu ích này? ⏎\nHỗ trợ phát triển nó bằng cách gửi một tài trợ cho các nhà phát triển!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-ja/donations__strings.xml"
+                qualifiers="ja" >
+                <string name="donations__thanks_dialog" >寄付ありがとう!\n本当に感謝しています!
+                </string>
+                <string name="donations__google_android_market_text" >いくら?
+                </string>
+                <string name="donations__google_android_market" >Google Playストア
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__paypal_description" >ボタンを押した後寄付したい額を選べます!
+                </string>
+                <string name="donations__alert_dialog_title" >エラーが発生しました
+                </string>
+                <string name="donations__google_android_market_donate_button" >寄付する!
+                </string>
+                <string name="donations__google_android_market_not_supported" >アプリ内寄付は非対応です。GooglePlayストアはインストールされていますか?
+                </string>
+                <string name="donations__thanks_dialog_title" >ありがとう!
+                </string>
+                <string name="donations__flattr_description" >Flattr は月額として10 %手に入れます!
+                </string>
+                <string name="donations__google_android_market_not_supported_title" >アプリ内寄付は非対応です
+                </string>
+                <string name="donations__alert_dialog_no_browser" >サイトを開くためのブラウザが見つかりません!
+                </string>
+                <string name="donations__google_android_market_description" >Googleは寄付の30%を持って行きます…。
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__description" >このアプリは役に立ちましたか?\n開発者に寄付をして開発を応援してください!
+                </string>
+                <string name="donations__button_close" >閉じる
+                </string>
+            </file>
+            <file
+                path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/main/res/values-he/donations__strings.xml"
+                qualifiers="he" >
+                <string name="donations__paypal_description" >אתה יכול לבחור כמה אתה רוצה לתרום על ידי לחיצה על הכפתור!
+                </string>
+                <string name="donations__google_android_market_description" >גוגל מקבלת 30% מסך התרומה!
+                </string>
+                <string name="donations__paypal" >PayPal
+                </string>
+                <string name="donations__thanks_dialog" >תודה על תרומתך!\nאני מאוד מעריך זאת!
+                </string>
+                <string name="donations__thanks_dialog_title" >תודה!
+                </string>
+                <string name="donations__google_android_market_text" >כמה?
+                </string>
+                <string name="donations__flattr_description" >Flattr מספר הנחה של 10 % לתשלום החודשי!
+                </string>
+                <string name="donations__button_close" >לא נמצא Busybox. כדי להתקין אותו מהמרקט לחץ על הלחצן מתחת.
+                </string>
+                <string name="donations__google_android_market_donate_button" >תרומה!
+                </string>
+                <string name="donations__google_android_market" >אנדרואיד מרקט
+                </string>
+                <string name="donations__flattr" >Flattr
+                </string>
+                <string name="donations__google_android_market_not_supported" >תרומות לתוכנה אינם נתמכות. האם המרקט של גוגל אנדרואיד מותקן כראוי?
+                </string>
+            </file>
+        </source>
+        <source path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/build/generated/res/rs/debug" />
+        <source path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/build/generated/res/generated/debug" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="/home/robin/AndroidStudioProjects/be.robinj.ubuntu/UbuntuLauncher/Donations/src/debug/res" />
+    </dataSet>
+
+</merger>
