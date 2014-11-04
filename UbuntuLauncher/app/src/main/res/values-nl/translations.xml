@@ -90,6 +90,6 @@
   <string name="contribute_donate_description">Indien gewenst kan je ook een donatie maken aan de ontwikkelaar. Donaties worden afgehandeld via PayPal. U krijgt zelf de mogelijkheid om te kiezen hoeveel u wil doneren.
 \nOpmerking: Het gaat hier om een donatie. Ik verkoop niets, en u koopt niets. Donaties worden erg geapprecieerd, maar u zal hierdoor geen extra functionaliteit krijgen. Alle opties van deze toepassing zijn gratis te gebruiken.
 \n
-\nPayPal neemt $0.30 + 2.2% fvan elke donatie in beslag als servicevergoeding. Indien uw donatie minder dan $0.30 bedraagt zal het volledige bedrag naar PayPal zelf gaan en zal de ontwikkelaar hier zelf niets aan overhouden. Indien u een donatie maakt kunt u dus best meer dan dit bedrag doneren, tenzij u om één of andere reden graag een donatie aan PayPal zelf zou maken.</string>
+\nPayPal neemt $0.30 + 2.2\%% van elke donatie in beslag als servicevergoeding. Indien uw donatie minder dan $0.30 bedraagt zal het volledige bedrag naar PayPal zelf gaan en zal de ontwikkelaar hier zelf niets aan overhouden. Indien u een donatie maakt kunt u dus best meer dan dit bedrag doneren, tenzij u om één of andere reden graag een donatie aan PayPal zelf zou maken.</string>
   <string name="contribute_donate_go">Doneren</string>
 </resources>
