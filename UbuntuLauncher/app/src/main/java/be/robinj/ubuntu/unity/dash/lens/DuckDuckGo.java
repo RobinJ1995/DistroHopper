@@ -20,11 +20,24 @@ import be.robinj.ubuntu.R;
 public class DuckDuckGo extends Lens
 {
 	private final String API = "https://api.duckduckgo.com/?q={:QUERY:}&format=json";
+
+	private Context context;
 	private Drawable icon;
 
 	public DuckDuckGo (Context context)
 	{
+		this.context = context;
 		this.icon = context.getResources ().getDrawable (R.drawable.dash_search_lens_duckduckgo);
+	}
+
+	public String getName ()
+	{
+		return "DuckDuckGo";
+	}
+
+	public String getDescription ()
+	{
+		return "DuckDuckGo search results";
 	}
 
 	public List<LensSearchResult> search (String str) throws IOException, JSONException
@@ -38,9 +51,29 @@ public class DuckDuckGo extends Lens
 		for (int i = 0; i < relatedTopics.length (); i++)
 		{
 			JSONObject relatedTopic = relatedTopics.getJSONObject (i);
-			LensSearchResult result = new LensSearchResult (relatedTopic.getString ("Name"), relatedTopic.getString ("FirstURL"), this.icon);
 
-			results.add (result);
+			if (relatedTopic.has ("Text") && relatedTopic.has ("FirstURL"))
+			{
+				LensSearchResult result = new LensSearchResult (this.context, relatedTopic.getString ("Text"), relatedTopic.getString ("FirstURL"), this.icon);
+
+				results.add (result);
+			}
+			else if (relatedTopic.has ("Topics"))
+			{
+				JSONArray topics = relatedTopic.getJSONArray ("Topics");
+
+				for (int j = 0; j < topics.length (); j++)
+				{
+					JSONObject topic = topics.getJSONObject (j);
+
+					if (topic.has ("Text") && topic.has ("FirstURL"))
+					{
+						LensSearchResult result = new LensSearchResult (this.context, topic.getString ("Text"), topic.getString ("FirstURL"), this.icon);
+
+						results.add (result);
+					}
+				}
+			}
 		}
 
 		return results;

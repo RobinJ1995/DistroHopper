@@ -1,22 +1,40 @@
 package be.robinj.ubuntu.unity.dash.lens;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
+import android.widget.LinearLayout;
 
 /**
  * Created by robin on 4/11/14.
  */
-public class LensSearchResult
+public class LensSearchResult extends LinearLayout
 {
+	private Context context;
 	private String name;
 	private String url;
 	private Drawable icon;
 
-	public LensSearchResult (String name, String url, Drawable icon)
+	public LensSearchResult (Context context, String name, String url, Drawable icon)
 	{
+		super (context);
+
+		this.context = context;
 		this.name = name;
 		this.url = url;
 		this.icon = icon;
 	}
+
+	public LensSearchResult (Context context)
+	{
+		super (context);
+	}
+
+	public LensSearchResult (Context context, AttributeSet attrs)
+	{
+		super (context, attrs);
+	}
+
 
 	public String getName ()
 	{

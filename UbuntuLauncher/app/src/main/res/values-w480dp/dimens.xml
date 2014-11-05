@@ -3,4 +3,7 @@
     <dimen name="dash_applauncher_width">112dp</dimen>
     <dimen name="dash_applauncher_height">112dp</dimen>
     <dimen name="dash_applauncher_textsize">16dp</dimen>
+
+    <dimen name="dash_lenssearchresult_width">112dp</dimen>
+    <dimen name="dash_lenssearchresult_height">136dp</dimen>
 </resources>

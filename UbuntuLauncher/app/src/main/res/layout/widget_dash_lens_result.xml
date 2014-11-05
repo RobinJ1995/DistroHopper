@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="96dp"
-              android:layout_height="96dp">
+      android:orientation="vertical"
+      android:layout_width="@dimen/dash_lenssearchresult_width"
+      android:layout_height="@dimen/dash_lenssearchresult_height"
+      android:padding="8dp">
 
     <ImageView
         android:layout_width="match_parent"
@@ -19,8 +20,9 @@
         android:textColor="@android:color/white"
         android:layout_weight="0"
         android:gravity="center"
-        android:textSize="16dp"
-        android:maxLines="@integer/dash_applauncher_label_maxlines"
-        />
+        android:textSize="@dimen/dash_applauncher_textsize"
+        android:maxLines="@integer/dash_lenssearchresult_label_maxlines"
+        android:ellipsize="marquee"
+        android:textAppearance="@style/textshadow_2px_black"/>
 
 </LinearLayout>

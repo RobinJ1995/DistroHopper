@@ -15,6 +15,10 @@ public abstract class Lens
 {
 	public abstract List<LensSearchResult> search (String str) throws IOException, JSONException;
 
+	public abstract String getName ();
+
+	public abstract String getDescription ();
+
 	protected String downloadStr (String url) throws IOException, JSONException
 	{
 		URL urlObj = new URL (url);
