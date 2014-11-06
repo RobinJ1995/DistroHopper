@@ -12,6 +12,7 @@
   <string name="honourable_mentions">Menções honrosas</string>
   <string name="button_back">Voltar</string>
   <string name="button_about">Sobre</string>
+  <string name="button_contribute">Contribua</string>
   <string name="title_preferences">Preferências</string>
   <string name="pref_header_general">Geral</string>
   <string name="pref_header_unity">Unity</string>
@@ -21,11 +22,13 @@
   <string name="pref_header_advanced">Avançado</string>
   <string name="category_colourcalc">Cálculo de cor predominante</string>
   <string name="option_launchericon_width">Tamanho do Launcher</string>
-  <string name="hint_launchericon_width">Ajustar tamanho do launcher e dos í­cones. O ajuste (de acordo com a barra) vai de 48px à 120px, com padrão em 84px.</string>
-  <string name="option_launchericon_opacity">Opacidade de fundo dos í­cones no Launcher</string>
+  <string name="hint_launchericon_width">Ajustar tamanho do launcher e dos ícones. O ajuste (de acordo com a barra) vai de 48px à 120px, com padrão em 84px.</string>
+  <string name="option_launchericon_opacity">Opacidade de fundo dos ícones no Launcher</string>
   <string name="hint_launchericon_opacity">Define a opacidade da cor de fundo dos ícones no Launcher.</string>
   <string name="option_launcherservice_enabled">Tornar o Launcher acessível em outros aplicativos abertos.</string>
   <string name="hint_launcherservice_enabled">Deslizando o dedo no canto inferior esquerdo da tela, o Launcher aparece, permitindo alternar entre os aplicativos fixados sem precisar voltar à tela inicial. (EXPERIMENTAL)</string>
+  <string name="option_launcher_running_show">Mostrar aplicativos em uso</string>
+  <string name="hint_launcher_running_show">O Launcher deve mostrar os aplicativos atualmente abertos. Isso é indicado por uma seta ao lado esquerdo do ícone. Aplicativos em uso, mas não fixados ao Launcher, também são mostrados e automaticamente removidos quando encerrados.</string>
   <string name="option_panel_show">Exibir Painel</string>
   <string name="hint_panel_show">Se o painel, no topo do Launcher, deve aparecer ou não.</string>
   <string name="option_panel_opacity">Opacidade do painel</string>
@@ -39,10 +42,16 @@
   <string name="hint_unitybackground_opacity">Defina a opacidade da cor de fundo na composição do Unity.</string>
   <string name="option_unitywallpaper_blur">Efeito de Papel de Parede </string>
   <string name="hint_unitywallpaper_blur">Efeito de desfoque do fundo quando o Dash é aberto. Caso o modo \"Desfoque\" for definido e não funcionar corretamente (ou quando um papel de parede animado for usado), o modo \"Escurecido\" será usado como padrão automaticamente.</string>
+  <string name="option_launcher_edge">Posição do Launcher</string>
+  <string name="hint_launcher_edge">Define a posição do Launcher na tela.</string>
   <string-array name="keys_unitywallpaper_blur">
     <item>Sem desfoque</item>
     <item>Escurecido</item>
     <item>Desfoque ativo (padrão)</item>
+  </string-array>
+  <string-array name="keys_launcher_edge">
+    <item>Esquerda (padrão)</item>
+    <item>Direita</item>
   </string-array>
   <string name="option_wallpaper">Papel de Parede</string>
   <string name="hint_wallpaper">Alterar papel de parede</string>
@@ -52,6 +61,8 @@
   <string name="hint_colourcalc_hsv">Usando o recurso HSV (melhoria de saturação) ao invés do RGB comum, as cores se tornam muito mais vibrantes (Pode causar demora no carregamento em dispositivos mais lentos).</string>
   <string name="option_dashsearch_full">Pesquisa avançada</string>
   <string name="hint_dashsearch_full">A ativação desta opção proporcionará melhores resultados de busca \"Dash\", mas também afetará o desempenho em dispositivos mais lentos, ou em dispositivos com muitos aplicativos instalados. Recomenda-se desativar, caso haja instabilidade no recurso.</string>
+  <string name="option_dash_ready_show">Abrir Dash por padrão</string>
+  <string name="hint_dash_ready_show">O Menu de Aplicativos deve abrir automaticamente quando voltar à tela inicial.</string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Testando (Se não consegue destruí­-lo, então é seguro pro resto do mundo) * Ajuda com cálculo de cor predominante.</string>
   <string name="hm_todddavies_name">Todd Davies</string>
@@ -63,4 +74,18 @@
   <string name="hm_commonsguy_why">* Uso do ColorMixer na tela de preferências.
 https://github.com/commonsguy/cwac-colormixer</string>
   <string name="translators_title">Tradutores</string>
+  <string name="title_activity_contribute">Como posso contribuir?</string>
+  <string name="contribute_intro">Desenvolver um aplicativo como este demanda tempo e trabalho duro. Se você tem interesse em ajudar, veja como fazer:</string>
+  <string name="contribute_translate_title">Traduzindo</string>
+  <string name="contribute_translate_description">O Ubuntu Launcher está disponível em varias línguas graças ao apoio de voluntários que se disponibilizam para traduzir o aplicativo. Se Ubuntu Launcher ainda não foi traduzido para o seu idioma, e você entende Inglês (e você tem conhecimento suficiente do Ubuntu para entender alguns dos termos mais relacionados com o Unity), traduzir o aplicativo é uma ótima maneira de ajudar. As traduções são feitas pelo Transifex. Tudo que você precisa fazer é pedir para se juntar a uma equipe de tradução. Depois que seu pedido for aprovado, você estará pronto para começar.</string>
+  <string name="contribute_translate_go">Ir para Transifex</string>
+  <string name="contribute_bugs_title">Informando bugs</string>
+  <string name="contribute_bugs_description">Se você encontra um erro no Ubuntu Launcher, isso não significa necessariamente que sabemos da existência do mesmo. Desenvolvedores geralmente não conseguem testar tudo antes de disponibilizar o aplicativo. Alguns problemas também só existem em determinadas circunstâncias específicas (por exemplo, um determinado dispositivo executando uma versão específica do Android com algumas opções extras habilitados). Então, se você encontrar um bug no Ubuntu Launcher (ou se você sente falta de algum recurso) pode ajudar informando-o. Relatórios de erros para Ubuntu Launcher são mantidos no GitHub. Se achar o GitHub complicado, você pode simplesmente enviar um e-mail para android-dev@robinj.be. Apenas certifique-se de entrar em contato em Inglês ou Holandês. Por favor, forneça o máximo de informações (relevantes) possíveis.</string>
+  <string name="contribute_bugs_go">Ir para GitHub</string>
+  <string name="contribute_donate_title">Doando</string>
+  <string name="contribute_donate_description">Se você quiser, você também pode fazer uma doação em dinheiro para o desenvolvedor. Doações são feitas através do PayPal. Você poderá escolher o valor que gostaria de doar.
+Nota: É uma doação. Não estamos vendendo nada, e você não está comprando nada. Doações são muito bem vindas, mas você não vai ganhar nenhum recurso adicional por causa disso. Todas as funcionalidades deste aplicativo estão disponíveis gratuitamente para todos.
+
+PayPal tem uma taxa de $0,30 dólares + 2,2\%%, por isso, se a sua doação for inferior à taxa, então tudo isso vai para o PayPal, e nada  vai chegar ao desenvolvedor. Então se você doar, é melhor fazer a sua doação acima desse valor, a menos que por alguma estranha razão você prefira fazer uma doação para o PayPal.</string>
+  <string name="contribute_donate_go">Doar</string>
 </resources>
