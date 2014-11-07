@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="dash_applauncher_label_maxlines">2</integer>
+    <integer name="dash_lenssearchresult_label_maxlines">3</integer>
 </resources>

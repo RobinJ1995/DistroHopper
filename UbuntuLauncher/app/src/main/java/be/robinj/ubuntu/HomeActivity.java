@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,6 +37,7 @@ import be.robinj.ubuntu.unity.WidgetHost;
 import be.robinj.ubuntu.unity.WidgetHostView;
 import be.robinj.ubuntu.unity.WidgetHostView_LongClickListener;
 import be.robinj.ubuntu.unity.dash.SearchTextWatcher;
+import be.robinj.ubuntu.unity.dash.lens.LensManager;
 import be.robinj.ubuntu.unity.launcher.AppLauncher;
 import be.robinj.ubuntu.unity.launcher.LauncherDragListener;
 import be.robinj.ubuntu.unity.launcher.TrashDragListener;
@@ -44,6 +46,7 @@ import be.robinj.ubuntu.unity.launcher.service.LauncherService;
 
 public class HomeActivity extends Activity
 {
+	private LensManager lenses;
 	private AppManager apps;
 	private AppWidgetManager widgetManager;
 	private WidgetHost widgetHost;
@@ -61,6 +64,13 @@ public class HomeActivity extends Activity
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_home);
 
+		//DEBUG// For debugging purposes only. This should be removed before publishing the next update. //
+		if (android.os.Build.VERSION.SDK_INT > 9)
+		{
+			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder ().permitAll ().build ();
+			StrictMode.setThreadPolicy (policy);
+		}
+
 		try
 		{
 			GridView gvDashHomeApps = (GridView) this.findViewById (R.id.gvDashHomeApps);
@@ -75,6 +85,7 @@ public class HomeActivity extends Activity
 			ImageButton ibPanelDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
 			//GridLayout glWidgets = (GridLayout) this.findViewById (R.id.glWidgets);
 			//ScrollView scrLauncherAppsContainer = (ScrollView) this.findViewById (R.id.scrLauncherAppsContainer);
+			GridView gvDashHomeLenses = (GridView) this.findViewById (R.id.gvDashHomeLenses);
 
 			Intent launcherServiceIntent = new Intent (this, LauncherService.class);
 			this.stopService (launcherServiceIntent);
@@ -135,6 +146,11 @@ public class HomeActivity extends Activity
 				gvDashHomeApps_transition.setDuration (180);
 				gvDashHomeApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
 				gvDashHomeApps.setLayoutTransition (gvDashHomeApps_transition);
+
+				LayoutTransition gvDashHomeLenses_transition = new LayoutTransition ();
+				gvDashHomeLenses_transition.setDuration (180);
+				gvDashHomeLenses_transition.setStartDelay (LayoutTransition.APPEARING, 0);
+				gvDashHomeLenses.setLayoutTransition (gvDashHomeLenses_transition);
 
 				LayoutTransition llLauncherPinnedApps_transition = new LayoutTransition ();
 				llLauncherPinnedApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
@@ -404,13 +420,16 @@ public class HomeActivity extends Activity
 	{
 		try
 		{
+			LinearLayout gvDashHomeLensesContainer = (LinearLayout) this.findViewById (R.id.gvDashHomeLensesContainer);
+
 			this.apps = installedApps;
+			this.lenses = new LensManager (this.getApplicationContext (), gvDashHomeLensesContainer);
 
 			EditText etDashSearch = (EditText) this.findViewById (R.id.etDashSearch);
 			LinearLayout llLauncher = (LinearLayout) this.findViewById (R.id.llLauncher);
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalTrash = (be.robinj.ubuntu.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalTrash);
 
-			etDashSearch.addTextChangedListener (new SearchTextWatcher (installedApps));
+			etDashSearch.addTextChangedListener (new SearchTextWatcher (installedApps, this.lenses));
 			if (Build.VERSION.SDK_INT >= 11)
 			{
 				llLauncher.setOnDragListener (new LauncherDragListener (this.apps));

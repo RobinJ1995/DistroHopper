@@ -6,4 +6,7 @@
     <dimen name="dash_applauncher_width">84dp</dimen>
     <dimen name="dash_applauncher_height">84dp</dimen>
     <dimen name="dash_applauncher_textsize">14dp</dimen>
+
+    <dimen name="dash_lenssearchresult_width">84dp</dimen>
+    <dimen name="dash_lenssearchresult_height">96dp</dimen>
 </resources>

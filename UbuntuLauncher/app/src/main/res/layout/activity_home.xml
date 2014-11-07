@@ -210,40 +210,86 @@
                             android:adjustViewBounds="true"/>
 
                         <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/dash_lens_apps_title"
-                                android:id="@+id/textView"
-                                android:layout_gravity="center_horizontal"
-                                android:textColor="@android:color/white"
-                                android:textAppearance="@style/textshadow_2px_black"/>
-
-                            <!--<LinearLayout
-                                android:orientation="horizontal"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:id="@+id/llDashHomeApps">
-                            </LinearLayout>-->
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
 
                             <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
                                 android:orientation="vertical"
-                                android:focusableInTouchMode="false">
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="2">
 
-                                <GridView
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/dash_lens_apps_title"
+                                    android:layout_gravity="center_horizontal"
+                                    android:textColor="@android:color/white"
+                                    android:textAppearance="@style/textshadow_2px_black"/>
+
+                                <!--<LinearLayout
+                                    android:orientation="horizontal"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="fill_parent"
+                                    android:id="@+id/llDashHomeApps">
+                                </LinearLayout>-->
+
+                                <LinearLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:id="@+id/gvDashHomeApps"
-                                    android:choiceMode="singleChoice"
-                                    android:numColumns="auto_fit"
-                                    android:columnWidth="@dimen/dash_applauncher_width" />
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:orientation="vertical"
+                                    android:focusableInTouchMode="false">
+
+                                    <GridView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:id="@+id/gvDashHomeApps"
+                                        android:choiceMode="singleChoice"
+                                        android:numColumns="auto_fit"
+                                        android:columnWidth="@dimen/dash_applauncher_width" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:visibility="gone"
+                                android:id="@+id/gvDashHomeLensesContainer"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/dash_lens_other_title"
+                                    android:layout_gravity="center_horizontal"
+                                    android:textColor="@android:color/white"
+                                    android:textAppearance="@style/textshadow_2px_black"/>
+
+                                <!--<LinearLayout
+                                    android:orientation="horizontal"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="fill_parent"
+                                    android:id="@+id/llDashHomeApps">
+                                </LinearLayout>-->
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:orientation="vertical"
+                                    android:focusableInTouchMode="false">
+
+                                    <GridView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:id="@+id/gvDashHomeLenses"
+                                        android:choiceMode="singleChoice"
+                                        android:numColumns="auto_fit"
+                                        android:columnWidth="@dimen/dash_applauncher_width" />
+                                </LinearLayout>
                             </LinearLayout>
                         </LinearLayout>
                     </RelativeLayout>

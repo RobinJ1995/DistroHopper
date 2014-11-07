@@ -12,6 +12,7 @@
   <string name="honourable_mentions">Eervolle vermeldingen</string>
   <string name="button_back">Terug</string>
   <string name="button_about">Over</string>
+  <string name="button_contribute">Bijdragen</string>
   <string name="title_preferences">Voorkeuren</string>
   <string name="pref_header_general">Algemeen</string>
   <string name="pref_header_unity">Unity</string>
@@ -26,6 +27,8 @@
   <string name="hint_launchericon_opacity">De transparantie van de achtergrondkleur van pictogrammen die vastgemaakt zijn aan de Launcher. 100 procent is volledig zichtbaar en 0 procent is volledig transparant.</string>
   <string name="option_launcherservice_enabled">Maak de Launcher beschikbaar binnen andere apps</string>
   <string name="hint_launcherservice_enabled">Bij een swipe van de onderste helft van de linkerkant van het scherm zal de Launcher verschijnen, zodat u apps kan starten zonder eerst naar de home screen te moeten gaan.\n(EXPERIMENTEEL)</string>
+  <string name="option_launcher_running_show">Toon apps die uitgevoerd worden</string>
+  <string name="hint_launcher_running_show">De Launcher zal apps die momenteel uitgevoerd worden tonen. Deze zullen aangeduid worden door een klein pijltje links van het pictogram. Apps die uitgevoerd worden maar niet aan de Launcher vastgemaakt zijn zullen ook getoond worden.</string>
   <string name="option_panel_show">Panel tonen</string>
   <string name="hint_panel_show">Of het Panel aan de bovenkant van het scherm getoond moet worden of niet.</string>
   <string name="option_panel_opacity">Panel-transparantie</string>
@@ -40,7 +43,7 @@
   <string name="option_unitywallpaper_blur">Achtergrond vervagen</string>
   <string name="hint_unitywallpaper_blur">De methode die gebruikt zal worden om de achtergrond te vervagen wanneer het Dash geöpend wordt. Wanneer \"Verkleinen &amp; vergroten\" gekozen is en dit mislukt (of er een live wallpaper is ingesteld) zal er teruggevallen worden op \"Donker maken\".</string>
   <string name="option_launcher_edge">Schermrand</string>
-  <string name="hint_launcher_edge">Tegen welke schermrand de Launcher zich bevindt.</string>
+  <string name="hint_launcher_edge">Tegen welke schermrand de Launcher zich moet bevinden.</string>
   <string-array name="keys_unitywallpaper_blur">
     <item>Niet vervagen</item>
     <item>Donker maken</item>
@@ -58,6 +61,8 @@
   <string name="hint_colourcalc_hsv">Gebruik HSV (Hue, Saturation, Value) in plaats van RGB (Red, Green, Blue) voor kleurberekeningen. Dit zal de uitkomst van kleurberekeningen veel levendiger maken, maar de berekeningen die uitgevoerd worden zijn ingewikkelder waardoor dit een impact kan hebben op de laadtijd als u gebruikmaakt van een ouder/trager apparaat.</string>
   <string name="option_dashsearch_full">Geavanceerd zoeken</string>
   <string name="hint_dashsearch_full">Toont betere zoekresultaten in het Dash, ten koste van prestaties op tragere apparaten of apparaten waarop veel apps geïnstalleerd zijn. Als zoeken in het Dash traag is voor u dan is het waarschijnlijk een goed idee om deze optie uit te zetten.</string>
+  <string name="option_dash_ready_show">Dash standaard openen</string>
+  <string name="hint_dash_ready_show">Het Dash zal automatisch geöpend worden wanneer de apps geladen zijn.</string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Testen (Als hij het niet kapot krijgt kan ik er meestal wel vanuit gaan dat het ook veilig is voor consumptie door de rest van de wereld.)\n
 * Hulp met de kleursberekeningsfuncties.</string>
@@ -71,4 +76,20 @@
   <string name="hm_commonsguy_why">* Ik heb zijn ColorMixer-component gebruik in het voorkeurenscherm.\n
         https://github.com/commonsguy/cwac-colormixer</string>
   <string name="translators_title">Vertalers</string>
+  <string name="title_activity_contribute">Hoe kan ik bijdragen?</string>
+  <string name="contribute_intro">Er is erg veel tijd en moeite gegaan in de ontwikkeling van deze app. Als je graag een steentje bijdraagt zal je hier een aantal manieren vinden waarop je dit kan doen.</string>
+  <string name="contribute_translate_title">Vertalen</string>
+  <string name="contribute_translate_description">Ubuntu Launcher is in verschillende talen beschikbaar. Dit komt doordat vrijwilligers zich hier voor inzetten. Als Ubuntu Launcher nog niet naar jouw taal vertaald is, en je verstaat Engels (en hebt voldoende kennis van Ubuntu om de iets meer Unity-gerelateerde termen te begrijpen), dan is bijdragen aan vertalingen een goede manier om een steentje bij te dragen. Ook als je een beter voorstel hebt voor één of meerdere vertalingen wordt dit erg geapprecieerd.
+\nVertalingen voor Ubuntu Launcher worden bijgehouden op Transifex. Als jegraag wil helpen bij het vertalen van Ubuntu Launcher moet je enkel een aanvraag indienen om lid te worden van een vertalingsteam. Vervolgens zal ik je aanvraag goedkeuren en kan je beginnen.</string>
+  <string name="contribute_translate_go">Ga naar Transifex</string>
+  <string name="contribute_bugs_title">Problemen melden</string>
+  <string name="contribute_bugs_description">Als er ergens een fout zit in Ubuntu Launcher betekent dat niet noodzakelijk dat ik me daar van bewust ben. Ontwikkelaars zijn over het algemeen vrij slecht in het testen van hun eigen toepassingen, omdat zij deze enkel zullen gebruiken op de manier waarvoor ze ontwikkeld zijn. Sommige problemen doen zich ook enkel voor in specifieke gevallen (bijvoorbeeld op een specifiek apparaat dat een specifieke versie van Android draait en een aantal extra opties heeft ingeschakeld). Dus wanneer je een fout vindt in Ubuntu Launcher (of je een goed idee hebt) kan je een steentje bijdragen door dit te melden.
+\nDeze meldingen worden bijgehouden op GitHub. Als GitHub te technisch voor u is mag je ook altijd een e-mail sturen naar android-dev@robinj.be. Gelieve je e-mail in het Nederlands of Engels op te stellen, en zo veel mogelijk (nuttige) informatie door te geven.</string>
+  <string name="contribute_bugs_go">Ga naar GitHub</string>
+  <string name="contribute_donate_title">Doneren</string>
+  <string name="contribute_donate_description">Indien gewenst kan je ook een donatie maken aan de ontwikkelaar. Donaties worden afgehandeld via PayPal. U krijgt zelf de mogelijkheid om te kiezen hoeveel u wil doneren.
+\nOpmerking: Het gaat hier om een donatie. Ik verkoop niets, en u koopt niets. Donaties worden erg geapprecieerd, maar u zal hierdoor geen extra functionaliteit krijgen. Alle opties van deze toepassing zijn gratis te gebruiken.
+\n
+\nPayPal neemt $0.30 + 2.2\%% van elke donatie in beslag als servicevergoeding. Indien uw donatie minder dan $0.30 bedraagt zal het volledige bedrag naar PayPal zelf gaan en zal de ontwikkelaar hier zelf niets aan overhouden. Indien u een donatie maakt kunt u dus best meer dan dit bedrag doneren, tenzij u om één of andere reden graag een donatie aan PayPal zelf zou maken.</string>
+  <string name="contribute_donate_go">Doneren</string>
 </resources>

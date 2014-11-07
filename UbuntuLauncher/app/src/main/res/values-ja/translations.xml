@@ -37,6 +37,18 @@
   <string name="message_unitybackground_colour">スライダーを使って色を選べてください。</string>
   <string name="option_unitybackground_opacity">Unityの背景不透明度</string>
   <string name="hint_unitybackground_opacity">透明なUnityコンポーネントの背景の不透明さの程度です。</string>
+  <string name="option_unitywallpaper_blur">壁紙のぼやけ方</string>
+  <string name="option_launcher_edge">画面の端</string>
+  <string name="hint_launcher_edge">ランチャーは画面のどちら側に表示されている</string>
+  <string-array name="keys_unitywallpaper_blur">
+    <item>何もしない</item>
+    <item>暗くする</item>
+    <item>小型化そして拡大する（デフォルト）</item>
+  </string-array>
+  <string-array name="keys_launcher_edge">
+    <item>左側（デフォルト）</item>
+    <item>右側</item>
+  </string-array>
   <string name="option_wallpaper">壁紙</string>
   <string name="hint_wallpaper">壁紙を変える</string>
   <string name="option_colourcalc_advanced">サンプル数を増やす</string>
@@ -45,6 +57,7 @@
   <string name="hint_colourcalc_hsv">RGB（赤、緑、青）の代わりにHSV（色相、彩度、明度）を使えば色彩がもっと鮮やかに見えますが、算定がより複雑になりますので、特に動きの遅いデバイスの場合はロードするのにより長くかかる可能性があります。</string>
   <string name="option_dashsearch_full">高度な検索</string>
   <string name="hint_dashsearch_full">この機能を使えばダッシュの検索結果はよくなりますが、動きの遅いデバイスや大勢のアプリがインストールされたデバイスの場合、パフォーマンスに影響を及びます。検索は不活発に見られる場合はこの機能を無効にするよう勧めます。</string>
+  <string name="option_dash_ready_show">デフォルトでダッシュを表示する</string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">＊ βテスト（彼がアプリを破壊できないなら絶対無理だと思います）\n
 ＊ 支配色の算定方式での手伝い\n

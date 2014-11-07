@@ -7,6 +7,19 @@
         android:defaultValue="true" />
 
     <CheckBoxPreference
+        android:key="dashsearch_lenses"
+        android:title="@string/option_dashsearch_lenses"
+        android:summary="@string/hint_dashsearch_lenses"
+        android:defaultValue="false" />
+
+    <EditTextPreference
+        android:key="dashsearch_lenses_maxresults"
+        android:title="@string/option_dashsearch_lenses_maxresults"
+        android:summary="@string/hint_dashsearch_lenses_maxresults"
+        android:defaultValue="5"
+        android:inputType="number" />
+
+    <CheckBoxPreference
         android:key="dash_ready_show"
         android:title="@string/option_dash_ready_show"
         android:summary="@string/hint_dash_ready_show"

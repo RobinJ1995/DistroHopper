@@ -26,6 +26,8 @@
   <string name="hint_launchericon_opacity">Başlatıcı ikonlarının opaklığı nasıl olmalı.</string>
   <string name="option_launcherservice_enabled">Başlatıcıyı diğer uygulamalarda kullanılabilir yap</string>
   <string name="hint_launcherservice_enabled">Ekranın sol alt sınırından sürüklediğinizde, Başlatıcı görünür, Başlatıcıya eklediğiniz uygulamaları ana ekrana gitmeden başlatmanıza izin verir.\n(DENEYİMSEL)</string>
+  <string name="option_launcher_running_show">Çalışan uygulamaları göster</string>
+  <string name="hint_launcher_running_show">Başlatıcı, şu an çalışan uygulamaları gösterecek. Bu ikonun sol tarafında küçük bir ok işaretiyle yapılacak. Ayrıca şu an çalışan fakat Başlatıcıya tutturulmayan uygulamalar da gösterilecek.</string>
   <string name="option_panel_show">Paneli Göster</string>
   <string name="hint_panel_show">Panelin ekranın üstünde görüntülenip görüntülenmeyeceği.</string>
   <string name="option_panel_opacity">Panel opaklığı</string>
@@ -58,4 +60,11 @@
   <string name="hm_commonsguy_why">* Tercihler ekranında onun ColorMixer (Renk karıştırıcı) bileşenini kullandım.\n
         https://github.com/commonsguy/cwac-colormixer</string>
   <string name="translators_title">Çevirenler</string>
+  <string name="title_activity_contribute">Nasıl destek olabilirim?</string>
+  <string name="contribute_translate_title">Çeviri Yap</string>
+  <string name="contribute_translate_go">Transifex\'e git</string>
+  <string name="contribute_bugs_title">Hata Raporla</string>
+  <string name="contribute_bugs_go">Github\'a git</string>
+  <string name="contribute_donate_title">Bağış Yap</string>
+  <string name="contribute_donate_go">Bağış Yap</string>
 </resources>
