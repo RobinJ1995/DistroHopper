@@ -3,6 +3,7 @@
   <string name="action_settings">Instellingen</string>
   <string name="dash_search_hint">Geïnstalleerde apps doorzoeken</string>
   <string name="dash_lens_apps_title">Toepassingen</string>
+  <string name="dash_lens_other_title">Overige</string>
   <string name="title_activity_preferences">Voorkeuren</string>
   <string name="title_activity_about">Over</string>
   <string name="pinned">is vastgemaakt aan de Launcher</string>
@@ -61,6 +62,10 @@
   <string name="hint_colourcalc_hsv">Gebruik HSV (Hue, Saturation, Value) in plaats van RGB (Red, Green, Blue) voor kleurberekeningen. Dit zal de uitkomst van kleurberekeningen veel levendiger maken, maar de berekeningen die uitgevoerd worden zijn ingewikkelder waardoor dit een impact kan hebben op de laadtijd als u gebruikmaakt van een ouder/trager apparaat.</string>
   <string name="option_dashsearch_full">Geavanceerd zoeken</string>
   <string name="hint_dashsearch_full">Toont betere zoekresultaten in het Dash, ten koste van prestaties op tragere apparaten of apparaten waarop veel apps geïnstalleerd zijn. Als zoeken in het Dash traag is voor u dan is het waarschijnlijk een goed idee om deze optie uit te zetten.</string>
+  <string name="option_dashsearch_lenses">Gebruik lenzen</string>
+  <string name="hint_dashsearch_lenses">Lenzen bieden extra zoekfunctionaliteit. Met behulp van lenzen kunnen onder andere services als DuckDuckGo, Stack Overflow, of lokale bestanden doorzocht worden vanuit het Dash.</string>
+  <string name="option_dashsearch_lenses_maxresults">Resultaten per lens</string>
+  <string name="hint_dashsearch_lenses_maxresults">Het maxmimum aantal resultaten dat getoond moet worden van elke lens.</string>
   <string name="option_dash_ready_show">Dash standaard openen</string>
   <string name="hint_dash_ready_show">Het Dash zal automatisch geöpend worden wanneer de apps geladen zijn.</string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>

@@ -3,6 +3,7 @@
   <string name="action_settings">Настройки</string>
   <string name="dash_search_hint">Поиск установленных приложений</string>
   <string name="dash_lens_apps_title">Приложения</string>
+  <string name="dash_lens_other_title">Другие</string>
   <string name="title_activity_preferences">Предпочтения</string>
   <string name="title_activity_about">О нас</string>
   <string name="pinned">был прикреплен к лаунчеру</string>
@@ -12,6 +13,7 @@
   <string name="honourable_mentions">Oсобая благодарность</string>
   <string name="button_back">Назад</string>
   <string name="button_about">О нас</string>
+  <string name="button_contribute">Помочь проекту</string>
   <string name="title_preferences">Предпочтения</string>
   <string name="pref_header_general">Общие</string>
   <string name="pref_header_unity">Юнити</string>
@@ -26,6 +28,8 @@
   <string name="hint_launchericon_opacity">Настройка уровня непрозрачности фона икон.</string>
   <string name="option_launcherservice_enabled">Сделать лаунчер доступным из других приложений</string>
   <string name="hint_launcherservice_enabled">При проведении пальцем по нижней левой части экрана появится лаунчер который позволит запустить программы прикрепленные к нему без надобности возврата на главный экран.</string>
+  <string name="option_launcher_running_show">Показать текущие приложения</string>
+  <string name="hint_launcher_running_show">Лаунчер покажет все приложения работающие на данный момент.  Это будет обозначено небольшой стрелкой на левой стороне иконки. Также будут показаны приложения не закрепленные к Лаунчеру. </string>
   <string name="option_panel_show">Показать панель</string>
   <string name="hint_panel_show">Показать панель в верхней части экрана.</string>
   <string name="option_panel_opacity">Непрозрачности панели</string>
@@ -37,6 +41,19 @@
   <string name="message_unitybackground_colour">Используйте ползунки чтобы изменить цвет</string>
   <string name="option_unitybackground_opacity">Непрозрачность фона Unity</string>
   <string name="hint_unitybackground_opacity">Настройка уровня непрозрачности компонентов Unity.</string>
+  <string name="option_unitywallpaper_blur">Метод размытия обоев</string>
+  <string name="hint_unitywallpaper_blur">Метод  размытия экрана который будет использоваться при открытии Дэша. В случае неправильной работы метода \"Уменьшить и увеличить\", метод \"Затемнение\" будет выбран автоматически.</string>
+  <string name="option_launcher_edge">Часть экрана</string>
+  <string name="hint_launcher_edge">К какой стороне экрана будет прикреплен Лаунчер.</string>
+  <string-array name="keys_unitywallpaper_blur">
+    <item>Не размывать</item>
+    <item>Затемнить</item>
+    <item>Уменьшить и увеличить(по умолчанию)</item>
+  </string-array>
+  <string-array name="keys_launcher_edge">
+    <item>К левой(по умолчанию)</item>
+    <item>К правой</item>
+  </string-array>
   <string name="option_wallpaper">обои</string>
   <string name="hint_wallpaper">Изменить обои</string>
   <string name="option_colourcalc_advanced">Использование большего количества образцов цвета</string>
@@ -45,6 +62,12 @@
   <string name="hint_colourcalc_hsv">Использование HSV вместо обычной RGB приводит к получению гораздо более ярких цветов, но сама функция является сложной что может также привести к увеличению времени загрузки на медленных устройствах.</string>
   <string name="option_dashsearch_full">Дополнительный поиск</string>
   <string name="hint_dashsearch_full">Активация этой опции улучшит поиск в Дэш меню, но также повлияет на скорость поиска на аппаратах с большим количеством программ. В случае медленной работы поиска, выключитe эту опцию.</string>
+  <string name="option_dashsearch_lenses">Использовать Линзы</string>
+  <string name="hint_dashsearch_lenses">Линзы обеспечивают дополнительные возможности для функции поискa. С помощью Линз вы можете осуществить поиск по внешнем услугам таких как DuckDuckGo, Stack Overflow, а также по локальным файлам, непосредственно из Дэша.</string>
+  <string name="option_dashsearch_lenses_maxresults">Количество результатов поиска на каждую Линзу </string>
+  <string name="hint_dashsearch_lenses_maxresults">Максимальное количество результатов поиска показанное Линзой.</string>
+  <string name="option_dash_ready_show">Открыть Дэш по умолчанию</string>
+  <string name="hint_dash_ready_show">Дэш будет открыт автоматически, как только все программы будут загружены .</string>
   <string name="hm_timvdstaaij_name">Тиму ван дер Стайу</string>
   <string name="hm_timvdstaaij_why">* Тестирование\n * Помощь с функцией расчета доминирующего цвета\n</string>
   <string name="hm_todddavies_name">Тоду Дэвису</string>
@@ -57,4 +80,14 @@ http://stackoverflow.com/a/8483078/521361</string>
   <string name="hm_commonsguy_why">* Я использовал его компонент ColorMixer в окне настроек.\n
 https://github.com/commonsguy/cwac-colormixer</string>
   <string name="translators_title">Переводчики</string>
+  <string name="title_activity_contribute">Как я могу помочь?</string>
+  <string name="contribute_intro">Данный проект потребовал больших усилий, временных и финансовых затрат. Если вы хотите помочь дальнейшему развитию проекта, сделайте это нижеприведенными способами.</string>
+  <string name="contribute_translate_title">Перевод</string>
+  <string name="contribute_translate_description">Ubuntu Launcher доступен на разных языках. Это стало возможным благодаря участию добровольцев. Если вы заметили что Ubuntu Launcher недоступен на вашем языке, вы владеете владеете aнглийским в достаточной степени и хотите помочь проетку, вы всегда можете помочь данному проекту расширить границы.
+\n Перевод Убунту Лаунчера выполняется с помощью услуги Transifex. Все что вам нужно сделать, это отправить запрос о присоединении к команде переводчиков. </string>
+  <string name="contribute_translate_go">Перейти на Transifex</string>
+  <string name="contribute_bugs_title">Сообщить об ошибке</string>
+  <string name="contribute_bugs_go">Перейти на GitHub</string>
+  <string name="contribute_donate_title">Оказать финансовую помощь</string>
+  <string name="contribute_donate_go">Оказать финансовую помощь</string>
 </resources>
