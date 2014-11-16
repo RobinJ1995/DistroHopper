@@ -25,6 +25,7 @@ import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.google.analytics.tracking.android.EasyTracker;
@@ -85,7 +86,7 @@ public class HomeActivity extends Activity
 			ImageButton ibPanelDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
 			//GridLayout glWidgets = (GridLayout) this.findViewById (R.id.glWidgets);
 			//ScrollView scrLauncherAppsContainer = (ScrollView) this.findViewById (R.id.scrLauncherAppsContainer);
-			GridView gvDashHomeLenses = (GridView) this.findViewById (R.id.gvDashHomeLenses);
+			ListView lvDashHomeLensResults = (ListView) this.findViewById (R.id.lvDashHomeLensResults);
 
 			Intent launcherServiceIntent = new Intent (this, LauncherService.class);
 			this.stopService (launcherServiceIntent);
@@ -147,10 +148,10 @@ public class HomeActivity extends Activity
 				gvDashHomeApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
 				gvDashHomeApps.setLayoutTransition (gvDashHomeApps_transition);
 
-				LayoutTransition gvDashHomeLenses_transition = new LayoutTransition ();
-				gvDashHomeLenses_transition.setDuration (180);
-				gvDashHomeLenses_transition.setStartDelay (LayoutTransition.APPEARING, 0);
-				gvDashHomeLenses.setLayoutTransition (gvDashHomeLenses_transition);
+				LayoutTransition lvDashHomeLensResults_transition = new LayoutTransition ();
+				lvDashHomeLensResults_transition.setDuration (180);
+				lvDashHomeLensResults_transition.setStartDelay (LayoutTransition.APPEARING, 0);
+				lvDashHomeLensResults.setLayoutTransition (lvDashHomeLensResults_transition);
 
 				LayoutTransition llLauncherPinnedApps_transition = new LayoutTransition ();
 				llLauncherPinnedApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
@@ -420,10 +421,11 @@ public class HomeActivity extends Activity
 	{
 		try
 		{
-			LinearLayout gvDashHomeLensesContainer = (LinearLayout) this.findViewById (R.id.gvDashHomeLensesContainer);
+			LinearLayout llDashHomeAppsContainer = (LinearLayout) this.findViewById (R.id.llDashHomeAppsContainer);
+			LinearLayout llDashHomeLensesContainer = (LinearLayout) this.findViewById (R.id.llDashHomeLensesContainer);
 
 			this.apps = installedApps;
-			this.lenses = new LensManager (this.getApplicationContext (), gvDashHomeLensesContainer);
+			this.lenses = new LensManager (this.getApplicationContext (), llDashHomeAppsContainer, llDashHomeLensesContainer, installedApps);
 
 			EditText etDashSearch = (EditText) this.findViewById (R.id.etDashSearch);
 			LinearLayout llLauncher = (LinearLayout) this.findViewById (R.id.llLauncher);

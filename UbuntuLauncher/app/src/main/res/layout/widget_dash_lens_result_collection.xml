@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="8dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvLabel"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@android:color/white"
+        android:textAppearance="@style/textshadow_2px_black"/>
+
+    <!--<LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/llDashHomeApps">
+    </LinearLayout>-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:focusableInTouchMode="false">
+
+        <GridView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/gvResults"
+            android:choiceMode="singleChoice"
+            android:numColumns="auto_fit"
+            android:scrollbars="none"
+            android:columnWidth="@dimen/dash_applauncher_width" />
+    </LinearLayout>
+
+</LinearLayout>

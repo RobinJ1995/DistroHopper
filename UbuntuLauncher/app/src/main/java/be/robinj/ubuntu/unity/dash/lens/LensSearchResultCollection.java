@@ -15,4 +15,14 @@ public class LensSearchResultCollection
 		this.lens = lens;
 		this.results = results;
 	}
+
+	public Lens getLens ()
+	{
+		return this.lens;
+	}
+
+	public List<LensSearchResult> getResults ()
+	{
+		return this.results;
+	}
 }
