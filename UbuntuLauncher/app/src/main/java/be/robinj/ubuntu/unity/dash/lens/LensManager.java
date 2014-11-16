@@ -50,11 +50,11 @@ public class LensManager
 		return this.search (pattern, false);
 	}
 
-	//public List<LensSearchResultCollection> search (String pattern, boolean showResults) throws IOException, JSONException
-	public List<LensSearchResult> search (String pattern, boolean showResults) throws IOException, JSONException
+	public List<LensSearchResultCollection> search (String pattern, boolean showResults) throws IOException, JSONException
+	//public List<LensSearchResult> search (String pattern, boolean showResults) throws IOException, JSONException
 	{
-		//List<LensSearchResultCollection> results = new ArrayList<LensSearchResultCollection> ();
-		List<LensSearchResult> results = new ArrayList<LensSearchResult> ();
+		List<LensSearchResultCollection> results = new ArrayList<LensSearchResultCollection> ();
+		//List<LensSearchResult> results = new ArrayList<LensSearchResult> ();
 
 		if (pattern.length () == 0)
 		{
@@ -69,10 +69,10 @@ public class LensManager
 				List<LensSearchResult> lensResults = lens.search (pattern);
 				lensResults = lensResults.subList (0, lensResults.size () > this.maxResultsPerLens ? this.maxResultsPerLens : lensResults.size ());
 
-				//LensSearchResultCollection collection = new LensSearchResultCollection (lens, lensResults);
-				//results.add (collection);
+				LensSearchResultCollection collection = new LensSearchResultCollection (lens, lensResults);
+				results.add (collection);
 
-				results.addAll (lensResults);
+				//results.addAll (lensResults);
 			}
 		}
 

@@ -16,7 +16,7 @@ import be.robinj.ubuntu.unity.dash.AppLauncher;
 /**
  * Created by robin on 8/21/14.
  */
-public class GridAdapter extends ArrayAdapter<LensSearchResult>
+public class GridAdapter extends ArrayAdapter<LensSearchResultCollection>
 {
 	public GridAdapter (Context context, List<LensSearchResult> results)
 	{

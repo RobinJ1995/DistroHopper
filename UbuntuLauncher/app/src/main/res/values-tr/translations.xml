@@ -3,6 +3,7 @@
   <string name="action_settings">Ayarlar</string>
   <string name="dash_search_hint">Kurulu uygulamaları ara</string>
   <string name="dash_lens_apps_title">Uygulamalar</string>
+  <string name="dash_lens_other_title">Diğer</string>
   <string name="title_activity_preferences">Tercihler</string>
   <string name="title_activity_about">Hakkında</string>
   <string name="pinned">Başlatıcıya eklendi</string>
@@ -12,6 +13,7 @@
   <string name="honourable_mentions">Onurlu isimler</string>
   <string name="button_back">Geri</string>
   <string name="button_about">Hakkında</string>
+  <string name="button_contribute">Katkı Yap</string>
   <string name="title_preferences">Tercihler</string>
   <string name="pref_header_general">Genel</string>
   <string name="pref_header_unity">Unity</string>
@@ -47,6 +49,10 @@
   <string name="hint_colourcalc_hsv">RGB (Kırmızı, Yeşil, Mavi) yerine HSV (Ton, Doygunluk, Parlaklık) kullanmak renklerin daha canlı olmasını sağlar, ama hesaplamalar o kadar karışıktır ki yavaş cihazlarda yüklenme süresini çok uzatabilir.</string>
   <string name="option_dashsearch_full">Gelişmiş arama</string>
   <string name="hint_dashsearch_full">Bu seçeneği kullanmak Pano aramasında daha iyi sonuç verir fakat yavaş cihazlarda ya da çok fazla uygulama yüklenmiş cihazlarda performansı düşürebilir. Eğer Pano araması sizin için yavaşsa bu seçeneği kapatmayı düşünebilirsiniz.</string>
+  <string name="option_dashsearch_lenses">Lens kullan</string>
+  <string name="hint_dashsearch_lenses">Lensler ekstra arama kaabiliyeti sunar. Lens kullanarak DuckDuckGo, Stack Overflow gibi diğer arama servislerini veya kendi lokal dosyalarınızı Pano\'dan arayabilirsiniz.</string>
+  <string name="option_dash_ready_show">Pano\'yu varsayılan olarak aç</string>
+  <string name="hint_dash_ready_show">Uygulamalar yüklendiğinde Pano otomatik olarak açılacaktır.</string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Test (Eğer yanlış bir şeyler yapmadıysa kullanmak dünyanın geri kalanı için güvenlidir.)\n
 * Baskın renk hesaplama fonksiyonunda yardım.</string>
