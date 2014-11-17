@@ -52,4 +52,10 @@ public class InstalledApps extends Lens
 
 		return results;
 	}
+
+	@Override
+	public void onClick (String url)
+	{
+
+	}
 }

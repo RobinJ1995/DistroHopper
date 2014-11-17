@@ -14,6 +14,7 @@ public class LensSearchResult extends LinearLayout
 	private String name;
 	private String url;
 	private Drawable icon;
+	private Object obj;
 
 	public LensSearchResult (Context context, String name, String url, Drawable icon)
 	{
@@ -23,6 +24,13 @@ public class LensSearchResult extends LinearLayout
 		this.name = name;
 		this.url = url;
 		this.icon = icon;
+	}
+
+	public LensSearchResult (Context context, String name, String url, Drawable icon, Object obj)
+	{
+		this (context, name, url, icon);
+
+		this.obj = obj;
 	}
 
 	public LensSearchResult (Context context)
@@ -64,5 +72,15 @@ public class LensSearchResult extends LinearLayout
 	public void setIcon (Drawable icon)
 	{
 		this.icon = icon;
+	}
+
+	public Object getObj ()
+	{
+		return this.obj;
+	}
+
+	public void setObj (Object obj)
+	{
+		this.obj = obj;
 	}
 }
