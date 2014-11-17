@@ -3,7 +3,6 @@ package be.robinj.ubuntu.unity.dash.lens;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.View;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -44,7 +43,7 @@ public class LensManager
 			this.enabled.add (new InstalledApps (context, apps));
 			this.enabled.add (new DuckDuckGo (context));
 			this.enabled.add (new SuperUser (context));
-			this.enabled.add (new ServerFault (context));
+			this.enabled.add (new GooglePlus (context));
 		}
 
 		this.maxResultsPerLens = Integer.valueOf (prefs.getString ("dashsearch_lenses_maxresults", "10"));

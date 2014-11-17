@@ -21,12 +21,12 @@ public class StackOverflow extends Lens
 {
 	private final String API = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle={:QUERY:}&site=stackoverflow";
 
-	private Context context;
 	private Drawable icon;
 
 	public StackOverflow (Context context)
 	{
-		this.context = context;
+		super (context);
+
 		this.icon = context.getResources ().getDrawable (R.drawable.dash_search_lens_stackoverflow);
 	}
 

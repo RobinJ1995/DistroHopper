@@ -17,27 +17,27 @@ import be.robinj.ubuntu.R;
 /**
  * Created by robin on 4/11/14.
  */
-public class ServerFault extends Lens
+public class GooglePlus extends Lens
 {
-	private final String API = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle={:QUERY:}&site=serverfault";
+	private final String API = "https://www.googleapis.com/plus/v1/activities?key=AIzaSyA1LFfEZYf7UapVn06Xnh69e13xbgr4-zg&query={:QUERY:}";
 
 	private Drawable icon;
 
-	public ServerFault (Context context)
+	public GooglePlus (Context context)
 	{
 		super (context);
 
-		this.icon = context.getResources ().getDrawable (R.drawable.dash_search_lens_serverfault);
+		this.icon = context.getResources ().getDrawable (R.drawable.dash_search_lens_googleplus);
 	}
 
 	public String getName ()
 	{
-		return "Server Fault";
+		return "Google+";
 	}
 
 	public String getDescription ()
 	{
-		return "Server Fault search results";
+		return "Public Google+ activity search results";
 	}
 
 	public List<LensSearchResult> search (String str) throws IOException, JSONException
@@ -52,9 +52,29 @@ public class ServerFault extends Lens
 		{
 			JSONObject item = items.getJSONObject (i);
 
-			if (item.has ("title") && item.has ("link"))
+			if (item.has ("title") && item.has ("url"))
 			{
-				LensSearchResult result = new LensSearchResult (this.context, item.getString ("title"), item.getString ("link"), this.icon);
+				Drawable icon = this.icon;
+
+				if (item.has ("actor"))
+				{
+					JSONObject actor = item.getJSONObject ("actor");
+
+					if (actor.has ("image"))
+					{
+						JSONObject image = actor.getJSONObject ("image");
+
+						if (image != null)
+						{
+							String imageUrl = image.getString ("url");
+
+							if (imageUrl != null)
+								icon = this.downloadImage (imageUrl.replace ("?sz=50", "?sz=64"));
+						}
+					}
+				}
+
+				LensSearchResult result = new LensSearchResult (this.context, item.getString ("title"), item.getString ("url"), icon);
 
 				results.add (result);
 			}

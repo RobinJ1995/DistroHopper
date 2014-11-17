@@ -17,27 +17,27 @@ import be.robinj.ubuntu.R;
 /**
  * Created by robin on 4/11/14.
  */
-public class ServerFault extends Lens
+public class GitHub extends Lens
 {
-	private final String API = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle={:QUERY:}&site=serverfault";
+	private final String API = "https://api.github.com/search/repositories?q={:QUERY:}";
 
 	private Drawable icon;
 
-	public ServerFault (Context context)
+	public GitHub (Context context)
 	{
 		super (context);
 
-		this.icon = context.getResources ().getDrawable (R.drawable.dash_search_lens_serverfault);
+		this.icon = context.getResources ().getDrawable (R.drawable.dash_search_lens_github);
 	}
 
 	public String getName ()
 	{
-		return "Server Fault";
+		return "GitHub";
 	}
 
 	public String getDescription ()
 	{
-		return "Server Fault search results";
+		return "GitHub repository search results";
 	}
 
 	public List<LensSearchResult> search (String str) throws IOException, JSONException
@@ -52,9 +52,9 @@ public class ServerFault extends Lens
 		{
 			JSONObject item = items.getJSONObject (i);
 
-			if (item.has ("title") && item.has ("link"))
+			if (item.has ("full_name") && item.has ("html_url"))
 			{
-				LensSearchResult result = new LensSearchResult (this.context, item.getString ("title"), item.getString ("link"), this.icon);
+				LensSearchResult result = new LensSearchResult (this.context, item.getString ("full_name"), item.getString ("html_url"), this.icon);
 
 				results.add (result);
 			}

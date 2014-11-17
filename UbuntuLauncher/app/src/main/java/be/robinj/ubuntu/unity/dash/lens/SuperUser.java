@@ -21,12 +21,12 @@ public class SuperUser extends Lens
 {
 	private final String API = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle={:QUERY:}&site=superuser";
 
-	private Context context;
 	private Drawable icon;
 
 	public SuperUser (Context context)
 	{
-		this.context = context;
+		super (context);
+
 		this.icon = context.getResources ().getDrawable (R.drawable.dash_search_lens_superuser);
 	}
 
