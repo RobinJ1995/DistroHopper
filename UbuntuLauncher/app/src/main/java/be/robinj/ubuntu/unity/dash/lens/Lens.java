@@ -43,6 +43,7 @@ public abstract class Lens
 		{
 			Intent intent = new Intent (Intent.ACTION_VIEW);
 			intent.setData (Uri.parse (url));
+			intent.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
 
 			this.context.startActivity (intent);
 		}
@@ -52,8 +53,25 @@ public abstract class Lens
 		}
 	}
 
-	public void onLongPress (String url)
+	public void onClick (String url, Object obj)
 	{
+		if (obj == null)
+			this.onClick (url);
+		else
+			throw new UnsupportedOperationException ();
+	}
+
+	public void onLongClick (String url)
+	{
+		throw new UnsupportedOperationException ();
+	}
+
+	public void onLongClick (String url, Object obj)
+	{
+		if (obj == null)
+			this.onClick (url);
+		else
+			throw new UnsupportedOperationException ();
 	}
 
 	protected String downloadStr (String url) throws IOException, JSONException

@@ -36,6 +36,8 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 
 		tvLabel.setText (coll.getLens ().getName ());
 		gvResults.setAdapter (new GridAdapter (this.getContext (), coll.getResults ()));
+		gvResults.setOnItemClickListener (new LensSearchResultClickListener (coll.getLens ()));
+		gvResults.setOnItemLongClickListener (new LensSearchResultLongClickListener (coll.getLens ()));
 
 		view.setTag (coll);
 

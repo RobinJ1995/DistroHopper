@@ -48,14 +48,24 @@ public class InstalledApps extends Lens
 		List<LensSearchResult> results = new ArrayList<LensSearchResult> ();
 
 		for (App app : appResults)
-			results.add (new LensSearchResult (this.context, app.getLabel (), app.getPackageName () + ":" + app.getActivityName (), app.getIcon ().getDrawable ()));
+			results.add (new LensSearchResult (this.context, app.getLabel (), app.getPackageName () + ":" + app.getActivityName (), app.getIcon ().getDrawable (), app));
 
 		return results;
 	}
 
 	@Override
-	public void onClick (String url)
+	public void onClick (String url, Object obj)
 	{
+		App app = (App) obj;
 
+		app.launch ();
+	}
+
+	@Override
+	public void onLongClick (String url, Object obj)
+	{
+		App app = (App) obj;
+
+		this.apps.pin (app);
 	}
 }

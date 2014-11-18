@@ -43,7 +43,6 @@ public class LensSearchResult extends LinearLayout
 		super (context, attrs);
 	}
 
-
 	public String getName ()
 	{
 		return this.name;
