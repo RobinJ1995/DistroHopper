@@ -1,4 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Nastavení</string>
+  <string name="dash_search_hint">Hledat instalované aplikace</string>
+  <string name="dash_lens_apps_title">Aplikace</string>
 </resources>
