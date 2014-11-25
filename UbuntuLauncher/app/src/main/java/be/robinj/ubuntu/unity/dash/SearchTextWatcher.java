@@ -32,7 +32,8 @@ public class SearchTextWatcher implements TextWatcher
 		try
 		{
 			//this.apps.search (s.toString (), true);
-			this.lenses.search (s.toString (), true);
+			//this.lenses.search (s.toString (), true);
+			this.lenses.startSearch (s.toString ());
 		}
 		catch (Exception ex)
 		{

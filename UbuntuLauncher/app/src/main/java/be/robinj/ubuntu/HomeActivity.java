@@ -33,6 +33,7 @@ import com.google.analytics.tracking.android.EasyTracker;
 import java.util.ArrayList;
 import java.util.List;
 
+import be.robinj.ubuntu.thirdparty.ProgressWheel;
 import be.robinj.ubuntu.unity.Wallpaper;
 import be.robinj.ubuntu.unity.WidgetHost;
 import be.robinj.ubuntu.unity.WidgetHostView;
@@ -423,9 +424,10 @@ public class HomeActivity extends Activity
 		{
 			LinearLayout llDashHomeAppsContainer = (LinearLayout) this.findViewById (R.id.llDashHomeAppsContainer);
 			LinearLayout llDashHomeLensesContainer = (LinearLayout) this.findViewById (R.id.llDashHomeLensesContainer);
+			ProgressWheel pwDashSearchProgress = (ProgressWheel) this.findViewById (R.id.pwDashSearchProgress);
 
 			this.apps = installedApps;
-			this.lenses = new LensManager (this.getApplicationContext (), llDashHomeAppsContainer, llDashHomeLensesContainer, installedApps);
+			this.lenses = new LensManager (this.getApplicationContext (), llDashHomeAppsContainer, llDashHomeLensesContainer, pwDashSearchProgress, installedApps);
 
 			EditText etDashSearch = (EditText) this.findViewById (R.id.etDashSearch);
 			LinearLayout llLauncher = (LinearLayout) this.findViewById (R.id.llLauncher);

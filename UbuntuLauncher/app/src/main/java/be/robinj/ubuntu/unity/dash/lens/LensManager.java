@@ -14,6 +14,7 @@ import java.util.List;
 
 import be.robinj.ubuntu.AppManager;
 import be.robinj.ubuntu.R;
+import be.robinj.ubuntu.thirdparty.ProgressWheel;
 
 /**
  * Created by robin on 5/11/14.
@@ -28,14 +29,16 @@ public class LensManager
 	private LinearLayout llDashHomeAppsContainer;
 	private LinearLayout llDashHomeLensesContainer;
 	private ListView lvDashHomeLensResults;
+	private ProgressWheel pwDashSearchProgress;
 
-	public LensManager (Context context, LinearLayout llDashHomeAppsContainer, LinearLayout llDashHomeLensesContainer, AppManager apps)
+	public LensManager (Context context, LinearLayout llDashHomeAppsContainer, LinearLayout llDashHomeLensesContainer, ProgressWheel pwDashSearchProgress, AppManager apps)
 	{
 		this.context = context;
 		this.enabled = new ArrayList<Lens> ();
 		this.llDashHomeAppsContainer = llDashHomeAppsContainer;
 		this.llDashHomeLensesContainer = llDashHomeLensesContainer;
 		this.lvDashHomeLensResults = (ListView) llDashHomeLensesContainer.findViewById (R.id.lvDashHomeLensResults);
+		this.pwDashSearchProgress = pwDashSearchProgress;
 
 		SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
 		if (prefs.getBoolean ("dashsearch_lenses", false))
@@ -47,6 +50,28 @@ public class LensManager
 		}
 
 		this.maxResultsPerLens = Integer.valueOf (prefs.getString ("dashsearch_lenses_maxresults", "10"));
+	}
+
+	public Context getContext ()
+	{
+		return this.context;
+	}
+
+	public List<Lens> getEnabledLenses ()
+	{
+		return this.enabled;
+	}
+
+	public int getMaxResultsPerLens ()
+	{
+		return this.maxResultsPerLens;
+	}
+
+	public void startSearch (String pattern)
+	{
+		this.pwDashSearchProgress.setProgress (180);
+		AsyncSearch async = new AsyncSearch (this, this.pwDashSearchProgress, this.lvDashHomeLensResults);
+		async.execute (pattern);
 	}
 
 	public List<LensSearchResultCollection> search (String pattern) throws IOException, JSONException
