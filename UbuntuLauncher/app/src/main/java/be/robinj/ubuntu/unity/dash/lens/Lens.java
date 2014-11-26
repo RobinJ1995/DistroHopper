@@ -37,6 +37,11 @@ public abstract class Lens
 
 	public abstract String getDescription ();
 
+	public int getMinSDKVersion ()
+	{
+		return -1;
+	}
+
 	public void onClick (String url)
 	{
 		if (url.startsWith ("http://") || url.startsWith ("https://"))

@@ -50,6 +50,12 @@ public class LocalFiles extends Lens
 		return "Search results for files on your device";
 	}
 
+	@Override
+	public int getMinSDKVersion ()
+	{
+		return 11;
+	}
+
 	public List<LensSearchResult> search (String str) throws IOException, JSONException
 	{
 		List<LensSearchResult> results = new ArrayList<LensSearchResult> ();
