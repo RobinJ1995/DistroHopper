@@ -6,12 +6,6 @@
         android:summary="@string/hint_dashsearch_full"
         android:defaultValue="true" />
 
-    <CheckBoxPreference
-        android:key="dashsearch_lenses"
-        android:title="@string/option_dashsearch_lenses"
-        android:summary="@string/hint_dashsearch_lenses"
-        android:defaultValue="false" />
-
     <!--<EditTextPreference
         android:key="dashsearch_lenses_maxresults"
         android:title="@string/option_dashsearch_lenses_maxresults"

@@ -42,11 +42,9 @@ public class LensManager
 		this.pwDashSearchProgress = pwDashSearchProgress;
 
 		SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
-		if (prefs.getBoolean ("dashsearch_lenses", false))
-		{
-			this.enabled.add (new InstalledApps (context, apps));
-			this.enabled.add (new LocalFiles (apps.getContext ())); // LocalFiles needs to show an AlertDialog in some cases, thus it needs the activity's Context (which AppsManager has) in stead of the Application Context (this.context). //
-		}
+
+		this.enabled.add (new InstalledApps (context, apps));
+		this.enabled.add (new LocalFiles (apps.getContext ())); // LocalFiles needs to show an AlertDialog in some cases, thus it needs the activity's Context (which AppsManager has) in stead of the Application Context (this.context). //
 
 		this.maxResultsPerLens = Integer.valueOf (prefs.getString ("dashsearch_lenses_maxresults", "10"));
 	}
