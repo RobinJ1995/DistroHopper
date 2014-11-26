@@ -180,19 +180,21 @@
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal">
+                        android:layout_gravity="center_horizontal"
+                        android:id="@+id/llDashSearchContainer">
 
                         <be.robinj.ubuntu.thirdparty.ProgressWheel
                             android:id="@+id/pwDashSearchProgress"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            ProgressWheel:circleColor="@android:color/black"
+                            android:layout_width="48dp"
+                            android:layout_height="match_parent"
+                            ProgressWheel:circleColor="@color/transparent"
                             ProgressWheel:contourColor="@color/transparent"
-                            ProgressWheel:rimColor="@color/transparent"
+                            ProgressWheel:rimColor="@color/transparent80"
                             ProgressWheel:barLength="16dp"
-                            ProgressWheel:barColor="@android:color/white"
-                            ProgressWheel:barWidth="5dp"
-                            ProgressWheel:rimWidth="2dp" />
+                            ProgressWheel:barColor="@color/transparent40"
+                            ProgressWheel:barWidth="4dp"
+                            ProgressWheel:rimWidth="4dp"
+                            android:visibility="gone" />
 
                         <EditText
                             android:layout_width="match_parent"

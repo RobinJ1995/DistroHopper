@@ -88,6 +88,7 @@ public class HomeActivity extends Activity
 			//GridLayout glWidgets = (GridLayout) this.findViewById (R.id.glWidgets);
 			//ScrollView scrLauncherAppsContainer = (ScrollView) this.findViewById (R.id.scrLauncherAppsContainer);
 			ListView lvDashHomeLensResults = (ListView) this.findViewById (R.id.lvDashHomeLensResults);
+			LinearLayout llDashSearchContainer = (LinearLayout) this.findViewById (R.id.llDashSearchContainer);
 
 			Intent launcherServiceIntent = new Intent (this, LauncherService.class);
 			this.stopService (launcherServiceIntent);
@@ -161,6 +162,14 @@ public class HomeActivity extends Activity
 				LayoutTransition llLauncherRunningApps_transition = new LayoutTransition ();
 				llLauncherRunningApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
 				llLauncherRunningApps.setLayoutTransition (llLauncherRunningApps_transition);
+
+				LayoutTransition llDashSearchContainer_transition = new LayoutTransition ();
+				llDashSearchContainer_transition.setStartDelay (LayoutTransition.APPEARING, 0);
+				llDashSearchContainer_transition.setStartDelay (LayoutTransition.DISAPPEARING, 0);
+				llDashSearchContainer_transition.setStartDelay (LayoutTransition.CHANGE_APPEARING, 0);
+				llDashSearchContainer_transition.setStartDelay (LayoutTransition.CHANGE_DISAPPEARING, 0);
+				llDashSearchContainer_transition.setStartDelay (LayoutTransition.CHANGING, 0);
+				llDashSearchContainer.setLayoutTransition (llDashSearchContainer_transition);
 			}
 
 			this.openDashWhenReady = prefs.getBoolean ("dash_ready_show", this.openDashWhenReady);

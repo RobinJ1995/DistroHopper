@@ -23,6 +23,7 @@ public class LensManager
 {
 	private Context context;
 	private List<Lens> enabled;
+	private AsyncSearch asyncSearch;
 
 	private int maxResultsPerLens = 10;
 
@@ -44,9 +45,7 @@ public class LensManager
 		if (prefs.getBoolean ("dashsearch_lenses", false))
 		{
 			this.enabled.add (new InstalledApps (context, apps));
-			this.enabled.add (new DuckDuckGo (context));
-			this.enabled.add (new SuperUser (context));
-			this.enabled.add (new GooglePlus (context));
+			this.enabled.add (new LocalFiles (apps.getContext ())); // LocalFiles needs to show an AlertDialog in some cases, thus it needs the activity's Context (which AppsManager has) in stead of the Application Context (this.context). //
 		}
 
 		this.maxResultsPerLens = Integer.valueOf (prefs.getString ("dashsearch_lenses_maxresults", "10"));
@@ -69,9 +68,18 @@ public class LensManager
 
 	public void startSearch (String pattern)
 	{
-		this.pwDashSearchProgress.setProgress (180);
-		AsyncSearch async = new AsyncSearch (this, this.pwDashSearchProgress, this.lvDashHomeLensResults);
-		async.execute (pattern);
+		if (this.asyncSearch != null)
+			this.asyncSearch.cancel (true);
+
+		if (! pattern.equals (""))
+		{
+			this.asyncSearch = new AsyncSearch (this, this.pwDashSearchProgress, this.lvDashHomeLensResults);
+			this.asyncSearch.execute (pattern);
+		}
+		else
+		{
+			this.showAppsContainer ();
+		}
 	}
 
 	public List<LensSearchResultCollection> search (String pattern) throws IOException, JSONException
@@ -80,6 +88,7 @@ public class LensManager
 		return this.search (pattern, false);
 	}
 
+	// No longer used. Replaced by AsyncSearch.doInBackground. //
 	public List<LensSearchResultCollection> search (String pattern, boolean showResults) throws IOException, JSONException
 	//public List<LensSearchResult> search (String pattern, boolean showResults) throws IOException, JSONException
 	{
@@ -118,5 +127,19 @@ public class LensManager
 		}
 
 		return results;
+	}
+
+	public void showAppsContainer ()
+	{
+		this.llDashHomeAppsContainer.setVisibility (View.VISIBLE);
+		this.llDashHomeLensesContainer.setVisibility (View.GONE);
+		this.pwDashSearchProgress.setVisibility (View.GONE);
+	}
+
+	public void showLensesContainer ()
+	{
+		this.llDashHomeAppsContainer.setVisibility (View.GONE);
+		this.llDashHomeLensesContainer.setVisibility (View.VISIBLE);
+		this.pwDashSearchProgress.setVisibility (View.VISIBLE);
 	}
 }

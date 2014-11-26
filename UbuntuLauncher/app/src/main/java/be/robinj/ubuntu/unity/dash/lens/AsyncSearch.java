@@ -27,6 +27,14 @@ public class AsyncSearch extends AsyncTask<String, Integer, Object[]>
 	}
 
 	@Override
+	protected void onPreExecute ()
+	{
+		super.onPreExecute ();
+
+		this.lensManager.showLensesContainer ();
+	}
+
+	@Override
 	protected Object[] doInBackground (String... params)
 	{
 		String pattern = params[0];
@@ -40,27 +48,30 @@ public class AsyncSearch extends AsyncTask<String, Integer, Object[]>
 
 			for (int i = 0; i < nLenses; i++)
 			{
-				Lens lens = lenses.get (i);
-				List<LensSearchResult> lensResults = null;
-
 				try
 				{
+					if (this.isCancelled ())
+						return null;
+
+					Lens lens = lenses.get (i);
+					List<LensSearchResult> lensResults = null;
+
 					lensResults = lens.search (pattern);
+
+					if (lensResults != null && lensResults.size () > 0)
+					{
+						lensResults = lensResults.subList (0, lensResults.size () > maxResultsPerLens ? maxResultsPerLens : lensResults.size ());
+
+						LensSearchResultCollection collection = new LensSearchResultCollection (lens, lensResults);
+						results.add (collection);
+					}
 				}
 				catch (Exception ex)
 				{
 					ex.printStackTrace ();
 				}
 
-				if (lensResults != null && lensResults.size () > 0)
-				{
-					lensResults = lensResults.subList (0, lensResults.size () > maxResultsPerLens ? maxResultsPerLens : lensResults.size ());
-
-					LensSearchResultCollection collection = new LensSearchResultCollection (lens, lensResults);
-					results.add (collection);
-				}
-
-				this.publishProgress (i, nLenses);
+				this.publishProgress (i + 1, nLenses);
 			}
 		}
 
@@ -78,8 +89,18 @@ public class AsyncSearch extends AsyncTask<String, Integer, Object[]>
 	@Override
 	protected void onPostExecute (Object[] result)
 	{
+		super.onPostExecute (result);
+
 		List<LensSearchResultCollection> results = (List<LensSearchResultCollection>) result[0];
 
 		this.lvDashHomeLensResults.setAdapter (new be.robinj.ubuntu.unity.dash.lens.CollectionGridAdapter (this.lensManager.getContext (), results));
+	}
+
+	@Override
+	protected void onCancelled ()
+	{
+		super.onCancelled ();
+
+		this.progressWheel.setProgress (0);
 	}
 }
