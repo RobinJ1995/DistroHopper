@@ -21,8 +21,6 @@ public class SuperUser extends Lens
 {
 	private final String API = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle={:QUERY:}&site=superuser";
 
-	private Drawable icon;
-
 	public SuperUser (Context context)
 	{
 		super (context);

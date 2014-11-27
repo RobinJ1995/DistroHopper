@@ -21,8 +21,6 @@ public class Reddit extends Lens
 {
 	private final String API = "https://www.reddit.com/search.json?q={:QUERY:}";
 
-	private Drawable icon;
-
 	public Reddit (Context context)
 	{
 		super (context);

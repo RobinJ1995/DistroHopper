@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="64dp"
+              android:paddingTop="4dp"
+              android:paddingBottom="4dp">
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:id="@+id/imgIcon"
+        android:layout_marginRight="4dp"
+        />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="[Name]"
+            android:id="@+id/tvName"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="[Description]"
+            android:id="@+id/tvDescription"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <CheckBox
+        android:layout_width="32dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0"/>
+</LinearLayout>

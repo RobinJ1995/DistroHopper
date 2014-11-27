@@ -84,7 +84,6 @@
     <string name="hm_commonsguy_why">* I used his ColorMixer component in the Preferences screen.\n
         https://github.com/commonsguy/cwac-colormixer</string>
     <string name="translators_title">Translators</string>
-
     <string name="title_activity_contribute">How can I contribute?</string>
     <string name="contribute_intro">A lot of time and hard work went into the development of this application. If you\'d like to help out, there are several ways in which you can do so.</string>
     <string name="contribute_translate_title">Translating</string>
@@ -101,5 +100,7 @@
         \n
         \nPayPal takes a $0.30 + 2.2\%% fee, so if your donation is less than $0.30 then all of it will go to PayPal, and none of it will reach the developer. If you donate, it\'s best to make your donation more than this amount, unless for some strange reason you\'d like to make a donation to PayPal itself.</string>
     <string name="contribute_donate_go">Donate</string>
+    <string name="title_activity_lens_preferences">LensPreferencesActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

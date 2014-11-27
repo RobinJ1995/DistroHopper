@@ -26,6 +26,8 @@ public abstract class Lens
 {
 	protected Context context;
 
+	protected Drawable icon;
+
 	protected Lens (Context context)
 	{
 		this.context = context;
@@ -36,6 +38,11 @@ public abstract class Lens
 	public abstract String getName ();
 
 	public abstract String getDescription ();
+
+	public Drawable getIcon ()
+	{
+		return this.icon;
+	}
 
 	public int getMinSDKVersion ()
 	{

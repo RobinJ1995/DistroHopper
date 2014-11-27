@@ -21,8 +21,6 @@ public class GitHub extends Lens
 {
 	private final String API = "https://api.github.com/search/repositories?q={:QUERY:}";
 
-	private Drawable icon;
-
 	public GitHub (Context context)
 	{
 		super (context);

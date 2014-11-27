@@ -58,6 +58,15 @@
         </activity>
 
         <service android:name="be.robinj.ubuntu.unity.launcher.service.LauncherService" />
+
+        <activity
+            android:name="be.robinj.ubuntu.LensPreferencesActivity"
+            android:label="@string/title_activity_lens_preferences"
+            android:parentActivityName="be.robinj.ubuntu.PreferencesActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="be.robinj.ubuntu.PreferencesActivity" />
+        </activity>
     </application>
 
 </manifest>

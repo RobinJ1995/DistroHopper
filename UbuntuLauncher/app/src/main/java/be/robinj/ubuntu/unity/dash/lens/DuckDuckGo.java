@@ -21,8 +21,6 @@ public class DuckDuckGo extends Lens
 {
 	private final String API = "https://api.duckduckgo.com/?q={:QUERY:}&format=json";
 
-	private Drawable icon;
-
 	public DuckDuckGo (Context context)
 	{
 		super (context);

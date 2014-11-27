@@ -21,8 +21,6 @@ public class ServerFault extends Lens
 {
 	private final String API = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle={:QUERY:}&site=serverfault";
 
-	private Drawable icon;
-
 	public ServerFault (Context context)
 	{
 		super (context);

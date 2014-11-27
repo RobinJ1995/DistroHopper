@@ -22,14 +22,19 @@ import be.robinj.ubuntu.R;
 public class InstalledApps extends Lens
 {
 	private AppManager apps;
-	private Drawable icon;
 
 	public InstalledApps (Context context, AppManager apps)
 	{
-		super (context);
+		this (context);
 
 		this.apps = apps;
-		this.icon = context.getResources ().getDrawable (R.drawable.launcher_icon_bg);
+	}
+
+	public InstalledApps (Context context)
+	{
+		super (context);
+
+		this.icon = context.getResources ().getDrawable (R.drawable.ic_launcher);
 	}
 
 	public String getName ()

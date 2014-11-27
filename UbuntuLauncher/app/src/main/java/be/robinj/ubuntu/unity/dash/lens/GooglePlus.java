@@ -21,8 +21,6 @@ public class GooglePlus extends Lens
 {
 	private final String API = "https://www.googleapis.com/plus/v1/activities?key=AIzaSyA1LFfEZYf7UapVn06Xnh69e13xbgr4-zg&query={:QUERY:}";
 
-	private Drawable icon;
-
 	public GooglePlus (Context context)
 	{
 		super (context);

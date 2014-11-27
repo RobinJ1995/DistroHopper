@@ -6,6 +6,14 @@
         android:summary="@string/hint_dashsearch_full"
         android:defaultValue="true" />
 
+    <Preference
+        android:title="Lenses"
+        android:summary="">
+        <intent
+            android:targetPackage="be.robinj.ubuntu"
+            android:targetClass="be.robinj.ubuntu.LensPreferencesActivity" />
+    </Preference>
+
     <!--<EditTextPreference
         android:key="dashsearch_lenses_maxresults"
         android:title="@string/option_dashsearch_lenses_maxresults"

@@ -21,8 +21,6 @@ public class AskUbuntu extends Lens
 {
 	private final String API = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle={:QUERY:}&site=askubuntu";
 
-	private Drawable icon;
-
 	public AskUbuntu (Context context)
 	{
 		super (context);

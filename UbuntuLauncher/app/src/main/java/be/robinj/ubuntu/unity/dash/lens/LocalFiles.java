@@ -31,8 +31,6 @@ import be.robinj.ubuntu.R;
  */
 public class LocalFiles extends Lens
 {
-	private Drawable icon;
-
 	public LocalFiles (Context context)
 	{
 		super (context);
