@@ -41,5 +41,6 @@
     <CheckBox
         android:layout_width="32dp"
         android:layout_height="match_parent"
+        android:id="@+id/cbEnabled"
         android:layout_weight="0"/>
 </LinearLayout>

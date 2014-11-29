@@ -15,6 +15,7 @@ import be.robinj.ubuntu.unity.dash.lens.*;
 
 public class LensPreferencesActivity extends Activity
 {
+	private LensManager lensManager;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
@@ -23,24 +24,13 @@ public class LensPreferencesActivity extends Activity
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_lens_preferences);
 
-		Context context = this.getApplicationContext ();
+		this.lensManager = new LensManager (this.getApplicationContext (), null, null, null, null);
 
-		Lens[] lenses = new Lens[] // Application Context will suffice here. Only need to get information from the lenses, no actual searches happening here. //
-		{
-			new AskUbuntu (context),
-			new DuckDuckGo (context),
-			new GitHub (context),
-			new GooglePlus (context),
-			new InstalledApps (context),
-			new LocalFiles (context),
-			new Reddit (context),
-			new ServerFault (context),
-			new StackOverflow (context),
-			new SuperUser (context)
-		};
+		Lens[] lenses = new Lens[this.lensManager.getAvailableLenses ().size ()];
+		this.lensManager.getAvailableLenses ().values ().toArray (lenses);
 
 		ListView lvList = (ListView) this.findViewById (R.id.lvList);
-		lvList.setAdapter (new LensPreferencesListViewAdapter (context, lenses));
+		lvList.setAdapter (new LensPreferencesListViewAdapter (this.getApplicationContext (), this.lensManager, lenses));
 	}
 
 

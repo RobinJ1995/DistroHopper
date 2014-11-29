@@ -66,13 +66,6 @@ public class HomeActivity extends Activity
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_home);
 
-		//DEBUG// For debugging purposes only. This should be removed before publishing the next update. //
-		if (android.os.Build.VERSION.SDK_INT > 9)
-		{
-			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder ().permitAll ().build ();
-			StrictMode.setThreadPolicy (policy);
-		}
-
 		try
 		{
 			GridView gvDashHomeApps = (GridView) this.findViewById (R.id.gvDashHomeApps);
