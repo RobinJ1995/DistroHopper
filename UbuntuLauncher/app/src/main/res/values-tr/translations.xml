@@ -41,6 +41,9 @@
   <string name="message_unitybackground_colour">Bir renk seçmek için kaydırıcıları kullanın.</string>
   <string name="option_unitybackground_opacity">Unity arka plan opaklığı</string>
   <string name="hint_unitybackground_opacity">Şeffaf Unity bileşenlerinin arka plan rengi nasıl olmalı.</string>
+  <string name="option_unitywallpaper_blur">Duvar kağıdı bulanıklaşma metodu</string>
+  <string name="option_launcher_edge">Ekran kenarı</string>
+  <string name="hint_launcher_edge">Başlatıcının ekranın hangi kenarına tutunacağını belirtin.</string>
   <string name="option_wallpaper">Duvar Kağıdı</string>
   <string name="hint_wallpaper">Duvar kağıdını değiştir</string>
   <string name="option_colourcalc_advanced">Daha fazla örnek al</string>
