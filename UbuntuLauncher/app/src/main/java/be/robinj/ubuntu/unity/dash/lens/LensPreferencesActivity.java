@@ -1,4 +1,4 @@
-package be.robinj.ubuntu;
+package be.robinj.ubuntu.unity.dash.lens;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,15 +7,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import com.mobeta.android.dslv.DragSortListView;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import be.robinj.ubuntu.R;
 import be.robinj.ubuntu.unity.dash.lens.*;
 
 
 public class LensPreferencesActivity extends Activity
 {
 	private LensManager lensManager;
+	private DragSortListView lvList;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
@@ -26,11 +30,13 @@ public class LensPreferencesActivity extends Activity
 
 		this.lensManager = new LensManager (this.getApplicationContext (), null, null, null, null);
 
-		Lens[] lenses = new Lens[this.lensManager.getAvailableLenses ().size ()];
-		this.lensManager.getAvailableLenses ().values ().toArray (lenses);
+		List<Lens> lenses = new ArrayList<Lens> ();
+		for (Lens lens : this.lensManager.getAvailableLenses ().values ())
+			lenses.add (lens);
 
-		ListView lvList = (ListView) this.findViewById (R.id.lvList);
-		lvList.setAdapter (new LensPreferencesListViewAdapter (this.getApplicationContext (), this.lensManager, lenses));
+		this.lvList = (DragSortListView) this.findViewById (R.id.lvList);
+		this.lvList.setAdapter (new LensPreferencesListViewAdapter (this.getApplicationContext (), this.lensManager, lenses));
+		this.lvList.setDropListener (new LensPreferencesListViewDropListener (lenses));
 	}
 
 
@@ -57,5 +63,11 @@ public class LensPreferencesActivity extends Activity
 		}*/
 
 		return super.onOptionsItemSelected (item);
+	}
+
+	@Override
+	protected void onStop ()
+	{
+		super.onStop ();
 	}
 }

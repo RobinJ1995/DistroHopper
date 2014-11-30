@@ -20,7 +20,7 @@ public class LensPreferencesListViewAdapter extends ArrayAdapter<Lens>
 {
 	private LensManager lensManager;
 
-	public LensPreferencesListViewAdapter (Context context, LensManager lensManager, Lens[] lenses)
+	public LensPreferencesListViewAdapter (Context context, LensManager lensManager, List<Lens> lenses)
 	{
 		super (context, R.layout.widget_lens_preferences_list_item, lenses);
 

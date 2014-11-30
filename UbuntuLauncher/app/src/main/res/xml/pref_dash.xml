@@ -11,7 +11,7 @@
         android:summary="">
         <intent
             android:targetPackage="be.robinj.ubuntu"
-            android:targetClass="be.robinj.ubuntu.LensPreferencesActivity" />
+            android:targetClass="be.robinj.ubuntu.unity.dash.lens.LensPreferencesActivity" />
     </Preference>
 
     <!--<EditTextPreference

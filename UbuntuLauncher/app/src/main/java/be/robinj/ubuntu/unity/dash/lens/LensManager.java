@@ -12,8 +12,10 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
+import be.robinj.ubuntu.App;
 import be.robinj.ubuntu.AppManager;
 import be.robinj.ubuntu.R;
 import be.robinj.ubuntu.thirdparty.ProgressWheel;
@@ -24,7 +26,7 @@ import be.robinj.ubuntu.thirdparty.ProgressWheel;
 public class LensManager
 {
 	private Context context;
-	private HashMap<String, Lens> lenses = new HashMap<String, Lens> ();
+	private LinkedHashMap<String, Lens> lenses = new LinkedHashMap<String, Lens> ();
 	private List<Lens> enabled;
 	private AsyncSearch asyncSearch;
 
@@ -63,10 +65,16 @@ public class LensManager
 		defaultLenses.add ("InstalledApps");
 		defaultLenses.add ("LocalFiles");
 
-		for (String key : this.lenses.keySet ())
+		int i = 0;
+		String lensName;
+		while ((lensName = prefsLenses.getString (Integer.toString (i), null)) != null)
 		{
-			if (prefsLenses.getBoolean (key + "_enabled", defaultLenses.contains (key)))
-				this.enabled.add (this.lenses.get (key));
+			Lens lens = this.lenses.get (lensName);
+
+			if (lens != null)
+				this.enabled.add (lens);
+
+			i++;
 		}
 
 		this.maxResultsPerLens = Integer.valueOf (prefs.getString ("dashsearch_lenses_maxresults", "10"));
@@ -79,17 +87,9 @@ public class LensManager
 
 	public void disableLens (String name)
 	{
-		SharedPreferences prefsLenses = this.context.getSharedPreferences ("lenses", Context.MODE_PRIVATE);
-
-		SharedPreferences.Editor editor = prefsLenses.edit ();
-		editor.putBoolean (name + "_enabled", false);
-
-		if (Build.VERSION.SDK_INT >= 9)
-			editor.apply ();
-		else
-			editor.commit ();
-
 		this.enabled.remove (this.lenses.get (name));
+
+		this.saveEnabledLenses ();
 	}
 
 	public void enableLens (Lens lens)
@@ -99,17 +99,9 @@ public class LensManager
 
 	public void enableLens (String name)
 	{
-		SharedPreferences prefsLenses = this.context.getSharedPreferences ("lenses", Context.MODE_PRIVATE);
-
-		SharedPreferences.Editor editor = prefsLenses.edit ();
-		editor.putBoolean (name + "_enabled", true);
-
-		if (Build.VERSION.SDK_INT >= 9)
-			editor.apply ();
-		else
-			editor.commit ();
-
 		this.enabled.add (this.lenses.get (name));
+
+		this.saveEnabledLenses ();
 	}
 
 	public Context getContext ()
@@ -142,6 +134,29 @@ public class LensManager
 		Lens lens = this.lenses.get (name);
 
 		return this.enabled.contains (lens);
+	}
+
+	private void saveEnabledLenses ()
+	{
+		SharedPreferences prefsLenses = this.context.getSharedPreferences ("lenses", Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = prefsLenses.edit ();
+
+		int i = 0;
+		String lensName;
+		while ((lensName = prefsLenses.getString (Integer.toString (i), null)) != null)
+		{
+			editor.remove (Integer.toString (i));
+
+			i++;
+		}
+
+		for (int j = 0; j < this.enabled.size (); j++)
+			editor.putString (Integer.toString (j), this.enabled.get (j).getClass ().getSimpleName ());
+
+		if (Build.VERSION.SDK_INT >= 9)
+			editor.apply ();
+		else
+			editor.commit ();
 	}
 
 	public void startSearch (String pattern)

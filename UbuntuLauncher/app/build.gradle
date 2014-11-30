@@ -26,4 +26,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':colormixer')
     compile 'com.android.support:support-v4:20.0.0'
+    compile 'asia.ivity.android:drag-sort-listview:1.0'
 }

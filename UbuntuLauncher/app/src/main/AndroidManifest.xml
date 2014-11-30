@@ -60,7 +60,7 @@
         <service android:name="be.robinj.ubuntu.unity.launcher.service.LauncherService" />
 
         <activity
-            android:name="be.robinj.ubuntu.LensPreferencesActivity"
+            android:name=".unity.dash.lens.LensPreferencesActivity"
             android:label="@string/title_activity_lens_preferences"
             android:parentActivityName="be.robinj.ubuntu.PreferencesActivity" >
             <meta-data
