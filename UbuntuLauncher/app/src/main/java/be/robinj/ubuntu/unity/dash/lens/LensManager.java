@@ -71,7 +71,7 @@ public class LensManager
 		{
 			Lens lens = this.lenses.get (lensName);
 
-			if (lens != null)
+			if (lens != null && (! this.isLensEnabled (lens)))
 				this.enabled.add (lens);
 
 			i++;
@@ -99,7 +99,8 @@ public class LensManager
 
 	public void enableLens (String name)
 	{
-		this.enabled.add (this.lenses.get (name));
+		if (! this.isLensEnabled (name))
+			this.enabled.add (this.lenses.get (name));
 
 		this.saveEnabledLenses ();
 	}
@@ -136,7 +137,7 @@ public class LensManager
 		return this.enabled.contains (lens);
 	}
 
-	private void saveEnabledLenses ()
+	public void saveEnabledLenses ()
 	{
 		SharedPreferences prefsLenses = this.context.getSharedPreferences ("lenses", Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = prefsLenses.edit ();
@@ -159,6 +160,38 @@ public class LensManager
 			editor.commit ();
 	}
 
+	public void showAppsContainer ()
+	{
+		this.llDashHomeAppsContainer.setVisibility (View.VISIBLE);
+		this.llDashHomeLensesContainer.setVisibility (View.GONE);
+		this.pwDashSearchProgress.setVisibility (View.GONE);
+	}
+
+	public void showLensesContainer ()
+	{
+		this.llDashHomeAppsContainer.setVisibility (View.GONE);
+		this.llDashHomeLensesContainer.setVisibility (View.VISIBLE);
+		this.pwDashSearchProgress.setVisibility (View.VISIBLE);
+	}
+
+	public void sortEnabledLenses (List<Lens> reference)
+	{
+		// Remove all lenses and add them again in the right order //
+		// this.enabled = new ArrayList<Lens> () would break existing references //
+		List<Lens> oldEnabled = new ArrayList<Lens> ();
+
+		for (Lens lens : this.enabled)
+			oldEnabled.add (lens);
+
+		this.enabled.clear ();
+
+		for (Lens lens : reference)
+		{
+			if (oldEnabled.contains (lens))
+				this.enabled.add (lens);
+		}
+	}
+
 	public void startSearch (String pattern)
 	{
 		if (this.asyncSearch != null)
@@ -173,19 +206,5 @@ public class LensManager
 		{
 			this.showAppsContainer ();
 		}
-	}
-
-	public void showAppsContainer ()
-	{
-		this.llDashHomeAppsContainer.setVisibility (View.VISIBLE);
-		this.llDashHomeLensesContainer.setVisibility (View.GONE);
-		this.pwDashSearchProgress.setVisibility (View.GONE);
-	}
-
-	public void showLensesContainer ()
-	{
-		this.llDashHomeAppsContainer.setVisibility (View.GONE);
-		this.llDashHomeLensesContainer.setVisibility (View.VISIBLE);
-		this.pwDashSearchProgress.setVisibility (View.VISIBLE);
 	}
 }

@@ -7,6 +7,7 @@
     <string name="dash_lens_other_title">Other</string>
     <string name="title_activity_preferences">Preferences</string>
     <string name="title_activity_about">About</string>
+    <string name="title_activity_lens_preferences">Lenses</string>
     <string name="pinned">has been pinned to the Launcher</string>
     <string name="unpinned">has been unpinned from the Launcher</string>
     <string name="notpinned">isn\'t pinned</string>
@@ -71,6 +72,8 @@
     <string name="hint_dashsearch_lenses_maxresults">The maximum number of search results that is shown from each lens.</string>
     <string name="option_dash_ready_show">Open Dash by default</string>
     <string name="hint_dash_ready_show">The Dash will automatically be opened once apps are loaded.</string>
+    <string name="option_lenses">Lenses</string>
+    <string name="hint_lenses">Choose which lenses you want to use and in which order you want their results to appear in the Dash. When you do a search in the Dash, your query is sent to all enabled lenses and their results are shown.</string>
     <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
     <string name="hm_timvdstaaij_why">* Testing (If he doesn\'t manage to wreck it then it\'s probably safe for consumption by the rest of the world.)\n
         * Help with the dominant colour calculation function.</string>
@@ -100,7 +103,5 @@
         \n
         \nPayPal takes a $0.30 + 2.2\%% fee, so if your donation is less than $0.30 then all of it will go to PayPal, and none of it will reach the developer. If you donate, it\'s best to make your donation more than this amount, unless for some strange reason you\'d like to make a donation to PayPal itself.</string>
     <string name="contribute_donate_go">Donate</string>
-    <string name="title_activity_lens_preferences">LensPreferencesActivity</string>
-    <string name="hello_world">Hello world!</string>
 
 </resources>

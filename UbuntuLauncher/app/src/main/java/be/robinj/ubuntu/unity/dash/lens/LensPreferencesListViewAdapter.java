@@ -44,9 +44,11 @@ public class LensPreferencesListViewAdapter extends ArrayAdapter<Lens>
 		tvDescription.setText (lens.getDescription ());
 		imgIcon.setImageDrawable (lens.getIcon ());
 		cbEnabled.setChecked (this.lensManager.isLensEnabled (lens));
-		cbEnabled.setOnCheckedChangeListener (new LensPreferencesItemCheckedChangeListener (this.lensManager));
 
-		cbEnabled.setTag (lens);
+		LensPreferencesItemClickListener clickListener = new LensPreferencesItemClickListener (this.lensManager, lens, cbEnabled);
+		imgIcon.setOnClickListener (clickListener);
+		cbEnabled.setOnClickListener (clickListener);
+
 		view.setTag (lens);
 
 		return view;

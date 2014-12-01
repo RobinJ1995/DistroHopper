@@ -7,8 +7,8 @@
         android:defaultValue="true" />
 
     <Preference
-        android:title="Lenses"
-        android:summary="">
+        android:title="@string/option_lenses"
+        android:summary="@string/hint_lenses">
         <intent
             android:targetPackage="be.robinj.ubuntu"
             android:targetClass="be.robinj.ubuntu.unity.dash.lens.LensPreferencesActivity" />

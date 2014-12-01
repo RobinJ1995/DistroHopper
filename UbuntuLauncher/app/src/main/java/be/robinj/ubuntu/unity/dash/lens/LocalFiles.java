@@ -62,7 +62,7 @@ public class LocalFiles extends Lens
 		{
 			MediaStore.Files.FileColumns.DATA
 		};
-		String selection = MediaStore.Files.FileColumns.TITLE + " LIKE \"%" + str + "%\"";
+		String selection = MediaStore.Files.FileColumns.TITLE + " LIKE '%" + str.replace ("'", "''") + "%'";
 		Cursor cursor = this.context.getContentResolver ().query (MediaStore.Files.getContentUri ("external"), projection, selection, null, null);
 
 		while (cursor.moveToNext ())

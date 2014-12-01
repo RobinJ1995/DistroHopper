@@ -19,6 +19,7 @@ import be.robinj.ubuntu.unity.dash.lens.*;
 public class LensPreferencesActivity extends Activity
 {
 	private LensManager lensManager;
+	private List<Lens> lenses;
 	private DragSortListView lvList;
 
 	@Override
@@ -30,13 +31,20 @@ public class LensPreferencesActivity extends Activity
 
 		this.lensManager = new LensManager (this.getApplicationContext (), null, null, null, null);
 
-		List<Lens> lenses = new ArrayList<Lens> ();
+		this.lenses = new ArrayList<Lens> ();
+
+		for (Lens lens : this.lensManager.getEnabledLenses ())
+			this.lenses.add (lens);
+
 		for (Lens lens : this.lensManager.getAvailableLenses ().values ())
-			lenses.add (lens);
+		{
+			if (! this.lenses.contains (lens))
+				this.lenses.add (lens);
+		}
 
 		this.lvList = (DragSortListView) this.findViewById (R.id.lvList);
-		this.lvList.setAdapter (new LensPreferencesListViewAdapter (this.getApplicationContext (), this.lensManager, lenses));
-		this.lvList.setDropListener (new LensPreferencesListViewDropListener (lenses));
+		this.lvList.setAdapter (new LensPreferencesListViewAdapter (this.getApplicationContext (), this.lensManager, this.lenses));
+		this.lvList.setDropListener (new LensPreferencesListViewDropListener (this.lvList, this.lenses));
 	}
 
 
@@ -45,6 +53,7 @@ public class LensPreferencesActivity extends Activity
 	{
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater ().inflate (R.menu.lens_preferences, menu);
+
 		return true;
 	}
 
@@ -66,8 +75,11 @@ public class LensPreferencesActivity extends Activity
 	}
 
 	@Override
-	protected void onStop ()
+	protected void onPause ()
 	{
-		super.onStop ();
+		this.lensManager.sortEnabledLenses (this.lenses);
+		this.lensManager.saveEnabledLenses ();
+
+		super.onPause ();
 	}
 }

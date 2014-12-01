@@ -1,5 +1,7 @@
 package be.robinj.ubuntu.unity.dash.lens;
 
+import android.widget.BaseAdapter;
+
 import com.mobeta.android.dslv.DragSortListView;
 
 import java.util.LinkedHashMap;
@@ -10,10 +12,12 @@ import java.util.List;
  */
 public class LensPreferencesListViewDropListener implements DragSortListView.DropListener
 {
+	private DragSortListView lvList;
 	private List<Lens> lenses;
 
-	public LensPreferencesListViewDropListener (List<Lens> lenses)
+	public LensPreferencesListViewDropListener (DragSortListView lvList, List<Lens> lenses)
 	{
+		this.lvList = lvList;
 		this.lenses = lenses;
 	}
 
@@ -22,5 +26,7 @@ public class LensPreferencesListViewDropListener implements DragSortListView.Dro
 	{
 		Lens lens = this.lenses.remove (i);
 		this.lenses.add (i2, lens);
+
+		((BaseAdapter) this.lvList.getAdapter ()).notifyDataSetChanged ();
 	}
 }
