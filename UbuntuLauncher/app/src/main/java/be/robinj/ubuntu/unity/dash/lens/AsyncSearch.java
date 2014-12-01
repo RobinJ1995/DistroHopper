@@ -1,6 +1,7 @@
 package be.robinj.ubuntu.unity.dash.lens;
 
 import android.os.AsyncTask;
+import android.view.View;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ import be.robinj.ubuntu.thirdparty.ProgressWheel;
 public class AsyncSearch extends AsyncTask<String, Integer, Object[]>
 {
 	private LensManager lensManager;
+	private List<LensSearchResultCollection> results = new ArrayList<LensSearchResultCollection> ();
+	private CollectionGridAdapter adapter;
 
 	private ProgressWheel progressWheel;
 	private ListView lvDashHomeLensResults;
@@ -32,50 +35,59 @@ public class AsyncSearch extends AsyncTask<String, Integer, Object[]>
 		super.onPreExecute ();
 
 		this.lensManager.showLensesContainer ();
+		this.progressWheel.setVisibility (View.VISIBLE);
+
+		this.adapter = new be.robinj.ubuntu.unity.dash.lens.CollectionGridAdapter (this.lensManager.getContext (), this.results);
+		this.lvDashHomeLensResults.setAdapter (this.adapter);
 	}
 
 	@Override
 	protected Object[] doInBackground (String... params)
 	{
 		String pattern = params[0];
+		this.results.clear ();
 
-		List<LensSearchResultCollection> results = new ArrayList<LensSearchResultCollection> ();
 		if (pattern.length () > 0)
 		{
 			List<Lens> lenses = this.lensManager.getEnabledLenses ();
 			int nLenses = lenses.size ();
 			int maxResultsPerLens = lensManager.getMaxResultsPerLens ();
 
+			this.publishProgress (0, nLenses);
+
 			for (int i = 0; i < nLenses; i++)
 			{
+				if (this.isCancelled ())
+					return null;
+
+				Lens lens = lenses.get (i);
+				List<LensSearchResult> lensResults = null;
+				LensSearchResultCollection collection = null;
+
 				try
 				{
-					if (this.isCancelled ())
-						return null;
-
-					Lens lens = lenses.get (i);
-					List<LensSearchResult> lensResults = null;
-
 					lensResults = lens.search (pattern);
 
-					if (lensResults != null && lensResults.size () > 0)
+					if (lensResults.size () > 0)
 					{
 						lensResults = lensResults.subList (0, lensResults.size () > maxResultsPerLens ? maxResultsPerLens : lensResults.size ());
 
-						LensSearchResultCollection collection = new LensSearchResultCollection (lens, lensResults);
-						results.add (collection);
+						collection = new LensSearchResultCollection (lens, lensResults);
 					}
 				}
 				catch (Exception ex)
 				{
-					ex.printStackTrace ();
+					collection = new LensSearchResultCollection (lens, ex);
 				}
 
-				this.publishProgress (i + 1, nLenses);
+				if (collection != null)
+					this.results.add (collection);
+
+				this.publishProgress (i, nLenses);
 			}
 		}
 
-		return new Object[] { results };
+		return new Object[] { this.results };
 	}
 
 	@Override
@@ -84,6 +96,8 @@ public class AsyncSearch extends AsyncTask<String, Integer, Object[]>
 		super.onProgressUpdate (progress[0]);
 
 		this.progressWheel.setProgress ((int) ((float) progress[0] / (float) progress[1] * 360));
+
+		this.adapter.notifyDataSetChanged ();
 	}
 
 	@Override
@@ -91,9 +105,7 @@ public class AsyncSearch extends AsyncTask<String, Integer, Object[]>
 	{
 		super.onPostExecute (result);
 
-		List<LensSearchResultCollection> results = (List<LensSearchResultCollection>) result[0];
-
-		this.lvDashHomeLensResults.setAdapter (new be.robinj.ubuntu.unity.dash.lens.CollectionGridAdapter (this.lensManager.getContext (), results));
+		this.progressWheel.setVisibility (View.GONE);
 	}
 
 	@Override

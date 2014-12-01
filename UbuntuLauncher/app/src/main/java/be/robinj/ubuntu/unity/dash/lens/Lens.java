@@ -1,11 +1,13 @@
 package be.robinj.ubuntu.unity.dash.lens;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 
 import org.json.JSONException;
 
@@ -58,6 +60,18 @@ public abstract class Lens
 			intent.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
 
 			this.context.startActivity (intent);
+		}
+		else if (url.startsWith ("error://"))
+		{
+			String message = url.substring ("error://".length ());
+
+			this.showDialog (message, true);
+		}
+		else if (url.startsWith ("message://"))
+		{
+			String message = url.substring ("message://".length ());
+
+			this.showDialog (message, false);
 		}
 		else
 		{
@@ -122,5 +136,25 @@ public abstract class Lens
 		Drawable image = new BitmapDrawable (BitmapFactory.decodeByteArray (imageBytes, 0, imageBytes.length));
 
 		return image;
+	}
+
+	protected void showDialog (String message)
+	{
+		this.showDialog (message, false);
+	}
+
+	protected void showDialog (String message, boolean error)
+	{
+		AlertDialog.Builder dlg;
+		if (Build.VERSION.SDK_INT >= 11)
+			dlg = new AlertDialog.Builder (this.context, error ? AlertDialog.THEME_HOLO_DARK : AlertDialog.THEME_HOLO_LIGHT);
+		else
+			dlg = new AlertDialog.Builder (this.context);
+
+		dlg.setMessage (message);
+		dlg.setCancelable (true);
+		dlg.setNeutralButton ("OK", null);
+
+		dlg.show ();
 	}
 }

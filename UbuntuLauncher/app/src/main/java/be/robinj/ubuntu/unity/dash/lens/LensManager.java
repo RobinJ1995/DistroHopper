@@ -50,12 +50,15 @@ public class LensManager
 		SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
 		SharedPreferences prefsLenses = this.context.getSharedPreferences ("lenses", Context.MODE_PRIVATE);
 
+		if (apps != null)
+			context = apps.getContext ();
+
 		this.lenses.put ("AskUbuntu", new AskUbuntu (context));
 		this.lenses.put ("DuckDuckGo", new DuckDuckGo (context));
 		this.lenses.put ("GitHub", new GitHub (context));
 		this.lenses.put ("GooglePlus", new GooglePlus (context));
 		this.lenses.put ("InstalledApps", new InstalledApps (context, apps));
-		this.lenses.put ("LocalFiles", new LocalFiles (apps != null ? apps.getContext () : context)); // LocalFiles needs to show an AlertDialog in some cases, thus it needs the activity's Context (which AppsManager has) in stead of the Application Context (this.context). //
+		this.lenses.put ("LocalFiles", new LocalFiles (context)); // LocalFiles needs to show an AlertDialog in some cases, thus it needs the activity's Context (which AppsManager has) in stead of the Application Context (this.context). //
 		this.lenses.put ("Reddit", new Reddit (context));
 		this.lenses.put ("ServerFault", new ServerFault (context));
 		this.lenses.put ("StackOverflow", new StackOverflow (context));
@@ -171,7 +174,6 @@ public class LensManager
 	{
 		this.llDashHomeAppsContainer.setVisibility (View.GONE);
 		this.llDashHomeLensesContainer.setVisibility (View.VISIBLE);
-		this.pwDashSearchProgress.setVisibility (View.VISIBLE);
 	}
 
 	public void sortEnabledLenses (List<Lens> reference)

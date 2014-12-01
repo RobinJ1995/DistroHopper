@@ -103,17 +103,7 @@ public class LocalFiles extends Lens
 		}
 		catch (ActivityNotFoundException ex)
 		{
-			AlertDialog.Builder dlg;
-			if (Build.VERSION.SDK_INT >= 11)
-				dlg = new AlertDialog.Builder (this.context, AlertDialog.THEME_HOLO_LIGHT);
-			else
-				dlg = new AlertDialog.Builder (this.context);
-
-			dlg.setMessage ("It looks like you don't have any apps installed that can open this type of file.");
-			dlg.setCancelable (true);
-			dlg.setNeutralButton ("OK", null);
-
-			dlg.show ();
+			this.showDialog ("It looks like you don't have any apps installed that can open this type of file.", false);
 		}
 	}
 }
