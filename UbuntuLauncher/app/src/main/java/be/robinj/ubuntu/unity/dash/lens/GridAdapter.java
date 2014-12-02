@@ -11,7 +11,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import be.robinj.ubuntu.R;
-import be.robinj.ubuntu.unity.dash.AppLauncher;
 
 /**
  * Created by robin on 8/21/14.

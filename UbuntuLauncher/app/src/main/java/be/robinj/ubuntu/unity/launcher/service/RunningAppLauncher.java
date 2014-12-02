@@ -1,8 +1,5 @@
 package be.robinj.ubuntu.unity.launcher.service;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.widget.ImageView;
 import android.widget.LinearLayout;

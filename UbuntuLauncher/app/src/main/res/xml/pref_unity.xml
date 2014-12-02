@@ -1,6 +1,6 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto">
+    >
 
     <CheckBoxPreference
         android:key="unitybackground_dynamic"

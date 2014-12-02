@@ -17,12 +17,14 @@
 package be.robinj.ubuntu.thirdparty;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.preference.Preference;
 import android.util.AttributeSet;
-import android.view.*;
-import android.widget.*;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 /**
  * SeekBarPreference class lets you put a {@linkplain android.widget.SeekBar} into the Preferences or

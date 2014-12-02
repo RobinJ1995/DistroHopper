@@ -1,13 +1,11 @@
 package be.robinj.ubuntu.unity.launcher.service;
 
-import android.animation.LayoutTransition;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
-import android.os.Build;
 import android.os.IBinder;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,11 +16,7 @@ import android.widget.LinearLayout;
 import java.util.List;
 
 import be.robinj.ubuntu.App;
-import be.robinj.ubuntu.ExceptionHandler;
 import be.robinj.ubuntu.R;
-import be.robinj.ubuntu.unity.launcher.service.RunningAppLauncher;
-import be.robinj.ubuntu.unity.launcher.service.AppLauncher;
-import be.robinj.ubuntu.unity.launcher.service.AppLauncherClickListener;
 
 /**
  * Created by robin on 8/27/14.

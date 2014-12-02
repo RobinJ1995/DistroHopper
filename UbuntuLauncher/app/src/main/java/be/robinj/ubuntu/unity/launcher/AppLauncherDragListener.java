@@ -1,12 +1,10 @@
 package be.robinj.ubuntu.unity.launcher;
 
 import android.annotation.TargetApi;
-import android.graphics.Color;
 import android.os.Build;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import be.robinj.ubuntu.App;
 import be.robinj.ubuntu.AppManager;

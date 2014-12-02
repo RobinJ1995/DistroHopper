@@ -7,8 +7,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;

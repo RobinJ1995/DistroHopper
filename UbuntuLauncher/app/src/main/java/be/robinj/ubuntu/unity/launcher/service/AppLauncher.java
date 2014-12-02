@@ -1,7 +1,5 @@
 package be.robinj.ubuntu.unity.launcher.service;
 
-import android.content.Context;
-
 import be.robinj.ubuntu.App;
 
 /**

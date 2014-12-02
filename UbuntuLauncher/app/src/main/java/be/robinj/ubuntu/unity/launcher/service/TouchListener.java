@@ -1,6 +1,5 @@
 package be.robinj.ubuntu.unity.launcher.service;
 
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 

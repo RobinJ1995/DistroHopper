@@ -3,9 +3,6 @@ package be.robinj.ubuntu.unity.dash.lens;
 import android.view.View;
 import android.widget.AdapterView;
 
-import be.robinj.ubuntu.ExceptionHandler;
-import be.robinj.ubuntu.unity.dash.AppLauncher;
-
 /**
  * Created by robin on 8/21/14.
  */

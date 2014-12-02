@@ -1,7 +1,6 @@
 package be.robinj.ubuntu.unity.launcher;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.widget.ImageView;

@@ -1,11 +1,9 @@
 package be.robinj.ubuntu.unity.dash;
 
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 
 import be.robinj.ubuntu.App;
-import be.robinj.ubuntu.ExceptionHandler;
 
 /**
  * Created by robin on 8/21/14.

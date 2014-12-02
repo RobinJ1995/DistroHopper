@@ -4,7 +4,6 @@ import android.widget.BaseAdapter;
 
 import com.mobeta.android.dslv.DragSortListView;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**

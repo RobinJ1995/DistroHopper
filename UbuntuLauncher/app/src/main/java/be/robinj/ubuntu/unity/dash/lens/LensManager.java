@@ -7,15 +7,11 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import be.robinj.ubuntu.App;
 import be.robinj.ubuntu.AppManager;
 import be.robinj.ubuntu.R;
 import be.robinj.ubuntu.thirdparty.ProgressWheel;

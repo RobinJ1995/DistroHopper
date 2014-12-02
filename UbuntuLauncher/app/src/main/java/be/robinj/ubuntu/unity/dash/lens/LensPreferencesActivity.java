@@ -1,11 +1,9 @@
 package be.robinj.ubuntu.unity.dash.lens;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
 
 import com.mobeta.android.dslv.DragSortListView;
 
@@ -13,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.robinj.ubuntu.R;
-import be.robinj.ubuntu.unity.dash.lens.*;
 
 
 public class LensPreferencesActivity extends Activity

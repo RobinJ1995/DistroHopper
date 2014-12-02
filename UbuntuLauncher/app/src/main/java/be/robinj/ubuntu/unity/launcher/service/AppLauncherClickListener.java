@@ -2,8 +2,6 @@ package be.robinj.ubuntu.unity.launcher.service;
 
 import android.view.View;
 
-import be.robinj.ubuntu.ExceptionHandler;
-
 /**
  * Created by robin on 8/28/14.
  */

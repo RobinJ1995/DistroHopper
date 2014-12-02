@@ -1,14 +1,10 @@
 package be.robinj.ubuntu.unity.dash.lens;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 

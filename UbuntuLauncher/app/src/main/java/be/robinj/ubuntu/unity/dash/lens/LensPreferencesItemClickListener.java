@@ -1,12 +1,7 @@
 package be.robinj.ubuntu.unity.dash.lens;
 
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-
-import be.robinj.ubuntu.R;
 
 /**
  * Created by robin on 29/11/14.
