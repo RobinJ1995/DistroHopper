@@ -67,6 +67,9 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 		float size = resInfs.size ();
 		this.publishProgress (0F, size);
 
+		if (this.isCancelled ())
+			return null;
+
 		for (int i = 0; i < size; i++)
 		{
 			App app = App.fromResolveInfo (this.context, appManager, resInfs.get (i));
@@ -79,6 +82,9 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 		size = appManager.size (); // Since the app itself is being filtered out to avoid an inception, the size will have changed, too //
 
 		this.publishProgress (360.0F, 360.0F);
+
+		if (this.isCancelled ())
+			return null;
 
 		appManager.sort ();
 
@@ -93,7 +99,8 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 			//this.publishProgress ((float) i, size); // Looks like it spends more time updating the progress bar than actually looping over and adding the app launchers //
 		}
 
-		//this.publishProgress (360.0F, 360.0F);
+		if (this.isCancelled ())
+			return null;
 
 		SharedPreferences pinned = this.context.getSharedPreferences ("pinned", Context.MODE_PRIVATE);
 
