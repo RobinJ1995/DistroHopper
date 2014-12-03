@@ -37,6 +37,7 @@ import be.robinj.ubuntu.unity.Wallpaper;
 import be.robinj.ubuntu.unity.WidgetHost;
 import be.robinj.ubuntu.unity.WidgetHostView;
 import be.robinj.ubuntu.unity.WidgetHostView_LongClickListener;
+import be.robinj.ubuntu.unity.WidgetHost_LongClickListener;
 import be.robinj.ubuntu.unity.dash.SearchTextWatcher;
 import be.robinj.ubuntu.unity.dash.lens.LensManager;
 import be.robinj.ubuntu.unity.launcher.AppLauncher;
@@ -77,7 +78,7 @@ public class HomeActivity extends Activity
 			Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
 			LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
 			ImageButton ibPanelDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
-			//GridLayout glWidgets = (GridLayout) this.findViewById (R.id.glWidgets);
+			GridLayout vgWidgets = (GridLayout) this.findViewById (R.id.vgWidgets);
 			//ScrollView scrLauncherAppsContainer = (ScrollView) this.findViewById (R.id.scrLauncherAppsContainer);
 			ListView lvDashHomeLensResults = (ListView) this.findViewById (R.id.lvDashHomeLensResults);
 			LinearLayout llDashSearchContainer = (LinearLayout) this.findViewById (R.id.llDashSearchContainer);
@@ -130,10 +131,10 @@ public class HomeActivity extends Activity
 			this.asyncLoadApps = new AsyncLoadApps (this, lalSpinner, lalBfb, gvDashHomeApps, llLauncherPinnedApps);
 			this.asyncLoadApps.execute (this.getApplicationContext ());
 
-			//this.widgetManager = AppWidgetManager.getInstance (this);
-			//this.widgetHost = new WidgetHost (this, R.id.vgWidgets);
+			this.widgetManager = AppWidgetManager.getInstance (this);
+			this.widgetHost = new WidgetHost (this, R.id.vgWidgets);
 
-			//glWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this));
+			vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this));
 
 			if (Build.VERSION.SDK_INT >= 11)
 			{
@@ -184,9 +185,6 @@ public class HomeActivity extends Activity
 				llStatusBar.setLayoutParams (llStatusBar_layoutParams);
 				llStatusBar.setVisibility (View.VISIBLE);
 			}
-
-			//if (Build.VERSION.SDK_INT >= 11)
-				//lalBfb.setOnDragListener (new ReturnFalseDragListener ());
 		}
 		catch (Exception ex)
 		{
@@ -286,7 +284,7 @@ public class HomeActivity extends Activity
 
 		try
 		{
-			//this.widgetHost.startListening ();
+			this.widgetHost.startListening ();
 
 			EasyTracker.getInstance (this).activityStart (this);
 		}
@@ -304,7 +302,7 @@ public class HomeActivity extends Activity
 
 		try
 		{
-			//this.widgetHost.stopListening ();
+			this.widgetHost.stopListening ();
 
 			EasyTracker.getInstance (this).activityStop (this);
 		}
@@ -572,8 +570,6 @@ public class HomeActivity extends Activity
 
 			Intent intent = new Intent (this, PreferencesActivity.class);
 			this.startActivityForResult (intent, 1);
-
-			//this.overridePendingTransition (R.anim.home_to_preferences_in, R.anim.home_to_preferences_out);
 		}
 		catch (Exception ex)
 		{

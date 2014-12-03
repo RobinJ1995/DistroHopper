@@ -352,7 +352,6 @@
 
         </LinearLayout>
 
-        <!-- Doesn't look like I'm going to get widget support working properly any time soon -->
         <include layout="@layout/activity_home_widgets"/>
 
     </RelativeLayout>

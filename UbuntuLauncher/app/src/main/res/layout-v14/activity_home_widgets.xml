@@ -6,9 +6,10 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_toRightOf="@id/llLauncher"
     android:layout_below="@id/llPanel"
-    android:visibility="gone"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentBottom="true"
     tools:showIn="@layout/activity_home">
 
 </GridLayout>
