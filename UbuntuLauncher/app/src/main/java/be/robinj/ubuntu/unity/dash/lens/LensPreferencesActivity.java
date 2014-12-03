@@ -17,7 +17,6 @@ public class LensPreferencesActivity extends Activity
 {
 	private LensManager lensManager;
 	private List<Lens> lenses;
-	private DragSortListView lvList;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
@@ -39,9 +38,9 @@ public class LensPreferencesActivity extends Activity
 				this.lenses.add (lens);
 		}
 
-		this.lvList = (DragSortListView) this.findViewById (R.id.lvList);
-		this.lvList.setAdapter (new LensPreferencesListViewAdapter (this.getApplicationContext (), this.lensManager, this.lenses));
-		this.lvList.setDropListener (new LensPreferencesListViewDropListener (this.lvList, this.lenses));
+		DragSortListView lvList = (DragSortListView) this.findViewById (R.id.lvList);
+		lvList.setAdapter (new LensPreferencesListViewAdapter (this.getApplicationContext (), this.lensManager, this.lenses));
+		lvList.setDropListener (new LensPreferencesListViewDropListener (lvList, this.lenses));
 	}
 
 

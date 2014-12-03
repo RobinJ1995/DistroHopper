@@ -26,7 +26,7 @@ public class AppLauncher extends be.robinj.ubuntu.unity.AppLauncher
 
 	public AppLauncher (Context context, AttributeSet attrs, int layoutNormal, int layoutSpecial)
 	{
-		super (context, attrs, layoutNormal, layoutSpecial);
+		super (context, attrs, R.layout.widget_launcher_applauncher_spinner, layoutSpecial);
 	}
 
 	public AppLauncher (Context context, App app)

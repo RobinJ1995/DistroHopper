@@ -1,10 +1,12 @@
 package be.robinj.ubuntu.unity.dash.lens;
 
+import android.annotation.TargetApi;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.webkit.MimeTypeMap;
 
@@ -22,6 +24,8 @@ import be.robinj.ubuntu.R;
  */
 public class LocalFiles extends Lens
 {
+	//TODO// This lens will only work on API level 11+ //
+
 	public LocalFiles (Context context)
 	{
 		super (context);
@@ -45,6 +49,7 @@ public class LocalFiles extends Lens
 		return 11;
 	}
 
+	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
 	public List<LensSearchResult> search (String str) throws IOException, JSONException
 	{
 		List<LensSearchResult> results = new ArrayList<LensSearchResult> ();

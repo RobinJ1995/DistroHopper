@@ -142,8 +142,7 @@ public class LensManager
 		SharedPreferences.Editor editor = prefsLenses.edit ();
 
 		int i = 0;
-		String lensName;
-		while ((lensName = prefsLenses.getString (Integer.toString (i), null)) != null)
+		while (prefsLenses.getString (Integer.toString (i), null) != null)
 		{
 			editor.remove (Integer.toString (i));
 

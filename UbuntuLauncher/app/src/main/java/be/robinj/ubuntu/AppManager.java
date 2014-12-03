@@ -180,7 +180,7 @@ public class AppManager implements Iterable<App>
 		this.iconPack.loadIconPack (name);
 	}
 
-	public void movePinnedApp (AppLauncher appLauncher, int oldIndex, int newIndex)
+	public void movePinnedApp (int oldIndex, int newIndex)
 	{
 		App app = this.pinned.remove (oldIndex);
 		this.pinned.add (newIndex, app);

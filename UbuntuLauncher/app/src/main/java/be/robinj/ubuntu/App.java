@@ -48,12 +48,6 @@ public class App implements Parcelable
 		return app;
 	}
 
-	public App (Context context, AppManager appManager)
-	{
-		this.context = context;
-		this.appManager = appManager;
-	}
-
 	private App (Context context)
 	{
 		this.context = context;
@@ -65,6 +59,12 @@ public class App implements Parcelable
 		this.description = parcel.readString ();
 		this.label = parcel.readString ();
 		this.packageName = parcel.readString ();
+	}
+
+	private App (Context context, AppManager appManager)
+	{
+		this.context = context;
+		this.appManager = appManager;
 	}
 
 	public void launch ()

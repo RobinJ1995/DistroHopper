@@ -17,7 +17,7 @@ import be.robinj.ubuntu.ExceptionHandler;
 public class TrashDragListener implements ViewGroup.OnDragListener
 {
 	private AppManager appManager;
-	int colour = -1;
+	private int colour = -1;
 
 	public TrashDragListener (AppManager appManager)
 	{

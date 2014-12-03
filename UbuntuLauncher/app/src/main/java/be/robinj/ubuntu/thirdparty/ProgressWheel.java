@@ -85,8 +85,8 @@ public class ProgressWheel extends View {
 //super.handleMessage(msg);
 		}
 	};
-	int progress = 0;
-	boolean isSpinning = false;
+	private int progress = 0;
+	private boolean isSpinning = false;
 	//Other
 	private String text = "";
 	private String[] splitText = {};
@@ -284,11 +284,7 @@ public class ProgressWheel extends View {
 	 * Check if the wheel is currently spinning
 	 */
 	public boolean isSpinning() {
-		if(isSpinning){
-			return true;
-		} else {
-			return false;
-		}
+		return isSpinning;
 	}
 	/**
 	 * Reset the count (in increment mode)

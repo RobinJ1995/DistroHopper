@@ -34,7 +34,7 @@ public class AppLauncherDragListener implements ViewGroup.OnDragListener
 			switch (event.getAction ())
 			{
 				case DragEvent.ACTION_DRAG_ENTERED:
-					if (Build.VERSION.SDK_INT >= 12)
+					if (Build.VERSION.SDK_INT >= 14)
 						appLauncher.animate ().setStartDelay (0).setDuration (120).alpha (0.2F);
 					else
 						appLauncher.setAlpha (0.2F);
@@ -43,13 +43,13 @@ public class AppLauncherDragListener implements ViewGroup.OnDragListener
 					int oldIndex = Integer.parseInt (event.getClipData ().getDescription ().getLabel ().toString ());
 					int newIndex = this.appManager.indexOfPinned (app);
 
-					this.appManager.movePinnedApp (appLauncher, oldIndex, newIndex);
+					this.appManager.movePinnedApp (oldIndex, newIndex);
 					this.appManager.refreshPinnedView ();
 
 					this.appManager.savePinnedApps ();
 					this.appManager.stoppedDraggingPinnedApp ();
 				case DragEvent.ACTION_DRAG_EXITED:
-					if (Build.VERSION.SDK_INT >= 12)
+					if (Build.VERSION.SDK_INT >= 14)
 						appLauncher.animate ().setStartDelay (0).setDuration (120).alpha (0.9F);
 					else
 						appLauncher.setAlpha (0.9F);

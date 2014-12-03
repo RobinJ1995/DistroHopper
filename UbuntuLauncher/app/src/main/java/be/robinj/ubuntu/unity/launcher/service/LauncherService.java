@@ -198,7 +198,7 @@ public class LauncherService extends Service
 	//# Event handlers #//
 	public void lalBfb_clicked (View view)
 	{
-		ComponentName compName = new ComponentName ("be.robinj.ubuntu", "be.robinj.ubuntu.HomeActivity");
+		//ComponentName compName = new ComponentName ("be.robinj.ubuntu", "be.robinj.ubuntu.HomeActivity");
 		Intent intent = new Intent (Intent.ACTION_MAIN);
 		intent.addCategory (Intent.CATEGORY_HOME);
 		intent.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -26,7 +26,6 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 	private SpinnerAppLauncher lalSpinner;
 	private be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb;
 	private GridView gvDashHomeApps;
-	private LinearLayout llLauncherPinnedApps;
 	private HomeActivity parent;
 	private Context context;
 
@@ -36,7 +35,6 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 		this.lalSpinner = lalSpinner;
 		this.lalBfb = lalBfb;
 		this.gvDashHomeApps = gvDashHomeApps;
-		this.llLauncherPinnedApps = llLauncherPinnedApps;
 	}
 
 	@Override

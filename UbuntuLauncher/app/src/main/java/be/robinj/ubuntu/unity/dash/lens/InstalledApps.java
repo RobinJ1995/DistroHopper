@@ -26,7 +26,7 @@ public class InstalledApps extends Lens
 		this.apps = apps;
 	}
 
-	public InstalledApps (Context context)
+	private InstalledApps (Context context)
 	{
 		super (context);
 

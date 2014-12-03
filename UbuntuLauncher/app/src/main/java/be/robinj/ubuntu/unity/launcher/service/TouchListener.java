@@ -13,7 +13,7 @@ public class TouchListener implements View.OnTouchListener
 	private LauncherService parent;
 	private boolean right = false;
 
-	float llListener_x = -1;
+	private float llListener_x = -1;
 	private float llLauncher_x = -1;
 
 	public TouchListener (LauncherService parent, boolean right)

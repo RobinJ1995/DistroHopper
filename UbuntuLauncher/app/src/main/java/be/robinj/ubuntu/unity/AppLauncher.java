@@ -29,7 +29,7 @@ public class AppLauncher extends LinearLayout
 
 	private App app;
 
-	public AppLauncher (Context context, App app, int layout, int layoutSpecial)
+	protected AppLauncher (Context context, App app, int layout, int layoutSpecial)
 	{
 		this (context, (AttributeSet) null, layout, layoutSpecial);
 
@@ -43,7 +43,7 @@ public class AppLauncher extends LinearLayout
 		this.onFinishInflate ();
 	}
 
-	public AppLauncher (Context context, AttributeSet attrs, int layout, int layoutSpecial) // This constructor shouldn't be called directly //
+	protected AppLauncher (Context context, AttributeSet attrs, int layout, int layoutSpecial) // This constructor shouldn't be called directly //
 	{
 		super (context, attrs);
 
@@ -77,7 +77,7 @@ public class AppLauncher extends LinearLayout
 		this.iconChanged ();
 	}
 
-	public void init ()
+	protected void init ()
 	{
 	}
 
@@ -120,7 +120,7 @@ public class AppLauncher extends LinearLayout
 	{
 	}
 
-	public boolean isSpecial ()
+	protected boolean isSpecial ()
 	{
 		return special;
 	}

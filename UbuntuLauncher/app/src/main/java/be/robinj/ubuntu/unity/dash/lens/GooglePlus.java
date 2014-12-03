@@ -50,7 +50,7 @@ public class GooglePlus extends Lens
 		{
 			JSONObject item = items.getJSONObject (i);
 
-			if (item.has ("title") && item.has ("url") && (! item.getString ("title").trim ().isEmpty ()))
+			if (item.has ("title") && item.has ("url") && (! item.getString ("title").trim ().equals ("")))
 			{
 				Drawable icon = this.icon;
 

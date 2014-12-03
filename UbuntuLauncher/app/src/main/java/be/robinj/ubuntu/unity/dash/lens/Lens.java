@@ -99,7 +99,7 @@ public abstract class Lens
 			throw new UnsupportedOperationException ();
 	}
 
-	protected String downloadStr (String url) throws IOException, JSONException
+	protected String downloadStr (String url) throws IOException
 	{
 		URL urlObj = new URL (url);
 		InputStreamReader streamReader = new InputStreamReader (urlObj.openStream ());
@@ -116,7 +116,7 @@ public abstract class Lens
 		return str.toString ();
 	}
 
-	protected Drawable downloadImage (String url) throws IOException, JSONException
+	protected Drawable downloadImage (String url) throws IOException
 	{
 		URL urlObj = new URL (url);
 		InputStream in = new BufferedInputStream (urlObj.openStream ());

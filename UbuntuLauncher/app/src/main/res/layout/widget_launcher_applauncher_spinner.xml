@@ -27,7 +27,6 @@
                 android:id="@+id/progressWheel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerInParent="true"
                 ProgressWheel:circleColor="@color/transparent"
                 ProgressWheel:contourColor="@color/transparent"
                 ProgressWheel:rimColor="@color/transparent"
