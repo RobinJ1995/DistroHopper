@@ -97,6 +97,7 @@ public class AsyncSearch extends AsyncTask<String, Integer, Object[]>
 
 		this.progressWheel.setProgress ((int) ((float) progress[0] / (float) progress[1] * 360));
 
+		this.progressWheel.invalidate ();
 		this.adapter.notifyDataSetChanged ();
 	}
 

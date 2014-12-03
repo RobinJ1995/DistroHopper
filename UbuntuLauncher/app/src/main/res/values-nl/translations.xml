@@ -6,6 +6,7 @@
   <string name="dash_lens_other_title">Overige</string>
   <string name="title_activity_preferences">Voorkeuren</string>
   <string name="title_activity_about">Over</string>
+  <string name="title_activity_lens_preferences">Lenzen</string>
   <string name="pinned">is vastgemaakt aan de Launcher</string>
   <string name="unpinned">is losgemaakt van de Launcher</string>
   <string name="notpinned">is niet vastgemaakt aan de Launcher</string>
@@ -68,6 +69,8 @@
   <string name="hint_dashsearch_lenses_maxresults">Het maxmimum aantal resultaten dat getoond moet worden van elke lens.</string>
   <string name="option_dash_ready_show">Dash standaard openen</string>
   <string name="hint_dash_ready_show">Het Dash zal automatisch geöpend worden wanneer de apps geladen zijn.</string>
+  <string name="option_lenses">Lenzen</string>
+  <string name="hint_lenses">Kies welke lenzen je wil gebruiken en in welke volgorde hun resultaten getoond moetenworden in het Dash. Wanneer je zoekt in het Dash wordt je zoekopdracht naar alle ingeschakelde lenzen gestuurd, en vervolgens worden hun resultaten getoond.</string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Testen (Als hij het niet kapot krijgt kan ik er meestal wel vanuit gaan dat het ook veilig is voor consumptie door de rest van de wereld.)\n
 * Hulp met de kleursberekeningsfuncties.</string>
