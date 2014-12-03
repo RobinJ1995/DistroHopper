@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<be.robinj.ubuntu.widgets.WidgetsContainer
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/vgWidgets"
@@ -7,6 +7,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_below="@id/llPanel"
-    android:visibility="gone"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentBottom="true"
     tools:showIn="@layout/activity_home">
-</LinearLayout>
+
+</be.robinj.ubuntu.widgets.WidgetsContainer>

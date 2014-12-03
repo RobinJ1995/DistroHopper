@@ -1,4 +1,4 @@
-package be.robinj.ubuntu.unity;
+package be.robinj.ubuntu.widgets;
 
 import android.view.View;
 import android.widget.GridLayout;

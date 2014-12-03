@@ -19,7 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/wpWallpaper"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop" />
+
+        <include layout="@layout/activity_home_widgets"/>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -351,8 +353,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <include layout="@layout/activity_home_widgets"/>
 
     </RelativeLayout>
 

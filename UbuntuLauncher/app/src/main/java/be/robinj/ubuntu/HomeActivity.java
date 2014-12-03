@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -34,10 +33,10 @@ import java.util.List;
 
 import be.robinj.ubuntu.thirdparty.ProgressWheel;
 import be.robinj.ubuntu.unity.Wallpaper;
-import be.robinj.ubuntu.unity.WidgetHost;
-import be.robinj.ubuntu.unity.WidgetHostView;
-import be.robinj.ubuntu.unity.WidgetHostView_LongClickListener;
-import be.robinj.ubuntu.unity.WidgetHost_LongClickListener;
+import be.robinj.ubuntu.widgets.WidgetHost;
+import be.robinj.ubuntu.widgets.WidgetHostView;
+import be.robinj.ubuntu.widgets.WidgetHostView_LongClickListener;
+import be.robinj.ubuntu.widgets.WidgetHost_LongClickListener;
 import be.robinj.ubuntu.unity.dash.SearchTextWatcher;
 import be.robinj.ubuntu.unity.dash.lens.LensManager;
 import be.robinj.ubuntu.unity.launcher.AppLauncher;
@@ -78,7 +77,7 @@ public class HomeActivity extends Activity
 			Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
 			LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
 			ImageButton ibPanelDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
-			GridLayout vgWidgets = (GridLayout) this.findViewById (R.id.vgWidgets);
+			RelativeLayout vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
 			//ScrollView scrLauncherAppsContainer = (ScrollView) this.findViewById (R.id.scrLauncherAppsContainer);
 			ListView lvDashHomeLensResults = (ListView) this.findViewById (R.id.lvDashHomeLensResults);
 			LinearLayout llDashSearchContainer = (LinearLayout) this.findViewById (R.id.llDashSearchContainer);
@@ -107,6 +106,10 @@ public class HomeActivity extends Activity
 			int ibDashClose_width = (int) ((float) (48 + prefs.getInt ("launchericon_width", 36)) * density);
 			LinearLayout.LayoutParams ibDashClose_layoutParams = new LinearLayout.LayoutParams (ibDashClose_width, LinearLayout.LayoutParams.MATCH_PARENT);
 			ibPanelDashClose.setLayoutParams (ibDashClose_layoutParams);
+
+			RelativeLayout.LayoutParams vgWidgets_layoutParams = (RelativeLayout.LayoutParams) vgWidgets.getLayoutParams ();
+			vgWidgets_layoutParams.setMargins (ibDashClose_width, 0, 0, 0);
+			//vgWidgets.setLayoutParams ();
 
 			lalSpinner.getProgressWheel ().spin ();
 
@@ -711,17 +714,17 @@ public class HomeActivity extends Activity
 		AppWidgetProviderInfo info = this.widgetManager.getAppWidgetInfo (id);
 		WidgetHostView hostView = (WidgetHostView) this.widgetHost.createView (this, id, info);
 
-		ViewGroup vgWidgets = (GridLayout) this.findViewById (R.id.vgWidgets);
+		ViewGroup vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
 		vgWidgets.addView (hostView);
 
-		hostView.setOnLongClickListener (new WidgetHostView_LongClickListener (this));
+		hostView.setOnLongClickListener (new WidgetHostView_LongClickListener (this, hostView));
 	}
 
 	public void removeWidget (AppWidgetHostView hostView)
 	{
 		this.widgetHost.deleteAppWidgetId (hostView.getAppWidgetId ());
 
-		GridLayout vgWidgets = (GridLayout) this.findViewById (R.id.vgWidgets);
+		RelativeLayout vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
 		vgWidgets.removeView (hostView);
 	}
 

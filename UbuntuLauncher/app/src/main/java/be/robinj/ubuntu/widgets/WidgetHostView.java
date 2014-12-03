@@ -1,9 +1,13 @@
-package be.robinj.ubuntu.unity;
+package be.robinj.ubuntu.widgets;
 
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewConfiguration;
 
 /**
@@ -14,6 +18,8 @@ public class WidgetHostView extends AppWidgetHostView
 	private LayoutInflater inflater;
 	private int longPressTimeout;
 	private boolean cancelLongPress = false;
+
+	private boolean editMode = false;
 
 	public WidgetHostView (Context context)
 	{
@@ -65,5 +71,40 @@ public class WidgetHostView extends AppWidgetHostView
 		};
 
 		this.postDelayed (runnable, this.longPressTimeout);
+	}
+
+	@Override
+	protected boolean drawChild (Canvas canvas, View child, long drawingTime)
+	{
+		boolean returnValue = super.drawChild (canvas, child, drawingTime);
+
+		Paint red = new Paint ();
+		red.setColor (Color.RED);
+		red.setStrokeWidth (10);
+
+		int width = canvas.getWidth ();
+		int height = canvas.getHeight ();
+
+		if (this.editMode)
+		{
+			canvas.drawLine (20, 20, width - 20, 20, red);
+			canvas.drawLine (width - 20, 20, width - 20, height - 20, red);
+			canvas.drawLine (width - 20, height - 20, 20, height - 20, red);
+			canvas.drawLine (20, height - 20, 20, 20, red);
+		}
+
+		return returnValue;
+	}
+
+	public boolean getEditMode ()
+	{
+		return this.editMode;
+	}
+
+	public void setEditMode (boolean editMode)
+	{
+		this.editMode = editMode;
+
+		this.invalidate ();
 	}
 }
