@@ -38,9 +38,12 @@ public class WidgetHostView extends AppWidgetHostView
 				this.postLongPressCheck ();
 				break;
 			case MotionEvent.ACTION_UP:
-			case MotionEvent.ACTION_CANCEL:
-				this.cancelLongPress = true; // performLongClick () gets triggered before this line, because who needs logic anyway //
+				this.cancelLongPress = true;
 				break;
+			case MotionEvent.ACTION_CANCEL:
+				this.cancelLongPress = true;
+
+				return true;
 		}
 
 		return false;
