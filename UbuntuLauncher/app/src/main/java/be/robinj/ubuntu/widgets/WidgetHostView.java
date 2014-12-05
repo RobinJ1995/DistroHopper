@@ -5,10 +5,12 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 
 /**
  * Created by robin on 8/25/14.
@@ -18,8 +20,9 @@ public class WidgetHostView extends AppWidgetHostView
 	private LayoutInflater inflater;
 	private int longPressTimeout;
 	private boolean cancelLongPress = false;
+	private ViewGroup.LayoutParams layoutParams;
 
-	private boolean editMode = false;
+	private boolean editMode = true;
 
 	public WidgetHostView (Context context)
 	{
@@ -44,6 +47,21 @@ public class WidgetHostView extends AppWidgetHostView
 				this.cancelLongPress = true;
 
 				return true;
+			case MotionEvent.ACTION_HOVER_MOVE:
+			case MotionEvent.ACTION_MOVE:
+				if (this.editMode)
+				{
+					MotionEvent.PointerCoords firstCoords = new MotionEvent.PointerCoords ();
+					MotionEvent.PointerCoords latestCoords = new MotionEvent.PointerCoords ();
+					e.getPointerCoords (0, firstCoords);
+					e.getPointerCoords (e.getPointerCount () - 1, latestCoords);
+
+					if (firstCoords.x != latestCoords.x && firstCoords.x > this.getWidth () - 250)
+						this.getLayoutParams ().width = (int) latestCoords.x;
+
+					this.invalidate ();
+				}
+				break;
 		}
 
 		return false;
@@ -85,15 +103,36 @@ public class WidgetHostView extends AppWidgetHostView
 		red.setColor (Color.RED);
 		red.setStrokeWidth (10);
 
+		Paint paintOverlay = new Paint ();
+		paintOverlay.setColor (Color.argb (50, 0, 0, 0));
+
+		Paint paintOverlayLight = new Paint ();
+		paintOverlayLight.setColor (Color.argb (50, 255, 255, 255));
+
 		int width = canvas.getWidth ();
 		int height = canvas.getHeight ();
 
 		if (this.editMode)
 		{
-			canvas.drawLine (20, 20, width - 20, 20, red);
-			canvas.drawLine (width - 20, 20, width - 20, height - 20, red);
-			canvas.drawLine (width - 20, height - 20, 20, height - 20, red);
-			canvas.drawLine (20, height - 20, 20, 20, red);
+			canvas.drawRect (0, 0, width, height, paintOverlay);
+
+			RectF smallTop = new RectF (width / 2 - 25, -5, width / 2 + 25, 45);
+			RectF bigTop = new RectF (width / 2 - 75, -35, width / 2 + 75, 115);
+			RectF smallRight = new RectF (width - 45, height / 2 - 25, width + 5, height / 2 + 25);
+			RectF bigRight = new RectF (width - 115, height / 2 - 75, width + 35, height / 2 + 75);
+			RectF smallBottom = new RectF (width / 2 - 25, height - 45, width / 2 + 25, height + 5);
+			RectF bigBottom = new RectF (width / 2 - 75, height - 115, width / 2 + 75, height + 35);
+			RectF smallLeft = new RectF (-5, height / 2 - 25, 45, height / 2 + 25);
+			RectF bigLeft = new RectF (-35, height / 2 - 75, 115, height / 2 + 75);
+
+			canvas.drawArc (bigTop, 0, 360, true, paintOverlay);
+			canvas.drawArc (smallTop, 0, 360, true, paintOverlayLight);
+			canvas.drawArc (bigRight, 0, 360, true, paintOverlay);
+			canvas.drawArc (smallRight, 0, 360, true, paintOverlayLight);
+			canvas.drawArc (bigBottom, 0, 360, true, paintOverlay);
+			canvas.drawArc (smallBottom, 0, 360, true, paintOverlayLight);
+			canvas.drawArc (bigLeft, 0, 360, true, paintOverlay);
+			canvas.drawArc (smallLeft, 0, 360, true, paintOverlayLight);
 		}
 
 		return returnValue;
@@ -106,7 +145,7 @@ public class WidgetHostView extends AppWidgetHostView
 
 	public void setEditMode (boolean editMode)
 	{
-		this.editMode = editMode;
+		this.editMode =true;// editMode;
 
 		this.invalidate ();
 	}
