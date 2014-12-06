@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="action_settings">Налаштування</string>
+  <string name="dash_search_hint">Пошук встановлених додатків</string>
+  <string name="dash_lens_apps_title">Додатки</string>
+  <string name="dash_lens_other_title">Інші</string>
+  <string name="title_activity_preferences">Уподобання</string>
+  <string name="title_activity_about">Про нас</string>
+  <string name="pinned">був прикріплений до Лаунчера</string>
+  <string name="unpinned">був від’єднаний від Лаунчера</string>
+  <string name="notpinned">не прикріплений</string>
+  <string name="developed_by">Розробник: Робін Джейкобс</string>
+  <string name="honourable_mentions">Особлива подяка</string>
+  <string name="button_back">Назад</string>
+  <string name="button_about">Про нас</string>
+  <string name="button_contribute">Допомогти проекту</string>
+  <string name="title_preferences">Уподобання</string>
+  <string name="pref_header_general">Загальні</string>
+  <string name="pref_header_unity">Unity</string>
+  <string name="pref_header_launcher">Лаунчер</string>
+  <string name="pref_header_panel">Панель</string>
+  <string name="pref_header_advanced">Розширені</string>
+  <string name="category_colourcalc">Розрахунок домінуючого кольору</string>
+  <string name="option_launchericon_width">Ширина лаунчера</string>
+  <string name="hint_launchericon_width">Налаштування ширини лаунчера та іконок. Мінімальне значення слайдера 48dip, максимальне 120dip, стандартне (середнє) 84dip.</string>
+  <string name="option_launchericon_opacity">Непрозорість фону іконки</string>
+  <string name="hint_launchericon_opacity">Налаштування рівня непрозорості фону іконки</string>
+  <string name="option_launcherservice_enabled">Зробити Лаунчер доступним з інших додатків</string>
+  <string name="hint_launcherservice_enabled">При проведенні пальцем по нижній лівій частині екрана з\'явиться Лаунчер, який дозволить запустити програми прикріплені до нього без потреби повернення на головний екран.</string>
+  <string name="option_launcher_running_show">Показати активні додатки</string>
+  <string name="hint_launcher_running_show">Лаунчер покаже, які додатки працюють на даний момент. Це буде позначено невеликою стрілкою з лівої сторони іконки. Також будуть показані активні додатки не закріплені в Лаунчері.</string>
+  <string name="option_panel_show">Показати панель</string>
+  <string name="hint_panel_show">Показати панель у верхній частині екрану.</string>
+  <string name="option_panel_opacity">Непрозорість панелі</string>
+  <string name="hint_panel_opacity">Налаштування рівня непрозорості панелі.</string>
+  <string name="option_unitybackground_dynamic">Автоматичний вибір кольору фону Unity</string>
+  <string name="hint_unitybackground_dynamic">Автоматичний вибір кольору фону компонентів Unity, а також лаунчера, деша і панелі, якщо деш відкритий. Программa вибирає колір фону орієнтуючись на домінантний колір шпалер. Однак це не розраховано на роботу з живими шпалерами. У цьому випадку використовується стандартний чорний прозорий фон.</string>
+  <string name="option_unitybackground_colour">Колір фону Unity</string>
+  <string name="hint_unitybackground_colour">Налаштування кольору фону компонентів Unity.</string>
+  <string name="message_unitybackground_colour">Використовуйте повзунки, щоб вибрати колір.</string>
+  <string name="option_unitybackground_opacity">Непрозорість фону Unity</string>
+  <string name="hint_unitybackground_opacity">Налаштування рівня непрозрості компонентів Unity.</string>
+  <string name="option_unitywallpaper_blur">Метод розмиття шпалер</string>
+</resources>

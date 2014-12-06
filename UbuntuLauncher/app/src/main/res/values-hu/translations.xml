@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="action_settings">Beállítások</string>
+  <string name="dash_search_hint">Keresés a telepített alkalmazások között</string>
+  <string name="dash_lens_apps_title">Alkalmazások</string>
+  <string name="dash_lens_other_title">Egyéb</string>
+  <string name="title_activity_preferences">Beállítások</string>
+  <string name="title_activity_about">Névjegy</string>
+  <string name="title_activity_lens_preferences">Objektív</string>
+  <string name="developed_by">Robin Jacobs fejlesztése</string>
+  <string name="honourable_mentions">Speciális köszönet</string>
+  <string name="button_back">Vissza</string>
+  <string name="button_about">Névjegy</string>
+  <string name="button_contribute">Közreműködés</string>
+  <string name="title_preferences">Beállítások</string>
+  <string name="pref_header_general">Általános</string>
+  <string name="pref_header_unity">Oldalsáv</string>
+  <string name="pref_header_launcher">Indítóikon</string>
+  <string name="pref_header_dash">Vezérlőpult</string>
+  <string name="pref_header_panel">Panel</string>
+  <string name="pref_header_advanced">Fejlett</string>
+  <string name="option_panel_show">Mutat</string>
+  <string name="hint_panel_show">A felső panel a képernyő felső részén látszódjon vagy sem.</string>
+  <string name="option_panel_opacity">Homályosság</string>
+  <string name="option_unitybackground_dynamic">Dinamikus háttérszín</string>
+  <string name="option_unitybackground_opacity">Háttér homályossága</string>
+  <string-array name="keys_unitywallpaper_blur">
+    <item>Ne legyen homályos</item>
+    <item>Árnyékol</item>
+    <item>Downscale &amp; upscale (default)</item>
+  </string-array>
+  <string-array name="keys_launcher_edge">
+    <item>Balra (alapértelmezett)</item>
+    <item>Jobbra</item>
+  </string-array>
+  <string name="option_wallpaper">Háttér</string>
+  <string name="hint_wallpaper">Háttérkép megváltoztatása</string>
+  <string name="option_dashsearch_full">Részletes keresés</string>
+  <string name="translators_title">Fordítók</string>
+  <string name="title_activity_contribute">Hogyan tudok közreműködő lenni?</string>
+  <string name="contribute_translate_title">Fordítás</string>
+  <string name="contribute_translate_go">Lépj be a Transifex oldalára</string>
+  <string name="contribute_bugs_title">Hibák jelentése</string>
+  <string name="contribute_bugs_go">Lépj be a GitHub oldalára</string>
+  <string name="contribute_donate_title">Adományozás</string>
+  <string name="contribute_donate_go">Adományozás</string>
+</resources>
