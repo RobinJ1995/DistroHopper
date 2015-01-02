@@ -19,10 +19,11 @@ public class WidgetHostView extends AppWidgetHostView
 {
 	private LayoutInflater inflater;
 	private int longPressTimeout;
-	private boolean cancelLongPress = false;
+	private LongPressCheck longPressCheck;
+	private boolean performedLongPress = false;
 	private ViewGroup.LayoutParams layoutParams;
 
-	private boolean editMode = true;
+	private boolean editMode = false;
 
 	public WidgetHostView (Context context)
 	{
@@ -35,32 +36,24 @@ public class WidgetHostView extends AppWidgetHostView
 	@Override
 	public boolean onInterceptTouchEvent (MotionEvent e)
 	{
+		if (this.performedLongPress)
+		{
+			this.performedLongPress = false;
+
+			return true;
+		}
+
 		switch (e.getAction ())
 		{
 			case MotionEvent.ACTION_DOWN:
 				this.postLongPressCheck ();
 				break;
 			case MotionEvent.ACTION_UP:
-				this.cancelLongPress = true;
-				break;
 			case MotionEvent.ACTION_CANCEL:
-				this.cancelLongPress = true;
+				this.performedLongPress = false;
 
-				return true;
-			case MotionEvent.ACTION_HOVER_MOVE:
-			case MotionEvent.ACTION_MOVE:
-				if (this.editMode)
-				{
-					MotionEvent.PointerCoords firstCoords = new MotionEvent.PointerCoords ();
-					MotionEvent.PointerCoords latestCoords = new MotionEvent.PointerCoords ();
-					e.getPointerCoords (0, firstCoords);
-					e.getPointerCoords (e.getPointerCount () - 1, latestCoords);
-
-					if (firstCoords.x != latestCoords.x && firstCoords.x > this.getWidth () - 250)
-						this.getLayoutParams ().width = (int) latestCoords.x;
-
-					this.invalidate ();
-				}
+				if (this.longPressCheck != null)
+					this.removeCallbacks (this.longPressCheck);
 				break;
 		}
 
@@ -72,26 +65,52 @@ public class WidgetHostView extends AppWidgetHostView
 	{
 		super.cancelLongPress ();
 
-		this.cancelLongPress = true;
+		this.performedLongPress = false;
+		if (this.longPressCheck != null)
+			this.removeCallbacks (this.longPressCheck);
 	}
 
 	private void postLongPressCheck ()
 	{
-		final int windowAttachCount = this.getWindowAttachCount ();
+		this.performedLongPress = false;
 
-		Runnable runnable = new Runnable ()
+		if (this.longPressCheck == null)
+			this.longPressCheck = new LongPressCheck ();
+
+		this.longPressCheck.setNWindowsAttached (this.getWindowAttachCount ());
+		this.postDelayed (this.longPressCheck, this.longPressTimeout);
+	}
+
+	@Override
+	public int getDescendantFocusability ()
+	{
+		return ViewGroup.FOCUS_BLOCK_DESCENDANTS;
+	}
+
+	class LongPressCheck implements Runnable
+	{
+		private int nWindowsAttached;
+
+		public void run ()
 		{
-			@Override
-			public void run ()
+			if (
+				getParent () != null
+				&& hasWindowFocus ()
+				&& this.nWindowsAttached == getWindowAttachCount ()
+				&& ! performedLongPress
+			)
 			{
-				if (getParent () != null && hasWindowFocus () && windowAttachCount == getWindowAttachCount () && (! cancelLongPress))
-					performLongClick ();
-				else
-					cancelLongPress = false;
+				if (performLongClick ())
+				{
+					performedLongPress = true;
+				}
 			}
-		};
+		}
 
-		this.postDelayed (runnable, this.longPressTimeout);
+		public void setNWindowsAttached (int n)
+		{
+			this.nWindowsAttached = n;
+		}
 	}
 
 	@Override
@@ -145,7 +164,7 @@ public class WidgetHostView extends AppWidgetHostView
 
 	public void setEditMode (boolean editMode)
 	{
-		this.editMode =true;// editMode;
+		this.editMode = editMode;
 
 		this.invalidate ();
 	}
