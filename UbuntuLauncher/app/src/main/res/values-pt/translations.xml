@@ -6,6 +6,7 @@
   <string name="dash_lens_other_title">Outros</string>
   <string name="title_activity_preferences">Preferências</string>
   <string name="title_activity_about">Sobre</string>
+  <string name="title_activity_lens_preferences">Lentes</string>
   <string name="pinned">foi fixado ao Launcher</string>
   <string name="unpinned">foi removido do Launcher</string>
   <string name="notpinned">não fixado</string>
@@ -68,6 +69,8 @@
   <string name="hint_dashsearch_lenses_maxresults">O número máximo de resultados da pesquisa, que é mostrada a partir de cada lente.</string>
   <string name="option_dash_ready_show">Abrir Dash por padrão</string>
   <string name="hint_dash_ready_show">O Menu de Aplicativos deve abrir automaticamente quando voltar à tela inicial.</string>
+  <string name="option_lenses">Lentes</string>
+  <string name="hint_lenses">Escolha quais lentes você deseja usar e em que ordem seus resultados devem aparecer no Dash. Quando fizer uma busca no Dash, sua consulta será enviada para todas as lentes ativadas e os seus resultados serão apresentados.</string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Testando (Se não consegue destruí­-lo, então é seguro pro resto do mundo) * Ajuda com cálculo de cor predominante.</string>
   <string name="hm_todddavies_name">Todd Davies</string>
