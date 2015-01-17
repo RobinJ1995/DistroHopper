@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
+import be.robinj.ubuntu.HomeActivity;
+
 /**
  * Created by robin on 8/25/14.
  */
@@ -22,12 +24,15 @@ public class WidgetHostView extends AppWidgetHostView
 	private LongPressCheck longPressCheck;
 	private boolean performedLongPress = false;
 	private ViewGroup.LayoutParams layoutParams;
+	private HomeActivity parent;
 
 	private boolean editMode = false;
 
-	public WidgetHostView (Context context)
+	public WidgetHostView (Context context, HomeActivity parent)
 	{
 		super (context);
+
+		this.parent = parent;
 
 		this.inflater = (LayoutInflater) context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
 		this.longPressTimeout = ViewConfiguration.getLongPressTimeout ();
@@ -56,7 +61,16 @@ public class WidgetHostView extends AppWidgetHostView
 					this.removeCallbacks (this.longPressCheck);
 
 				if (this.editMode)
+				{
+					int width = this.getWidth ();
+					int height = this.getHeight ();
+
+					RectF bigMiddle = new RectF (width / 2 - 53, height / 2 - 53, width / 2 + 53, height / 2 + 53);
+					if (bigMiddle.contains (e.getX (), e.getY ()))
+						this.parent.removeWidget (this);
+
 					return true;
+				}
 				break;
 		}
 
@@ -121,15 +135,14 @@ public class WidgetHostView extends AppWidgetHostView
 	{
 		boolean returnValue = super.drawChild (canvas, child, drawingTime);
 
-		Paint red = new Paint ();
-		red.setColor (Color.RED);
-		red.setStrokeWidth (10);
-
 		Paint paintOverlay = new Paint ();
 		paintOverlay.setColor (Color.argb (50, 0, 0, 0));
 
 		Paint paintOverlayLight = new Paint ();
 		paintOverlayLight.setColor (Color.argb (50, 255, 255, 255));
+
+		Paint paintLight = new Paint ();
+		paintLight.setColor (Color.argb (200, 255, 255, 255));
 
 		int width = canvas.getWidth ();
 		int height = canvas.getHeight ();
@@ -146,6 +159,8 @@ public class WidgetHostView extends AppWidgetHostView
 			RectF bigBottom = new RectF (width / 2 - 75, height - 115, width / 2 + 75, height + 35);
 			RectF smallLeft = new RectF (-5, height / 2 - 25, 45, height / 2 + 25);
 			RectF bigLeft = new RectF (-35, height / 2 - 75, 115, height / 2 + 75);
+			RectF smallMiddle = new RectF (width / 2 - 50, height / 2 - 50, width / 2 + 50, height / 2 + 50);
+			RectF bigMiddle = new RectF (width / 2 - 53, height / 2 - 53, width / 2 + 53, height / 2 + 53);
 
 			canvas.drawArc (bigTop, 0, 360, true, paintOverlay);
 			canvas.drawArc (smallTop, 0, 360, true, paintOverlayLight);
@@ -155,6 +170,11 @@ public class WidgetHostView extends AppWidgetHostView
 			canvas.drawArc (smallBottom, 0, 360, true, paintOverlayLight);
 			canvas.drawArc (bigLeft, 0, 360, true, paintOverlay);
 			canvas.drawArc (smallLeft, 0, 360, true, paintOverlayLight);
+			canvas.drawArc (bigMiddle, 0, 360, true, paintOverlayLight);
+			canvas.drawArc (smallMiddle, 0, 360, true, paintOverlay);
+			canvas.drawArc (smallMiddle, 0, 360, true, paintOverlay);
+			canvas.drawLine (smallMiddle.left + smallMiddle.width () / 4, smallMiddle.top + smallMiddle.height () / 4, smallMiddle.right - smallMiddle.width () / 4, smallMiddle.bottom - smallMiddle.height () / 4, paintLight);
+			canvas.drawLine (smallMiddle.left + smallMiddle.width () / 4, smallMiddle.bottom - smallMiddle.height () / 4, smallMiddle.right - smallMiddle.width () / 4, smallMiddle.top + smallMiddle.height () / 4, paintLight);
 		}
 
 		return returnValue;

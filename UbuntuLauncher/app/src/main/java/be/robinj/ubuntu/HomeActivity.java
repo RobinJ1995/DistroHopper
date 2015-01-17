@@ -717,7 +717,7 @@ public class HomeActivity extends Activity
 		ViewGroup vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
 		vgWidgets.addView (hostView);
 
-		hostView.setOnLongClickListener (new WidgetHostView_LongClickListener (this, hostView));
+		hostView.setOnLongClickListener (new WidgetHostView_LongClickListener (hostView));
 	}
 
 	public void removeWidget (AppWidgetHostView hostView)

@@ -10,12 +10,10 @@ import be.robinj.ubuntu.HomeActivity;
  */
 public class WidgetHostView_LongClickListener implements AppWidgetHostView.OnLongClickListener
 {
-	private HomeActivity parent;
 	private WidgetHostView hostView;
 
-	public WidgetHostView_LongClickListener (HomeActivity parent, WidgetHostView hostView)
+	public WidgetHostView_LongClickListener (WidgetHostView hostView)
 	{
-		this.parent = parent;
 		this.hostView = hostView;
 	}
 
