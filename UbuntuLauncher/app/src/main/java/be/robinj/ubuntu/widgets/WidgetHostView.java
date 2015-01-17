@@ -6,11 +6,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+
+import java.util.Date;
 
 import be.robinj.ubuntu.HomeActivity;
 
@@ -53,6 +57,21 @@ public class WidgetHostView extends AppWidgetHostView
 			case MotionEvent.ACTION_DOWN:
 				this.postLongPressCheck ();
 				break;
+			case MotionEvent.ACTION_MOVE:
+				if (this.editMode)
+				{
+					int width = this.getWidth ();
+					int height = this.getHeight ();
+
+					RectF bigTop = new RectF (width / 2 - 75, -35, width / 2 + 75, 115);
+					RectF bigRight = new RectF (width - 115, height / 2 - 75, width + 35, height / 2 + 75);
+					RectF bigBottom = new RectF (width / 2 - 75, height - 115, width / 2 + 75, height + 35);
+					RectF bigLeft = new RectF (-35, height / 2 - 75, 115, height / 2 + 75);
+
+					this.updateAppWidgetSize (new Bundle (), 20, 20, 100, 100); // y u no do anything //
+
+					break;
+				}
 			case MotionEvent.ACTION_UP:
 			case MotionEvent.ACTION_CANCEL:
 				this.performedLongPress = false;
