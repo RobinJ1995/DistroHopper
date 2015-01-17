@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="action_settings">Налаштування</string>
+  <string name="dash_search_hint">Пошук встановлених додатків</string>
+  <string name="dash_lens_apps_title">Додатки</string>
+  <string name="dash_lens_other_title">Інші</string>
+  <string name="title_activity_preferences">Уподобання</string>
+  <string name="title_activity_about">Про нас</string>
+  <string name="title_activity_lens_preferences">Лінзи</string>
+  <string name="pinned">був прикріплений до Лаунчера</string>
+  <string name="unpinned">був відкріплений від Лаунчера</string>
+  <string name="notpinned">не прикріплений</string>
+  <string name="developed_by">Розробник: Робін Джейкобс</string>
+  <string name="honourable_mentions">Особлива подяка</string>
+  <string name="button_back">Назад</string>
+  <string name="button_about">Про нас</string>
+  <string name="button_contribute">Допомогти проекту</string>
+  <string name="title_preferences">Уподобання</string>
+  <string name="pref_header_general">Загальні</string>
+  <string name="pref_header_unity">Unity</string>
+  <string name="pref_header_launcher">Лаунчер</string>
+  <string name="pref_header_dash">Деш</string>
+  <string name="pref_header_panel">Панель</string>
+  <string name="pref_header_advanced">Розширені</string>
+  <string name="category_colourcalc">Розрахунок домінуючого кольору</string>
+  <string name="option_launchericon_width">Ширина лаунчера</string>
+  <string name="hint_launchericon_width">Налаштування ширини лаунчера та іконок. Мінімальне значення слайдера 48dip, максимальне 120dip, стандартне (середнє) 84dip.</string>
+  <string name="option_launchericon_opacity">Непрозорість фону іконки</string>
+  <string name="hint_launchericon_opacity">Налаштування рівня непрозорості фону іконки</string>
+  <string name="option_launcherservice_enabled">Зробити Лаунчер доступним з інших додатків</string>
+  <string name="hint_launcherservice_enabled">При проведенні пальцем по нижній лівій частині екрану з\'явиться Лаунчер, який дозволить запустити програми прикріплені до нього без потреби повернення на головний екран.</string>
+  <string name="option_launcher_running_show">Показати активні додатки</string>
+  <string name="hint_launcher_running_show">Лаунчер покаже, які додатки працюють на даний момент. Це буде позначено невеликою стрілкою з лівої сторони іконки. Також будуть показані активні додатки не закріплені в Лаунчері.</string>
+  <string name="option_panel_show">Показати панель</string>
+  <string name="hint_panel_show">Показати панель у верхній частині екрану.</string>
+  <string name="option_panel_opacity">Непрозорість панелі</string>
+  <string name="hint_panel_opacity">Налаштування рівня непрозорості панелі.</string>
+  <string name="option_unitybackground_dynamic">Автоматичний вибір кольору фону Unity</string>
+  <string name="hint_unitybackground_dynamic">Автоматичний вибір кольору фону компонентів Unity, а також лаунчера, деша і панелі, якщо деш відкритий. Программa вибирає колір фону орієнтуючись на домінантний колір шпалер. Однак це не розраховано на роботу з живими шпалерами. У цьому випадку використовується стандартний чорний прозорий фон.</string>
+  <string name="option_unitybackground_colour">Колір фону Unity</string>
+  <string name="hint_unitybackground_colour">Налаштування кольору фону компонентів Unity.</string>
+  <string name="message_unitybackground_colour">Використовуйте повзунки, щоб вибрати колір.</string>
+  <string name="option_unitybackground_opacity">Непрозорість фону Unity</string>
+  <string name="hint_unitybackground_opacity">Налаштування рівня непрозрості компонентів Unity.</string>
+  <string name="option_unitywallpaper_blur">Метод розмиття шпалер</string>
+  <string name="hint_unitywallpaper_blur">Метод розмиття фону екрану, який буде використовуватися при відкритті Деша. У разі неправильної роботи методу \"Зменшити і збільшити\", метод \"Затемнення\" буде обраний автоматично.</string>
+  <string name="option_launcher_edge">Частина екрану</string>
+  <string name="hint_launcher_edge">До якої сторони екрану буде прикріплений Лаунчер.</string>
+  <string-array name="keys_unitywallpaper_blur">
+    <item>Не розмивати</item>
+    <item>Затемнити</item>
+    <item>Зменшити і збільшити (за замовчуванням)</item>
+  </string-array>
+  <string-array name="keys_launcher_edge">
+    <item>До лівої (за замовчуванням)</item>
+    <item>До правої</item>
+  </string-array>
+  <string name="option_wallpaper">Шпалери</string>
+  <string name="hint_wallpaper">Змінити шпалери</string>
+  <string name="option_colourcalc_advanced">Використання більшої кількості зразків кольору</string>
+  <string name="hint_colourscalc_advanced">Використання більшої кількості зразків кольору збільшує точність, але може також призвести до збільшення часу завантаження на повільних пристроях.</string>
+  <string name="option_colourcalc_hsv">Використовувати HSV модель</string>
+  <string name="hint_colourcalc_hsv">Використання моделі HSV замість звичайної RGB робить кольори більш яскравими, але розрахунки є складнішими, що може також призвести до збільшення часу завантаження на повільних пристроях.</string>
+  <string name="option_dashsearch_full">Розширений пошук</string>
+  <string name="hint_dashsearch_full">Активація цієї опції покращить пошук в Деш меню, але також вплине на швидкість роботи повільних пристроїв або пристроїв з великою кількістю програм. У разі повільної роботи пошуку, виключтe цю опцію.</string>
+  <string name="option_dashsearch_lenses">Використовувати лінзи</string>
+  <string name="hint_dashsearch_lenses">Лінзи забезпечують додаткові можливості для функції пошуку. За допомогою лінз ви можете здійснити пошук по зовнішніх сервісах, таких як DuckDuckGo, Stack Overflow, а також по локальних файлах, безпосередньо з Деша.</string>
+  <string name="option_dashsearch_lenses_maxresults">Кількість результатів пошуку для кожної Лінзи</string>
+  <string name="hint_dashsearch_lenses_maxresults">Максимальна кількість результатів пошуку з кожної лінзи.</string>
+  <string name="option_dash_ready_show">Відкривати Деш за замовчуванням</string>
+  <string name="hint_dash_ready_show">Деш буде відкрито автоматично, як тільки всі програми будуть завантажені.</string>
+  <string name="option_lenses">Лінзи</string>
+  <string name="hint_lenses">Виберіть, які лінзи ви хочете використовувати, і в якому порядку їх результати будуть з\'являтися у Деші. Коли ви використовуєте Деш для пошуку, ваш запит відправляється до усіх включених лінз і відображаються їхні результати.</string>
+  <string name="hm_timvdstaaij_name">Тіму ван дер Стайї</string>
+  <string name="hm_timvdstaaij_why">* Тестування\n 
+* Допомога з функцією розрахунку домінуючого кольору\n</string>
+  <string name="hm_todddavies_name">Тоду Девісу</string>
+  <string name="hm_todddavies_why">* Я використав його компонент ProgressWheel, тому що стандартний компонент Android ProgressBar не працює правильно.\n
+https://github.com/Todd-Davies/ProgressWheel/</string>
+  <string name="hm_tacone_name">tacone (користувачу Stack Overflow)</string>
+  <string name="hm_tacone_why">* Я використав його компонент ExpandableHeightGridView.\n
+http://stackoverflow.com/a/8483078/521361</string>
+  <string name="hm_commonsguy_name">Марку Мерфі (Commonsware)</string>
+  <string name="hm_commonsguy_why">* Я використав його компонент ColorMixer у вікні Уподобань.\n
+https://github.com/commonsguy/cwac-colormixer</string>
+  <string name="translators_title">Перекладачі</string>
+  <string name="title_activity_contribute">Як я можу допомогти?</string>
+  <string name="contribute_intro">На цей проект було витрачено багато сил, часу і фінансів. Якщо ви хочете допомогти подальшому розвитку проекту, зробіть це одним з нижчеперечислених способів.</string>
+  <string name="contribute_translate_title">Переклад</string>
+  <string name="contribute_translate_description">Ubuntu Launcher перекладений на різні мови. Це стало можливим завдяки участі добровольців. Якщо ви помітили, що Ubuntu Launcher недоступний на вашій мові, ви добре знаєте англійську (і достатньо знайомі з Ubuntu, щоб зрозуміти терміни пов’язані з Unity), тоді ви можете допомогти з перекладом.
+\nПереклад Ubuntu Launcher виконується за допомогою Transifex. Все, що вам потрібно зробити, це відправити запит про приєднання до команди перекладачів.</string>
+  <string name="contribute_translate_go">Перейти на Transifex</string>
+  <string name="contribute_bugs_title">Повідомити про помилку</string>
+  <string name="contribute_bugs_description">Якщо ви знайшли помилку в додатку, будь ласка повідомте нам про неї.
+\nВи можете повідомити про помилку через GitHub або, надіславши повідомлення на android-dev@robinj.be. Будь ласка, переконайтеся, що ваше повідомлення написано англійською або голландською, і надайте нам наскільки можливо більше інформації про проблему.</string>
+  <string name="contribute_bugs_go">Перейти на GitHub</string>
+  <string name="contribute_donate_title">Зробити пожертву</string>
+  <string name="contribute_donate_description">Якщо ви бажаєте надати проекту фінансову допомогу, ви завжди можете зробити це за допомогою кнопки \"Зробити пожертву\" (через сервіс PayPal).
+\nПримітка: Надаючи фінансову допомогу, ви нічого не купуєте. Ми будемо дуже вдячні за надану вами фінансову підтримку, але ви не отримаєте додаткових функцій.
+\n
+\nPayPal бере плату $0.30+2.2\%% за кожне пожертву, тобто, якщо пожертва менша $0.30, то гроші повністю підуть на оплату внеску PayPal і розробник не отримає вашу фінансову допомогу. Тому, якщо ви хочете допомогти проекту фінансово, то зробіть пожертву на суму більшу ніж $0.30.</string>
+  <string name="contribute_donate_go">Зробити пожертву</string>
+</resources>

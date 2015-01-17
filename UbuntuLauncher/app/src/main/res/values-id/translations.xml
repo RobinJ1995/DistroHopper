@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="action_settings">Pengaturan</string>
+  <string name="dash_search_hint">Cari aplikasi terpasang</string>
+  <string name="dash_lens_apps_title">Aplikasi</string>
+  <string name="dash_lens_other_title">Lainnya</string>
+  <string name="title_activity_preferences">Preferensi</string>
+  <string name="title_activity_about">Tentang</string>
+  <string name="title_activity_lens_preferences">Lensa</string>
+  <string name="pinned">telah disematkan ke Peluncur</string>
+  <string name="unpinned">telah dilepaskan dari Peluncur</string>
+  <string name="notpinned">tidak disematkan</string>
+  <string name="developed_by">Dikembangkan oleh Robin Jacobs</string>
+  <string name="honourable_mentions">Yang dihormati disebutkan</string>
+  <string name="button_back">Kembali</string>
+  <string name="button_about">Tentang</string>
+  <string name="button_contribute">Kontribusi</string>
+  <string name="title_preferences">Preferensi</string>
+  <string name="pref_header_general">Umum</string>
+  <string name="pref_header_unity">Unity</string>
+  <string name="pref_header_launcher">Peluncur</string>
+  <string name="pref_header_dash">Dasbor</string>
+  <string name="pref_header_panel">Panel</string>
+  <string name="pref_header_advanced">Tingkat Lanjut</string>
+  <string name="category_colourcalc">Perhitungan warna dominan</string>
+  <string name="option_launchericon_width">Lebar</string>
+  <string name="hint_launchericon_width">Seberapa luas Peluncur dan ikon seharusnya. Slider dimulai dari 48dip sampai 120dip, dengan standar (tepat di tengah) berada di 84dip.</string>
+  <string name="option_launchericon_opacity">Opasitas ikon latar belakang</string>
+  <string name="hint_launchericon_opacity">Bagaimana keburaman warna latar belakang ikon dari peluncur seharusnya.</string>
+  <string name="option_launcherservice_enabled">Membuat peluncur tersedia dalam aplikasi lain</string>
+  <string name="hint_launcherservice_enabled">Ketika anda menggeser dari bagian bawah tepi kiri layar, Peluncur akan muncul, memungkinkan anda untuk memulai aplikasi yang telah anda sematkan ke peluncur tanpa perlu pergi ke layar awal.\n(EKPERIMENTAL)</string>
+  <string name="option_launcher_running_show">Tampilkan aplikasi yang sedang berjalan</string>
+  <string name="hint_launcher_running_show">Peluncur akan menampilkan aplikasi yang sedang berjalan. Ini akan ditunjukkan dengan panah kecil di sisi kiri ikon. Aplikasi yang berjalan namun belum disematkan ke Launcher juga akan ditampilkan.</string>
+  <string name="option_panel_show">Tampilkan</string>
+  <string name="hint_panel_show">Apakah Panel di bagian atas layar harus ditampilkan atau tidak.</string>
+  <string name="option_panel_opacity">Keburaman</string>
+  <string name="hint_panel_opacity">Bagaimana keburaman Panel seharusnya.</string>
+  <string name="option_unitybackground_dynamic">Warna latar belakang yang dinamis</string>
+  <string name="hint_unitybackground_dynamic">Secara dinamis memilih warna latar belakang dari komponen Unity transparan (Peluncur, dan Dasbor, dan Panel ketika Dasbor dibuka) berdasarkan warna dominan dari kertas dinding. Ini tida bekerja ketika kertas dinding diatur, yang mana akan kembali ke hitam transparan.</string>
+  <string name="option_unitybackground_colour">Warna latar belakang</string>
+  <string name="hint_unitybackground_colour">Warna latar belakang yang harus digunakan untuk komponen Unity yang transparan.</string>
+  <string name="message_unitybackground_colour">Gunakan slider untuk memilih warna</string>
+  <string name="option_unitybackground_opacity">Keburaman latar belakang</string>
+  <string name="hint_unitybackground_opacity">Bagaimana keburaman warna latar belakang dari komponen Unity yang transparan seharusnya.</string>
+  <string name="option_unitywallpaper_blur">Metode blur kertas dinding</string>
+  <string name="hint_unitywallpaper_blur">Metode yang harus digunakan untuk mengaburkan latar belakang saat Dasbor dibuka. Ketika \"Downscale &amp; upscale\" dipilih dan gagal (atau wallpaper hidup diatur), \"Darken\" akan digunakan sebagai fallback.</string>
+  <string name="option_launcher_edge">Tepi layar</string>
+  <string name="hint_launcher_edge">Untuk memilih tepi layar Peluncur yang harus dilampirkan.</string>
+  <string-array name="keys_unitywallpaper_blur">
+    <item>Jangan blur</item>
+    <item>Gelapkan</item>
+    <item>Downscale &amp; upscale (default)</item>
+  </string-array>
+  <string-array name="keys_launcher_edge">
+    <item>Kiri (standar)</item>
+    <item>Kanan</item>
+  </string-array>
+  <string name="option_wallpaper">Kertas Dinding</string>
+  <string name="hint_wallpaper">Ubah kertas dinding</string>
+  <string name="option_colourcalc_advanced">Ambil lebih banyak sampel</string>
+  <string name="hint_colourscalc_advanced">Mengambil lebih banyak sampel sangat meningkatkan akurasi tetapi dapat menghasilkan waktu menunggu lebih lama pada perangkat yang lebih lambat.</string>
+  <string name="option_colourcalc_hsv">Gunakan HSV</string>
+  <string name="hint_colourcalc_hsv">Menggunakan HSV (Hue, Saturation, Value) bukan RGB polos (Merah, Hijau, Biru) akan menghasilkan warna yang jauh lebih hidup, tetapi perhitungan yang dikerjakan sebelumnya akan lebih rumit yang dapat menghasilkan waktu menunggu lebih lama pada perangkat yang lebih lambat.</string>
+  <string name="option_dashsearch_full">Pencarian tingkat lanjut</string>
+  <string name="hint_dashsearch_full">Mengaktifkan opsi ini akan menghasilkan hasil pencarian Dasbor yang lebih baik tetapi juga akan mempengaruhi kinerja pada perangkat yang lambat atau perangkat dengan banyak aplikasi yang terpasang. Jika pencarian Dasbor lambat untuk Anda, Anda mungkin ingin mempertimbangkan untuk menonaktifkan ini.</string>
+  <string name="option_dashsearch_lenses">Gunakan lensa</string>
+  <string name="hint_dashsearch_lenses">Lensa menyediakan fungsi pencarian ekstra. Menggunakan lensa Anda dapat mencari layanan lain seperti DuckDuckGo, Stack Overflow, atau bahkan file lokal Anda, langsung dari Dasbor.</string>
+  <string name="option_dashsearch_lenses_maxresults">Hasil per lensa</string>
+  <string name="hint_dashsearch_lenses_maxresults">Jumlah maksimum hasil pencarian yang ditampilkan dari setiap lensa.</string>
+  <string name="option_dash_ready_show">Buka Dasbor secara standar</string>
+  <string name="hint_dash_ready_show">Dasbor secara otomatis akan dibuka setelah aplikasi dimuat.</string>
+  <string name="option_lenses">Lensa</string>
+  <string name="hint_lenses">Pilih yang lensa yang ingin Anda gunakan dan di mana Anda ingin mengatur hasilnya muncul di Dasbor. Ketika Anda melakukan pencarian di Dasbor, permintaan Anda dikirim ke semua lensa yang diaktifkan dan hasilnya akan ditampilkan.</string>
+  <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
+  <string name="hm_timvdstaaij_why">* Pengujian (Jika ia tidak berhasil menghancurkannya maka mungkin aman untuk dikonsumsi oleh seluruh dunia.)\n
+* Bantuan dengan fungsi perhitungan warna dominan.</string>
+  <string name="hm_todddavies_name">Todd Davies</string>
+  <string name="hm_todddavies_why">* Saya menggunakan komponen ProgressWheel nya, karena komponen standar (round) Android ProgressBar tidak benar-benar menunjukkan kemajuan.\n
+https://github.com/Todd-Davies/ProgressWheel/</string>
+  <string name="hm_tacone_name">tacone (dari Stack Overflow)</string>
+  <string name="hm_tacone_why">* Saya menggunakan komponen ExpandableHeightGridView nya.\n
+http://stackoverflow.com/a/8483078/521361</string>
+  <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
+  <string name="hm_commonsguy_why">* Saya menggunakan komponen ColorMixer di Preferensi layar.\n
+https://github.com/commonsguy/cwac-colormixer</string>
+  <string name="translators_title">Penerjemah</string>
+  <string name="title_activity_contribute">Bagaimana Saya bisa berkontribusi?</string>
+  <string name="contribute_intro">Waktu yang lama dan kerja keras telah dilakukan untuk mengembangkan aplikasi ini. Jika Anda ingin membantu, ada beberapa cara di mana Anda dapat melakukannya.</string>
+  <string name="contribute_translate_title">Menerjemahkan</string>
+  <string name="contribute_translate_description">Ubuntu Launcher tersedia dalam beberapa bahasa. Hal ini karena relawan memberikan proyek dengan terjemahannya. Jika Peluncur Ubuntu belum diterjemahkan ke dalam bahasa Anda dan Anda mengerti bahasa Inggris (dan Anda memiliki pengetahuan yang cukup tentang Ubuntu untuk memahami beberapa istilah yang terkait dengan Unity), kemudian membantu dengan terjemahan adalah cara yang baik untuk membantu.
+\nTranslasi untuk Ubuntu Launcher dikelola di Transifex. Yang perlu Anda lakukan adalah permintaan untuk bergabung dengan tim penerjemah. Setelah itu saya akan menyetujui permintaan Anda dan Anda siap untu menterjemahkan.</string>
+  <string name="contribute_translate_go">Pergi ke Transifex</string>
+  <string name="contribute_bugs_title">Laporkan bug</string>
+  <string name="contribute_bugs_description">Jika ada bug di Peluncur Ubuntu, itu tidak berarti bahwa saya menyadari keberadaannya. Pengembang umumnya cukup buruk untuk menguji aplikasi mereka sendiri karena mereka hanya akan menggunakannya dengan cara mereka dimaksudkan untuk digunakan. Beberapa masalah juga hanya ada dalam keadaan khusus tertentu (misalnya perangkat tertentu yang menjalankan versi tertentu dari Android dengan beberapa opsi tambahan diaktifkan). Jadi jika Anda menemukan bug di Peluncur Ubuntu (atau jika Anda memiliki permintaan fitur) Anda dapat membantu dengan melaporkannya.
+\ nLaporan bug untuk Peluncur Ubuntu disimpan di GitHub. Jika GitHub terlalu teknis untuk Anda, Anda juga dapat hanya mengirim surat elektronik ke android-dev@robinj.be. Hanya pastikan itu dalam bahasa Inggris atau Belanda. Mohon berikan informasi sebanyak-banyaknya (yang relevan) mungkin.</string>
+  <string name="contribute_bugs_go">Pergi ke GitHub</string>
+  <string name="contribute_donate_title">Donasi</string>
+  <string name="contribute_donate_description">Jika Anda ingin, Anda juga dapat membuat sumbangan moneter untuk pengembang. Sumbangan ditangani melalui PayPal. Anda akan dapat memilih jumlah uang yang ingin Anda donasikan.
+\ nCatatan: Ini sumbangan. Saya tidak menjual apa-apa, dan Anda tidak membeli apa-apa. Sumbangan yang sangat dihargai, tetapi Anda tidak akan mendapatkan fitur tambahan karena itu. Semua fitur dari aplikasi ini tersedia gratis.
+\ n
+\ nPayPal mengambil biaya $ 0,30 + 2,2 \ %%, jadi donasi Anda berkurang $ 0,30 maka semua itu akan pergi ke PayPal, dan tidak ada yang akan mencapai pengembang. Jika Anda menyumbangkan, itu yang terbaik untuk membuat donasi Anda lebih dari jumlah ini, kecuali untuk beberapa alasan aneh Anda ingin membuat sumbangan untuk PayPal sendiri.</string>
+  <string name="contribute_donate_go">Donasi</string>
+</resources>

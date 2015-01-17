@@ -54,6 +54,9 @@ public class WidgetHostView extends AppWidgetHostView
 
 				if (this.longPressCheck != null)
 					this.removeCallbacks (this.longPressCheck);
+
+				if (this.editMode)
+					return true;
 				break;
 		}
 
