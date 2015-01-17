@@ -68,10 +68,14 @@ public class WidgetHostView extends AppWidgetHostView
 					RectF bigBottom = new RectF (width / 2 - 75, height - 115, width / 2 + 75, height + 35);
 					RectF bigLeft = new RectF (-35, height / 2 - 75, 115, height / 2 + 75);
 
-					this.updateAppWidgetSize (new Bundle (), 20, 20, 100, 100); // y u no do anything //
+					RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) this.getLayoutParams ();
+					layoutParams.width = 200;
+					layoutParams.height = 200;
 
-					break;
+					this.requestLayout ();
 				}
+
+				break;
 			case MotionEvent.ACTION_UP:
 			case MotionEvent.ACTION_CANCEL:
 				this.performedLongPress = false;
