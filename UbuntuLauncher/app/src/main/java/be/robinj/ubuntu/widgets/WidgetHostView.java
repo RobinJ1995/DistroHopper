@@ -69,8 +69,9 @@ public class WidgetHostView extends AppWidgetHostView
 					RectF bigLeft = new RectF (-35, height / 2 - 75, 115, height / 2 + 75);
 
 					RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) this.getLayoutParams ();
-					layoutParams.width = 200;
-					layoutParams.height = 200;
+
+					if (bigRight.contains (e.getX (), e.getY ()))
+						layoutParams.width = (int) e.getX (e.getPointerCount () - 1);
 
 					this.requestLayout ();
 				}
