@@ -58,6 +58,8 @@ public class WidgetHostView extends AppWidgetHostView
 				this.postLongPressCheck ();
 				break;
 			case MotionEvent.ACTION_MOVE:
+				this.cancelLongPress ();
+
 				if (this.editMode)
 				{
 					int width = this.getWidth ();
@@ -71,7 +73,13 @@ public class WidgetHostView extends AppWidgetHostView
 					RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) this.getLayoutParams ();
 
 					if (bigRight.contains (e.getX (), e.getY ()))
-						layoutParams.width = (int) e.getX (e.getPointerCount () - 1);
+					{
+						layoutParams.width = (int) e.getX (e.getPointerCount () - 1) - 10;
+					}
+					else if (bigBottom.contains (e.getX (), e.getY ()))
+					{
+						layoutParams.height = (int) e.getY (e.getPointerCount () - 1) - 10;
+					}
 
 					this.requestLayout ();
 				}
