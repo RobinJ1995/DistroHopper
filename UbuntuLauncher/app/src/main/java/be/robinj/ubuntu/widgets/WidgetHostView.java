@@ -28,15 +28,15 @@ public class WidgetHostView extends AppWidgetHostView
 	private LongPressCheck longPressCheck;
 	private boolean performedLongPress = false;
 	private ViewGroup.LayoutParams layoutParams;
-	private HomeActivity parent;
+	private WidgetHost widgetHost;
 
 	private boolean editMode = false;
 
-	public WidgetHostView (Context context, HomeActivity parent)
+	public WidgetHostView (Context context, WidgetHost widgetHost)
 	{
 		super (context);
 
-		this.parent = parent;
+		this.widgetHost = widgetHost;
 
 		this.inflater = (LayoutInflater) context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
 		this.longPressTimeout = ViewConfiguration.getLongPressTimeout ();
@@ -74,11 +74,19 @@ public class WidgetHostView extends AppWidgetHostView
 
 					if (bigRight.contains (e.getX (), e.getY ()))
 					{
-						layoutParams.width = (int) e.getX (e.getPointerCount () - 1) - 10;
+						layoutParams.width = (int) e.getX (e.getPointerCount () - 1) + 25;
 					}
 					else if (bigBottom.contains (e.getX (), e.getY ()))
 					{
-						layoutParams.height = (int) e.getY (e.getPointerCount () - 1) - 10;
+						layoutParams.height = (int) e.getY (e.getPointerCount () - 1) + 25;
+					}
+					else if (bigTop.contains (e.getX (), e.getY ()))
+					{
+						layoutParams.topMargin = (int) e.getY (e.getPointerCount () - 1) - 25;
+					}
+					else if (bigLeft.contains (e.getX (), e.getY ()))
+					{
+						layoutParams.leftMargin = (int) e.getX (e.getPointerCount () - 1) - 25;
 					}
 
 					this.requestLayout ();
@@ -99,7 +107,7 @@ public class WidgetHostView extends AppWidgetHostView
 
 					RectF bigMiddle = new RectF (width / 2 - 53, height / 2 - 53, width / 2 + 53, height / 2 + 53);
 					if (bigMiddle.contains (e.getX (), e.getY ()))
-						this.parent.removeWidget (this);
+						this.widgetHost.removeWidget (this);
 
 					return true;
 				}

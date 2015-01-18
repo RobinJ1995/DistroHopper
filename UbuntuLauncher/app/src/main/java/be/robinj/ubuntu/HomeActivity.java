@@ -135,9 +135,9 @@ public class HomeActivity extends Activity
 			this.asyncLoadApps.execute (this.getApplicationContext ());
 
 			this.widgetManager = AppWidgetManager.getInstance (this);
-			this.widgetHost = new WidgetHost (this, R.id.vgWidgets);
+			this.widgetHost = new WidgetHost (this, this.widgetManager, R.id.vgWidgets);
 
-			vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this));
+			vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this.widgetHost));
 
 			if (Build.VERSION.SDK_INT >= 11)
 			{
@@ -234,16 +234,16 @@ public class HomeActivity extends Activity
 			else if (requestCode == 2) // Widget picked //
 			{
 				if (resultCode == RESULT_OK)
-					this.configureWidget (data);
+					this.widgetHost.configureWidget (data);
 				else
-					this.removeWidget (data);
+					this.widgetHost.removeWidget (data);
 			}
 			else if (requestCode == 3) // Widget configured //
 			{
 				if (resultCode == RESULT_OK)
-					this.createWidget (data);
+					this.widgetHost.createWidget (data);
 				else
-					this.removeWidget (data);
+					this.widgetHost.removeWidget (data);
 			}
 		}
 		catch (Exception ex)
@@ -657,88 +657,5 @@ public class HomeActivity extends Activity
 		}
 
 		return false;
-	}
-
-	//# Widgets #//
-	public void selectWidget ()
-	{
-		int id = this.widgetHost.allocateAppWidgetId ();
-
-		Intent intent = new Intent (AppWidgetManager.ACTION_APPWIDGET_PICK);
-		intent.putExtra (AppWidgetManager.EXTRA_APPWIDGET_ID, id);
-
-		/*
-		ArrayList customInfo = new ArrayList();
-		pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_INFO, customInfo);
-		ArrayList customExtras = new ArrayList();
-		pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_EXTRAS, customExtras);
-
-		addEmptyData (pickIntent);
-		*/
-
-		this.startActivityForResult (intent, 2);
-	}
-
-	private void configureWidget (Intent data) throws Exception
-	{
-		Bundle bundle = data.getExtras ();
-		int id = bundle.getInt (AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-
-		AppWidgetProviderInfo info = this.widgetManager.getAppWidgetInfo (id);
-
-		if (id == -1)
-			throw new Exception ("Didn't receive a widget ID");
-
-		if (info.configure == null)
-		{
-			this.createWidget (data);
-		}
-		else
-		{
-			Intent intent = new Intent (AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
-			intent.setComponent (info.configure);
-			intent.putExtra (AppWidgetManager.EXTRA_APPWIDGET_ID, id);
-
-			this.startActivityForResult (intent, 3);
-		}
-	}
-
-	private void createWidget (Intent data) throws Exception
-	{
-		Bundle bundle = data.getExtras ();
-		int id = bundle.getInt (AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-
-		if (id == -1)
-			throw new Exception ("Didn't receive a widget ID");
-
-		AppWidgetProviderInfo info = this.widgetManager.getAppWidgetInfo (id);
-		WidgetHostView hostView = (WidgetHostView) this.widgetHost.createView (this, id, info);
-
-		ViewGroup vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
-		vgWidgets.addView (hostView);
-
-		hostView.setOnLongClickListener (new WidgetHostView_LongClickListener (hostView));
-	}
-
-	public void removeWidget (AppWidgetHostView hostView)
-	{
-		this.widgetHost.deleteAppWidgetId (hostView.getAppWidgetId ());
-
-		RelativeLayout vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
-		vgWidgets.removeView (hostView);
-	}
-
-	private void removeWidget (Intent data) throws Exception
-	{
-		if (data != null)
-		{
-			Bundle bundle = data.getExtras ();
-			int id = bundle.getInt (AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-
-			if (id == -1)
-				throw new Exception ("Didn't receive a widget ID");
-
-			this.widgetHost.deleteAppWidgetId (id);
-		}
 	}
 }

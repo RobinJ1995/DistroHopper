@@ -10,18 +10,18 @@ import be.robinj.ubuntu.HomeActivity;
  */
 public class WidgetHost_LongClickListener implements GridLayout.OnLongClickListener
 {
-	private HomeActivity parent;
+	private WidgetHost widgetHost;
 	boolean x = false;
 
-	public WidgetHost_LongClickListener (HomeActivity parent)
+	public WidgetHost_LongClickListener (WidgetHost widgetHost)
 	{
-		this.parent = parent;
+		this.widgetHost = widgetHost;
 	}
 
 	@Override
 	public boolean onLongClick (View view)
 	{
-		this.parent.selectWidget ();
+		this.widgetHost.selectWidget ();
 
 		return false;
 	}
