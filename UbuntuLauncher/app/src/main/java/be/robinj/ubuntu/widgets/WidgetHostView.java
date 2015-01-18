@@ -27,10 +27,8 @@ public class WidgetHostView extends AppWidgetHostView
 	private int longPressTimeout;
 	private LongPressCheck longPressCheck;
 	private boolean performedLongPress = false;
-	private ViewGroup.LayoutParams layoutParams;
 	private WidgetHost widgetHost;
-
-	private boolean editMode = false;
+	private WidgetContainer widgetContainer;
 
 	public WidgetHostView (Context context, WidgetHost widgetHost)
 	{
@@ -42,10 +40,15 @@ public class WidgetHostView extends AppWidgetHostView
 		this.longPressTimeout = ViewConfiguration.getLongPressTimeout ();
 	}
 
+	public void setWidgetContainer (WidgetContainer widgetContainer)
+	{
+		this.widgetContainer = widgetContainer;
+	}
+
 	@Override
 	public boolean onInterceptTouchEvent (MotionEvent e)
 	{
-		if (this.performedLongPress)
+		if (this.performedLongPress || this.widgetContainer.getEditMode ())
 		{
 			this.performedLongPress = false;
 
@@ -57,7 +60,7 @@ public class WidgetHostView extends AppWidgetHostView
 			case MotionEvent.ACTION_DOWN:
 				this.postLongPressCheck ();
 				break;
-			case MotionEvent.ACTION_MOVE:
+			/*case MotionEvent.ACTION_MOVE:
 				this.cancelLongPress ();
 
 				if (this.editMode)
@@ -92,7 +95,7 @@ public class WidgetHostView extends AppWidgetHostView
 					this.requestLayout ();
 				}
 
-				break;
+				break;*/
 			case MotionEvent.ACTION_UP:
 			case MotionEvent.ACTION_CANCEL:
 				this.performedLongPress = false;
@@ -100,17 +103,6 @@ public class WidgetHostView extends AppWidgetHostView
 				if (this.longPressCheck != null)
 					this.removeCallbacks (this.longPressCheck);
 
-				if (this.editMode)
-				{
-					int width = this.getWidth ();
-					int height = this.getHeight ();
-
-					RectF bigMiddle = new RectF (width / 2 - 53, height / 2 - 53, width / 2 + 53, height / 2 + 53);
-					if (bigMiddle.contains (e.getX (), e.getY ()))
-						this.widgetHost.removeWidget (this);
-
-					return true;
-				}
 				break;
 		}
 
@@ -175,7 +167,7 @@ public class WidgetHostView extends AppWidgetHostView
 	{
 		boolean returnValue = super.drawChild (canvas, child, drawingTime);
 
-		Paint paintOverlay = new Paint ();
+		/*Paint paintOverlay = new Paint ();
 		paintOverlay.setColor (Color.argb (50, 0, 0, 0));
 
 		Paint paintOverlayLight = new Paint ();
@@ -215,20 +207,8 @@ public class WidgetHostView extends AppWidgetHostView
 			canvas.drawArc (smallMiddle, 0, 360, true, paintOverlay);
 			canvas.drawLine (smallMiddle.left + smallMiddle.width () / 4, smallMiddle.top + smallMiddle.height () / 4, smallMiddle.right - smallMiddle.width () / 4, smallMiddle.bottom - smallMiddle.height () / 4, paintLight);
 			canvas.drawLine (smallMiddle.left + smallMiddle.width () / 4, smallMiddle.bottom - smallMiddle.height () / 4, smallMiddle.right - smallMiddle.width () / 4, smallMiddle.top + smallMiddle.height () / 4, paintLight);
-		}
+		}*/
 
 		return returnValue;
-	}
-
-	public boolean getEditMode ()
-	{
-		return this.editMode;
-	}
-
-	public void setEditMode (boolean editMode)
-	{
-		this.editMode = editMode;
-
-		this.invalidate ();
 	}
 }

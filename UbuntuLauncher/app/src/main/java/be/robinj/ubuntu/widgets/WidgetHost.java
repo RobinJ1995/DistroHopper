@@ -7,8 +7,11 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
+import java.util.jar.Attributes;
 
 import be.robinj.ubuntu.HomeActivity;
 import be.robinj.ubuntu.R;
@@ -68,9 +71,11 @@ public class WidgetHost extends AppWidgetHost
 		AppWidgetProviderInfo info = this.widgetManager.getAppWidgetInfo (id);
 		WidgetHostView hostView = (WidgetHostView) this.createView (this.parent, id, info);
 
-		this.vgWidgets.addView (hostView);
+		WidgetContainer container = new WidgetContainer (this.parent.getApplicationContext (), null, hostView);
 
-		hostView.setOnLongClickListener (new WidgetHostView_LongClickListener (hostView));
+		this.vgWidgets.addView (container);
+
+		hostView.setOnLongClickListener (new WidgetHostView_LongClickListener (container));
 	}
 
 	public void configureWidget (Intent data) throws Exception

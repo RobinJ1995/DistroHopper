@@ -10,18 +10,17 @@ import be.robinj.ubuntu.HomeActivity;
  */
 public class WidgetHostView_LongClickListener implements AppWidgetHostView.OnLongClickListener
 {
-	private WidgetHostView hostView;
+	private WidgetContainer widgetContainer;
 
-	public WidgetHostView_LongClickListener (WidgetHostView hostView)
+	public WidgetHostView_LongClickListener (WidgetContainer widgetContainer)
 	{
-		this.hostView = hostView;
+		this.widgetContainer = widgetContainer;
 	}
 
 	@Override
 	public boolean onLongClick (View view)
 	{
-		//this.parent.removeWidget ((WidgetHostView) view);
-		this.hostView.setEditMode (! this.hostView.getEditMode ());
+		this.widgetContainer.setEditMode (true);
 
 		return true;
 	}

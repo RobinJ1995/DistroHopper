@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/widgetContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:padding="16dp">
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/widgetOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <FrameLayout
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/frameLayout2">
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentLeft="false"
+            android:id="@+id/frameLayout">
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentLeft="false"
+            android:id="@+id/frameLayout3">
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/frameLayout4">
+        </FrameLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/frameLayout2"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/frameLayout"
+            android:layout_toStartOf="@+id/frameLayout"
+            android:id="@+id/llEdgeTop"
+            android:layout_above="@+id/llEdgeLeft"
+            android:focusableInTouchMode="false">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/widget_resize_handle"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignRight="@+id/llEdgeTop"
+            android:layout_alignEnd="@+id/llEdgeTop"
+            android:layout_toRightOf="@+id/frameLayout4"
+            android:layout_toEndOf="@+id/frameLayout4"
+            android:id="@+id/llEdgeBottom"
+            android:layout_below="@+id/llEdgeLeft">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/widget_resize_handle"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/llEdgeTop"
+            android:layout_above="@+id/frameLayout4"
+            android:layout_below="@+id/frameLayout2"
+            android:id="@+id/llEdgeLeft"
+            android:layout_toLeftOf="@+id/llEdgeTop">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/widget_resize_handle"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/llEdgeTop"
+            android:layout_alignBottom="@+id/llEdgeLeft"
+            android:layout_below="@+id/frameLayout"
+            android:layout_toRightOf="@+id/llEdgeTop"
+            android:id="@+id/llEdgeRight">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/widget_resize_handle"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/widgetOverlayCenter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparentblack80"
+            android:layout_below="@+id/frameLayout2"
+            android:layout_alignRight="@+id/llEdgeBottom"
+            android:layout_alignEnd="@+id/llEdgeBottom"
+            android:layout_alignBottom="@+id/llEdgeRight"
+            android:layout_toRightOf="@+id/frameLayout2"
+            android:layout_toEndOf="@+id/frameLayout2">
+
+            <ImageButton
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:id="@+id/ibRemove"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/launcher_trash"
+                android:background="@color/transparent"
+                android:scaleType="fitXY"/>
+        </RelativeLayout>
+    </RelativeLayout>
+</FrameLayout>
