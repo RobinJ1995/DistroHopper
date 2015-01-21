@@ -10,9 +10,14 @@ public class Default extends Theme
 	public Default ()
 	{
 		// Launcher //
+		this.launcher_background_dynamic = R.bool.theme_default_launcher_background_dynamic;
+		this.launcher_background = R.drawable.theme_default_launcher_background;
 		this.launcher_bfb_location = R.integer.theme_default_launcher_bfb_location;
 		this.launcher_bfb_image = R.drawable.theme_default_launcher_bfb_image;
 		this.launcher_preferences_location = R.integer.theme_default_launcher_preferences_location;
+		this.launcher_preferences_image = R.drawable.theme_default_launcher_preferences_image;
+		this.launcher_applauncher_backgroundcolour_dynamic = R.bool.theme_default_launcher_applauncher_backgroundcolour_dynamic;
+		this.launcher_applauncher_backgroundcolour = R.color.theme_default_launcher_applauncher_backgroundcolour;
 		this.launcher_applauncher_background = R.drawable.theme_default_launcher_applauncher_background;
 		this.launcher_applauncher_gradient = R.drawable.theme_default_launcher_applauncher_gradient;
 		this.launcher_applauncher_running = R.drawable.theme_default_launcher_applauncher_running;

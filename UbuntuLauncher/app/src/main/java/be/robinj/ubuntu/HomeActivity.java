@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -26,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
@@ -33,8 +35,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.robinj.ubuntu.theme.Abstract;
+import be.robinj.ubuntu.theme.Elementary;
+import be.robinj.ubuntu.theme.Location;
 import be.robinj.ubuntu.theme.Theme;
 import be.robinj.ubuntu.thirdparty.ProgressWheel;
+import be.robinj.ubuntu.unity.AppIcon;
 import be.robinj.ubuntu.unity.Wallpaper;
 import be.robinj.ubuntu.widgets.WidgetHost;
 import be.robinj.ubuntu.widgets.WidgetHostView;
@@ -62,7 +67,7 @@ public class HomeActivity extends Activity
 
 	private boolean openDashWhenReady = false;
 
-	public static Theme theme = new Abstract ();
+	public static Theme theme = new Elementary ();
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
@@ -73,12 +78,16 @@ public class HomeActivity extends Activity
 		try
 		{
 			GridView gvDashHomeApps = (GridView) this.findViewById (R.id.gvDashHomeApps);
-			be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher lalSpinner = (be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher) this.findViewById (R.id.lalSpinner);
-			be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalBfb);
-			be.robinj.ubuntu.unity.launcher.AppLauncher lalPreferences = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalPreferences);
-			be.robinj.ubuntu.unity.launcher.AppLauncher lalTrash = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalTrash);
-			LinearLayout llLauncherPinnedApps = (LinearLayout) this.findViewById (R.id.llLauncherPinnedApps);
-			LinearLayout llLauncherRunningApps = (LinearLayout) this.findViewById (R.id.llLauncherRunningApps);
+			LinearLayout llLauncherAndDashContainer = (LinearLayout) this.findViewById (R.id.llLauncherAndDashContainer);
+			LinearLayout llLauncher = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llLauncher);
+			LinearLayout llLauncherAppsContainer = (LinearLayout) llLauncher.findViewById (R.id.llLauncherAppsContainer);
+			LinearLayout llLauncherPinnedApps = (LinearLayout) llLauncherAppsContainer.findViewById (R.id.llLauncherPinnedApps);
+			LinearLayout llLauncherRunningApps = (LinearLayout) llLauncherAppsContainer.findViewById (R.id.llLauncherRunningApps);
+			be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher lalSpinner = (be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher) llLauncher.findViewById (R.id.lalSpinner);
+			be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb = (be.robinj.ubuntu.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalBfb);
+			be.robinj.ubuntu.unity.launcher.AppLauncher lalPreferences = (be.robinj.ubuntu.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalPreferences);
+			be.robinj.ubuntu.unity.launcher.AppLauncher lalTrash = (be.robinj.ubuntu.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalTrash);
+			LinearLayout llDash = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llDash);
 			Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
 			LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
 			ImageButton ibPanelDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
@@ -122,10 +131,6 @@ public class HomeActivity extends Activity
 
 			if (prefs.getString ("launcher_edge", "left").equals ("right"))
 			{
-				LinearLayout llLauncherAndDashContainer = (LinearLayout) this.findViewById (R.id.llLauncherAndDashContainer);
-				LinearLayout llLauncher = (LinearLayout) this.findViewById (R.id.llLauncher);
-				LinearLayout llDash = (LinearLayout) this.findViewById (R.id.llDash);
-
 				llLauncherAndDashContainer.setGravity (Gravity.RIGHT);
 
 				llLauncherAndDashContainer.removeView (llLauncher);
@@ -201,6 +206,45 @@ public class HomeActivity extends Activity
 			ibPanelCog.setImageResource (HomeActivity.theme.panel_preferences_image);
 			ibPanelDashClose.setImageResource (HomeActivity.theme.panel_close_image);
 			imgDashBackgroundGradient.setImageResource (HomeActivity.theme.dash_background_gradient);
+			lalBfb.setIcon (this.getResources ().getDrawable (HomeActivity.theme.launcher_bfb_image));
+			lalPreferences.setIcon (this.getResources ().getDrawable (HomeActivity.theme.launcher_preferences_image));
+
+			switch (this.getResources ().getInteger (HomeActivity.theme.launcher_location))
+			{
+				case 2:
+					llLauncherAndDashContainer.setOrientation (LinearLayout.VERTICAL);
+					llLauncher.setOrientation (LinearLayout.HORIZONTAL);
+					llLauncherAppsContainer.setOrientation (LinearLayout.HORIZONTAL);
+					llLauncherPinnedApps.setOrientation (LinearLayout.HORIZONTAL);
+					llLauncherRunningApps.setOrientation (LinearLayout.HORIZONTAL);
+
+					llLauncherAndDashContainer.setGravity (Gravity.BOTTOM);
+
+					llLauncherAndDashContainer.removeView (llLauncher);
+					llLauncherAndDashContainer.removeView (llDash);
+
+					llLauncherAndDashContainer.addView (llDash);
+					llLauncherAndDashContainer.addView (llLauncher);
+
+					LinearLayout.LayoutParams llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+					llLauncher.setLayoutParams (llLauncher_layoutParams);
+
+					//ScrollView.LayoutParams llLauncherAppsContainer_layoutParams = new ScrollView.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+					//llLauncherAppsContainer.setLayoutParams (llLauncherAppsContainer_layoutParams);
+
+					LinearLayout.LayoutParams llLauncherPinnedApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+					llLauncherPinnedApps_layoutParams.gravity = Gravity.LEFT;
+					llLauncherPinnedApps.setLayoutParams (llLauncherPinnedApps_layoutParams);
+
+					LinearLayout.LayoutParams llLauncherRunningApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+					llLauncherRunningApps_layoutParams.gravity = Gravity.LEFT;
+					llLauncherRunningApps.setLayoutParams (llLauncherRunningApps_layoutParams);
+
+					RelativeLayout.LayoutParams llPanel_layoutParams = (RelativeLayout.LayoutParams) llPanel.getLayoutParams ();
+					llPanel_layoutParams.height = (int) this.getResources ().getDimension (R.dimen.theme_elementary_panel_height);
+			}
+
+
 		}
 		catch (Exception ex)
 		{
@@ -516,12 +560,18 @@ public class HomeActivity extends Activity
 			LinearLayout llLauncher = (LinearLayout) this.findViewById (R.id.llLauncher);
 			LinearLayout llDash = (LinearLayout) this.findViewById (R.id.llDash);
 
-			lalBfb.setColour (colour);
-			lalPreferences.setColour (colour);
-			lalSpinner.setColour (colour);
-			lalTrash.setColour (colour);
+			if (this.getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
+			{
+				lalBfb.setColour (colour);
+				lalPreferences.setColour (colour);
+				lalSpinner.setColour (colour);
+				lalTrash.setColour (colour);
+			}
 
-			llLauncher.setBackgroundColor (bgColour);
+			if (this.getResources ().getBoolean (HomeActivity.theme.launcher_background_dynamic))
+				llLauncher.setBackgroundColor (bgColour);
+			else
+				llLauncher.setBackgroundResource (HomeActivity.theme.launcher_background);
 			llDash.setBackgroundColor (bgColour);
 
 			this.chameleonicBgColour = bgColour;

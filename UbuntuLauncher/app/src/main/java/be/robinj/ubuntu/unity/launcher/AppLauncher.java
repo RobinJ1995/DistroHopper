@@ -58,24 +58,20 @@ public class AppLauncher extends be.robinj.ubuntu.unity.AppLauncher
 
 	private void applyTheme ()
 	{
-		if (this.getId () == R.id.lalBfb)
-		{
-			Drawable bfbImage = this.getContext ().getResources ().getDrawable (HomeActivity.theme.launcher_bfb_image);
-			this.setIcon (new AppIcon (bfbImage));
-		}
-
 		ViewGroup llBackground = (ViewGroup) this.findViewById (R.id.llBackground);
 		llBackground.setBackgroundResource (HomeActivity.theme.launcher_applauncher_background);
 
 		ViewGroup llGradient = (ViewGroup) this.findViewById (R.id.llGradient);
 		llGradient.setBackgroundResource (HomeActivity.theme.launcher_applauncher_gradient);
 
-
 		if (this.getId () != R.id.lalSpinner)
 		{
 			ImageView imgRunning = (ImageView) this.findViewById (R.id.imgRunning);
 			imgRunning.setImageResource (HomeActivity.theme.launcher_applauncher_running);
 		}
+
+		if (! this.getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
+			this.setColour (this.getResources ().getColor (HomeActivity.theme.launcher_applauncher_backgroundcolour));
 	}
 
 	public int getColour ()
