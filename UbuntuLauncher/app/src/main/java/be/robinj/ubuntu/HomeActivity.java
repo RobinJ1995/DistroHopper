@@ -22,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -81,10 +82,12 @@ public class HomeActivity extends Activity
 			Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
 			LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
 			ImageButton ibPanelDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
+			ImageButton ibPanelCog = (ImageButton) this.findViewById (R.id.ibPanelCog);
 			RelativeLayout vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
 			//ScrollView scrLauncherAppsContainer = (ScrollView) this.findViewById (R.id.scrLauncherAppsContainer);
 			ListView lvDashHomeLensResults = (ListView) this.findViewById (R.id.lvDashHomeLensResults);
 			LinearLayout llDashSearchContainer = (LinearLayout) this.findViewById (R.id.llDashSearchContainer);
+			ImageView imgDashBackgroundGradient = (ImageView) this.findViewById (R.id.imgDashBackgroundGradient);
 
 			Intent launcherServiceIntent = new Intent (this, LauncherService.class);
 			this.stopService (launcherServiceIntent);
@@ -192,6 +195,12 @@ public class HomeActivity extends Activity
 				llStatusBar.setLayoutParams (llStatusBar_layoutParams);
 				llStatusBar.setVisibility (View.VISIBLE);
 			}
+
+			// Apply theme //
+			llPanel.setBackgroundResource (HomeActivity.theme.panel_background);
+			ibPanelCog.setImageResource (HomeActivity.theme.panel_preferences_image);
+			ibPanelDashClose.setImageResource (HomeActivity.theme.panel_close_image);
+			imgDashBackgroundGradient.setImageResource (HomeActivity.theme.dash_background_gradient);
 		}
 		catch (Exception ex)
 		{
@@ -595,7 +604,7 @@ public class HomeActivity extends Activity
 		EditText etDashSearch = (EditText) this.findViewById (R.id.etDashSearch);
 
 		llDash.setVisibility (View.GONE);
-		llPanel.setBackgroundResource (R.drawable.panel_background);
+		llPanel.setBackgroundResource (HomeActivity.theme.panel_background);
 		ibPanelDashClose.setVisibility (View.INVISIBLE);
 		wpWallpaper.unblur ();
 		etDashSearch.setText ("");

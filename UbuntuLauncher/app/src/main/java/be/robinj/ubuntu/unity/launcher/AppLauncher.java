@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -55,13 +56,25 @@ public class AppLauncher extends be.robinj.ubuntu.unity.AppLauncher
 		this.applyTheme ();
 	}
 
-	public void applyTheme ()
+	private void applyTheme ()
 	{
 		if (this.getId () == R.id.lalBfb)
 		{
 			Drawable bfbImage = this.getContext ().getResources ().getDrawable (HomeActivity.theme.launcher_bfb_image);
 			this.setIcon (new AppIcon (bfbImage));
+		}
 
+		ViewGroup llBackground = (ViewGroup) this.findViewById (R.id.llBackground);
+		llBackground.setBackgroundResource (HomeActivity.theme.launcher_applauncher_background);
+
+		ViewGroup llGradient = (ViewGroup) this.findViewById (R.id.llGradient);
+		llGradient.setBackgroundResource (HomeActivity.theme.launcher_applauncher_gradient);
+
+
+		if (this.getId () != R.id.lalSpinner)
+		{
+			ImageView imgRunning = (ImageView) this.findViewById (R.id.imgRunning);
+			imgRunning.setImageResource (HomeActivity.theme.launcher_applauncher_running);
 		}
 	}
 

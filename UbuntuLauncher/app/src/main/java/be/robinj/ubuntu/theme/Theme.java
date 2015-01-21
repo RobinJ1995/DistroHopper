@@ -22,8 +22,9 @@ public abstract class Theme
 	public int panel_location;
 	public int panel_background;
 	public int panel_close_location;
+	public int panel_close_image;
 	public int panel_preferences_location;
-	public int getPanel_preferences_image;
+	public int panel_preferences_image;
 
 	// Dash //
 	public int dash_background_gradient;

@@ -12,6 +12,7 @@
     <integer name="theme_default_panel_location">@integer/position_top</integer>
     <drawable name="theme_default_panel_background">@drawable/panel_background</drawable>
     <integer name="theme_default_panel_close_location">@integer/position_left</integer>
+    <drawable name="theme_default_panel_close_image">@drawable/dash_close</drawable>
     <integer name="theme_default_panel_preferences_location">@integer/position_right</integer>
     <drawable name="theme_default_panel_preferences_image">@drawable/panel_cog</drawable>
 

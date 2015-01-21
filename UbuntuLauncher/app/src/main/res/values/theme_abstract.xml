@@ -10,8 +10,9 @@
 
     <!-- Panel -->
     <integer name="theme_abstract_panel_location">@integer/position_top</integer>
-    <drawable name="theme_abstract_panel_background">@color/transparentblack20</drawable>
+    <drawable name="theme_abstract_panel_background">@android:color/black</drawable>
     <integer name="theme_abstract_panel_close_location">@integer/position_left</integer>
+    <drawable name="theme_abstract_panel_close_image">@drawable/blank</drawable>
     <integer name="theme_abstract_panel_preferences_location">@integer/position_right</integer>
     <drawable name="theme_abstract_panel_preferences_image">@drawable/theme_abstract_res_panel_cog</drawable>
 

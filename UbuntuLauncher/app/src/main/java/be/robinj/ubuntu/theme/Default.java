@@ -21,8 +21,9 @@ public class Default extends Theme
 		this.panel_location = R.integer.theme_default_panel_location;
 		this.panel_background = R.drawable.theme_default_panel_background;
 		this.panel_close_location = R.integer.theme_default_panel_close_location;
+		this.panel_close_image = R.drawable.theme_default_panel_close_image;
 		this.panel_preferences_location = R.integer.theme_default_panel_preferences_location;
-		this.getPanel_preferences_image = R.drawable.theme_default_panel_preferences_image;
+		this.panel_preferences_image = R.drawable.theme_default_panel_preferences_image;
 
 		// Dash //
 		this.dash_background_gradient = R.drawable.theme_default_dash_background_gradient;
