@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="position_top">0</integer>
+    <integer name="position_right">1</integer>
+    <integer name="position_bottom">2</integer>
+    <integer name="position_left">3</integer>
+</resources>

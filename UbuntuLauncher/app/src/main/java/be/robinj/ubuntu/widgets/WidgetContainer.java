@@ -6,8 +6,11 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import be.robinj.ubuntu.R;
 import be.robinj.ubuntu.unity.AppIcon;
@@ -15,7 +18,7 @@ import be.robinj.ubuntu.unity.AppIcon;
 /**
  * Created by robin on 18/01/15.
  */
-public class WidgetContainer extends FrameLayout
+public class WidgetContainer extends FrameLayout implements View.OnTouchListener
 {
 	private WidgetHostView widget;
 	private FrameLayout container;
@@ -36,6 +39,16 @@ public class WidgetContainer extends FrameLayout
 		widgetContainer.addView (widget);
 		this.container = widgetContainer;
 		this.overlay = (ViewGroup) this.findViewById (R.id.widgetOverlay);
+
+		ViewGroup llEdgeTop = (ViewGroup) this.findViewById (R.id.llEdgeTop);
+		ViewGroup llEdgeRight = (ViewGroup) this.findViewById (R.id.llEdgeRight);
+		ViewGroup llEdgeBottom = (ViewGroup) this.findViewById (R.id.llEdgeBottom);
+		ViewGroup llEdgeLeft = (ViewGroup) this.findViewById (R.id.llEdgeLeft);
+
+		llEdgeTop.setOnTouchListener (this);
+		llEdgeRight.setOnTouchListener (this);
+		llEdgeBottom.setOnTouchListener (this);
+		llEdgeLeft.setOnTouchListener (this);
 	}
 
 	public boolean getEditMode ()
@@ -52,5 +65,25 @@ public class WidgetContainer extends FrameLayout
 
 		this.overlay.setVisibility (editMode ? VISIBLE : GONE);
 		this.widget.invalidate ();
+	}
+
+	@Override
+	public boolean onTouch (View view, MotionEvent e)
+	{
+		int id = view.getId ();
+
+		RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) this.getLayoutParams ();
+
+		if (id == R.id.llEdgeRight)
+		{
+			if (e.getAction () == MotionEvent.ACTION_MOVE)
+			{
+				layoutParams.width = (int) e.getX (e.getPointerCount () - 1) + (view.getWidth () / 2);
+			}
+		}
+
+		this.requestLayout ();
+
+		return false;
 	}
 }

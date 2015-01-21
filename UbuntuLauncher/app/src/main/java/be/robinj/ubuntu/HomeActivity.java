@@ -31,6 +31,8 @@ import com.google.analytics.tracking.android.EasyTracker;
 import java.util.ArrayList;
 import java.util.List;
 
+import be.robinj.ubuntu.theme.Abstract;
+import be.robinj.ubuntu.theme.Theme;
 import be.robinj.ubuntu.thirdparty.ProgressWheel;
 import be.robinj.ubuntu.unity.Wallpaper;
 import be.robinj.ubuntu.widgets.WidgetHost;
@@ -58,6 +60,8 @@ public class HomeActivity extends Activity
 	private AsyncLoadApps asyncLoadApps;
 
 	private boolean openDashWhenReady = false;
+
+	public static Theme theme = new Abstract ();
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState)

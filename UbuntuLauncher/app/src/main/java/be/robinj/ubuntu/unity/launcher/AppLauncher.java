@@ -2,6 +2,7 @@ package be.robinj.ubuntu.unity.launcher;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -9,7 +10,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import be.robinj.ubuntu.App;
+import be.robinj.ubuntu.HomeActivity;
 import be.robinj.ubuntu.R;
+import be.robinj.ubuntu.unity.AppIcon;
 
 /**
  * Created by robin on 8/20/14.
@@ -48,6 +51,18 @@ public class AppLauncher extends be.robinj.ubuntu.unity.AppLauncher
 		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams (width, height);
 
 		this.setLayoutParams (layoutParams);
+
+		this.applyTheme ();
+	}
+
+	public void applyTheme ()
+	{
+		if (this.getId () == R.id.lalBfb)
+		{
+			Drawable bfbImage = this.getContext ().getResources ().getDrawable (HomeActivity.theme.launcher_bfb_image);
+			this.setIcon (new AppIcon (bfbImage));
+
+		}
 	}
 
 	public int getColour ()
