@@ -104,4 +104,5 @@
         \nPayPal takes a $0.30 + 2.2\%% fee, so if your donation is less than $0.30 then all of it will go to PayPal, and none of it will reach the developer. If you donate, it\'s best to make your donation more than this amount, unless for some strange reason you\'d like to make a donation to PayPal itself.</string>
     <string name="contribute_donate_go">Donate</string>
 
+    <string name="theme_elementary_res_panel_bfb_text">Applications</string>
 </resources>

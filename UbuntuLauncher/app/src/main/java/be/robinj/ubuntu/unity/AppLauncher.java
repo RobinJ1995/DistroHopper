@@ -72,6 +72,8 @@ public class AppLauncher extends LinearLayout
 	@Override
 	public void onFinishInflate ()
 	{
+		super.onFinishInflate ();
+
 		this.labelChanged ();
 		this.descriptionChanged ();
 		this.specialChanged ();

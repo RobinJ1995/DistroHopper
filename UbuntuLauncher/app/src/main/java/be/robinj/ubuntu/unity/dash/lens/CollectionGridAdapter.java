@@ -15,6 +15,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import be.robinj.ubuntu.HomeActivity;
 import be.robinj.ubuntu.R;
 
 /**
@@ -40,6 +41,9 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 		GridView gvResults = (GridView) view.findViewById (R.id.gvResults);
 
 		tvLabel.setText (coll.getLens ().getName ());
+		tvLabel.setTextColor (view.getResources ().getColor (HomeActivity.theme.dash_applauncher_text_colour));
+		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (HomeActivity.theme.dash_applauncher_text_shadow_colour));
+
 		List<LensSearchResult> results = coll.getResults ();
 		if (results == null)
 		{

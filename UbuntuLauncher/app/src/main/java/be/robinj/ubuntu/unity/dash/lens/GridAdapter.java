@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import be.robinj.ubuntu.HomeActivity;
 import be.robinj.ubuntu.R;
 
 /**
@@ -34,6 +35,8 @@ public class GridAdapter extends ArrayAdapter<LensSearchResult>
 		ImageView imgIcon = (ImageView) view.findViewById (R.id.imgIcon);
 
 		tvLabel.setText (result.getName ());
+		tvLabel.setTextColor (view.getResources ().getColor (HomeActivity.theme.dash_applauncher_text_colour));
+		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (HomeActivity.theme.dash_applauncher_text_shadow_colour));
 		imgIcon.setImageDrawable (result.getIcon ());
 
 		view.setTag (result);

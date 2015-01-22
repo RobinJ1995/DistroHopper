@@ -381,7 +381,15 @@ public class AppManager implements Iterable<App>
 		AppLauncher lalPreferences = (AppLauncher) this.llLauncher.findViewById (R.id.lalPreferences);
 		AppLauncher lalTrash = (AppLauncher) this.llLauncher.findViewById (R.id.lalTrash);
 
-		lalPreferences.setVisibility (View.VISIBLE);
+		switch (this.context.getResources ().getInteger (HomeActivity.theme.launcher_preferences_location))
+		{
+			case -1:
+				lalPreferences.setVisibility (View.GONE);
+				break;
+			default:
+				lalPreferences.setVisibility (View.VISIBLE);
+				break;
+		}
 		lalTrash.setVisibility (View.GONE);
 
 		if (Build.VERSION.SDK_INT >= 11)

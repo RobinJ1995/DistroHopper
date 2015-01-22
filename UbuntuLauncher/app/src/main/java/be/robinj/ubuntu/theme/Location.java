@@ -5,7 +5,7 @@ package be.robinj.ubuntu.theme;
  */
 public enum Location
 {
-	TOP (0), RIGHT (1), BOTTOM (2), LEFT (3);
+	NONE (-1), TOP (0), RIGHT (1), BOTTOM (2), LEFT (3);
 
 	private int value;
 

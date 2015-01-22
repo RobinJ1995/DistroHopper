@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -22,12 +24,14 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
@@ -87,16 +91,19 @@ public class HomeActivity extends Activity
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb = (be.robinj.ubuntu.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalBfb);
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalPreferences = (be.robinj.ubuntu.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalPreferences);
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalTrash = (be.robinj.ubuntu.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalTrash);
+			ScrollView scrLauncherAppsContainer = (ScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainer);
+			HorizontalScrollView scrLauncherAppsContainerHorizontal = (HorizontalScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainerHorizontal);
 			LinearLayout llDash = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llDash);
-			Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
-			LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
-			ImageButton ibPanelDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
-			ImageButton ibPanelCog = (ImageButton) this.findViewById (R.id.ibPanelCog);
-			RelativeLayout vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
-			//ScrollView scrLauncherAppsContainer = (ScrollView) this.findViewById (R.id.scrLauncherAppsContainer);
-			ListView lvDashHomeLensResults = (ListView) this.findViewById (R.id.lvDashHomeLensResults);
 			LinearLayout llDashSearchContainer = (LinearLayout) this.findViewById (R.id.llDashSearchContainer);
 			ImageView imgDashBackgroundGradient = (ImageView) this.findViewById (R.id.imgDashBackgroundGradient);
+			TextView tvDashHomeTitle = (TextView) llDash.findViewById (R.id.tvDashHomeTitle);
+			Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
+			LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
+			TextView tvPanelBfb = (TextView) llPanel.findViewById (R.id.tvPanelBfb);
+			ImageButton ibPanelDashClose = (ImageButton) llPanel.findViewById (R.id.ibPanelDashClose);
+			ImageButton ibPanelCog = (ImageButton) llPanel.findViewById (R.id.ibPanelCog);
+			RelativeLayout vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
+			ListView lvDashHomeLensResults = (ListView) this.findViewById (R.id.lvDashHomeLensResults);
 
 			Intent launcherServiceIntent = new Intent (this, LauncherService.class);
 			this.stopService (launcherServiceIntent);
@@ -105,9 +112,11 @@ public class HomeActivity extends Activity
 			lalSpinner.init ();
 			lalPreferences.init ();
 			lalTrash.init ();
+			
+			Resources res = this.getResources ();
 
 			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
-			float density = this.getResources ().getDisplayMetrics ().density;
+			float density = res.getDisplayMetrics ().density;
 
 			if (prefs.getBoolean ("panel_show", true))
 			{
@@ -191,10 +200,10 @@ public class HomeActivity extends Activity
 				LinearLayout llStatusBar = (LinearLayout) this.findViewById (R.id.llStatusBar);
 
 				int llStatusBar_height = llStatusBar.getHeight ();
-				int statusBarHeight_resource = this.getResources ().getIdentifier ("status_bar_height", "dimen", "android");
+				int statusBarHeight_resource = res.getIdentifier ("status_bar_height", "dimen", "android");
 
 				if (statusBarHeight_resource > 0)
-					llStatusBar_height = this.getResources ().getDimensionPixelSize (statusBarHeight_resource);
+					llStatusBar_height = res.getDimensionPixelSize (statusBarHeight_resource);
 
 				RelativeLayout.LayoutParams llStatusBar_layoutParams = new RelativeLayout.LayoutParams (ViewGroup.LayoutParams.MATCH_PARENT, llStatusBar_height);
 				llStatusBar.setLayoutParams (llStatusBar_layoutParams);
@@ -206,10 +215,13 @@ public class HomeActivity extends Activity
 			ibPanelCog.setImageResource (HomeActivity.theme.panel_preferences_image);
 			ibPanelDashClose.setImageResource (HomeActivity.theme.panel_close_image);
 			imgDashBackgroundGradient.setImageResource (HomeActivity.theme.dash_background_gradient);
-			lalBfb.setIcon (this.getResources ().getDrawable (HomeActivity.theme.launcher_bfb_image));
-			lalPreferences.setIcon (this.getResources ().getDrawable (HomeActivity.theme.launcher_preferences_image));
+			lalBfb.setIcon (res.getDrawable (HomeActivity.theme.launcher_bfb_image));
+			lalPreferences.setIcon (res.getDrawable (HomeActivity.theme.launcher_preferences_image));
 
-			switch (this.getResources ().getInteger (HomeActivity.theme.launcher_location))
+			RelativeLayout.LayoutParams llPanel_layoutParams = (RelativeLayout.LayoutParams) llPanel.getLayoutParams ();
+			llPanel_layoutParams.height = (int) res.getDimension (R.dimen.theme_elementary_panel_height);
+
+			switch (res.getInteger (HomeActivity.theme.launcher_location))
 			{
 				case 2:
 					llLauncherAndDashContainer.setOrientation (LinearLayout.VERTICAL);
@@ -232,6 +244,11 @@ public class HomeActivity extends Activity
 					//ScrollView.LayoutParams llLauncherAppsContainer_layoutParams = new ScrollView.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
 					//llLauncherAppsContainer.setLayoutParams (llLauncherAppsContainer_layoutParams);
 
+					scrLauncherAppsContainer.setVisibility (View.GONE);
+					scrLauncherAppsContainer.removeView (llLauncherAppsContainer);
+					scrLauncherAppsContainerHorizontal.addView (llLauncherAppsContainer);
+					scrLauncherAppsContainerHorizontal.setVisibility (View.VISIBLE);
+
 					LinearLayout.LayoutParams llLauncherPinnedApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
 					llLauncherPinnedApps_layoutParams.gravity = Gravity.LEFT;
 					llLauncherPinnedApps.setLayoutParams (llLauncherPinnedApps_layoutParams);
@@ -240,11 +257,40 @@ public class HomeActivity extends Activity
 					llLauncherRunningApps_layoutParams.gravity = Gravity.LEFT;
 					llLauncherRunningApps.setLayoutParams (llLauncherRunningApps_layoutParams);
 
-					RelativeLayout.LayoutParams llPanel_layoutParams = (RelativeLayout.LayoutParams) llPanel.getLayoutParams ();
-					llPanel_layoutParams.height = (int) this.getResources ().getDimension (R.dimen.theme_elementary_panel_height);
+					break;
 			}
 
+			switch (res.getInteger (HomeActivity.theme.launcher_preferences_location))
+			{
+				case -1:
+					lalPreferences.setVisibility (View.GONE);
+					break;
+			}
 
+			switch (res.getInteger (HomeActivity.theme.panel_bfb_location))
+			{
+				case -1:
+					tvPanelBfb.setVisibility (View.GONE);
+					break;
+				case 3:
+					tvPanelBfb.setVisibility (View.VISIBLE);
+					break;
+			}
+
+			tvPanelBfb.setText (res.getString (HomeActivity.theme.panel_bfb_text));
+			tvPanelBfb.setTextColor (res.getColor (HomeActivity.theme.panel_bfb_text_colour));
+
+			TypedArray launcherMargins = res.obtainTypedArray (HomeActivity.theme.launcher_margin);
+			int launcherMarginTop = (int) launcherMargins.getDimension (0, 0);
+			int launcherMarginRight = (int) launcherMargins.getDimension (1, 0);
+			int launcherMarginBottom = (int) launcherMargins.getDimension (2, 0);
+			int launcherMarginLeft = (int) launcherMargins.getDimension (3, 0);
+
+			LinearLayout.LayoutParams llLauncher_layoutParams = (LinearLayout.LayoutParams) llLauncher.getLayoutParams ();
+			llLauncher_layoutParams.setMargins (launcherMarginLeft, launcherMarginTop, launcherMarginRight, launcherMarginBottom);
+
+			tvDashHomeTitle.setTextColor (res.getColor (HomeActivity.theme.dash_applauncher_text_colour));
+			tvDashHomeTitle.setShadowLayer (5, 2, 2, res.getColor (HomeActivity.theme.dash_applauncher_text_shadow_colour));
 		}
 		catch (Exception ex)
 		{
@@ -572,7 +618,11 @@ public class HomeActivity extends Activity
 				llLauncher.setBackgroundColor (bgColour);
 			else
 				llLauncher.setBackgroundResource (HomeActivity.theme.launcher_background);
-			llDash.setBackgroundColor (bgColour);
+
+			if (this.getResources ().getBoolean (HomeActivity.theme.dash_background_dynamic))
+				llDash.setBackgroundColor (bgColour);
+			else
+				llDash.setBackgroundResource (HomeActivity.theme.dash_background);
 
 			this.chameleonicBgColour = bgColour;
 		}
@@ -654,11 +704,12 @@ public class HomeActivity extends Activity
 		EditText etDashSearch = (EditText) this.findViewById (R.id.etDashSearch);
 
 		llDash.setVisibility (View.GONE);
-		llPanel.setBackgroundResource (HomeActivity.theme.panel_background);
-		ibPanelDashClose.setVisibility (View.INVISIBLE);
 		wpWallpaper.unblur ();
 		etDashSearch.setText ("");
 		etDashSearch.clearFocus ();
+
+		if (this.getResources ().getInteger (HomeActivity.theme.panel_close_location) != -1)
+			ibPanelDashClose.setVisibility (View.INVISIBLE);
 
 		if (Build.VERSION.SDK_INT >= 11)
 		{
@@ -666,10 +717,15 @@ public class HomeActivity extends Activity
 			llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
 		}
 
-		if (Build.VERSION.SDK_INT >= 19)
+		if (this.getResources ().getBoolean (HomeActivity.theme.panel_background_dynamic_if_dash_opened))
 		{
-			LinearLayout llStatusBar = (LinearLayout) this.findViewById (R.id.llStatusBar);
-			llStatusBar.setBackgroundColor (this.getResources ().getColor (android.R.color.black));
+			llPanel.setBackgroundResource (HomeActivity.theme.panel_background);
+
+			if (Build.VERSION.SDK_INT >= 19)
+			{
+				LinearLayout llStatusBar = (LinearLayout) this.findViewById (R.id.llStatusBar);
+				llStatusBar.setBackgroundColor (this.getResources ().getColor (android.R.color.black));
+			}
 		}
 
 		InputMethodManager imm = (InputMethodManager) this.getSystemService (Context.INPUT_METHOD_SERVICE);
@@ -685,16 +741,22 @@ public class HomeActivity extends Activity
 		Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
 
 		llDash.setVisibility (View.VISIBLE);
-		llPanel.setBackgroundColor (this.chameleonicBgColour);
-		ibPanelDashClose.setVisibility (View.VISIBLE);
 		wpWallpaper.blur ();
 		if (Build.VERSION.SDK_INT >= 11)
 			llPanel.setAlpha (1F);
 
-		if (Build.VERSION.SDK_INT >= 19)
+		if (this.getResources ().getInteger (HomeActivity.theme.panel_close_location) != -1)
+			ibPanelDashClose.setVisibility (View.VISIBLE);
+
+		if (this.getResources ().getBoolean (HomeActivity.theme.panel_background_dynamic_if_dash_opened))
 		{
-			LinearLayout llStatusBar = (LinearLayout) this.findViewById (R.id.llStatusBar);
-			llStatusBar.setBackgroundColor (this.chameleonicBgColour);
+			llPanel.setBackgroundColor (this.chameleonicBgColour);
+
+			if (Build.VERSION.SDK_INT >= 19)
+			{
+				LinearLayout llStatusBar = (LinearLayout) this.findViewById (R.id.llStatusBar);
+				llStatusBar.setBackgroundColor (this.chameleonicBgColour);
+			}
 		}
 	}
 

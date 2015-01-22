@@ -12,6 +12,7 @@ public abstract class Theme
 {
 	// Launcher //
 	public int launcher_location;
+	public int launcher_margin;
 	public int launcher_background_dynamic;
 	public int launcher_background;
 	public int launcher_bfb_location;
@@ -28,6 +29,10 @@ public abstract class Theme
 	public int panel_location;
 	public int panel_height;
 	public int panel_background;
+	public int panel_background_dynamic_if_dash_opened;
+	public int panel_bfb_location;
+	public int panel_bfb_text;
+	public int panel_bfb_text_colour;
 	public int panel_close_location;
 	public int panel_close_image;
 	public int panel_preferences_location;
@@ -35,4 +40,8 @@ public abstract class Theme
 
 	// Dash //
 	public int dash_background_gradient;
+	public int dash_background_dynamic;
+	public int dash_background;
+	public int dash_applauncher_text_colour;
+	public int dash_applauncher_text_shadow_colour;
 }
