@@ -97,6 +97,7 @@ public class HomeActivity extends Activity
 			LinearLayout llDashSearchContainer = (LinearLayout) this.findViewById (R.id.llDashSearchContainer);
 			ImageView imgDashBackgroundGradient = (ImageView) this.findViewById (R.id.imgDashBackgroundGradient);
 			TextView tvDashHomeTitle = (TextView) llDash.findViewById (R.id.tvDashHomeTitle);
+			EditText etDashSearch = (EditText) llDash.findViewById (R.id.etDashSearch);
 			Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
 			LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
 			TextView tvPanelBfb = (TextView) llPanel.findViewById (R.id.tvPanelBfb);
@@ -291,6 +292,9 @@ public class HomeActivity extends Activity
 
 			tvDashHomeTitle.setTextColor (res.getColor (HomeActivity.theme.dash_applauncher_text_colour));
 			tvDashHomeTitle.setShadowLayer (5, 2, 2, res.getColor (HomeActivity.theme.dash_applauncher_text_shadow_colour));
+
+			etDashSearch.setBackgroundResource (HomeActivity.theme.dash_search_background);
+			etDashSearch.setTextColor (res.getColor (HomeActivity.theme.dash_search_text_colour));
 		}
 		catch (Exception ex)
 		{
