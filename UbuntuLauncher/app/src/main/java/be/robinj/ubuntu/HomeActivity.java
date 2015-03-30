@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.robinj.ubuntu.theme.Abstract;
+import be.robinj.ubuntu.theme.Default;
 import be.robinj.ubuntu.theme.Elementary;
 import be.robinj.ubuntu.theme.Location;
 import be.robinj.ubuntu.theme.Theme;
@@ -71,7 +72,7 @@ public class HomeActivity extends Activity
 
 	private boolean openDashWhenReady = false;
 
-	public static Theme theme = new Elementary ();
+	public static Theme theme = new Default ();
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
