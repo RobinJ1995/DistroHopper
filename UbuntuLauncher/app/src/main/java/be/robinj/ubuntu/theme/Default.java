@@ -10,6 +10,8 @@ public class Default extends Theme
 	public Default ()
 	{
 		// Launcher //
+		this.launcher_location = R.integer.theme_default_launcher_location;
+		this.launcher_margin = R.array.theme_default_launcher_margin;
 		this.launcher_background_dynamic = R.bool.theme_default_launcher_background_dynamic;
 		this.launcher_background = R.drawable.theme_default_launcher_background;
 		this.launcher_bfb_location = R.integer.theme_default_launcher_bfb_location;
@@ -24,7 +26,12 @@ public class Default extends Theme
 
 		// Panel //
 		this.panel_location = R.integer.theme_default_panel_location;
+		this.panel_height = R.dimen.theme_default_panel_height;
 		this.panel_background = R.drawable.theme_default_panel_background;
+		this.panel_background_dynamic_if_dash_opened = R.bool.theme_default_panel_background_dynamic_if_dash_opened;
+		this.panel_bfb_location = R.integer.theme_default_panel_bfb_location;
+		this.panel_bfb_text = R.string.theme_default_panel_bfb_text;
+		this.panel_bfb_text_colour = R.color.theme_default_panel_bfb_text_colour;
 		this.panel_close_location = R.integer.theme_default_panel_close_location;
 		this.panel_close_image = R.drawable.theme_default_panel_close_image;
 		this.panel_preferences_location = R.integer.theme_default_panel_preferences_location;
@@ -32,5 +39,11 @@ public class Default extends Theme
 
 		// Dash //
 		this.dash_background_gradient = R.drawable.theme_default_dash_background_gradient;
+		this.dash_background_dynamic = R.bool.theme_default_dash_background_dynamic;
+		this.dash_background = R.drawable.theme_default_dash_background;
+		this.dash_applauncher_text_colour = R.color.theme_default_dash_applauncher_text_colour;
+		this.dash_applauncher_text_shadow_colour = R.color.theme_default_dash_applauncher_text_shadow_colour;
+		this.dash_search_background = R.drawable.theme_default_dash_search_background;
+		this.dash_search_text_colour = R.color.theme_default_dash_search_text_colour;
 	}
 }

@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Launcher -->
+    <integer name="theme_default_launcher_location">@integer/position_left</integer>
+    <array name="theme_default_launcher_margin">
+        <item>0dp</item>
+        <item>0dp</item>
+        <item>0dp</item>
+        <item>0dp</item>
+    </array>
     <bool name="theme_default_launcher_background_dynamic">true</bool>
     <drawable name="theme_default_launcher_background">@android:color/transparent</drawable>
     <integer name="theme_default_launcher_bfb_location">@integer/position_top</integer>
@@ -17,11 +24,21 @@
     <integer name="theme_default_panel_location">@integer/position_top</integer>
     <dimen name="theme_default_panel_height">28dp</dimen>
     <drawable name="theme_default_panel_background">@drawable/panel_background</drawable>
+    <bool name="theme_default_panel_background_dynamic_if_dash_opened">true</bool>
+    <integer name="theme_default_panel_bfb_location">@integer/position_none</integer>
+    <string name="theme_default_panel_bfb_text"></string>
+    <color name="theme_default_panel_bfb_text_colour">@android:color/white</color>
     <integer name="theme_default_panel_close_location">@integer/position_left</integer>
     <drawable name="theme_default_panel_close_image">@drawable/dash_close</drawable>
     <integer name="theme_default_panel_preferences_location">@integer/position_right</integer>
     <drawable name="theme_default_panel_preferences_image">@drawable/panel_cog</drawable>
 
     <!-- Dash -->
+    <bool name="theme_default_dash_background_dynamic">true</bool>
+    <drawable name="theme_default_dash_background">@android:color/transparent</drawable>
     <drawable name="theme_default_dash_background_gradient">@drawable/dash_background_gradient</drawable>
+    <color name="theme_default_dash_applauncher_text_colour">@android:color/white</color>
+    <color name="theme_default_dash_applauncher_text_shadow_colour">@android:color/transparent</color>
+    <drawable name="theme_elementary_dash_search_background">@drawable/theme_elementary_res_dash_search_background</drawable>
+    <color name="theme_elementary_dash_search_text_colour">@android:color/black</color>
 </resources>
