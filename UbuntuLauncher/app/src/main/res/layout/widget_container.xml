@@ -16,7 +16,7 @@
         android:id="@+id/widgetOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <FrameLayout
             android:layout_width="16dp"

@@ -64,6 +64,7 @@ public class WidgetContainer extends FrameLayout implements View.OnTouchListener
 			this.container.setAlpha (editMode ? 0.8F : 1.0F);
 
 		this.overlay.setVisibility (editMode ? VISIBLE : GONE);
+		this.widget.setVisibility (editMode ? GONE : VISIBLE);
 		this.widget.invalidate ();
 	}
 
