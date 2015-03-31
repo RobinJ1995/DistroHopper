@@ -1,6 +1,7 @@
 package be.robinj.ubuntu.unity.dash;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import be.robinj.ubuntu.HomeActivity;
 import be.robinj.ubuntu.R;
 
 /**
@@ -34,6 +36,8 @@ public class GridAdapter extends ArrayAdapter<AppLauncher>
 		ImageView imgIcon = (ImageView) view.findViewById (R.id.imgIcon);
 
 		tvLabel.setText (appLauncher.getLabel ());
+		tvLabel.setTextColor (view.getResources ().getColor (HomeActivity.theme.dash_applauncher_text_colour));
+		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (HomeActivity.theme.dash_applauncher_text_shadow_colour));
 		imgIcon.setImageDrawable (appLauncher.getIcon ().getDrawable ());
 
 		view.setTag (appLauncher);

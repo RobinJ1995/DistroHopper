@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import be.robinj.ubuntu.App;
+import be.robinj.ubuntu.HomeActivity;
 import be.robinj.ubuntu.R;
 
 /**
@@ -71,6 +72,8 @@ public class AppLauncher extends LinearLayout
 	@Override
 	public void onFinishInflate ()
 	{
+		super.onFinishInflate ();
+
 		this.labelChanged ();
 		this.descriptionChanged ();
 		this.specialChanged ();
@@ -165,7 +168,7 @@ public class AppLauncher extends LinearLayout
 			imgIcon.setImageDrawable (this.icon.getDrawable ());
 
 			LinearLayout llBackground = (LinearLayout) this.findViewById (R.id.llBackground);
-			if (llBackground != null && (!this.special))
+			if (llBackground != null && (! this.special) && this.getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
 			{
 				SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
 

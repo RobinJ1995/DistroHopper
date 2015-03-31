@@ -23,6 +23,6 @@
         android:textSize="@dimen/dash_applauncher_textsize"
         android:maxLines="@integer/dash_applauncher_label_maxlines"
         android:ellipsize="marquee"
-        android:textAppearance="@style/textshadow_2px_black"/>
+        android:textAppearance="@style/textshadow_2px_black" />
 
 </LinearLayout>

@@ -10,7 +10,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -20,24 +23,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.GridView;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import be.robinj.ubuntu.theme.Abstract;
+import be.robinj.ubuntu.theme.Default;
+import be.robinj.ubuntu.theme.Elementary;
+import be.robinj.ubuntu.theme.Location;
+import be.robinj.ubuntu.theme.Theme;
 import be.robinj.ubuntu.thirdparty.ProgressWheel;
+import be.robinj.ubuntu.unity.AppIcon;
 import be.robinj.ubuntu.unity.Wallpaper;
-import be.robinj.ubuntu.unity.WidgetHost;
-import be.robinj.ubuntu.unity.WidgetHostView;
-import be.robinj.ubuntu.unity.WidgetHostView_LongClickListener;
-import be.robinj.ubuntu.unity.WidgetHost_LongClickListener;
+import be.robinj.ubuntu.widgets.WidgetHost;
+import be.robinj.ubuntu.widgets.WidgetHostView;
+import be.robinj.ubuntu.widgets.WidgetHostView_LongClickListener;
+import be.robinj.ubuntu.widgets.WidgetHost_LongClickListener;
 import be.robinj.ubuntu.unity.dash.SearchTextWatcher;
 import be.robinj.ubuntu.unity.dash.lens.LensManager;
 import be.robinj.ubuntu.unity.launcher.AppLauncher;
@@ -60,6 +72,8 @@ public class HomeActivity extends Activity
 
 	private boolean openDashWhenReady = false;
 
+	public static Theme theme = new Default ();
+
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
@@ -69,19 +83,29 @@ public class HomeActivity extends Activity
 		try
 		{
 			GridView gvDashHomeApps = (GridView) this.findViewById (R.id.gvDashHomeApps);
-			be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher lalSpinner = (be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher) this.findViewById (R.id.lalSpinner);
-			be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalBfb);
-			be.robinj.ubuntu.unity.launcher.AppLauncher lalPreferences = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalPreferences);
-			be.robinj.ubuntu.unity.launcher.AppLauncher lalTrash = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalTrash);
-			LinearLayout llLauncherPinnedApps = (LinearLayout) this.findViewById (R.id.llLauncherPinnedApps);
-			LinearLayout llLauncherRunningApps = (LinearLayout) this.findViewById (R.id.llLauncherRunningApps);
+			LinearLayout llLauncherAndDashContainer = (LinearLayout) this.findViewById (R.id.llLauncherAndDashContainer);
+			LinearLayout llLauncher = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llLauncher);
+			LinearLayout llLauncherAppsContainer = (LinearLayout) llLauncher.findViewById (R.id.llLauncherAppsContainer);
+			LinearLayout llLauncherPinnedApps = (LinearLayout) llLauncherAppsContainer.findViewById (R.id.llLauncherPinnedApps);
+			LinearLayout llLauncherRunningApps = (LinearLayout) llLauncherAppsContainer.findViewById (R.id.llLauncherRunningApps);
+			be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher lalSpinner = (be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher) llLauncher.findViewById (R.id.lalSpinner);
+			be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb = (be.robinj.ubuntu.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalBfb);
+			be.robinj.ubuntu.unity.launcher.AppLauncher lalPreferences = (be.robinj.ubuntu.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalPreferences);
+			be.robinj.ubuntu.unity.launcher.AppLauncher lalTrash = (be.robinj.ubuntu.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalTrash);
+			ScrollView scrLauncherAppsContainer = (ScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainer);
+			HorizontalScrollView scrLauncherAppsContainerHorizontal = (HorizontalScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainerHorizontal);
+			LinearLayout llDash = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llDash);
+			LinearLayout llDashSearchContainer = (LinearLayout) this.findViewById (R.id.llDashSearchContainer);
+			ImageView imgDashBackgroundGradient = (ImageView) this.findViewById (R.id.imgDashBackgroundGradient);
+			TextView tvDashHomeTitle = (TextView) llDash.findViewById (R.id.tvDashHomeTitle);
+			EditText etDashSearch = (EditText) llDash.findViewById (R.id.etDashSearch);
 			Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
 			LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
-			ImageButton ibPanelDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
-			GridLayout vgWidgets = (GridLayout) this.findViewById (R.id.vgWidgets);
-			//ScrollView scrLauncherAppsContainer = (ScrollView) this.findViewById (R.id.scrLauncherAppsContainer);
+			TextView tvPanelBfb = (TextView) llPanel.findViewById (R.id.tvPanelBfb);
+			ImageButton ibPanelDashClose = (ImageButton) llPanel.findViewById (R.id.ibPanelDashClose);
+			ImageButton ibPanelCog = (ImageButton) llPanel.findViewById (R.id.ibPanelCog);
+			RelativeLayout vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
 			ListView lvDashHomeLensResults = (ListView) this.findViewById (R.id.lvDashHomeLensResults);
-			LinearLayout llDashSearchContainer = (LinearLayout) this.findViewById (R.id.llDashSearchContainer);
 
 			Intent launcherServiceIntent = new Intent (this, LauncherService.class);
 			this.stopService (launcherServiceIntent);
@@ -90,9 +114,11 @@ public class HomeActivity extends Activity
 			lalSpinner.init ();
 			lalPreferences.init ();
 			lalTrash.init ();
+			
+			Resources res = this.getResources ();
 
 			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
-			float density = this.getResources ().getDisplayMetrics ().density;
+			float density = res.getDisplayMetrics ().density;
 
 			if (prefs.getBoolean ("panel_show", true))
 			{
@@ -108,14 +134,14 @@ public class HomeActivity extends Activity
 			LinearLayout.LayoutParams ibDashClose_layoutParams = new LinearLayout.LayoutParams (ibDashClose_width, LinearLayout.LayoutParams.MATCH_PARENT);
 			ibPanelDashClose.setLayoutParams (ibDashClose_layoutParams);
 
+			RelativeLayout.LayoutParams vgWidgets_layoutParams = (RelativeLayout.LayoutParams) vgWidgets.getLayoutParams ();
+			vgWidgets_layoutParams.setMargins (ibDashClose_width, 0, 0, 0);
+			//vgWidgets.setLayoutParams ();
+
 			lalSpinner.getProgressWheel ().spin ();
 
 			if (prefs.getString ("launcher_edge", "left").equals ("right"))
 			{
-				LinearLayout llLauncherAndDashContainer = (LinearLayout) this.findViewById (R.id.llLauncherAndDashContainer);
-				LinearLayout llLauncher = (LinearLayout) this.findViewById (R.id.llLauncher);
-				LinearLayout llDash = (LinearLayout) this.findViewById (R.id.llDash);
-
 				llLauncherAndDashContainer.setGravity (Gravity.RIGHT);
 
 				llLauncherAndDashContainer.removeView (llLauncher);
@@ -132,9 +158,9 @@ public class HomeActivity extends Activity
 			this.asyncLoadApps.execute (this.getApplicationContext ());
 
 			this.widgetManager = AppWidgetManager.getInstance (this);
-			this.widgetHost = new WidgetHost (this, R.id.vgWidgets);
+			this.widgetHost = new WidgetHost (this, this.widgetManager, R.id.vgWidgets);
 
-			vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this));
+			vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this.widgetHost));
 
 			if (Build.VERSION.SDK_INT >= 11)
 			{
@@ -176,15 +202,100 @@ public class HomeActivity extends Activity
 				LinearLayout llStatusBar = (LinearLayout) this.findViewById (R.id.llStatusBar);
 
 				int llStatusBar_height = llStatusBar.getHeight ();
-				int statusBarHeight_resource = this.getResources ().getIdentifier ("status_bar_height", "dimen", "android");
+				int statusBarHeight_resource = res.getIdentifier ("status_bar_height", "dimen", "android");
 
 				if (statusBarHeight_resource > 0)
-					llStatusBar_height = this.getResources ().getDimensionPixelSize (statusBarHeight_resource);
+					llStatusBar_height = res.getDimensionPixelSize (statusBarHeight_resource);
 
 				RelativeLayout.LayoutParams llStatusBar_layoutParams = new RelativeLayout.LayoutParams (ViewGroup.LayoutParams.MATCH_PARENT, llStatusBar_height);
 				llStatusBar.setLayoutParams (llStatusBar_layoutParams);
 				llStatusBar.setVisibility (View.VISIBLE);
 			}
+
+			// Apply theme //
+			llPanel.setBackgroundResource (HomeActivity.theme.panel_background);
+			ibPanelCog.setImageResource (HomeActivity.theme.panel_preferences_image);
+			ibPanelDashClose.setImageResource (HomeActivity.theme.panel_close_image);
+			imgDashBackgroundGradient.setImageResource (HomeActivity.theme.dash_background_gradient);
+			lalBfb.setIcon (res.getDrawable (HomeActivity.theme.launcher_bfb_image));
+			lalPreferences.setIcon (res.getDrawable (HomeActivity.theme.launcher_preferences_image));
+
+			RelativeLayout.LayoutParams llPanel_layoutParams = (RelativeLayout.LayoutParams) llPanel.getLayoutParams ();
+			llPanel_layoutParams.height = (int) res.getDimension (R.dimen.theme_elementary_panel_height);
+
+			switch (res.getInteger (HomeActivity.theme.launcher_location))
+			{
+				case 2:
+					llLauncherAndDashContainer.setOrientation (LinearLayout.VERTICAL);
+					llLauncher.setOrientation (LinearLayout.HORIZONTAL);
+					llLauncherAppsContainer.setOrientation (LinearLayout.HORIZONTAL);
+					llLauncherPinnedApps.setOrientation (LinearLayout.HORIZONTAL);
+					llLauncherRunningApps.setOrientation (LinearLayout.HORIZONTAL);
+
+					llLauncherAndDashContainer.setGravity (Gravity.BOTTOM);
+
+					llLauncherAndDashContainer.removeView (llLauncher);
+					llLauncherAndDashContainer.removeView (llDash);
+
+					llLauncherAndDashContainer.addView (llDash);
+					llLauncherAndDashContainer.addView (llLauncher);
+
+					LinearLayout.LayoutParams llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+					llLauncher.setLayoutParams (llLauncher_layoutParams);
+
+					//ScrollView.LayoutParams llLauncherAppsContainer_layoutParams = new ScrollView.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+					//llLauncherAppsContainer.setLayoutParams (llLauncherAppsContainer_layoutParams);
+
+					scrLauncherAppsContainer.setVisibility (View.GONE);
+					scrLauncherAppsContainer.removeView (llLauncherAppsContainer);
+					scrLauncherAppsContainerHorizontal.addView (llLauncherAppsContainer);
+					scrLauncherAppsContainerHorizontal.setVisibility (View.VISIBLE);
+
+					LinearLayout.LayoutParams llLauncherPinnedApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+					llLauncherPinnedApps_layoutParams.gravity = Gravity.LEFT;
+					llLauncherPinnedApps.setLayoutParams (llLauncherPinnedApps_layoutParams);
+
+					LinearLayout.LayoutParams llLauncherRunningApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+					llLauncherRunningApps_layoutParams.gravity = Gravity.LEFT;
+					llLauncherRunningApps.setLayoutParams (llLauncherRunningApps_layoutParams);
+
+					break;
+			}
+
+			switch (res.getInteger (HomeActivity.theme.launcher_preferences_location))
+			{
+				case -1:
+					lalPreferences.setVisibility (View.GONE);
+					break;
+			}
+
+			switch (res.getInteger (HomeActivity.theme.panel_bfb_location))
+			{
+				case -1:
+					tvPanelBfb.setVisibility (View.GONE);
+					break;
+				case 3:
+					tvPanelBfb.setVisibility (View.VISIBLE);
+					break;
+			}
+
+			tvPanelBfb.setText (res.getString (HomeActivity.theme.panel_bfb_text));
+			tvPanelBfb.setTextColor (res.getColor (HomeActivity.theme.panel_bfb_text_colour));
+
+			TypedArray launcherMargins = res.obtainTypedArray (HomeActivity.theme.launcher_margin);
+			int launcherMarginTop = (int) launcherMargins.getDimension (0, 0);
+			int launcherMarginRight = (int) launcherMargins.getDimension (1, 0);
+			int launcherMarginBottom = (int) launcherMargins.getDimension (2, 0);
+			int launcherMarginLeft = (int) launcherMargins.getDimension (3, 0);
+
+			LinearLayout.LayoutParams llLauncher_layoutParams = (LinearLayout.LayoutParams) llLauncher.getLayoutParams ();
+			llLauncher_layoutParams.setMargins (launcherMarginLeft, launcherMarginTop, launcherMarginRight, launcherMarginBottom);
+
+			tvDashHomeTitle.setTextColor (res.getColor (HomeActivity.theme.dash_applauncher_text_colour));
+			tvDashHomeTitle.setShadowLayer (5, 2, 2, res.getColor (HomeActivity.theme.dash_applauncher_text_shadow_colour));
+
+			etDashSearch.setBackgroundResource (HomeActivity.theme.dash_search_background);
+			etDashSearch.setTextColor (res.getColor (HomeActivity.theme.dash_search_text_colour));
 		}
 		catch (Exception ex)
 		{
@@ -231,16 +342,16 @@ public class HomeActivity extends Activity
 			else if (requestCode == 2) // Widget picked //
 			{
 				if (resultCode == RESULT_OK)
-					this.configureWidget (data);
+					this.widgetHost.configureWidget (data);
 				else
-					this.removeWidget (data);
+					this.widgetHost.removeWidget (data);
 			}
 			else if (requestCode == 3) // Widget configured //
 			{
 				if (resultCode == RESULT_OK)
-					this.createWidget (data);
+					this.widgetHost.createWidget (data);
 				else
-					this.removeWidget (data);
+					this.widgetHost.removeWidget (data);
 			}
 		}
 		catch (Exception ex)
@@ -500,13 +611,23 @@ public class HomeActivity extends Activity
 			LinearLayout llLauncher = (LinearLayout) this.findViewById (R.id.llLauncher);
 			LinearLayout llDash = (LinearLayout) this.findViewById (R.id.llDash);
 
-			lalBfb.setColour (colour);
-			lalPreferences.setColour (colour);
-			lalSpinner.setColour (colour);
-			lalTrash.setColour (colour);
+			if (this.getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
+			{
+				lalBfb.setColour (colour);
+				lalPreferences.setColour (colour);
+				lalSpinner.setColour (colour);
+				lalTrash.setColour (colour);
+			}
 
-			llLauncher.setBackgroundColor (bgColour);
-			llDash.setBackgroundColor (bgColour);
+			if (this.getResources ().getBoolean (HomeActivity.theme.launcher_background_dynamic))
+				llLauncher.setBackgroundColor (bgColour);
+			else
+				llLauncher.setBackgroundResource (HomeActivity.theme.launcher_background);
+
+			if (this.getResources ().getBoolean (HomeActivity.theme.dash_background_dynamic))
+				llDash.setBackgroundColor (bgColour);
+			else
+				llDash.setBackgroundResource (HomeActivity.theme.dash_background);
 
 			this.chameleonicBgColour = bgColour;
 		}
@@ -588,11 +709,12 @@ public class HomeActivity extends Activity
 		EditText etDashSearch = (EditText) this.findViewById (R.id.etDashSearch);
 
 		llDash.setVisibility (View.GONE);
-		llPanel.setBackgroundResource (R.drawable.panel_background);
-		ibPanelDashClose.setVisibility (View.INVISIBLE);
 		wpWallpaper.unblur ();
 		etDashSearch.setText ("");
 		etDashSearch.clearFocus ();
+
+		if (this.getResources ().getInteger (HomeActivity.theme.panel_close_location) != -1)
+			ibPanelDashClose.setVisibility (View.INVISIBLE);
 
 		if (Build.VERSION.SDK_INT >= 11)
 		{
@@ -600,10 +722,15 @@ public class HomeActivity extends Activity
 			llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
 		}
 
-		if (Build.VERSION.SDK_INT >= 19)
+		if (this.getResources ().getBoolean (HomeActivity.theme.panel_background_dynamic_if_dash_opened))
 		{
-			LinearLayout llStatusBar = (LinearLayout) this.findViewById (R.id.llStatusBar);
-			llStatusBar.setBackgroundColor (this.getResources ().getColor (android.R.color.black));
+			llPanel.setBackgroundResource (HomeActivity.theme.panel_background);
+
+			if (Build.VERSION.SDK_INT >= 19)
+			{
+				LinearLayout llStatusBar = (LinearLayout) this.findViewById (R.id.llStatusBar);
+				llStatusBar.setBackgroundColor (this.getResources ().getColor (android.R.color.black));
+			}
 		}
 
 		InputMethodManager imm = (InputMethodManager) this.getSystemService (Context.INPUT_METHOD_SERVICE);
@@ -619,16 +746,22 @@ public class HomeActivity extends Activity
 		Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
 
 		llDash.setVisibility (View.VISIBLE);
-		llPanel.setBackgroundColor (this.chameleonicBgColour);
-		ibPanelDashClose.setVisibility (View.VISIBLE);
 		wpWallpaper.blur ();
 		if (Build.VERSION.SDK_INT >= 11)
 			llPanel.setAlpha (1F);
 
-		if (Build.VERSION.SDK_INT >= 19)
+		if (this.getResources ().getInteger (HomeActivity.theme.panel_close_location) != -1)
+			ibPanelDashClose.setVisibility (View.VISIBLE);
+
+		if (this.getResources ().getBoolean (HomeActivity.theme.panel_background_dynamic_if_dash_opened))
 		{
-			LinearLayout llStatusBar = (LinearLayout) this.findViewById (R.id.llStatusBar);
-			llStatusBar.setBackgroundColor (this.chameleonicBgColour);
+			llPanel.setBackgroundColor (this.chameleonicBgColour);
+
+			if (Build.VERSION.SDK_INT >= 19)
+			{
+				LinearLayout llStatusBar = (LinearLayout) this.findViewById (R.id.llStatusBar);
+				llStatusBar.setBackgroundColor (this.chameleonicBgColour);
+			}
 		}
 	}
 
@@ -654,88 +787,5 @@ public class HomeActivity extends Activity
 		}
 
 		return false;
-	}
-
-	//# Widgets #//
-	public void selectWidget ()
-	{
-		int id = this.widgetHost.allocateAppWidgetId ();
-
-		Intent intent = new Intent (AppWidgetManager.ACTION_APPWIDGET_PICK);
-		intent.putExtra (AppWidgetManager.EXTRA_APPWIDGET_ID, id);
-
-		/*
-		ArrayList customInfo = new ArrayList();
-		pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_INFO, customInfo);
-		ArrayList customExtras = new ArrayList();
-		pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_EXTRAS, customExtras);
-
-		addEmptyData (pickIntent);
-		*/
-
-		this.startActivityForResult (intent, 2);
-	}
-
-	private void configureWidget (Intent data) throws Exception
-	{
-		Bundle bundle = data.getExtras ();
-		int id = bundle.getInt (AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-
-		AppWidgetProviderInfo info = this.widgetManager.getAppWidgetInfo (id);
-
-		if (id == -1)
-			throw new Exception ("Didn't receive a widget ID");
-
-		if (info.configure == null)
-		{
-			this.createWidget (data);
-		}
-		else
-		{
-			Intent intent = new Intent (AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
-			intent.setComponent (info.configure);
-			intent.putExtra (AppWidgetManager.EXTRA_APPWIDGET_ID, id);
-
-			this.startActivityForResult (intent, 3);
-		}
-	}
-
-	private void createWidget (Intent data) throws Exception
-	{
-		Bundle bundle = data.getExtras ();
-		int id = bundle.getInt (AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-
-		if (id == -1)
-			throw new Exception ("Didn't receive a widget ID");
-
-		AppWidgetProviderInfo info = this.widgetManager.getAppWidgetInfo (id);
-		WidgetHostView hostView = (WidgetHostView) this.widgetHost.createView (this, id, info);
-
-		ViewGroup vgWidgets = (GridLayout) this.findViewById (R.id.vgWidgets);
-		vgWidgets.addView (hostView);
-
-		hostView.setOnLongClickListener (new WidgetHostView_LongClickListener (this));
-	}
-
-	public void removeWidget (AppWidgetHostView hostView)
-	{
-		this.widgetHost.deleteAppWidgetId (hostView.getAppWidgetId ());
-
-		GridLayout vgWidgets = (GridLayout) this.findViewById (R.id.vgWidgets);
-		vgWidgets.removeView (hostView);
-	}
-
-	private void removeWidget (Intent data) throws Exception
-	{
-		if (data != null)
-		{
-			Bundle bundle = data.getExtras ();
-			int id = bundle.getInt (AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-
-			if (id == -1)
-				throw new Exception ("Didn't receive a widget ID");
-
-			this.widgetHost.deleteAppWidgetId (id);
-		}
 	}
 }

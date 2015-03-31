@@ -2,14 +2,18 @@ package be.robinj.ubuntu.unity.launcher;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import be.robinj.ubuntu.App;
+import be.robinj.ubuntu.HomeActivity;
 import be.robinj.ubuntu.R;
+import be.robinj.ubuntu.unity.AppIcon;
 
 /**
  * Created by robin on 8/20/14.
@@ -48,6 +52,26 @@ public class AppLauncher extends be.robinj.ubuntu.unity.AppLauncher
 		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams (width, height);
 
 		this.setLayoutParams (layoutParams);
+
+		this.applyTheme ();
+	}
+
+	private void applyTheme ()
+	{
+		ViewGroup llBackground = (ViewGroup) this.findViewById (R.id.llBackground);
+		llBackground.setBackgroundResource (HomeActivity.theme.launcher_applauncher_background);
+
+		ViewGroup llGradient = (ViewGroup) this.findViewById (R.id.llGradient);
+		llGradient.setBackgroundResource (HomeActivity.theme.launcher_applauncher_gradient);
+
+		if (this.getId () != R.id.lalSpinner)
+		{
+			ImageView imgRunning = (ImageView) this.findViewById (R.id.imgRunning);
+			imgRunning.setImageResource (HomeActivity.theme.launcher_applauncher_running);
+		}
+
+		if (! this.getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
+			this.setColour (this.getResources ().getColor (HomeActivity.theme.launcher_applauncher_backgroundcolour));
 	}
 
 	public int getColour ()
