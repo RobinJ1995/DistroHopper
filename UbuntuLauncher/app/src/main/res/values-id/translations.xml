@@ -11,11 +11,7 @@
   <string name="unpinned">telah dilepaskan dari Peluncur</string>
   <string name="notpinned">tidak disematkan</string>
   <string name="developed_by">Dikembangkan oleh Robin Jacobs</string>
-<<<<<<< HEAD
-  <string name="honourable_mentions">Yang terhormat disebutkan</string>
-=======
   <string name="honourable_mentions">Yang dihormati disebutkan</string>
->>>>>>> 4b3c7f1306f1c5a6f2023cc316f0552a4315b8fd
   <string name="button_back">Kembali</string>
   <string name="button_about">Tentang</string>
   <string name="button_contribute">Kontribusi</string>
@@ -39,15 +35,6 @@
   <string name="hint_panel_show">Apakah Panel di bagian atas layar harus ditampilkan atau tidak.</string>
   <string name="option_panel_opacity">Keburaman</string>
   <string name="hint_panel_opacity">Bagaimana keburaman Panel seharusnya.</string>
-<<<<<<< HEAD
-  <string name="option_unitybackground_dynamic">Warna latar belakang yang dinamsi</string>
-  <string name="hint_unitybackground_dynamic">Secara dinamis memilih warna later belakang dari komponen Unity transparan (Peluncur, dan Dasbor, dan Panel ketika Dasbor dibuka) berdasarkan warna dominan dari kertas dinding. Ini tida bekerja ketika kertas dinding diatur, yang mana akan kembali ke hitam transparan.</string>
-  <string name="option_unitybackground_colour">Warna latar belakang</string>
-  <string name="hint_unitybackground_colour">Warna latar belakang yang harus digunakan untuk komponen Unity transparan.</string>
-  <string name="message_unitybackground_colour">Gunakan slider untuk memilih warna</string>
-  <string name="option_unitybackground_opacity">Keburaman latar belakang</string>
-  <string name="hint_unitybackground_opacity">Bagaimana keburaman warna latar belakang ikon dari peluncur seharusnya.</string>
-=======
   <string name="option_unitybackground_dynamic">Warna latar belakang yang dinamis</string>
   <string name="hint_unitybackground_dynamic">Secara dinamis memilih warna latar belakang dari komponen Unity transparan (Peluncur, dan Dasbor, dan Panel ketika Dasbor dibuka) berdasarkan warna dominan dari kertas dinding. Ini tida bekerja ketika kertas dinding diatur, yang mana akan kembali ke hitam transparan.</string>
   <string name="option_unitybackground_colour">Warna latar belakang</string>
@@ -55,7 +42,6 @@
   <string name="message_unitybackground_colour">Gunakan slider untuk memilih warna</string>
   <string name="option_unitybackground_opacity">Keburaman latar belakang</string>
   <string name="hint_unitybackground_opacity">Bagaimana keburaman warna latar belakang dari komponen Unity yang transparan seharusnya.</string>
->>>>>>> 4b3c7f1306f1c5a6f2023cc316f0552a4315b8fd
   <string name="option_unitywallpaper_blur">Metode blur kertas dinding</string>
   <string name="hint_unitywallpaper_blur">Metode yang harus digunakan untuk mengaburkan latar belakang saat Dasbor dibuka. Ketika \"Downscale &amp; upscale\" dipilih dan gagal (atau wallpaper hidup diatur), \"Darken\" akan digunakan sebagai fallback.</string>
   <string name="option_launcher_edge">Tepi layar</string>
@@ -74,11 +60,7 @@
   <string name="option_colourcalc_advanced">Ambil lebih banyak sampel</string>
   <string name="hint_colourscalc_advanced">Mengambil lebih banyak sampel sangat meningkatkan akurasi tetapi dapat menghasilkan waktu menunggu lebih lama pada perangkat yang lebih lambat.</string>
   <string name="option_colourcalc_hsv">Gunakan HSV</string>
-<<<<<<< HEAD
-  <string name="hint_colourcalc_hsv">Menggunakan HSV (Hue, Saturation, Value) bukan RGB polos (Merah, Hijau, Biru) akan menghasilkan warna yang jauh lebih hidup, tetapi perhitungan yang dikerjakan sebelumnya akan lebih rumit yang dapat menghasilkan waktu menunggu lebih lama pada perangkat yang lambat.</string>
-=======
   <string name="hint_colourcalc_hsv">Menggunakan HSV (Hue, Saturation, Value) bukan RGB polos (Merah, Hijau, Biru) akan menghasilkan warna yang jauh lebih hidup, tetapi perhitungan yang dikerjakan sebelumnya akan lebih rumit yang dapat menghasilkan waktu menunggu lebih lama pada perangkat yang lebih lambat.</string>
->>>>>>> 4b3c7f1306f1c5a6f2023cc316f0552a4315b8fd
   <string name="option_dashsearch_full">Pencarian tingkat lanjut</string>
   <string name="hint_dashsearch_full">Mengaktifkan opsi ini akan menghasilkan hasil pencarian Dasbor yang lebih baik tetapi juga akan mempengaruhi kinerja pada perangkat yang lambat atau perangkat dengan banyak aplikasi yang terpasang. Jika pencarian Dasbor lambat untuk Anda, Anda mungkin ingin mempertimbangkan untuk menonaktifkan ini.</string>
   <string name="option_dashsearch_lenses">Gunakan lensa</string>
@@ -105,21 +87,12 @@ https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Bagaimana Saya bisa berkontribusi?</string>
   <string name="contribute_intro">Waktu yang lama dan kerja keras telah dilakukan untuk mengembangkan aplikasi ini. Jika Anda ingin membantu, ada beberapa cara di mana Anda dapat melakukannya.</string>
   <string name="contribute_translate_title">Menerjemahkan</string>
-<<<<<<< HEAD
-  <string name="contribute_translate_description">Peluncur Ubuntu tersedia dalam beberapa bahasa. Hal ini karena relawan memberikan proyek dengan terjemahannya. Jika Peluncur Ubuntu belum diterjemahkan ke dalam bahasa Anda dan Anda mengerti bahasa Inggris (dan Anda memiliki pengetahuan yang cukup tentang Ubuntu untuk memahami beberapa istilah yang terkait dengan Unity), kemudian membantu dengan terjemahan adalah cara yang baik untuk membantu.
-\nTranslasi untuk Peluncur Ubuntu dikelola di Transifex. Yang perlu Anda lakukan adalah permintaan untuk bergabung dengan tim penerjemah. Setelah itu saya akan menyetujui permintaan Anda dan Anda siap untu menterjemahkan.</string>
-  <string name="contribute_translate_go">Pergi ke Transifex</string>
-  <string name="contribute_bugs_title">Laporkan bug</string>
-  <string name="contribute_bugs_description">Jika ada bug di Peluncur Ubuntu, itu tidak berarti bahwa saya menyadari keberadaannya. Pengembang umumnya cukup buruk untuk menguji aplikasi mereka sendiri karena mereka hanya akan menggunakannya dengan cara mereka dimaksudkan untuk digunakan. Beberapa masalah juga hanya ada dalam keadaan khusus tertentu (misalnya perangkat tertentu yang menjalankan versi tertentu dari Android dengan beberapa opsi tambahan diaktifkan). Jadi jika Anda menemukan bug di Ubuntu Launcher (atau jika Anda memiliki permintaan fitur) Anda dapat membantu dengan melaporkan it.
-\ nLaporan bug untuk Peluncur Ubuntu disimpan di GitHub. Jika GitHub terlalu teknis untuk Anda, Anda juga dapat hanya mengirim e-mail ke android-dev@robinj.be. Hanya pastikan itu dalam bahasa Inggris atau Belanda. Mohon berikan informasi sebanyak-banyaknya (yang relevan) mungkin.</string>
-=======
   <string name="contribute_translate_description">Ubuntu Launcher tersedia dalam beberapa bahasa. Hal ini karena relawan memberikan proyek dengan terjemahannya. Jika Peluncur Ubuntu belum diterjemahkan ke dalam bahasa Anda dan Anda mengerti bahasa Inggris (dan Anda memiliki pengetahuan yang cukup tentang Ubuntu untuk memahami beberapa istilah yang terkait dengan Unity), kemudian membantu dengan terjemahan adalah cara yang baik untuk membantu.
 \nTranslasi untuk Ubuntu Launcher dikelola di Transifex. Yang perlu Anda lakukan adalah permintaan untuk bergabung dengan tim penerjemah. Setelah itu saya akan menyetujui permintaan Anda dan Anda siap untu menterjemahkan.</string>
   <string name="contribute_translate_go">Pergi ke Transifex</string>
   <string name="contribute_bugs_title">Laporkan bug</string>
   <string name="contribute_bugs_description">Jika ada bug di Peluncur Ubuntu, itu tidak berarti bahwa saya menyadari keberadaannya. Pengembang umumnya cukup buruk untuk menguji aplikasi mereka sendiri karena mereka hanya akan menggunakannya dengan cara mereka dimaksudkan untuk digunakan. Beberapa masalah juga hanya ada dalam keadaan khusus tertentu (misalnya perangkat tertentu yang menjalankan versi tertentu dari Android dengan beberapa opsi tambahan diaktifkan). Jadi jika Anda menemukan bug di Peluncur Ubuntu (atau jika Anda memiliki permintaan fitur) Anda dapat membantu dengan melaporkannya.
 \ nLaporan bug untuk Peluncur Ubuntu disimpan di GitHub. Jika GitHub terlalu teknis untuk Anda, Anda juga dapat hanya mengirim surat elektronik ke android-dev@robinj.be. Hanya pastikan itu dalam bahasa Inggris atau Belanda. Mohon berikan informasi sebanyak-banyaknya (yang relevan) mungkin.</string>
->>>>>>> 4b3c7f1306f1c5a6f2023cc316f0552a4315b8fd
   <string name="contribute_bugs_go">Pergi ke GitHub</string>
   <string name="contribute_donate_title">Donasi</string>
   <string name="contribute_donate_description">Jika Anda ingin, Anda juga dapat membuat sumbangan moneter untuk pengembang. Sumbangan ditangani melalui PayPal. Anda akan dapat memilih jumlah uang yang ingin Anda donasikan.
