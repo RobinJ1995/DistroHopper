@@ -7,6 +7,9 @@
   <string name="title_activity_preferences">Beállítások</string>
   <string name="title_activity_about">Névjegy</string>
   <string name="title_activity_lens_preferences">Objektív</string>
+  <string name="pinned">rögzítve lett az indítóban</string>
+  <string name="unpinned">rögzítése meg lett szüntetve az indítóban</string>
+  <string name="notpinned">nem rögzített</string>
   <string name="developed_by">Robin Jacobs fejlesztése</string>
   <string name="honourable_mentions">Speciális köszönet</string>
   <string name="button_back">Vissza</string>
@@ -15,15 +18,25 @@
   <string name="title_preferences">Beállítások</string>
   <string name="pref_header_general">Általános</string>
   <string name="pref_header_unity">Oldalsáv</string>
-  <string name="pref_header_launcher">Indítóikon</string>
+  <string name="pref_header_launcher">Indító</string>
   <string name="pref_header_dash">Vezérlőpult</string>
   <string name="pref_header_panel">Panel</string>
   <string name="pref_header_advanced">Fejlett</string>
+  <string name="category_colourcalc">Domináns szín számítás</string>
+  <string name="option_launchericon_width">Szélesség</string>
+  <string name="hint_launchericon_width">Milyen széles az Indító és az ikonok, amelyeknek ezen belül kell lennie. A beállítása ennek 48dip - 120dip értékig állítható, a gyári érték (jobbra középen) 84dip.</string>
+  <string name="option_launchericon_opacity">Ikon hátterének homályossága</string>
+  <string name="hint_launchericon_opacity">Mennyire legyenek homályosak az ikonok háttér színei az Indítón.</string>
+  <string name="hint_launcherservice_enabled">Ha lapozzunk az alsó felén / bal szélén a képernyőn, az indító jelenik meg, amely lehetővé teszi, hogy indítson alkalmazásokat, amelyek már rögzítve vannak az indítóban, anélkül, hogy a kezdőképernyőre kellene ugrani\n(KISÉRLETI)</string>
+  <string name="option_launcher_running_show">Futó alkalmazások mutatása</string>
   <string name="option_panel_show">Mutat</string>
   <string name="hint_panel_show">A felső panel a képernyő felső részén látszódjon vagy sem.</string>
   <string name="option_panel_opacity">Homályosság</string>
   <string name="option_unitybackground_dynamic">Dinamikus háttérszín</string>
+  <string name="option_unitybackground_colour">Háttérszín</string>
   <string name="option_unitybackground_opacity">Háttér homályossága</string>
+  <string name="option_unitywallpaper_blur">Háttérkép elmosódási módszer</string>
+  <string name="option_launcher_edge">Képernyő szélére</string>
   <string-array name="keys_unitywallpaper_blur">
     <item>Ne legyen homályos</item>
     <item>Árnyékol</item>
@@ -35,12 +48,19 @@
   </string-array>
   <string name="option_wallpaper">Háttér</string>
   <string name="hint_wallpaper">Háttérkép megváltoztatása</string>
+  <string name="option_colourcalc_hsv">HSV használata</string>
   <string name="option_dashsearch_full">Részletes keresés</string>
+  <string name="option_dash_ready_show">Vezérlőpult nyitása alapértelmezetten</string>
+  <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
+  <string name="hm_todddavies_name">Todd Davies</string>
+  <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
   <string name="translators_title">Fordítók</string>
   <string name="title_activity_contribute">Hogyan tudok közreműködő lenni?</string>
   <string name="contribute_translate_title">Fordítás</string>
+  <string name="contribute_translate_description">Ubuntu Launcher számos nyelven elérhető. Ez azért van, mert önkéntesek segítik a projekt fordítását. Ha az Ubuntu Launcher-t még nem fordították le a saját nyelvén, és ért Angolul (és megfelelő ismeretekkel rendelkeznek Ubuntu területein, megért néhány az Unity-vel kapcsolatos kifejezést), valamint segít a fordításban, egy jó módja annak, hogy segítsen az Ön nyelvén is elérhetővé tenni ezt a projektet. \n        \nAz Ubuntu Launcher fordításait hivatalosan a Transifex oldala kezeli. Mindössze annyit kell tennie, hogy csatlakozási kérelemmel fordul a fordító csapatunkhoz az oldalon. Utána már jóváhagyjuk a kérését, és már lehet is fordítani.</string>
   <string name="contribute_translate_go">Lépj be a Transifex oldalára</string>
   <string name="contribute_bugs_title">Hibák jelentése</string>
+  <string name="contribute_bugs_description">Ha talál egy hibát az Ubuntu Launcher-ben, ez nem feltétlenül jelenti azt, hogy tisztában vagyok a létezéséről. A fejlesztők számára általában meglehetősen rossz, hogy a saját alkalmazásaikat maguk próbálják ki, mert csak azokat a funkciókat használják, amelyeket Ők maguk kívánnak felhasználni. Néhány probléma is csak bizonyos különleges körülmények között léteznek (például egy adott készüléken futó, adott változata az Android-nak, talán kevesebb extra lehetőséget engedélyezz csak). Tehát, ha hibát talál az Ubuntu Launcher-ben (vagy ha van egy új funkció igénye), lehet segíteni, annak bejelentésével.\n        \nA hibajelentések tárolását és nyilvántartását az Ubuntu Launcher számára a GitHub biztosítja. Ha GitHub túl bonyolult számára, akkor elegendő csak egy e-mail írása is az android-dev@robinj.be címemre. Kérjük Angol vagy Holland nyelven írjon levelet számunkra. Kérjük, adjon meg annyi (megfelelő) információt amennyi csak lehetséges az adott problémáról, kérésről.</string>
   <string name="contribute_bugs_go">Lépj be a GitHub oldalára</string>
   <string name="contribute_donate_title">Adományozás</string>
   <string name="contribute_donate_go">Adományozás</string>

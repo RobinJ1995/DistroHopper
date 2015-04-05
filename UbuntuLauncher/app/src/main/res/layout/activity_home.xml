@@ -19,11 +19,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/wpWallpaper"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop" />
+
+        <include layout="@layout/activity_home_widgets"/>
 
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="25dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
@@ -36,7 +38,7 @@
 
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="28dp"
             android:layout_below="@+id/llStatusBar"
             android:layout_alignParentLeft="true"
@@ -44,6 +46,17 @@
             android:layout_alignParentBottom="false"
             android:background="@drawable/panel_background"
             android:id="@+id/llPanel">
+
+            <TextView
+                android:id="@+id/tvPanelBfb"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:textSize="16dp"
+                android:gravity="center"
+                android:layout_marginLeft="8dp"
+                android:textAppearance="@style/textshadow_2px_black"
+                android:onClick="lalBfb_clicked" />
 
             <ImageButton
                 android:layout_width="84dp"
@@ -93,7 +106,6 @@
                 <be.robinj.ubuntu.unity.launcher.AppLauncher
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    custom:icon="@drawable/launcher_bfb"
                     custom:special="true"
                     android:onClick="lalBfb_clicked"
                     android:id="@+id/lalBfb"
@@ -109,7 +121,7 @@
 
                 <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="match_parent"
                     android:id="@+id/scrLauncherAppsContainer"
                     android:scrollbars="none"
                     android:layout_weight="1"
@@ -118,7 +130,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:id="@+id/llLauncherAppsContainer">
 
                         <LinearLayout
                             android:orientation="vertical"
@@ -138,6 +151,16 @@
 
                     </LinearLayout>
                 </ScrollView>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="none"
+                    android:layout_weight="1"
+                    android:fillViewport="false"
+                    android:id="@+id/scrLauncherAppsContainerHorizontal"
+                    android:visibility="gone">
+                </HorizontalScrollView>
 
                 <be.robinj.ubuntu.unity.launcher.AppLauncher
                     android:layout_width="wrap_content"
@@ -161,7 +184,7 @@
 
             <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@color/transparent90"
@@ -170,10 +193,9 @@
 
                 <LinearLayout
                     android:orientation="vertical"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:padding="4dp"
                     android:focusable="true"
                     android:focusableInTouchMode="true">
 
@@ -216,7 +238,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/imageView"
+                            android:id="@+id/imgDashBackgroundGradient"
                             android:layout_alignParentTop="true"
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentRight="true"
@@ -238,6 +260,7 @@
                                 android:layout_weight="2">
 
                                 <TextView
+                                    android:id="@+id/tvDashHomeTitle"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/dash_lens_apps_title"
@@ -247,8 +270,8 @@
 
                                 <!--<LinearLayout
                                     android:orientation="horizontal"
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
                                     android:id="@+id/llDashHomeApps">
                                 </LinearLayout>-->
 
@@ -287,8 +310,8 @@
 
                                 <!--<LinearLayout
                                     android:orientation="horizontal"
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
                                     android:id="@+id/llDashHomeApps">
                                 </LinearLayout>-->
 
@@ -351,8 +374,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <include layout="@layout/activity_home_widgets"/>
 
     </RelativeLayout>
 

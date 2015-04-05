@@ -3,8 +3,10 @@
   <string name="action_settings">Einstellungen</string>
   <string name="dash_search_hint">Installierte Apps durchsuchen</string>
   <string name="dash_lens_apps_title">Anwendungen</string>
+  <string name="dash_lens_other_title">Andere</string>
   <string name="title_activity_preferences">Einstellungen</string>
   <string name="title_activity_about">Über</string>
+  <string name="title_activity_lens_preferences">Lenses</string>
   <string name="pinned">wurde an das Startmenü angeheftet</string>
   <string name="unpinned">wurde vom Startmenü entfernt</string>
   <string name="notpinned">ist angepinnt</string>
@@ -12,6 +14,7 @@
   <string name="honourable_mentions">Spezielle Erwähnungen</string>
   <string name="button_back">Zurück</string>
   <string name="button_about">Über</string>
+  <string name="button_contribute">Beitragen</string>
   <string name="title_preferences">Einstellungen</string>
   <string name="pref_header_general">Allgemein</string>
   <string name="pref_header_unity">Unity</string>
@@ -26,7 +29,9 @@
   <string name="hint_launchericon_opacity">Deckkraft der Hintergrundfarbe der Icons im Startmenü.</string>
   <string name="option_launcherservice_enabled">Das Startmenü in anderen Apps erreichbar machen</string>
   <string name="hint_launcherservice_enabled">Wenn du von der unteren linken Seite wischt, wird die Taskleiste erscheinen und dir erlauben die angehefteten Apps, ohne zum Homemenü wechseln zu müssen, zu starten.(EXPERIMENTELL)</string>
-  <string name="option_panel_show">Zeige</string>
+  <string name="option_launcher_running_show">Zeige laufende Anwendungen</string>
+  <string name="hint_launcher_running_show">Der Launcher zeigt die derzeit laufenden Anwendungen. Dies wird durch einen kleinen Pfeil an der linken Seite des Icons angezeigt. Laufende Anwendungen dich nicht bereits angeheftet wurden, werden trotzdem gezeigt.</string>
+  <string name="option_panel_show">Zeige Leiste</string>
   <string name="hint_panel_show">Soll die Leiste am oberen Bildschirmrand gezeigt werden oder nicht.</string>
   <string name="option_panel_opacity">Deckkraft</string>
   <string name="hint_panel_opacity">Deckkraft der Taskleiste.</string>
@@ -37,6 +42,14 @@
   <string name="message_unitybackground_colour">Verwende die Regler um eine Farbe zu wählen.</string>
   <string name="option_unitybackground_opacity">Hintergrunddeckkraft</string>
   <string name="hint_unitybackground_opacity">Deckkraft der Hintergrundfarbe von transparenten Unity-Komponenten.</string>
+  <string name="option_unitywallpaper_blur">Unschärfe-Methode für Wallpaper</string>
+  <string name="hint_unitywallpaper_blur">Die Methode, welche für den Unschärfe-Effekt genutzt werden soll, wenn das Dash geöffnet ist. Schlägt "Hoch- &amp; Herunterskalieren" fehl, wird "Verdunkeln" als Fallback-Methode genutzt.</string>
+  <string name="option_launcher_edge">Bildschirmkante</string>
+  <string name="hint_launcher_edge">Auf welcher Seite des Bildschirms der Launcher angezeigt werden.</string>
+  <string-array name="keys_launcher_edge">
+    <item>Links (Standard)</item>
+    <item>Rechts</item>
+  </string-array>
   <string name="option_wallpaper">Hintergrundbild</string>
   <string name="hint_wallpaper">Hintergrundbild ändern</string>
   <string name="option_colourcalc_advanced">Mehr Samples nutzen</string>
@@ -45,6 +58,14 @@
   <string name="hint_colourcalc_hsv">Die Nutzung von HSV(Farbton, Sättigung, Wert) anstatt RGB(Rot, Grün, Blau) wird dynamischere Farben liefern, aber die Berechnungen sind komplizierter und können längere Ladezeiten für langsamere Geräte bedeuten.</string>
   <string name="option_dashsearch_full">Erweiterte Suche</string>
   <string name="hint_dashsearch_full">Diese Option wird bessere Resultate in der Dash-Suche liefern, ist aber auch auf langsamen Geräten, oder bei vielen Apps langsamer, sodass du es dann deaktivieren solltest.</string>
+  <string name="option_dashsearch_lenses">Nutze \"Lenses\"</string>
+  <string name="hint_dashsearch_lenses">Lenses bieten zusätzliche Suchfunktionalitäten. Durch die Nutzung von Lenses können verschiedene Suchdienste wie DuckDuckGo, Stack Overflow, oder sogar eine Suche für die lokalen Dateien, direkt vom Dash genutzt werden.</string>
+  <string name="option_dashsearch_lenses_maxresults">Suchergebnisse pro Lens</string>
+  <string name="hint_dashsearch_lenses_maxresults">Die maximale Anzahl an Suchergebnissen, die in jeder Lens gezeigt werden.</string>
+  <string name="option_dash_ready_show">Öffne standardmäßig den Dash</string>
+  <string name="hint_dash_ready_show">Der Dash wird automatisch geöffnet, sobald die Apps geladen wurden.</string>
+  <string name="option_lenses">Lenses</string>
+  <string name="hint_lenses">Wähle welche Lenses genutzt werden sollen und in welcher Reihenfolge die Suchergebnisse im Dash angezeigt werden sollen. Wenn im Dash gesucht wird, wird die Suchanfrage gleichzeitig an alle aktivierten Lenses gesandt und die Suchergebnisse werden angezeigt.</string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">*Tester (Wenn er es nicht zum Absturz bringen konnte ist es für den Rest der Welt benutzbar).\n
 *Hilfe bei der Farbberechnungsfunktion.</string>
@@ -58,4 +79,20 @@ https://github.com/Todd-Davies/ProgressWheel/</string>
   <string name="hm_commonsguy_why">*Ich habe diese Farbmixer-Komponente in den Einstellungen genutzt.\n
 https://github.com/commonsguy/cwac-colormixer</string>
   <string name="translators_title">Übersetzer</string>
+  <string name="title_activity_contribute">Wie kann ich beitragen?</string>
+  <string name="contribute_intro">Viel Zeit und harte Arbeit wurde in die Entwicklung dieser App gesteckt. Wenn du helfen möchtest gibt es hierfür viele Möglichkeiten.</string>
+  <string name="contribute_translate_title">Übersetzung</string>
+  <string name="contribute_translate_description">Ubuntu Launcher ist in diversen Sprachen verfügbar. Dies ist möglich, weil viele freiwillige Helfer dem Projekt Übersetzungen zur Verfügung stellen. Wenn Ubuntu Launcher noch nicht in deine Sprache übersetzt wurde und du der englischen Sprache mächtig bist (und ein Verständnis für Ubuntu-eigene Begriffe und Ideen mitbringst), dann ist deine Hilfe bei der Übesetzung herzlich willkommen.
+\nÜbersetzungen für Ubuntu Launcher werden über Transifex verwaltet. Alles was du tun musst ist die Mitgliedschaft im Übersetzungsteam für Ubuntu Launcher anzufragen. Anschließend werde ich deiner Mitgliedschaft zustimmen und du kannst direkt loslegen.</string>
+  <string name="contribute_translate_go">Gehe zu Transifex</string>
+  <string name="contribute_bugs_title">Melde Bugs</string>
+  <string name="contribute_bugs_description">Sofern Bugs (Fehler) in Ubuntu Launcher existieren, bin ich mir dessen nicht unbedingt bewusst. Entwickler sind zumeist nicht in der Lage ihre Applikationen ausreichend gut zu prüfen weil sie sie nur in der Art und Weise nutzen, für die sie entwickelt wurden. Manche Probleme treten aber nur in sehr bestimmten Umständen auf (zum Beispiel ein sehr spezielles Gerät auf dem eine spezielle Version von Android mit zusätzlichen oder fehlenden Funktionen und Optionen). Wenn dir also Bugs in Ubuntu Launcher auffallen (oder auch wenn du Feature-Wünsche hast) kannst du damit helfen, uns dies zu melden.
+\nBugmeldungen werden für Ubuntu Launcher auf GitHub gesammelt. Wenn dir GitHub zu technisch ist, kannst du den Fehler auch per Email an android-dev@robinj.be mitteilen. Bitte melde die Bugs in Englisch oder Holländisch und stelle so viel Information wie möglich zur Verfügung.</string>
+  <string name="contribute_bugs_go">Gehe zu GitHub</string>
+  <string name="contribute_donate_title">Spende</string>
+  <string name="contribute_donate_description">Wenn du willst, kannst du auch eine finanzielle Spende an den Entwickler senden. Spenden werden per PayPal übermittelt. Du kannst selbst entscheiden, wieviel zu spenden möchtest.
+\nBeachte: Es handelt sich um eine Spende. Ich verkaufe nichts und du kaufst damit nichts. Spenden sind sehr willkommen aber ich stelle hierfür keine zusätzlichen Features zur Verfügung. Alle Features dieser Applikation sind frei (im Sinne für ohne Kosten)
+\n
+\nPayPal nimmt $0,30 + 2,2/%% als Gebühren - eine Spende kleiner $0,30 geht also vollständig an PayPal und nichts an den Entwickler. Wenn du spendest, wäre es gut wenn du mehr als diesen Betrag sendest - es sei denn du möchtest aus irgendeinem Grund eine spende an PayPal selbst senden.</string>
+  <string name="contribute_donate_go">Spenden</string>
 </resources>

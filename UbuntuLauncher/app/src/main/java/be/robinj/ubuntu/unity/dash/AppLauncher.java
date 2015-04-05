@@ -1,10 +1,13 @@
 package be.robinj.ubuntu.unity.dash;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.TextView;
 
 import be.robinj.ubuntu.App;
+import be.robinj.ubuntu.HomeActivity;
 import be.robinj.ubuntu.R;
 import be.robinj.ubuntu.unity.AppIcon;
 
