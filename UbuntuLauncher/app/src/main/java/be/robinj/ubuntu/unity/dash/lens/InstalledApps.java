@@ -10,6 +10,7 @@ import java.util.List;
 
 import be.robinj.ubuntu.App;
 import be.robinj.ubuntu.AppManager;
+import be.robinj.ubuntu.ExceptionHandler;
 import be.robinj.ubuntu.R;
 
 /**
@@ -65,8 +66,16 @@ public class InstalledApps extends Lens
 	@Override
 	public void onLongClick (String url, Object obj)
 	{
-		App app = (App) obj;
+		try
+		{
+			App app = (App) obj;
 
-		this.apps.pin (app);
+			this.apps.pin (app);
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (this.context, ex);
+			exh.show ();
+		}
 	}
 }

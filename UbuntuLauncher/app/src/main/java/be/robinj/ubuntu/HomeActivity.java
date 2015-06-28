@@ -2,9 +2,6 @@ package be.robinj.ubuntu;
 
 import android.animation.LayoutTransition;
 import android.app.Activity;
-import android.appwidget.AppWidgetHostView;
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -38,18 +34,11 @@ import com.google.analytics.tracking.android.EasyTracker;
 import java.util.ArrayList;
 import java.util.List;
 
-import be.robinj.ubuntu.theme.Abstract;
+import be.robinj.ubuntu.broadcast.PackageManagerBroadcastReceiver;
 import be.robinj.ubuntu.theme.Default;
-import be.robinj.ubuntu.theme.Elementary;
-import be.robinj.ubuntu.theme.Location;
 import be.robinj.ubuntu.theme.Theme;
 import be.robinj.ubuntu.thirdparty.ProgressWheel;
-import be.robinj.ubuntu.unity.AppIcon;
 import be.robinj.ubuntu.unity.Wallpaper;
-import be.robinj.ubuntu.widgets.WidgetHost;
-import be.robinj.ubuntu.widgets.WidgetHostView;
-import be.robinj.ubuntu.widgets.WidgetHostView_LongClickListener;
-import be.robinj.ubuntu.widgets.WidgetHost_LongClickListener;
 import be.robinj.ubuntu.unity.dash.SearchTextWatcher;
 import be.robinj.ubuntu.unity.dash.lens.LensManager;
 import be.robinj.ubuntu.unity.launcher.AppLauncher;
@@ -73,6 +62,8 @@ public class HomeActivity extends Activity
 	private boolean openDashWhenReady = false;
 
 	public static Theme theme = new Default ();
+
+	private PackageManagerBroadcastReceiver broadcastPackageManager;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
@@ -154,7 +145,7 @@ public class HomeActivity extends Activity
 			this.asyncInitWallpaper = new AsyncInitWallpaper (this);
 			this.asyncInitWallpaper.execute (wpWallpaper);
 
-			this.asyncLoadApps = new AsyncLoadApps (this, lalSpinner, lalBfb, gvDashHomeApps, llLauncherPinnedApps);
+			this.asyncLoadApps = new AsyncLoadApps (this, lalSpinner, lalBfb, gvDashHomeApps);
 			this.asyncLoadApps.execute (this.getApplicationContext ());
 
 			/*
@@ -561,6 +552,17 @@ public class HomeActivity extends Activity
 
 			if (this.openDashWhenReady)
 				this.openDash ();
+
+			// Broadcast receiver //
+			this.broadcastPackageManager = new PackageManagerBroadcastReceiver (this);
+
+			IntentFilter ifPackageManager = new IntentFilter ();
+			ifPackageManager.addAction ("android.intent.action.PACKAGE_INSTALL");
+			ifPackageManager.addAction ("android.intent.action.PACKAGE_ADDED");
+			ifPackageManager.addAction ("android.intent.action.PACKAGE_REMOVED");
+			ifPackageManager.addDataScheme ("package");
+
+			this.registerReceiver (this.broadcastPackageManager, ifPackageManager);
 		}
 		catch (Exception ex)
 		{
@@ -648,6 +650,19 @@ public class HomeActivity extends Activity
 
 		if (prefs.getBoolean ("launcher_running_show", true))
 			this.apps.addRunningApps (this.chameleonicBgColour);
+	}
+
+	public void installedAppsChanged ()
+	{
+		/*
+		 * Replacing the existing instance of AppManager could result in problems.
+		 * Need to figure out a (good) way to just replace the contents of the
+		 * existing AppManager and have all the other components be updated automatically.
+		 *
+		 * Tried just restarting the app, but on relatively fast devices this would result
+		 * in the broadcast being received over and over again and causing an infinite loop.
+		 * It was kind of a dirty hack anyway, so that's alright.
+		 */
 	}
 
 	//# Event handlers #//

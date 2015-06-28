@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 
+import com.snappydb.DB;
+import com.snappydb.DBFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +32,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 	private HomeActivity parent;
 	private Context context;
 
-	public AsyncLoadApps (HomeActivity parent, SpinnerAppLauncher lalSpinner, be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb, GridView gvDashHomeApps, LinearLayout llLauncherPinnedApps)
+	public AsyncLoadApps (HomeActivity parent, SpinnerAppLauncher lalSpinner, be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb, GridView gvDashHomeApps)
 	{
 		this.parent = parent;
 		this.lalSpinner = lalSpinner;
@@ -96,7 +99,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 		if (this.isCancelled ())
 			return null;
 
-		SharedPreferences pinned = this.context.getSharedPreferences ("pinned", Context.MODE_PRIVATE);
+		/*SharedPreferences pinned = this.context.getSharedPreferences ("pinned", Context.MODE_PRIVATE);
 
 		int i = 0;
 		String packageAndActivityName;
@@ -114,6 +117,24 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 			}
 
 			i++;
+		}*/
+		try
+		{
+			DB db = DBFactory.open (this.context);
+			App[] apps = db.getObjectArray ("launcher_pinnedApps", App.class);
+
+			for (App app : apps)
+			{
+				app.fixAfterUnserialize (appManager);
+				appManager.pin (app, false, false, false);
+			}
+
+			db.close ();
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (this.context, ex);
+			exh.show ();
 		}
 
 		return new Object[] { appManager, appLaunchers };

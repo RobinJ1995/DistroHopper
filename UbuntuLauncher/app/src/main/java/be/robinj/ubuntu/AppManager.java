@@ -12,6 +12,10 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.snappydb.DB;
+import com.snappydb.DBFactory;
+import com.snappydb.SnappydbException;
+
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -139,7 +143,7 @@ public class AppManager implements Iterable<App>
 		List<App> running = new ArrayList<App> ();
 
 		ActivityManager am = (ActivityManager) this.context.getSystemService (Context.ACTIVITY_SERVICE);
-		List<ActivityManager.RunningTaskInfo> runningTasks =  am.getRunningTasks (16);
+		List<ActivityManager.RunningTaskInfo> runningTasks = am.getRunningTasks (16);
 
 		for (ActivityManager.RunningTaskInfo task : runningTasks)
 		{
@@ -186,12 +190,12 @@ public class AppManager implements Iterable<App>
 		this.pinned.add (newIndex, app);
 	}
 
-	public boolean pin (App app)
+	public boolean pin (App app) throws SnappydbException
 	{
 		return this.pin (app, true, true, true);
 	}
 
-	public boolean pin (App app, boolean save, boolean showToast, boolean addView)
+	public boolean pin (App app, boolean save, boolean showToast, boolean addView) throws SnappydbException
 	{
 		if (! this.isPinned (app))
 		{
@@ -248,8 +252,9 @@ public class AppManager implements Iterable<App>
 		}
 	}
 
-	public void savePinnedApps ()
+	public void savePinnedApps () throws SnappydbException
 	{
+		/*
 		SharedPreferences prefs = this.context.getSharedPreferences ("pinned", Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = prefs.edit ();
 
@@ -268,7 +273,11 @@ public class AppManager implements Iterable<App>
 		if (Build.VERSION.SDK_INT >= 9)
 			editor.apply ();
 		else
-			editor.commit ();
+			editor.commit ();*/
+
+		DB db = DBFactory.open (this.context);
+		db.put ("launcher_pinnedApps", this.pinned.toArray ());
+		db.close ();
 
 		this.parent.pinnedAppsChanged ();
 	}
@@ -338,12 +347,12 @@ public class AppManager implements Iterable<App>
 		Collections.sort (this.apps, comparator);
 	}
 
-	public boolean unpin (int index)
+	public boolean unpin (int index) throws SnappydbException
 	{
 		return this.unpin (this.pinned.get (index));
 	}
 
-	public boolean unpin (App app)
+	public boolean unpin (App app) throws SnappydbException
 	{
 		boolean modified = this.pinned.remove (app);
 

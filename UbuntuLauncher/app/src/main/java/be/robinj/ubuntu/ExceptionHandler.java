@@ -3,6 +3,7 @@ package be.robinj.ubuntu;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.text.Html;
+import android.util.Log;
 
 /**
  * Created by robin on 8/22/14.
@@ -32,20 +33,39 @@ public class ExceptionHandler
 			.append (Html.fromHtml ("<a href=\"mailto:android-dev@robinj.be\">android-dev@robinj.be</a>"))
 			.append (" with the contents of this dialog so I can get this problem fixed.\n\n")
 			.append ("Type: ")
-			.append (ex.getClass ().getSimpleName ())
+			.append (this.ex.getClass ().getSimpleName ())
 			.append ("\n")
 			.append ("Message: ")
-			.append (ex.getMessage ())
+			.append (this.ex.getMessage ())
 			.append ("\n\n")
 			.append ("Stack trace:\n")
 			.append (stackTrace.toString ());
 
-		AlertDialog.Builder dlg = new AlertDialog.Builder (this.context);
-		dlg.setTitle ("(╯°□°）╯︵ ┻━┻");
-		dlg.setMessage (message.toString ());
-		dlg.setCancelable (true);
-		dlg.setNeutralButton ("OK", null);
+		if (this.context == null)
+		{
+			this.logException (stackTrace.toString ());
+		}
+		else
+		{
+			try
+			{
+				AlertDialog.Builder dlg = new AlertDialog.Builder (this.context);
+				dlg.setTitle ("(╯°□°）╯︵ ┻━┻");
+				dlg.setMessage (message.toString ());
+				dlg.setCancelable (true);
+				dlg.setNeutralButton ("OK", null);
 
-		dlg.show ();
+				dlg.show ();
+			}
+			catch (Exception ex2)
+			{
+				this.logException (stackTrace.toString ());
+			}
+		}
+	}
+
+	private void logException (String stackTrace)
+	{
+		Log.e (this.getClass ().getSimpleName (), this.ex.getClass ().getName () + "\n\n" + this.ex.getMessage () + "\n\n" + stackTrace.toString ());
 	}
 }

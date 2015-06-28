@@ -74,8 +74,6 @@ public class PreferencesActivity extends PreferenceActivity
 		super.onCreate (savedInstanceState);
 
 		this.setupActionBar ();
-
-
 	}
 
 	/**

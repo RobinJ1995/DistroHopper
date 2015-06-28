@@ -8,21 +8,23 @@ import android.content.pm.ResolveInfo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 import be.robinj.ubuntu.unity.AppIcon;
 
 /**
  * Created by robin on 8/20/14.
  */
-public class App implements Parcelable
+public class App implements Serializable, Parcelable
 {
 	private String label;
-	private AppIcon icon;
+	private transient AppIcon icon;
 	private String description;
 	private String packageName;
 	private String activityName;
 
-	private Context context;
-	private AppManager appManager;
+	private transient Context context;
+	private transient AppManager appManager;
 
 	public static App fromResolveInfo (Context context, AppManager appManager, ResolveInfo resInf)
 	{
@@ -46,6 +48,10 @@ public class App implements Parcelable
 		app.setIcon (icon);
 
 		return app;
+	}
+
+	public App () // This constructor should never be invoked manually. That's SnappyDB's job.
+	{
 	}
 
 	private App (Context context)
@@ -76,6 +82,19 @@ public class App implements Parcelable
 		intent.setComponent (compName);
 
 		this.context.startActivity (intent);
+	}
+
+	@Override
+	public boolean equals (Object obj)
+	{
+		if (! (obj instanceof App))
+			return false;
+		else if (obj == this)
+			return true;
+
+		App app = (App) obj;
+
+		return (this.getPackageName ().equals (app.getPackageName ()) && this.getActivityName ().equals (app.getActivityName ()));
 	}
 
 	//# Getters & Setters #//
@@ -134,7 +153,7 @@ public class App implements Parcelable
 		return appManager;
 	}
 
-	//# Parcelable #//
+	//# Parcelable, Serializable #//
 	@Override
 	public int describeContents ()
 	{
@@ -174,5 +193,12 @@ public class App implements Parcelable
 		ResolveInfo resInf = pacMan.resolveActivity (intent, 0);
 
 		this.icon = new AppIcon (resInf.loadIcon (pacMan));
+	}
+
+	public void fixAfterUnserialize (AppManager appManager)
+	{
+		this.appManager = appManager;
+
+		this.fixAfterUnpackingFromParcel (appManager.getContext ());
 	}
 }

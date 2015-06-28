@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "be.robinj.ubuntu"
-        minSdkVersion 8
+        minSdkVersion 9
         targetSdkVersion 19
         versionCode 69
         versionName "0.5.12"
@@ -27,4 +27,6 @@ dependencies {
     compile project(':colormixer')
     compile 'com.android.support:support-v4:20.0.0'
     compile 'asia.ivity.android:drag-sort-listview:1.0'
+    compile 'com.snappydb:snappydb-lib:0.5.2'
+    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
 }
