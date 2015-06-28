@@ -62,8 +62,8 @@ public class HomeActivity extends Activity
 {
 	private LensManager lenses;
 	private AppManager apps;
-	private AppWidgetManager widgetManager;
-	private WidgetHost widgetHost;
+	//private AppWidgetManager widgetManager;
+	//private WidgetHost widgetHost;
 
 	private int chameleonicBgColour = Color.argb (25, 0, 0, 0);
 
@@ -157,10 +157,12 @@ public class HomeActivity extends Activity
 			this.asyncLoadApps = new AsyncLoadApps (this, lalSpinner, lalBfb, gvDashHomeApps, llLauncherPinnedApps);
 			this.asyncLoadApps.execute (this.getApplicationContext ());
 
+			/*
 			this.widgetManager = AppWidgetManager.getInstance (this);
 			this.widgetHost = new WidgetHost (this, this.widgetManager, R.id.vgWidgets);
 
 			vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this.widgetHost));
+			*/
 
 			if (Build.VERSION.SDK_INT >= 11)
 			{
@@ -338,7 +340,7 @@ public class HomeActivity extends Activity
 				this.onCreate (null); // Reload activity //
 
 				//this.overridePendingTransition (R.anim.home_to_preferences_in, R.anim.home_to_preferences_out);
-			}
+			}/*
 			else if (requestCode == 2) // Widget picked //
 			{
 				if (resultCode == RESULT_OK)
@@ -352,7 +354,7 @@ public class HomeActivity extends Activity
 					this.widgetHost.createWidget (data);
 				else
 					this.widgetHost.removeWidget (data);
-			}
+			}*/
 		}
 		catch (Exception ex)
 		{
@@ -395,7 +397,7 @@ public class HomeActivity extends Activity
 
 		try
 		{
-			this.widgetHost.startListening ();
+			//this.widgetHost.startListening ();
 
 			EasyTracker.getInstance (this).activityStart (this);
 		}
@@ -413,7 +415,7 @@ public class HomeActivity extends Activity
 
 		try
 		{
-			this.widgetHost.stopListening ();
+			//this.widgetHost.stopListening ();
 
 			EasyTracker.getInstance (this).activityStop (this);
 		}
