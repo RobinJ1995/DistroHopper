@@ -10,6 +10,10 @@ import be.robinj.ubuntu.R;
  */
 public abstract class Theme
 {
+	public String name;
+	public String description;
+	public int[] res_screenshots;
+
 	// Launcher //
 	public int launcher_location;
 	public int launcher_margin;

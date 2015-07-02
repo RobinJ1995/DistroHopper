@@ -1,10 +1,12 @@
-package be.robinj.ubuntu.unity.dash.lens;
+package be.robinj.ubuntu.preferences;
 
 import android.widget.BaseAdapter;
 
 import com.mobeta.android.dslv.DragSortListView;
 
 import java.util.List;
+
+import be.robinj.ubuntu.unity.dash.lens.Lens;
 
 /**
  * Created by robin on 30/11/14.

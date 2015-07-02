@@ -32,10 +32,14 @@ import android.widget.TextView;
 import com.google.analytics.tracking.android.EasyTracker;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import be.robinj.ubuntu.broadcast.PackageManagerBroadcastReceiver;
+import be.robinj.ubuntu.preferences.PreferencesActivity;
+import be.robinj.ubuntu.theme.Abstract;
 import be.robinj.ubuntu.theme.Default;
+import be.robinj.ubuntu.theme.Elementary;
 import be.robinj.ubuntu.theme.Theme;
 import be.robinj.ubuntu.thirdparty.ProgressWheel;
 import be.robinj.ubuntu.unity.Wallpaper;
@@ -98,6 +102,14 @@ public class HomeActivity extends Activity
 			RelativeLayout vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
 			ListView lvDashHomeLensResults = (ListView) this.findViewById (R.id.lvDashHomeLensResults);
 
+			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+			HashMap<String, Class> themes = new HashMap<String, Class> ();
+			themes.put ("default", Default.class);
+			themes.put ("elementary", Elementary.class);
+
+			Theme theme = (Theme) themes.get (prefs.getString ("theme", "default")).newInstance ();
+			HomeActivity.theme = theme;
+
 			Intent launcherServiceIntent = new Intent (this, LauncherService.class);
 			this.stopService (launcherServiceIntent);
 
@@ -107,8 +119,6 @@ public class HomeActivity extends Activity
 			lalTrash.init ();
 			
 			Resources res = this.getResources ();
-
-			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 			float density = res.getDisplayMetrics ().density;
 
 			if (prefs.getBoolean ("panel_show", true))

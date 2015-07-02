@@ -9,6 +9,14 @@ public class Default extends Theme
 {
 	public Default ()
 	{
+		this.name = "Ubuntu";
+		this.description = "Ubuntu's Unity desktop";
+		this.res_screenshots = new int[]
+		{
+			R.drawable.theme_default_screenshot0,
+			R.drawable.theme_default_screenshot1
+		};
+
 		// Launcher //
 		this.launcher_location = R.integer.theme_default_launcher_location;
 		this.launcher_margin = R.array.theme_default_launcher_margin;

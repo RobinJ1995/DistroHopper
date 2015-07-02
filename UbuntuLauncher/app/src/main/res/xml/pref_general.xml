@@ -6,6 +6,14 @@
         <intent android:action="android.intent.action.SET_WALLPAPER" />
     </Preference>
 
+    <Preference
+        android:title="@string/option_theme"
+        android:summary="@string/hint_theme">
+        <intent
+            android:targetPackage="be.robinj.ubuntu"
+            android:targetClass="be.robinj.ubuntu.preferences.ThemePreferencesActivity" />
+    </Preference>
+
     <!--<CheckBoxPreference
         android:key="example_checkbox"
         android:title="@string/pref_title_social_recommendations"

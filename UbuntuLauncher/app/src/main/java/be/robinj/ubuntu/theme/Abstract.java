@@ -9,6 +9,10 @@ public class Abstract extends Theme
 {
 	public Abstract ()
 	{
+		this.name = "Abstract";
+		this.description = "Ugly experiment...";
+		this.res_screenshots = new int[] {};
+
 		// Launcher //
 		this.launcher_background_dynamic = R.bool.theme_abstract_launcher_background_dynamic;
 		this.launcher_background = R.drawable.theme_abstract_launcher_background;

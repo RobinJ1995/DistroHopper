@@ -7,16 +7,15 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name="be.robinj.ubuntu.Application"
+        android:name=".Application"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="be.robinj.ubuntu.HomeActivity"
+            android:name=".HomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop"
@@ -34,39 +33,47 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="be.robinj.ubuntu.AboutActivity"
+            android:name=".AboutActivity"
             android:label="@string/title_activity_about"
-            android:parentActivityName="be.robinj.ubuntu.PreferencesActivity" >
+            android:parentActivityName=".preferences.PreferencesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="be.robinj.ubuntu.PreferencesActivity" />
+                android:value="be.robinj.ubuntu.preferences.PreferencesActivity" />
         </activity>
         <activity
-            android:name="be.robinj.ubuntu.PreferencesActivity"
+            android:name=".preferences.PreferencesActivity"
             android:label="@string/title_activity_preferences"
-            android:parentActivityName="be.robinj.ubuntu.HomeActivity" >
+            android:parentActivityName=".HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="be.robinj.ubuntu.HomeActivity" />
         </activity>
         <activity
-            android:name="be.robinj.ubuntu.ContributeActivity"
+            android:name=".ContributeActivity"
             android:label="@string/title_activity_contribute"
-            android:parentActivityName="be.robinj.ubuntu.AboutActivity" >
+            android:parentActivityName=".AboutActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="be.robinj.ubuntu.AboutActivity" />
         </activity>
 
-        <service android:name="be.robinj.ubuntu.unity.launcher.service.LauncherService" />
+        <service android:name=".unity.launcher.service.LauncherService" />
 
         <activity
-            android:name=".unity.dash.lens.LensPreferencesActivity"
+            android:name=".preferences.LensPreferencesActivity"
             android:label="@string/title_activity_lens_preferences"
-            android:parentActivityName="be.robinj.ubuntu.PreferencesActivity" >
+            android:parentActivityName=".preferences.PreferencesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="be.robinj.ubuntu.PreferencesActivity" />
+                android:value="be.robinj.ubuntu.preferences.PreferencesActivity" />
+        </activity>
+        <activity
+            android:name=".preferences.ThemePreferencesActivity"
+            android:label="@string/title_activity_theme_preferences"
+            android:parentActivityName=".preferences.PreferencesActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="be.robinj.ubuntu.preferences.PreferencesActivity" />
         </activity>
     </application>
 

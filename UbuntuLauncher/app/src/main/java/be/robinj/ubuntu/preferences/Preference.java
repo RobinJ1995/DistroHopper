@@ -1,4 +1,4 @@
-package be.robinj.ubuntu;
+package be.robinj.ubuntu.preferences;
 
 import android.content.Context;
 

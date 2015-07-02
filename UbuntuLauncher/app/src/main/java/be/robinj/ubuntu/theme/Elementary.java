@@ -9,6 +9,14 @@ public class Elementary extends Theme
 {
 	public Elementary ()
 	{
+		this.name = "elementary OS";
+		this.description = "elementary OS's Patheon desktop";
+		this.res_screenshots = new int[]
+		{
+			R.drawable.theme_elementary_screenshot0,
+			R.drawable.theme_elementary_screenshot1
+		};
+
 		// Launcher //
 		this.launcher_location = R.integer.theme_elementary_launcher_location;
 		this.launcher_margin = R.array.theme_elementary_launcher_margin;

@@ -1,9 +1,11 @@
-package be.robinj.ubuntu.unity.dash.lens;
+package be.robinj.ubuntu.preferences;
 
 import android.view.View;
 import android.widget.CheckBox;
 
 import be.robinj.ubuntu.ExceptionHandler;
+import be.robinj.ubuntu.unity.dash.lens.Lens;
+import be.robinj.ubuntu.unity.dash.lens.LensManager;
 
 /**
  * Created by robin on 29/11/14.

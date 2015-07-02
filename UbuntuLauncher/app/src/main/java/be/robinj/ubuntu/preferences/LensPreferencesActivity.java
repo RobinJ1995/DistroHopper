@@ -1,4 +1,4 @@
-package be.robinj.ubuntu.unity.dash.lens;
+package be.robinj.ubuntu.preferences;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import java.util.List;
 
 import be.robinj.ubuntu.ExceptionHandler;
 import be.robinj.ubuntu.R;
+import be.robinj.ubuntu.unity.dash.lens.Lens;
+import be.robinj.ubuntu.unity.dash.lens.LensManager;
 
 
 public class LensPreferencesActivity extends Activity

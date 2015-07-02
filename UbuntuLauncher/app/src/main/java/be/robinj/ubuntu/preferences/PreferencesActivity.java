@@ -1,4 +1,4 @@
-package be.robinj.ubuntu;
+package be.robinj.ubuntu.preferences;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -15,6 +15,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.List;
+
+import be.robinj.ubuntu.AboutActivity;
+import be.robinj.ubuntu.ContributeActivity;
+import be.robinj.ubuntu.ExceptionHandler;
+import be.robinj.ubuntu.R;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On

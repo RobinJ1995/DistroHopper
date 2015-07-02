@@ -1,4 +1,4 @@
-package be.robinj.ubuntu.unity.dash.lens;
+package be.robinj.ubuntu.preferences;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,6 +12,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import be.robinj.ubuntu.R;
+import be.robinj.ubuntu.unity.dash.lens.Lens;
+import be.robinj.ubuntu.unity.dash.lens.LensManager;
 
 /**
  * Created by robin on 27/11/14.
