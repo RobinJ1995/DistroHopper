@@ -2,8 +2,11 @@ package be.robinj.ubuntu;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
+import android.os.Debug;
+import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -12,6 +15,7 @@ import com.snappydb.DB;
 import com.snappydb.DBFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import be.robinj.ubuntu.thirdparty.ProgressWheel;
@@ -43,90 +47,107 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 	@Override
 	protected Object[] doInBackground (Context... params)
 	{
-		this.context = params[0];
-
-		AppManager appManager = new AppManager (this.parent, this.parent);
+		AppManager appManager = null;
+		List<AppLauncher> appLaunchers = null;
 
 		try
 		{
-			SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
-			String iconPack = prefs.getString ("iconpack", null);
+			this.context = params[0];
 
-			if (iconPack != null)
-				appManager.loadIconPack ("com.numix.icons_circle");
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace ();
-		}
+			appManager = new AppManager (this.parent, this.parent);
+			DB db = DBFactory.open (this.context);
 
-		List<ResolveInfo> resInfs = appManager.queryInstalledApps ();
-		float size = resInfs.size ();
-		this.publishProgress (0F, size);
-
-		if (this.isCancelled ())
-			return null;
-
-		for (int i = 0; i < size; i++)
-		{
-			App app = App.fromResolveInfo (this.context, appManager, resInfs.get (i));
-			if (! "be.robinj.ubuntu".equals (app.getPackageName ())) // Inception //
-				appManager.add (app);
-
-			this.publishProgress ((float) i, size);
-		}
-
-		size = appManager.size (); // Since the app itself is being filtered out to avoid an inception, the size will have changed, too //
-
-		this.publishProgress (360.0F, 360.0F);
-
-		if (this.isCancelled ())
-			return null;
-
-		appManager.sort ();
-
-		//this.publishProgress (0.0F, size);
-
-		List<AppLauncher> appLaunchers = new ArrayList<AppLauncher> ();
-		for (int i = 0; i < size; i++)
-		{
-			App app = appManager.get (i);
-			appLaunchers.add (new be.robinj.ubuntu.unity.dash.AppLauncher (this.context, app));
-
-			//this.publishProgress ((float) i, size); // Looks like it spends more time updating the progress bar than actually looping over and adding the app launchers //
-		}
-
-		if (this.isCancelled ())
-			return null;
-
-		/*SharedPreferences pinned = this.context.getSharedPreferences ("pinned", Context.MODE_PRIVATE);
-
-		int i = 0;
-		String packageAndActivityName;
-		while ((packageAndActivityName = pinned.getString (Integer.toString (i), null)) != null)
-		{
-			if (packageAndActivityName.contains ("\n")) // Transition from the Beta builds where pinned apps were stored by either package name or activity name (which resulted in bugs because some apps share a package/activity name) //
+			try
 			{
-				String packageName = packageAndActivityName.substring (0, packageAndActivityName.indexOf ("\n"));
-				String activityName = packageAndActivityName.substring (packageAndActivityName.indexOf ("\n") + 1);
+				SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
+				String iconPack = prefs.getString ("iconpack", null);
 
-				App app = appManager.findAppByPackageAndActivityName (packageName, activityName);
-
-				if (app != null) // The result of findAppByPackageName () is null if the app is no longer present on the device //
-					appManager.pin (app, false, false, false);
+				if (iconPack != null)
+					appManager.loadIconPack ("com.numix.icons_circle");
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace ();
 			}
 
-			i++;
-		}*/
-		try
-		{
-			DB db = DBFactory.open (this.context);
-			App[] apps = db.getObjectArray ("launcher_pinnedApps", App.class);
+			long tStartRetrievingInstalledApps = System.currentTimeMillis ();
 
-			for (App app : apps)
+			List<ResolveInfo> resInfs = appManager.queryInstalledApps ();
+			int size = resInfs.size ();
+			float fSize = (float) size;
+			this.publishProgress (0F, fSize);
+
+			if (this.isCancelled ())
+				return null;
+
+			PackageManager pacMan = this.context.getPackageManager ();
+
+			for (int i = 0; i < size; i++)
 			{
-				app.fixAfterUnserialize (appManager);
-				appManager.pin (app, false, false, false);
+				App app = App.fromResolveInfo (this.context, pacMan, appManager, resInfs.get (i));
+				if (! "be.robinj.ubuntu".equals (app.getPackageName ())) // Inception //
+					appManager.add (app);
+
+				this.publishProgress ((float) i, fSize);
+			}
+
+			long tDoneRetrievingInstalledApps = System.currentTimeMillis ();
+			float tdRetrievingInstalledApps = (float) (tDoneRetrievingInstalledApps - tStartRetrievingInstalledApps) / 1000F;
+
+			Log.v (this.getClass ().getSimpleName (), "Data about " + size + " installed apps was retrieved from the package manager. Operation took " + tdRetrievingInstalledApps + " seconds.");
+
+			size = appManager.size (); // Since the app itself is being filtered out to avoid an inception, the size will have changed, too //
+
+			this.publishProgress (360.0F, 360.0F);
+
+			if (this.isCancelled ())
+				return null;
+
+			appManager.sort ();
+
+			//this.publishProgress (0.0F, size);
+
+			appLaunchers = new ArrayList<AppLauncher> ();
+			for (int i = 0; i < size; i++)
+			{
+				App app = appManager.get (i);
+				appLaunchers.add (new be.robinj.ubuntu.unity.dash.AppLauncher (this.context, app));
+
+				//this.publishProgress ((float) i, size); // Looks like it spends more time updating the progress bar than actually looping over and adding the app launchers //
+			}
+
+			if (this.isCancelled ())
+				return null;
+
+			/*SharedPreferences pinned = this.context.getSharedPreferences ("pinned", Context.MODE_PRIVATE);
+
+			int i = 0;
+			String packageAndActivityName;
+			while ((packageAndActivityName = pinned.getString (Integer.toString (i), null)) != null)
+			{
+				if (packageAndActivityName.contains ("\n")) // Transition from the Beta builds where pinned apps were stored by either package name or activity name (which resulted in bugs because some apps share a package/activity name) //
+				{
+					String packageName = packageAndActivityName.substring (0, packageAndActivityName.indexOf ("\n"));
+					String activityName = packageAndActivityName.substring (packageAndActivityName.indexOf ("\n") + 1);
+
+					App app = appManager.findAppByPackageAndActivityName (packageName, activityName);
+
+					if (app != null) // The result of findAppByPackageName () is null if the app is no longer present on the device //
+						appManager.pin (app, false, false, false);
+				}
+
+				i++;
+			}*/
+
+			if (db.exists ("launcher_pinnedApps"))
+			{
+				App[] apps = db.getObjectArray ("launcher_pinnedApps", App.class);
+
+				for (App app : apps)
+				{
+					app.fixAfterUnserialize (appManager);
+					appManager.pin (app, false, false, false);
+				}
 			}
 
 			db.close ();

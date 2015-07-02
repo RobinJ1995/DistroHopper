@@ -41,11 +41,9 @@ public class ExceptionHandler
 			.append ("Stack trace:\n")
 			.append (stackTrace.toString ());
 
-		if (this.context == null)
-		{
-			this.logException (stackTrace.toString ());
-		}
-		else
+		logException (stackTrace.toString ());
+
+		if (this.context != null)
 		{
 			try
 			{
@@ -59,7 +57,6 @@ public class ExceptionHandler
 			}
 			catch (Exception ex2)
 			{
-				this.logException (stackTrace.toString ());
 			}
 		}
 	}

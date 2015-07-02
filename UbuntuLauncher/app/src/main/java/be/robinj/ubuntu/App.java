@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.Debug;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -30,6 +31,11 @@ public class App implements Serializable, Parcelable
 	{
 		PackageManager pacMan = context.getPackageManager ();
 
+		return App.fromResolveInfo (context, pacMan, appManager, resInf);
+	}
+
+	public static App fromResolveInfo (Context context, PackageManager pacMan, AppManager appManager, ResolveInfo resInf)
+	{
 		String label = resInf.loadLabel (pacMan).toString ();
 		String packageName = resInf.activityInfo.applicationInfo.packageName;
 		String activityName = resInf.activityInfo.name;
