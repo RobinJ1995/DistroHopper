@@ -3,6 +3,8 @@ package be.robinj.ubuntu.unity.dash.lens;
 import android.view.View;
 import android.widget.CheckBox;
 
+import be.robinj.ubuntu.ExceptionHandler;
+
 /**
  * Created by robin on 29/11/14.
  */
@@ -24,14 +26,22 @@ public class LensPreferencesItemClickListener implements View.OnClickListener //
 	@Override
 	public void onClick (View view)
 	{
-		boolean checked = this.cbEnabled.isChecked ();
+		try
+		{
+			boolean checked = this.cbEnabled.isChecked ();
 
-		if (! (view instanceof CheckBox))
-			this.cbEnabled.setChecked (! checked);
+			if (!(view instanceof CheckBox))
+				this.cbEnabled.setChecked (!checked);
 
-		if (this.cbEnabled.isChecked ())
-			this.lensManager.enableLens (this.lens);
-		else
-			this.lensManager.disableLens (this.lens);
+			if (this.cbEnabled.isChecked ())
+				this.lensManager.enableLens (this.lens);
+			else
+				this.lensManager.disableLens (this.lens);
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (this.lensManager.getContext (), ex);
+			exh.show ();
+		}
 	}
 }

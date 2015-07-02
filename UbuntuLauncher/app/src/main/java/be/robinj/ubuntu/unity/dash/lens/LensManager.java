@@ -7,6 +7,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.snappydb.DB;
+import com.snappydb.DBFactory;
+import com.snappydb.SnappydbException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -33,7 +37,7 @@ public class LensManager
 	private ListView lvDashHomeLensResults;
 	private ProgressWheel pwDashSearchProgress;
 
-	public LensManager (Context context, LinearLayout llDashHomeAppsContainer, LinearLayout llDashHomeLensesContainer, ProgressWheel pwDashSearchProgress, AppManager apps)
+	public LensManager (Context context, LinearLayout llDashHomeAppsContainer, LinearLayout llDashHomeLensesContainer, ProgressWheel pwDashSearchProgress, AppManager apps) throws SnappydbException
 	{
 		this.context = context;
 		this.enabled = new ArrayList<Lens> ();
@@ -44,7 +48,7 @@ public class LensManager
 		this.pwDashSearchProgress = pwDashSearchProgress;
 
 		SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
-		SharedPreferences prefsLenses = this.context.getSharedPreferences ("lenses", Context.MODE_PRIVATE);
+		DB db = DBFactory.open (this.context);
 
 		if (apps != null)
 			context = apps.getContext ();
@@ -64,39 +68,48 @@ public class LensManager
 		defaultLenses.add ("InstalledApps");
 		defaultLenses.add ("LocalFiles");
 
-		int i = 0;
-		String lensName;
-		while ((lensName = prefsLenses.getString (Integer.toString (i), null)) != null)
+		List<String> enabledLenses;
+		if (db.exists ("dash_enabledLenses"))
+		{
+			enabledLenses = db.get ("dash_enabledLenses", ArrayList.class);
+		}
+		else
+		{
+			enabledLenses = new ArrayList<String> ();
+			enabledLenses.addAll (defaultLenses);
+		}
+
+		for (String lensName : enabledLenses)
 		{
 			Lens lens = this.lenses.get (lensName);
 
 			if (lens != null && (! this.isLensEnabled (lens)))
 				this.enabled.add (lens);
-
-			i++;
 		}
+
+		db.close ();
 
 		this.maxResultsPerLens = Integer.valueOf (prefs.getString ("dashsearch_lenses_maxresults", "10"));
 	}
 
-	public void disableLens (Lens lens)
+	public void disableLens (Lens lens) throws SnappydbException
 	{
 		this.disableLens (lens.getClass ().getSimpleName ());
 	}
 
-	public void disableLens (String name)
+	public void disableLens (String name) throws SnappydbException
 	{
 		this.enabled.remove (this.lenses.get (name));
 
 		this.saveEnabledLenses ();
 	}
 
-	public void enableLens (Lens lens)
+	public void enableLens (Lens lens) throws SnappydbException
 	{
 		this.enableLens (lens.getClass ().getSimpleName ());
 	}
 
-	public void enableLens (String name)
+	public void enableLens (String name) throws SnappydbException
 	{
 		if (! this.isLensEnabled (name))
 			this.enabled.add (this.lenses.get (name));
@@ -136,26 +149,16 @@ public class LensManager
 		return this.enabled.contains (lens);
 	}
 
-	public void saveEnabledLenses ()
+	public void saveEnabledLenses () throws SnappydbException
 	{
-		SharedPreferences prefsLenses = this.context.getSharedPreferences ("lenses", Context.MODE_PRIVATE);
-		SharedPreferences.Editor editor = prefsLenses.edit ();
+		DB db = DBFactory.open (this.context);
 
-		int i = 0;
-		while (prefsLenses.getString (Integer.toString (i), null) != null)
-		{
-			editor.remove (Integer.toString (i));
-
-			i++;
-		}
-
+		List<String> enabledLenses = new ArrayList<String> ();
 		for (int j = 0; j < this.enabled.size (); j++)
-			editor.putString (Integer.toString (j), this.enabled.get (j).getClass ().getSimpleName ());
+			enabledLenses.add (this.enabled.get (j).getClass ().getSimpleName ());
 
-		if (Build.VERSION.SDK_INT >= 9)
-			editor.apply ();
-		else
-			editor.commit ();
+		db.put ("dash_enabledLenses", enabledLenses);
+		db.close ();
 	}
 
 	public void showAppsContainer ()

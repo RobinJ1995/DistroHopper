@@ -10,6 +10,7 @@ import com.mobeta.android.dslv.DragSortListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import be.robinj.ubuntu.ExceptionHandler;
 import be.robinj.ubuntu.R;
 
 
@@ -21,26 +22,34 @@ public class LensPreferencesActivity extends Activity
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
-		super.setTheme (R.style.PreferencesTheme);
-		super.onCreate (savedInstanceState);
-		setContentView (R.layout.activity_lens_preferences);
-
-		this.lensManager = new LensManager (this.getApplicationContext (), null, null, null, null);
-
-		this.lenses = new ArrayList<Lens> ();
-
-		for (Lens lens : this.lensManager.getEnabledLenses ())
-			this.lenses.add (lens);
-
-		for (Lens lens : this.lensManager.getAvailableLenses ().values ())
+		try
 		{
-			if (! this.lenses.contains (lens))
-				this.lenses.add (lens);
-		}
+			super.setTheme (R.style.PreferencesTheme);
+			super.onCreate (savedInstanceState);
+			setContentView (R.layout.activity_lens_preferences);
 
-		DragSortListView lvList = (DragSortListView) this.findViewById (R.id.lvList);
-		lvList.setAdapter (new LensPreferencesListViewAdapter (this.getApplicationContext (), this.lensManager, this.lenses));
-		lvList.setDropListener (new LensPreferencesListViewDropListener (lvList, this.lenses));
+			this.lensManager = new LensManager (this.getApplicationContext (), null, null, null, null);
+
+			this.lenses = new ArrayList<Lens> ();
+
+			for (Lens lens : this.lensManager.getEnabledLenses ())
+				this.lenses.add (lens);
+
+			for (Lens lens : this.lensManager.getAvailableLenses ().values ())
+			{
+				if (!this.lenses.contains (lens))
+					this.lenses.add (lens);
+			}
+
+			DragSortListView lvList = (DragSortListView) this.findViewById (R.id.lvList);
+			lvList.setAdapter (new LensPreferencesListViewAdapter (this.getApplicationContext (), this.lensManager, this.lenses));
+			lvList.setDropListener (new LensPreferencesListViewDropListener (lvList, this.lenses));
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (this, ex);
+			exh.show ();
+		}
 	}
 
 
@@ -73,8 +82,16 @@ public class LensPreferencesActivity extends Activity
 	@Override
 	protected void onPause ()
 	{
-		this.lensManager.sortEnabledLenses (this.lenses);
-		this.lensManager.saveEnabledLenses ();
+		try
+		{
+			this.lensManager.sortEnabledLenses (this.lenses);
+			this.lensManager.saveEnabledLenses ();
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (this, ex);
+			exh.show ();
+		}
 
 		super.onPause ();
 	}
