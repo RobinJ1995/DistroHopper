@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="action_settings">الإعدادات</string>
+  <string name="dash_search_hint">بحث في التطبيقات المثبتة</string>
+  <string name="dash_lens_apps_title">التطبيقات</string>
+  <string name="dash_lens_other_title">أخرى</string>
+  <string name="title_activity_preferences">التفضيلات</string>
+  <string name="title_activity_about">عن التطبيق</string>
+  <string name="title_activity_lens_preferences">العدسات</string>
+  <string name="pinned">تم التثبيت في مطلِق البرامج</string>
+  <string name="unpinned">تم ت الإزالة من مطلِق البرامج</string>
+  <string name="notpinned">ليس مثبت</string>
+  <string name="developed_by">تم تطويره من قبل روبن جيكوبس</string>
+  <string name="honourable_mentions">يشرفنا أن نذكرهم</string>
+  <string name="button_back">رجوع</string>
+  <string name="button_about">عن التطبيق</string>
+  <string name="button_contribute">ساعدنا</string>
+  <string name="title_preferences">التفضيلات</string>
+  <string name="pref_header_general">عام</string>
+  <string name="pref_header_unity">يونيتي</string>
+  <string name="pref_header_launcher">مطلِق البرامج</string>
+  <string name="pref_header_dash">بحث \"داش\"</string>
+  <string name="pref_header_panel">الشريط</string>
+  <string name="pref_header_advanced">متقدم</string>
+</resources>

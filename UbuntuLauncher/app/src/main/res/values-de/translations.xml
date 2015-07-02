@@ -95,4 +95,5 @@ https://github.com/commonsguy/cwac-colormixer</string>
 \n
 \nPayPal nimmt $0,30 + 2,2/%% als Gebühren - eine Spende kleiner $0,30 geht also vollständig an PayPal und nichts an den Entwickler. Wenn du spendest, wäre es gut wenn du mehr als diesen Betrag sendest - es sei denn du möchtest aus irgendeinem Grund eine spende an PayPal selbst senden.</string>
   <string name="contribute_donate_go">Spenden</string>
+  <string name="theme_elementary_res_panel_bfb_text">Anwendungen</string>
 </resources>

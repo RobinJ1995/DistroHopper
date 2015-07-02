@@ -3,8 +3,10 @@
   <string name="action_settings">Impostazioni</string>
   <string name="dash_search_hint">Cerca applicazioni installate</string>
   <string name="dash_lens_apps_title">Applicazioni</string>
+  <string name="dash_lens_other_title">Altro</string>
   <string name="title_activity_preferences">Preferenze</string>
   <string name="title_activity_about">Informazioni</string>
+  <string name="title_activity_lens_preferences">Lenti</string>
   <string name="pinned">è stato aggiunto al launcher</string>
   <string name="unpinned">è stato rimosso dal launcher</string>
   <string name="notpinned">non è presente sul pannello</string>
@@ -12,6 +14,7 @@
   <string name="honourable_mentions">Menzioni d\'onore</string>
   <string name="button_back">Indietro</string>
   <string name="button_about">Informazioni</string>
+  <string name="button_contribute">Contributo</string>
   <string name="title_preferences">Preferenze</string>
   <string name="pref_header_general">Generali</string>
   <string name="pref_header_unity">Unity</string>
@@ -26,6 +29,7 @@
   <string name="hint_launchericon_opacity">Quanto deve essere opaco il colore di sfondo delle icone.</string>
   <string name="option_launcherservice_enabled">Rendi il launcher disponibile all\'interno di altre applicazioni</string>
   <string name="hint_launcherservice_enabled">Il launchr comparirà facendo swipe dalla metà inferiore sinistra del bordo dello schermo, permettendoti di aprire applicazioni senza dover tornare alla home.\n(SPERIMENTALE)</string>
+  <string name="option_launcher_running_show">Mostra app avviate</string>
   <string name="option_panel_show">Visualizza</string>
   <string name="hint_panel_show">Imposta se il pannello nella parte alta dello schermo deve essere visibile o no.</string>
   <string name="option_panel_opacity">Opacità</string>
@@ -58,4 +62,11 @@ http://stackoverflow.com/a/8483078/521361</string>
   <string name="hm_commonsguy_why">* Ho utilizzato il suo componente ColorMixer nella schermata delle preferenze.\n
 https://github.com/commonsguy/cwac-colormixer</string>
   <string name="translators_title">Traduttori</string>
+  <string name="title_activity_contribute">Come posso contribuire?</string>
+  <string name="contribute_translate_go">Vai su Transifex</string>
+  <string name="contribute_bugs_title">Segnala Bug</string>
+  <string name="contribute_bugs_go">Vai su GitHub</string>
+  <string name="contribute_donate_title">Dona</string>
+  <string name="contribute_donate_go">Dona</string>
+  <string name="theme_elementary_res_panel_bfb_text">Applicazioni</string>
 </resources>
