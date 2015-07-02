@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="store_app_description_short">The Ubuntu Unity desktop on your Android device</string>
+    <string name="store_app_description_short">Linux desktop on your Android device</string>
     <string name="store_app_description_full">-- Description --
 \nDo you like Linux/Ubuntu? Does it seem awesome to you to be able to have the Unity desktop as your Android home screen? No? Ok, bye bye. In that case, this isn\'t for you.
 \nThis work in progress will allow you to have the Unity desktop running as your Android home/launcher screen.
