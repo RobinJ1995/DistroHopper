@@ -106,6 +106,7 @@ public class HomeActivity extends Activity
 			ImageButton ibPanelCog = (ImageButton) llPanel.findViewById (R.id.ibPanelCog);
 			RelativeLayout vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
 			ListView lvDashHomeLensResults = (ListView) this.findViewById (R.id.lvDashHomeLensResults);
+			LinearLayout llDashRibbon = (LinearLayout) this.findViewById (R.id.llDashRibbon);
 
 			HashMap<String, Class> themes = new HashMap<String, Class> ();
 			themes.put ("default", Default.class);
@@ -303,6 +304,8 @@ public class HomeActivity extends Activity
 
 			etDashSearch.setBackgroundResource (HomeActivity.theme.dash_search_background);
 			etDashSearch.setTextColor (res.getColor (HomeActivity.theme.dash_search_text_colour));
+
+			llDashRibbon.setVisibility (res.getBoolean (HomeActivity.theme.dash_ribbon_show) ? View.VISIBLE : View.GONE);
 		}
 		catch (Exception ex)
 		{

@@ -55,5 +55,6 @@ public class Default extends Theme
 		this.dash_applauncher_text_shadow_colour = R.color.theme_default_dash_applauncher_text_shadow_colour;
 		this.dash_search_background = R.drawable.theme_default_dash_search_background;
 		this.dash_search_text_colour = R.color.theme_default_dash_search_text_colour;
+		this.dash_ribbon_show = R.bool.theme_elementary_dash_ribbon_show;
 	}
 }
