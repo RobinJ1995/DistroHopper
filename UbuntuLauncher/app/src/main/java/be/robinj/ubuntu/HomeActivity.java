@@ -41,6 +41,7 @@ import be.robinj.ubuntu.preferences.PreferencesActivity;
 import be.robinj.ubuntu.theme.Abstract;
 import be.robinj.ubuntu.theme.Default;
 import be.robinj.ubuntu.theme.Elementary;
+import be.robinj.ubuntu.theme.Location;
 import be.robinj.ubuntu.theme.Theme;
 import be.robinj.ubuntu.thirdparty.ProgressWheel;
 import be.robinj.ubuntu.unity.Wallpaper;
@@ -88,8 +89,9 @@ public class HomeActivity extends Activity
 			LinearLayout llLauncherAppsContainer = (LinearLayout) llLauncher.findViewById (R.id.llLauncherAppsContainer);
 			LinearLayout llLauncherPinnedApps = (LinearLayout) llLauncherAppsContainer.findViewById (R.id.llLauncherPinnedApps);
 			LinearLayout llLauncherRunningApps = (LinearLayout) llLauncherAppsContainer.findViewById (R.id.llLauncherRunningApps);
-			be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher lalSpinner = (be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher) llLauncher.findViewById (R.id.lalSpinner);
-			be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb = (be.robinj.ubuntu.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalBfb);
+			LinearLayout llBfbSpinnerWrapper = (LinearLayout) llLauncher.findViewById (R.id.llBfbSpinnerWrapper);
+			be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher lalSpinner = (be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher) llBfbSpinnerWrapper.findViewById (R.id.lalSpinner);
+			be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb = (be.robinj.ubuntu.unity.launcher.AppLauncher) llBfbSpinnerWrapper.findViewById (R.id.lalBfb);
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalPreferences = (be.robinj.ubuntu.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalPreferences);
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalTrash = (be.robinj.ubuntu.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalTrash);
 			ScrollView scrLauncherAppsContainer = (ScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainer);
@@ -146,6 +148,8 @@ public class HomeActivity extends Activity
 
 			lalSpinner.getProgressWheel ().spin ();
 
+			//TODO// Bring this back before release //
+			/*
 			if (prefs.getString ("launcher_edge", "left").equals ("right"))
 			{
 				llLauncherAndDashContainer.setGravity (Gravity.RIGHT);
@@ -156,6 +160,7 @@ public class HomeActivity extends Activity
 				llLauncherAndDashContainer.addView (llDash);
 				llLauncherAndDashContainer.addView (llLauncher);
 			}
+			*/
 
 			this.asyncInitWallpaper = new AsyncInitWallpaper (this);
 			this.asyncInitWallpaper.execute (wpWallpaper);
@@ -233,9 +238,10 @@ public class HomeActivity extends Activity
 
 			switch (res.getInteger (HomeActivity.theme.launcher_location))
 			{
-				case 2:
+				case Location.BOTTOM:
 					llLauncherAndDashContainer.setOrientation (LinearLayout.VERTICAL);
 					llLauncher.setOrientation (LinearLayout.HORIZONTAL);
+					llBfbSpinnerWrapper.setOrientation (LinearLayout.HORIZONTAL);
 					llLauncherAppsContainer.setOrientation (LinearLayout.HORIZONTAL);
 					llLauncherPinnedApps.setOrientation (LinearLayout.HORIZONTAL);
 					llLauncherRunningApps.setOrientation (LinearLayout.HORIZONTAL);
@@ -270,19 +276,35 @@ public class HomeActivity extends Activity
 					break;
 			}
 
-			switch (res.getInteger (HomeActivity.theme.launcher_preferences_location))
+			int lalPreferencesLocation = res.getInteger (HomeActivity.theme.launcher_preferences_location);
+			if (! prefs.getBoolean ("panel_show", true))
+				lalPreferencesLocation = res.getInteger (HomeActivity.theme.launcher_preferences_location_when_panel_hidden);
+
+			switch (lalPreferencesLocation)
 			{
-				case -1:
+				case Location.NONE:
 					lalPreferences.setVisibility (View.GONE);
+					break;
+				case Location.TOP:
+				case Location.LEFT:
+					int posLlBfbSpinnerWrapper = llLauncher.indexOfChild (llBfbSpinnerWrapper);
+					int posLalPreferences = (posLlBfbSpinnerWrapper == 0 ? 1 : 0);
+
+					llLauncher.removeView (lalPreferences);
+					llLauncher.addView (lalPreferences, posLalPreferences);
+					break;
+				case Location.RIGHT:
+				case Location.BOTTOM:
+					lalPreferences.setVisibility (View.VISIBLE);
 					break;
 			}
 
 			switch (res.getInteger (HomeActivity.theme.panel_bfb_location))
 			{
-				case -1:
+				case Location.NONE:
 					tvPanelBfb.setVisibility (View.GONE);
 					break;
-				case 3:
+				case Location.LEFT:
 					tvPanelBfb.setVisibility (View.VISIBLE);
 					break;
 			}

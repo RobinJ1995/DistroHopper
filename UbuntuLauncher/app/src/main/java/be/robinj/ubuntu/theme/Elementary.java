@@ -26,6 +26,7 @@ public class Elementary extends Theme
 		this.launcher_bfb_image = R.drawable.theme_elementary_launcher_bfb_image;
 		this.launcher_preferences_location = R.integer.theme_elementary_launcher_preferences_location;
 		this.launcher_preferences_image = R.drawable.theme_elementary_launcher_preferences_image;
+		this.launcher_preferences_location_when_panel_hidden = R.integer.theme_elementary_launcher_preferences_location_when_panel_hidden;
 		this.launcher_applauncher_backgroundcolour_dynamic = R.bool.theme_elementary_launcher_applauncher_backgroundcolour_dynamic;
 		this.launcher_applauncher_backgroundcolour = R.color.theme_elementary_launcher_applauncher_backgroundcolour;
 		this.launcher_applauncher_background = R.drawable.theme_elementary_launcher_applauncher_background;

@@ -103,21 +103,28 @@
                 android:focusableInTouchMode="false"
                 android:id="@+id/llLauncher">
 
-                <be.robinj.ubuntu.unity.launcher.AppLauncher
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:id="@+id/llBfbSpinnerWrapper"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    custom:special="true"
-                    android:onClick="lalBfb_clicked"
-                    android:id="@+id/lalBfb"
-                    android:layout_marginTop="2dp"
-                    android:visibility="gone"/>
+                    android:layout_height="wrap_content">
 
-                <be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    custom:special="true"
-                    android:layout_marginTop="2dp"
-                    android:id="@+id/lalSpinner" />
+                    <be.robinj.ubuntu.unity.launcher.AppLauncher
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        custom:special="true"
+                        android:onClick="lalBfb_clicked"
+                        android:id="@+id/lalBfb"
+                        android:layout_marginTop="2dp"
+                        android:visibility="gone"/>
+
+                    <be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        custom:special="true"
+                        android:layout_marginTop="2dp"
+                        android:id="@+id/lalSpinner" />
+                </LinearLayout>
 
                 <ScrollView
                     android:layout_width="match_parent"
