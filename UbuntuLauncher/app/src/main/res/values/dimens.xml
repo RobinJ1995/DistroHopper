@@ -4,8 +4,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="dash_applauncher_width">84dp</dimen>
-    <dimen name="dash_applauncher_height">84dp</dimen>
+    <dimen name="dash_applauncher_height">96dp</dimen>
     <dimen name="dash_applauncher_textsize">14dp</dimen>
+    <dimen name="dash_applauncher_padding">4dp</dimen>
 
     <dimen name="dash_lenssearchresult_width">84dp</dimen>
     <dimen name="dash_lenssearchresult_height">96dp</dimen>

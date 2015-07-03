@@ -2,7 +2,7 @@
 <resources>
 
     <string name="action_settings">Settings</string>
-    <string name="dash_search_hint">Search installed applications</string>
+    <string name="dash_search_hint">Search</string>
     <string name="dash_lens_apps_title">Applications</string>
     <string name="dash_lens_other_title">Other</string>
     <string name="title_activity_preferences">Preferences</string>

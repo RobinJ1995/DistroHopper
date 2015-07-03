@@ -4,7 +4,7 @@
       android:orientation="vertical"
       android:layout_width="@dimen/dash_applauncher_width"
       android:layout_height="@dimen/dash_applauncher_height"
-      android:padding="8dp">
+      android:padding="@dimen/dash_applauncher_padding">
 
     <ImageView
         android:layout_width="match_parent"
