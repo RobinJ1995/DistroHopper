@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Pengaturan</string>
-  <string name="dash_search_hint">Cari aplikasi terpasang</string>
   <string name="dash_lens_apps_title">Aplikasi</string>
   <string name="dash_lens_other_title">Lainnya</string>
   <string name="title_activity_preferences">Preferensi</string>
@@ -87,12 +86,8 @@ https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Bagaimana Saya bisa berkontribusi?</string>
   <string name="contribute_intro">Waktu yang lama dan kerja keras telah dilakukan untuk mengembangkan aplikasi ini. Jika Anda ingin membantu, ada beberapa cara di mana Anda dapat melakukannya.</string>
   <string name="contribute_translate_title">Menerjemahkan</string>
-  <string name="contribute_translate_description">Ubuntu Launcher tersedia dalam beberapa bahasa. Hal ini karena relawan memberikan proyek dengan terjemahannya. Jika Peluncur Ubuntu belum diterjemahkan ke dalam bahasa Anda dan Anda mengerti bahasa Inggris (dan Anda memiliki pengetahuan yang cukup tentang Ubuntu untuk memahami beberapa istilah yang terkait dengan Unity), kemudian membantu dengan terjemahan adalah cara yang baik untuk membantu.
-\nTranslasi untuk Ubuntu Launcher dikelola di Transifex. Yang perlu Anda lakukan adalah permintaan untuk bergabung dengan tim penerjemah. Setelah itu saya akan menyetujui permintaan Anda dan Anda siap untu menterjemahkan.</string>
   <string name="contribute_translate_go">Pergi ke Transifex</string>
   <string name="contribute_bugs_title">Laporkan bug</string>
-  <string name="contribute_bugs_description">Jika ada bug di Peluncur Ubuntu, itu tidak berarti bahwa saya menyadari keberadaannya. Pengembang umumnya cukup buruk untuk menguji aplikasi mereka sendiri karena mereka hanya akan menggunakannya dengan cara mereka dimaksudkan untuk digunakan. Beberapa masalah juga hanya ada dalam keadaan khusus tertentu (misalnya perangkat tertentu yang menjalankan versi tertentu dari Android dengan beberapa opsi tambahan diaktifkan). Jadi jika Anda menemukan bug di Peluncur Ubuntu (atau jika Anda memiliki permintaan fitur) Anda dapat membantu dengan melaporkannya.
-\ nLaporan bug untuk Peluncur Ubuntu disimpan di GitHub. Jika GitHub terlalu teknis untuk Anda, Anda juga dapat hanya mengirim surat elektronik ke android-dev@robinj.be. Hanya pastikan itu dalam bahasa Inggris atau Belanda. Mohon berikan informasi sebanyak-banyaknya (yang relevan) mungkin.</string>
   <string name="contribute_bugs_go">Pergi ke GitHub</string>
   <string name="contribute_donate_title">Donasi</string>
   <string name="contribute_donate_description">Jika Anda ingin, Anda juga dapat membuat sumbangan moneter untuk pengembang. Sumbangan ditangani melalui PayPal. Anda akan dapat memilih jumlah uang yang ingin Anda donasikan.

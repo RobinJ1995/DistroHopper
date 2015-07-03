@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Beállítások</string>
-  <string name="dash_search_hint">Keresés a telepített alkalmazások között</string>
   <string name="dash_lens_apps_title">Alkalmazások</string>
   <string name="dash_lens_other_title">Egyéb</string>
   <string name="title_activity_preferences">Beállítások</string>
@@ -57,10 +56,8 @@
   <string name="translators_title">Fordítók</string>
   <string name="title_activity_contribute">Hogyan tudok közreműködő lenni?</string>
   <string name="contribute_translate_title">Fordítás</string>
-  <string name="contribute_translate_description">Ubuntu Launcher számos nyelven elérhető. Ez azért van, mert önkéntesek segítik a projekt fordítását. Ha az Ubuntu Launcher-t még nem fordították le a saját nyelvén, és ért Angolul (és megfelelő ismeretekkel rendelkeznek Ubuntu területein, megért néhány az Unity-vel kapcsolatos kifejezést), valamint segít a fordításban, egy jó módja annak, hogy segítsen az Ön nyelvén is elérhetővé tenni ezt a projektet. \n        \nAz Ubuntu Launcher fordításait hivatalosan a Transifex oldala kezeli. Mindössze annyit kell tennie, hogy csatlakozási kérelemmel fordul a fordító csapatunkhoz az oldalon. Utána már jóváhagyjuk a kérését, és már lehet is fordítani.</string>
   <string name="contribute_translate_go">Lépj be a Transifex oldalára</string>
   <string name="contribute_bugs_title">Hibák jelentése</string>
-  <string name="contribute_bugs_description">Ha talál egy hibát az Ubuntu Launcher-ben, ez nem feltétlenül jelenti azt, hogy tisztában vagyok a létezéséről. A fejlesztők számára általában meglehetősen rossz, hogy a saját alkalmazásaikat maguk próbálják ki, mert csak azokat a funkciókat használják, amelyeket Ők maguk kívánnak felhasználni. Néhány probléma is csak bizonyos különleges körülmények között léteznek (például egy adott készüléken futó, adott változata az Android-nak, talán kevesebb extra lehetőséget engedélyezz csak). Tehát, ha hibát talál az Ubuntu Launcher-ben (vagy ha van egy új funkció igénye), lehet segíteni, annak bejelentésével.\n        \nA hibajelentések tárolását és nyilvántartását az Ubuntu Launcher számára a GitHub biztosítja. Ha GitHub túl bonyolult számára, akkor elegendő csak egy e-mail írása is az android-dev@robinj.be címemre. Kérjük Angol vagy Holland nyelven írjon levelet számunkra. Kérjük, adjon meg annyi (megfelelő) információt amennyi csak lehetséges az adott problémáról, kérésről.</string>
   <string name="contribute_bugs_go">Lépj be a GitHub oldalára</string>
   <string name="contribute_donate_title">Adományozás</string>
   <string name="contribute_donate_go">Adományozás</string>

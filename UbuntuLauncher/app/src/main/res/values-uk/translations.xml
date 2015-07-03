@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Налаштування</string>
-  <string name="dash_search_hint">Пошук встановлених додатків</string>
   <string name="dash_lens_apps_title">Додатки</string>
   <string name="dash_lens_other_title">Інші</string>
   <string name="title_activity_preferences">Уподобання</string>
@@ -87,12 +86,8 @@ https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Як я можу допомогти?</string>
   <string name="contribute_intro">На цей проект було витрачено багато сил, часу і фінансів. Якщо ви хочете допомогти подальшому розвитку проекту, зробіть це одним з нижчеперечислених способів.</string>
   <string name="contribute_translate_title">Переклад</string>
-  <string name="contribute_translate_description">Ubuntu Launcher перекладений на різні мови. Це стало можливим завдяки участі добровольців. Якщо ви помітили, що Ubuntu Launcher недоступний на вашій мові, ви добре знаєте англійську (і достатньо знайомі з Ubuntu, щоб зрозуміти терміни пов’язані з Unity), тоді ви можете допомогти з перекладом.
-\nПереклад Ubuntu Launcher виконується за допомогою Transifex. Все, що вам потрібно зробити, це відправити запит про приєднання до команди перекладачів.</string>
   <string name="contribute_translate_go">Перейти на Transifex</string>
   <string name="contribute_bugs_title">Повідомити про помилку</string>
-  <string name="contribute_bugs_description">Якщо ви знайшли помилку в додатку, будь ласка повідомте нам про неї.
-\nВи можете повідомити про помилку через GitHub або, надіславши повідомлення на android-dev@robinj.be. Будь ласка, переконайтеся, що ваше повідомлення написано англійською або голландською, і надайте нам наскільки можливо більше інформації про проблему.</string>
   <string name="contribute_bugs_go">Перейти на GitHub</string>
   <string name="contribute_donate_title">Зробити пожертву</string>
   <string name="contribute_donate_description">Якщо ви бажаєте надати проекту фінансову допомогу, ви завжди можете зробити це за допомогою кнопки \"Зробити пожертву\" (через сервіс PayPal).

@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Ayarlar</string>
-  <string name="dash_search_hint">Kurulu uygulamaları ara</string>
   <string name="dash_lens_apps_title">Uygulamalar</string>
   <string name="dash_lens_other_title">Diğer</string>
   <string name="title_activity_preferences">Tercihler</string>

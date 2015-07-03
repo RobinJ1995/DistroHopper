@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Réglages</string>
-  <string name="dash_search_hint">Chercher des applications installées</string>
   <string name="dash_lens_apps_title">Applications</string>
   <string name="dash_lens_other_title">Autre</string>
   <string name="title_activity_preferences">Préférences</string>
@@ -82,11 +81,8 @@
   <string name="title_activity_contribute">Comment contribuer?</string>
   <string name="contribute_intro">Beaucoup de temps et de travail ont été mis au développement de cette application. Si vous voudriez y contribuer, il y a plusieurs façons de le faire.</string>
   <string name="contribute_translate_title">Traduire</string>
-  <string name="contribute_translate_description">Ubuntu Launcher est disponible dans plusieurs langues. Il en est ainsi grâce aux nombreux volontaires qui ont traduit l\'application par eux-mêmes. Si Ubuntu Launcher n\'a pas été traduit dans votre langue et que vous avez une bonne connaissance de l\'anglais et de Ubuntu, vous pouvez aider Ubuntu Launcher en le traduisant dans votre langue.
-\nLes traductions deUbuntu Launchersont gérées sur Transifex. Tout ce que vous avez à faire est de joindre une équipe de traduction, de vous faire accepter et c\'est tout!</string>
   <string name="contribute_translate_go">Allez sur Transifex</string>
   <string name="contribute_bugs_title">Signaler des erreurs</string>
-  <string name="contribute_bugs_description">S\'il existe un bug dans Ubuntu Launcher, n\'assumez pas que le développeur est au courant. Celui-ci est souvent assez nul pour tester ses propres applications puisqu\'il ne les utilise que de la manière qu\'elles sont supposées fonctionner. De plus, certaines erreurs n\'apparaissent que sur certains appareils, ou sur certaines versions d\'Android. Si vous trouver un bug dans Ubuntu Launcher ou si vous avez une idée pour l\'application, signalez-le! \nLes rapports d\'erreurs pour Ubuntu Launcher sont sur Github. Si vous avez des difficultés avec Github, vous pouvez aussi envoyer un simple email à android-dev@robinj.be (Anglais ou Allemand seulement). N\'oubliez pas de fournir le plus de détails que possible!</string>
   <string name="contribute_bugs_go">Allez sur Github</string>
   <string name="contribute_donate_title">Faire un don</string>
   <string name="contribute_donate_description">Si vous voulez, vous pouvez aussi faire un don monétaire au développeur. Les dons sont gérés via PayPal. Vous pouvez décider de la somme que vous voulez donner. \nNote: C\'est un don. Le développeur ne vend rien, et vous n\'achetez rien. Les dons sont appréciés, mais vous ne gagnerez pas de privilèges en en faisant. Ubuntu Launcher est entièrement gratuit. \n \nPaypal prend un frais de $0.30 + 2.2\%%, donc si votre don est de moins de $0.30, tout ira à PayPal, rien au développeur. Si vous faites un don, il est donc préférable de faire un don supérieur à ce montant, excepté bien sûr si vous voulez supporter PayPal pour une quelconque raison.</string>

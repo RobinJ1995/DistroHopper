@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Einstellungen</string>
-  <string name="dash_search_hint">Installierte Apps durchsuchen</string>
   <string name="dash_lens_apps_title">Anwendungen</string>
   <string name="dash_lens_other_title">Andere</string>
   <string name="title_activity_preferences">Einstellungen</string>
@@ -82,12 +81,8 @@ https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Wie kann ich beitragen?</string>
   <string name="contribute_intro">Viel Zeit und harte Arbeit wurde in die Entwicklung dieser App gesteckt. Wenn du helfen möchtest gibt es hierfür viele Möglichkeiten.</string>
   <string name="contribute_translate_title">Übersetzung</string>
-  <string name="contribute_translate_description">Ubuntu Launcher ist in diversen Sprachen verfügbar. Dies ist möglich, weil viele freiwillige Helfer dem Projekt Übersetzungen zur Verfügung stellen. Wenn Ubuntu Launcher noch nicht in deine Sprache übersetzt wurde und du der englischen Sprache mächtig bist (und ein Verständnis für Ubuntu-eigene Begriffe und Ideen mitbringst), dann ist deine Hilfe bei der Übesetzung herzlich willkommen.
-\nÜbersetzungen für Ubuntu Launcher werden über Transifex verwaltet. Alles was du tun musst ist die Mitgliedschaft im Übersetzungsteam für Ubuntu Launcher anzufragen. Anschließend werde ich deiner Mitgliedschaft zustimmen und du kannst direkt loslegen.</string>
   <string name="contribute_translate_go">Gehe zu Transifex</string>
   <string name="contribute_bugs_title">Melde Bugs</string>
-  <string name="contribute_bugs_description">Sofern Bugs (Fehler) in Ubuntu Launcher existieren, bin ich mir dessen nicht unbedingt bewusst. Entwickler sind zumeist nicht in der Lage ihre Applikationen ausreichend gut zu prüfen weil sie sie nur in der Art und Weise nutzen, für die sie entwickelt wurden. Manche Probleme treten aber nur in sehr bestimmten Umständen auf (zum Beispiel ein sehr spezielles Gerät auf dem eine spezielle Version von Android mit zusätzlichen oder fehlenden Funktionen und Optionen). Wenn dir also Bugs in Ubuntu Launcher auffallen (oder auch wenn du Feature-Wünsche hast) kannst du damit helfen, uns dies zu melden.
-\nBugmeldungen werden für Ubuntu Launcher auf GitHub gesammelt. Wenn dir GitHub zu technisch ist, kannst du den Fehler auch per Email an android-dev@robinj.be mitteilen. Bitte melde die Bugs in Englisch oder Holländisch und stelle so viel Information wie möglich zur Verfügung.</string>
   <string name="contribute_bugs_go">Gehe zu GitHub</string>
   <string name="contribute_donate_title">Spende</string>
   <string name="contribute_donate_description">Wenn du willst, kannst du auch eine finanzielle Spende an den Entwickler senden. Spenden werden per PayPal übermittelt. Du kannst selbst entscheiden, wieviel zu spenden möchtest.

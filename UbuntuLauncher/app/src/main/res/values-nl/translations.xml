@@ -1,12 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Instellingen</string>
-  <string name="dash_search_hint">Geïnstalleerde apps doorzoeken</string>
+  <string name="dash_search_hint">Zoeken</string>
   <string name="dash_lens_apps_title">Toepassingen</string>
   <string name="dash_lens_other_title">Overige</string>
   <string name="title_activity_preferences">Voorkeuren</string>
   <string name="title_activity_about">Over</string>
   <string name="title_activity_lens_preferences">Lenzen</string>
+  <string name="title_activity_theme_preferences">Thema\'s</string>
   <string name="pinned">is vastgemaakt aan de Launcher</string>
   <string name="unpinned">is losgemaakt van de Launcher</string>
   <string name="notpinned">is niet vastgemaakt aan de Launcher</string>
@@ -15,6 +16,7 @@
   <string name="button_back">Terug</string>
   <string name="button_about">Over</string>
   <string name="button_contribute">Bijdragen</string>
+  <string name="button_apply">Toepassen</string>
   <string name="title_preferences">Voorkeuren</string>
   <string name="pref_header_general">Algemeen</string>
   <string name="pref_header_unity">Unity</string>
@@ -71,6 +73,8 @@
   <string name="hint_dash_ready_show">Het Dash zal automatisch geöpend worden wanneer de apps geladen zijn.</string>
   <string name="option_lenses">Lenzen</string>
   <string name="hint_lenses">Kies welke lenzen je wil gebruiken en in welke volgorde hun resultaten getoond moetenworden in het Dash. Wanneer je zoekt in het Dash wordt je zoekopdracht naar alle ingeschakelde lenzen gestuurd, en vervolgens worden hun resultaten getoond.</string>
+  <string name="option_theme">Thema</string>
+  <string name="hint_theme">Kies als welke Linux-distributie je wil dat DistroHopper er uit ziet.</string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Testen (Als hij het niet kapot krijgt kan ik er meestal wel vanuit gaan dat het ook veilig is voor consumptie door de rest van de wereld.)\n
 * Hulp met de kleursberekeningsfuncties.</string>
@@ -87,12 +91,10 @@
   <string name="title_activity_contribute">Hoe kan ik bijdragen?</string>
   <string name="contribute_intro">Er is erg veel tijd en moeite gegaan in de ontwikkeling van deze app. Als je graag een steentje bijdraagt zal je hier een aantal manieren vinden waarop je dit kan doen.</string>
   <string name="contribute_translate_title">Vertalen</string>
-  <string name="contribute_translate_description">Ubuntu Launcher is in verschillende talen beschikbaar. Dit komt doordat vrijwilligers zich hier voor inzetten. Als Ubuntu Launcher nog niet naar jouw taal vertaald is, en je verstaat Engels (en hebt voldoende kennis van Ubuntu om de iets meer Unity-gerelateerde termen te begrijpen), dan is bijdragen aan vertalingen een goede manier om een steentje bij te dragen. Ook als je een beter voorstel hebt voor één of meerdere vertalingen wordt dit erg geapprecieerd.
-\nVertalingen voor Ubuntu Launcher worden bijgehouden op Transifex. Als jegraag wil helpen bij het vertalen van Ubuntu Launcher moet je enkel een aanvraag indienen om lid te worden van een vertalingsteam. Vervolgens zal ik je aanvraag goedkeuren en kan je beginnen.</string>
+  <string name="contribute_translate_description">DistroHopper is in verschillende talen beschikbaar. Dit komt doordat vrijwilligers zich hier voor inzetten. Als DistroHopper nog niet naar jouw taal vertaald is, en je verstaat Engels (en hebt voldoende kennis van Ubuntu om de iets meer Unity-gerelateerde termen te begrijpen), dan is bijdragen aan vertalingen een goede manier om een steentje bij te dragen. Ook als je een beter voorstel hebt voor één of meerdere vertalingen wordt dit erg geapprecieerd. \nVertalingen voor DistroHopper worden bijgehouden op Transifex. Als jegraag wil helpen bij het vertalen van DistroHopper moet je enkel een aanvraag indienen om lid te worden van een vertalingsteam. Vervolgens zal ik je aanvraag goedkeuren en kan je beginnen.</string>
   <string name="contribute_translate_go">Ga naar Transifex</string>
   <string name="contribute_bugs_title">Problemen melden</string>
-  <string name="contribute_bugs_description">Als er ergens een fout zit in Ubuntu Launcher betekent dat niet noodzakelijk dat ik me daar van bewust ben. Ontwikkelaars zijn over het algemeen vrij slecht in het testen van hun eigen toepassingen, omdat zij deze enkel zullen gebruiken op de manier waarvoor ze ontwikkeld zijn. Sommige problemen doen zich ook enkel voor in specifieke gevallen (bijvoorbeeld op een specifiek apparaat dat een specifieke versie van Android draait en een aantal extra opties heeft ingeschakeld). Dus wanneer je een fout vindt in Ubuntu Launcher (of je een goed idee hebt) kan je een steentje bijdragen door dit te melden.
-\nDeze meldingen worden bijgehouden op GitHub. Als GitHub te technisch voor u is mag je ook altijd een e-mail sturen naar android-dev@robinj.be. Gelieve je e-mail in het Nederlands of Engels op te stellen, en zo veel mogelijk (nuttige) informatie door te geven.</string>
+  <string name="contribute_bugs_description">Als er ergens een fout zit in DistroHopper betekent dat niet noodzakelijk dat ik me daar van bewust ben. Ontwikkelaars zijn over het algemeen vrij slecht in het testen van hun eigen toepassingen, omdat zij deze enkel zullen gebruiken op de manier waarvoor ze ontwikkeld zijn. Sommige problemen doen zich ook enkel voor in specifieke gevallen (bijvoorbeeld op een specifiek apparaat dat een specifieke versie van Android draait en een aantal extra opties heeft ingeschakeld). Dus wanneer je een fout vindt in DistroHopper (of je een goed idee hebt) kan je een steentje bijdragen door dit te melden. \nDeze meldingen worden bijgehouden op GitHub. Als GitHub te technisch voor u is mag je ook altijd een e-mail sturen naar android-dev@robinj.be. Gelieve je e-mail in het Nederlands of Engels op te stellen, en zo veel mogelijk (nuttige) informatie door te geven.</string>
   <string name="contribute_bugs_go">Ga naar GitHub</string>
   <string name="contribute_donate_title">Doneren</string>
   <string name="contribute_donate_description">Indien gewenst kan je ook een donatie maken aan de ontwikkelaar. Donaties worden afgehandeld via PayPal. U krijgt zelf de mogelijkheid om te kiezen hoeveel u wil doneren.

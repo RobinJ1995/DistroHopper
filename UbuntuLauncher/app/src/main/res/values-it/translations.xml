@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Impostazioni</string>
-  <string name="dash_search_hint">Cerca applicazioni installate</string>
   <string name="dash_lens_apps_title">Applicazioni</string>
   <string name="dash_lens_other_title">Altro</string>
   <string name="title_activity_preferences">Preferenze</string>

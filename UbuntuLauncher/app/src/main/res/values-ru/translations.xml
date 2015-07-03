@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Настройки</string>
-  <string name="dash_search_hint">Поиск установленных приложений</string>
   <string name="dash_lens_apps_title">Приложения</string>
   <string name="dash_lens_other_title">Другие</string>
   <string name="title_activity_preferences">Предпочтения</string>
@@ -83,12 +82,8 @@ https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Как я могу помочь?</string>
   <string name="contribute_intro">Данный проект потребовал больших усилий, временных и финансовых затрат. Если вы хотите помочь дальнейшему развитию проекта, сделайте это нижеприведенными способами.</string>
   <string name="contribute_translate_title">Перевод</string>
-  <string name="contribute_translate_description">Ubuntu Launcher доступен на разных языках. Это стало возможным благодаря участию добровольцев. Если вы заметили что Ubuntu Launcher недоступен на вашем языке, вы владеете владеете aнглийским в достаточной степени и хотите помочь проетку, вы всегда можете помочь данному проекту расширить границы.
-\n Перевод Убунту Лаунчера выполняется с помощью услуги Transifex. Все что вам нужно сделать, это отправить запрос о присоединении к команде переводчиков. </string>
   <string name="contribute_translate_go">Перейти на Transifex</string>
   <string name="contribute_bugs_title">Сообщить об ошибке</string>
-  <string name="contribute_bugs_description">Если вы заметили ошибку в приложении, пожалуйста сообщите нам о ней.
-\n Вы можете сообщить об ошибке через GitHub или пошлите сообщение на android-dev@robinj.be. Пожалуйста убедитесь что ваше сообщение составлено на английском или на голландском, и предоставьте нам насколько возможно больше информации о проблеме.</string>
   <string name="contribute_bugs_go">Перейти на GitHub</string>
   <string name="contribute_donate_title">Сделать пожертвование</string>
   <string name="contribute_donate_description">Если вы желаете окaзать проекту финансовую помощь, вы всегда можете сделать это с помощью кнопки \"Сделать пожертвование\".

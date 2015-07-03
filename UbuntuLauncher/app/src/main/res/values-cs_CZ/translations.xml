@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Nastavení</string>
-  <string name="dash_search_hint">Hledat instalované aplikace</string>
   <string name="dash_lens_apps_title">Aplikace</string>
   <string name="dash_lens_other_title">Jiné</string>
   <string name="title_activity_preferences">Předvolby</string>
@@ -84,13 +83,8 @@ https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Jak mohu přispět ?</string>
   <string name="contribute_intro">Hodně času a tvrdé práce šla do vývoje této aplikace. Pokud byste chtěli pomoct, existuje několik způsobů, jak můžete tak učinit.</string>
   <string name="contribute_translate_title">Překládání</string>
-  <string name="contribute_translate_description">
-Ubuntu Launcher je k dispozici v několika jazycích. Je to proto, že dobrovolníci poskytují projekt s jejich překlady. Pokud Ubuntu Launcher nebyl ještě přeloženy do vašeho vlastního jazyka, a rozumíte anglicky (a máte dostatečné znalosti o Ubuntu pochopit některé z dalších podmínek Unity související s), a pak pomáhal s překladem je dobrý způsob, jak pomoci ven. 
-\Translations pro Ubuntu Launcher jsou řízeny na Transifex. Vše, co musíte udělat, je požadavek připojit se k překladu týmu. Poté, co jsem vám vaši žádost schválit, a máte dobré jít.</string>
   <string name="contribute_translate_go">Přejít na Transifex</string>
   <string name="contribute_bugs_title">Nahlásit chybu</string>
-  <string name="contribute_bugs_description">Pokud je chyba v Ubuntu Launcher, že nemusí nutně znamenat, že jsem si vědom své existence. Vývojáři jsou obecně velmi špatné testování vlastních aplikací, které budou používat pouze je tak, že jsou určeny k použití. Některé problémy také existují pouze v určitých zvláštních okolností (například určité zařízení se systémem konkrétní verzi Androidu s některými další volby zapnuto). Takže pokud najdete chybu v Ubuntu spouštěči (nebo máte-li požadavek na funkci), které může pomoci tím, jejího oznámení. 
-\ nBugs zprávy pro Ubuntu Launcher jsou uchovávány na GitHub. Pokud GitHub je příliš technická pro vás, můžete také jen poslat e-mail na android-dev@robinj.be. Jen se ujistěte, že je to v angličtině nebo holandštině. Uveďte, prosím, co nejvíce (relevantní) informace jak je to možné.</string>
   <string name="contribute_bugs_go">Přejít na GitHub</string>
   <string name="contribute_donate_title">Darovat</string>
   <string name="contribute_donate_description">Pokud chcete, můžete si také peněžní dar pro vývojáře. Dary jsou zpracovány prostřednictvím PayPal. Budete mít možnost vybrat částku, kterou chcete darovat. 
