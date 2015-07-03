@@ -8,6 +8,7 @@
         <item>0dp</item>
         <item>0dp</item>
     </array>
+    <bool name="theme_default_launcher_expand">true</bool>
     <bool name="theme_default_launcher_background_dynamic">true</bool>
     <drawable name="theme_default_launcher_background">@android:color/transparent</drawable>
     <integer name="theme_default_launcher_bfb_location">@integer/position_top</integer>

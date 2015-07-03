@@ -1,48 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+
     <!-- Launcher -->
     <integer name="theme_gnome_launcher_location">@integer/position_left</integer>
     <array name="theme_gnome_launcher_margin">
         <item>0dp</item>
         <item>0dp</item>
-        <item>0dp</item>
+        <item>6dp</item>
         <item>0dp</item>
     </array>
+    <bool name="theme_gnome_launcher_expand">false</bool>
     <bool name="theme_gnome_launcher_background_dynamic">false</bool>
     <drawable name="theme_gnome_launcher_background">@drawable/theme_gnome_res_launcher_background</drawable>
-    <integer name="theme_gnome_launcher_bfb_location">@integer/position_top</integer>
+    <integer name="theme_gnome_launcher_bfb_location">@integer/position_bottom</integer>
     <drawable name="theme_gnome_launcher_bfb_image">@drawable/theme_gnome_res_launcher_bfb</drawable>
-    <integer name="theme_gnome_launcher_preferences_location">@integer/position_bottom</integer>
+    <integer name="theme_gnome_launcher_preferences_location">@integer/position_none</integer>
     <drawable name="theme_gnome_launcher_preferences_image">@drawable/launcher_preferences</drawable>
     <integer name="theme_gnome_launcher_preferences_location_when_panel_hidden">@integer/position_bottom</integer>
-    <bool name="theme_gnome_launcher_applauncher_backgroundcolour_dynamic">true</bool>
+    <bool name="theme_gnome_launcher_applauncher_backgroundcolour_dynamic">false</bool>
     <color name="theme_gnome_launcher_applauncher_backgroundcolour">@android:color/transparent</color>
-    <drawable name="theme_gnome_launcher_applauncher_background">@drawable/widget_launcher_applauncher_background</drawable>
-    <drawable name="theme_gnome_launcher_applauncher_gradient">@drawable/launcher_icon_bg</drawable>
-    <drawable name="theme_gnome_launcher_applauncher_running">@drawable/launcher_app_running</drawable>
-    <bool name="theme_gnome_launcher_applauncher_running_backgroundcolour_dynamic">true</bool>
+    <drawable name="theme_gnome_launcher_applauncher_background">@drawable/blank_gradient</drawable>
+    <drawable name="theme_gnome_launcher_applauncher_gradient">@android:color/transparent</drawable>
+    <drawable name="theme_gnome_launcher_applauncher_running">@drawable/theme_gnome_res_launcher_app_running</drawable>
+    <bool name="theme_gnome_launcher_applauncher_running_backgroundcolour_dynamic">false</bool>
     <color name="theme_gnome_launcher_applauncher_running_backgroundcolour">@android:color/transparent</color>
 
     <!-- Panel -->
     <integer name="theme_gnome_panel_location">@integer/position_top</integer>
     <dimen name="theme_gnome_panel_height">28dp</dimen>
-    <drawable name="theme_gnome_panel_background">@drawable/panel_background</drawable>
-    <bool name="theme_gnome_panel_background_dynamic_if_dash_opened">true</bool>
-    <integer name="theme_gnome_panel_bfb_location">@integer/position_none</integer>
-    <string name="theme_gnome_panel_bfb_text"></string>
+    <drawable name="theme_gnome_panel_background">@drawable/theme_gnome_res_panel_background</drawable>
+    <bool name="theme_gnome_panel_background_dynamic_if_dash_opened">false</bool>
+    <integer name="theme_gnome_panel_bfb_location">@integer/position_left</integer>
+    <string name="theme_gnome_panel_bfb_text">@string/theme_elementary_res_panel_bfb_text</string>
     <color name="theme_gnome_panel_bfb_text_colour">@android:color/white</color>
-    <integer name="theme_gnome_panel_close_location">@integer/position_left</integer>
-    <drawable name="theme_gnome_panel_close_image">@drawable/dash_close</drawable>
+    <integer name="theme_gnome_panel_close_location">@integer/position_none</integer>
+    <drawable name="theme_gnome_panel_close_image">@android:color/transparent</drawable>
     <integer name="theme_gnome_panel_preferences_location">@integer/position_right</integer>
-    <drawable name="theme_gnome_panel_preferences_image">@drawable/panel_cog</drawable>
+    <drawable name="theme_gnome_panel_preferences_image">@drawable/theme_gnome_res_panel_cog</drawable>
 
     <!-- Dash -->
-    <bool name="theme_gnome_dash_background_dynamic">true</bool>
+    <bool name="theme_gnome_dash_background_dynamic">false</bool>
     <drawable name="theme_gnome_dash_background">@android:color/transparent</drawable>
-    <drawable name="theme_gnome_dash_background_gradient">@drawable/dash_background_gradient</drawable>
+    <drawable name="theme_gnome_dash_background_gradient">@android:color/transparent</drawable>
     <color name="theme_gnome_dash_applauncher_text_colour">@android:color/white</color>
     <color name="theme_gnome_dash_applauncher_text_shadow_colour">@android:color/transparent</color>
     <drawable name="theme_gnome_dash_search_background">@drawable/dash_search_background</drawable>
     <color name="theme_gnome_dash_search_text_colour">@android:color/white</color>
-    <bool name="theme_gnome_dash_ribbon_show">true</bool>
+    <bool name="theme_gnome_dash_ribbon_show">false</bool>
 </resources>

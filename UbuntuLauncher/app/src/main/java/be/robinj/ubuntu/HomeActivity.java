@@ -238,8 +238,19 @@ public class HomeActivity extends Activity
 			RelativeLayout.LayoutParams llPanel_layoutParams = (RelativeLayout.LayoutParams) llPanel.getLayoutParams ();
 			llPanel_layoutParams.height = (int) res.getDimension (R.dimen.theme_elementary_panel_height);
 
+			boolean expandLlLauncher = res.getBoolean (HomeActivity.theme.launcher_expand);
+
 			switch (res.getInteger (HomeActivity.theme.launcher_location))
 			{
+				case Location.LEFT:
+					if (! expandLlLauncher)
+					{
+						LinearLayout.LayoutParams llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+						llLauncher.setLayoutParams (llLauncher_layoutParams);
+
+						llLauncherAndDashContainer.setGravity (Gravity.CENTER_VERTICAL);
+					}
+					break;
 				case Location.BOTTOM:
 					llLauncherAndDashContainer.setOrientation (LinearLayout.VERTICAL);
 					llLauncher.setOrientation (LinearLayout.HORIZONTAL);
@@ -298,6 +309,26 @@ public class HomeActivity extends Activity
 				case Location.RIGHT:
 				case Location.BOTTOM:
 					lalPreferences.setVisibility (View.VISIBLE);
+					break;
+			}
+
+			switch (res.getInteger (HomeActivity.theme.launcher_bfb_location))
+			{
+				case Location.NONE:
+					llBfbSpinnerWrapper.setVisibility (View.GONE);
+					break;
+				case Location.TOP:
+				case Location.LEFT:
+					llBfbSpinnerWrapper.setVisibility (View.VISIBLE);
+					break;
+				case Location.RIGHT:
+				case Location.BOTTOM:
+					int posLalPreferences = llLauncher.indexOfChild (lalPreferences);
+					int posLalTrash = llLauncher.indexOfChild (lalTrash);
+					int posLlBfbSpinnerWrapper = (posLalPreferences > 1 ? posLalPreferences : posLalTrash) - 1;
+
+					llLauncher.removeView (llBfbSpinnerWrapper);
+					llLauncher.addView (llBfbSpinnerWrapper, posLlBfbSpinnerWrapper);
 					break;
 			}
 

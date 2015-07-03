@@ -8,6 +8,7 @@
         <item>0dp</item>
         <item>16dp</item>
     </array>
+    <bool name="theme_elementary_launcher_expand">false</bool>
     <bool name="theme_elementary_launcher_background_dynamic">false</bool>
     <drawable name="theme_elementary_launcher_background">@drawable/theme_elementary_res_launcher_background</drawable>
     <integer name="theme_elementary_launcher_bfb_location">@integer/position_left</integer>
