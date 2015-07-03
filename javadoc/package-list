@@ -1,4 +1,7 @@
 be.robinj.ubuntu
+be.robinj.ubuntu.broadcast
+be.robinj.ubuntu.dev
+be.robinj.ubuntu.preferences
 be.robinj.ubuntu.theme
 be.robinj.ubuntu.thirdparty
 be.robinj.ubuntu.unity
@@ -7,4 +10,3 @@ be.robinj.ubuntu.unity.dash.lens
 be.robinj.ubuntu.unity.launcher
 be.robinj.ubuntu.unity.launcher.service
 be.robinj.ubuntu.widgets
-com.commonsware.cwac.colormixer
