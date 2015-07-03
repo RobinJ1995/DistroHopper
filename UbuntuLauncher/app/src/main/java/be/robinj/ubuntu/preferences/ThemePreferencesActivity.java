@@ -15,6 +15,7 @@ import be.robinj.ubuntu.R;
 import be.robinj.ubuntu.theme.Abstract;
 import be.robinj.ubuntu.theme.Default;
 import be.robinj.ubuntu.theme.Elementary;
+import be.robinj.ubuntu.theme.Gnome;
 import be.robinj.ubuntu.theme.Theme;
 
 public class ThemePreferencesActivity extends Activity
@@ -30,6 +31,7 @@ public class ThemePreferencesActivity extends Activity
 		List<Theme> themes = new ArrayList<Theme> ();
 		themes.add (new Default ());
 		themes.add (new Elementary ());
+		themes.add (new Gnome ());
 
 		ListView lvThemeList = (ListView) this.findViewById (R.id.lvThemeList);
 		lvThemeList.setAdapter (new ThemePreferencesListViewAdapter (this, themes));

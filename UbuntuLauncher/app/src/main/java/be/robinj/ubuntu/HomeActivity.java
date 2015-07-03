@@ -41,6 +41,7 @@ import be.robinj.ubuntu.preferences.PreferencesActivity;
 import be.robinj.ubuntu.theme.Abstract;
 import be.robinj.ubuntu.theme.Default;
 import be.robinj.ubuntu.theme.Elementary;
+import be.robinj.ubuntu.theme.Gnome;
 import be.robinj.ubuntu.theme.Location;
 import be.robinj.ubuntu.theme.Theme;
 import be.robinj.ubuntu.thirdparty.ProgressWheel;
@@ -113,6 +114,7 @@ public class HomeActivity extends Activity
 			HashMap<String, Class> themes = new HashMap<String, Class> ();
 			themes.put ("default", Default.class);
 			themes.put ("elementary", Elementary.class);
+			themes.put ("gnome", Gnome.class);
 
 			Theme theme = (Theme) themes.get (prefs.getString ("theme", "default")).newInstance ();
 			HomeActivity.theme = theme;
