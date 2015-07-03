@@ -88,6 +88,9 @@ public class AppManager implements Iterable<App>
 			}
 			else
 			{
+				if (! this.context.getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
+					colour = this.context.getResources ().getColor (HomeActivity.theme.launcher_applauncher_backgroundcolour);
+
 				RunningAppLauncher appLauncher = new RunningAppLauncher (this.context, app);
 				appLauncher.setOnClickListener (new AppLauncherClickListener ());
 				appLauncher.setColour (colour);

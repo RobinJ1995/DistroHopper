@@ -3,10 +3,12 @@ package be.robinj.ubuntu.unity.launcher;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import be.robinj.ubuntu.App;
+import be.robinj.ubuntu.HomeActivity;
 import be.robinj.ubuntu.R;
 
 /**
@@ -25,6 +27,15 @@ public class RunningAppLauncher extends AppLauncher
 		super.init ();
 
 		this.setRunning (true);
+	}
+
+	@Override
+	protected void applyTheme ()
+	{
+		super.applyTheme ();
+
+		if (! this.getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
+			this.setColour (this.getResources ().getColor (HomeActivity.theme.launcher_applauncher_backgroundcolour));
 	}
 
 	@Override

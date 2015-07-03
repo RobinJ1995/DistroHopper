@@ -28,6 +28,8 @@ public abstract class Theme
 	public int launcher_applauncher_background;
 	public int launcher_applauncher_gradient;
 	public int launcher_applauncher_running;
+	public int launcher_applauncher_running_backgroundcolour_dynamic;
+	public int launcher_applauncher_running_backgroundcolour;
 
 	// Panel //
 	public int panel_location;

@@ -31,6 +31,8 @@ public class Elementary extends Theme
 		this.launcher_applauncher_background = R.drawable.theme_elementary_launcher_applauncher_background;
 		this.launcher_applauncher_gradient = R.drawable.theme_elementary_launcher_applauncher_gradient;
 		this.launcher_applauncher_running = R.drawable.theme_elementary_launcher_applauncher_running;
+		this.launcher_applauncher_running_backgroundcolour_dynamic = R.bool.theme_elementary_launcher_applauncher_running_backgroundcolour_dynamic;
+		this.launcher_applauncher_running_backgroundcolour = R.color.theme_elementary_launcher_applauncher_running_backgroundcolour;
 
 		// Panel //
 		this.panel_location = R.integer.theme_elementary_panel_location;

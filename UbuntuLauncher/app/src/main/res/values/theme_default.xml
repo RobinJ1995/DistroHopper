@@ -19,6 +19,8 @@
     <drawable name="theme_default_launcher_applauncher_background">@drawable/widget_launcher_applauncher_background</drawable>
     <drawable name="theme_default_launcher_applauncher_gradient">@drawable/launcher_icon_bg</drawable>
     <drawable name="theme_default_launcher_applauncher_running">@drawable/launcher_app_running</drawable>
+    <bool name="theme_default_launcher_applauncher_running_backgroundcolour_dynamic">true</bool>
+    <color name="theme_default_launcher_applauncher_running_backgroundcolour">@android:color/transparent</color>
 
     <!-- Panel -->
     <integer name="theme_default_panel_location">@integer/position_top</integer>

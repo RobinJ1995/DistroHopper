@@ -18,7 +18,9 @@
     <color name="theme_elementary_launcher_applauncher_backgroundcolour">@android:color/transparent</color>
     <drawable name="theme_elementary_launcher_applauncher_background">@drawable/blank_gradient</drawable>
     <drawable name="theme_elementary_launcher_applauncher_gradient">@android:color/transparent</drawable>
-    <drawable name="theme_elementary_launcher_applauncher_running">@drawable/launcher_app_running</drawable>
+    <drawable name="theme_elementary_launcher_applauncher_running">@android:color/transparent</drawable>
+    <bool name="theme_elementary_launcher_applauncher_running_backgroundcolour_dynamic">false</bool>
+    <color name="theme_elementary_launcher_applauncher_running_backgroundcolour">@android:color/transparent</color>
 
     <!-- Panel -->
     <integer name="theme_elementary_panel_location">@integer/position_top</integer>

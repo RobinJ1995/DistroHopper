@@ -56,7 +56,7 @@ public class AppLauncher extends be.robinj.ubuntu.unity.AppLauncher
 		this.applyTheme ();
 	}
 
-	private void applyTheme ()
+	protected void applyTheme ()
 	{
 		ViewGroup llBackground = (ViewGroup) this.findViewById (R.id.llBackground);
 		llBackground.setBackgroundResource (HomeActivity.theme.launcher_applauncher_background);
