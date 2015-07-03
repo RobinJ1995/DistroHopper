@@ -12,4 +12,10 @@
         android:summary="@string/hint_colourcalc_hsv"
         android:defaultValue="true" />
 
+    <CheckBoxPreference
+        android:key="dev"
+        android:title="@string/option_dev"
+        android:summary="@string/hint_dev"
+        android:defaultValue="false" />
+
 </PreferenceScreen>

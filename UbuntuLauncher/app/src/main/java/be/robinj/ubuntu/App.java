@@ -11,6 +11,7 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
+import be.robinj.ubuntu.dev.Log;
 import be.robinj.ubuntu.unity.AppIcon;
 
 /**

@@ -3,7 +3,7 @@ package be.robinj.ubuntu;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.text.Html;
-import android.util.Log;
+import be.robinj.ubuntu.dev.Log;
 
 /**
  * Created by robin on 8/22/14.

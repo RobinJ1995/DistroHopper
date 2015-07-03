@@ -192,6 +192,11 @@ public class PreferencesActivity extends PreferenceActivity
 		this.getPreferenceScreen ().addPreference (fakeHeader);
 		this.addPreferencesFromResource (R.xml.pref_advanced);
 
+		fakeHeader = new PreferenceCategory (this);
+		fakeHeader.setTitle (R.string.pref_header_dev);
+		this.getPreferenceScreen ().addPreference (fakeHeader);
+		this.addPreferencesFromResource (R.xml.pref_dev);
+
 		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
 		// their values. When their values change, their summaries are updated
 		// to reflect the new value, per the Android Design guidelines.
@@ -305,6 +310,23 @@ public class PreferencesActivity extends PreferenceActivity
 		{
 			super.onCreate (savedInstanceState);
 			addPreferencesFromResource (R.xml.pref_advanced);
+
+			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
+			// to their values. When their values change, their summaries are
+			// updated to reflect the new value, per the Android Design
+			// guidelines.
+			//bindPreferenceSummaryToValue (findPreference ("sync_frequency"));
+		}
+	}
+
+	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
+	public static class DevPreferenceFragment extends PreferenceFragment
+	{
+		@Override
+		public void onCreate (Bundle savedInstanceState)
+		{
+			super.onCreate (savedInstanceState);
+			addPreferencesFromResource (R.xml.pref_dev);
 
 			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
 			// to their values. When their values change, their summaries are

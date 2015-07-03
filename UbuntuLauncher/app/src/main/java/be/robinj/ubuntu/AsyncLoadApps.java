@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
 import android.os.Debug;
-import android.util.Log;
+import be.robinj.ubuntu.dev.Log;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;

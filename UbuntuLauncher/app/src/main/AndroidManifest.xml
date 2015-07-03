@@ -75,6 +75,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="be.robinj.ubuntu.preferences.PreferencesActivity" />
         </activity>
+        <activity
+            android:name=".dev.DevLogsActivity"
+            android:label="@string/title_activity_dev_logs"
+            android:parentActivityName=".preferences.PreferencesActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="be.robinj.ubuntu.preferences.PreferencesActivity" />
+        </activity>
     </application>
 
 </manifest>

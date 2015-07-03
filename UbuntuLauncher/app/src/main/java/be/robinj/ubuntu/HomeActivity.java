@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import be.robinj.ubuntu.broadcast.PackageManagerBroadcastReceiver;
+import be.robinj.ubuntu.dev.Log;
 import be.robinj.ubuntu.preferences.PreferencesActivity;
 import be.robinj.ubuntu.theme.Abstract;
 import be.robinj.ubuntu.theme.Default;
@@ -77,6 +78,10 @@ public class HomeActivity extends Activity
 
 		try
 		{
+			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+
+			Log.setEnabled (prefs.getBoolean ("dev", false));
+
 			GridView gvDashHomeApps = (GridView) this.findViewById (R.id.gvDashHomeApps);
 			LinearLayout llLauncherAndDashContainer = (LinearLayout) this.findViewById (R.id.llLauncherAndDashContainer);
 			LinearLayout llLauncher = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llLauncher);
@@ -102,7 +107,6 @@ public class HomeActivity extends Activity
 			RelativeLayout vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
 			ListView lvDashHomeLensResults = (ListView) this.findViewById (R.id.lvDashHomeLensResults);
 
-			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 			HashMap<String, Class> themes = new HashMap<String, Class> ();
 			themes.put ("default", Default.class);
 			themes.put ("elementary", Elementary.class);

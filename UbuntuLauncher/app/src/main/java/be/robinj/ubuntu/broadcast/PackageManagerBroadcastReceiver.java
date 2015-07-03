@@ -3,7 +3,7 @@ package be.robinj.ubuntu.broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import be.robinj.ubuntu.dev.Log;
 
 import be.robinj.ubuntu.HomeActivity;
 

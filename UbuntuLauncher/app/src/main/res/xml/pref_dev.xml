@@ -1,0 +1,11 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:dependency="dev"
+        android:title="@string/option_dev_logs">
+        <intent
+            android:targetPackage="be.robinj.ubuntu"
+            android:targetClass="be.robinj.ubuntu.dev.DevLogsActivity" />
+    </Preference>
+
+</PreferenceScreen>
