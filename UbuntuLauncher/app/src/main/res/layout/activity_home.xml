@@ -22,9 +22,22 @@
             android:scaleType="centerCrop" />
 
         <FrameLayout
+            android:id="@+id/flWallpaperOverlayContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/flWallpaperOverlay">
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/flWallpaperOverlay">
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:id="@+id/flWallpaperOverlayWhenDashOpened">
+            </FrameLayout>
         </FrameLayout>
 
         <include layout="@layout/activity_home_widgets"/>

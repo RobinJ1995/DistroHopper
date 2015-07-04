@@ -1,5 +1,7 @@
 package be.robinj.ubuntu;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -17,6 +19,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -67,6 +72,7 @@ public class HomeActivity extends Activity
 	ImageButton ibPanelDashClose;
 	Wallpaper wpWallpaper;
 	FrameLayout flWallpaperOverlay;
+	FrameLayout flWallpaperOverlayWhenDashOpened;
 
 	private int chameleonicBgColour = Color.argb (25, 0, 0, 0);
 
@@ -112,7 +118,9 @@ public class HomeActivity extends Activity
 			ListView lvDashHomeLensResults = (ListView) this.llDash.findViewById (R.id.lvDashHomeLensResults);
 			LinearLayout llDashRibbon = (LinearLayout) this.llDash.findViewById (R.id.llDashRibbon);
 			this.wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
-			this.flWallpaperOverlay = (FrameLayout) this.findViewById (R.id.flWallpaperOverlay);
+			FrameLayout flWallpaperOverlayContainer = (FrameLayout) this.findViewById (R.id.flWallpaperOverlayContainer);
+			this.flWallpaperOverlay = (FrameLayout) flWallpaperOverlayContainer.findViewById (R.id.flWallpaperOverlay);
+			this.flWallpaperOverlayWhenDashOpened = (FrameLayout) flWallpaperOverlayContainer.findViewById (R.id.flWallpaperOverlayWhenDashOpened);
 			this.llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
 			TextView tvPanelBfb = (TextView) this.llPanel.findViewById (R.id.tvPanelBfb);
 			this.ibPanelDashClose = (ImageButton) this.llPanel.findViewById (R.id.ibPanelDashClose);
@@ -212,6 +220,24 @@ public class HomeActivity extends Activity
 				llDashSearchContainer_transition.setStartDelay (LayoutTransition.CHANGE_DISAPPEARING, 0);
 				llDashSearchContainer_transition.setStartDelay (LayoutTransition.CHANGING, 0);
 				llDashSearchContainer.setLayoutTransition (llDashSearchContainer_transition);
+
+				LayoutTransition llLauncherAndDashContainer_transition = new LayoutTransition ();
+				llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.APPEARING, 0);
+				llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.DISAPPEARING, 0);
+				llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.CHANGE_APPEARING, 0);
+				llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.CHANGE_DISAPPEARING, 0);
+				llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.CHANGING, 0);
+				llLauncherAndDashContainer_transition.setDuration (res.getInteger (android.R.integer.config_shortAnimTime));
+				llLauncherAndDashContainer.setLayoutTransition (llLauncherAndDashContainer_transition);
+
+				LayoutTransition flWallpaperOverlayContainer_transition = new LayoutTransition ();
+				flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.APPEARING, 0);
+				flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.DISAPPEARING, 0);
+				flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.CHANGE_APPEARING, 0);
+				flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.CHANGE_DISAPPEARING, 0);
+				flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.CHANGING, 0);
+				flWallpaperOverlayContainer_transition.setDuration (res.getInteger (android.R.integer.config_shortAnimTime));
+				flWallpaperOverlayContainer.setLayoutTransition (flWallpaperOverlayContainer_transition);
 			}
 
 			this.openDashWhenReady = prefs.getBoolean ("dash_ready_show", this.openDashWhenReady);
@@ -371,6 +397,7 @@ public class HomeActivity extends Activity
 			llDashRibbon.setVisibility (res.getBoolean (HomeActivity.theme.dash_ribbon_show) ? View.VISIBLE : View.GONE);
 
 			this.flWallpaperOverlay.setBackgroundResource (HomeActivity.theme.wallpaper_overlay);
+			this.flWallpaperOverlayWhenDashOpened.setBackgroundResource (HomeActivity.theme.wallpaper_overlay_when_dash_opened);
 		}
 		catch (Exception ex)
 		{
@@ -827,7 +854,8 @@ public class HomeActivity extends Activity
 		if (imm != null)
 			imm.hideSoftInputFromWindow (this.getWindow ().getDecorView ().getRootView ().getWindowToken (), 0);
 
-		this.flWallpaperOverlay.setBackgroundResource (HomeActivity.theme.wallpaper_overlay);
+		this.flWallpaperOverlay.setVisibility (View.VISIBLE);
+		this.flWallpaperOverlayWhenDashOpened.setVisibility (View.INVISIBLE);
 	}
 
 	private void openDash ()
@@ -851,7 +879,8 @@ public class HomeActivity extends Activity
 			}
 		}
 
-		this.flWallpaperOverlay.setBackgroundResource (HomeActivity.theme.wallpaper_overlay_when_dash_opened);
+		this.flWallpaperOverlay.setVisibility (View.INVISIBLE);
+		this.flWallpaperOverlayWhenDashOpened.setVisibility (View.VISIBLE);
 	}
 
 	//# Checks #//
