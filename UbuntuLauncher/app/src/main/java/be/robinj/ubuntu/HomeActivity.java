@@ -62,6 +62,12 @@ public class HomeActivity extends Activity
 	//private AppWidgetManager widgetManager;
 	//private WidgetHost widgetHost;
 
+	LinearLayout llDash;
+	LinearLayout llPanel;
+	ImageButton ibPanelDashClose;
+	Wallpaper wpWallpaper;
+	FrameLayout flWallpaperOverlay;
+
 	private int chameleonicBgColour = Color.argb (25, 0, 0, 0);
 
 	private AsyncInitWallpaper asyncInitWallpaper;
@@ -85,7 +91,6 @@ public class HomeActivity extends Activity
 
 			Log.setEnabled (prefs.getBoolean ("dev", false));
 
-			GridView gvDashHomeApps = (GridView) this.findViewById (R.id.gvDashHomeApps);
 			LinearLayout llLauncherAndDashContainer = (LinearLayout) this.findViewById (R.id.llLauncherAndDashContainer);
 			LinearLayout llLauncher = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llLauncher);
 			LinearLayout llLauncherAppsContainer = (LinearLayout) llLauncher.findViewById (R.id.llLauncherAppsContainer);
@@ -98,20 +103,21 @@ public class HomeActivity extends Activity
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalTrash = (be.robinj.ubuntu.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalTrash);
 			ScrollView scrLauncherAppsContainer = (ScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainer);
 			HorizontalScrollView scrLauncherAppsContainerHorizontal = (HorizontalScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainerHorizontal);
-			LinearLayout llDash = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llDash);
-			LinearLayout llDashSearchContainer = (LinearLayout) this.findViewById (R.id.llDashSearchContainer);
-			ImageView imgDashBackgroundGradient = (ImageView) this.findViewById (R.id.imgDashBackgroundGradient);
-			TextView tvDashHomeTitle = (TextView) llDash.findViewById (R.id.tvDashHomeTitle);
-			EditText etDashSearch = (EditText) llDash.findViewById (R.id.etDashSearch);
-			Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
-			FrameLayout flWallpaperOverlay = (FrameLayout) this.findViewById (R.id.flWallpaperOverlay);
-			LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
-			TextView tvPanelBfb = (TextView) llPanel.findViewById (R.id.tvPanelBfb);
-			ImageButton ibPanelDashClose = (ImageButton) llPanel.findViewById (R.id.ibPanelDashClose);
-			ImageButton ibPanelCog = (ImageButton) llPanel.findViewById (R.id.ibPanelCog);
-			RelativeLayout vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
-			ListView lvDashHomeLensResults = (ListView) this.findViewById (R.id.lvDashHomeLensResults);
-			LinearLayout llDashRibbon = (LinearLayout) this.findViewById (R.id.llDashRibbon);
+			this.llDash = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llDash);
+			GridView gvDashHomeApps = (GridView) this.llDash.findViewById (R.id.gvDashHomeApps);
+			LinearLayout llDashSearchContainer = (LinearLayout) this.llDash.findViewById (R.id.llDashSearchContainer);
+			ImageView imgDashBackgroundGradient = (ImageView) this.llDash.findViewById (R.id.imgDashBackgroundGradient);
+			TextView tvDashHomeTitle = (TextView) this.llDash.findViewById (R.id.tvDashHomeTitle);
+			EditText etDashSearch = (EditText) this.llDash.findViewById (R.id.etDashSearch);
+			ListView lvDashHomeLensResults = (ListView) this.llDash.findViewById (R.id.lvDashHomeLensResults);
+			LinearLayout llDashRibbon = (LinearLayout) this.llDash.findViewById (R.id.llDashRibbon);
+			this.wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
+			this.flWallpaperOverlay = (FrameLayout) this.findViewById (R.id.flWallpaperOverlay);
+			this.llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
+			TextView tvPanelBfb = (TextView) this.llPanel.findViewById (R.id.tvPanelBfb);
+			this.ibPanelDashClose = (ImageButton) this.llPanel.findViewById (R.id.ibPanelDashClose);
+			ImageButton ibPanelCog = (ImageButton) this.llPanel.findViewById (R.id.ibPanelCog);
+			//RelativeLayout vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
 
 			HashMap<String, Class> themes = new HashMap<String, Class> ();
 			themes.put ("default", Default.class);
@@ -135,20 +141,20 @@ public class HomeActivity extends Activity
 			if (prefs.getBoolean ("panel_show", true))
 			{
 				if (Build.VERSION.SDK_INT >= 11)
-					llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
+					this.llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
 			}
 			else
 			{
-				llPanel.setVisibility (View.GONE);
+				this.llPanel.setVisibility (View.GONE);
 			}
 
 			int ibDashClose_width = (int) ((float) (48 + prefs.getInt ("launchericon_width", 36)) * density);
 			LinearLayout.LayoutParams ibDashClose_layoutParams = new LinearLayout.LayoutParams (ibDashClose_width, LinearLayout.LayoutParams.MATCH_PARENT);
-			ibPanelDashClose.setLayoutParams (ibDashClose_layoutParams);
+			this.ibPanelDashClose.setLayoutParams (ibDashClose_layoutParams);
 
-			RelativeLayout.LayoutParams vgWidgets_layoutParams = (RelativeLayout.LayoutParams) vgWidgets.getLayoutParams ();
+			/*RelativeLayout.LayoutParams vgWidgets_layoutParams = (RelativeLayout.LayoutParams) vgWidgets.getLayoutParams ();
 			vgWidgets_layoutParams.setMargins (ibDashClose_width, 0, 0, 0);
-			//vgWidgets.setLayoutParams ();
+			//vgWidgets.setLayoutParams ();*/
 
 			lalSpinner.getProgressWheel ().spin ();
 
@@ -167,7 +173,7 @@ public class HomeActivity extends Activity
 			*/
 
 			this.asyncInitWallpaper = new AsyncInitWallpaper (this);
-			this.asyncInitWallpaper.execute (wpWallpaper);
+			this.asyncInitWallpaper.execute (this.wpWallpaper);
 
 			this.asyncLoadApps = new AsyncLoadApps (this, lalSpinner, lalBfb, gvDashHomeApps);
 			this.asyncLoadApps.execute (this.getApplicationContext ());
@@ -230,14 +236,14 @@ public class HomeActivity extends Activity
 			}
 
 			// Apply theme //
-			llPanel.setBackgroundResource (HomeActivity.theme.panel_background);
+			this.llPanel.setBackgroundResource (HomeActivity.theme.panel_background);
 			ibPanelCog.setImageResource (HomeActivity.theme.panel_preferences_image);
-			ibPanelDashClose.setImageResource (HomeActivity.theme.panel_close_image);
+			this.ibPanelDashClose.setImageResource (HomeActivity.theme.panel_close_image);
 			imgDashBackgroundGradient.setImageResource (HomeActivity.theme.dash_background_gradient);
 			lalBfb.setIcon (res.getDrawable (HomeActivity.theme.launcher_bfb_image));
 			lalPreferences.setIcon (res.getDrawable (HomeActivity.theme.launcher_preferences_image));
 
-			RelativeLayout.LayoutParams llPanel_layoutParams = (RelativeLayout.LayoutParams) llPanel.getLayoutParams ();
+			RelativeLayout.LayoutParams llPanel_layoutParams = (RelativeLayout.LayoutParams) this.llPanel.getLayoutParams ();
 			llPanel_layoutParams.height = (int) res.getDimension (R.dimen.theme_elementary_panel_height);
 
 			boolean expandLlLauncher = res.getBoolean (HomeActivity.theme.launcher_expand);
@@ -264,9 +270,9 @@ public class HomeActivity extends Activity
 					llLauncherAndDashContainer.setGravity (Gravity.BOTTOM);
 
 					llLauncherAndDashContainer.removeView (llLauncher);
-					llLauncherAndDashContainer.removeView (llDash);
+					llLauncherAndDashContainer.removeView (this.llDash);
 
-					llLauncherAndDashContainer.addView (llDash);
+					llLauncherAndDashContainer.addView (this.llDash);
 					llLauncherAndDashContainer.addView (llLauncher);
 
 					LinearLayout.LayoutParams llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -364,7 +370,7 @@ public class HomeActivity extends Activity
 
 			llDashRibbon.setVisibility (res.getBoolean (HomeActivity.theme.dash_ribbon_show) ? View.VISIBLE : View.GONE);
 
-			flWallpaperOverlay.setBackgroundResource (HomeActivity.theme.wallpaper_overlay);
+			this.flWallpaperOverlay.setBackgroundResource (HomeActivity.theme.wallpaper_overlay);
 		}
 		catch (Exception ex)
 		{
@@ -435,9 +441,7 @@ public class HomeActivity extends Activity
 	{
 		try
 		{
-			LinearLayout llDash = (LinearLayout) this.findViewById (R.id.llDash);
-
-			if (llDash.getVisibility () == View.VISIBLE)
+			if (this.llDash.getVisibility () == View.VISIBLE)
 				this.closeDash ();
 			else if (! this.isDefaultLauncher ())
 				super.onBackPressed ();
@@ -689,7 +693,6 @@ public class HomeActivity extends Activity
 			be.robinj.ubuntu.unity.launcher.AppLauncher lalTrash = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.findViewById (R.id.lalTrash);
 
 			LinearLayout llLauncher = (LinearLayout) this.findViewById (R.id.llLauncher);
-			LinearLayout llDash = (LinearLayout) this.findViewById (R.id.llDash);
 
 			if (this.getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
 			{
@@ -705,9 +708,9 @@ public class HomeActivity extends Activity
 				llLauncher.setBackgroundResource (HomeActivity.theme.launcher_background);
 
 			if (this.getResources ().getBoolean (HomeActivity.theme.dash_background_dynamic))
-				llDash.setBackgroundColor (bgColour);
+				this.llDash.setBackgroundColor (bgColour);
 			else
-				llDash.setBackgroundResource (HomeActivity.theme.dash_background);
+				this.llDash.setBackgroundResource (HomeActivity.theme.dash_background);
 
 			this.chameleonicBgColour = bgColour;
 		}
@@ -746,9 +749,7 @@ public class HomeActivity extends Activity
 	{
 		try
 		{
-			LinearLayout llDash = (LinearLayout) this.findViewById (R.id.llDash);
-
-			if (llDash.getVisibility () == View.VISIBLE)
+			if (this.llDash.getVisibility () == View.VISIBLE)
 				this.closeDash ();
 			else
 				this.openDash ();
@@ -795,30 +796,25 @@ public class HomeActivity extends Activity
 	//# Dash #//
 	private void closeDash ()
 	{
-		LinearLayout llDash = (LinearLayout) this.findViewById (R.id.llDash);
-		LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
-		ImageButton ibPanelDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
-		Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
 		EditText etDashSearch = (EditText) this.findViewById (R.id.etDashSearch);
-		FrameLayout flWallpaperOverlay = (FrameLayout) this.findViewById (R.id.flWallpaperOverlay);
 
-		llDash.setVisibility (View.GONE);
-		wpWallpaper.unblur ();
+		this.llDash.setVisibility (View.GONE);
+		this.wpWallpaper.unblur ();
 		etDashSearch.setText ("");
 		etDashSearch.clearFocus ();
 
 		if (this.getResources ().getInteger (HomeActivity.theme.panel_close_location) != -1)
-			ibPanelDashClose.setVisibility (View.INVISIBLE);
+			this.ibPanelDashClose.setVisibility (View.INVISIBLE);
 
 		if (Build.VERSION.SDK_INT >= 11)
 		{
 			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
-			llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
+			this.llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
 		}
 
 		if (this.getResources ().getBoolean (HomeActivity.theme.panel_background_dynamic_when_dash_opened))
 		{
-			llPanel.setBackgroundResource (HomeActivity.theme.panel_background);
+			this.llPanel.setBackgroundResource (HomeActivity.theme.panel_background);
 
 			if (Build.VERSION.SDK_INT >= 19)
 			{
@@ -831,28 +827,22 @@ public class HomeActivity extends Activity
 		if (imm != null)
 			imm.hideSoftInputFromWindow (this.getWindow ().getDecorView ().getRootView ().getWindowToken (), 0);
 
-		flWallpaperOverlay.setBackgroundResource (HomeActivity.theme.wallpaper_overlay);
+		this.flWallpaperOverlay.setBackgroundResource (HomeActivity.theme.wallpaper_overlay);
 	}
 
 	private void openDash ()
 	{
-		LinearLayout llDash = (LinearLayout) this.findViewById (R.id.llDash);
-		LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
-		ImageButton ibPanelDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
-		Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
-		FrameLayout flWallpaperOverlay = (FrameLayout) this.findViewById (R.id.flWallpaperOverlay);
-
-		llDash.setVisibility (View.VISIBLE);
-		wpWallpaper.blur ();
+		this.llDash.setVisibility (View.VISIBLE);
+		this.wpWallpaper.blur ();
 		if (Build.VERSION.SDK_INT >= 11)
-			llPanel.setAlpha (1F);
+			this.llPanel.setAlpha (1F);
 
 		if (this.getResources ().getInteger (HomeActivity.theme.panel_close_location) != -1)
-			ibPanelDashClose.setVisibility (View.VISIBLE);
+			this.ibPanelDashClose.setVisibility (View.VISIBLE);
 
 		if (this.getResources ().getBoolean (HomeActivity.theme.panel_background_dynamic_when_dash_opened))
 		{
-			llPanel.setBackgroundColor (this.chameleonicBgColour);
+			this.llPanel.setBackgroundColor (this.chameleonicBgColour);
 
 			if (Build.VERSION.SDK_INT >= 19)
 			{
@@ -861,7 +851,7 @@ public class HomeActivity extends Activity
 			}
 		}
 
-		flWallpaperOverlay.setBackgroundResource (HomeActivity.theme.wallpaper_overlay_when_dash_opened);
+		this.flWallpaperOverlay.setBackgroundResource (HomeActivity.theme.wallpaper_overlay_when_dash_opened);
 	}
 
 	//# Checks #//
