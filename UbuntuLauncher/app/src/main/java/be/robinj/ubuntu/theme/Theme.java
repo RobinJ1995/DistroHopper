@@ -14,6 +14,9 @@ public abstract class Theme
 	public String description;
 	public int[] res_screenshots;
 
+	public int wallpaper_overlay;
+	public int wallpaper_overlay_when_dash_opened;
+
 	// Launcher //
 	public int launcher_location;
 	public int launcher_margin;
@@ -37,7 +40,7 @@ public abstract class Theme
 	public int panel_location;
 	public int panel_height;
 	public int panel_background;
-	public int panel_background_dynamic_if_dash_opened;
+	public int panel_background_dynamic_when_dash_opened;
 	public int panel_bfb_location;
 	public int panel_bfb_text;
 	public int panel_bfb_text_colour;

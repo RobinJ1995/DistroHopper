@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <drawable name="theme_elementary_wallpaper_overlay">@android:color/transparent</drawable>
+    <drawable name="theme_elementary_wallpaper_overlay_when_dash_opened">@android:color/transparent</drawable>
+
     <!-- Launcher -->
     <integer name="theme_elementary_launcher_location">@integer/position_bottom</integer>
     <array name="theme_elementary_launcher_margin">
@@ -28,7 +31,7 @@
     <integer name="theme_elementary_panel_location">@integer/position_top</integer>
     <dimen name="theme_elementary_panel_height">32dp</dimen>
     <drawable name="theme_elementary_panel_background">@android:color/transparent</drawable>
-    <bool name="theme_elementary_panel_background_dynamic_if_dash_opened">false</bool>
+    <bool name="theme_elementary_panel_background_dynamic_when_dash_opened">false</bool>
     <integer name="theme_elementary_panel_bfb_location">@integer/position_left</integer>
     <string name="theme_elementary_panel_bfb_text">@string/theme_elementary_res_panel_bfb_text</string>
     <color name="theme_elementary_panel_bfb_text_colour">@android:color/white</color>

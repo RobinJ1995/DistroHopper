@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -103,6 +104,7 @@ public class HomeActivity extends Activity
 			TextView tvDashHomeTitle = (TextView) llDash.findViewById (R.id.tvDashHomeTitle);
 			EditText etDashSearch = (EditText) llDash.findViewById (R.id.etDashSearch);
 			Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
+			FrameLayout flWallpaperOverlay = (FrameLayout) this.findViewById (R.id.flWallpaperOverlay);
 			LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
 			TextView tvPanelBfb = (TextView) llPanel.findViewById (R.id.tvPanelBfb);
 			ImageButton ibPanelDashClose = (ImageButton) llPanel.findViewById (R.id.ibPanelDashClose);
@@ -361,6 +363,8 @@ public class HomeActivity extends Activity
 			etDashSearch.setTextColor (res.getColor (HomeActivity.theme.dash_search_text_colour));
 
 			llDashRibbon.setVisibility (res.getBoolean (HomeActivity.theme.dash_ribbon_show) ? View.VISIBLE : View.GONE);
+
+			flWallpaperOverlay.setBackgroundResource (HomeActivity.theme.wallpaper_overlay);
 		}
 		catch (Exception ex)
 		{
@@ -796,6 +800,7 @@ public class HomeActivity extends Activity
 		ImageButton ibPanelDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
 		Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
 		EditText etDashSearch = (EditText) this.findViewById (R.id.etDashSearch);
+		FrameLayout flWallpaperOverlay = (FrameLayout) this.findViewById (R.id.flWallpaperOverlay);
 
 		llDash.setVisibility (View.GONE);
 		wpWallpaper.unblur ();
@@ -811,7 +816,7 @@ public class HomeActivity extends Activity
 			llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
 		}
 
-		if (this.getResources ().getBoolean (HomeActivity.theme.panel_background_dynamic_if_dash_opened))
+		if (this.getResources ().getBoolean (HomeActivity.theme.panel_background_dynamic_when_dash_opened))
 		{
 			llPanel.setBackgroundResource (HomeActivity.theme.panel_background);
 
@@ -825,6 +830,8 @@ public class HomeActivity extends Activity
 		InputMethodManager imm = (InputMethodManager) this.getSystemService (Context.INPUT_METHOD_SERVICE);
 		if (imm != null)
 			imm.hideSoftInputFromWindow (this.getWindow ().getDecorView ().getRootView ().getWindowToken (), 0);
+
+		flWallpaperOverlay.setBackgroundResource (HomeActivity.theme.wallpaper_overlay);
 	}
 
 	private void openDash ()
@@ -833,6 +840,7 @@ public class HomeActivity extends Activity
 		LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
 		ImageButton ibPanelDashClose = (ImageButton) this.findViewById (R.id.ibPanelDashClose);
 		Wallpaper wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
+		FrameLayout flWallpaperOverlay = (FrameLayout) this.findViewById (R.id.flWallpaperOverlay);
 
 		llDash.setVisibility (View.VISIBLE);
 		wpWallpaper.blur ();
@@ -842,7 +850,7 @@ public class HomeActivity extends Activity
 		if (this.getResources ().getInteger (HomeActivity.theme.panel_close_location) != -1)
 			ibPanelDashClose.setVisibility (View.VISIBLE);
 
-		if (this.getResources ().getBoolean (HomeActivity.theme.panel_background_dynamic_if_dash_opened))
+		if (this.getResources ().getBoolean (HomeActivity.theme.panel_background_dynamic_when_dash_opened))
 		{
 			llPanel.setBackgroundColor (this.chameleonicBgColour);
 
@@ -852,6 +860,8 @@ public class HomeActivity extends Activity
 				llStatusBar.setBackgroundColor (this.chameleonicBgColour);
 			}
 		}
+
+		flWallpaperOverlay.setBackgroundResource (HomeActivity.theme.wallpaper_overlay_when_dash_opened);
 	}
 
 	//# Checks #//

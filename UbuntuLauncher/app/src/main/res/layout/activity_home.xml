@@ -21,6 +21,12 @@
             android:id="@+id/wpWallpaper"
             android:scaleType="centerCrop" />
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/flWallpaperOverlay">
+        </FrameLayout>
+
         <include layout="@layout/activity_home_widgets"/>
 
         <LinearLayout

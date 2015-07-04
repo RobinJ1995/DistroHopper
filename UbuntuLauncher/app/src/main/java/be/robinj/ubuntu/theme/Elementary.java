@@ -17,6 +17,9 @@ public class Elementary extends Theme
 			R.drawable.theme_elementary_screenshot1
 		};
 
+		this.wallpaper_overlay = R.drawable.theme_elementary_wallpaper_overlay;
+		this.wallpaper_overlay_when_dash_opened = R.drawable.theme_elementary_wallpaper_overlay_when_dash_opened;
+
 		// Launcher //
 		this.launcher_location = R.integer.theme_elementary_launcher_location;
 		this.launcher_margin = R.array.theme_elementary_launcher_margin;
@@ -40,7 +43,7 @@ public class Elementary extends Theme
 		this.panel_location = R.integer.theme_elementary_panel_location;
 		this.panel_height = R.dimen.theme_default_panel_height;
 		this.panel_background = R.drawable.theme_elementary_panel_background;
-		this.panel_background_dynamic_if_dash_opened = R.bool.theme_elementary_panel_background_dynamic_if_dash_opened;
+		this.panel_background_dynamic_when_dash_opened = R.bool.theme_elementary_panel_background_dynamic_when_dash_opened;
 		this.panel_bfb_location = R.integer.theme_elementary_panel_bfb_location;
 		this.panel_bfb_text = R.string.theme_elementary_panel_bfb_text;
 		this.panel_bfb_text_colour = R.color.theme_elementary_panel_bfb_text_colour;
