@@ -53,6 +53,7 @@ public class Wallpaper extends ImageView
 
 		try
 		{
+			//TODO// Huge memory hog! Need to get rid of this. //
 			SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
 			this.mode = prefs.getString ("unitywallpaper_blur", "darken");
 
