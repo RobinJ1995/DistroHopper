@@ -7,33 +7,35 @@
         max="72"
         android:defaultValue="36" />
 
-    <be.robinj.ubuntu.thirdparty.SeekBarPreference
-        android:key="launchericon_opacity"
-        android:title="@string/option_launchericon_opacity"
-        android:summary="@string/hint_launchericon_opacity"
-        max="255"
-        android:defaultValue="204" />
+    <!-- //TODO// This will become a theme-specific preference //
+   <be.robinj.ubuntu.thirdparty.SeekBarPreference
+       android:key="launchericon_opacity"
+       android:title="@string/option_launchericon_opacity"
+       android:summary="@string/hint_launchericon_opacity"
+       max="255"
+       android:defaultValue="204" />-->
 
-    <CheckBoxPreference
-        android:key="launcher_running_show"
-        android:title="@string/option_launcher_running_show"
-        android:summary="@string/hint_launcher_running_show"
-        android:defaultValue="true" />
+   <CheckBoxPreference
+       android:key="launcher_running_show"
+       android:title="@string/option_launcher_running_show"
+       android:summary="@string/hint_launcher_running_show"
+       android:defaultValue="true" />
 
+    <!-- //TODO// This will become a theme-specific preference //
     <ListPreference
-        android:key="launcher_edge"
-        android:title="@string/option_launcher_edge"
-        android:summary="@string/hint_launcher_edge"
-        android:entries="@array/keys_launcher_edge"
-        android:entryValues="@array/values_launcher_edge"
-        android:defaultValue="left"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null" />
+       android:key="launcher_edge"
+       android:title="@string/option_launcher_edge"
+       android:summary="@string/hint_launcher_edge"
+       android:entries="@array/keys_launcher_edge"
+       android:entryValues="@array/values_launcher_edge"
+       android:defaultValue="left"
+       android:negativeButtonText="@null"
+       android:positiveButtonText="@null" />-->
 
-    <CheckBoxPreference
-        android:key="launcherservice_enabled"
-        android:title="@string/option_launcherservice_enabled"
-        android:summary="@string/hint_launcherservice_enabled"
-        android:defaultValue="false" />
+   <CheckBoxPreference
+       android:key="launcherservice_enabled"
+       android:title="@string/option_launcherservice_enabled"
+       android:summary="@string/hint_launcherservice_enabled"
+       android:defaultValue="false" />
 
 </PreferenceScreen>

@@ -1,17 +1,21 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference
-        android:key="panel_show"
-        android:title="@string/option_panel_show"
-        android:summary="@string/hint_panel_show"
-        android:defaultValue="true" />
+    <!-- //TODO// This will become a theme-specific preference //
+   <CheckBoxPreference
+       android:key="panel_show"
+       android:title="@string/option_panel_show"
+       android:summary="@string/hint_panel_show"
+       android:defaultValue="true" />
+       -->
 
+    <!-- //TODO// This will become a theme-specific preference //
     <be.robinj.ubuntu.thirdparty.SeekBarPreference
-        android:dependency="panel_show"
-        android:key="panel_opacity"
-        android:title="@string/option_panel_opacity"
-        android:summary="@string/hint_panel_opacity"
-        max="255"
-        android:defaultValue="255" />
+       android:dependency="panel_show"
+       android:key="panel_opacity"
+       android:title="@string/option_panel_opacity"
+       android:summary="@string/hint_panel_opacity"
+       max="255"
+       android:defaultValue="255" />
+       -->
 
 </PreferenceScreen>

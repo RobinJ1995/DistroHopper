@@ -1,25 +1,27 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference
-        android:key="dashsearch_full"
-        android:title="@string/option_dashsearch_full"
-        android:summary="@string/hint_dashsearch_full"
-        android:defaultValue="true" />
+    <!-- //TODO// This will become a lens-specific preference, if I ever decide to implement lens-specific preferences //
+   <CheckBoxPreference
+       android:key="dashsearch_full"
+       android:title="@string/option_dashsearch_full"
+       android:summary="@string/hint_dashsearch_full"
+       android:defaultValue="true" />
+    -->
 
-    <Preference
-        android:title="@string/option_lenses"
-        android:summary="@string/hint_lenses">
-        <intent
-            android:targetPackage="be.robinj.ubuntu"
-            android:targetClass="be.robinj.ubuntu.preferences.LensPreferencesActivity" />
-    </Preference>
+   <Preference
+       android:title="@string/option_lenses"
+       android:summary="@string/hint_lenses">
+       <intent
+           android:targetPackage="be.robinj.ubuntu"
+           android:targetClass="be.robinj.ubuntu.preferences.LensPreferencesActivity" />
+   </Preference>
 
-    <!--<EditTextPreference
-        android:key="dashsearch_lenses_maxresults"
-        android:title="@string/option_dashsearch_lenses_maxresults"
-        android:summary="@string/hint_dashsearch_lenses_maxresults"
-        android:defaultValue="5"
-        android:inputType="number" />-->
+   <!--<EditTextPreference
+       android:key="dashsearch_lenses_maxresults"
+       android:title="@string/option_dashsearch_lenses_maxresults"
+       android:summary="@string/hint_dashsearch_lenses_maxresults"
+       android:defaultValue="5"
+       android:inputType="number" />-->
 
     <CheckBoxPreference
         android:key="dash_ready_show"
