@@ -15,9 +15,9 @@
     </Preference>
 
     <be.robinj.ubuntu.thirdparty.SeekBarPreference
-        android:key="launchericon_size"
-        android:title="@string/option_launchericon_width"
-        android:summary="@string/hint_launchericon_width"
+        android:key="launchericon_width"
+        android:title="@string/option_launchericon_size"
+        android:summary="@string/hint_launchericon_size"
         max="72"
         android:defaultValue="36" />
 
