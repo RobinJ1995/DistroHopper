@@ -31,8 +31,8 @@
     <string name="pref_header_functionality">Functionality</string>
     <string name="pref_header_appearance">Appearance</string>
     <string name="category_colourcalc">Dominant colour calculation</string>
-    <string name="option_launchericon_width">Width</string>
-    <string name="hint_launchericon_width">How wide the Launcher and the icons within it should be. The slider goes from 48dip to 120dip, with the default (right in the middle) being 84dip.</string>
+    <string name="option_launchericon_size">Pinned icon size</string>
+    <string name="hint_launchericon_size">How large icons for pinned apps should be. The slider goes from 48dip to 120dip, with the default (right in the middle) being 84dip.</string>
     <string name="option_launchericon_opacity">Icon background opacity</string>
     <string name="hint_launchericon_opacity">How opaque the background colour of icons in the Launcher should be.</string>
     <string name="option_launcherservice_enabled">Make the Launcher available inside other apps</string>
