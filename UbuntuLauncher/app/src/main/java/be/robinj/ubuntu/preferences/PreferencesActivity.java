@@ -165,27 +165,17 @@ public class PreferencesActivity extends PreferenceActivity
 		// In the simplified UI, fragments are not used at all and we instead
 		// use the older PreferenceActivity APIs.
 
-		this.addPreferencesFromResource (R.xml.pref_general);
+		this.addPreferencesFromResource (R.xml.pref_empty); // Workaround for a shortcoming in Android //
 
 		PreferenceCategory fakeHeader = new PreferenceCategory (this);
-		fakeHeader.setTitle (R.string.pref_header_unity);
+		fakeHeader.setTitle (R.string.pref_header_appearance);
 		this.getPreferenceScreen ().addPreference (fakeHeader);
-		this.addPreferencesFromResource (R.xml.pref_unity);
+		this.addPreferencesFromResource (R.xml.pref_appearance);
 
 		fakeHeader = new PreferenceCategory (this);
-		fakeHeader.setTitle (R.string.pref_header_launcher);
+		fakeHeader.setTitle (R.string.pref_header_functionality);
 		this.getPreferenceScreen ().addPreference (fakeHeader);
-		this.addPreferencesFromResource (R.xml.pref_launcher);
-
-		fakeHeader = new PreferenceCategory (this);
-		fakeHeader.setTitle (R.string.pref_header_dash);
-		this.getPreferenceScreen ().addPreference (fakeHeader);
-		this.addPreferencesFromResource (R.xml.pref_dash);
-
-		fakeHeader = new PreferenceCategory (this);
-		fakeHeader.setTitle (R.string.pref_header_panel);
-		this.getPreferenceScreen ().addPreference (fakeHeader);
-		this.addPreferencesFromResource (R.xml.pref_panel);
+		this.addPreferencesFromResource (R.xml.pref_functionality);
 
 		fakeHeader = new PreferenceCategory (this);
 		fakeHeader.setTitle (R.string.pref_header_advanced);
@@ -218,91 +208,6 @@ public class PreferencesActivity extends PreferenceActivity
 	}
 
 	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
-	public static class GeneralPreferenceFragment extends PreferenceFragment
-	{
-		@Override
-		public void onCreate (Bundle savedInstanceState)
-		{
-			super.onCreate (savedInstanceState);
-			addPreferencesFromResource (R.xml.pref_general);
-
-			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
-			// to their values. When their values change, their summaries are
-			// updated to reflect the new value, per the Android Design
-			// guidelines.
-			//bindPreferenceSummaryToValue (findPreference ("example_text"));
-		}
-	}
-
-	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
-	public static class UnityPreferenceFragment extends PreferenceFragment
-	{
-		@Override
-		public void onCreate (Bundle savedInstanceState)
-		{
-			super.onCreate (savedInstanceState);
-			addPreferencesFromResource (R.xml.pref_unity);
-
-			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
-			// to their values. When their values change, their summaries are
-			// updated to reflect the new value, per the Android Design
-			// guidelines.
-			//bindPreferenceSummaryToValue (findPreference ("notifications_new_message_ringtone"));
-		}
-	}
-
-	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
-	public static class LauncherPreferenceFragment extends PreferenceFragment
-	{
-		@Override
-		public void onCreate (Bundle savedInstanceState)
-		{
-			super.onCreate (savedInstanceState);
-			addPreferencesFromResource (R.xml.pref_launcher);
-
-			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
-			// to their values. When their values change, their summaries are
-			// updated to reflect the new value, per the Android Design
-			// guidelines.
-			//bindPreferenceSummaryToValue (findPreference ("sync_frequency"));
-		}
-	}
-
-	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
-	public static class DashPreferenceFragment extends PreferenceFragment
-	{
-		@Override
-		public void onCreate (Bundle savedInstanceState)
-		{
-			super.onCreate (savedInstanceState);
-			addPreferencesFromResource (R.xml.pref_dash);
-
-			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
-			// to their values. When their values change, their summaries are
-			// updated to reflect the new value, per the Android Design
-			// guidelines.
-			//bindPreferenceSummaryToValue (findPreference ("sync_frequency"));
-		}
-	}
-
-	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
-	public static class PanelPreferenceFragment extends PreferenceFragment
-	{
-		@Override
-		public void onCreate (Bundle savedInstanceState)
-		{
-			super.onCreate (savedInstanceState);
-			addPreferencesFromResource (R.xml.pref_panel);
-
-			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
-			// to their values. When their values change, their summaries are
-			// updated to reflect the new value, per the Android Design
-			// guidelines.
-			//bindPreferenceSummaryToValue (findPreference ("sync_frequency"));
-		}
-	}
-
-	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
 	public static class AdvancedPreferenceFragment extends PreferenceFragment
 	{
 		@Override
@@ -327,6 +232,40 @@ public class PreferencesActivity extends PreferenceActivity
 		{
 			super.onCreate (savedInstanceState);
 			addPreferencesFromResource (R.xml.pref_dev);
+
+			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
+			// to their values. When their values change, their summaries are
+			// updated to reflect the new value, per the Android Design
+			// guidelines.
+			//bindPreferenceSummaryToValue (findPreference ("sync_frequency"));
+		}
+	}
+
+	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
+	public static class AppearancePreferenceFragment extends PreferenceFragment
+	{
+		@Override
+		public void onCreate (Bundle savedInstanceState)
+		{
+			super.onCreate (savedInstanceState);
+			addPreferencesFromResource (R.xml.pref_appearance);
+
+			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
+			// to their values. When their values change, their summaries are
+			// updated to reflect the new value, per the Android Design
+			// guidelines.
+			//bindPreferenceSummaryToValue (findPreference ("sync_frequency"));
+		}
+	}
+
+	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
+	public static class FunctionalityPreferenceFragment extends PreferenceFragment
+	{
+		@Override
+		public void onCreate (Bundle savedInstanceState)
+		{
+			super.onCreate (savedInstanceState);
+			addPreferencesFromResource (R.xml.pref_functionality);
 
 			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
 			// to their values. When their values change, their summaries are

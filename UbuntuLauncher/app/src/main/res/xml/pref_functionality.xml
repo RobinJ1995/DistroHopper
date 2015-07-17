@@ -1,0 +1,29 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:key="launcher_running_show"
+        android:title="@string/option_launcher_running_show"
+        android:summary="@string/hint_launcher_running_show"
+        android:defaultValue="true" />
+
+    <CheckBoxPreference
+        android:key="launcherservice_enabled"
+        android:title="@string/option_launcherservice_enabled"
+        android:summary="@string/hint_launcherservice_enabled"
+        android:defaultValue="false" />
+
+    <Preference
+       android:title="@string/option_lenses"
+       android:summary="@string/hint_lenses">
+       <intent
+           android:targetPackage="be.robinj.ubuntu"
+           android:targetClass="be.robinj.ubuntu.preferences.LensPreferencesActivity" />
+   </Preference>
+
+    <CheckBoxPreference
+        android:key="dash_ready_show"
+        android:title="@string/option_dash_ready_show"
+        android:summary="@string/hint_dash_ready_show"
+        android:defaultValue="false" />
+
+</PreferenceScreen>

@@ -1,0 +1,24 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:title="@string/option_theme"
+        android:summary="@string/hint_theme">
+        <intent
+            android:targetPackage="be.robinj.ubuntu"
+            android:targetClass="be.robinj.ubuntu.preferences.ThemePreferencesActivity" />
+    </Preference>
+
+    <Preference
+        android:title="@string/option_wallpaper"
+        android:summary="@string/hint_wallpaper">
+        <intent android:action="android.intent.action.SET_WALLPAPER" />
+    </Preference>
+
+    <be.robinj.ubuntu.thirdparty.SeekBarPreference
+        android:key="launchericon_width"
+        android:title="@string/option_launchericon_width"
+        android:summary="@string/hint_launchericon_width"
+        max="72"
+        android:defaultValue="36" />
+
+</PreferenceScreen>
