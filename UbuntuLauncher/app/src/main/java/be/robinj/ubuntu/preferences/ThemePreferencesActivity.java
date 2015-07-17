@@ -33,6 +33,12 @@ public class ThemePreferencesActivity extends Activity
 		themes.add (new Elementary ());
 		themes.add (new Gnome ());
 
+		for (int i = 0; i < themes.size (); i++)
+		{
+			if (themes.get (i).dev_only)
+				themes.remove (i);
+		}
+
 		ListView lvThemeList = (ListView) this.findViewById (R.id.lvThemeList);
 		lvThemeList.setAdapter (new ThemePreferencesListViewAdapter (this, themes));
 	}

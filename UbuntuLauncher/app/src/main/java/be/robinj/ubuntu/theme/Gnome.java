@@ -14,6 +14,7 @@ public class Gnome extends Theme
 		this.res_screenshots = new int[]
 		{
 		};
+		this.dev_only = true;
 
 		this.wallpaper_overlay = R.drawable.theme_gnome_wallpaper_overlay;
 		this.wallpaper_overlay_when_dash_opened = R.drawable.theme_gnome_wallpaper_overlay_when_dash_opened;

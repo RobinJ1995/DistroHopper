@@ -45,7 +45,7 @@
     <drawable name="theme_default_dash_background">@android:color/transparent</drawable>
     <drawable name="theme_default_dash_background_gradient">@drawable/dash_background_gradient</drawable>
     <color name="theme_default_dash_applauncher_text_colour">@android:color/white</color>
-    <color name="theme_default_dash_applauncher_text_shadow_colour">@android:color/transparent</color>
+    <color name="theme_default_dash_applauncher_text_shadow_colour">@android:color/black</color>
     <drawable name="theme_default_dash_search_background">@drawable/dash_search_background</drawable>
     <color name="theme_default_dash_search_text_colour">@android:color/white</color>
     <bool name="theme_default_dash_ribbon_show">true</bool>
