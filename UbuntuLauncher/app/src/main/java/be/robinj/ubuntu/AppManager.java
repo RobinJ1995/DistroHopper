@@ -225,6 +225,9 @@ public class AppManager implements Iterable<App>
 		}
 		else
 		{
+			if (showToast)
+				Toast.makeText (this.context, app.getLabel () + " " + this.context.getResources ().getString (R.string.alreadypinned), Toast.LENGTH_SHORT).show ();
+
 			return false;
 		}
 	}

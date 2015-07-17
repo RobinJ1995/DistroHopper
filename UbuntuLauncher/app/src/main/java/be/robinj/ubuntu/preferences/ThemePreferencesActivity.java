@@ -12,11 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import be.robinj.ubuntu.R;
-import be.robinj.ubuntu.theme.Abstract;
-import be.robinj.ubuntu.theme.Default;
-import be.robinj.ubuntu.theme.Elementary;
-import be.robinj.ubuntu.theme.Gnome;
-import be.robinj.ubuntu.theme.Theme;
+import be.robinj.ubuntu.theme.*;
 
 public class ThemePreferencesActivity extends Activity
 {
