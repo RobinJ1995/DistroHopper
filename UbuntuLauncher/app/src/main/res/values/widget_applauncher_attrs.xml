@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="AppLauncher">
-        <attr name="label" format="string" />
-        <attr name="description" format="string" />
-        <attr name="icon" format="integer" />
-        <attr name="special" format="boolean" />
-        <attr name="background" format="integer" />
+        <!-- Let's just prefix everything with `applauncher_` as to avoid conflicts with v7-appcompat... -->
+        <attr name="applauncher_label" format="string" />
+        <attr name="applauncher_description" format="string" />
+        <attr name="applauncher_icon" format="integer" />
+        <attr name="applauncher_special" format="boolean" />
+        <attr name="applauncher_background" format="integer" />
     </declare-styleable>
 </resources>

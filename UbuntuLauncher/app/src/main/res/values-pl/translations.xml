@@ -4,8 +4,6 @@
   <string name="dash_lens_apps_title">Aplikacje</string>
   <string name="title_activity_preferences">Ustawienia</string>
   <string name="title_activity_about">O programie</string>
-  <string name="pinned">zostało przypięte</string>
-  <string name="unpinned">zostało odpięte</string>
   <string name="notpinned">nie jest przypięte</string>
   <string name="developed_by">Stworzone przez Robin Jacobs</string>
   <string name="honourable_mentions">Specjalne podziękowania</string>
@@ -13,9 +11,6 @@
   <string name="button_about">O programie</string>
   <string name="title_preferences">Ustawienia</string>
   <string name="category_colourcalc">Wyznaczanie głównego koloru</string>
-  <string name="option_launchericon_width">Szerokośc paska szybkiego dostępu</string>
-  <string name="hint_launchericon_width">Jak szeroki powinien być pasek postępu oraz ikony do niego przypięte. Minimalna szerokość to
-        48dip, maksymalna 120dip. Domyślnie ustawienie to 84dip.</string>
   <string name="option_launchericon_opacity">Nieprzezroczystość tła ikon na pasku szybkiego dostępu</string>
   <string name="hint_launchericon_opacity">Ustawienie stopnia nieprzezroczystości tła ikon. Im bardziej suwak ustawiony jest na
         lewo, tym tło ikon jest bardziej przezroczyste.</string>

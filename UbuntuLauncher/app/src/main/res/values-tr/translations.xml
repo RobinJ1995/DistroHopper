@@ -5,8 +5,6 @@
   <string name="dash_lens_other_title">Diğer</string>
   <string name="title_activity_preferences">Tercihler</string>
   <string name="title_activity_about">Hakkında</string>
-  <string name="pinned">Başlatıcıya eklendi</string>
-  <string name="unpinned">Başlatıcıdan kaldırıldı</string>
   <string name="notpinned">eklenmedi</string>
   <string name="developed_by">Robin Jacobs Tarafından Geliştirildi</string>
   <string name="honourable_mentions">Onurlu isimler</string>
@@ -21,8 +19,6 @@
   <string name="pref_header_panel">Panel</string>
   <string name="pref_header_advanced">Gelişmiş</string>
   <string name="category_colourcalc">Baskın renk hesaplaması</string>
-  <string name="option_launchericon_width">Başlatıcı genişliği</string>
-  <string name="hint_launchericon_width">Başlatıcının ve ikonların genişliği ne kadar olmalı. Kaydırıcı 48dip\'den 120dip\'e kadar gider, varsayılan olarak (tam ortada) 84dip\'dir.</string>
   <string name="option_launchericon_opacity">Başlatıcı ikon arka planı opaklığı</string>
   <string name="hint_launchericon_opacity">Başlatıcı ikonlarının opaklığı nasıl olmalı.</string>
   <string name="option_launcherservice_enabled">Başlatıcıyı diğer uygulamalarda kullanılabilir yap</string>

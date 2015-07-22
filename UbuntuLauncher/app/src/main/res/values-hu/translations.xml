@@ -5,9 +5,6 @@
   <string name="dash_lens_other_title">Egyéb</string>
   <string name="title_activity_preferences">Beállítások</string>
   <string name="title_activity_about">Névjegy</string>
-  <string name="title_activity_lens_preferences">Objektív</string>
-  <string name="pinned">rögzítve lett az indítóban</string>
-  <string name="unpinned">rögzítése meg lett szüntetve az indítóban</string>
   <string name="notpinned">nem rögzített</string>
   <string name="developed_by">Robin Jacobs fejlesztése</string>
   <string name="honourable_mentions">Speciális köszönet</string>
@@ -22,8 +19,6 @@
   <string name="pref_header_panel">Panel</string>
   <string name="pref_header_advanced">Fejlett</string>
   <string name="category_colourcalc">Domináns szín számítás</string>
-  <string name="option_launchericon_width">Szélesség</string>
-  <string name="hint_launchericon_width">Milyen széles az Indító és az ikonok, amelyeknek ezen belül kell lennie. A beállítása ennek 48dip - 120dip értékig állítható, a gyári érték (jobbra középen) 84dip.</string>
   <string name="option_launchericon_opacity">Ikon hátterének homályossága</string>
   <string name="hint_launchericon_opacity">Mennyire legyenek homályosak az ikonok háttér színei az Indítón.</string>
   <string name="hint_launcherservice_enabled">Ha lapozzunk az alsó felén / bal szélén a képernyőn, az indító jelenik meg, amely lehetővé teszi, hogy indítson alkalmazásokat, amelyek már rögzítve vannak az indítóban, anélkül, hogy a kezdőképernyőre kellene ugrani\n(KISÉRLETI)</string>

@@ -8,6 +8,8 @@ import android.graphics.drawable.Drawable;
 import java.util.ArrayList;
 import java.util.List;
 
+import be.robinj.ubuntu.dev.Debug;
+
 /**
  * Created by robin on 8/22/14.
  */
@@ -38,6 +40,8 @@ public class Image
 
 	public int getAverageColour (boolean advanced, boolean useHsv, int alpha)
 	{
+		Debug.assertCondition (this.drawable != null);
+
 		BitmapDrawable bmd = (BitmapDrawable) this.getDrawable ();
 		Bitmap bm = bmd.getBitmap ();
 

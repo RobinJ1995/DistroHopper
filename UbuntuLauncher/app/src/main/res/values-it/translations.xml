@@ -5,9 +5,6 @@
   <string name="dash_lens_other_title">Altro</string>
   <string name="title_activity_preferences">Preferenze</string>
   <string name="title_activity_about">Informazioni</string>
-  <string name="title_activity_lens_preferences">Lenti</string>
-  <string name="pinned">è stato aggiunto al launcher</string>
-  <string name="unpinned">è stato rimosso dal launcher</string>
   <string name="notpinned">non è presente sul pannello</string>
   <string name="developed_by">Sviluppato da Robin Jacobs</string>
   <string name="honourable_mentions">Menzioni d\'onore</string>
@@ -22,8 +19,6 @@
   <string name="pref_header_panel">Pannello</string>
   <string name="pref_header_advanced">Avanzate</string>
   <string name="category_colourcalc">Calcolo colore dominante</string>
-  <string name="option_launchericon_width">Larghezza</string>
-  <string name="hint_launchericon_width">Quanto devono essere larghe le icone ed il launcher. Lo slider va da 48dip a 120dip, defult (il valore medio tra i due) è di 84dip.</string>
   <string name="option_launchericon_opacity">Opacità sfondo icone</string>
   <string name="hint_launchericon_opacity">Quanto deve essere opaco il colore di sfondo delle icone.</string>
   <string name="option_launcherservice_enabled">Rendi il launcher disponibile all\'interno di altre applicazioni</string>

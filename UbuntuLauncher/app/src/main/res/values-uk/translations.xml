@@ -1,29 +1,37 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Налаштування</string>
+  <string name="dash_search_hint">Пошук</string>
   <string name="dash_lens_apps_title">Додатки</string>
   <string name="dash_lens_other_title">Інші</string>
   <string name="title_activity_preferences">Уподобання</string>
   <string name="title_activity_about">Про нас</string>
-  <string name="title_activity_lens_preferences">Лінзи</string>
+  <string name="title_activity_lens_preferences">Джерела пошуку</string>
+  <string name="title_activity_theme_preferences">Теми</string>
+  <string name="title_activity_dev_logs">Логи</string>
   <string name="pinned">був прикріплений до Лаунчера</string>
   <string name="unpinned">був відкріплений від Лаунчера</string>
   <string name="notpinned">не прикріплений</string>
+  <string name="alreadypinned">вже прикріплений</string>
   <string name="developed_by">Розробник: Робін Джейкобс</string>
   <string name="honourable_mentions">Особлива подяка</string>
   <string name="button_back">Назад</string>
   <string name="button_about">Про нас</string>
   <string name="button_contribute">Допомогти проекту</string>
+  <string name="button_apply">Застосувати</string>
   <string name="title_preferences">Уподобання</string>
   <string name="pref_header_general">Загальні</string>
   <string name="pref_header_unity">Unity</string>
   <string name="pref_header_launcher">Лаунчер</string>
-  <string name="pref_header_dash">Деш</string>
+  <string name="pref_header_dash">Dash</string>
   <string name="pref_header_panel">Панель</string>
   <string name="pref_header_advanced">Розширені</string>
+  <string name="pref_header_dev">Опції для розробників</string>
+  <string name="pref_header_functionality">Функціональність</string>
+  <string name="pref_header_appearance">Вигляд</string>
   <string name="category_colourcalc">Розрахунок домінуючого кольору</string>
-  <string name="option_launchericon_width">Ширина лаунчера</string>
-  <string name="hint_launchericon_width">Налаштування ширини лаунчера та іконок. Мінімальне значення слайдера 48dip, максимальне 120dip, стандартне (середнє) 84dip.</string>
+  <string name="option_launchericon_size">Встановлений розмір іконки</string>
+  <string name="hint_launchericon_size">Якого розміру повинні бути іконки? Слайдер варіюється від 48dip до 120dip, стандартно - 84dip.</string>
   <string name="option_launchericon_opacity">Непрозорість фону іконки</string>
   <string name="hint_launchericon_opacity">Налаштування рівня непрозорості фону іконки</string>
   <string name="option_launcherservice_enabled">Зробити Лаунчер доступним з інших додатків</string>
@@ -68,8 +76,13 @@
   <string name="hint_dashsearch_lenses_maxresults">Максимальна кількість результатів пошуку з кожної лінзи.</string>
   <string name="option_dash_ready_show">Відкривати Деш за замовчуванням</string>
   <string name="hint_dash_ready_show">Деш буде відкрито автоматично, як тільки всі програми будуть завантажені.</string>
-  <string name="option_lenses">Лінзи</string>
-  <string name="hint_lenses">Виберіть, які лінзи ви хочете використовувати, і в якому порядку їх результати будуть з\'являтися у Деші. Коли ви використовуєте Деш для пошуку, ваш запит відправляється до усіх включених лінз і відображаються їхні результати.</string>
+  <string name="option_lenses">Джерела пошуку</string>
+  <string name="hint_lenses">Виберіть, які джерела пошуку ви хочете використовувати, і в якому порядку їх результати будуть з\'являтися у Панелі. Коли ви використовуєте Панель для пошуку, ваш запит відправляється до усіх включених джерел і відображаються їхні результати.</string>
+  <string name="option_theme">Тема</string>
+  <string name="hint_theme">Виберіть дистрибутив Linux-а, на який повинен бути схожим DistroHopper.</string>
+  <string name="option_dev">Режим розробника</string>
+  <string name="hint_dev">Отримайте доступ до логів та іншої технічної інформації. Увімкнення цієї функції негативно вплине на швидкість та стабільність роботи додатка.</string>
+  <string name="option_dev_logs">Логи</string>
   <string name="hm_timvdstaaij_name">Тіму ван дер Стайї</string>
   <string name="hm_timvdstaaij_why">* Тестування\n 
 * Допомога з функцією розрахунку домінуючого кольору\n</string>
@@ -86,8 +99,12 @@ https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Як я можу допомогти?</string>
   <string name="contribute_intro">На цей проект було витрачено багато сил, часу і фінансів. Якщо ви хочете допомогти подальшому розвитку проекту, зробіть це одним з нижчеперечислених способів.</string>
   <string name="contribute_translate_title">Переклад</string>
+  <string name="contribute_translate_description">DistroHopper доступний на декількох мовах. Це тому, що волонтери доповнюють цей проект своїми перекладами. Якщо DistroHopper ще не перекладений вашою рідною мовою, а ви розумієте англійську (і у вас достатньо знань по Ubuntu, щоб зрозуміти  деякі зі складніших термінів, пов\'язаних з Unity), то я буду радий допомозі у перекладі.
+\nПереклад для DistroHopper здійснюється на сайті Transifex. Все, що вам потрібно зробити, це надіслати запит, щоб приєднатися до команди перекладачів. Після цього я схвалю ваш запит і ви можете розпочинати.</string>
   <string name="contribute_translate_go">Перейти на Transifex</string>
   <string name="contribute_bugs_title">Повідомити про помилку</string>
+  <string name="contribute_bugs_description">Якщо в DistroHopper є помилка (баг), я не обов\'язково знаю про її існування. Розробникам, як правило, дуже важко дається тестування власних додатків, бо вони використовують їх тільки так, як було задумано. Деякі проблеми також існують тільки при певних умовах (наприклад, для конкретного пристрою, що працює на певній версії Android з деякими увімкненими опціями). Так що, якщо ви знайшли помилку в DistroHopper (або якщо ви просите про додання нової функції), ви можете допомогти, розказавши про неї.
+\nЗвіти про проблеми DistroHopper зберігаються на GitHub. Якщо GitHub занадто технічний для вас, ви також можете просто надіслати мені лист на android-dev@robinj.be. Переконайтеся, що лист англійською або голландською мовою. Будь ласка, надайте якомога більше детальної інформації.</string>
   <string name="contribute_bugs_go">Перейти на GitHub</string>
   <string name="contribute_donate_title">Зробити пожертву</string>
   <string name="contribute_donate_description">Якщо ви бажаєте надати проекту фінансову допомогу, ви завжди можете зробити це за допомогою кнопки \"Зробити пожертву\" (через сервіс PayPal).

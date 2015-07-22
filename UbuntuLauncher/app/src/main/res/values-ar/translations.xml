@@ -5,9 +5,6 @@
   <string name="dash_lens_other_title">أخرى</string>
   <string name="title_activity_preferences">التفضيلات</string>
   <string name="title_activity_about">عن التطبيق</string>
-  <string name="title_activity_lens_preferences">العدسات</string>
-  <string name="pinned">تم التثبيت في مطلِق البرامج</string>
-  <string name="unpinned">تم ت الإزالة من مطلِق البرامج</string>
   <string name="notpinned">ليس مثبت</string>
   <string name="developed_by">تم تطويره من قبل روبن جيكوبس</string>
   <string name="honourable_mentions">يشرفنا أن نذكرهم</string>

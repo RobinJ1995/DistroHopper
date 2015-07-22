@@ -4,8 +4,6 @@
   <string name="dash_lens_apps_title">アプリ</string>
   <string name="title_activity_preferences">設定</string>
   <string name="title_activity_about">このアプリについて</string>
-  <string name="pinned">というアプリをランチャーに留めておきました</string>
-  <string name="unpinned">というアプリをランチャーから外しました</string>
   <string name="notpinned">というアプリはランチャーに留めていません</string>
   <string name="developed_by">Robin Jacobsが開発したアプリです。</string>
   <string name="honourable_mentions">謝辞</string>
@@ -19,8 +17,6 @@
   <string name="pref_header_panel">パネル</string>
   <string name="pref_header_advanced">詳細</string>
   <string name="category_colourcalc">支配色算定</string>
-  <string name="option_launchericon_width">ランチャー幅</string>
-  <string name="hint_launchericon_width">ランチャーやそのアイコンの広さです。 スライダーは48dipから120dipに及びます。デフォルトでは84dipになります。</string>
   <string name="option_launchericon_opacity">ランチャーアイコンの背景不透明度</string>
   <string name="hint_launchericon_opacity">ランチャーに置いているアイコンの背景の不透明さの程度です。</string>
   <string name="option_launcherservice_enabled">ランチャーを他のアプリで利用可能する</string>
