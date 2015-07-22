@@ -5,9 +5,6 @@
   <string name="dash_lens_other_title">Autre</string>
   <string name="title_activity_preferences">Préférences</string>
   <string name="title_activity_about">À propos</string>
-  <string name="title_activity_lens_preferences">Lentilles</string>
-  <string name="pinned">a été attaché au Launcher</string>
-  <string name="unpinned">a été détaché du Launcher</string>
   <string name="notpinned">n\'est pas attaché</string>
   <string name="developed_by">Développé par Robin Jacobs</string>
   <string name="honourable_mentions">Mentions honorables</string>
@@ -22,8 +19,6 @@
   <string name="pref_header_panel">Panneau</string>
   <string name="pref_header_advanced">Avancé</string>
   <string name="category_colourcalc">Calcul de couleur dominante</string>
-  <string name="option_launchericon_width">Largeur</string>
-  <string name="hint_launchericon_width">La largeur du Launcher et de ses icônes. Le curseur va de 48dip à 120dip, la valeur par défaut (en plein milieu) étant 84dip.</string>
   <string name="option_launchericon_opacity">Opacité du fond des icônes</string>
   <string name="hint_launchericon_opacity">L\'opacité du fond des icônes du Launcher.</string>
   <string name="option_launcherservice_enabled">Rendre le Launcher disponible dans les autres apps</string>
@@ -63,8 +58,6 @@
   <string name="hint_dashsearch_lenses_maxresults">Le nombre maximal de résultats de recherche affichés par lentille.</string>
   <string name="option_dash_ready_show">Ouvrir le Dash par défaut</string>
   <string name="hint_dash_ready_show">Une fois que les applications sont chargées, le Dash s\'ouvrira automatiquement.</string>
-  <string name="option_lenses">Lentilles</string>
-  <string name="hint_lenses">Choisir les lentilles que vous voulez utiliser et leur ordre dans le Dash. Lorsque vous ferez une recherche dans le Dash, vous obtiendrez des résultats de toutes les lentilles activées.</string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Testing (If he doesn\'t manage to wreck it then it\'s probably safe for consumption by the rest of the world.)\n
         * Help with the dominant colour calculation function.</string>

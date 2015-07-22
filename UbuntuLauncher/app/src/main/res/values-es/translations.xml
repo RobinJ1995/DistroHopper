@@ -4,8 +4,6 @@
   <string name="dash_lens_apps_title">Aplicaciones</string>
   <string name="title_activity_preferences">Preferencias</string>
   <string name="title_activity_about">Acerca de</string>
-  <string name="pinned">se ha anclado al Lanzador</string>
-  <string name="unpinned">se ha desanclado del Lanzador</string>
   <string name="notpinned">no está anclado</string>
   <string name="developed_by">Desarrollado por Robin Jacobs</string>
   <string name="honourable_mentions">Menciones honorificas</string>
@@ -19,8 +17,6 @@
   <string name="pref_header_panel">Panel</string>
   <string name="pref_header_advanced">Avanzado</string>
   <string name="category_colourcalc">Cálculo del color dominante</string>
-  <string name="option_launchericon_width">Ancho</string>
-  <string name="hint_launchericon_width">Cual debe ser la anchura del lanzador y los iconos dentro de ella. El deslizador va de 48dip a 120dip, con el valor por defecto (en el centro) siendo 84dip.</string>
   <string name="option_launchericon_opacity">Opacidad de fondo del icono</string>
   <string name="hint_launchericon_opacity">Cual debe ser la opacidad del color de fondo de los iconos en el Lanzador.</string>
   <string name="option_launcherservice_enabled">Hacer al Launcher disponible dentro de otras apps</string>

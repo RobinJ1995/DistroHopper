@@ -5,9 +5,6 @@
   <string name="dash_lens_other_title">Lainnya</string>
   <string name="title_activity_preferences">Preferensi</string>
   <string name="title_activity_about">Tentang</string>
-  <string name="title_activity_lens_preferences">Lensa</string>
-  <string name="pinned">telah disematkan ke Peluncur</string>
-  <string name="unpinned">telah dilepaskan dari Peluncur</string>
   <string name="notpinned">tidak disematkan</string>
   <string name="developed_by">Dikembangkan oleh Robin Jacobs</string>
   <string name="honourable_mentions">Yang dihormati disebutkan</string>
@@ -22,8 +19,6 @@
   <string name="pref_header_panel">Panel</string>
   <string name="pref_header_advanced">Tingkat Lanjut</string>
   <string name="category_colourcalc">Perhitungan warna dominan</string>
-  <string name="option_launchericon_width">Lebar</string>
-  <string name="hint_launchericon_width">Seberapa luas Peluncur dan ikon seharusnya. Slider dimulai dari 48dip sampai 120dip, dengan standar (tepat di tengah) berada di 84dip.</string>
   <string name="option_launchericon_opacity">Opasitas ikon latar belakang</string>
   <string name="hint_launchericon_opacity">Bagaimana keburaman warna latar belakang ikon dari peluncur seharusnya.</string>
   <string name="option_launcherservice_enabled">Membuat peluncur tersedia dalam aplikasi lain</string>
@@ -68,8 +63,6 @@
   <string name="hint_dashsearch_lenses_maxresults">Jumlah maksimum hasil pencarian yang ditampilkan dari setiap lensa.</string>
   <string name="option_dash_ready_show">Buka Dasbor secara standar</string>
   <string name="hint_dash_ready_show">Dasbor secara otomatis akan dibuka setelah aplikasi dimuat.</string>
-  <string name="option_lenses">Lensa</string>
-  <string name="hint_lenses">Pilih yang lensa yang ingin Anda gunakan dan di mana Anda ingin mengatur hasilnya muncul di Dasbor. Ketika Anda melakukan pencarian di Dasbor, permintaan Anda dikirim ke semua lensa yang diaktifkan dan hasilnya akan ditampilkan.</string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Pengujian (Jika ia tidak berhasil menghancurkannya maka mungkin aman untuk dikonsumsi oleh seluruh dunia.)\n
 * Bantuan dengan fungsi perhitungan warna dominan.</string>

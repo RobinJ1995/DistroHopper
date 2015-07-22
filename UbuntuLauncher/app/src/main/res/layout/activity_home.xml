@@ -131,7 +131,7 @@
                     <be.robinj.ubuntu.unity.launcher.AppLauncher
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        custom:special="true"
+                        custom:applauncher_special="true"
                         android:onClick="lalBfb_clicked"
                         android:id="@+id/lalBfb"
                         android:layout_marginTop="2dp"
@@ -140,7 +140,7 @@
                     <be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        custom:special="true"
+                        custom:applauncher_special="true"
                         android:layout_marginTop="2dp"
                         android:id="@+id/lalSpinner" />
                 </LinearLayout>
@@ -192,7 +192,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     custom:icon="@drawable/launcher_preferences"
-                    custom:special="false"
+                    custom:applauncher_special="false"
                     android:id="@+id/lalPreferences"
                     android:layout_marginBottom="4dp"
                     android:onClick="lalPreferences_clicked" />
@@ -201,7 +201,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     custom:icon="@drawable/launcher_trash"
-                    custom:special="false"
+                    custom:applauncher_special="false"
                     android:id="@+id/lalTrash"
                     android:layout_marginBottom="4dp"
                     android:visibility="gone" />

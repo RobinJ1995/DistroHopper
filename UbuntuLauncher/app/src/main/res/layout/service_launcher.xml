@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             custom:icon="@drawable/launcher_bfb"
-            custom:special="true"
+            custom:applauncher_special="true"
             android:onClick="lalBfb_clicked"
             android:id="@+id/lalBfb"
             android:layout_marginTop="2dp" />

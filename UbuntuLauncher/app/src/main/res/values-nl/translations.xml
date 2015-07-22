@@ -6,10 +6,7 @@
   <string name="dash_lens_other_title">Overige</string>
   <string name="title_activity_preferences">Voorkeuren</string>
   <string name="title_activity_about">Over</string>
-  <string name="title_activity_lens_preferences">Lenzen</string>
   <string name="title_activity_theme_preferences">Thema\'s</string>
-  <string name="pinned">is vastgemaakt aan de Launcher</string>
-  <string name="unpinned">is losgemaakt van de Launcher</string>
   <string name="notpinned">is niet vastgemaakt aan de Launcher</string>
   <string name="developed_by">Ontwikkeld door Robin Jacobs</string>
   <string name="honourable_mentions">Eervolle vermeldingen</string>
@@ -25,8 +22,6 @@
   <string name="pref_header_panel">Panel</string>
   <string name="pref_header_advanced">Geavanceerd</string>
   <string name="category_colourcalc">Dominante kleurberekening</string>
-  <string name="option_launchericon_width">Launcher-breedte</string>
-  <string name="hint_launchericon_width">Hoe breed de Launcher en de pictogrammen die zich er in bevinden moeten zijn. De slider gaat van 48dip tot 120dip, met 48dip als standaardwaarde (in het midden).</string>
   <string name="option_launchericon_opacity">Transparantie van Launcher-pictogrammen</string>
   <string name="hint_launchericon_opacity">De transparantie van de achtergrondkleur van pictogrammen die vastgemaakt zijn aan de Launcher. 100 procent is volledig zichtbaar en 0 procent is volledig transparant.</string>
   <string name="option_launcherservice_enabled">Maak de Launcher beschikbaar binnen andere apps</string>
@@ -71,8 +66,6 @@
   <string name="hint_dashsearch_lenses_maxresults">Het maxmimum aantal resultaten dat getoond moet worden van elke lens.</string>
   <string name="option_dash_ready_show">Dash standaard openen</string>
   <string name="hint_dash_ready_show">Het Dash zal automatisch geöpend worden wanneer de apps geladen zijn.</string>
-  <string name="option_lenses">Lenzen</string>
-  <string name="hint_lenses">Kies welke lenzen je wil gebruiken en in welke volgorde hun resultaten getoond moetenworden in het Dash. Wanneer je zoekt in het Dash wordt je zoekopdracht naar alle ingeschakelde lenzen gestuurd, en vervolgens worden hun resultaten getoond.</string>
   <string name="option_theme">Thema</string>
   <string name="hint_theme">Kies als welke Linux-distributie je wil dat DistroHopper er uit ziet.</string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>

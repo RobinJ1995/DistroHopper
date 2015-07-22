@@ -2,7 +2,8 @@
 host = https://www.transifex.com
 type = android
 
-[ubuntu-launcher.stringsxml]
+[distrohopper.stringsxml]
 file_filter = UbuntuLauncher/app/src/main/res/values-<lang>/translations.xml
+lang_map = cs_CZ:cs, en_US:en-rUS, hi_IN:hi-rIN
 source_lang = en_GB
 type = ANDROID

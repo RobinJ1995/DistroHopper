@@ -1,19 +1,24 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Einstellungen</string>
+  <string name="dash_search_hint">Suche</string>
   <string name="dash_lens_apps_title">Anwendungen</string>
   <string name="dash_lens_other_title">Andere</string>
   <string name="title_activity_preferences">Einstellungen</string>
   <string name="title_activity_about">Über</string>
   <string name="title_activity_lens_preferences">Lenses</string>
-  <string name="pinned">wurde an das Startmenü angeheftet</string>
-  <string name="unpinned">wurde vom Startmenü entfernt</string>
+  <string name="title_activity_theme_preferences">Themen</string>
+  <string name="title_activity_dev_logs">Logs</string>
+  <string name="pinned">wurde an den Startmenü angepinnt</string>
+  <string name="unpinned">wurde vom Startmenü gelöst</string>
   <string name="notpinned">ist angepinnt</string>
+  <string name="alreadypinned">ist bereits angepinnt</string>
   <string name="developed_by">Entwickelt von Robin Jacobs</string>
   <string name="honourable_mentions">Spezielle Erwähnungen</string>
   <string name="button_back">Zurück</string>
   <string name="button_about">Über</string>
   <string name="button_contribute">Beitragen</string>
+  <string name="button_apply">Anwenden</string>
   <string name="title_preferences">Einstellungen</string>
   <string name="pref_header_general">Allgemein</string>
   <string name="pref_header_unity">Unity</string>
@@ -21,9 +26,12 @@
   <string name="pref_header_dash">Dash</string>
   <string name="pref_header_panel">Taskleiste</string>
   <string name="pref_header_advanced">Erweiterte</string>
+  <string name="pref_header_dev">Entwickleroptionen</string>
+  <string name="pref_header_functionality">Funktionalität</string>
+  <string name="pref_header_appearance">Aussehen</string>
   <string name="category_colourcalc">Bevorzugte Farbberechnung</string>
-  <string name="option_launchericon_width">Breite</string>
-  <string name="hint_launchericon_width">Die Breite des Startmenüs und der Icons. Der Regler geht von 48dip bis 120dip. Der Standard ist 84dip(Genau in der Mitte).</string>
+  <string name="option_launchericon_size">Größe angepinnter Icons</string>
+  <string name="hint_launchericon_size">Die Breite angepinnter Icons. Der Regler geht von 48dip bis 120dip. Der Standard ist 84dip(Genau in der Mitte).</string>
   <string name="option_launchericon_opacity">Deckkraft des Iconhintergrundes</string>
   <string name="hint_launchericon_opacity">Deckkraft der Hintergrundfarbe der Icons im Startmenü.</string>
   <string name="option_launcherservice_enabled">Das Startmenü in anderen Apps erreichbar machen</string>
@@ -65,6 +73,11 @@
   <string name="hint_dash_ready_show">Der Dash wird automatisch geöffnet, sobald die Apps geladen wurden.</string>
   <string name="option_lenses">Lenses</string>
   <string name="hint_lenses">Wähle welche Lenses genutzt werden sollen und in welcher Reihenfolge die Suchergebnisse im Dash angezeigt werden sollen. Wenn im Dash gesucht wird, wird die Suchanfrage gleichzeitig an alle aktivierten Lenses gesandt und die Suchergebnisse werden angezeigt.</string>
+  <string name="option_theme">Thema</string>
+  <string name="hint_theme">Wähle, nach wekcher Linux Distributation DistroHopper aussehen soll.</string>
+  <string name="option_dev">Entwicklermodus</string>
+  <string name="hint_dev">Greife auf Debuglogs und andere technische Informationen zu. Aktivierung wird sich negativ auf Performance und stabilität auswirken.</string>
+  <string name="option_dev_logs">Logs</string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">*Tester (Wenn er es nicht zum Absturz bringen konnte ist es für den Rest der Welt benutzbar).\n
 *Hilfe bei der Farbberechnungsfunktion.</string>
@@ -81,8 +94,10 @@ https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Wie kann ich beitragen?</string>
   <string name="contribute_intro">Viel Zeit und harte Arbeit wurde in die Entwicklung dieser App gesteckt. Wenn du helfen möchtest gibt es hierfür viele Möglichkeiten.</string>
   <string name="contribute_translate_title">Übersetzung</string>
+  <string name="contribute_translate_description">Ubuntu Launcher ist in diversen Sprachen verfügbar. Dies ist möglich, weil viele freiwillige Helfer dem Projekt Übersetzungen zur Verfügung stellen. Wenn Ubuntu Launcher noch nicht in deine Sprache übersetzt wurde und du der englischen Sprache mächtig bist (und ein Verständnis für Ubuntu-eigene Begriffe und Ideen mitbringst), dann ist deine Hilfe bei der Übesetzung herzlich willkommen. \nÜbersetzungen für Ubuntu Launcher werden über Transifex verwaltet. Alles was du tun musst ist die Mitgliedschaft im Übersetzungsteam für DistroHopper anzufragen. Anschließend werde ich deiner Mitgliedschaft zustimmen und du kannst direkt loslegen.</string>
   <string name="contribute_translate_go">Gehe zu Transifex</string>
   <string name="contribute_bugs_title">Melde Bugs</string>
+  <string name="contribute_bugs_description">Sofern Bugs (Fehler) in DistroHopper existieren, bin ich mir dessen nicht unbedingt bewusst. Entwickler sind zumeist nicht in der Lage ihre Applikationen ausreichend gut zu prüfen weil sie sie nur in der Art und Weise nutzen, für die sie entwickelt wurden. Manche Probleme treten aber nur in sehr bestimmten Umständen auf (zum Beispiel ein sehr spezielles Gerät auf dem eine spezielle Version von Android mit zusätzlichen oder fehlenden Funktionen und Optionen). Wenn dir also Bugs in DistroHopper auffallen (oder auch wenn du Feature-Wünsche hast) kannst du damit helfen, uns dies zu melden. \nBugmeldungen werden für DistroHopper auf GitHub gesammelt. Wenn dir GitHub zu technisch ist, kannst du den Fehler auch per Email an android-dev@robinj.be mitteilen. Bitte melde die Bugs in Englisch oder Holländisch und stelle so viel Information wie möglich zur Verfügung.</string>
   <string name="contribute_bugs_go">Gehe zu GitHub</string>
   <string name="contribute_donate_title">Spende</string>
   <string name="contribute_donate_description">Wenn du willst, kannst du auch eine finanzielle Spende an den Entwickler senden. Spenden werden per PayPal übermittelt. Du kannst selbst entscheiden, wieviel zu spenden möchtest.

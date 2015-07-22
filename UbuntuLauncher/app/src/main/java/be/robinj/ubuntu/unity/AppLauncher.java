@@ -53,10 +53,10 @@ public class AppLauncher extends LinearLayout
 		TypedArray styleAttrs = context.getTheme ().obtainStyledAttributes (attrs, R.styleable.AppLauncher, 0, 0);
 		if (styleAttrs != null)
 		{
-			this.label = styleAttrs.getString (R.styleable.AppLauncher_label);
-			this.description = styleAttrs.getString (R.styleable.AppLauncher_description);
-			this.special = styleAttrs.getBoolean (R.styleable.AppLauncher_special, false);
-			this.icon = new AppIcon (styleAttrs.getDrawable (R.styleable.AppLauncher_icon));
+			this.label = styleAttrs.getString (R.styleable.AppLauncher_applauncher_label);
+			this.description = styleAttrs.getString (R.styleable.AppLauncher_applauncher_description);
+			this.special = styleAttrs.getBoolean (R.styleable.AppLauncher_applauncher_special, false);
+			this.icon = new AppIcon (styleAttrs.getDrawable (R.styleable.AppLauncher_applauncher_icon));
 		}
 
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService (Service.LAYOUT_INFLATER_SERVICE);
