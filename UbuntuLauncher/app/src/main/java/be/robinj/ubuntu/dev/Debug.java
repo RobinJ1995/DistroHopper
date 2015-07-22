@@ -20,7 +20,8 @@ public class Debug
 					{
 						if (ste.toString ().contains ("Debug.assertCondition"))
 							nextLineIsTheChosenOne = true;
-					} else
+					}
+					else
 					{
 						message = ste.toString ();
 						break;

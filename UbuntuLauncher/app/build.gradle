@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "be.robinj.ubuntu"
         minSdkVersion 9
-        targetSdkVersion 19
+        targetSdkVersion 22
         versionCode 69
         versionName "0.5.12"
     }
@@ -34,7 +34,7 @@ dependencies {
     compile 'com.android.support:support-v4:22.2.0'
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:gridlayout-v7:22.2.0'
-    compile 'asia.ivity.android:drag-sort-listview:+'
+    compile 'asia.ivity.android:drag-sort-listview:1.0'
     compile 'com.snappydb:snappydb-lib:0.5.2'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
 }

@@ -56,7 +56,10 @@ public class AppLauncher extends LinearLayout
 			this.label = styleAttrs.getString (R.styleable.AppLauncher_applauncher_label);
 			this.description = styleAttrs.getString (R.styleable.AppLauncher_applauncher_description);
 			this.special = styleAttrs.getBoolean (R.styleable.AppLauncher_applauncher_special, false);
-			this.icon = new AppIcon (styleAttrs.getDrawable (R.styleable.AppLauncher_applauncher_icon));
+			Drawable icon = styleAttrs.getDrawable (R.styleable.AppLauncher_applauncher_icon);
+
+			if (icon != null)
+				this.icon = new AppIcon (icon);
 		}
 
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService (Service.LAYOUT_INFLATER_SERVICE);
@@ -162,7 +165,7 @@ public class AppLauncher extends LinearLayout
 
 	protected void iconChanged ()
 	{
-		if (! this.isInEditMode ())
+		if (! this.isInEditMode () && (this.icon != null))
 		{
 			ImageView imgIcon = (ImageView) this.findViewById (R.id.imgIcon);
 			imgIcon.setImageDrawable (this.icon.getDrawable ());
