@@ -8,6 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 
 public class ContributeActivity extends Activity
 {
@@ -50,6 +53,14 @@ public class ContributeActivity extends Activity
 		try
 		{
 			this.openUrl ("https://www.transifex.com/projects/p/ubuntu-launcher/");
+
+			Tracker tracker = Application.getTracker ();
+			tracker.send (new HitBuilders.EventBuilder ()
+					.setCategory ("Contribute")
+					.setAction ("Transifex")
+					.setLabel ("click")
+					.build ()
+			);
 		}
 		catch (Exception ex)
 		{
@@ -63,6 +74,14 @@ public class ContributeActivity extends Activity
 		try
 		{
 			this.openUrl ("https://github.com/RobinJ1995/be.robinj.ubuntu/issues");
+
+			Tracker tracker = Application.getTracker ();
+			tracker.send (new HitBuilders.EventBuilder ()
+					.setCategory ("Contribute")
+					.setAction ("GitHub")
+					.setLabel ("click")
+					.build ()
+			);
 		}
 		catch (Exception ex)
 		{
@@ -76,6 +95,14 @@ public class ContributeActivity extends Activity
 		try
 		{
 			this.openUrl ("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=broederjacobs%40gmail%2ecom&lc=BE&item_name=Ubuntu%20Launcher&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted");
+
+			Tracker tracker = Application.getTracker ();
+			tracker.send (new HitBuilders.EventBuilder ()
+					.setCategory ("Contribute")
+					.setAction ("Donate")
+					.setLabel ("click")
+					.build ()
+			);
 		}
 		catch (Exception ex)
 		{

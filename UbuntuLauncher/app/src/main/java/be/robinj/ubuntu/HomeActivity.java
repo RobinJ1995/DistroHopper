@@ -35,7 +35,8 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -491,8 +492,6 @@ public class HomeActivity extends Activity
 		try
 		{
 			//this.widgetHost.startListening ();
-
-			EasyTracker.getInstance (this).activityStart (this);
 		}
 		catch (Exception ex)
 		{
@@ -509,8 +508,6 @@ public class HomeActivity extends Activity
 		try
 		{
 			//this.widgetHost.stopListening ();
-
-			EasyTracker.getInstance (this).activityStop (this);
 		}
 		catch (Exception ex)
 		{
@@ -772,9 +769,9 @@ public class HomeActivity extends Activity
 		try
 		{
 			if (this.llDash.getVisibility () == View.VISIBLE)
-				this.closeDash ();
+				this.closeDash (true);
 			else
-				this.openDash ();
+				this.openDash (true);
 		}
 		catch (Exception ex)
 		{
@@ -815,8 +812,13 @@ public class HomeActivity extends Activity
 		}
 	}
 
-	//# Dash #//
 	private void closeDash ()
+	{
+		this.closeDash (false);
+	}
+
+	//# Dash #//
+	private void closeDash (boolean track)
 	{
 		EditText etDashSearch = (EditText) this.findViewById (R.id.etDashSearch);
 
@@ -851,9 +853,25 @@ public class HomeActivity extends Activity
 
 		this.flWallpaperOverlay.setVisibility (View.VISIBLE);
 		this.flWallpaperOverlayWhenDashOpened.setVisibility (View.INVISIBLE);
+
+		if (track)
+		{
+			Tracker tracker = Application.getTracker ();
+			tracker.send (new HitBuilders.EventBuilder ()
+					.setCategory ("Home")
+					.setAction ("Dash closed")
+					.setLabel ("Dash")
+					.build ()
+			);
+		}
 	}
 
 	private void openDash ()
+	{
+		this.openDash (false);
+	}
+
+	private void openDash (boolean track)
 	{
 		this.llDash.setVisibility (View.VISIBLE);
 		this.wpWallpaper.blur ();
@@ -876,6 +894,17 @@ public class HomeActivity extends Activity
 
 		this.flWallpaperOverlay.setVisibility (View.INVISIBLE);
 		this.flWallpaperOverlayWhenDashOpened.setVisibility (View.VISIBLE);
+
+		if (track)
+		{
+			Tracker tracker = Application.getTracker ();
+			tracker.send (new HitBuilders.EventBuilder ()
+				.setCategory ("Home")
+				.setAction ("Dash opened")
+				.setLabel ("Dash")
+				.build ()
+			);
+		}
 	}
 
 	//# Checks #//

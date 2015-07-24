@@ -16,7 +16,7 @@ public class Debug
 
 				for (StackTraceElement ste : Thread.currentThread ().getStackTrace ())
 				{
-					if (!nextLineIsTheChosenOne)
+					if (! nextLineIsTheChosenOne)
 					{
 						if (ste.toString ().contains ("Debug.assertCondition"))
 							nextLineIsTheChosenOne = true;

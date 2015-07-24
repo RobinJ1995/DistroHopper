@@ -10,8 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.google.analytics.tracking.android.EasyTracker;
-
 
 public class AboutActivity extends Activity
 {
@@ -61,17 +59,13 @@ public class AboutActivity extends Activity
 	@Override
 	protected void onStart ()
 	{
-		super.onStart();
-
-		EasyTracker.getInstance (this).activityStart (this);
+		super.onStart ();
 	}
 
 	@Override
 	protected void onStop ()
 	{
-		super.onStop();
-
-		EasyTracker.getInstance (this).activityStop (this);
+		super.onStop ();
 	}
 
 	@Override

@@ -3,6 +3,13 @@ package be.robinj.ubuntu;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.text.Html;
+
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
+import java.util.Map;
+
+import be.robinj.ubuntu.dev.Debug;
 import be.robinj.ubuntu.dev.Log;
 
 /**
@@ -28,6 +35,8 @@ public class ExceptionHandler
 			stackTrace.append (ste.toString ())
 				.append ("\n");
 
+		this.logException (stackTrace.toString ());
+
 		message.append ("Oops! Something went wrong!\n")
 			.append ("If this happens a lot, then please send an e-mail to ")
 			.append (Html.fromHtml ("<a href=\"mailto:android-dev@robinj.be\">android-dev@robinj.be</a>"))
@@ -40,8 +49,6 @@ public class ExceptionHandler
 			.append ("\n\n")
 			.append ("Stack trace:\n")
 			.append (stackTrace.toString ());
-
-		logException (stackTrace.toString ());
 
 		if (this.context != null)
 		{
@@ -57,7 +64,33 @@ public class ExceptionHandler
 			}
 			catch (Exception ex2)
 			{
+				Log.e (this.getClass ().getSimpleName (), "Couldn't show AlertDialog");
 			}
+		}
+		else
+		{
+			Log.w (this.getClass ().getSimpleName (), "User wasn't notified that there was a problem because context == NULL");
+		}
+
+		try
+		{
+			Tracker tracker = Application.getTracker ();
+			String description = "";
+
+			if (stackTrace.indexOf ("\n") > 0)
+				description = stackTrace.substring (0, stackTrace.indexOf ("\n"));
+			else
+				description = this.ex.getMessage ();
+
+			Map<String, String> data = new HitBuilders.ExceptionBuilder ()
+				.setDescription (description)
+				.build ();
+
+			tracker.send (data);
+		}
+		catch (Exception ex2)
+		{
+			Log.w (this.getClass ().getSimpleName (), "Problem description couldn't be sent: " + ex2.getMessage ());
 		}
 	}
 
