@@ -52,8 +52,6 @@ public class ContributeActivity extends Activity
 	{
 		try
 		{
-			this.openUrl ("https://www.transifex.com/projects/p/ubuntu-launcher/");
-
 			Tracker tracker = Application.getTracker ();
 			tracker.send (new HitBuilders.EventBuilder ()
 					.setCategory ("Contribute")
@@ -61,6 +59,8 @@ public class ContributeActivity extends Activity
 					.setLabel ("click")
 					.build ()
 			);
+
+			this.openUrl ("https://www.transifex.com/projects/p/distrohopper/");
 		}
 		catch (Exception ex)
 		{
@@ -73,8 +73,6 @@ public class ContributeActivity extends Activity
 	{
 		try
 		{
-			this.openUrl ("https://github.com/RobinJ1995/be.robinj.ubuntu/issues");
-
 			Tracker tracker = Application.getTracker ();
 			tracker.send (new HitBuilders.EventBuilder ()
 					.setCategory ("Contribute")
@@ -82,6 +80,8 @@ public class ContributeActivity extends Activity
 					.setLabel ("click")
 					.build ()
 			);
+
+			this.openUrl ("https://github.com/RobinJ1995/DistroHopper/issues");
 		}
 		catch (Exception ex)
 		{
@@ -94,8 +94,6 @@ public class ContributeActivity extends Activity
 	{
 		try
 		{
-			this.openUrl ("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=broederjacobs%40gmail%2ecom&lc=BE&item_name=Ubuntu%20Launcher&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted");
-
 			Tracker tracker = Application.getTracker ();
 			tracker.send (new HitBuilders.EventBuilder ()
 					.setCategory ("Contribute")
@@ -103,6 +101,8 @@ public class ContributeActivity extends Activity
 					.setLabel ("click")
 					.build ()
 			);
+
+			this.openUrl ("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=broederjacobs%40gmail%2ecom&lc=BE&item_name=Ubuntu%20Launcher&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted");
 		}
 		catch (Exception ex)
 		{
