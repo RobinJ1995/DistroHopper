@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="intent_action_package_added">android.intent.action.PACKAGE_INSTALL</string>
+	<string name="intent_action_package_added_legacy">android.intent.action.PACKAGE_ADDED</string>
+	<string name="intent_action_package_removed">android.intent.action.PACKAGE_REMOVED</string>
+</resources>

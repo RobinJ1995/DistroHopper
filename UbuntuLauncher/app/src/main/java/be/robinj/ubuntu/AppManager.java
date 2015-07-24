@@ -4,10 +4,13 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -64,12 +67,30 @@ public class AppManager implements Iterable<App>
 
 	public void add (App app)
 	{
-		this.apps.add (app);
+		this.add (app, false);
+	}
+
+	public void add (App app, boolean checkDuplicate)
+	{
+		if (! (checkDuplicate && this.apps.contains (app)))
+		{
+			this.apps.add (app);
+			this.sort ();
+
+			ArrayAdapter adapter = (ArrayAdapter) this.gvDashHomeApps.getAdapter ();
+			if (adapter != null)
+				adapter.notifyDataSetChanged ();
+		}
 	}
 
 	public void add (ResolveInfo resInf)
 	{
-		this.apps.add (App.fromResolveInfo (this.context, this, resInf));
+		this.add (resInf, false);
+	}
+
+	public void add (ResolveInfo resInf, boolean checkDuplicate)
+	{
+		this.add (App.fromResolveInfo (this.context, this, resInf), checkDuplicate);
 	}
 
 	public void addRunningApps (int colour)
@@ -100,11 +121,6 @@ public class AppManager implements Iterable<App>
 		}
 	}
 
-	public void clear ()
-	{
-		this.apps.clear ();
-	}
-
 	public App findAppByPackageAndActivityName (String packageName, String activityName)
 	{
 		for (App app : this.apps)
@@ -114,6 +130,19 @@ public class AppManager implements Iterable<App>
 		}
 
 		return null;
+	}
+
+	public List<App> findAppsByPackageName (String packageName)
+	{
+		List<App> results = new ArrayList<App> ();
+
+		for (App app : this.apps)
+		{
+			if (packageName.equals (app.getPackageName ()))
+				results.add (app);
+		}
+
+		return results;
 	}
 
 	public App get (int index)
@@ -129,6 +158,11 @@ public class AppManager implements Iterable<App>
 	public IconPackHelper getIconPack ()
 	{
 		return this.iconPack;
+	}
+
+	public List<App> getInstalledApps ()
+	{
+		return this.apps;
 	}
 
 	public HomeActivity getParent ()
@@ -234,8 +268,15 @@ public class AppManager implements Iterable<App>
 
 	public List<ResolveInfo> queryInstalledApps ()
 	{
+		return this.queryInstalledApps (null);
+	}
+
+	public List<ResolveInfo> queryInstalledApps (String packageName)
+	{
 		Intent mainIntent = new Intent (Intent.ACTION_MAIN);
 		mainIntent.addCategory (Intent.CATEGORY_LAUNCHER);
+		if (packageName != null)
+			mainIntent.setPackage (packageName);
 		PackageManager pacMan = this.context.getPackageManager ();
 		List<ResolveInfo> apps = pacMan.queryIntentActivities (mainIntent, 0);
 
@@ -256,6 +297,18 @@ public class AppManager implements Iterable<App>
 
 			this.llLauncherPinnedApps.addView (appLauncher);
 		}
+	}
+
+	public boolean remove (App app) throws SnappydbException
+	{
+		boolean modified = this.apps.remove (app);
+		this.unpin (app, false);
+
+		ArrayAdapter adapter = (ArrayAdapter) this.gvDashHomeApps.getAdapter ();
+		if (adapter != null)
+			adapter.notifyDataSetChanged ();
+
+		return modified;
 	}
 
 	public void savePinnedApps () throws SnappydbException
@@ -290,11 +343,6 @@ public class AppManager implements Iterable<App>
 
 	public List<App> search (String pattern)
 	{
-		return this.search (pattern, false);
-	}
-
-	public List<App> search (String pattern, boolean showResults)
-	{
 		List<App> results;
 
 		if (pattern.length () == 0)
@@ -326,19 +374,6 @@ public class AppManager implements Iterable<App>
 			}
 		}
 
-		if (showResults)
-		{
-			List<be.robinj.ubuntu.unity.dash.AppLauncher> appLaunchers = new ArrayList<be.robinj.ubuntu.unity.dash.AppLauncher> ();
-
-			for (App app : results)
-			{
-				be.robinj.ubuntu.unity.dash.AppLauncher appLauncher = new be.robinj.ubuntu.unity.dash.AppLauncher (this.context, app);
-				appLaunchers.add (appLauncher);
-			}
-
-			this.gvDashHomeApps.setAdapter (new GridAdapter (this.context, appLaunchers));
-		}
-
 		return results;
 	}
 
@@ -360,15 +395,23 @@ public class AppManager implements Iterable<App>
 
 	public boolean unpin (App app) throws SnappydbException
 	{
+		return this.unpin (app, true);
+	}
+
+	public boolean unpin (App app, boolean showToast) throws SnappydbException
+	{
 		boolean modified = this.pinned.remove (app);
 
-		String message;
-		if (modified)
-			message = " " + this.context.getResources ().getString (R.string.unpinned);
-		else
-			message = " " + this.context.getResources ().getString (R.string.notpinned);
+		if (showToast)
+		{
+			String message;
+			if (modified)
+				message = " " + this.context.getResources ().getString (R.string.unpinned);
+			else
+				message = " " + this.context.getResources ().getString (R.string.notpinned);
 
-		Toast.makeText (this.context, app.getLabel () + message, Toast.LENGTH_SHORT).show ();
+			Toast.makeText (this.context, app.getLabel () + message, Toast.LENGTH_SHORT).show ();
+		}
 
 		be.robinj.ubuntu.unity.launcher.AppLauncher appLauncher = (be.robinj.ubuntu.unity.launcher.AppLauncher) this.llLauncherPinnedApps.findViewWithTag (app);
 		this.llLauncherPinnedApps.removeView (appLauncher);

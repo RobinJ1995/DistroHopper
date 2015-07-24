@@ -619,6 +619,11 @@ public class HomeActivity extends Activity
 		}
 	}
 
+	public AppManager getAppManager ()
+	{
+		return this.apps;
+	}
+
 	//# Callbacks #//
 	public void asyncLoadInstalledAppsDone (AppManager installedApps)
 	{
@@ -655,10 +660,12 @@ public class HomeActivity extends Activity
 			// Broadcast receiver //
 			this.broadcastPackageManager = new PackageManagerBroadcastReceiver (this);
 
+			Resources res = this.getResources ();
+
 			IntentFilter ifPackageManager = new IntentFilter ();
-			ifPackageManager.addAction ("android.intent.action.PACKAGE_INSTALL");
-			ifPackageManager.addAction ("android.intent.action.PACKAGE_ADDED");
-			ifPackageManager.addAction ("android.intent.action.PACKAGE_REMOVED");
+			ifPackageManager.addAction (res.getString (R.string.intent_action_package_added_legacy));
+			ifPackageManager.addAction (res.getString (R.string.intent_action_package_added));
+			ifPackageManager.addAction (res.getString (R.string.intent_action_package_removed));
 			ifPackageManager.addDataScheme ("package");
 
 			this.registerReceiver (this.broadcastPackageManager, ifPackageManager);
@@ -748,19 +755,6 @@ public class HomeActivity extends Activity
 
 		if (prefs.getBoolean ("launcher_running_show", true))
 			this.apps.addRunningApps (this.chameleonicBgColour);
-	}
-
-	public void installedAppsChanged ()
-	{
-		/*
-		 * Replacing the existing instance of AppManager could result in problems.
-		 * Need to figure out a (good) way to just replace the contents of the
-		 * existing AppManager and have all the other components be updated automatically.
-		 *
-		 * Tried just restarting the app, but on relatively fast devices this would result
-		 * in the broadcast being received over and over again and causing an infinite loop.
-		 * It was kind of a dirty hack anyway, so that's alright.
-		 */
 	}
 
 	//# Event handlers #//

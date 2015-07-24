@@ -11,23 +11,24 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import be.robinj.ubuntu.App;
 import be.robinj.ubuntu.HomeActivity;
 import be.robinj.ubuntu.R;
 
 /**
  * Created by robin on 8/21/14.
  */
-public class GridAdapter extends ArrayAdapter<AppLauncher>
+public class GridAdapter extends ArrayAdapter<App>
 {
-	public GridAdapter (Context context, List<AppLauncher> appLaunchers)
+	public GridAdapter (Context context, List<App> apps)
 	{
-		super (context, R.layout.widget_dash_applauncher, appLaunchers);
+		super (context, R.layout.widget_dash_applauncher, apps);
 	}
 
 	@Override
 	public View getView (int position, View view, ViewGroup parent)
 	{
-		AppLauncher appLauncher = this.getItem (position);
+		AppLauncher appLauncher = (this.getItem (position)).getDashAppLauncher ();
 
 		if (view == null)
 			view = LayoutInflater.from (this.getContext ()).inflate (R.layout.widget_dash_applauncher, parent, false);

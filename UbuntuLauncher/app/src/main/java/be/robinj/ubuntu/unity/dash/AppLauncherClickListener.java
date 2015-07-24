@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import be.robinj.ubuntu.ExceptionHandler;
+import be.robinj.ubuntu.unity.AppLauncher;
 
 /**
  * Created by robin on 8/21/14.

@@ -3,6 +3,7 @@ package be.robinj.ubuntu;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Debug;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 
 import be.robinj.ubuntu.dev.Log;
 import be.robinj.ubuntu.unity.AppIcon;
+import be.robinj.ubuntu.unity.dash.AppLauncher;
 
 /**
  * Created by robin on 8/20/14.
@@ -57,7 +59,29 @@ public class App implements Serializable, Parcelable
 		return app;
 	}
 
-	public App () // This constructor should never be invoked manually. That's SnappyDB's job.
+	public static App fromActivityInfo (Context context, PackageManager pacMan, AppManager appManager, ActivityInfo activityInfo)
+	{
+		String label = activityInfo.loadLabel (pacMan).toString ();
+		String packageName = activityInfo.applicationInfo.packageName;
+		String activityName = activityInfo.name;
+
+		App app = new App (context, appManager);
+		app.setLabel (label);
+		app.setPackageName (packageName);
+		app.setActivityName (activityName);
+
+		AppIcon icon = null;
+		if (appManager.isIconPackLoaded ())
+			icon = appManager.getIconPack ().getIconForApp (app);
+		if (icon == null)
+			icon = appManager.getIconPack ().getFallbackIcon (activityInfo.loadIcon (pacMan));
+
+		app.setIcon (icon);
+
+		return app;
+	}
+
+	public App () // This constructor should never be invoked manually. That's SnappyDB's job. //
 	{
 	}
 
@@ -158,6 +182,11 @@ public class App implements Serializable, Parcelable
 	public AppManager getAppManager ()
 	{
 		return appManager;
+	}
+
+	public AppLauncher getDashAppLauncher ()
+	{
+		return new AppLauncher (this.context, this);
 	}
 
 	//# Parcelable, Serializable #//

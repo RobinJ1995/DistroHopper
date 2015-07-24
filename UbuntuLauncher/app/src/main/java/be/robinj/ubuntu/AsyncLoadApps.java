@@ -28,7 +28,7 @@ import be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher;
 /**
  * Created by robin on 8/21/14.
  */
-public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
+public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 {
 	private SpinnerAppLauncher lalSpinner;
 	private be.robinj.ubuntu.unity.launcher.AppLauncher lalBfb;
@@ -45,7 +45,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 	}
 
 	@Override
-	protected Object[] doInBackground (Context... params)
+	protected AppManager doInBackground (Context... params)
 	{
 		AppManager appManager = null;
 		List<AppLauncher> appLaunchers = null;
@@ -96,25 +96,12 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 
 			Log.v (this.getClass ().getSimpleName (), "Data about " + size + " installed apps was retrieved from the package manager. Operation took " + tdRetrievingInstalledApps + " seconds.");
 
-			size = appManager.size (); // Since the app itself is being filtered out to avoid an inception, the size will have changed, too //
-
 			this.publishProgress (360.0F, 360.0F);
 
 			if (this.isCancelled ())
 				return null;
 
 			appManager.sort ();
-
-			//this.publishProgress (0.0F, size);
-
-			appLaunchers = new ArrayList<AppLauncher> ();
-			for (int i = 0; i < size; i++)
-			{
-				App app = appManager.get (i);
-				appLaunchers.add (new be.robinj.ubuntu.unity.dash.AppLauncher (this.context, app));
-
-				//this.publishProgress ((float) i, size); // Looks like it spends more time updating the progress bar than actually looping over and adding the app launchers //
-			}
 
 			if (this.isCancelled ())
 				return null;
@@ -158,7 +145,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 			exh.show ();
 		}
 
-		return new Object[] { appManager, appLaunchers };
+		return appManager;
 	}
 
 	@Override
@@ -171,15 +158,14 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, Object[]>
 	}
 
 	@Override
-	protected void onPostExecute (Object[] result)
+	protected void onPostExecute (AppManager appManager)
 	{
 		this.lalSpinner.setVisibility (View.GONE);
 		this.lalBfb.setVisibility (View.VISIBLE);
 
-		AppManager appManager = (AppManager) result[0];
 		appManager.refreshPinnedView ();
 
-		this.gvDashHomeApps.setAdapter (new GridAdapter (this.context, (List<AppLauncher>) result[1]));
+		this.gvDashHomeApps.setAdapter (new GridAdapter (this.context, appManager.getInstalledApps ()));
 		this.gvDashHomeApps.setOnItemClickListener (new AppLauncherClickListener ());
 		this.gvDashHomeApps.setOnItemLongClickListener (new AppLauncherLongClickListener ());
 
