@@ -12,7 +12,7 @@ import be.robinj.ubuntu.thirdparty.ProgressWheel;
 /**
  * Created by robin on 25/11/14.
  */
-public class AsyncSearch extends AsyncTask<String, Integer, Object[]>
+public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgressUpdate, List<LensSearchResultCollection>>
 {
 	private LensManager lensManager;
 	private List<LensSearchResultCollection> results = new ArrayList<LensSearchResultCollection> ();
@@ -42,7 +42,7 @@ public class AsyncSearch extends AsyncTask<String, Integer, Object[]>
 	}
 
 	@Override
-	protected Object[] doInBackground (String... params)
+	protected List<LensSearchResultCollection> doInBackground (String... params)
 	{
 		String pattern = params[0];
 		this.results.clear ();
@@ -53,7 +53,7 @@ public class AsyncSearch extends AsyncTask<String, Integer, Object[]>
 			int nLenses = lenses.size ();
 			int maxResultsPerLens = lensManager.getMaxResultsPerLens ();
 
-			this.publishProgress (0, nLenses);
+			this.publishProgress (new AsyncSearchProgressUpdate (null, 0, nLenses));
 
 			for (int i = 0; i < nLenses; i++)
 			{
@@ -80,31 +80,35 @@ public class AsyncSearch extends AsyncTask<String, Integer, Object[]>
 					collection = new LensSearchResultCollection (lens, ex);
 				}
 
-				if (collection != null)
-					this.results.add (collection);
-
-				this.publishProgress (i, nLenses);
+				this.publishProgress (new AsyncSearchProgressUpdate (collection, i, nLenses));
 			}
 		}
 
-		return new Object[] { this.results };
+		return this.results;
 	}
 
 	@Override
-	protected void onProgressUpdate (Integer... progress)
+	protected void onProgressUpdate (AsyncSearchProgressUpdate... progressUpdate)
 	{
-		super.onProgressUpdate (progress[0]);
+		super.onProgressUpdate (progressUpdate);
 
-		this.progressWheel.setProgress ((int) ((float) progress[0] / (float) progress[1] * 360));
+		AsyncSearchProgressUpdate update = progressUpdate[0];
 
-		this.progressWheel.invalidate ();
-		this.adapter.notifyDataSetChanged ();
+		this.progressWheel.setProgress ((int) ((float) update.getProgress () / (float) update.getNLenses () * 360));
+		//this.progressWheel.invalidate ();
+
+		LensSearchResultCollection collection = update.getCollection ();
+		if (collection != null)
+		{
+			this.results.add (collection);
+			this.adapter.notifyDataSetChanged ();
+		}
 	}
 
 	@Override
-	protected void onPostExecute (Object[] result)
+	protected void onPostExecute (List<LensSearchResultCollection> results)
 	{
-		super.onPostExecute (result);
+		super.onPostExecute (results);
 
 		this.progressWheel.setVisibility (View.GONE);
 	}
@@ -115,5 +119,34 @@ public class AsyncSearch extends AsyncTask<String, Integer, Object[]>
 		super.onCancelled ();
 
 		this.progressWheel.setProgress (0);
+	}
+
+	protected class AsyncSearchProgressUpdate
+	{
+		private LensSearchResultCollection collection;
+		private int progress;
+		private int nLenses;
+
+		public AsyncSearchProgressUpdate (LensSearchResultCollection collection, int progress, int nLenses)
+		{
+			this.collection = collection;
+			this.progress = progress;
+			this.nLenses = nLenses;
+		}
+
+		public LensSearchResultCollection getCollection ()
+		{
+			return this.collection;
+		}
+
+		public int getProgress ()
+		{
+			return this.progress;
+		}
+
+		public int getNLenses ()
+		{
+			return this.nLenses;
+		}
 	}
 }
