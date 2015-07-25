@@ -1,69 +1,87 @@
 package be.robinj.ubuntu.dev;
 
+import be.robinj.ubuntu.Observed;
+
 /**
  * Created by robin on 03/07/15.
  */
-public class Log
+public class Log extends Observed
 {
-	private static StringBuilder log = new StringBuilder ();
-	private static boolean enabled = false;
+	private StringBuilder log = new StringBuilder ();
+	private boolean enabled = false;
 
-	public static void v (String tag, String message)
+	private static Log instance;
+
+	public static Log getInstance ()
+	{
+		if (Log.instance == null)
+			Log.instance = new Log ();
+
+		return Log.instance;
+	}
+
+	private Log ()
+	{
+	}
+
+	public void v (String tag, String message)
 	{
 		android.util.Log.v (tag, message);
 
-		Log.appendToDevLog ("v", tag, message);
+		this.appendToDevLog ("v", tag, message);
 	}
 
-	public static void d (String tag, String message)
+	public void d (String tag, String message)
 	{
 		android.util.Log.d (tag, message);
 
-		Log.appendToDevLog ("d", tag, message);
+		this.appendToDevLog ("d", tag, message);
 	}
 
-	public static void i (String tag, String message)
+	public void i (String tag, String message)
 	{
 		android.util.Log.i (tag, message);
 
-		Log.appendToDevLog ("i", tag, message);
+		this.appendToDevLog ("i", tag, message);
 	}
 
-	public static void w (String tag, String message)
+	public void w (String tag, String message)
 	{
 		android.util.Log.w (tag, message);
 
-		Log.appendToDevLog ("w", tag, message);
+		this.appendToDevLog ("w", tag, message);
 	}
 
-	public static void e (String tag, String message)
+	public void e (String tag, String message)
 	{
 		android.util.Log.e (tag, message);
 
-		Log.appendToDevLog ("e", tag, message);
+		this.appendToDevLog ("e", tag, message);
 	}
 
-	public static String getLog ()
+	public String getLog ()
 	{
-		return Log.log.toString ();
+		return this.log.toString ();
 	}
 
-	public static void setEnabled (boolean enabled)
+	public void setEnabled (boolean enabled)
 	{
-		Log.enabled = enabled;
+		this.enabled = enabled;
 	}
 
-	private static void appendToDevLog (String type, String tag, String message)
+	private void appendToDevLog (String type, String tag, String message)
 	{
-		if (Log.enabled)
+		if (this.enabled)
 		{
-			Log.log.append ("[")
+			this.log.append ("[")
 				.append (type.toUpperCase ())
 				.append ("] ")
 				.append (tag)
 				.append (": ")
 				.append (message)
 				.append ("\n");
+
+			this.nudgeObservers ();
 		}
 	}
 }

@@ -64,12 +64,12 @@ public class ExceptionHandler
 			}
 			catch (Exception ex2)
 			{
-				Log.e (this.getClass ().getSimpleName (), "Couldn't show AlertDialog");
+				Log.getInstance ().e (this.getClass ().getSimpleName (), "Couldn't show AlertDialog");
 			}
 		}
 		else
 		{
-			Log.w (this.getClass ().getSimpleName (), "User wasn't notified that there was a problem because context == NULL");
+			Log.getInstance ().w (this.getClass ().getSimpleName (), "User wasn't notified that there was a problem because context == NULL");
 		}
 
 		try
@@ -90,12 +90,12 @@ public class ExceptionHandler
 		}
 		catch (Exception ex2)
 		{
-			Log.w (this.getClass ().getSimpleName (), "Problem description couldn't be sent: " + ex2.getMessage ());
+			Log.getInstance ().w (this.getClass ().getSimpleName (), "Problem description couldn't be sent: " + ex2.getMessage ());
 		}
 	}
 
 	private void logException (String stackTrace)
 	{
-		Log.e (this.getClass ().getSimpleName (), this.ex.getClass ().getName () + "\n\n" + this.ex.getMessage () + "\n\n" + stackTrace.toString ());
+		Log.getInstance ().e (this.getClass ().getSimpleName (), this.ex.getClass ().getName () + "\n\n" + this.ex.getMessage () + "\n\n" + stackTrace.toString ());
 	}
 }

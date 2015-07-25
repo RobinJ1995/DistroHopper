@@ -33,7 +33,7 @@ public class Debug
 				message = "Failed to get stack trace: " + ex.toString ();
 			}
 
-			Log.e (Debug.class.getSimpleName (), "Assertion failed: " + message);
+			Log.getInstance ().e (Debug.class.getSimpleName (), "Assertion failed: " + message);
 			throw new AssertionError ("Assertion failed: " + message);
 		}
 	}

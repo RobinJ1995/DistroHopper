@@ -6,10 +6,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import be.robinj.ubuntu.IObserver;
 import be.robinj.ubuntu.R;
 
-public class DevLogsActivity extends Activity
+public class DevLogsActivity extends Activity implements IObserver
 {
+	private Log log;
+	private TextView tvLogs;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
@@ -18,8 +21,20 @@ public class DevLogsActivity extends Activity
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_dev_logs);
 
-		TextView tvLogs = (TextView) this.findViewById (R.id.tvLogs);
-		tvLogs.setText (Log.getLog ());
+		this.log = Log.getInstance ();
+
+		this.tvLogs = (TextView) this.findViewById (R.id.tvLogs);
+		this.tvLogs.setText (this.log.getLog ());
+
+		this.log.attachObserver (this);
+	}
+
+	@Override
+	protected void onStop ()
+	{
+		this.log.detachObserver (this);
+
+		super.onStop ();
 	}
 
 	@Override
@@ -34,5 +49,11 @@ public class DevLogsActivity extends Activity
 	public boolean onOptionsItemSelected (MenuItem item)
 	{
 		return super.onOptionsItemSelected (item);
+	}
+
+	@Override
+	public void nudge ()
+	{
+		this.tvLogs.setText (Log.getInstance ().getLog ());
 	}
 }

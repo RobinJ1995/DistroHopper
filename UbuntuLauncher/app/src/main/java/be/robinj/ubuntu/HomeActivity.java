@@ -91,7 +91,7 @@ public class HomeActivity extends Activity
 		{
 			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 
-			Log.setEnabled (prefs.getBoolean ("dev", false));
+			Log.getInstance ().setEnabled (prefs.getBoolean ("dev", false));
 
 			LinearLayout llLauncherAndDashContainer = (LinearLayout) this.findViewById (R.id.llLauncherAndDashContainer);
 			LinearLayout llLauncher = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llLauncher);
@@ -806,12 +806,27 @@ public class HomeActivity extends Activity
 		}
 	}
 
+	public void ibPanelDevLogs_clicked (View view)
+	{
+		try
+		{
+			this.openDash ();
+
+
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (this, ex);
+			exh.show ();
+		}
+	}
+
+	//# Dash #//
 	private void closeDash ()
 	{
 		this.closeDash (false);
 	}
 
-	//# Dash #//
 	private void closeDash (boolean track)
 	{
 		EditText etDashSearch = (EditText) this.findViewById (R.id.etDashSearch);

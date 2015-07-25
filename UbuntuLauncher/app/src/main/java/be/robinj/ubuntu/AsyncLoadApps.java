@@ -94,7 +94,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 			long tDoneRetrievingInstalledApps = System.currentTimeMillis ();
 			float tdRetrievingInstalledApps = (float) (tDoneRetrievingInstalledApps - tStartRetrievingInstalledApps) / 1000F;
 
-			Log.v (this.getClass ().getSimpleName (), "Data about " + size + " installed apps was retrieved from the package manager. Operation took " + tdRetrievingInstalledApps + " seconds.");
+			Log.getInstance ().v (this.getClass ().getSimpleName (), "Data about " + size + " installed apps was retrieved from the package manager. Operation took " + tdRetrievingInstalledApps + " seconds.");
 
 			this.publishProgress (360.0F, 360.0F);
 

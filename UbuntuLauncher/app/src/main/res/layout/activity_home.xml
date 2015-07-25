@@ -1,406 +1,406 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
-    xmlns:ProgressWheel="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="0dp"
-    android:paddingRight="0dp"
-    android:paddingTop="0dp"
-    android:paddingBottom="0dp"
-    tools:context=".HomeActivity">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/rlContainer">
-
-        <be.robinj.ubuntu.unity.Wallpaper
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/wpWallpaper"
-            android:scaleType="centerCrop" />
-
-        <FrameLayout
-            android:id="@+id/flWallpaperOverlayContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <FrameLayout
+<RelativeLayout xmlns:ProgressWheel="http://schemas.android.com/apk/res-auto"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:custom="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/flWallpaperOverlay">
-            </FrameLayout>
+                android:paddingBottom="0dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="0dp"
+                tools:context=".HomeActivity">
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                android:id="@+id/flWallpaperOverlayWhenDashOpened">
-            </FrameLayout>
-        </FrameLayout>
+	<RelativeLayout
+		android:id="@+id/rlContainer"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
 
-        <include layout="@layout/activity_home_widgets"/>
+		<be.robinj.ubuntu.unity.Wallpaper
+			android:id="@+id/wpWallpaper"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:scaleType="centerCrop" />
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="false"
-            android:background="@android:color/black"
-            android:id="@+id/llStatusBar"
-            android:visibility="gone">
-        </LinearLayout>
+		<FrameLayout
+			android:id="@+id/flWallpaperOverlayContainer"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="28dp"
-            android:layout_below="@+id/llStatusBar"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="false"
-            android:background="@drawable/panel_background"
-            android:id="@+id/llPanel">
+			<FrameLayout
+				android:id="@+id/flWallpaperOverlay"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+			</FrameLayout>
 
-            <TextView
-                android:id="@+id/tvPanelBfb"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                android:textSize="16dp"
-                android:gravity="center"
-                android:layout_marginLeft="8dp"
-                android:textAppearance="@style/textshadow_2px_black"
-                android:onClick="lalBfb_clicked" />
+			<FrameLayout
+				android:id="@+id/flWallpaperOverlayWhenDashOpened"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:visibility="gone">
+			</FrameLayout>
+		</FrameLayout>
 
-            <ImageButton
-                android:layout_width="84dp"
-                android:layout_height="match_parent"
-                android:id="@+id/ibPanelDashClose"
-                android:src="@drawable/dash_close"
-                android:background="@color/transparent"
-                android:visibility="invisible"
-                android:onClick="ibPanelDashClose_clicked" />
+		<include layout="@layout/activity_home_widgets" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:id="@+id/tvPanelTitle"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:textStyle="bold"
-                android:textColor="@android:color/white"/>
+		<LinearLayout
+			android:id="@+id/llStatusBar"
+			android:layout_width="match_parent"
+			android:layout_height="25dp"
+			android:layout_alignParentBottom="false"
+			android:layout_alignParentLeft="true"
+			android:layout_alignParentStart="true"
+			android:layout_alignParentTop="true"
+			android:background="@android:color/black"
+			android:orientation="horizontal"
+			android:visibility="gone">
+		</LinearLayout>
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:id="@+id/ibPanelCog"
-                android:src="@drawable/panel_cog"
-                android:background="@color/transparent"
-                android:onClick="lalPreferences_clicked"/>
-        </LinearLayout>
+		<LinearLayout
+			android:id="@+id/llPanel"
+			android:layout_width="match_parent"
+			android:layout_height="28dp"
+			android:layout_alignParentBottom="false"
+			android:layout_alignParentLeft="true"
+			android:layout_alignParentStart="true"
+			android:layout_below="@+id/llStatusBar"
+			android:background="@drawable/panel_background"
+			android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/llPanel"
-            android:orientation="horizontal"
-            android:id="@+id/llLauncherAndDashContainer"
-            android:baselineAligned="false">
+			<TextView
+				android:id="@+id/tvPanelBfb"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:layout_marginLeft="8dp"
+				android:gravity="center"
+				android:onClick="lalBfb_clicked"
+				android:textAppearance="@style/textshadow_2px_black"
+				android:textSize="16dp"
+				android:visibility="gone" />
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@color/transparent90"
-                android:focusableInTouchMode="false"
-                android:id="@+id/llLauncher">
+			<ImageButton
+				android:id="@+id/ibPanelDashClose"
+				android:layout_width="84dp"
+				android:layout_height="match_parent"
+				android:background="@color/transparent"
+				android:onClick="ibPanelDashClose_clicked"
+				android:src="@drawable/dash_close"
+				android:visibility="invisible" />
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:id="@+id/llBfbSpinnerWrapper"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+			<TextView
+				android:id="@+id/tvPanelTitle"
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:gravity="center_vertical"
+				android:textColor="@android:color/white"
+				android:textStyle="bold" />
 
-                    <be.robinj.ubuntu.unity.launcher.AppLauncher
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        custom:applauncher_special="true"
-                        android:onClick="lalBfb_clicked"
-                        android:id="@+id/lalBfb"
-                        android:layout_marginTop="2dp"
-                        android:visibility="gone"/>
+			<ImageButton
+				android:id="@+id/ibPanelCog"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:background="@color/transparent"
+				android:onClick="lalPreferences_clicked"
+				android:src="@drawable/panel_cog" />
+		</LinearLayout>
 
-                    <be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        custom:applauncher_special="true"
-                        android:layout_marginTop="2dp"
-                        android:id="@+id/lalSpinner" />
-                </LinearLayout>
+		<LinearLayout
+			android:id="@+id/llLauncherAndDashContainer"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_alignParentLeft="true"
+			android:layout_alignParentStart="true"
+			android:layout_below="@+id/llPanel"
+			android:baselineAligned="false"
+			android:orientation="horizontal">
 
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/scrLauncherAppsContainer"
-                    android:scrollbars="none"
-                    android:layout_weight="1"
-                    android:fillViewport="false">
+			<LinearLayout
+				android:id="@+id/llLauncher"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:background="@color/transparent90"
+				android:focusableInTouchMode="false"
+				android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:id="@+id/llLauncherAppsContainer">
+				<LinearLayout
+					android:id="@+id/llBfbSpinnerWrapper"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="vertical">
 
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/llLauncherPinnedApps"
-                            android:layout_gravity="top">
-                        </LinearLayout>
+					<be.robinj.ubuntu.unity.launcher.AppLauncher
+						android:id="@+id/lalBfb"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="2dp"
+						android:onClick="lalBfb_clicked"
+						android:visibility="gone"
+						custom:applauncher_special="true" />
 
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/llLauncherRunningApps"
-                            android:layout_gravity="top">
-                        </LinearLayout>
+					<be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher
+						android:id="@+id/lalSpinner"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="2dp"
+						custom:applauncher_special="true" />
+				</LinearLayout>
 
-                    </LinearLayout>
-                </ScrollView>
+				<ScrollView
+					android:id="@+id/scrLauncherAppsContainer"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:fillViewport="false"
+					android:scrollbars="none">
 
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:scrollbars="none"
-                    android:layout_weight="1"
-                    android:fillViewport="false"
-                    android:id="@+id/scrLauncherAppsContainerHorizontal"
-                    android:visibility="gone">
-                </HorizontalScrollView>
+					<LinearLayout
+						android:id="@+id/llLauncherAppsContainer"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical">
 
-                <be.robinj.ubuntu.unity.launcher.AppLauncher
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    custom:icon="@drawable/launcher_preferences"
-                    custom:applauncher_special="false"
-                    android:id="@+id/lalPreferences"
-                    android:layout_marginBottom="4dp"
-                    android:onClick="lalPreferences_clicked" />
+						<LinearLayout
+							android:id="@+id/llLauncherPinnedApps"
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:layout_gravity="top"
+							android:orientation="vertical">
+						</LinearLayout>
 
-                <be.robinj.ubuntu.unity.launcher.AppLauncher
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    custom:icon="@drawable/launcher_trash"
-                    custom:applauncher_special="false"
-                    android:id="@+id/lalTrash"
-                    android:layout_marginBottom="4dp"
-                    android:visibility="gone" />
+						<LinearLayout
+							android:id="@+id/llLauncherRunningApps"
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:layout_gravity="top"
+							android:orientation="vertical">
+						</LinearLayout>
 
-            </LinearLayout>
+					</LinearLayout>
+				</ScrollView>
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/transparent90"
-                android:visibility="gone"
-                android:id="@+id/llDash">
+				<HorizontalScrollView
+					android:id="@+id/scrLauncherAppsContainerHorizontal"
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:fillViewport="false"
+					android:scrollbars="none"
+					android:visibility="gone">
+				</HorizontalScrollView>
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true">
+				<be.robinj.ubuntu.unity.launcher.AppLauncher
+					android:id="@+id/lalPreferences"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="4dp"
+					android:onClick="lalPreferences_clicked"
+					custom:applauncher_special="false"
+					custom:icon="@drawable/launcher_preferences" />
 
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:id="@+id/llDashSearchContainer">
+				<be.robinj.ubuntu.unity.launcher.AppLauncher
+					android:id="@+id/lalTrash"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="4dp"
+					android:visibility="gone"
+					custom:applauncher_special="false"
+					custom:icon="@drawable/launcher_trash" />
 
-                        <be.robinj.ubuntu.thirdparty.ProgressWheel
-                            android:id="@+id/pwDashSearchProgress"
-                            android:layout_width="48dp"
-                            android:layout_height="match_parent"
-                            ProgressWheel:circleColor="@color/transparent"
-                            ProgressWheel:contourColor="@color/transparent"
-                            ProgressWheel:rimColor="@color/transparent80"
-                            ProgressWheel:barLength="16dp"
-                            ProgressWheel:barColor="@color/transparent40"
-                            ProgressWheel:barWidth="4dp"
-                            ProgressWheel:rimWidth="4dp"
-                            android:visibility="gone" />
+			</LinearLayout>
 
-                        <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/etDashSearch"
-                            android:layout_gravity="bottom"
-                            android:hint="@string/dash_search_hint"
-                            android:singleLine="true"
-                            android:ellipsize="end"
-                            android:visibility="visible" />
-                    </LinearLayout>
+			<LinearLayout
+				android:id="@+id/llDash"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:background="@color/transparent90"
+				android:orientation="vertical"
+				android:visibility="gone">
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1">
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:focusable="true"
+					android:focusableInTouchMode="true"
+					android:orientation="vertical">
 
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/imgDashBackgroundGradient"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerHorizontal="true"
-                            android:src="@drawable/dash_background_gradient"
-                            android:scaleType="centerCrop"
-                            android:adjustViewBounds="true"/>
+					<LinearLayout
+						android:id="@+id/llDashSearchContainer"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center_horizontal"
+						android:orientation="horizontal">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
+						<be.robinj.ubuntu.thirdparty.ProgressWheel
+							android:id="@+id/pwDashSearchProgress"
+							android:layout_width="48dp"
+							android:layout_height="match_parent"
+							android:visibility="gone"
+							ProgressWheel:barColor="@color/transparent40"
+							ProgressWheel:barLength="16dp"
+							ProgressWheel:barWidth="4dp"
+							ProgressWheel:circleColor="@color/transparent"
+							ProgressWheel:contourColor="@color/transparent"
+							ProgressWheel:rimColor="@color/transparent80"
+							ProgressWheel:rimWidth="4dp" />
 
-                            <LinearLayout
-                                android:id="@+id/llDashHomeAppsContainer"
-                                android:orientation="vertical"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight="2">
+						<EditText
+							android:id="@+id/etDashSearch"
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:layout_gravity="bottom"
+							android:ellipsize="end"
+							android:hint="@string/dash_search_hint"
+							android:singleLine="true"
+							android:visibility="visible" />
+					</LinearLayout>
 
-                                <TextView
-                                    android:id="@+id/tvDashHomeTitle"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/dash_lens_apps_title"
-                                    android:layout_gravity="center_horizontal"
-                                    android:textColor="@android:color/white"
-                                    android:textAppearance="@style/textshadow_2px_black"/>
+					<RelativeLayout
+						android:layout_width="match_parent"
+						android:layout_height="0dp"
+						android:layout_weight="1">
 
-                                <!--<LinearLayout
-                                    android:orientation="horizontal"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:id="@+id/llDashHomeApps">
-                                </LinearLayout>-->
+						<ImageView
+							android:id="@+id/imgDashBackgroundGradient"
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:layout_alignParentLeft="true"
+							android:layout_alignParentRight="true"
+							android:layout_alignParentTop="true"
+							android:layout_centerHorizontal="true"
+							android:adjustViewBounds="true"
+							android:scaleType="centerCrop"
+							android:src="@drawable/dash_background_gradient" />
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:orientation="vertical"
-                                    android:focusableInTouchMode="false">
+						<LinearLayout
+							android:layout_width="match_parent"
+							android:layout_height="match_parent"
+							android:orientation="vertical">
 
-                                    <GridView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:id="@+id/gvDashHomeApps"
-                                        android:choiceMode="singleChoice"
-                                        android:numColumns="auto_fit"
-                                        android:columnWidth="@dimen/dash_applauncher_width" />
-                                </LinearLayout>
-                            </LinearLayout>
+							<LinearLayout
+								android:id="@+id/llDashHomeAppsContainer"
+								android:layout_width="match_parent"
+								android:layout_height="match_parent"
+								android:layout_weight="2"
+								android:orientation="vertical">
 
-                            <LinearLayout
-                                android:orientation="vertical"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:visibility="gone"
-                                android:id="@+id/llDashHomeLensesContainer"
-                                android:layout_weight="1">
+								<TextView
+									android:id="@+id/tvDashHomeTitle"
+									android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:layout_gravity="center_horizontal"
+									android:text="@string/dash_lens_apps_title"
+									android:textAppearance="@style/textshadow_2px_black"
+									android:textColor="@android:color/white" />
 
-                                <!--<TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/dash_lens_other_title"
-                                    android:layout_gravity="center_horizontal"
-                                    android:textColor="@android:color/white"
-                                    android:textAppearance="@style/textshadow_2px_black"/>-->
+								<!--<LinearLayout
+								    android:orientation="horizontal"
+								    android:layout_width="match_parent"
+								    android:layout_height="match_parent"
+								    android:id="@+id/llDashHomeApps">
+								</LinearLayout>-->
 
-                                <!--<LinearLayout
-                                    android:orientation="horizontal"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:id="@+id/llDashHomeApps">
-                                </LinearLayout>-->
+								<LinearLayout
+									android:layout_width="match_parent"
+									android:layout_height="wrap_content"
+									android:layout_gravity="center"
+									android:focusableInTouchMode="false"
+									android:orientation="vertical">
 
-                                <ListView
-                                    android:id="@+id/lvDashHomeLensResults"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:orientation="vertical"
-                                    android:focusableInTouchMode="false"
-                                    android:divider="@null" />
-                            </LinearLayout>
-                        </LinearLayout>
-                    </RelativeLayout>
-                </LinearLayout>
+									<GridView
+										android:id="@+id/gvDashHomeApps"
+										android:layout_width="match_parent"
+										android:layout_height="match_parent"
+										android:choiceMode="singleChoice"
+										android:columnWidth="@dimen/dash_applauncher_width"
+										android:numColumns="auto_fit" />
+								</LinearLayout>
+							</LinearLayout>
 
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:id="@+id/llDashRibbon"
-                    android:background="@color/transparent90"
-                    android:layout_weight="0">
+							<LinearLayout
+								android:id="@+id/llDashHomeLensesContainer"
+								android:layout_width="match_parent"
+								android:layout_height="match_parent"
+								android:layout_weight="1"
+								android:orientation="vertical"
+								android:visibility="gone">
 
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
-                    </LinearLayout>
+								<!--<TextView
+								    android:layout_width="wrap_content"
+								    android:layout_height="wrap_content"
+								    android:text="@string/dash_lens_other_title"
+								    android:layout_gravity="center_horizontal"
+								    android:textColor="@android:color/white"
+								    android:textAppearance="@style/textshadow_2px_black"/>-->
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:id="@+id/ibDashLensHome"
-                        android:background="@color/transparent90"
-                        android:src="@drawable/dash_ribbon_home"
-                        android:layout_weight="0"
-                        android:padding="5dp"/>
+								<!--<LinearLayout
+								    android:orientation="horizontal"
+								    android:layout_width="match_parent"
+								    android:layout_height="match_parent"
+								    android:id="@+id/llDashHomeApps">
+								</LinearLayout>-->
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:id="@+id/ibDashLensApps"
-                        android:background="@color/transparent"
-                        android:src="@drawable/dash_ribbon_apps"
-                        android:layout_weight="0"
-                        android:visibility="gone"
-                        android:padding="5dp"/>
+								<ListView
+									android:id="@+id/lvDashHomeLensResults"
+									android:layout_width="match_parent"
+									android:layout_height="wrap_content"
+									android:layout_gravity="center"
+									android:divider="@null"
+									android:focusableInTouchMode="false"
+									android:orientation="vertical" />
+							</LinearLayout>
+						</LinearLayout>
+					</RelativeLayout>
+				</LinearLayout>
 
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
-                    </LinearLayout>
+				<LinearLayout
+					android:id="@+id/llDashRibbon"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:layout_weight="0"
+					android:background="@color/transparent90"
+					android:orientation="horizontal">
 
-                </LinearLayout>
-            </LinearLayout>
+					<LinearLayout
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:layout_weight="1"
+						android:orientation="horizontal">
+					</LinearLayout>
 
-        </LinearLayout>
+					<ImageButton
+						android:id="@+id/ibDashLensHome"
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:layout_weight="0"
+						android:background="@color/transparent90"
+						android:padding="5dp"
+						android:src="@drawable/dash_ribbon_home" />
 
-    </RelativeLayout>
+					<ImageButton
+						android:id="@+id/ibDashLensApps"
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:layout_weight="0"
+						android:background="@color/transparent"
+						android:padding="5dp"
+						android:src="@drawable/dash_ribbon_apps"
+						android:visibility="gone" />
+
+					<LinearLayout
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:layout_weight="1"
+						android:orientation="horizontal">
+					</LinearLayout>
+
+				</LinearLayout>
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</RelativeLayout>
 
 </RelativeLayout>
