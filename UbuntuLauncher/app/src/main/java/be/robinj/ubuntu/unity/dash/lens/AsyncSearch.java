@@ -7,6 +7,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import be.robinj.ubuntu.dev.Log;
 import be.robinj.ubuntu.thirdparty.ProgressWheel;
 
 /**
@@ -80,7 +81,7 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 					collection = new LensSearchResultCollection (lens, ex);
 				}
 
-				this.publishProgress (new AsyncSearchProgressUpdate (collection, i, nLenses));
+				this.publishProgress (new AsyncSearchProgressUpdate (collection, i + 1, nLenses));
 			}
 		}
 

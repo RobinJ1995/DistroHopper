@@ -48,7 +48,6 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 	protected AppManager doInBackground (Context... params)
 	{
 		AppManager appManager = null;
-		List<AppLauncher> appLaunchers = null;
 
 		try
 		{
