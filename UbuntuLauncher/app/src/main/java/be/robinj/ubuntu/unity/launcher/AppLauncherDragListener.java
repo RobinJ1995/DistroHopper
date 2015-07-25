@@ -47,6 +47,7 @@ public class AppLauncherDragListener implements ViewGroup.OnDragListener
 					this.appManager.refreshPinnedView ();
 
 					this.appManager.savePinnedApps ();
+				case DragEvent.ACTION_DRAG_ENDED: // Falls through //
 					this.appManager.stoppedDraggingPinnedApp ();
 				case DragEvent.ACTION_DRAG_EXITED:
 					if (Build.VERSION.SDK_INT >= 14)
