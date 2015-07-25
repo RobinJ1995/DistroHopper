@@ -67,30 +67,34 @@ public class AppManager implements Iterable<App>
 
 	public void add (App app)
 	{
-		this.add (app, false);
+		this.add (app, false, true);
 	}
 
-	public void add (App app, boolean checkDuplicate)
+	public void add (App app, boolean checkDuplicate, boolean sortAndNotifyAdapter)
 	{
 		if (! (checkDuplicate && this.apps.contains (app)))
 		{
 			this.apps.add (app);
-			this.sort ();
 
-			ArrayAdapter adapter = (ArrayAdapter) this.gvDashHomeApps.getAdapter ();
-			if (adapter != null)
-				adapter.notifyDataSetChanged ();
+			if (sortAndNotifyAdapter)
+			{
+				this.sort ();
+
+				ArrayAdapter adapter = (ArrayAdapter) this.gvDashHomeApps.getAdapter ();
+				if (adapter != null)
+					adapter.notifyDataSetChanged ();
+			}
 		}
 	}
 
 	public void add (ResolveInfo resInf)
 	{
-		this.add (resInf, false);
+		this.add (resInf, false, true);
 	}
 
-	public void add (ResolveInfo resInf, boolean checkDuplicate)
+	public void add (ResolveInfo resInf, boolean checkDuplicate, boolean sortAndNotifyAdapter)
 	{
-		this.add (App.fromResolveInfo (this.context, this, resInf), checkDuplicate);
+		this.add (App.fromResolveInfo (this.context, this, resInf), checkDuplicate, sortAndNotifyAdapter);
 	}
 
 	public void addRunningApps (int colour)

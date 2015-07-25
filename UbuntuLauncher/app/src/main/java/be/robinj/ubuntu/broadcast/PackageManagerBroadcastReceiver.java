@@ -33,8 +33,6 @@ public class PackageManagerBroadcastReceiver extends BroadcastReceiver
 	{
 		try
 		{
-			Log.v (this.getClass ().getSimpleName (), "Broadcast received");
-
 			AppManager appManager = this.parent.getAppManager ();
 			if (appManager != null) // If AsyncLoadApps isn't finished then there is no AppManager yet. In theory this class should only be instantiated once AsyncLoadApps is finished, but it doesn't hurt to make sure. //
 			{
@@ -55,7 +53,7 @@ public class PackageManagerBroadcastReceiver extends BroadcastReceiver
 						for (ResolveInfo resInf : appManager.queryInstalledApps (packageName))
 						{
 							App app = App.fromResolveInfo (context, pacMan, appManager, resInf);
-							appManager.add (app, true);
+							appManager.add (app, true, true);
 						}
 					}
 					else if (action.equals (res.getString (R.string.intent_action_package_removed)))

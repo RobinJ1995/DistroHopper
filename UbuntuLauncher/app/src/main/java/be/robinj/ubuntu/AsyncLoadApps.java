@@ -86,7 +86,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 			{
 				App app = App.fromResolveInfo (this.context, pacMan, appManager, resInfs.get (i));
 				if (! "be.robinj.ubuntu".equals (app.getPackageName ())) // Inception //
-					appManager.add (app);
+					appManager.add (app, false, false);
 
 				this.publishProgress ((float) i, fSize);
 			}
