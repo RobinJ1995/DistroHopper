@@ -24,10 +24,12 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import be.robinj.ubuntu.dev.Log;
 import be.robinj.ubuntu.unity.dash.GridAdapter;
 import be.robinj.ubuntu.unity.launcher.AppLauncher;
 import be.robinj.ubuntu.unity.launcher.AppLauncherClickListener;
@@ -183,20 +185,47 @@ public class AppManager implements Iterable<App>
 	public List<App> getRunningApps ()
 	{
 		List<App> running = new ArrayList<App> ();
-
 		ActivityManager am = (ActivityManager) this.context.getSystemService (Context.ACTIVITY_SERVICE);
-		List<ActivityManager.RunningTaskInfo> runningTasks = am.getRunningTasks (16);
 
-		for (ActivityManager.RunningTaskInfo task : runningTasks)
+		if (Build.VERSION.SDK_INT >= 21) // ActivityManager.getRunningTasks () is deprecated //
 		{
-			String packageName = task.baseActivity.getPackageName ();
-			String activityName = task.baseActivity.getClassName ();
+			List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = am.getRunningAppProcesses ();
 
-			App app = this.findAppByPackageAndActivityName (packageName, activityName);
+			for (ActivityManager.RunningAppProcessInfo appProcess : runningAppProcesses)
+			{
+				Integer[] importantImportances = new Integer[]
+				{
+					ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND,
+					ActivityManager.RunningAppProcessInfo.IMPORTANCE_PERCEPTIBLE,
+					ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE,
+					ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND,
+					ActivityManager.RunningAppProcessInfo.IMPORTANCE_SERVICE
+				};
 
-			if (app != null)
-				running.add (app);
+				if (Arrays.asList (importantImportances).contains (appProcess.importance))
+				{
+					for (App app : this.findAppsByPackageName (appProcess.processName))
+						running.add (app);
+				}
+			}
 		}
+		else
+		{
+			List<ActivityManager.RunningTaskInfo> runningTasks = am.getRunningTasks (16);
+
+			for (ActivityManager.RunningTaskInfo task : runningTasks)
+			{
+				String packageName = task.baseActivity.getPackageName ();
+				String activityName = task.baseActivity.getClassName ();
+
+				App app = this.findAppByPackageAndActivityName (packageName, activityName);
+
+				if (app != null)
+					running.add (app);
+			}
+		}
+
+
 
 		return running;
 	}
