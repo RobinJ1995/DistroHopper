@@ -1,2 +1,69 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<resources/>
+<resources>
+  <string name="action_settings">Inställningar</string>
+  <string name="dash_search_hint">Sök</string>
+  <string name="dash_lens_apps_title">Applikationer</string>
+  <string name="dash_lens_other_title">Annat</string>
+  <string name="title_activity_preferences">Egenskaper</string>
+  <string name="title_activity_about">Om</string>
+  <string name="title_activity_theme_preferences">Teman</string>
+  <string name="title_activity_dev_logs">Loggar</string>
+  <string name="pinned">har nålats fast i launchern</string>
+  <string name="notpinned">är inte nålad</string>
+  <string name="alreadypinned">är redan fastnålad</string>
+  <string name="developed_by">Utvecklad av Robin Jacobs</string>
+  <string name="honourable_mentions">Hedersbara nämningar</string>
+  <string name="button_back">Tillbaka</string>
+  <string name="button_about">Om</string>
+  <string name="button_contribute">Bidra</string>
+  <string name="button_apply">Verkställ</string>
+  <string name="title_preferences">Egenskaper</string>
+  <string name="pref_header_general">Generellt</string>
+  <string name="pref_header_unity">Unity</string>
+  <string name="pref_header_launcher">Launcher</string>
+  <string name="pref_header_dash">Instrumentpanel</string>
+  <string name="pref_header_panel">Panel</string>
+  <string name="pref_header_advanced">Avancerat</string>
+  <string name="pref_header_dev">Utvecklingsalternativ</string>
+  <string name="pref_header_functionality">Funktionalitet</string>
+  <string name="pref_header_appearance">Sken</string>
+  <string name="option_launcher_running_show">Visa appar som körs</string>
+  <string name="option_panel_show">Visa</string>
+  <string name="option_panel_opacity">Opacitet</string>
+  <string name="option_unitybackground_dynamic">Dynamisk bakgrundsfärg</string>
+  <string name="option_unitybackground_colour">Bakgrundsfärg</string>
+  <string name="option_unitybackground_opacity">Bakgrundsopacitet</string>
+  <string name="option_launcher_edge">Skärmkant</string>
+  <string-array name="keys_unitywallpaper_blur">
+    <item>Sudda inte ut</item>
+    <item>Mörklägg</item>
+    <item>Skala ner &amp; skala upp (standard)</item>
+  </string-array>
+  <string-array name="keys_launcher_edge">
+    <item>Vänster (standard)</item>
+    <item>Höger</item>
+  </string-array>
+  <string name="option_wallpaper">Skrivbordsbakgrund</string>
+  <string name="hint_wallpaper">Ändra skrivbordsbakgrund</string>
+  <string name="option_colourcalc_advanced">Ta fler smakprover</string>
+  <string name="option_colourcalc_hsv">Använd HSV</string>
+  <string name="option_dashsearch_full">Avancerad sökning</string>
+  <string name="option_dashsearch_lenses">Använd linser</string>
+  <string name="option_dashsearch_lenses_maxresults">Resultaten per lins</string>
+  <string name="option_theme">Tema</string>
+  <string name="hint_theme">Välj vilken Linux-distribution som du vill att DistroHopper ska efterlikna.</string>
+  <string name="option_dev">Utvecklingsläge</string>
+  <string name="option_dev_logs">Loggar</string>
+  <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
+  <string name="hm_todddavies_name">Todd Davies</string>
+  <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
+  <string name="translators_title">Översättare</string>
+  <string name="title_activity_contribute">Hur kan jag bidra?</string>
+  <string name="contribute_translate_title">Översättande</string>
+  <string name="contribute_translate_go">Gå till Transifex</string>
+  <string name="contribute_bugs_title">Rapportera fel</string>
+  <string name="contribute_bugs_go">Gå till GitHub</string>
+  <string name="contribute_donate_title">Donera</string>
+  <string name="contribute_donate_go">Donera</string>
+  <string name="theme_elementary_res_panel_bfb_text">Applikationer</string>
+</resources>
