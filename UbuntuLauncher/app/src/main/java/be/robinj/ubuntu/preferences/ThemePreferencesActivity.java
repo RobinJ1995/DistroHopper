@@ -1,6 +1,7 @@
 package be.robinj.ubuntu.preferences;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import be.robinj.ubuntu.R;
+import be.robinj.ubuntu.dev.Log;
 import be.robinj.ubuntu.theme.*;
 
 public class ThemePreferencesActivity extends Activity
@@ -29,10 +31,15 @@ public class ThemePreferencesActivity extends Activity
 		themes.add (new Elementary ());
 		themes.add (new Gnome ());
 
-		for (int i = 0; i < themes.size (); i++)
+		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+
+		if (! prefs.getBoolean ("dev", false))
 		{
-			if (themes.get (i).dev_only)
-				themes.remove (i);
+			for (int i = 0; i < themes.size (); i++)
+			{
+				if (themes.get (i).dev_only)
+					themes.remove (i);
+			}
 		}
 
 		ListView lvThemeList = (ListView) this.findViewById (R.id.lvThemeList);
