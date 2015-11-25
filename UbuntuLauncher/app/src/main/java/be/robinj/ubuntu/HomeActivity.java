@@ -264,6 +264,7 @@ public class HomeActivity extends Activity
 			imgDashBackgroundGradient.setImageResource (HomeActivity.theme.dash_background_gradient);
 			lalBfb.setIcon (res.getDrawable (HomeActivity.theme.launcher_bfb_image));
 			lalPreferences.setIcon (res.getDrawable (HomeActivity.theme.launcher_preferences_image));
+			lalTrash.setIcon (res.getDrawable (HomeActivity.theme.launcher_trash_image));
 
 			RelativeLayout.LayoutParams llPanel_layoutParams = (RelativeLayout.LayoutParams) this.llPanel.getLayoutParams ();
 			llPanel_layoutParams.height = (int) res.getDimension (R.dimen.theme_elementary_panel_height);
@@ -537,7 +538,7 @@ public class HomeActivity extends Activity
 			{
 				SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 
-				if (prefs.getBoolean ("launcher_running_show", true))
+				if (prefs.getBoolean ("launcher_running_show", false))
 					this.apps.addRunningApps (this.chameleonicBgColour);
 			}
 		}
@@ -612,7 +613,7 @@ public class HomeActivity extends Activity
 			Intent intent = new Intent (this, LauncherService.class);
 			intent.putExtra ("show", show);
 			intent.putExtra ("visible", false);
-			if (show && this.apps != null && prefs.getBoolean ("launcher_running_show", true))
+			if (show && this.apps != null && prefs.getBoolean ("launcher_running_show", false))
 				intent.putParcelableArrayListExtra ("running", (ArrayList<App>) this.apps.getRunningApps ());
 
 			this.startService (intent);
@@ -651,7 +652,7 @@ public class HomeActivity extends Activity
 
 			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 
-			if (prefs.getBoolean ("launcher_running_show", true))
+			if (prefs.getBoolean ("launcher_running_show", false))
 				this.apps.addRunningApps (this.chameleonicBgColour);
 
 			if (this.openDashWhenReady)
@@ -753,7 +754,7 @@ public class HomeActivity extends Activity
 
 		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 
-		if (prefs.getBoolean ("launcher_running_show", true))
+		if (prefs.getBoolean ("launcher_running_show", false))
 			this.apps.addRunningApps (this.chameleonicBgColour);
 	}
 

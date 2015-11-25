@@ -4,7 +4,7 @@
         android:key="launcher_running_show"
         android:title="@string/option_launcher_running_show"
         android:summary="@string/hint_launcher_running_show"
-        android:defaultValue="true" />
+        android:defaultValue="false" />
 
     <CheckBoxPreference
         android:key="launcherservice_enabled"

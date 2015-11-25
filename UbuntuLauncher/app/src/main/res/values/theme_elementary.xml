@@ -19,6 +19,7 @@
     <integer name="theme_elementary_launcher_preferences_location">@integer/position_none</integer>
     <drawable name="theme_elementary_launcher_preferences_image">@drawable/theme_elementary_res_launcher_preferences</drawable>
     <integer name="theme_elementary_launcher_preferences_location_when_panel_hidden">@integer/position_right</integer>
+    <drawable name="theme_elementary_launcher_trash_image">@drawable/theme_elementary_res_launcher_trash</drawable>
     <bool name="theme_elementary_launcher_applauncher_backgroundcolour_dynamic">false</bool>
     <color name="theme_elementary_launcher_applauncher_backgroundcolour">@android:color/transparent</color>
     <drawable name="theme_elementary_launcher_applauncher_background">@drawable/blank_gradient</drawable>

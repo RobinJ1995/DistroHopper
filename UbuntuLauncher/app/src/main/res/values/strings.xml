@@ -38,7 +38,7 @@
     <string name="option_launcherservice_enabled">Make the Launcher available inside other apps</string>
     <string name="hint_launcherservice_enabled">When you swipe from the bottom half of the left edge of the screen, the Launcher will appear, allowing you to launch apps which you have pinned to the Launcher without having to go to the home screen.\n(EXPERIMENTAL)</string>
     <string name="option_launcher_running_show">Show running apps</string>
-    <string name="hint_launcher_running_show">The Launcher will show which apps are currently running. This will be indicated by a small arrow on the left side of the icon. Apps which are running but have not been pinned to the Launcher will also be shown.</string>
+    <string name="hint_launcher_running_show">The Launcher will show which apps are currently running. This will be indicated by a small arrow on the left side of the icon. Apps which are running but have not been pinned to the Launcher will also be shown.\nNOTE: This feature no longer works reliably from Android 5.0 onwards because of restrictions that were added to the operating system.</string>
     <string name="option_panel_show">Show</string>
     <string name="hint_panel_show">Whether the Panel at the top of the screen should be shown or not.</string>
     <string name="option_panel_opacity">Opacity</string>

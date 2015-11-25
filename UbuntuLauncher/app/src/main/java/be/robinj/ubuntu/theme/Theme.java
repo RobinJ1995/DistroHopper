@@ -29,6 +29,7 @@ public abstract class Theme
 	public int launcher_preferences_location;
 	public int launcher_preferences_image;
 	public int launcher_preferences_location_when_panel_hidden;
+	public int launcher_trash_image;
 	public int launcher_applauncher_backgroundcolour_dynamic;
 	public int launcher_applauncher_backgroundcolour;
 	public int launcher_applauncher_background;

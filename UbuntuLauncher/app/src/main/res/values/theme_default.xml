@@ -19,6 +19,7 @@
     <integer name="theme_default_launcher_preferences_location">@integer/position_bottom</integer>
     <drawable name="theme_default_launcher_preferences_image">@drawable/launcher_preferences</drawable>
     <integer name="theme_default_launcher_preferences_location_when_panel_hidden">@integer/position_bottom</integer>
+    <drawable name="theme_default_launcher_trash_image">@drawable/launcher_trash</drawable>
     <bool name="theme_default_launcher_applauncher_backgroundcolour_dynamic">true</bool>
     <color name="theme_default_launcher_applauncher_backgroundcolour">@android:color/transparent</color>
     <drawable name="theme_default_launcher_applauncher_background">@drawable/widget_launcher_applauncher_background</drawable>
