@@ -1,5 +1,5 @@
 <menu
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="be.robinj.ubuntu.ContributeActivity">
+    tools:context="be.robinj.distrohopper.ContributeActivity">
 
 </menu>

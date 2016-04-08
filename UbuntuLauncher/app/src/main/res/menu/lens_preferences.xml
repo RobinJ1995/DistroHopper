@@ -1,4 +1,4 @@
 <menu
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="be.robinj.ubuntu.preferences.LensPreferencesActivity">
+    tools:context="be.robinj.distrohopper.preferences.LensPreferencesActivity">
 </menu>

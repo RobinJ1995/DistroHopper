@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<be.robinj.ubuntu.widgets.WidgetsContainer
+<be.robinj.distrohopper.widgets.WidgetsContainer
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/vgWidgets"
@@ -12,4 +12,4 @@
     android:layout_alignParentBottom="true"
     tools:showIn="@layout/activity_home">
 
-</be.robinj.ubuntu.widgets.WidgetsContainer>
+</be.robinj.distrohopper.widgets.WidgetsContainer>

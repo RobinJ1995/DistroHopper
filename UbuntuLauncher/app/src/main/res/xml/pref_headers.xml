@@ -3,11 +3,11 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="be.robinj.ubuntu.preferences.PreferencesActivity$AppearancePreferenceFragment"
+        android:fragment="be.robinj.distrohopper.preferences.PreferencesActivity$AppearancePreferenceFragment"
         android:title="@string/pref_header_appearance" />
 
     <header
-        android:fragment="be.robinj.ubuntu.preferences.PreferencesActivity$FunctionalityPreferenceFragment"
+        android:fragment="be.robinj.distrohopper.preferences.PreferencesActivity$FunctionalityPreferenceFragment"
         android:title="@string/pref_header_functionality" />
 
 </preference-headers>

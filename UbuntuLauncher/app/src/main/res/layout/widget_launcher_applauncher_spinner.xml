@@ -24,7 +24,7 @@
             android:background="@drawable/launcher_icon_bg"
             android:id="@+id/llGradient">
 
-            <be.robinj.ubuntu.thirdparty.ProgressWheel
+            <be.robinj.distrohopper.thirdparty.ProgressWheel
                 android:id="@+id/progressWheel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

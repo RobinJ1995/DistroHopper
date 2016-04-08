@@ -14,7 +14,7 @@
         android:background="@color/transparentblack80"
         android:visibility="gone">
 
-        <be.robinj.ubuntu.unity.launcher.AppLauncher
+        <be.robinj.distrohopper.unity.launcher.AppLauncher
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             custom:icon="@drawable/launcher_bfb"

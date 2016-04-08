@@ -8,14 +8,14 @@
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
                 android:paddingTop="0dp"
-                tools:context=".HomeActivity">
+                tools:context="be.robinj.distrohopper.HomeActivity">
 
 	<RelativeLayout
 		android:id="@+id/rlContainer"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<be.robinj.ubuntu.unity.Wallpaper
+		<be.robinj.distrohopper.unity.Wallpaper
 			android:id="@+id/wpWallpaper"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
@@ -128,7 +128,7 @@
 					android:layout_height="wrap_content"
 					android:orientation="vertical">
 
-					<be.robinj.ubuntu.unity.launcher.AppLauncher
+					<be.robinj.distrohopper.unity.launcher.AppLauncher
 						android:id="@+id/lalBfb"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
@@ -137,7 +137,7 @@
 						android:visibility="gone"
 						custom:applauncher_special="true" />
 
-					<be.robinj.ubuntu.unity.launcher.SpinnerAppLauncher
+					<be.robinj.distrohopper.unity.launcher.SpinnerAppLauncher
 						android:id="@+id/lalSpinner"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
@@ -188,7 +188,7 @@
 					android:visibility="gone">
 				</HorizontalScrollView>
 
-				<be.robinj.ubuntu.unity.launcher.AppLauncher
+				<be.robinj.distrohopper.unity.launcher.AppLauncher
 					android:id="@+id/lalPreferences"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -197,7 +197,7 @@
 					custom:applauncher_special="false"
 					custom:icon="@drawable/launcher_preferences" />
 
-				<be.robinj.ubuntu.unity.launcher.AppLauncher
+				<be.robinj.distrohopper.unity.launcher.AppLauncher
 					android:id="@+id/lalTrash"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -232,7 +232,7 @@
 						android:layout_gravity="center_horizontal"
 						android:orientation="horizontal">
 
-						<be.robinj.ubuntu.thirdparty.ProgressWheel
+						<be.robinj.distrohopper.thirdparty.ProgressWheel
 							android:id="@+id/pwDashSearchProgress"
 							android:layout_width="48dp"
 							android:layout_height="match_parent"

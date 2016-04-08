@@ -4,11 +4,11 @@
 	<bool name="ga_autoActivityTracking">true</bool>
 	<bool name="ga_reportUncaughtExceptions">true</bool>
 
-	<screenName name="be.robinj.ubuntu.HomeActivity">Home</screenName>
-	<screenName name="be.robinj.ubuntu.preferences.PreferencesActivity">Preferences</screenName>
-	<screenName name="be.robinj.ubuntu.preferences.LensPreferencesActivity">Lens Preferences</screenName>
-	<screenName name="be.robinj.ubuntu.preferences.ThemePreferencesActivity">Theme Preferences</screenName>
-	<screenName name="be.robinj.ubuntu.AboutActivity">About</screenName>
-	<screenName name="be.robinj.ubuntu.ContributeActivity">Contribute</screenName>
-	<screenName name="be.robinj.ubuntu.dev.DevLogsActivity">Developer Logs</screenName>
+	<screenName name="be.robinj.distrohopper.HomeActivity">Home</screenName>
+	<screenName name="be.robinj.distrohopper.preferences.PreferencesActivity">Preferences</screenName>
+	<screenName name="be.robinj.distrohopper.preferences.LensPreferencesActivity">Lens Preferences</screenName>
+	<screenName name="be.robinj.distrohopper.preferences.ThemePreferencesActivity">Theme Preferences</screenName>
+	<screenName name="be.robinj.distrohopper.AboutActivity">About</screenName>
+	<screenName name="be.robinj.distrohopper.ContributeActivity">Contribute</screenName>
+	<screenName name="be.robinj.distrohopper.dev.DevLogsActivity">Developer Logs</screenName>
 </resources>
