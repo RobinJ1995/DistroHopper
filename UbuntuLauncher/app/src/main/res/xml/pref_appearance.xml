@@ -4,8 +4,8 @@
         android:title="@string/option_theme"
         android:summary="@string/hint_theme">
         <intent
-            android:targetPackage="be.robinj.ubuntu"
-            android:targetClass="be.robinj.ubuntu.preferences.ThemePreferencesActivity" />
+            android:targetPackage="be.robinj.distrohopper"
+            android:targetClass="be.robinj.distrohopper.preferences.ThemePreferencesActivity" />
     </Preference>
 
     <Preference

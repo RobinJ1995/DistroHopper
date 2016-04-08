@@ -4,8 +4,8 @@
 		android:dependency="dev"
 		android:title="@string/option_dev_logs">
 		<intent
-			android:targetClass="be.robinj.ubuntu.dev.DevLogsActivity"
-			android:targetPackage="be.robinj.ubuntu" />
+			android:targetClass="be.robinj.distrohopper.dev.DevLogsActivity"
+			android:targetPackage="be.robinj.distrohopper" />
 	</Preference>
 
 </PreferenceScreen>

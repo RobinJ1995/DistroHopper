@@ -1,4 +1,4 @@
-package be.robinj.ubuntu;
+package be.robinj.distrohopper;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
