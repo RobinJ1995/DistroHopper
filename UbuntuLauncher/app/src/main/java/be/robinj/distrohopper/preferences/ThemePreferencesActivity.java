@@ -11,7 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.robinj.distrohopper.R;
-import be.robinj.distrohopper.theme.*;
+import be.robinj.distrohopper.theme.Default;
+import be.robinj.distrohopper.theme.Elementary;
+import be.robinj.distrohopper.theme.Gnome;
+import be.robinj.distrohopper.theme.Theme;
 
 public class ThemePreferencesActivity extends Activity
 {

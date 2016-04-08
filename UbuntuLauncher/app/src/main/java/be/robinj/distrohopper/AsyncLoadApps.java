@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
-
-import be.robinj.distrohopper.dev.Log;
 import android.view.View;
 import android.widget.GridView;
 
@@ -15,6 +13,7 @@ import com.snappydb.DBFactory;
 
 import java.util.List;
 
+import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.thirdparty.ProgressWheel;
 import be.robinj.distrohopper.unity.dash.AppLauncherClickListener;
 import be.robinj.distrohopper.unity.dash.AppLauncherLongClickListener;

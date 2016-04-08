@@ -37,11 +37,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.broadcast.PackageManagerBroadcastReceiver;
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.preferences.PreferencesActivity;
-import be.robinj.distrohopper.theme.*;
+import be.robinj.distrohopper.theme.Default;
+import be.robinj.distrohopper.theme.Elementary;
+import be.robinj.distrohopper.theme.Gnome;
+import be.robinj.distrohopper.theme.Location;
+import be.robinj.distrohopper.theme.Theme;
 import be.robinj.distrohopper.thirdparty.ProgressWheel;
 import be.robinj.distrohopper.unity.Wallpaper;
 import be.robinj.distrohopper.unity.dash.SearchTextWatcher;

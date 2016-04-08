@@ -10,8 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import be.robinj.distrohopper.R;
-
 
 public class AboutActivity extends Activity
 {

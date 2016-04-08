@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.unity.launcher.AppLauncher;
 import be.robinj.distrohopper.unity.launcher.AppLauncherClickListener;
 import be.robinj.distrohopper.unity.launcher.AppLauncherDragListener;

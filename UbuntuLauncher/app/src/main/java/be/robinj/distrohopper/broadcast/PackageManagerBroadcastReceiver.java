@@ -10,10 +10,9 @@ import android.content.res.Resources;
 import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.HomeActivity;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.dev.Log;
-
-import be.robinj.distrohopper.HomeActivity;
 
 /**
  * Created by robin on 28/06/15.
