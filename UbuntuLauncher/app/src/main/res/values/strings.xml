@@ -100,7 +100,8 @@
     <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
     <string name="hm_commonsguy_why">* I used his ColorMixer component in the Preferences screen.\n
         https://github.com/commonsguy/cwac-colormixer</string>
-    <string name="translators_title">Translators</string>
+    <string name="hm_translators_name">The Translation Team</string>
+    <string name="hm_translators_why">* A couple of people devoted time and effort to make this app available in their respective languages. I am grateful towards all of these people for their contributions to the project.</string>
     <string name="title_activity_contribute">How can I contribute?</string>
     <string name="contribute_intro">A lot of time and hard work went into the development of this application. If you\'d like to help out, there are several ways in which you can do so.</string>
     <string name="contribute_translate_title">Translating</string>
