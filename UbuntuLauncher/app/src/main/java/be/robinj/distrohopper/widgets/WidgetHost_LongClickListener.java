@@ -9,7 +9,6 @@ import android.widget.GridLayout;
 public class WidgetHost_LongClickListener implements GridLayout.OnLongClickListener
 {
 	private WidgetHost widgetHost;
-	boolean x = false;
 
 	public WidgetHost_LongClickListener (WidgetHost widgetHost)
 	{

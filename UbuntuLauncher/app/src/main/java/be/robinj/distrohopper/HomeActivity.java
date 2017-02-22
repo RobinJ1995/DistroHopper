@@ -2,6 +2,7 @@ package be.robinj.distrohopper;
 
 import android.animation.LayoutTransition;
 import android.app.Activity;
+import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -53,14 +54,16 @@ import be.robinj.distrohopper.unity.launcher.AppLauncher;
 import be.robinj.distrohopper.unity.launcher.LauncherDragListener;
 import be.robinj.distrohopper.unity.launcher.TrashDragListener;
 import be.robinj.distrohopper.unity.launcher.service.LauncherService;
+import be.robinj.distrohopper.widgets.WidgetHost;
+import be.robinj.distrohopper.widgets.WidgetHost_LongClickListener;
 
 
 public class HomeActivity extends Activity
 {
 	private LensManager lenses;
 	private AppManager apps;
-	//private AppWidgetManager widgetManager;
-	//private WidgetHost widgetHost;
+	private AppWidgetManager widgetManager;
+	private WidgetHost widgetHost;
 
 	LinearLayout llDash;
 	LinearLayout llPanel;
@@ -120,7 +123,7 @@ public class HomeActivity extends Activity
 			TextView tvPanelBfb = (TextView) this.llPanel.findViewById (R.id.tvPanelBfb);
 			this.ibPanelDashClose = (ImageButton) this.llPanel.findViewById (R.id.ibPanelDashClose);
 			ImageButton ibPanelCog = (ImageButton) this.llPanel.findViewById (R.id.ibPanelCog);
-			//RelativeLayout vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
+			RelativeLayout vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
 
 			HashMap<String, Class> themes = new HashMap<String, Class> ();
 			themes.put ("default", Default.class);
@@ -155,9 +158,9 @@ public class HomeActivity extends Activity
 			LinearLayout.LayoutParams ibDashClose_layoutParams = new LinearLayout.LayoutParams (ibDashClose_width, LinearLayout.LayoutParams.MATCH_PARENT);
 			this.ibPanelDashClose.setLayoutParams (ibDashClose_layoutParams);
 
-			/*RelativeLayout.LayoutParams vgWidgets_layoutParams = (RelativeLayout.LayoutParams) vgWidgets.getLayoutParams ();
+			RelativeLayout.LayoutParams vgWidgets_layoutParams = (RelativeLayout.LayoutParams) vgWidgets.getLayoutParams ();
 			vgWidgets_layoutParams.setMargins (ibDashClose_width, 0, 0, 0);
-			//vgWidgets.setLayoutParams ();*/
+			//vgWidgets.setLayoutParams ();
 
 			lalSpinner.getProgressWheel ().spin ();
 
@@ -181,12 +184,12 @@ public class HomeActivity extends Activity
 			this.asyncLoadApps = new AsyncLoadApps (this, lalSpinner, lalBfb, gvDashHomeApps);
 			this.asyncLoadApps.execute (this.getApplicationContext ());
 
-			/*
+
 			this.widgetManager = AppWidgetManager.getInstance (this);
 			this.widgetHost = new WidgetHost (this, this.widgetManager, R.id.vgWidgets);
 
 			vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this.widgetHost));
-			*/
+
 
 			if (Build.VERSION.SDK_INT >= 11)
 			{
@@ -436,7 +439,7 @@ public class HomeActivity extends Activity
 				this.onCreate (null); // Reload activity //
 
 				//this.overridePendingTransition (R.anim.home_to_preferences_in, R.anim.home_to_preferences_out);
-			}/*
+			}
 			else if (requestCode == 2) // Widget picked //
 			{
 				if (resultCode == RESULT_OK)
@@ -450,7 +453,7 @@ public class HomeActivity extends Activity
 					this.widgetHost.createWidget (data);
 				else
 					this.widgetHost.removeWidget (data);
-			}*/
+			}
 		}
 		catch (Exception ex)
 		{
@@ -491,7 +494,7 @@ public class HomeActivity extends Activity
 
 		try
 		{
-			//this.widgetHost.startListening ();
+			this.widgetHost.startListening ();
 		}
 		catch (Exception ex)
 		{
@@ -507,7 +510,7 @@ public class HomeActivity extends Activity
 
 		try
 		{
-			//this.widgetHost.stopListening ();
+			this.widgetHost.stopListening ();
 		}
 		catch (Exception ex)
 		{
