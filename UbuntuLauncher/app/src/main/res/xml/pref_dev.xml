@@ -8,4 +8,11 @@
 			android:targetPackage="be.robinj.distrohopper" />
 	</Preference>
 
+	<CheckBoxPreference
+		android:key="widgets_enabled"
+		android:title="@string/option_widgets_enabled"
+		android:summary="@string/hint_widgets_enabled"
+		android:dependency="dev"
+		android:defaultValue="false" />
+
 </PreferenceScreen>

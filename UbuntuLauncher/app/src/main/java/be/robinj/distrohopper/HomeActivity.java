@@ -93,8 +93,10 @@ public class HomeActivity extends Activity
 		{
 			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 
+			// Only enable logging if dev mode is enabled // When not enabled nothing will be appended to the internal log variable //
 			Log.getInstance ().setEnabled (prefs.getBoolean ("dev", false));
 
+			// Get ALL the views! //
 			LinearLayout llLauncherAndDashContainer = (LinearLayout) this.findViewById (R.id.llLauncherAndDashContainer);
 			LinearLayout llLauncher = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llLauncher);
 			LinearLayout llLauncherAppsContainer = (LinearLayout) llLauncher.findViewById (R.id.llLauncherAppsContainer);
@@ -125,6 +127,7 @@ public class HomeActivity extends Activity
 			ImageButton ibPanelCog = (ImageButton) this.llPanel.findViewById (R.id.ibPanelCog);
 			RelativeLayout vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
 
+			// Load up the theme //
 			HashMap<String, Class> themes = new HashMap<String, Class> ();
 			themes.put ("default", Default.class);
 			themes.put ("elementary", Elementary.class);
@@ -133,14 +136,17 @@ public class HomeActivity extends Activity
 			Theme theme = (Theme) themes.get (prefs.getString ("theme", "default")).newInstance ();
 			HomeActivity.theme = theme;
 
+			// Load the launcher service //
 			Intent launcherServiceIntent = new Intent (this, LauncherService.class);
 			this.stopService (launcherServiceIntent);
 
+			// Initialise the core launcher items //
 			lalBfb.init ();
 			lalSpinner.init ();
 			lalPreferences.init ();
 			lalTrash.init ();
-			
+
+			// Process panel user preferences // May get removed in future as themes should probably handle this //
 			Resources res = this.getResources ();
 			float density = res.getDisplayMetrics ().density;
 
@@ -162,9 +168,11 @@ public class HomeActivity extends Activity
 			vgWidgets_layoutParams.setMargins (ibDashClose_width, 0, 0, 0);
 			//vgWidgets.setLayoutParams ();
 
+			// Start spinning the BFB //
 			lalSpinner.getProgressWheel ().spin ();
 
-			//TODO// Bring this back before release //
+			// Launcher on the left or right side of the screen? //
+			//TODO// Think of a way to implement this into the themes //
 			/*
 			if (prefs.getString ("launcher_edge", "left").equals ("right"))
 			{
@@ -178,19 +186,22 @@ public class HomeActivity extends Activity
 			}
 			*/
 
+			// Start initialising the wallpaper //
 			this.asyncInitWallpaper = new AsyncInitWallpaper (this);
 			this.asyncInitWallpaper.execute (this.wpWallpaper);
 
+			// Start loading apps from the package manager //
 			this.asyncLoadApps = new AsyncLoadApps (this, lalSpinner, lalBfb, gvDashHomeApps);
 			this.asyncLoadApps.execute (this.getApplicationContext ());
 
-
+			// Initialise the widget host //
 			this.widgetManager = AppWidgetManager.getInstance (this);
 			this.widgetHost = new WidgetHost (this, this.widgetManager, R.id.vgWidgets);
 
-			vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this.widgetHost));
+			if (prefs.getBoolean ("widgets_enabled", false) && prefs.getBoolean ("dev", false))
+				vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this.widgetHost));
 
-
+			// Setup layout transitions //
 			if (Build.VERSION.SDK_INT >= 11)
 			{
 				LayoutTransition gvDashHomeApps_transition = new LayoutTransition ();
@@ -238,12 +249,14 @@ public class HomeActivity extends Activity
 				flWallpaperOverlayContainer.setLayoutTransition (flWallpaperOverlayContainer_transition);
 			}
 
+			// Check if the dash should open immediately once apps have been loaded //
 			this.openDashWhenReady = prefs.getBoolean ("dash_ready_show", this.openDashWhenReady);
 
 			Intent intent = this.getIntent ();
 			if (intent != null)
 				this.openDashWhenReady = intent.getBooleanExtra ("openDash", this.openDashWhenReady);
 
+			// Take control of system status bar background //
 			if (Build.VERSION.SDK_INT >= 19)
 			{
 				LinearLayout llStatusBar = (LinearLayout) this.findViewById (R.id.llStatusBar);
@@ -584,7 +597,7 @@ public class HomeActivity extends Activity
 	{
 		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 
-		if (prefs.getBoolean ("launcherservice_enabled", false))
+		if (prefs.getBoolean ("launcherservice_enabled", false) && prefs.getBoolean ("dev", false))
 		{
 			AppLauncher lalbfb = (AppLauncher) this.findViewById (R.id.lalBfb);
 
@@ -610,7 +623,7 @@ public class HomeActivity extends Activity
 	{
 		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 
-		if (prefs.getBoolean ("launcherservice_enabled", false))
+		if (prefs.getBoolean ("launcherservice_enabled", false) && prefs.getBoolean ("dev", false))
 		{
 			Intent intent = new Intent (this, LauncherService.class);
 			intent.putExtra ("show", show);

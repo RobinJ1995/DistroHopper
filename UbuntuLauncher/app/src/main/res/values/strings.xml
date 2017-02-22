@@ -54,6 +54,8 @@
     <string name="hint_unitywallpaper_blur">The method that should be used to blur the background when the Dash is opened. When \"Downscale &amp; upscale\" is chosen and it fails (or a live wallpaper is set), \"Darken\" will be used as fallback.</string>
     <string name="option_launcher_edge">Screen edge</string>
     <string name="hint_launcher_edge">To which screen edge the Launcher should be attached.</string>
+    <string name="option_widgets_enabled">Widgets</string>
+    <string name="hint_widgets_enabled">Enable <b>experimental</b> widget support. Experimental in this case means it pretty much just doesn\'t work. If you\'re a user and not a developer, there is pretty much no reason why you would want to enable this option at this stage. If you notice things are broken, and you have this option enabled, you might want to consider seeing if disabling it solves the issue you are experiencing.</string>
 
     <string-array name="keys_unitywallpaper_blur">
         <item>Don\'t blur</item>

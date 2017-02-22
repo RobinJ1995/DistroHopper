@@ -10,6 +10,7 @@
         android:key="launcherservice_enabled"
         android:title="@string/option_launcherservice_enabled"
         android:summary="@string/hint_launcherservice_enabled"
+        android:dependency="dev"
         android:defaultValue="false" />
 
     <Preference
