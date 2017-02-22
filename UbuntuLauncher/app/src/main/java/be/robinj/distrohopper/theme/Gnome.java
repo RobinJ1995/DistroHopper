@@ -13,6 +13,8 @@ public class Gnome extends Theme
 		this.description = "Gnome Shell";
 		this.res_screenshots = new int[]
 		{
+			R.drawable.theme_gnome_screenshot0,
+			R.drawable.theme_gnome_screenshot1
 		};
 		this.dev_only = true;
 

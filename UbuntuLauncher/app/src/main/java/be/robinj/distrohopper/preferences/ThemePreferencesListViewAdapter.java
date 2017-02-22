@@ -47,16 +47,14 @@ public class ThemePreferencesListViewAdapter extends ArrayAdapter<Theme>
 
 		tvName.setText (theme.name);
 		tvDescription.setText (theme.description);
-		if (llScreenshots.getChildCount () == 0)
+		llScreenshots.removeAllViews ();
+		for (int res_screenshot : theme.res_screenshots)
 		{
-			for (int res_screenshot : theme.res_screenshots)
-			{
-				ImageView ivScreenshot = new ImageView (this.getContext ());
-				ivScreenshot.setImageResource (res_screenshot);
-				ivScreenshot.setScaleType (ImageView.ScaleType.CENTER_INSIDE);
+			ImageView ivScreenshot = new ImageView (this.getContext ());
+			ivScreenshot.setImageResource (res_screenshot);
+			ivScreenshot.setScaleType (ImageView.ScaleType.CENTER_INSIDE);
 
-				llScreenshots.addView (ivScreenshot);
-			}
+			llScreenshots.addView (ivScreenshot);
 		}
 
 		ThemePreferencesButtonClickListener clickListener = new ThemePreferencesButtonClickListener (this.parent, this.prefs);
