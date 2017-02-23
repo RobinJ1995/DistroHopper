@@ -24,7 +24,6 @@
   <string name="option_launcherservice_enabled">Tornar o Launcher acessível em outros aplicativos abertos.</string>
   <string name="hint_launcherservice_enabled">Deslizando o dedo no canto inferior esquerdo da tela, o Launcher aparece, permitindo alternar entre os aplicativos fixados sem precisar voltar à tela inicial. (EXPERIMENTAL)</string>
   <string name="option_launcher_running_show">Mostrar aplicativos em uso</string>
-  <string name="hint_launcher_running_show">O Launcher deve mostrar os aplicativos atualmente abertos. Isso é indicado por uma seta ao lado esquerdo do ícone. Aplicativos em uso, mas não fixados ao Launcher, também são mostrados e automaticamente removidos quando encerrados.</string>
   <string name="option_panel_show">Exibir Painel</string>
   <string name="hint_panel_show">Se o painel, no topo do Launcher, deve aparecer ou não.</string>
   <string name="option_panel_opacity">Opacidade do painel</string>
@@ -73,7 +72,6 @@
   <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
   <string name="hm_commonsguy_why">* Uso do ColorMixer na tela de preferências.
 https://github.com/commonsguy/cwac-colormixer</string>
-  <string name="translators_title">Tradutores</string>
   <string name="title_activity_contribute">Como posso contribuir?</string>
   <string name="contribute_intro">Desenvolver um aplicativo como este demanda tempo e trabalho duro. Se você tem interesse em ajudar, veja como fazer:</string>
   <string name="contribute_translate_title">Traduzindo</string>

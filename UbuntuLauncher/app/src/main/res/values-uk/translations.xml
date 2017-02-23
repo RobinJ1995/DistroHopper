@@ -37,7 +37,7 @@
   <string name="option_launcherservice_enabled">Зробити Лаунчер доступним з інших додатків</string>
   <string name="hint_launcherservice_enabled">При проведенні пальцем по нижній лівій частині екрану з\'явиться Лаунчер, який дозволить запустити програми прикріплені до нього без потреби повернення на головний екран.</string>
   <string name="option_launcher_running_show">Показати активні додатки</string>
-  <string name="hint_launcher_running_show">Лаунчер покаже, які додатки працюють на даний момент. Це буде позначено невеликою стрілкою з лівої сторони іконки. Також будуть показані активні додатки не закріплені в Лаунчері.</string>
+  <string name="hint_launcher_running_show">Лаунчер покаже, які додатки працюють в даний момент. Вони позначатимуться невеликою стрілкою з лівої сторони іконки. Також будуть показані активні додатки не закріплені в Лаунчері.\nПримітка: Ця властивість не працює починаючи з  Android 5.0 і далі через обмеження додані до цих операційних систем.</string>
   <string name="option_panel_show">Показати панель</string>
   <string name="hint_panel_show">Показати панель у верхній частині екрану.</string>
   <string name="option_panel_opacity">Непрозорість панелі</string>
@@ -95,7 +95,6 @@ http://stackoverflow.com/a/8483078/521361</string>
   <string name="hm_commonsguy_name">Марку Мерфі (Commonsware)</string>
   <string name="hm_commonsguy_why">* Я використав його компонент ColorMixer у вікні Уподобань.\n
 https://github.com/commonsguy/cwac-colormixer</string>
-  <string name="translators_title">Перекладачі</string>
   <string name="title_activity_contribute">Як я можу допомогти?</string>
   <string name="contribute_intro">На цей проект було витрачено багато сил, часу і фінансів. Якщо ви хочете допомогти подальшому розвитку проекту, зробіть це одним з нижчеперечислених способів.</string>
   <string name="contribute_translate_title">Переклад</string>

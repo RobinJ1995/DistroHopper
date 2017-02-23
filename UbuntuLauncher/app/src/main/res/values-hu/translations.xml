@@ -1,16 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Beállítások</string>
+  <string name="dash_search_hint">Keresés</string>
   <string name="dash_lens_apps_title">Alkalmazások</string>
   <string name="dash_lens_other_title">Egyéb</string>
   <string name="title_activity_preferences">Beállítások</string>
   <string name="title_activity_about">Névjegy</string>
+  <string name="title_activity_theme_preferences">Sablonok</string>
   <string name="notpinned">nem rögzített</string>
   <string name="developed_by">Robin Jacobs fejlesztése</string>
   <string name="honourable_mentions">Speciális köszönet</string>
   <string name="button_back">Vissza</string>
   <string name="button_about">Névjegy</string>
   <string name="button_contribute">Közreműködés</string>
+  <string name="button_apply">Alkalmaz</string>
   <string name="title_preferences">Beállítások</string>
   <string name="pref_header_general">Általános</string>
   <string name="pref_header_unity">Oldalsáv</string>
@@ -48,7 +51,6 @@
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_todddavies_name">Todd Davies</string>
   <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
-  <string name="translators_title">Fordítók</string>
   <string name="title_activity_contribute">Hogyan tudok közreműködő lenni?</string>
   <string name="contribute_translate_title">Fordítás</string>
   <string name="contribute_translate_go">Lépj be a Transifex oldalára</string>

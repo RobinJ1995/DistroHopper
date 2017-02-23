@@ -27,7 +27,6 @@
   <string name="option_launcherservice_enabled">Povoluje Launcher k dispozici v dalších aplikacích</string>
   <string name="hint_launcherservice_enabled">Při táhnutí ze spodní poloviny levého okraje obrazovky, se objeví Launcher, která vám umožní spustit aplikace, které jste připnul na Launcher, aniž by museli jít na domovskou obrazovku. \ N (experimentální)</string>
   <string name="option_launcher_running_show">Ukázat běžící aplikace</string>
-  <string name="hint_launcher_running_show">Launcher ukáže, které aplikace jsou v současné době v provozu. To bude indikováno malou šipkou na levé straně ikony. Se zobrazí také aplikace, které jsou spuštěny, ale nebyly přidány na Launcher.</string>
   <string name="option_panel_show">Ukázat</string>
   <string name="hint_panel_show">Zde je panel v horní části obrazovky je třeba uvést, nebo ne.</string>
   <string name="option_panel_opacity">Průhlednost</string>
@@ -77,7 +76,6 @@ http://stackoverflow.com/a/8483078/521361</string>
   <string name="hm_commonsguy_why">
 * Použil jsem jeho ColorMixer komponentu na obrazovce Předvolby.
 https://github.com/commonsguy/cwac-colormixer</string>
-  <string name="translators_title">Překladatelé</string>
   <string name="title_activity_contribute">Jak mohu přispět ?</string>
   <string name="contribute_intro">Hodně času a tvrdé práce šla do vývoje této aplikace. Pokud byste chtěli pomoct, existuje několik způsobů, jak můžete tak učinit.</string>
   <string name="contribute_translate_title">Překládání</string>

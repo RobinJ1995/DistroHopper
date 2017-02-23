@@ -37,7 +37,6 @@
   <string name="option_launcherservice_enabled">Das Startmenü in anderen Apps erreichbar machen</string>
   <string name="hint_launcherservice_enabled">Wenn du von der unteren linken Seite wischt, wird die Taskleiste erscheinen und dir erlauben die angehefteten Apps, ohne zum Homemenü wechseln zu müssen, zu starten.(EXPERIMENTELL)</string>
   <string name="option_launcher_running_show">Zeige laufende Anwendungen</string>
-  <string name="hint_launcher_running_show">Der Launcher zeigt die derzeit laufenden Anwendungen. Dies wird durch einen kleinen Pfeil an der linken Seite des Icons angezeigt. Laufende Anwendungen dich nicht bereits angeheftet wurden, werden trotzdem gezeigt.</string>
   <string name="option_panel_show">Zeige Leiste</string>
   <string name="hint_panel_show">Soll die Leiste am oberen Bildschirmrand gezeigt werden oder nicht.</string>
   <string name="option_panel_opacity">Deckkraft</string>
@@ -74,7 +73,7 @@
   <string name="option_lenses">Lenses</string>
   <string name="hint_lenses">Wähle welche Lenses genutzt werden sollen und in welcher Reihenfolge die Suchergebnisse im Dash angezeigt werden sollen. Wenn im Dash gesucht wird, wird die Suchanfrage gleichzeitig an alle aktivierten Lenses gesandt und die Suchergebnisse werden angezeigt.</string>
   <string name="option_theme">Thema</string>
-  <string name="hint_theme">Wähle, nach wekcher Linux Distributation DistroHopper aussehen soll.</string>
+  <string name="hint_theme">Wähle, nach welcher Linux Distributation DistroHopper aussehen soll.</string>
   <string name="option_dev">Entwicklermodus</string>
   <string name="hint_dev">Greife auf Debuglogs und andere technische Informationen zu. Aktivierung wird sich negativ auf Performance und stabilität auswirken.</string>
   <string name="option_dev_logs">Logs</string>
@@ -90,7 +89,6 @@ https://github.com/Todd-Davies/ProgressWheel/</string>
   <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
   <string name="hm_commonsguy_why">*Ich habe diese Farbmixer-Komponente in den Einstellungen genutzt.\n
 https://github.com/commonsguy/cwac-colormixer</string>
-  <string name="translators_title">Übersetzer</string>
   <string name="title_activity_contribute">Wie kann ich beitragen?</string>
   <string name="contribute_intro">Viel Zeit und harte Arbeit wurde in die Entwicklung dieser App gesteckt. Wenn du helfen möchtest gibt es hierfür viele Möglichkeiten.</string>
   <string name="contribute_translate_title">Übersetzung</string>

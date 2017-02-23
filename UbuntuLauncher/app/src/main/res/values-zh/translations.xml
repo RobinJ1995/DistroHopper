@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="action_settings">设置</string>
+  <string name="dash_search_hint">搜索</string>
+  <string name="dash_lens_apps_title">应用</string>
+  <string name="dash_lens_other_title">其他</string>
+  <string name="title_activity_preferences">偏好</string>
+  <string name="title_activity_about">关于</string>
+  <string name="title_activity_lens_preferences">搜索资源</string>
+  <string name="title_activity_theme_preferences">主题</string>
+  <string name="developed_by">由Robin Jacobs开发</string>
+  <string name="button_back">返回</string>
+  <string name="button_about">关于</string>
+  <string name="button_contribute">贡献</string>
+  <string name="button_apply">应用</string>
+  <string name="title_preferences">偏好</string>
+  <string name="pref_header_advanced">高级</string>
+  <string name="pref_header_dev">开发者选项</string>
+  <string name="pref_header_functionality">功能</string>
+  <string name="option_launchericon_opacity">图标背景的不透明度</string>
+  <string name="hint_launchericon_opacity">启动器中的图标背景颜色应该多不透明</string>
+  <string name="option_panel_opacity">不透明度</string>
+  <string name="option_unitybackground_dynamic">动态背景颜色</string>
+  <string name="option_unitybackground_colour">背景颜色</string>
+  <string name="option_unitybackground_opacity">背景不透明度</string>
+  <string name="option_unitywallpaper_blur">壁纸模糊法</string>
+  <string name="option_widgets_enabled">窗口小部件</string>
+  <string name="option_wallpaper">壁纸</string>
+  <string name="hint_wallpaper">更换壁纸</string>
+  <string name="option_colourcalc_advanced">更多样品</string>
+  <string name="option_colourcalc_hsv">使用HSV</string>
+  <string name="option_dashsearch_full">高级搜索</string>
+  <string name="option_theme">主题</string>
+  <string name="option_dev">开发者模式</string>
+  <string name="hm_translators_name">翻译团队</string>
+  <string name="title_activity_contribute">我能做出什么贡献？</string>
+  <string name="contribute_translate_title">翻译中</string>
+  <string name="contribute_translate_go">去Transifex</string>
+  <string name="contribute_bugs_title">报告错误</string>
+  <string name="contribute_bugs_go">去GitHub</string>
+  <string name="contribute_donate_title">捐助</string>
+  <string name="contribute_donate_go">捐助</string>
+  <string name="theme_elementary_res_panel_bfb_text">应用</string>
+</resources>

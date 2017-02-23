@@ -66,5 +66,4 @@
   <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
   <string name="hm_commonsguy_why">＊ 彼が開発したColorMixerというコンポーネントを設定画面のために利用しました。\n
         https://github.com/commonsguy/cwac-colormixer</string>
-  <string name="translators_title">翻訳者</string>
 </resources>

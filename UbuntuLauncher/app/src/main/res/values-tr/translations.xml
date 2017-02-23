@@ -1,16 +1,24 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Ayarlar</string>
+  <string name="dash_search_hint">Arama</string>
   <string name="dash_lens_apps_title">Uygulamalar</string>
   <string name="dash_lens_other_title">Diğer</string>
   <string name="title_activity_preferences">Tercihler</string>
   <string name="title_activity_about">Hakkında</string>
+  <string name="title_activity_lens_preferences">Kaynakları ara</string>
+  <string name="title_activity_theme_preferences">Temalar</string>
+  <string name="title_activity_dev_logs">Kayıtlar</string>
+  <string name="pinned">Başlatıcıya eklendi</string>
+  <string name="unpinned">Başlatıcıdan kaldırıldı</string>
   <string name="notpinned">eklenmedi</string>
+  <string name="alreadypinned">zaten ekli</string>
   <string name="developed_by">Robin Jacobs Tarafından Geliştirildi</string>
   <string name="honourable_mentions">Onurlu isimler</string>
   <string name="button_back">Geri</string>
   <string name="button_about">Hakkında</string>
   <string name="button_contribute">Katkı Yap</string>
+  <string name="button_apply">Uygula</string>
   <string name="title_preferences">Tercihler</string>
   <string name="pref_header_general">Genel</string>
   <string name="pref_header_unity">Unity</string>
@@ -18,13 +26,14 @@
   <string name="pref_header_dash">Pano</string>
   <string name="pref_header_panel">Panel</string>
   <string name="pref_header_advanced">Gelişmiş</string>
+  <string name="pref_header_dev">Geliştirici seçenekleri</string>
+  <string name="pref_header_appearance">Görünüm</string>
   <string name="category_colourcalc">Baskın renk hesaplaması</string>
   <string name="option_launchericon_opacity">Başlatıcı ikon arka planı opaklığı</string>
   <string name="hint_launchericon_opacity">Başlatıcı ikonlarının opaklığı nasıl olmalı.</string>
   <string name="option_launcherservice_enabled">Başlatıcıyı diğer uygulamalarda kullanılabilir yap</string>
   <string name="hint_launcherservice_enabled">Ekranın sol alt sınırından sürüklediğinizde, Başlatıcı görünür, Başlatıcıya eklediğiniz uygulamaları ana ekrana gitmeden başlatmanıza izin verir.\n(DENEYİMSEL)</string>
   <string name="option_launcher_running_show">Çalışan uygulamaları göster</string>
-  <string name="hint_launcher_running_show">Başlatıcı, şu an çalışan uygulamaları gösterecek. Bu ikonun sol tarafında küçük bir ok işaretiyle yapılacak. Ayrıca şu an çalışan fakat Başlatıcıya tutturulmayan uygulamalar da gösterilecek.</string>
   <string name="option_panel_show">Paneli Göster</string>
   <string name="hint_panel_show">Panelin ekranın üstünde görüntülenip görüntülenmeyeceği.</string>
   <string name="option_panel_opacity">Panel opaklığı</string>
@@ -63,7 +72,6 @@
   <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
   <string name="hm_commonsguy_why">* Tercihler ekranında onun ColorMixer (Renk karıştırıcı) bileşenini kullandım.\n
         https://github.com/commonsguy/cwac-colormixer</string>
-  <string name="translators_title">Çevirenler</string>
   <string name="title_activity_contribute">Nasıl destek olabilirim?</string>
   <string name="contribute_translate_title">Çeviri Yap</string>
   <string name="contribute_translate_go">Transifex\'e git</string>
