@@ -8,9 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-
 
 public class ContributeActivity extends Activity
 {
@@ -52,13 +49,7 @@ public class ContributeActivity extends Activity
 	{
 		try
 		{
-			Tracker tracker = Application.getTracker ();
-			tracker.send (new HitBuilders.EventBuilder ()
-					.setCategory ("Contribute")
-					.setAction ("Transifex")
-					.setLabel ("click")
-					.build ()
-			);
+			Tracker.trackEvent ("Contribute", "Transifex", "click");
 
 			this.openUrl ("https://www.transifex.com/projects/p/distrohopper/");
 		}
@@ -73,13 +64,7 @@ public class ContributeActivity extends Activity
 	{
 		try
 		{
-			Tracker tracker = Application.getTracker ();
-			tracker.send (new HitBuilders.EventBuilder ()
-					.setCategory ("Contribute")
-					.setAction ("GitHub")
-					.setLabel ("click")
-					.build ()
-			);
+			Tracker.trackEvent ("Contribute", "GitHub", "click");
 
 			this.openUrl ("https://github.com/RobinJ1995/DistroHopper/issues");
 		}
@@ -94,13 +79,7 @@ public class ContributeActivity extends Activity
 	{
 		try
 		{
-			Tracker tracker = Application.getTracker ();
-			tracker.send (new HitBuilders.EventBuilder ()
-					.setCategory ("Contribute")
-					.setAction ("Donate")
-					.setLabel ("click")
-					.build ()
-			);
+			Tracker.trackEvent ("Contribute", "Donate", "click");
 
 			this.openUrl ("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=broederjacobs%40gmail%2ecom&lc=BE&item_name=Ubuntu%20Launcher&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted");
 		}

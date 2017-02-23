@@ -4,9 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.text.Html;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-
 import java.util.Map;
 
 import be.robinj.distrohopper.dev.Log;
@@ -73,19 +70,7 @@ public class ExceptionHandler
 
 		try
 		{
-			Tracker tracker = Application.getTracker ();
-			String description = "";
-
-			if (stackTrace.indexOf ("\n") > 0)
-				description = stackTrace.substring (0, stackTrace.indexOf ("\n"));
-			else
-				description = this.ex.getMessage ();
-
-			Map<String, String> data = new HitBuilders.ExceptionBuilder ()
-				.setDescription (description)
-				.build ();
-
-			tracker.send (data);
+			Tracker.trackException (ex, stackTrace);
 		}
 		catch (Exception ex2)
 		{

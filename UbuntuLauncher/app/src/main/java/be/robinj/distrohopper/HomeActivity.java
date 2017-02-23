@@ -31,9 +31,6 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -880,15 +877,7 @@ public class HomeActivity extends Activity
 		this.flWallpaperOverlayWhenDashOpened.setVisibility (View.INVISIBLE);
 
 		if (track)
-		{
-			Tracker tracker = Application.getTracker ();
-			tracker.send (new HitBuilders.EventBuilder ()
-					.setCategory ("Home")
-					.setAction ("Dash closed")
-					.setLabel ("Dash")
-					.build ()
-			);
-		}
+			Tracker.trackEvent ("Home", "Dash closed", "Dash");
 	}
 
 	private void openDash ()
@@ -921,15 +910,7 @@ public class HomeActivity extends Activity
 		this.flWallpaperOverlayWhenDashOpened.setVisibility (View.VISIBLE);
 
 		if (track)
-		{
-			Tracker tracker = Application.getTracker ();
-			tracker.send (new HitBuilders.EventBuilder ()
-				.setCategory ("Home")
-				.setAction ("Dash opened")
-				.setLabel ("Dash")
-				.build ()
-			);
-		}
+			Tracker.trackEvent ("Home", "Dash opened", "Dash");
 	}
 
 	//# Checks #//
