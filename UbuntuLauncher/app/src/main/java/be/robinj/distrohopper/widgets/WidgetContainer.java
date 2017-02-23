@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import be.robinj.distrohopper.R;
@@ -22,6 +23,7 @@ public class WidgetContainer extends FrameLayout implements View.OnTouchListener
 	private FrameLayout container;
 	private ViewGroup overlay;
 	private boolean editMode = false;
+	private View view;
 
 	protected WidgetContainer (Context context, AttributeSet attrs, WidgetHostView widget)
 	{
@@ -31,12 +33,13 @@ public class WidgetContainer extends FrameLayout implements View.OnTouchListener
 		this.widget = widget;
 
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService (Service.LAYOUT_INFLATER_SERVICE);
-		inflater.inflate (R.layout.widget_container, this, true);
+		this.view = inflater.inflate (R.layout.widget_container, this, true);
 
 		FrameLayout widgetContainer = (FrameLayout) this.findViewById (R.id.widgetContainer);
 		widgetContainer.addView (widget);
 		this.container = widgetContainer;
-		this.overlay = (ViewGroup) this.findViewById (R.id.widgetOverlay);
+		this.overlay = (ViewGroup) this.findViewById (R.id.widgetOverlayCenter);
+		ImageButton ibRemove = (ImageButton) this.findViewById (R.id.ibRemove);
 
 		ViewGroup llEdgeTop = (ViewGroup) this.findViewById (R.id.llEdgeTop);
 		ViewGroup llEdgeRight = (ViewGroup) this.findViewById (R.id.llEdgeRight);
@@ -47,6 +50,7 @@ public class WidgetContainer extends FrameLayout implements View.OnTouchListener
 		llEdgeRight.setOnTouchListener (this);
 		llEdgeBottom.setOnTouchListener (this);
 		llEdgeLeft.setOnTouchListener (this);
+		ibRemove.setOnClickListener (new WidgetContainerRemove_ClickListener (this));
 	}
 
 	public boolean getEditMode ()
@@ -62,8 +66,13 @@ public class WidgetContainer extends FrameLayout implements View.OnTouchListener
 			this.container.setAlpha (editMode ? 0.8F : 1.0F);
 
 		this.overlay.setVisibility (editMode ? VISIBLE : GONE);
-		this.widget.setVisibility (editMode ? GONE : VISIBLE);
+		this.container.setVisibility (editMode ? GONE : VISIBLE);
 		this.widget.invalidate ();
+	}
+
+	public void removeWidget ()
+	{
+		((ViewGroup) this.view.getParent ()).removeView (this.view);
 	}
 
 	@Override

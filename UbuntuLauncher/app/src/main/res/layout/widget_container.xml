@@ -4,19 +4,10 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent" android:background="@android:color/holo_red_dark">
 
-    <FrameLayout
-        android:id="@+id/widgetContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:padding="16dp">
-    </FrameLayout>
-
     <RelativeLayout
-        android:id="@+id/widgetOverlay"
+        android:id="@+id/widgetWrapper"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:layout_width="16dp"
@@ -124,27 +115,35 @@
                 android:src="@drawable/widget_resize_handle"/>
         </LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/widgetOverlayCenter"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/transparentblack80"
-            android:layout_below="@+id/frameLayout2"
-            android:layout_alignRight="@+id/llEdgeBottom"
-            android:layout_alignEnd="@+id/llEdgeBottom"
-            android:layout_alignBottom="@+id/llEdgeRight"
-            android:layout_toRightOf="@+id/frameLayout2"
-            android:layout_toEndOf="@+id/frameLayout2">
+            android:layout_height="match_parent">
 
-            <ImageButton
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:id="@+id/ibRemove"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/launcher_trash"
-                android:background="@color/transparent"
-                android:scaleType="fitXY"/>
-        </RelativeLayout>
+            <FrameLayout
+                android:id="@+id/widgetContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:padding="16dp">
+            </FrameLayout>
+
+            <RelativeLayout
+                android:id="@+id/widgetOverlayCenter"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/transparentblack80"
+                android:visibility="gone">
+
+                <ImageButton
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:id="@+id/ibRemove"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/launcher_trash"
+                    android:background="@color/transparent"
+                    android:scaleType="fitXY"/>
+            </RelativeLayout>
+        </FrameLayout>
     </RelativeLayout>
 </FrameLayout>
