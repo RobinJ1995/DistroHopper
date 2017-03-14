@@ -53,6 +53,7 @@ import be.robinj.distrohopper.unity.launcher.TrashDragListener;
 import be.robinj.distrohopper.unity.launcher.service.LauncherService;
 import be.robinj.distrohopper.widgets.WidgetHost;
 import be.robinj.distrohopper.widgets.WidgetHost_LongClickListener;
+import be.robinj.distrohopper.widgets.WidgetsContainer;
 
 
 public class HomeActivity extends Activity
@@ -122,7 +123,7 @@ public class HomeActivity extends Activity
 			TextView tvPanelBfb = (TextView) this.llPanel.findViewById (R.id.tvPanelBfb);
 			this.ibPanelDashClose = (ImageButton) this.llPanel.findViewById (R.id.ibPanelDashClose);
 			ImageButton ibPanelCog = (ImageButton) this.llPanel.findViewById (R.id.ibPanelCog);
-			RelativeLayout vgWidgets = (RelativeLayout) this.findViewById (R.id.vgWidgets);
+			WidgetsContainer vgWidgets = (WidgetsContainer) this.findViewById (R.id.vgWidgets);
 
 			// Load up the theme //
 			HashMap<String, Class> themes = new HashMap<String, Class> ();

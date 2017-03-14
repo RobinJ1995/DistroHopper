@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.widget.GridLayout;
 import android.widget.RelativeLayout;
 
 import be.robinj.distrohopper.R;
@@ -11,7 +12,7 @@ import be.robinj.distrohopper.R;
 /**
  * Created by robin on 3/12/14.
  */
-public class WidgetsContainer extends RelativeLayout
+public class WidgetsContainer extends GridLayout
 {
 	public WidgetsContainer (Context context, AttributeSet attrs)
 	{

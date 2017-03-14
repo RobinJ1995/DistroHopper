@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "be.robinj.distrohopper"
-        minSdkVersion 9
+        minSdkVersion 14
         targetSdkVersion 22
-        versionCode 70
-        versionName "0.6.0a"
+        versionCode 71
+        versionName "0.6.0b"
     }
     buildTypes {
         release {

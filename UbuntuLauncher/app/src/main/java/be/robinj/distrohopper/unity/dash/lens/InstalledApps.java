@@ -31,7 +31,7 @@ public class InstalledApps extends Lens
 	{
 		super (context);
 
-		this.icon = context.getResources ().getDrawable (R.drawable.ic_launcher);
+		this.icon = context.getResources ().getDrawable (R.mipmap.ic_launcher);
 	}
 
 	public String getName ()

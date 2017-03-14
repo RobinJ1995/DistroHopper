@@ -18,7 +18,7 @@ public class WidgetHost extends AppWidgetHost
 {
 	private HomeActivity parent;
 	private AppWidgetManager widgetManager;
-	private RelativeLayout vgWidgets;
+	private WidgetsContainer vgWidgets;
 
 	public WidgetHost (HomeActivity parent, AppWidgetManager widgetManager, int hostId)
 	{
@@ -26,7 +26,7 @@ public class WidgetHost extends AppWidgetHost
 
 		this.parent = parent;
 		this.widgetManager = widgetManager;
-		this.vgWidgets = (RelativeLayout) parent.findViewById (hostId);
+		this.vgWidgets = (WidgetsContainer) parent.findViewById (hostId);
 	}
 
 	@Override

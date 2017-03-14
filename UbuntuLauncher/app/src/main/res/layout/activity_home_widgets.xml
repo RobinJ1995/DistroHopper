@@ -10,6 +10,8 @@
     android:layout_alignParentLeft="true"
     android:layout_alignParentRight="true"
     android:layout_alignParentBottom="true"
+    android:columnCount="8"
+    android:rowCount="8"
     tools:showIn="@layout/activity_home">
 
 </be.robinj.distrohopper.widgets.WidgetsContainer>
