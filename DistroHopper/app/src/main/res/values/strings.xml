@@ -35,7 +35,7 @@
     <string name="hint_launchericon_size">How large icons for pinned apps should be. The slider goes from 48dip to 120dip, with the default (right in the middle) being 84dip.</string>
     <string name="option_launchericon_opacity">Icon background opacity</string>
     <string name="hint_launchericon_opacity">How opaque the background colour of icons in the Launcher should be.</string>
-    <string name="option_launcherservice_enabled">Make the Launcher available inside other apps</string>
+    <string name="option_launcherservice_enabled">Launcher overlay service</string>
     <string name="hint_launcherservice_enabled">When you swipe from the bottom half of the left edge of the screen, the Launcher will appear, allowing you to launch apps which you have pinned to the Launcher without having to go to the home screen.\n(EXPERIMENTAL)</string>
     <string name="option_launcher_running_show">Show running apps</string>
     <string name="hint_launcher_running_show">The Launcher will show which apps are currently running. This will be indicated by a small arrow on the left side of the icon. Apps which are running but have not been pinned to the Launcher will also be shown.\nNOTE: This feature no longer works reliably from Android 5.0 onwards because of restrictions that were added to the operating system.</string>
@@ -55,7 +55,7 @@
     <string name="option_launcher_edge">Screen edge</string>
     <string name="hint_launcher_edge">To which screen edge the Launcher should be attached.</string>
     <string name="option_widgets_enabled">Widgets</string>
-    <string name="hint_widgets_enabled">Enable <b>experimental</b> widget support. Experimental in this case means it pretty much just doesn\'t work. If you\'re a user and not a developer, there is pretty much no reason why you would want to enable this option at this stage. If you notice things are broken, and you have this option enabled, you might want to consider seeing if disabling it solves the issue you are experiencing.</string>
+    <string name="hint_widgets_enabled">Enable <b>experimental</b> widget support. (Don\'t. It doesn\'t work yet, so it\'s no use.)</string>
 
     <string-array name="keys_unitywallpaper_blur">
         <item>Don\'t blur</item>
@@ -94,9 +94,11 @@
     <string name="hm_todddavies_name">Todd Davies</string>
     <string name="hm_todddavies_why">* I used his ProgressWheel component, since the default (round) Android ProgressBar component can\'t actually indicate progress.\n
         https://github.com/Todd-Davies/ProgressWheel/</string>
+    <!-- No longer used
     <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
     <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
         http://stackoverflow.com/a/8483078/521361</string>
+    -->
     <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
     <string name="hm_commonsguy_why">* I used his ColorMixer component in the Preferences screen.\n
         https://github.com/commonsguy/cwac-colormixer</string>
@@ -105,7 +107,7 @@
     <string name="title_activity_contribute">How can I contribute?</string>
     <string name="contribute_intro">A lot of time and hard work went into the development of this application. If you\'d like to help out, there are several ways in which you can do so.</string>
     <string name="contribute_translate_title">Translating</string>
-    <string name="contribute_translate_description">DistroHopper is available in several languages. This is because volunteers provide the project with their translations. If DistroHopper has not been translated yet into your own language, and you understand English (and you have sufficient knowledge of Ubuntu to understand some of the more Unity-related terms), then helping out with translations is a good way to help out.
+    <string name="contribute_translate_description">DistroHopper is available in several languages. This is because volunteers provide the project with their translations. If DistroHopper has not been translated yet into your own language, and you understand English (and you have sufficient knowledge of the Linux desktop to understand some of the more Unity-related terms), then helping out with translations is a good way to help out.
         \nTranslations for DistroHopper are managed on Transifex. All you need to do is request to join a translation team. After that I will approve your request and you are good to go.</string>
     <string name="contribute_translate_go">Go to Transifex</string>
     <string name="contribute_bugs_title">Report bugs</string>
