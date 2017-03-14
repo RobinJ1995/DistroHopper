@@ -106,7 +106,7 @@
     <string name="hm_translators_why">* A couple of people devoted time and effort to make this app available in their respective languages. I am grateful towards all of these people for their contributions to the project.</string>
     <string name="title_activity_contribute">How can I contribute?</string>
     <string name="contribute_intro">A lot of time and hard work went into the development of this application. If you\'d like to help out, there are several ways in which you can do so.</string>
-    <string name="contribute_translate_title">Translating</string>
+    <string name="contribute_translate_title">Translate</string>
     <string name="contribute_translate_description">DistroHopper is available in several languages. This is because volunteers provide the project with their translations. If DistroHopper has not been translated yet into your own language, and you understand English (and you have sufficient knowledge of the Linux desktop to understand some of the more Unity-related terms), then helping out with translations is a good way to help out.
         \nTranslations for DistroHopper are managed on Transifex. All you need to do is request to join a translation team. After that I will approve your request and you are good to go.</string>
     <string name="contribute_translate_go">Go to Transifex</string>
