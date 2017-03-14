@@ -1,16 +1,24 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">الإعدادات</string>
+  <string name="dash_search_hint">البحث</string>
   <string name="dash_lens_apps_title">التطبيقات</string>
   <string name="dash_lens_other_title">أخرى</string>
   <string name="title_activity_preferences">التفضيلات</string>
   <string name="title_activity_about">عن التطبيق</string>
+  <string name="title_activity_lens_preferences">ابحث فى المصادر</string>
+  <string name="title_activity_theme_preferences">الثيمات</string>
+  <string name="title_activity_dev_logs">السجلات</string>
+  <string name="pinned">قد ثبت فى مطلق البرامج</string>
+  <string name="unpinned">تم الغاء تثبيته فى مطلق البرامج</string>
   <string name="notpinned">ليس مثبت</string>
+  <string name="alreadypinned">هو مثبت مسبقا</string>
   <string name="developed_by">تم تطويره من قبل روبن جيكوبس</string>
   <string name="honourable_mentions">يشرفنا أن نذكرهم</string>
   <string name="button_back">رجوع</string>
   <string name="button_about">عن التطبيق</string>
   <string name="button_contribute">ساعدنا</string>
+  <string name="button_apply">طَبق</string>
   <string name="title_preferences">التفضيلات</string>
   <string name="pref_header_general">عام</string>
   <string name="pref_header_unity">يونيتي</string>
@@ -18,4 +26,16 @@
   <string name="pref_header_dash">بحث \"داش\"</string>
   <string name="pref_header_panel">الشريط</string>
   <string name="pref_header_advanced">متقدم</string>
+  <string name="pref_header_dev">إعدادات المطور</string>
+  <string name="pref_header_functionality">وظائف البرنامج</string>
+  <string name="pref_header_appearance">المظهر</string>
+  <string name="category_colourcalc">سيطر على حساب الالوان</string>
+  <string name="option_launchericon_size">حجم الايقونات المثبتة</string>
+  <string name="hint_launchericon_size">كم حجم ايقونات التطبيقات المثبتة. المنزلق يذهب من 48 dip إلى 120 dip، مع الافتراضى (فى المنتصف) يكون 84 dip.</string>
+  <string name="option_launchericon_opacity">شفافية ايقونات الخلفية</string>
+  <string name="option_panel_show">أظهر</string>
+  <string name="hint_panel_show">سواء القائمة فى أعلى الشاشة يجب أن تظهر ام لا.</string>
+  <string name="option_panel_opacity">الشفافية</string>
+  <string name="hint_panel_opacity">كم شفافية القائمة يجب ان تكون.</string>
+  <string name="option_unitybackground_dynamic">لون خلفية ديناميكي</string>
 </resources>

@@ -8,37 +8,112 @@
   <string name="title_activity_about">关于</string>
   <string name="title_activity_lens_preferences">搜索资源</string>
   <string name="title_activity_theme_preferences">主题</string>
+  <string name="title_activity_dev_logs">日志</string>
+  <string name="pinned">已绑定到启动器</string>
+  <string name="unpinned">已从启动器取消绑定</string>
+  <string name="notpinned">未绑定</string>
+  <string name="alreadypinned">已绑定</string>
   <string name="developed_by">由Robin Jacobs开发</string>
+  <string name="honourable_mentions">荣誉提名</string>
   <string name="button_back">返回</string>
   <string name="button_about">关于</string>
   <string name="button_contribute">贡献</string>
   <string name="button_apply">应用</string>
   <string name="title_preferences">偏好</string>
+  <string name="pref_header_general">普通设置</string>
+  <string name="pref_header_unity">Unity介面</string>
+  <string name="pref_header_launcher">启动器</string>
+  <string name="pref_header_dash">Dash功能</string>
+  <string name="pref_header_panel">面板</string>
   <string name="pref_header_advanced">高级</string>
   <string name="pref_header_dev">开发者选项</string>
   <string name="pref_header_functionality">功能</string>
+  <string name="pref_header_appearance">外观</string>
+  <string name="category_colourcalc">主要颜色计算</string>
+  <string name="option_launchericon_size">已绑定的图标尺寸</string>
+  <string name="hint_launchericon_size">使用以下滑块来设置已绑定图标的大小。可选大小为48至120设备独立像素。默认大小为84设备独立像素。</string>
   <string name="option_launchericon_opacity">图标背景的不透明度</string>
   <string name="hint_launchericon_opacity">启动器中的图标背景颜色应该多不透明</string>
+  <string name="option_launcherservice_enabled">允许在其他应用程序里使用此启动器</string>
+  <string name="hint_launcherservice_enabled">当你从屏幕左边向右滑动时，启动器便会出现。你便可直接从启动器中启动已被绑定的程序，从而无需从主界面中启动。（试验中） </string>
+  <string name="option_launcher_running_show">显示正在运行的程序</string>
+  <string name="hint_launcher_running_show">此启动器会显示正在运行的应用程序。正在运行的应用程序的左上方会显示一个小鼠标。此启动器会显示正在运行的应用程序。左上方会显示一个小鼠标正在运行但并未绑顶的应用程序也会显示在启动器中。\n 。注意：由于系统的限制， 这个功能已无法在安卓5.0以后的版本中实现了。</string>
+  <string name="option_panel_show">显示</string>
+  <string name="hint_panel_show">选择是否在屏幕上方显示面板</string>
   <string name="option_panel_opacity">不透明度</string>
+  <string name="hint_panel_opacity">面板的不透明度</string>
   <string name="option_unitybackground_dynamic">动态背景颜色</string>
+  <string name="hint_unitybackground_dynamic">动态地从壁纸中选择透明Unity部件（启动器，Dash，和启动Dash后的面板）的主要颜色。\n 注意：这个功能无法应用于自动切换的壁纸。（背景会变成透明黑）</string>
   <string name="option_unitybackground_colour">背景颜色</string>
+  <string name="hint_unitybackground_colour">应用于透明Unity部件的背景颜色</string>
+  <string name="message_unitybackground_colour">使用以下滑块来选取颜色</string>
   <string name="option_unitybackground_opacity">背景不透明度</string>
+  <string name="hint_unitybackground_opacity">Unity部件的不透明度</string>
   <string name="option_unitywallpaper_blur">壁纸模糊法</string>
+  <string name="hint_unitywallpaper_blur">启动Dash时模糊背景的方式。当“缩小比例和增大比例\"被选择而无法运作时（如使用自动更换壁纸的功能）， “变暗\"将会自动成为模糊背景的方式。</string>
+  <string name="option_launcher_edge">启动器的位置</string>
+  <string name="hint_launcher_edge">选择启动器要依附在屏幕上的哪一端</string>
   <string name="option_widgets_enabled">窗口小部件</string>
+  <string name="hint_widgets_enabled">启用&lt;b&gt;实验性&lt;/ b&gt;小部件。 在这种情况下的实验性其实意味它几乎无法运作。 如果您只是用户而不是开发人员，您不需要启用此选项。 如果您发现程序有故障，并且您已启用此选项，你则可能需要考虑禁用来解决您遇到的问题。</string>
+  <string-array name="keys_unitywallpaper_blur">
+    <item>不要模糊</item>
+    <item>变暗</item>
+    <item>缩小比例和增大比例（默认）</item>
+  </string-array>
+  <string-array name="keys_launcher_edge">
+    <item>左边（默认）</item>
+    <item>右边</item>
+  </string-array>
   <string name="option_wallpaper">壁纸</string>
   <string name="hint_wallpaper">更换壁纸</string>
   <string name="option_colourcalc_advanced">更多样品</string>
+  <string name="hint_colourscalc_advanced">选择取样更多颜色会增加准确率但是会延长加载时间。</string>
   <string name="option_colourcalc_hsv">使用HSV</string>
+  <string name="hint_colourcalc_hsv">使用HSV（色相、饱和度、明度）而不是用RGB（红绿蓝颜色模型）可以使颜色更鲜明。这也是会延长加载时间。</string>
   <string name="option_dashsearch_full">高级搜索</string>
+  <string name="hint_dashsearch_full">   启用这个选项会延长加载速度。</string>
+  <string name="option_dashsearch_lenses">使用透鏡</string>
+  <string name="hint_dashsearch_lenses">透鏡提供高级的搜索功能。它允许你直接搜索本地文件或在线资料，例如你可以直接在Duck Duck Go, Stack Overflow进行站内搜索。</string>
+  <string name="option_dashsearch_lenses_maxresults">透镜的搜索结果数量</string>
+  <string name="hint_dashsearch_lenses_maxresults">最多显示多少个搜索结果</string>
+  <string name="option_dash_ready_show">默认启动Dash功能</string>
+  <string name="hint_dash_ready_show">当程序加载完毕后，Dash会自动被开启。</string>
+  <string name="option_lenses">搜索资源</string>
+  <string name="hint_lenses">选择搜索来源和它们的显示顺序。被勾选的搜索源将会显示在搜索结果内。</string>
   <string name="option_theme">主题</string>
+  <string name="hint_theme">请选择你希望DistroHopper看起来像哪一个Linux发行版。</string>
   <string name="option_dev">开发者模式</string>
+  <string name="hint_dev">你可以访问调试日志和其他技术信息。 启用此选项将对性能和稳定性产生负面影响。</string>
+  <string name="option_dev_logs">日志</string>
+  <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
+  <string name="hm_timvdstaaij_why">*帮助测试（如果他最终并没有破坏这个程序那么就代表其他人都可以放心使用了）
+*帮助开发主色计算功能</string>
+  <string name="hm_todddavies_name">Todd Davies</string>
+  <string name="hm_todddavies_why">*我使用了他的进度环部件（因为安卓默认的进度环并不会显示进度） \n
+https://github.com/Todd-Davies/ProgressWheel/</string>
+  <string name="hm_tacone_name">Tacone (Stack Overflow的用户)</string>
+  <string name="hm_tacone_why">* 我使用了他的可扩展高度的九宫图部件 \n
+http://stackoverflow.com/a/8483078/521361</string>
+  <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
+  <string name="hm_commonsguy_why">*我在偏好设置里使用了他的颜色混合器部件 \n
+https://github.com/commonsguy/cwac-colormixer</string>
   <string name="hm_translators_name">翻译团队</string>
+  <string name="hm_translators_why">有一群人贡献了他们的时间和精力来翻译这个应用。我非常感激他们的贡献！</string>
   <string name="title_activity_contribute">我能做出什么贡献？</string>
+  <string name="contribute_intro">此程序的开发花费了许多时间与精力。如果你有意愿帮忙，你可以用以下几种方法：</string>
   <string name="contribute_translate_title">翻译中</string>
+  <string name="contribute_translate_description">你可以帮忙翻译DistroHopper。DistroHopper有多种语言版本主要是归功于志愿者的帮忙。如果DistroHopper还未被翻译成你自己的语言，而你懂得英语和Ubuntu内与Unity相关的术语，那么我欢迎你加入DistroHopper的翻译团队。
+\n 我使用Transifex来管理DistroHopper的翻译。你只需申请加入翻译团队，待我我批准你的请求后你即可开始翻译。</string>
   <string name="contribute_translate_go">去Transifex</string>
   <string name="contribute_bugs_title">报告错误</string>
+  <string name="contribute_bugs_description">我并不能第一时间知道DistroHopper的运行错误（程序开发员通在测试自己的程序时都比较弱，因为他们只会用特定的方式来测试这个程序）。一些问题也只存在于特别情况下，例如在特定的设备运行着特定的安卓版本与它的附加功能时）。所以如果你发现DistroHopper故障时（或者你想提交一个特性请求）你可以帮忙报告。
+\n DistroHopper的运行错误报告会被保存在GitHub中。如果GitHub对你来说太技术化了，你可以发邮件给我（android-dev@robinj.be），但请确保你用的是英语或是荷兰语。请尽可能地提供相关信息。</string>
   <string name="contribute_bugs_go">去GitHub</string>
   <string name="contribute_donate_title">捐助</string>
+  <string name="contribute_donate_description">你也可以选择使用PayPal进行捐款。你将能够选择你想捐赠的金额。\n
+注意：这只是一项捐款。我并不是在进行任何买卖。我很感激你，但并不代表你会因此而获得额外的功能。此程序的所有功能都是免费的。
+\n
+\n PayPal收取$0.30 + 2.2%% 的费用。如果你的捐款小于0.30美元，那么所有的款项都将转到PayPal门下而不会到开发者`手中。 如果你打算捐赠给我而不是PayPal，请确保你的款项超过这个金额。</string>
   <string name="contribute_donate_go">捐助</string>
   <string name="theme_elementary_res_panel_bfb_text">应用</string>
 </resources>
