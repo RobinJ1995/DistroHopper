@@ -14,7 +14,6 @@
   <string name="option_launchericon_opacity">Nieprzezroczystość tła ikon na pasku szybkiego dostępu</string>
   <string name="hint_launchericon_opacity">Ustawienie stopnia nieprzezroczystości tła ikon. Im bardziej suwak ustawiony jest na
         lewo, tym tło ikon jest bardziej przezroczyste.</string>
-  <string name="option_launcherservice_enabled">Dostęp do paska szybkiego dostępu z innych aplikacji</string>
   <string name="hint_launcherservice_enabled">Przeciągniecie palcem z dolnej połowy lewej krawędzi ekranu spowoduje pokazanie się paska
         szybkiego dostępu, który umożliwi uruchamianie przypiętych aplikacji bez konieczności przechodzenia do ekranu głównego.\n
         (EKSPERYMENTALNE)</string>
@@ -47,9 +46,10 @@
   <string name="hm_todddavies_why">* Użyłem jego komponentu ProgressWheel, ponieważ domyślny (zaokrąglony) komponent ProgressBar w
         zasadzie nie pokazuje stopnia postępu.\n
         https://github.com/Todd-Davies/ProgressWheel/</string>
-  <string name="hm_tacone_name">tacone (z Stack Overflow)</string>
-  <string name="hm_tacone_why">* Użyłem jego komponentu ExpandableHeightGridView.\n
-        http://stackoverflow.com/a/8483078/521361</string>
+  <!--No longer used
+    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
+    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
+        http://stackoverflow.com/a/8483078/521361</string>-->
   <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
   <string name="hm_commonsguy_why">* Użyłem jego komponentu ColorMixer na ekranie ustawień.\n
         https://github.com/commonsguy/cwac-colormixer</string>

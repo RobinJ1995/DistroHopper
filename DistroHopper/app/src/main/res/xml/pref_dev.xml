@@ -9,6 +9,13 @@
 	</Preference>
 
 	<CheckBoxPreference
+		android:key="launcher_running_show"
+		android:dependency="dev"
+		android:title="@string/option_launcher_running_show"
+		android:summary="@string/hint_launcher_running_show"
+		android:defaultValue="false" />
+
+	<CheckBoxPreference
 		android:key="launcherservice_enabled"
 		android:title="@string/option_launcherservice_enabled"
 		android:summary="@string/hint_launcherservice_enabled"

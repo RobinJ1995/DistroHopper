@@ -34,7 +34,6 @@
   <string name="hint_launchericon_size">Die Breite angepinnter Icons. Der Regler geht von 48dip bis 120dip. Der Standard ist 84dip(Genau in der Mitte).</string>
   <string name="option_launchericon_opacity">Deckkraft des Iconhintergrundes</string>
   <string name="hint_launchericon_opacity">Deckkraft der Hintergrundfarbe der Icons im Startmenü.</string>
-  <string name="option_launcherservice_enabled">Das Startmenü in anderen Apps erreichbar machen</string>
   <string name="hint_launcherservice_enabled">Wenn du von der unteren linken Seite wischt, wird die Taskleiste erscheinen und dir erlauben die angehefteten Apps, ohne zum Homemenü wechseln zu müssen, zu starten.(EXPERIMENTELL)</string>
   <string name="option_launcher_running_show">Zeige laufende Anwendungen</string>
   <string name="option_panel_show">Zeige Leiste</string>
@@ -83,16 +82,15 @@
   <string name="hm_todddavies_name">Todd Davies</string>
   <string name="hm_todddavies_why">*Ich habe dieses Prozess-Rad genutzt, seit das Standart(runde) Android Rad keine laufenden Prozesse erkennen kann\n
 https://github.com/Todd-Davies/ProgressWheel/</string>
-  <string name="hm_tacone_name">tacone (von Stack Overflow)</string>
-  <string name="hm_tacone_why">* Ich habe diese ErweiterbareHöhenGitteR-Komponente genutzt.\n
-        http://stackoverflow.com/a/8483078/521361</string>
+  <!--No longer used
+    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
+    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
+        http://stackoverflow.com/a/8483078/521361</string>-->
   <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
   <string name="hm_commonsguy_why">*Ich habe diese Farbmixer-Komponente in den Einstellungen genutzt.\n
 https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Wie kann ich beitragen?</string>
   <string name="contribute_intro">Viel Zeit und harte Arbeit wurde in die Entwicklung dieser App gesteckt. Wenn du helfen möchtest gibt es hierfür viele Möglichkeiten.</string>
-  <string name="contribute_translate_title">Übersetzung</string>
-  <string name="contribute_translate_description">Ubuntu Launcher ist in diversen Sprachen verfügbar. Dies ist möglich, weil viele freiwillige Helfer dem Projekt Übersetzungen zur Verfügung stellen. Wenn Ubuntu Launcher noch nicht in deine Sprache übersetzt wurde und du der englischen Sprache mächtig bist (und ein Verständnis für Ubuntu-eigene Begriffe und Ideen mitbringst), dann ist deine Hilfe bei der Übesetzung herzlich willkommen. \nÜbersetzungen für Ubuntu Launcher werden über Transifex verwaltet. Alles was du tun musst ist die Mitgliedschaft im Übersetzungsteam für DistroHopper anzufragen. Anschließend werde ich deiner Mitgliedschaft zustimmen und du kannst direkt loslegen.</string>
   <string name="contribute_translate_go">Gehe zu Transifex</string>
   <string name="contribute_bugs_title">Melde Bugs</string>
   <string name="contribute_bugs_description">Sofern Bugs (Fehler) in DistroHopper existieren, bin ich mir dessen nicht unbedingt bewusst. Entwickler sind zumeist nicht in der Lage ihre Applikationen ausreichend gut zu prüfen weil sie sie nur in der Art und Weise nutzen, für die sie entwickelt wurden. Manche Probleme treten aber nur in sehr bestimmten Umständen auf (zum Beispiel ein sehr spezielles Gerät auf dem eine spezielle Version von Android mit zusätzlichen oder fehlenden Funktionen und Optionen). Wenn dir also Bugs in DistroHopper auffallen (oder auch wenn du Feature-Wünsche hast) kannst du damit helfen, uns dies zu melden. \nBugmeldungen werden für DistroHopper auf GitHub gesammelt. Wenn dir GitHub zu technisch ist, kannst du den Fehler auch per Email an android-dev@robinj.be mitteilen. Bitte melde die Bugs in Englisch oder Holländisch und stelle so viel Information wie möglich zur Verfügung.</string>

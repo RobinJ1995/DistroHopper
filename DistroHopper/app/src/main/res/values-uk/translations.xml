@@ -34,7 +34,6 @@
   <string name="hint_launchericon_size">Якого розміру повинні бути іконки? Слайдер варіюється від 48dip до 120dip, стандартно - 84dip.</string>
   <string name="option_launchericon_opacity">Непрозорість фону іконки</string>
   <string name="hint_launchericon_opacity">Налаштування рівня непрозорості фону іконки</string>
-  <string name="option_launcherservice_enabled">Зробити Лаунчер доступним з інших додатків</string>
   <string name="hint_launcherservice_enabled">При проведенні пальцем по нижній лівій частині екрану з\'явиться Лаунчер, який дозволить запустити програми прикріплені до нього без потреби повернення на головний екран.</string>
   <string name="option_launcher_running_show">Показати активні додатки</string>
   <string name="hint_launcher_running_show">Лаунчер покаже, які додатки працюють в даний момент. Вони позначатимуться невеликою стрілкою з лівої сторони іконки. Також будуть показані активні додатки не закріплені в Лаунчері.\nПримітка: Ця властивість не працює починаючи з  Android 5.0 і далі через обмеження додані до цих операційних систем.</string>
@@ -89,17 +88,15 @@
   <string name="hm_todddavies_name">Тоду Девісу</string>
   <string name="hm_todddavies_why">* Я використав його компонент ProgressWheel, тому що стандартний компонент Android ProgressBar не працює правильно.\n
 https://github.com/Todd-Davies/ProgressWheel/</string>
-  <string name="hm_tacone_name">tacone (користувачу Stack Overflow)</string>
-  <string name="hm_tacone_why">* Я використав його компонент ExpandableHeightGridView.\n
-http://stackoverflow.com/a/8483078/521361</string>
+  <!--No longer used
+    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
+    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
+        http://stackoverflow.com/a/8483078/521361</string>-->
   <string name="hm_commonsguy_name">Марку Мерфі (Commonsware)</string>
   <string name="hm_commonsguy_why">* Я використав його компонент ColorMixer у вікні Уподобань.\n
 https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Як я можу допомогти?</string>
   <string name="contribute_intro">На цей проект було витрачено багато сил, часу і фінансів. Якщо ви хочете допомогти подальшому розвитку проекту, зробіть це одним з нижчеперечислених способів.</string>
-  <string name="contribute_translate_title">Переклад</string>
-  <string name="contribute_translate_description">DistroHopper доступний на декількох мовах. Це тому, що волонтери доповнюють цей проект своїми перекладами. Якщо DistroHopper ще не перекладений вашою рідною мовою, а ви розумієте англійську (і у вас достатньо знань по Ubuntu, щоб зрозуміти  деякі зі складніших термінів, пов\'язаних з Unity), то я буду радий допомозі у перекладі.
-\nПереклад для DistroHopper здійснюється на сайті Transifex. Все, що вам потрібно зробити, це надіслати запит, щоб приєднатися до команди перекладачів. Після цього я схвалю ваш запит і ви можете розпочинати.</string>
   <string name="contribute_translate_go">Перейти на Transifex</string>
   <string name="contribute_bugs_title">Повідомити про помилку</string>
   <string name="contribute_bugs_description">Якщо в DistroHopper є помилка (баг), я не обов\'язково знаю про її існування. Розробникам, як правило, дуже важко дається тестування власних додатків, бо вони використовують їх тільки так, як було задумано. Деякі проблеми також існують тільки при певних умовах (наприклад, для конкретного пристрою, що працює на певній версії Android з деякими увімкненими опціями). Так що, якщо ви знайшли помилку в DistroHopper (або якщо ви просите про додання нової функції), ви можете допомогти, розказавши про неї.

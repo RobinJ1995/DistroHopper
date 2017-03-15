@@ -33,7 +33,6 @@
   <string name="option_launchericon_size">Fissa grandezza icone</string>
   <string name="option_launchericon_opacity">Opacità sfondo icone</string>
   <string name="hint_launchericon_opacity">Quanto deve essere opaco il colore di sfondo delle icone.</string>
-  <string name="option_launcherservice_enabled">Rendi il launcher disponibile all\'interno di altre applicazioni</string>
   <string name="hint_launcherservice_enabled">Il launchr comparirà facendo swipe dalla metà inferiore sinistra del bordo dello schermo, permettendoti di aprire applicazioni senza dover tornare alla home.\n(SPERIMENTALE)</string>
   <string name="option_launcher_running_show">Mostra app avviate</string>
   <string name="option_panel_show">Visualizza</string>
@@ -63,9 +62,10 @@
   <string name="hm_todddavies_name">Todd Davies</string>
   <string name="hm_todddavies_why">* Ho utilizzato il suo componente ProgressWheel dato che il componente ProgressBar di default su Android (round) non visualizza correttamente l\'avanzamento.\n
 https://github.com/Todd-Davies/ProgressWheel/</string>
-  <string name="hm_tacone_name">tacone (Stack Overflow)</string>
-  <string name="hm_tacone_why">* Ho utilizzato il suo componente ExpandableHeightGridView.\n
-http://stackoverflow.com/a/8483078/521361</string>
+  <!--No longer used
+    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
+    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
+        http://stackoverflow.com/a/8483078/521361</string>-->
   <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
   <string name="hm_commonsguy_why">* Ho utilizzato il suo componente ColorMixer nella schermata delle preferenze.\n
 https://github.com/commonsguy/cwac-colormixer</string>

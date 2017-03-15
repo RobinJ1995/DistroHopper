@@ -1,11 +1,5 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference
-        android:key="launcher_running_show"
-        android:title="@string/option_launcher_running_show"
-        android:summary="@string/hint_launcher_running_show"
-        android:defaultValue="false" />
-
     <Preference
        android:title="@string/option_lenses"
        android:summary="@string/hint_lenses">

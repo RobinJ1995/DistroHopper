@@ -38,4 +38,8 @@
   <string name="option_panel_opacity">الشفافية</string>
   <string name="hint_panel_opacity">كم شفافية القائمة يجب ان تكون.</string>
   <string name="option_unitybackground_dynamic">لون خلفية ديناميكي</string>
+  <!--No longer used
+    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
+    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
+        http://stackoverflow.com/a/8483078/521361</string>-->
 </resources>

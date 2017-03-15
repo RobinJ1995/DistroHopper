@@ -19,7 +19,6 @@
   <string name="category_colourcalc">Cálculo del color dominante</string>
   <string name="option_launchericon_opacity">Opacidad de fondo del icono</string>
   <string name="hint_launchericon_opacity">Cual debe ser la opacidad del color de fondo de los iconos en el Lanzador.</string>
-  <string name="option_launcherservice_enabled">Hacer al Launcher disponible dentro de otras apps</string>
   <string name="hint_launcherservice_enabled">Cuando usted pasa de la mitad inferior del borde izquierdo de la pantalla, aparecerá el Lanzador, y le permite ejecutar aplicaciones que has anclado al Launcher sin tener que ir a la pantalla principal.\n(EXPERIMENTAL)</string>
   <string name="option_panel_show">Ver</string>
   <string name="hint_panel_show">Si el panel en la parte superior de la pantalla se debe mostrar o no.</string>
@@ -46,9 +45,10 @@
   <string name="hm_todddavies_name">Todd Davies</string>
   <string name="hm_todddavies_why">* He utilizado su componente ProgressWheel, ya que por defecto (round) el componente ProgressBar de Android no puede realmente indicar el progreso.\n
 https://github.com/Todd-Davies/ProgressWheel/</string>
-  <string name="hm_tacone_name">tacone (desde Stack Overflow)</string>
-  <string name="hm_tacone_why">* He utilizado su componente ExpandableHeightGridView.\n
-http://stackoverflow.com/a/8483078/521361</string>
+  <!--No longer used
+    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
+    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
+        http://stackoverflow.com/a/8483078/521361</string>-->
   <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
   <string name="hm_commonsguy_why">* He utilizado su componente ColorMixer en la pantalla de Preferencias.\n
 https://github.com/commonsguy/cwac-colormixer</string>

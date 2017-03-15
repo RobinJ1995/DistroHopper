@@ -1,6 +1,7 @@
 package be.robinj.distrohopper;
 
 import android.animation.LayoutTransition;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -82,6 +83,7 @@ public class HomeActivity extends Activity
 	private PackageManagerBroadcastReceiver broadcastPackageManager;
 
 	@Override
+	@SuppressLint ("ResourceType")
 	protected void onCreate (Bundle savedInstanceState)
 	{
 		super.onCreate (savedInstanceState);

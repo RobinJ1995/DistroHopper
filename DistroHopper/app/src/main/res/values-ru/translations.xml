@@ -21,7 +21,6 @@
   <string name="category_colourcalc">Расчет доминирующего цвета</string>
   <string name="option_launchericon_opacity">Непрозрачность фона икон</string>
   <string name="hint_launchericon_opacity">Настройка уровня непрозрачности фона икон.</string>
-  <string name="option_launcherservice_enabled">Сделать лаунчер доступным из других приложений</string>
   <string name="hint_launcherservice_enabled">При проведении пальцем по нижней левой части экрана появится лаунчер который позволит запустить программы прикрепленные к нему без надобности возврата на главный экран.</string>
   <string name="option_launcher_running_show">Показать текущие приложения</string>
   <string name="option_panel_show">Показать панель</string>
@@ -67,15 +66,15 @@
   <string name="hm_todddavies_name">Тоду Дэвису</string>
   <string name="hm_todddavies_why">* Я использовал его компонент ProgressWheel, потому что стандартный компонент Android ProgressBar не хорошо работает.\n
 https://github.com/Todd-Davies/ProgressWheel/</string>
-  <string name="hm_tacone_name">tacone-у (пользователь Stack Overflow)</string>
-  <string name="hm_tacone_why">* Я использовал его компонент ExpandableHeightGridView.\n
-http://stackoverflow.com/a/8483078/521361</string>
+  <!--No longer used
+    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
+    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
+        http://stackoverflow.com/a/8483078/521361</string>-->
   <string name="hm_commonsguy_name">Марку Мерфи (Commonsware)</string>
   <string name="hm_commonsguy_why">* Я использовал его компонент ColorMixer в окне настроек.\n
 https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Как я могу помочь?</string>
   <string name="contribute_intro">Данный проект потребовал больших усилий, временных и финансовых затрат. Если вы хотите помочь дальнейшему развитию проекта, сделайте это нижеприведенными способами.</string>
-  <string name="contribute_translate_title">Перевод</string>
   <string name="contribute_translate_go">Перейти на Transifex</string>
   <string name="contribute_bugs_title">Сообщить об ошибке</string>
   <string name="contribute_bugs_go">Перейти на GitHub</string>

@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="store_app_description_short">Linux desktop on your Android device</string>
-    <string name="store_app_description_full">-- Description --
-\nDo you like Linux/Ubuntu? Does it seem awesome to you to be able to have the Unity desktop as your Android home screen? No? Ok, bye bye. In that case, this isn\'t for you.
-\nThis work in progress will allow you to have the Unity desktop running as your Android home/launcher screen.
-\n
-\n-- Disclaimer --
-\nUbuntu is a registered trademark of Canonical Ltd, which I am not associated with.
-\nI don\'t take any responsibility for... anything.
-\n
-\n-- Notice --
-\nIt\'s a Beta, so if something doesn\'t work, or you have a suggestion, please let me know. Don\'t go drilling a Beta into the ground with 1 star reviews without actually telling me why you didn\'t like it, like some people are doing. Nobody\'s going to benefit from that.
-\nFeel free to leave bug reports and suggestions on Google+ (https://plus.google.com/communities/111207292310016778258) or Github (https://github.com/RobinJ1995/DistroHopper/issues), or contact me by e-mail.</string>
+    <string name="store_app_description_short">The Linux desktop on your Android device!</string>
+    <string name="store_app_description_full">Are you a Linux/open-source enthusiast? Whether you are or not, if it seems cool to be able to have the Linux desktop on your Android device, then this app is what you\'re looking for. Currently there is a choice between Ubuntu\'s Unity desktop, elementary OS\' Pantheon desktop, and Gnome. Missing your desktop of choice? Get in touch and if there\'s enough interest I might just add it 😉
+\n\nFeatures include a couple of different themes, a search feature which allows you to search from a multitude of different search sources (both local and remote), and customisation options.
+\n\nIf you have any suggestions or feedback, feel free to get in touch. The project is open-source with the source code publicly available at https://github.com/RobinJ1995/DistroHopper. If you\'re less technically-inclined but would still like to contribute, you can join the project\'s translation team over at https://www.transifex.com/distrohopper/.
+\n\nUbuntu is a registered trademark of Canonical Ltd. elementary is a registered trademark of elementary LLC. Gnome is a registered trademark of the Gnome Foundation.</string>
 </resources>
