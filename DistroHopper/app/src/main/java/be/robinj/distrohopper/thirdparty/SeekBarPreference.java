@@ -127,7 +127,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
 		layout.setId( android.R.id.widget_frame );
 		layout.setOrientation (LinearLayout.VERTICAL);
 		layout.setPadding (15, 15, 15, 15);
-
+		
 		TextView title = new TextView( ctx );
 		title.setId (android.R.id.title);
 		title.setSingleLine ();

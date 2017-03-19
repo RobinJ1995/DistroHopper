@@ -7,6 +7,11 @@
     <style name="DialogTheme" parent="android:Theme.Wallpaper">
     </style>
 
+    <style name="ContributeTheme" parent="Theme.AppCompat">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowShowWallpaper">true</item>
+    </style>
+
     <style name="PreferencesTheme" parent="DialogTheme">
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:backgroundDimAmount">0.8</item>

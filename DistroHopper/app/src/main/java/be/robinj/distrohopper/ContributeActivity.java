@@ -4,21 +4,36 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import org.sufficientlysecure.donations.DonationsFragment;
 
-public class ContributeActivity extends Activity
+
+public class ContributeActivity extends AppCompatActivity
 {
-
+	private static final String[] IAP_CATALOG = new String[] {"be.robinj.distrohopper.donation.e1", "be.robinj.distrohopper.donation.e2", "be.robinj.distrohopper.donation.e3", "be.robinj.distrohopper.donation.e4", "be.robinj.distrohopper.donation.e5", "be.robinj.distrohopper.donation.e10", "be.robinj.distrohopper.donation.e20"};
+	private static final String[] IAP_CATALOG_VALUES = new String[] {"€1", "€2", "€3", "€4", "€5", "€10", "€20"};
+	
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
-		super.setTheme (R.style.DialogTheme);
+		super.setTheme (R.style.ContributeTheme);
 
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_contribute);
+		
+		FragmentTransaction fragmentTransaction = this.getSupportFragmentManager ().beginTransaction ();
+		// I know I'm supposed to keep my key hidden but... come on. This app is open source, and donations don't unlock any additional features. If they want to circumvent it they can easily do so, and they would gain absolutely nothing from it anyway. //
+		DonationsFragment donationsFragment = DonationsFragment.newInstance (false, true, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAogL8ClXWCd9fMZrDISjCN0Dtzv5E06CAZpRihm2QH6vMP64mCMkTPUb/0ti4kIwyO3OVO7uJYLgdmHnGLyjuACknRrlVD94IzQLlwRMtSyhZClhLEsaKJEUl4CM2l6ZKgdxBJNYFnRRWcnYCo5n5e5UagPcXirPPXidsxj3OYe6bLHXP27uECB6h6yeq2XU4Rs9VejgC+5BYyPB5N7xbsVBMD8k2ym8EO1qGzJoXlkUS9pS5To5pO7/1tUZRAw0eXtNoO4p/LjF8HkLuN0GhnqL3cjjxIy2S/rC+3ypWDqo1ndoLRbYRMbPTxkbZ0a8MIXW36yXw/iSZfospi5/d/QIDAQAB", IAP_CATALOG, IAP_CATALOG_VALUES, false, null, null, null, false, null, null, false, null);
+		fragmentTransaction.replace (R.id.flDonate, donationsFragment, "donationsFragment");
+		fragmentTransaction.commit ();
 	}
 
 
@@ -88,5 +103,16 @@ public class ContributeActivity extends Activity
 			ExceptionHandler exh = new ExceptionHandler (this, ex);
 			exh.show ();
 		}
+	}
+	
+	@Override
+	protected void onActivityResult (int requestCode, int resultCode, Intent data)
+	{
+		super.onActivityResult (requestCode, resultCode, data);
+		
+		FragmentManager fragmentManager = this.getSupportFragmentManager();
+		Fragment fragment = fragmentManager.findFragmentByTag ("donationsFragment");
+		if (fragment != null)
+			fragment.onActivityResult (requestCode, resultCode, data);
 	}
 }

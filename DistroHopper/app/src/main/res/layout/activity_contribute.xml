@@ -82,13 +82,11 @@
                 android:text="@string/contribute_donate_description"
                 android:layout_gravity="center_horizontal"/>
 
-            <Button
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/contribute_donate_go"
-                android:id="@+id/btnDonate"
-                android:onClick="btnDonate_clicked"
-                android:layout_gravity="center_horizontal"/>
+                android:id="@+id/flDonate"
+                android:background="@color/background_material_dark"></FrameLayout>
 
         </LinearLayout>
     </ScrollView>
