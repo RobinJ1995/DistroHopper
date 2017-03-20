@@ -106,10 +106,6 @@ https://github.com/commonsguy/cwac-colormixer</string>
 \n DistroHopper的运行错误报告会被保存在GitHub中。如果GitHub对你来说太技术化了，你可以发邮件给我（android-dev@robinj.be），但请确保你用的是英语或是荷兰语。请尽可能地提供相关信息。</string>
   <string name="contribute_bugs_go">去GitHub</string>
   <string name="contribute_donate_title">捐助</string>
-  <string name="contribute_donate_description">你也可以选择使用PayPal进行捐款。你将能够选择你想捐赠的金额。\n
-注意：这只是一项捐款。我并不是在进行任何买卖。我很感激你，但并不代表你会因此而获得额外的功能。此程序的所有功能都是免费的。
-\n
-\n PayPal收取$0.30 + 2.2%% 的费用。如果你的捐款小于0.30美元，那么所有的款项都将转到PayPal门下而不会到开发者`手中。 如果你打算捐赠给我而不是PayPal，请确保你的款项超过这个金额。</string>
   <string name="contribute_donate_go">捐助</string>
   <string name="theme_elementary_res_panel_bfb_text">应用</string>
 </resources>

@@ -1,10 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Réglages</string>
+  <string name="dash_search_hint">Chercher</string>
   <string name="dash_lens_apps_title">Applications</string>
   <string name="dash_lens_other_title">Autre</string>
   <string name="title_activity_preferences">Préférences</string>
   <string name="title_activity_about">À propos</string>
+  <string name="pinned">a été attaché au Launcher</string>
+  <string name="unpinned">a été détaché du Launcher</string>
   <string name="notpinned">n\'est pas attaché</string>
   <string name="developed_by">Développé par Robin Jacobs</string>
   <string name="honourable_mentions">Mentions honorables</string>
@@ -21,6 +24,7 @@
   <string name="category_colourcalc">Calcul de couleur dominante</string>
   <string name="option_launchericon_opacity">Opacité du fond des icônes</string>
   <string name="hint_launchericon_opacity">L\'opacité du fond des icônes du Launcher.</string>
+  <string name="option_launcherservice_enabled">Rendre le Launcher disponible dans les autres apps</string>
   <string name="hint_launcherservice_enabled">Quand vous glissez du côté bas-gauche de l\'écran, le Launcher apparaît, vous permettant de lancer vos applications attachées au Launcher sans retourner à l\'écran d\'accueil.\n(EXPÉRIMENTAL)</string>
   <string name="option_launcher_running_show">Montrer les applications ouvertes</string>
   <string name="option_panel_show">Afficher</string>
@@ -56,6 +60,7 @@
   <string name="hint_dashsearch_lenses_maxresults">Le nombre maximal de résultats de recherche affichés par lentille.</string>
   <string name="option_dash_ready_show">Ouvrir le Dash par défaut</string>
   <string name="hint_dash_ready_show">Une fois que les applications sont chargées, le Dash s\'ouvrira automatiquement.</string>
+  <string name="hint_lenses">Choisir les lentilles que vous voulez utiliser et leur ordre dans le Dash. Lorsque vous ferez une recherche dans le Dash, vous obtiendrez des résultats de toutes les lentilles activées.</string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Testing (If he doesn\'t manage to wreck it then it\'s probably safe for consumption by the rest of the world.)\n
         * Help with the dominant colour calculation function.</string>
@@ -71,10 +76,14 @@
         https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Comment contribuer?</string>
   <string name="contribute_intro">Beaucoup de temps et de travail ont été mis au développement de cette application. Si vous voudriez y contribuer, il y a plusieurs façons de le faire.</string>
+  <string name="contribute_translate_title">Traduire</string>
+  <string name="contribute_translate_description">DistroHopper est disponible dans plusieurs langues. Il en est ainsi grâce aux nombreux volontaires qui ont traduit l\'application par eux-mêmes. Si DistroHopper n\'a pas été traduit dans votre langue et que vous avez une bonne connaissance de l\'anglais et de Ubuntu/Linux, vous pouvez aider DistroHopper en le traduisant dans votre langue.
+\nLes traductions deUbuntu Launchersont gérées sur Transifex. Tout ce que vous avez à faire est de joindre une équipe de traduction, de vous faire accepter et c\'est tout!</string>
   <string name="contribute_translate_go">Allez sur Transifex</string>
   <string name="contribute_bugs_title">Signaler des erreurs</string>
+  <string name="contribute_bugs_description">S\'il existe un bug dans DistroHopper, n\'assumez pas que le développeur est au courant. Celui-ci est souvent assez nul pour tester ses propres applications puisqu\'il ne les utilise que de la manière qu\'elles sont supposées fonctionner. De plus, certaines erreurs n\'apparaissent que sur certains appareils, ou sur certaines versions d\'Android. Si vous trouver un bug dans DistroHopper ou si vous avez une idée pour l\'application, signalez-le! \nLes rapports d\'erreurs pour DistroHopper sont sur Github. Si vous avez des difficultés avec Github, vous pouvez aussi envoyer un simple email à android-dev@robinj.be (Anglais ou Allemand seulement). N\'oubliez pas de fournir le plus de détails que possible!</string>
   <string name="contribute_bugs_go">Allez sur Github</string>
   <string name="contribute_donate_title">Faire un don</string>
-  <string name="contribute_donate_description">Si vous voulez, vous pouvez aussi faire un don monétaire au développeur. Les dons sont gérés via PayPal. Vous pouvez décider de la somme que vous voulez donner. \nNote: C\'est un don. Le développeur ne vend rien, et vous n\'achetez rien. Les dons sont appréciés, mais vous ne gagnerez pas de privilèges en en faisant. Ubuntu Launcher est entièrement gratuit. \n \nPaypal prend un frais de $0.30 + 2.2\%%, donc si votre don est de moins de $0.30, tout ira à PayPal, rien au développeur. Si vous faites un don, il est donc préférable de faire un don supérieur à ce montant, excepté bien sûr si vous voulez supporter PayPal pour une quelconque raison.</string>
+  <string name="contribute_donate_description">Si vous voulez, vous pouvez aussi faire un don monétaire au développeur. Les dons sont gérés via PayPal. Vous pouvez décider de la somme que vous voulez donner. \nNote: C\'est un don. Le développeur ne vend rien, et vous n\'achetez rien. Les dons sont appréciés, mais vous ne gagnerez pas de privilèges en en faisant. DistroHopper est entièrement gratuit.</string>
   <string name="contribute_donate_go">Donner</string>
 </resources>

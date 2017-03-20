@@ -82,10 +82,7 @@ https://github.com/commonsguy/cwac-colormixer</string>
   <string name="contribute_bugs_title">Nahlásit chybu</string>
   <string name="contribute_bugs_go">Přejít na GitHub</string>
   <string name="contribute_donate_title">Darovat</string>
-  <string name="contribute_donate_description">Pokud chcete, můžete si také peněžní dar pro vývojáře. Dary jsou zpracovány prostřednictvím PayPal. Budete mít možnost vybrat částku, kterou chcete darovat. 
-Poznámka: Je to dar. Já neprodávám nic, a nejste něco koupit. Dary jsou velmi ocenil, ale nebudete získávat žádné další funkce, protože to. Všechny funkce této aplikace jsou k dispozici zdarma.
-\ on
-\ PayPal trvá,30dolar + 2,2 \ %% poplatek, takže pokud váš dar je menší než 0,30 dolar pak to všechno půjde do PayPal, a nic z toho dosáhne developer. Máte-li darovat, je to nejlepší, aby se vaše daru více než tato částka, pokud z nějakého podivného důvodu byste chtěli, aby se dárcovství PayPal sám.</string>
+  <string name="contribute_donate_description">Pokud chcete, můžete si také peněžní dar pro vývojáře. Dary jsou zpracovány prostřednictvím PayPal. Budete mít možnost vybrat částku, kterou chcete darovat. Poznámka: Je to dar. Já neprodávám nic, a nejste něco koupit. Dary jsou velmi ocenil, ale nebudete získávat žádné další funkce, protože to. Všechny funkce této aplikace jsou k dispozici zdarma.</string>
   <string name="contribute_donate_go">Darovat</string>
   <string name="theme_elementary_res_panel_bfb_text">Aplikace</string>
 </resources>

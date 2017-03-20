@@ -76,14 +76,12 @@ https://github.com/Todd-Davies/ProgressWheel/</string>
 https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Bagaimana Saya bisa berkontribusi?</string>
   <string name="contribute_intro">Waktu yang lama dan kerja keras telah dilakukan untuk mengembangkan aplikasi ini. Jika Anda ingin membantu, ada beberapa cara di mana Anda dapat melakukannya.</string>
+  <string name="contribute_translate_description">DistroHopper tersedia dalam beberapa bahasa. Hal ini karena relawan memberikan proyek dengan terjemahannya. Jika DistroHopper belum diterjemahkan ke dalam bahasa Anda dan Anda mengerti bahasa Inggris (dan Anda memiliki pengetahuan yang cukup tentang Linux), kemudian membantu dengan terjemahan adalah cara yang baik untuk membantu. \nTranslasi untuk DistroHopper dikelola di Transifex. Yang perlu Anda lakukan adalah permintaan untuk bergabung dengan tim penerjemah. Setelah itu saya akan menyetujui permintaan Anda dan Anda siap untu menterjemahkan.</string>
   <string name="contribute_translate_go">Pergi ke Transifex</string>
   <string name="contribute_bugs_title">Laporkan bug</string>
   <string name="contribute_bugs_go">Pergi ke GitHub</string>
   <string name="contribute_donate_title">Donasi</string>
-  <string name="contribute_donate_description">Jika Anda ingin, Anda juga dapat membuat sumbangan moneter untuk pengembang. Sumbangan ditangani melalui PayPal. Anda akan dapat memilih jumlah uang yang ingin Anda donasikan.
-\ nCatatan: Ini sumbangan. Saya tidak menjual apa-apa, dan Anda tidak membeli apa-apa. Sumbangan yang sangat dihargai, tetapi Anda tidak akan mendapatkan fitur tambahan karena itu. Semua fitur dari aplikasi ini tersedia gratis.
-\ n
-\ nPayPal mengambil biaya $ 0,30 + 2,2 \ %%, jadi donasi Anda berkurang $ 0,30 maka semua itu akan pergi ke PayPal, dan tidak ada yang akan mencapai pengembang. Jika Anda menyumbangkan, itu yang terbaik untuk membuat donasi Anda lebih dari jumlah ini, kecuali untuk beberapa alasan aneh Anda ingin membuat sumbangan untuk PayPal sendiri.</string>
+  <string name="contribute_donate_description">Jika Anda ingin, Anda juga dapat membuat sumbangan moneter untuk pengembang. Sumbangan ditangani melalui PayPal. Anda akan dapat memilih jumlah uang yang ingin Anda donasikan. \ nCatatan: Ini sumbangan. Saya tidak menjual apa-apa, dan Anda tidak membeli apa-apa. Sumbangan yang sangat dihargai, tetapi Anda tidak akan mendapatkan fitur tambahan karena itu. Semua fitur dari aplikasi ini tersedia gratis.</string>
   <string name="contribute_donate_go">Donasi</string>
   <string name="theme_elementary_res_panel_bfb_text">Aplikasi</string>
 </resources>

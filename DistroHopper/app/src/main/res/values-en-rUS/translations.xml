@@ -93,9 +93,5 @@
   <string name="contribute_bugs_title">Report bugs</string>
   <string name="contribute_bugs_go">Go to GitHub</string>
   <string name="contribute_donate_title">Donate</string>
-  <string name="contribute_donate_description">If you want, you can also make a monetary donation to the developer. Donations are handled via PayPal. You will be able to pick the amount of money you\'d like to donate.
-        \nNote: It\'s a donation. I am not selling anything, and you are not buying anything. Donations are greatly appreciated, but you will not gain any additional features because of it. All features of this application are available free of charge.
-        \n
-        \nPayPal takes a $0.30 + 2.2\%% fee, so if your donation is less than $0.30 then all of it will go to PayPal, and none of it will reach the developer. If you donate, it\'s best to make your donation more than this amount, unless for some strange reason you\'d like to make a donation to PayPal itself.</string>
   <string name="contribute_donate_go">Donate</string>
 </resources>
