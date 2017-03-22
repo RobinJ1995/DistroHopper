@@ -34,6 +34,7 @@
   <string name="hint_launchericon_size">使用以下滑块来设置已绑定图标的大小。可选大小为48至120设备独立像素。默认大小为84设备独立像素。</string>
   <string name="option_launchericon_opacity">图标背景的不透明度</string>
   <string name="hint_launchericon_opacity">启动器中的图标背景颜色应该多不透明</string>
+  <string name="option_launcherservice_enabled">允许覆盖服务</string>
   <string name="hint_launcherservice_enabled">当你从屏幕左边向右滑动时，启动器便会出现。你便可直接从启动器中启动已被绑定的程序，从而无需从主界面中启动。（试验中） </string>
   <string name="option_launcher_running_show">显示正在运行的程序</string>
   <string name="hint_launcher_running_show">此启动器会显示正在运行的应用程序。正在运行的应用程序的左上方会显示一个小鼠标。此启动器会显示正在运行的应用程序。左上方会显示一个小鼠标正在运行但并未绑顶的应用程序也会显示在启动器中。\n 。注意：由于系统的限制， 这个功能已无法在安卓5.0以后的版本中实现了。</string>
@@ -53,6 +54,7 @@
   <string name="option_launcher_edge">启动器的位置</string>
   <string name="hint_launcher_edge">选择启动器要依附在屏幕上的哪一端</string>
   <string name="option_widgets_enabled">窗口小部件</string>
+  <string name="hint_widgets_enabled">允许<b>实验性</b>窗口小部件。（请别使用，因为它还无法正常运行）</string>
   <string-array name="keys_unitywallpaper_blur">
     <item>不要模糊</item>
     <item>变暗</item>
@@ -100,12 +102,19 @@ https://github.com/commonsguy/cwac-colormixer</string>
   <string name="hm_translators_why">有一群人贡献了他们的时间和精力来翻译这个应用。我非常感激他们的贡献！</string>
   <string name="title_activity_contribute">我能做出什么贡献？</string>
   <string name="contribute_intro">此程序的开发花费了许多时间与精力。如果你有意愿帮忙，你可以用以下几种方法：</string>
+  <string name="contribute_translate_title">翻译</string>
+  <string name="contribute_translate_description">DistroHopper有多种语言版本。这都要归功于志愿者们为项目提供了翻译。 如果DistroHopper还没有被翻译成你自己的语言，并且你的英语水平达标（也对Linux有足够的认识且理解与Unity相关的术语），那么提供翻译是个很棒的贡献。
+
+\ n 我使用Transifex来管理DistroHopper的翻译。 你只需要申请加入翻译团队便可以在得到我的批准后开始翻译了。</string>
   <string name="contribute_translate_go">去Transifex</string>
   <string name="contribute_bugs_title">报告错误</string>
   <string name="contribute_bugs_description">我并不能第一时间知道DistroHopper的运行错误（程序开发员通在测试自己的程序时都比较弱，因为他们只会用特定的方式来测试这个程序）。一些问题也只存在于特别情况下，例如在特定的设备运行着特定的安卓版本与它的附加功能时）。所以如果你发现DistroHopper故障时（或者你想提交一个特性请求）你可以帮忙报告。
 \n DistroHopper的运行错误报告会被保存在GitHub中。如果GitHub对你来说太技术化了，你可以发邮件给我（android-dev@robinj.be），但请确保你用的是英语或是荷兰语。请尽可能地提供相关信息。</string>
   <string name="contribute_bugs_go">去GitHub</string>
   <string name="contribute_donate_title">捐助</string>
+  <string name="contribute_donate_description">你也可以选择使用PayPal进行捐款。你将能够选择你想捐赠的金额。
+
+\n 注意：这只是一项捐款。我并不是在进行任何买卖。我很感激你，但并不代表你会因此而获得额外的功能。此程序的所有功能都是免费的。</string>
   <string name="contribute_donate_go">捐助</string>
   <string name="theme_elementary_res_panel_bfb_text">应用</string>
 </resources>
