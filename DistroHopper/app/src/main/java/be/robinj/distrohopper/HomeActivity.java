@@ -151,14 +151,9 @@ public class HomeActivity extends Activity
 			float density = res.getDisplayMetrics ().density;
 
 			if (prefs.getBoolean ("panel_show", true))
-			{
-				if (Build.VERSION.SDK_INT >= 11)
-					this.llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
-			}
+				this.llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
 			else
-			{
 				this.llPanel.setVisibility (View.GONE);
-			}
 
 			int ibDashClose_width = (int) ((float) (48 + prefs.getInt ("launchericon_width", 36)) * density);
 			LinearLayout.LayoutParams ibDashClose_layoutParams = new LinearLayout.LayoutParams (ibDashClose_width, LinearLayout.LayoutParams.MATCH_PARENT);
@@ -202,52 +197,49 @@ public class HomeActivity extends Activity
 				vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this.widgetHost));
 
 			// Setup layout transitions //
-			if (Build.VERSION.SDK_INT >= 11)
-			{
-				LayoutTransition gvDashHomeApps_transition = new LayoutTransition ();
-				gvDashHomeApps_transition.setDuration (180);
-				gvDashHomeApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
-				gvDashHomeApps.setLayoutTransition (gvDashHomeApps_transition);
+			LayoutTransition gvDashHomeApps_transition = new LayoutTransition ();
+			gvDashHomeApps_transition.setDuration (180);
+			gvDashHomeApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
+			gvDashHomeApps.setLayoutTransition (gvDashHomeApps_transition);
 
-				LayoutTransition lvDashHomeLensResults_transition = new LayoutTransition ();
-				lvDashHomeLensResults_transition.setDuration (180);
-				lvDashHomeLensResults_transition.setStartDelay (LayoutTransition.APPEARING, 0);
-				lvDashHomeLensResults.setLayoutTransition (lvDashHomeLensResults_transition);
+			LayoutTransition lvDashHomeLensResults_transition = new LayoutTransition ();
+			lvDashHomeLensResults_transition.setDuration (180);
+			lvDashHomeLensResults_transition.setStartDelay (LayoutTransition.APPEARING, 0);
+			lvDashHomeLensResults.setLayoutTransition (lvDashHomeLensResults_transition);
 
-				LayoutTransition llLauncherPinnedApps_transition = new LayoutTransition ();
-				llLauncherPinnedApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
-				llLauncherPinnedApps.setLayoutTransition (llLauncherPinnedApps_transition);
+			LayoutTransition llLauncherPinnedApps_transition = new LayoutTransition ();
+			llLauncherPinnedApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
+			llLauncherPinnedApps.setLayoutTransition (llLauncherPinnedApps_transition);
 
-				LayoutTransition llLauncherRunningApps_transition = new LayoutTransition ();
-				llLauncherRunningApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
-				llLauncherRunningApps.setLayoutTransition (llLauncherRunningApps_transition);
+			LayoutTransition llLauncherRunningApps_transition = new LayoutTransition ();
+			llLauncherRunningApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
+			llLauncherRunningApps.setLayoutTransition (llLauncherRunningApps_transition);
 
-				LayoutTransition llDashSearchContainer_transition = new LayoutTransition ();
-				llDashSearchContainer_transition.setStartDelay (LayoutTransition.APPEARING, 0);
-				llDashSearchContainer_transition.setStartDelay (LayoutTransition.DISAPPEARING, 0);
-				llDashSearchContainer_transition.setStartDelay (LayoutTransition.CHANGE_APPEARING, 0);
-				llDashSearchContainer_transition.setStartDelay (LayoutTransition.CHANGE_DISAPPEARING, 0);
-				llDashSearchContainer_transition.setStartDelay (LayoutTransition.CHANGING, 0);
-				llDashSearchContainer.setLayoutTransition (llDashSearchContainer_transition);
+			LayoutTransition llDashSearchContainer_transition = new LayoutTransition ();
+			llDashSearchContainer_transition.setStartDelay (LayoutTransition.APPEARING, 0);
+			llDashSearchContainer_transition.setStartDelay (LayoutTransition.DISAPPEARING, 0);
+			llDashSearchContainer_transition.setStartDelay (LayoutTransition.CHANGE_APPEARING, 0);
+			llDashSearchContainer_transition.setStartDelay (LayoutTransition.CHANGE_DISAPPEARING, 0);
+			llDashSearchContainer_transition.setStartDelay (LayoutTransition.CHANGING, 0);
+			llDashSearchContainer.setLayoutTransition (llDashSearchContainer_transition);
 
-				LayoutTransition llLauncherAndDashContainer_transition = new LayoutTransition ();
-				llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.APPEARING, 0);
-				llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.DISAPPEARING, 0);
-				llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.CHANGE_APPEARING, 0);
-				llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.CHANGE_DISAPPEARING, 0);
-				llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.CHANGING, 0);
-				llLauncherAndDashContainer_transition.setDuration (res.getInteger (android.R.integer.config_shortAnimTime));
-				llLauncherAndDashContainer.setLayoutTransition (llLauncherAndDashContainer_transition);
+			LayoutTransition llLauncherAndDashContainer_transition = new LayoutTransition ();
+			llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.APPEARING, 0);
+			llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.DISAPPEARING, 0);
+			llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.CHANGE_APPEARING, 0);
+			llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.CHANGE_DISAPPEARING, 0);
+			llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.CHANGING, 0);
+			llLauncherAndDashContainer_transition.setDuration (res.getInteger (android.R.integer.config_shortAnimTime));
+			llLauncherAndDashContainer.setLayoutTransition (llLauncherAndDashContainer_transition);
 
-				LayoutTransition flWallpaperOverlayContainer_transition = new LayoutTransition ();
-				flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.APPEARING, 0);
-				flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.DISAPPEARING, 0);
-				flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.CHANGE_APPEARING, 0);
-				flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.CHANGE_DISAPPEARING, 0);
-				flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.CHANGING, 0);
-				flWallpaperOverlayContainer_transition.setDuration (res.getInteger (android.R.integer.config_shortAnimTime));
-				flWallpaperOverlayContainer.setLayoutTransition (flWallpaperOverlayContainer_transition);
-			}
+			LayoutTransition flWallpaperOverlayContainer_transition = new LayoutTransition ();
+			flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.APPEARING, 0);
+			flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.DISAPPEARING, 0);
+			flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.CHANGE_APPEARING, 0);
+			flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.CHANGE_DISAPPEARING, 0);
+			flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.CHANGING, 0);
+			flWallpaperOverlayContainer_transition.setDuration (res.getInteger (android.R.integer.config_shortAnimTime));
+			flWallpaperOverlayContainer.setLayoutTransition (flWallpaperOverlayContainer_transition);
 
 			// Check if the dash should open immediately once apps have been loaded //
 			this.openDashWhenReady = prefs.getBoolean ("dash_ready_show", this.openDashWhenReady);
@@ -657,11 +649,8 @@ public class HomeActivity extends Activity
 			be.robinj.distrohopper.unity.launcher.AppLauncher lalTrash = (be.robinj.distrohopper.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalTrash);
 
 			etDashSearch.addTextChangedListener (new SearchTextWatcher (installedApps, this.lenses));
-			if (Build.VERSION.SDK_INT >= 11)
-			{
-				llLauncher.setOnDragListener (new LauncherDragListener (this.apps));
-				lalTrash.setOnDragListener (new TrashDragListener (this.apps));
-			}
+			llLauncher.setOnDragListener (new LauncherDragListener (this.apps));
+			lalTrash.setOnDragListener (new TrashDragListener (this.apps));
 
 			this.startLauncherService (false);
 
@@ -854,12 +843,9 @@ public class HomeActivity extends Activity
 
 		if (this.getResources ().getInteger (HomeActivity.theme.panel_close_location) != -1)
 			this.ibPanelDashClose.setVisibility (View.INVISIBLE);
-
-		if (Build.VERSION.SDK_INT >= 11)
-		{
-			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
-			this.llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
-		}
+		
+		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+		this.llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
 
 		if (this.getResources ().getBoolean (HomeActivity.theme.panel_background_dynamic_when_dash_opened))
 		{
@@ -892,8 +878,7 @@ public class HomeActivity extends Activity
 	{
 		this.llDash.setVisibility (View.VISIBLE);
 		this.wpWallpaper.blur ();
-		if (Build.VERSION.SDK_INT >= 11)
-			this.llPanel.setAlpha (1F);
+		this.llPanel.setAlpha (1F);
 
 		if (this.getResources ().getInteger (HomeActivity.theme.panel_close_location) != -1)
 			this.ibPanelDashClose.setVisibility (View.VISIBLE);

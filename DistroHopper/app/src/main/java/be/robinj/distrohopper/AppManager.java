@@ -275,8 +275,7 @@ public class AppManager implements Iterable<App>
 				be.robinj.distrohopper.unity.launcher.AppLauncher appLauncher = new be.robinj.distrohopper.unity.launcher.AppLauncher (this.context, app);
 				appLauncher.setOnClickListener (new AppLauncherClickListener ());
 				appLauncher.setOnLongClickListener (new AppLauncherLongClickListener ());
-				if (Build.VERSION.SDK_INT >= 11)
-					appLauncher.setOnDragListener (new AppLauncherDragListener (this));
+				appLauncher.setOnDragListener (new AppLauncherDragListener (this));
 
 				this.llLauncherPinnedApps.addView (appLauncher);
 			}
@@ -321,8 +320,7 @@ public class AppManager implements Iterable<App>
 			be.robinj.distrohopper.unity.launcher.AppLauncher appLauncher = new be.robinj.distrohopper.unity.launcher.AppLauncher (this.context, app);
 			appLauncher.setOnClickListener (new AppLauncherClickListener ());
 			appLauncher.setOnLongClickListener (new AppLauncherLongClickListener ());
-			if (Build.VERSION.SDK_INT >= 11)
-				appLauncher.setOnDragListener (new AppLauncherDragListener (this));
+			appLauncher.setOnDragListener (new AppLauncherDragListener (this));
 
 			this.llLauncherPinnedApps.addView (appLauncher);
 		}
@@ -358,10 +356,7 @@ public class AppManager implements Iterable<App>
 			editor.putString (Integer.toString (i), packageAndActivityName.toString ());
 		}
 
-		if (Build.VERSION.SDK_INT >= 9)
-			editor.apply ();
-		else
-			editor.commit ();*/
+		editor.apply ();*/
 
 		DB db = DBFactory.open (this.context);
 		db.put ("launcher_pinnedApps", this.pinned.toArray ());
@@ -458,9 +453,8 @@ public class AppManager implements Iterable<App>
 
 		lalPreferences.setVisibility (View.GONE);
 		lalTrash.setVisibility (View.VISIBLE);
-
-		if (Build.VERSION.SDK_INT >= 11)
-			this.llLauncherPinnedApps.setAlpha (0.9F);
+		
+		this.llLauncherPinnedApps.setAlpha (0.9F);
 	}
 
 	public void stoppedDraggingPinnedApp ()
@@ -478,8 +472,7 @@ public class AppManager implements Iterable<App>
 				break;
 		}
 		lalTrash.setVisibility (View.GONE);
-
-		if (Build.VERSION.SDK_INT >= 11)
-			this.llLauncherPinnedApps.setAlpha (1.0F);
+		
+		this.llLauncherPinnedApps.setAlpha (1.0F);
 	}
 }

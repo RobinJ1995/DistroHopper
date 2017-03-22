@@ -34,10 +34,7 @@ public class AppLauncherDragListener implements ViewGroup.OnDragListener
 			switch (event.getAction ())
 			{
 				case DragEvent.ACTION_DRAG_ENTERED:
-					if (Build.VERSION.SDK_INT >= 14)
-						appLauncher.animate ().setStartDelay (0).setDuration (120).alpha (0.2F);
-					else
-						appLauncher.setAlpha (0.2F);
+					appLauncher.animate ().setStartDelay (0).setDuration (120).alpha (0.2F);
 					break;
 				case DragEvent.ACTION_DROP: // Falls through //
 					int oldIndex = Integer.parseInt (event.getClipData ().getDescription ().getLabel ().toString ());

@@ -37,8 +37,7 @@ public class RunningAppLauncher extends AppLauncher
 			if (llBackground != null && (! this.isSpecial ()))
 				this.colourChanged ();
 
-			if (Build.VERSION.SDK_INT >= 11)
-				imgIcon.setAlpha (0.9F);
+			imgIcon.setAlpha (0.9F);
 		}
 	}
 }

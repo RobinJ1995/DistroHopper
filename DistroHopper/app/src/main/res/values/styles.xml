@@ -1,27 +1,47 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Wallpaper.NoTitleBar">
+    <style name="AppTheme" parent="android:Theme.Holo.Wallpaper.NoTitleBar">
     </style>
 
-    <style name="DialogTheme" parent="android:Theme.Wallpaper">
-    </style>
-
-    <style name="ContributeTheme" parent="Theme.AppCompat">
+    <style name="DialogTheme" parent="Theme.AppCompat">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowShowWallpaper">true</item>
     </style>
 
-    <style name="PreferencesTheme" parent="DialogTheme">
+    <style name="HoloDialogTheme" parent="android:Theme.Holo.Wallpaper">
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:backgroundDimAmount">0.8</item>
+        <item name="android:actionBarStyle">@style/actionbar_solid</item>
     </style>
 
-    <style name="textshadow_2px_black" parent="android:TextAppearance.Widget.TextView">
+    <style name="AboutTheme" parent="DialogTheme">
+    </style>
+
+    <style name="ContributeTheme" parent="DialogTheme">
+    </style>
+
+    <style name="PreferencesTheme" parent="HoloDialogTheme">
+    </style>
+
+    <style name="actionbar_solid" parent="android:Widget.ActionBar">
+        <item name="android:background">@color/transparentblack10</item>
+        <item name="android:icon">@color/transparent</item>
+    </style>
+
+    <style name="textshadow_2px_black" parent="android:TextAppearance.Holo.Widget.TextView">
         <item name="android:shadowColor">@android:color/black</item>
         <item name="android:shadowDx">2</item>
         <item name="android:shadowDy">2</item>
         <item name="android:shadowRadius">5</item>
+    </style>
+
+    <style name="honourable_mentions_name" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="developer_by" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textSize">17sp</item>
     </style>
 
 </resources>

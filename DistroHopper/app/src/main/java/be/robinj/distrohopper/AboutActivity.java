@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.Menu;
@@ -17,12 +18,12 @@ import android.widget.TextView;
 import be.robinj.distrohopper.dev.Log;
 
 
-public class AboutActivity extends Activity
+public class AboutActivity extends AppCompatActivity
 {
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
-		super.setTheme (R.style.DialogTheme);
+		super.setTheme (R.style.AboutTheme);
 
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_about);

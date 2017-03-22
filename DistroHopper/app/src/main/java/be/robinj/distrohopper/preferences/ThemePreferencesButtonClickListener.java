@@ -28,13 +28,8 @@ public class ThemePreferencesButtonClickListener implements View.OnClickListener
 		try
 		{
 			SharedPreferences.Editor editor = this.prefs.edit ();
-
 			editor.putString ("theme", (String) view.getTag ());
-
-			if (Build.VERSION.SDK_INT >= 9)
-				editor.apply ();
-			else
-				editor.commit ();
+			editor.apply ();
 
 			this.parent.finish ();
 		}

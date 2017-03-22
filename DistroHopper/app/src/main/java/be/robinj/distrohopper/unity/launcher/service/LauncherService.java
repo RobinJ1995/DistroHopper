@@ -92,13 +92,12 @@ public class LauncherService extends Service
 		this.llListener.setOnTouchListener (this.touchListener);
 		this.llShadow.setOnTouchListener (this.touchListener);
 
-		/*if (Build.VERSION.SDK_INT >= 11)
-		{
-			LayoutTransition layout_transition = new LayoutTransition ();
-			layout_transition.setStartDelay (LayoutTransition.APPEARING, 0);
-			layout_transition.setStartDelay (LayoutTransition.DISAPPEARING, 0);
-			this.layout.setLayoutTransition (layout_transition);
-		}*/
+		/*
+		LayoutTransition layout_transition = new LayoutTransition ();
+		layout_transition.setStartDelay (LayoutTransition.APPEARING, 0);
+		layout_transition.setStartDelay (LayoutTransition.DISAPPEARING, 0);
+		this.layout.setLayoutTransition (layout_transition);
+		*/
 
 		this.wm.addView (this.layout, params);
 	}

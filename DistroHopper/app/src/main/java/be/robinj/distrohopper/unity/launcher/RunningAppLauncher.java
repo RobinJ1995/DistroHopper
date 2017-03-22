@@ -56,9 +56,8 @@ public class RunningAppLauncher extends AppLauncher
 			LinearLayout llBackground = (LinearLayout) this.findViewById (R.id.llBackground);
 			if (llBackground != null && (! this.isSpecial ()))
 				this.colourChanged ();
-
-			if (Build.VERSION.SDK_INT >= 11)
-				imgIcon.setAlpha (0.9F);
+			
+			imgIcon.setAlpha (0.9F);
 		}
 	}
 }

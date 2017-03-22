@@ -20,22 +20,15 @@ public class AppLauncherLongClickListener implements View.OnLongClickListener
 		{
 			App app = (App) view.getTag ();
 			AppManager appManager = app.getAppManager ();
+			
+			int index = appManager.indexOfPinned (app);
 
-			if (Build.VERSION.SDK_INT >= 11)
-			{
-				int index = appManager.indexOfPinned (app);
+			ClipData.Item item = new ClipData.Item (Integer.toString (index));
+			ClipData data = new ClipData (Integer.toString (index), new String[]{"text/plain"}, item);
+			View.DragShadowBuilder dragShadowBuilder = new View.DragShadowBuilder (view);
 
-				ClipData.Item item = new ClipData.Item (Integer.toString (index));
-				ClipData data = new ClipData (Integer.toString (index), new String[]{"text/plain"}, item);
-				View.DragShadowBuilder dragShadowBuilder = new View.DragShadowBuilder (view);
-
-				view.startDrag (data, dragShadowBuilder, item, 0);
-				appManager.startedDraggingPinnedApp ();
-			}
-			else
-			{
-				appManager.unpin (app);
-			}
+			view.startDrag (data, dragShadowBuilder, item, 0);
+			appManager.startedDraggingPinnedApp ();
 		}
 		catch (Exception ex)
 		{

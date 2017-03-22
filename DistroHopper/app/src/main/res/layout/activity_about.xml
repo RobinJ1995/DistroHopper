@@ -81,6 +81,7 @@
                         android:layout_height="match_parent"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="@string/developed_by"
+                        style="@style/developer_by"
                         android:gravity="center"
                         android:layout_weight="1"/>
 
@@ -135,6 +136,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="@string/hm_timvdstaaij_name"
+                        style="@style/honourable_mentions_name"
                         android:gravity="center"/>
 
                     <TextView
@@ -155,6 +157,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="@string/hm_todddavies_name"
+                        style="@style/honourable_mentions_name"
                         android:gravity="center"/>
 
                     <TextView
@@ -175,6 +178,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="@string/hm_commonsguy_name"
+                        style="@style/honourable_mentions_name"
                         android:gravity="center"/>
 
                     <TextView
@@ -195,6 +199,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="@string/hm_translators_name"
+                        style="@style/honourable_mentions_name"
                         android:gravity="center"/>
 
                     <TextView

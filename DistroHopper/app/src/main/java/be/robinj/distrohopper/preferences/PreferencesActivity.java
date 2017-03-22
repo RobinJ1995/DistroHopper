@@ -61,9 +61,7 @@ public class PreferencesActivity extends PreferenceActivity
 	 */
 	private static boolean isSimplePreferences (Context context)
 	{
-		return ALWAYS_SIMPLE_PREFS
-			|| Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
-			|| !isXLargeTablet (context);
+		return ALWAYS_SIMPLE_PREFS || ! isXLargeTablet (context);
 	}
 
 	@Override
@@ -87,18 +85,15 @@ public class PreferencesActivity extends PreferenceActivity
 	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar ()
 	{
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-		{
-			// Show the Up button in the action bar.
-			getActionBar ().setDisplayHomeAsUpEnabled (true);
-		}
+		// Show the Up button in the action bar.
+		this.getActionBar ().setDisplayHomeAsUpEnabled (true);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu)
 	{
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater ().inflate (R.menu.preferences, menu);
+		this.getMenuInflater ().inflate (R.menu.preferences, menu);
 
 		return true;
 	}

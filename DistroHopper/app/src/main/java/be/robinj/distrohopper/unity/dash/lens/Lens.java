@@ -145,11 +145,7 @@ public abstract class Lens
 	protected void showDialog (String message, boolean error)
 	{
 		AlertDialog.Builder dlg;
-		if (Build.VERSION.SDK_INT >= 11)
-			dlg = new AlertDialog.Builder (this.context, error ? AlertDialog.THEME_HOLO_DARK : AlertDialog.THEME_HOLO_LIGHT);
-		else
-			dlg = new AlertDialog.Builder (this.context);
-
+		dlg = new AlertDialog.Builder (this.context, error ? AlertDialog.THEME_HOLO_DARK : AlertDialog.THEME_HOLO_LIGHT);
 		dlg.setMessage (message);
 		dlg.setCancelable (true);
 		dlg.setNeutralButton ("OK", null);
