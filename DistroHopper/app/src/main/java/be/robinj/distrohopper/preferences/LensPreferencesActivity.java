@@ -2,6 +2,7 @@ package be.robinj.distrohopper.preferences;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -16,7 +17,7 @@ import be.robinj.distrohopper.unity.dash.lens.Lens;
 import be.robinj.distrohopper.unity.dash.lens.LensManager;
 
 
-public class LensPreferencesActivity extends Activity
+public class LensPreferencesActivity extends AppCompatActivity
 {
 	private LensManager lensManager;
 	private List<Lens> lenses;
@@ -26,7 +27,7 @@ public class LensPreferencesActivity extends Activity
 	{
 		try
 		{
-			super.setTheme (R.style.PreferencesTheme);
+			super.setTheme (R.style.LensPreferencesTheme);
 			super.onCreate (savedInstanceState);
 			setContentView (R.layout.activity_lens_preferences);
 

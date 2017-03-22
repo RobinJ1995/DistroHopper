@@ -3,6 +3,7 @@ package be.robinj.distrohopper.preferences;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -16,13 +17,13 @@ import be.robinj.distrohopper.theme.Elementary;
 import be.robinj.distrohopper.theme.Gnome;
 import be.robinj.distrohopper.theme.Theme;
 
-public class ThemePreferencesActivity extends Activity
+public class ThemePreferencesActivity extends AppCompatActivity
 {
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
-		super.setTheme (R.style.PreferencesTheme);
+		super.setTheme (R.style.ThemePreferencesTheme);
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_theme_preferences);
 
