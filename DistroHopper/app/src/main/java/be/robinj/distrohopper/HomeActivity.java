@@ -86,6 +86,8 @@ public class HomeActivity extends Activity
 	@SuppressLint ("ResourceType")
 	protected void onCreate (Bundle savedInstanceState)
 	{
+		super.setTheme (R.style.HomeTheme);
+		
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_home);
 

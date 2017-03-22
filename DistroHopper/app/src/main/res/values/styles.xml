@@ -6,6 +6,9 @@
         <item name="android:windowShowWallpaper">true</item>
     </style>
 
+    <style name="HomeTheme" parent="AppTheme">
+    </style>
+
     <style name="DialogTheme" parent="Theme.AppCompat">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowShowWallpaper">true</item>
