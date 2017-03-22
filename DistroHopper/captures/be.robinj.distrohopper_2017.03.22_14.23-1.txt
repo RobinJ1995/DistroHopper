@@ -1,0 +1,53 @@
+Applications Memory Usage (kB):
+Uptime: 11892040 Realtime: 14642320
+
+** MEMINFO in pid 16010 [be.robinj.distrohopper] **
+                   Pss  Private  Private  Swapped     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------
+  Native Heap     7072     7036        0        0    15104     9163     5940
+  Dalvik Heap    68593    68488        0        0    87987    80711     7276
+ Dalvik Other      820      816        0        0                           
+        Stack      272      272        0        0                           
+       Ashmem        2        0        0        0                           
+      Gfx dev     2352     2352        0        0                           
+    Other dev        4        0        4        0                           
+     .so mmap      963      176      440        0                           
+    .apk mmap      475        0      196        0                           
+    .ttf mmap       31        0       24        0                           
+    .dex mmap     4799     4740       40        0                           
+    .oat mmap     1586        0      708        0                           
+    .art mmap     2444     2272       36        0                           
+   Other mmap       16        8        0        0                           
+   EGL mtrack    41280    41280        0        0                           
+      Unknown      156      156        0        0                           
+        TOTAL   130865   127596     1448        0   103091    89874    13216
+ 
+ App Summary
+                       Pss(KB)
+                        ------
+           Java Heap:    70796
+         Native Heap:     7036
+                Code:     6324
+               Stack:      272
+            Graphics:    43632
+       Private Other:      984
+              System:     1821
+ 
+               TOTAL:   130865      TOTAL SWAP (KB):        0
+ 
+ Objects
+               Views:       92         ViewRootImpl:        1
+         AppContexts:        3           Activities:        1
+              Assets:      161        AssetManagers:        2
+       Local Binders:       12        Proxy Binders:       19
+       Parcel memory:        7         Parcel count:       28
+    Death Recipients:        0      OpenSSL Sockets:        0
+ 
+ SQL
+         MEMORY_USED:      117
+  PAGECACHE_OVERFLOW:       33          MALLOC_SIZE:       62
+ 
+ DATABASES
+      pgsz     dbsz   Lookaside(b)          cache  Dbname
+         4       28             62        13/24/8  /data/user/0/be.robinj.distrohopper/databases/google_analytics_v4.db

@@ -8,12 +8,12 @@
 			android:targetPackage="be.robinj.distrohopper" />
 	</Preference>
 
-	<CheckBoxPreference
+	<!--<CheckBoxPreference
 		android:key="launcher_running_show"
 		android:dependency="dev"
 		android:title="@string/option_launcher_running_show"
 		android:summary="@string/hint_launcher_running_show"
-		android:defaultValue="false" />
+		android:defaultValue="false" />-->
 
 	<CheckBoxPreference
 		android:key="launcherservice_enabled"

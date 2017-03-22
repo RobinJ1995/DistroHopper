@@ -1,0 +1,211 @@
+CURRENT STATS:
+System memory usage:
+  SOff/Norm: 1 samples:
+    Cached: 575MB min, 575MB avg, 575MB max
+    Free: 113MB min, 113MB avg, 113MB max
+    ZRam: 0.00 min, 0.00 avg, 0.00 max
+    Kernel: 159MB min, 159MB avg, 159MB max
+    Native: 115MB min, 115MB avg, 115MB max
+
+Per-Package Stats:
+  * be.robinj.distrohopper / u0a248 / v73:
+      * be.robinj.distrohopper / u0a248 / v73:
+               TOTAL: 100% (100MB-108MB-118MB/97MB-105MB-116MB over 4)
+                 Top: 11% (114MB-116MB-118MB/111MB-114MB-116MB over 2)
+             Service: 89% (100MB-100MB-100MB/97MB-97MB-97MB over 2)
+          Service Rs: 0.01%
+      * com.android.tools.fd.runtime.InstantRunService:
+        Process: be.robinj.distrohopper
+            Running count 6 / time 91%
+            Started count 6 / time 91%
+          Executing count 2 / time 0.15%
+
+Summary:
+  * be.robinj.distrohopper / u0a248 / v73:
+           TOTAL: 100% (100MB-108MB-118MB/97MB-105MB-116MB over 4)
+             Top: 11% (114MB-116MB-118MB/111MB-114MB-116MB over 2)
+         Service: 89% (100MB-100MB-100MB/97MB-97MB-97MB over 2)
+      Service Rs: 0.01%
+
+Run time Stats:
+  SOff/Norm: +8m27s810ms
+  SOn /Norm: +8m41s243ms (running)
+      TOTAL: +17m9s53ms
+
+Memory usage:
+  Kernel : 159MB (8 samples)
+  Native : 115MB (8 samples)
+  Persist: 289MB (24 samples)
+  Top    : 179MB (59 samples)
+  ImpFg  : 157MB (112 samples)
+  ImpBg  : 71MB (20 samples)
+  Service: 660MB (219 samples)
+  Receivr: 694KB (204 samples)
+  Home   : 36MB (10 samples)
+  LastAct: 3.3MB (39 samples)
+  CchAct : 109MB (4 samples)
+  CchCAct: 73MB (14 samples)
+  CchEmty: 291MB (121 samples)
+  Cached : 575MB (8 samples)
+  Free   : 113MB (8 samples)
+  TOTAL  : 2.8GB
+  ServRst: 13KB (26 samples)
+
+          Start time: 2017-03-22 13:49:08
+  Total elapsed time: +34m1s975ms (partial) libart.so
+
+AGGREGATED OVER LAST 24 HOURS:
+System memory usage:
+  SOff/Norm: 12 samples:
+    Cached: 274MB min, 833MB avg, 1.2GB max
+    Free: 106MB min, 139MB avg, 256MB max
+    ZRam: 0.00 min, 0.00 avg, 0.00 max
+    Kernel: 142MB min, 156MB avg, 183MB max
+    Native: 111MB min, 117MB avg, 122MB max
+  SOn /Norm: 16 samples:
+    Cached: 294MB min, 691MB avg, 1.5GB max
+    Free: 77MB min, 120MB avg, 203MB max
+    ZRam: 0.00 min, 0.00 avg, 0.00 max
+    Kernel: 145MB min, 165MB avg, 182MB max
+    Native: 110MB min, 118MB avg, 124MB max
+
+Per-Package Stats:
+  * be.robinj.distrohopper / u0a247 / v73:
+      * be.robinj.distrohopper / u0a247 / v73:
+               TOTAL: 0.77% (111MB-111MB-111MB/106MB-106MB-106MB over 2)
+                 Top: 0.77% (111MB-111MB-111MB/106MB-106MB-106MB over 2)
+  * be.robinj.distrohopper / u0a248 / v73:
+      * be.robinj.distrohopper / u0a248 / v73:
+               TOTAL: 25% (8.5MB-126MB-205MB/7.3MB-122MB-198MB over 53)
+                 Top: 18% (8.5MB-131MB-205MB/7.3MB-128MB-198MB over 44)
+             Service: 7.5% (85MB-98MB-123MB/83MB-95MB-116MB over 9)
+          Service Rs: 0.01%
+          (Last Act): 0.07%
+            (Cached): 1.9% (90MB-90MB-90MB/87MB-87MB-87MB over 1)
+      * com.android.tools.fd.runtime.InstantRunService:
+        Process: be.robinj.distrohopper
+            Running count 67 / time 17%
+            Started count 65 / time 17%
+          Executing count 34 / time 0.08%
+      * com.google.android.gms.analytics.AnalyticsService:
+        Process: be.robinj.distrohopper
+            Running count 24 / time 1.4%
+            Started count 20 / time 1.4%
+          Executing count 14 / time 1.4%
+
+Summary:
+  * be.robinj.distrohopper / u0a248 / v73:
+           TOTAL: 25% (8.5MB-126MB-205MB/7.3MB-122MB-198MB over 53)
+             Top: 18% (8.5MB-131MB-205MB/7.3MB-128MB-198MB over 44)
+         Service: 7.5% (85MB-98MB-123MB/83MB-95MB-116MB over 9)
+      Service Rs: 0.01%
+      (Last Act): 0.07%
+        (Cached): 1.9% (90MB-90MB-90MB/87MB-87MB-87MB over 1)
+  * be.robinj.distrohopper / u0a247 / v73:
+           TOTAL: 0.77% (111MB-111MB-111MB/106MB-106MB-106MB over 2)
+             Top: 0.77% (111MB-111MB-111MB/106MB-106MB-106MB over 2)
+
+Run time Stats:
+  SOff/Norm: +6h38m4s827ms
+  SOn /Norm: +2h29m14s720ms
+      TOTAL: +9h7m19s547ms
+
+Memory usage:
+  Kernel : 159MB (196 samples)
+  Native : 118MB (196 samples)
+  Persist: 288MB (438 samples)
+  Top    : 151MB (1659 samples)
+  ImpFg  : 221MB (2820 samples)
+  ImpBg  : 73MB (2475 samples)
+  Service: 446MB (4983 samples)
+  Receivr: 1.0MB (5849 samples)
+  Home   : 28MB (64 samples)
+  LastAct: 28MB (1550 samples)
+  CchAct : 139MB (123 samples)
+  CchCAct: 35MB (155 samples)
+  CchEmty: 226MB (3336 samples)
+  Cached : 794MB (196 samples)
+  Free   : 134MB (196 samples)
+  TOTAL  : 2.8GB
+  ServRst: 47KB (2517 samples)
+
+          Start time: 2017-03-21 12:20:47
+  Total elapsed time: +1d2h1m31s800ms (partial) libart.so
+
+AGGREGATED OVER LAST 3 HOURS:
+System memory usage:
+  SOff/Norm: 7 samples:
+    Cached: 575MB min, 0.89GB avg, 1.2GB max
+    Free: 106MB min, 121MB avg, 148MB max
+    ZRam: 0.00 min, 0.00 avg, 0.00 max
+    Kernel: 142MB min, 148MB avg, 160MB max
+    Native: 114MB min, 117MB avg, 122MB max
+  SOn /Norm: 5 samples:
+    Cached: 746MB min, 1.1GB avg, 1.5GB max
+    Free: 77MB min, 126MB avg, 164MB max
+    ZRam: 0.00 min, 0.00 avg, 0.00 max
+    Kernel: 145MB min, 149MB avg, 156MB max
+    Native: 115MB min, 121MB avg, 124MB max
+
+Per-Package Stats:
+  * be.robinj.distrohopper / u0a247 / v73:
+      * be.robinj.distrohopper / u0a247 / v73:
+               TOTAL: 2.2% (111MB-111MB-111MB/106MB-106MB-106MB over 2)
+                 Top: 2.2% (111MB-111MB-111MB/106MB-106MB-106MB over 2)
+  * be.robinj.distrohopper / u0a248 / v73:
+      * be.robinj.distrohopper / u0a248 / v73:
+               TOTAL: 71% (8.5MB-126MB-205MB/7.3MB-122MB-198MB over 53)
+                 Top: 50% (8.5MB-131MB-205MB/7.3MB-128MB-198MB over 44)
+             Service: 21% (85MB-98MB-123MB/83MB-95MB-116MB over 9)
+          Service Rs: 0.04%
+          (Last Act): 0.21%
+            (Cached): 5.2% (90MB-90MB-90MB/87MB-87MB-87MB over 1)
+      * com.android.tools.fd.runtime.InstantRunService:
+        Process: be.robinj.distrohopper
+            Running count 67 / time 48%
+            Started count 65 / time 48%
+          Executing count 34 / time 0.23%
+      * com.google.android.gms.analytics.AnalyticsService:
+        Process: be.robinj.distrohopper
+            Running count 24 / time 4.0%
+            Started count 20 / time 4.0%
+          Executing count 14 / time 4.0%
+
+Summary:
+  * be.robinj.distrohopper / u0a248 / v73:
+           TOTAL: 71% (8.5MB-126MB-205MB/7.3MB-122MB-198MB over 53)
+             Top: 50% (8.5MB-131MB-205MB/7.3MB-128MB-198MB over 44)
+         Service: 21% (85MB-98MB-123MB/83MB-95MB-116MB over 9)
+      Service Rs: 0.04%
+      (Last Act): 0.21%
+        (Cached): 5.2% (90MB-90MB-90MB/87MB-87MB-87MB over 1)
+  * be.robinj.distrohopper / u0a247 / v73:
+           TOTAL: 2.2% (111MB-111MB-111MB/106MB-106MB-106MB over 2)
+             Top: 2.2% (111MB-111MB-111MB/106MB-106MB-106MB over 2)
+
+Run time Stats:
+  SOff/Norm: +1h51m6s564ms
+  SOn /Norm: +1h25m20s538ms
+      TOTAL: +3h16m27s102ms
+
+Memory usage:
+  Kernel : 149MB (84 samples)
+  Native : 119MB (84 samples)
+  Persist: 266MB (168 samples)
+  Top    : 144MB (408 samples)
+  ImpFg  : 161MB (1057 samples)
+  ImpBg  : 64MB (658 samples)
+  Service: 404MB (1777 samples)
+  Receivr: 521KB (2150 samples)
+  Home   : 47MB (68 samples)
+  LastAct: 7.0MB (550 samples)
+  CchAct : 18MB (15 samples)
+  CchCAct: 9.7MB (15 samples)
+  CchEmty: 198MB (1220 samples)
+  Cached : 1.00GB (84 samples)
+  Free   : 123MB (84 samples)
+  TOTAL  : 2.7GB
+  ServRst: 47KB (495 samples)
+
+          Start time: 2017-03-22 10:19:49
+  Total elapsed time: +4h3m21s793ms (partial) libart.so
