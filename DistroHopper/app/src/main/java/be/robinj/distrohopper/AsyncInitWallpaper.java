@@ -2,7 +2,7 @@ package be.robinj.distrohopper;
 
 import android.os.AsyncTask;
 
-import be.robinj.distrohopper.unity.Wallpaper;
+import be.robinj.distrohopper.desktop.Wallpaper;
 
 /**
  * Created by robin on 8/21/14.

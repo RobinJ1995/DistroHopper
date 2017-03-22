@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import be.robinj.distrohopper.unity.AppIcon;
+import be.robinj.distrohopper.desktop.AppIcon;
 
 /**
  * Created by robin on 06/09/14.

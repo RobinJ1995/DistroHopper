@@ -61,7 +61,7 @@
 				android:value="be.robinj.distrohopper.AboutActivity" />
 		</activity>
 
-		<service android:name="be.robinj.distrohopper.unity.launcher.service.LauncherService" />
+		<service android:name="be.robinj.distrohopper.desktop.launcher.service.LauncherService" />
 
 		<activity
 			android:name="be.robinj.distrohopper.preferences.LensPreferencesActivity"

@@ -45,13 +45,13 @@ import be.robinj.distrohopper.theme.Gnome;
 import be.robinj.distrohopper.theme.Location;
 import be.robinj.distrohopper.theme.Theme;
 import be.robinj.distrohopper.thirdparty.ProgressWheel;
-import be.robinj.distrohopper.unity.Wallpaper;
-import be.robinj.distrohopper.unity.dash.SearchTextWatcher;
-import be.robinj.distrohopper.unity.dash.lens.LensManager;
-import be.robinj.distrohopper.unity.launcher.AppLauncher;
-import be.robinj.distrohopper.unity.launcher.LauncherDragListener;
-import be.robinj.distrohopper.unity.launcher.TrashDragListener;
-import be.robinj.distrohopper.unity.launcher.service.LauncherService;
+import be.robinj.distrohopper.desktop.Wallpaper;
+import be.robinj.distrohopper.desktop.dash.SearchTextWatcher;
+import be.robinj.distrohopper.desktop.dash.lens.LensManager;
+import be.robinj.distrohopper.desktop.launcher.AppLauncher;
+import be.robinj.distrohopper.desktop.launcher.LauncherDragListener;
+import be.robinj.distrohopper.desktop.launcher.TrashDragListener;
+import be.robinj.distrohopper.desktop.launcher.service.LauncherService;
 import be.robinj.distrohopper.widgets.WidgetHost;
 import be.robinj.distrohopper.widgets.WidgetHost_LongClickListener;
 import be.robinj.distrohopper.widgets.WidgetsContainer;
@@ -103,10 +103,10 @@ public class HomeActivity extends Activity
 			LinearLayout llLauncherPinnedApps = (LinearLayout) llLauncherAppsContainer.findViewById (R.id.llLauncherPinnedApps);
 			LinearLayout llLauncherRunningApps = (LinearLayout) llLauncherAppsContainer.findViewById (R.id.llLauncherRunningApps);
 			LinearLayout llBfbSpinnerWrapper = (LinearLayout) llLauncher.findViewById (R.id.llBfbSpinnerWrapper);
-			be.robinj.distrohopper.unity.launcher.SpinnerAppLauncher lalSpinner = (be.robinj.distrohopper.unity.launcher.SpinnerAppLauncher) llBfbSpinnerWrapper.findViewById (R.id.lalSpinner);
-			be.robinj.distrohopper.unity.launcher.AppLauncher lalBfb = (be.robinj.distrohopper.unity.launcher.AppLauncher) llBfbSpinnerWrapper.findViewById (R.id.lalBfb);
-			be.robinj.distrohopper.unity.launcher.AppLauncher lalPreferences = (be.robinj.distrohopper.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalPreferences);
-			be.robinj.distrohopper.unity.launcher.AppLauncher lalTrash = (be.robinj.distrohopper.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalTrash);
+			be.robinj.distrohopper.desktop.launcher.SpinnerAppLauncher lalSpinner = (be.robinj.distrohopper.desktop.launcher.SpinnerAppLauncher) llBfbSpinnerWrapper.findViewById (R.id.lalSpinner);
+			be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb = (be.robinj.distrohopper.desktop.launcher.AppLauncher) llBfbSpinnerWrapper.findViewById (R.id.lalBfb);
+			be.robinj.distrohopper.desktop.launcher.AppLauncher lalPreferences = (be.robinj.distrohopper.desktop.launcher.AppLauncher) llLauncher.findViewById (R.id.lalPreferences);
+			be.robinj.distrohopper.desktop.launcher.AppLauncher lalTrash = (be.robinj.distrohopper.desktop.launcher.AppLauncher) llLauncher.findViewById (R.id.lalTrash);
 			ScrollView scrLauncherAppsContainer = (ScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainer);
 			HorizontalScrollView scrLauncherAppsContainerHorizontal = (HorizontalScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainerHorizontal);
 			this.llDash = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llDash);
@@ -646,7 +646,7 @@ public class HomeActivity extends Activity
 
 			EditText etDashSearch = (EditText) this.findViewById (R.id.etDashSearch);
 			LinearLayout llLauncher = (LinearLayout) this.findViewById (R.id.llLauncher);
-			be.robinj.distrohopper.unity.launcher.AppLauncher lalTrash = (be.robinj.distrohopper.unity.launcher.AppLauncher) llLauncher.findViewById (R.id.lalTrash);
+			be.robinj.distrohopper.desktop.launcher.AppLauncher lalTrash = (be.robinj.distrohopper.desktop.launcher.AppLauncher) llLauncher.findViewById (R.id.lalTrash);
 
 			etDashSearch.addTextChangedListener (new SearchTextWatcher (installedApps, this.lenses));
 			llLauncher.setOnDragListener (new LauncherDragListener (this.apps));
@@ -718,10 +718,10 @@ public class HomeActivity extends Activity
 				bgColour = Color.argb (bgColour_opacity, r, g, b);
 			}
 
-			be.robinj.distrohopper.unity.launcher.AppLauncher lalBfb = (be.robinj.distrohopper.unity.launcher.AppLauncher) this.findViewById (R.id.lalBfb);
-			be.robinj.distrohopper.unity.launcher.AppLauncher lalPreferences = (be.robinj.distrohopper.unity.launcher.AppLauncher) this.findViewById (R.id.lalPreferences);
-			be.robinj.distrohopper.unity.launcher.AppLauncher lalSpinner = (be.robinj.distrohopper.unity.launcher.AppLauncher) this.findViewById (R.id.lalSpinner);
-			be.robinj.distrohopper.unity.launcher.AppLauncher lalTrash = (be.robinj.distrohopper.unity.launcher.AppLauncher) this.findViewById (R.id.lalTrash);
+			be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb = (be.robinj.distrohopper.desktop.launcher.AppLauncher) this.findViewById (R.id.lalBfb);
+			be.robinj.distrohopper.desktop.launcher.AppLauncher lalPreferences = (be.robinj.distrohopper.desktop.launcher.AppLauncher) this.findViewById (R.id.lalPreferences);
+			be.robinj.distrohopper.desktop.launcher.AppLauncher lalSpinner = (be.robinj.distrohopper.desktop.launcher.AppLauncher) this.findViewById (R.id.lalSpinner);
+			be.robinj.distrohopper.desktop.launcher.AppLauncher lalTrash = (be.robinj.distrohopper.desktop.launcher.AppLauncher) this.findViewById (R.id.lalTrash);
 
 			LinearLayout llLauncher = (LinearLayout) this.findViewById (R.id.llLauncher);
 

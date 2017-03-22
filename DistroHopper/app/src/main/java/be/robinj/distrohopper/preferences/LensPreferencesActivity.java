@@ -1,6 +1,5 @@
 package be.robinj.distrohopper.preferences;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -13,8 +12,8 @@ import java.util.List;
 
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.R;
-import be.robinj.distrohopper.unity.dash.lens.Lens;
-import be.robinj.distrohopper.unity.dash.lens.LensManager;
+import be.robinj.distrohopper.desktop.dash.lens.Lens;
+import be.robinj.distrohopper.desktop.dash.lens.LensManager;
 
 
 public class LensPreferencesActivity extends AppCompatActivity

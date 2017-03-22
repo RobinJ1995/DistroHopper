@@ -15,7 +15,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<be.robinj.distrohopper.unity.Wallpaper
+		<be.robinj.distrohopper.desktop.Wallpaper
 			android:id="@+id/wpWallpaper"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
@@ -128,7 +128,7 @@
 					android:layout_height="wrap_content"
 					android:orientation="vertical">
 
-					<be.robinj.distrohopper.unity.launcher.AppLauncher
+					<be.robinj.distrohopper.desktop.launcher.AppLauncher
 						android:id="@+id/lalBfb"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
@@ -137,7 +137,7 @@
 						android:visibility="gone"
 						custom:applauncher_special="true" />
 
-					<be.robinj.distrohopper.unity.launcher.SpinnerAppLauncher
+					<be.robinj.distrohopper.desktop.launcher.SpinnerAppLauncher
 						android:id="@+id/lalSpinner"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
@@ -188,7 +188,7 @@
 					android:visibility="gone">
 				</HorizontalScrollView>
 
-				<be.robinj.distrohopper.unity.launcher.AppLauncher
+				<be.robinj.distrohopper.desktop.launcher.AppLauncher
 					android:id="@+id/lalPreferences"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -197,7 +197,7 @@
 					custom:applauncher_special="false"
 					custom:icon="@drawable/launcher_preferences" />
 
-				<be.robinj.distrohopper.unity.launcher.AppLauncher
+				<be.robinj.distrohopper.desktop.launcher.AppLauncher
 					android:id="@+id/lalTrash"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"

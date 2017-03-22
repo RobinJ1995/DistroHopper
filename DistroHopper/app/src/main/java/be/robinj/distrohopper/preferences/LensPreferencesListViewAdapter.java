@@ -12,8 +12,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import be.robinj.distrohopper.R;
-import be.robinj.distrohopper.unity.dash.lens.Lens;
-import be.robinj.distrohopper.unity.dash.lens.LensManager;
+import be.robinj.distrohopper.desktop.dash.lens.Lens;
+import be.robinj.distrohopper.desktop.dash.lens.LensManager;
 
 /**
  * Created by robin on 27/11/14.

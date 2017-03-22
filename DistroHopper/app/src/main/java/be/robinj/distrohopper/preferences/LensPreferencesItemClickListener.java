@@ -4,8 +4,8 @@ import android.view.View;
 import android.widget.CheckBox;
 
 import be.robinj.distrohopper.ExceptionHandler;
-import be.robinj.distrohopper.unity.dash.lens.Lens;
-import be.robinj.distrohopper.unity.dash.lens.LensManager;
+import be.robinj.distrohopper.desktop.dash.lens.Lens;
+import be.robinj.distrohopper.desktop.dash.lens.LensManager;
 
 /**
  * Created by robin on 29/11/14.

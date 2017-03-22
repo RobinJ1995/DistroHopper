@@ -26,11 +26,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import be.robinj.distrohopper.unity.launcher.AppLauncher;
-import be.robinj.distrohopper.unity.launcher.AppLauncherClickListener;
-import be.robinj.distrohopper.unity.launcher.AppLauncherDragListener;
-import be.robinj.distrohopper.unity.launcher.AppLauncherLongClickListener;
-import be.robinj.distrohopper.unity.launcher.RunningAppLauncher;
+import be.robinj.distrohopper.desktop.launcher.AppLauncher;
+import be.robinj.distrohopper.desktop.launcher.AppLauncherClickListener;
+import be.robinj.distrohopper.desktop.launcher.AppLauncherDragListener;
+import be.robinj.distrohopper.desktop.launcher.AppLauncherLongClickListener;
+import be.robinj.distrohopper.desktop.launcher.RunningAppLauncher;
 
 /**
  * Created by robin on 8/20/14.
@@ -272,7 +272,7 @@ public class AppManager implements Iterable<App>
 
 			if (addView)
 			{
-				be.robinj.distrohopper.unity.launcher.AppLauncher appLauncher = new be.robinj.distrohopper.unity.launcher.AppLauncher (this.context, app);
+				be.robinj.distrohopper.desktop.launcher.AppLauncher appLauncher = new be.robinj.distrohopper.desktop.launcher.AppLauncher (this.context, app);
 				appLauncher.setOnClickListener (new AppLauncherClickListener ());
 				appLauncher.setOnLongClickListener (new AppLauncherLongClickListener ());
 				appLauncher.setOnDragListener (new AppLauncherDragListener (this));
@@ -317,7 +317,7 @@ public class AppManager implements Iterable<App>
 
 		for (App app : this.pinned)
 		{
-			be.robinj.distrohopper.unity.launcher.AppLauncher appLauncher = new be.robinj.distrohopper.unity.launcher.AppLauncher (this.context, app);
+			be.robinj.distrohopper.desktop.launcher.AppLauncher appLauncher = new be.robinj.distrohopper.desktop.launcher.AppLauncher (this.context, app);
 			appLauncher.setOnClickListener (new AppLauncherClickListener ());
 			appLauncher.setOnLongClickListener (new AppLauncherLongClickListener ());
 			appLauncher.setOnDragListener (new AppLauncherDragListener (this));
@@ -437,7 +437,7 @@ public class AppManager implements Iterable<App>
 			Toast.makeText (this.context, app.getLabel () + message, Toast.LENGTH_SHORT).show ();
 		}
 
-		be.robinj.distrohopper.unity.launcher.AppLauncher appLauncher = (be.robinj.distrohopper.unity.launcher.AppLauncher) this.llLauncherPinnedApps.findViewWithTag (app);
+		be.robinj.distrohopper.desktop.launcher.AppLauncher appLauncher = (be.robinj.distrohopper.desktop.launcher.AppLauncher) this.llLauncherPinnedApps.findViewWithTag (app);
 		this.llLauncherPinnedApps.removeView (appLauncher);
 
 		this.savePinnedApps ();

@@ -11,8 +11,8 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
-import be.robinj.distrohopper.unity.AppIcon;
-import be.robinj.distrohopper.unity.dash.AppLauncher;
+import be.robinj.distrohopper.desktop.AppIcon;
+import be.robinj.distrohopper.desktop.dash.AppLauncher;
 
 /**
  * Created by robin on 8/20/14.
@@ -225,7 +225,7 @@ public class App implements Serializable, Parcelable
 		Intent intent = new Intent ();
 		intent.setComponent (new ComponentName (this.packageName, this.activityName));
 		ResolveInfo resInf = pacMan.resolveActivity (intent, 0);
-
+		
 		this.icon = new AppIcon (resInf.loadIcon (pacMan));
 	}
 

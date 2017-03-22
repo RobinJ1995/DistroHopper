@@ -6,7 +6,7 @@ import com.mobeta.android.dslv.DragSortListView;
 
 import java.util.List;
 
-import be.robinj.distrohopper.unity.dash.lens.Lens;
+import be.robinj.distrohopper.desktop.dash.lens.Lens;
 
 /**
  * Created by robin on 30/11/14.

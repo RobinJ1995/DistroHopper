@@ -15,10 +15,10 @@ import java.util.List;
 
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.thirdparty.ProgressWheel;
-import be.robinj.distrohopper.unity.dash.AppLauncherClickListener;
-import be.robinj.distrohopper.unity.dash.AppLauncherLongClickListener;
-import be.robinj.distrohopper.unity.dash.GridAdapter;
-import be.robinj.distrohopper.unity.launcher.SpinnerAppLauncher;
+import be.robinj.distrohopper.desktop.dash.AppLauncherClickListener;
+import be.robinj.distrohopper.desktop.dash.AppLauncherLongClickListener;
+import be.robinj.distrohopper.desktop.dash.GridAdapter;
+import be.robinj.distrohopper.desktop.launcher.SpinnerAppLauncher;
 
 /**
  * Created by robin on 8/21/14.
@@ -26,12 +26,14 @@ import be.robinj.distrohopper.unity.launcher.SpinnerAppLauncher;
 public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 {
 	private SpinnerAppLauncher lalSpinner;
-	private be.robinj.distrohopper.unity.launcher.AppLauncher lalBfb;
+	private be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb;
 	private GridView gvDashHomeApps;
 	private HomeActivity parent;
 	private Context context;
+	
+	private static final String[] IGNORE = {"be.robinj.distrohopper", "be.robinj.ubuntu"}; // Inception //
 
-	public AsyncLoadApps (HomeActivity parent, SpinnerAppLauncher lalSpinner, be.robinj.distrohopper.unity.launcher.AppLauncher lalBfb, GridView gvDashHomeApps)
+	public AsyncLoadApps (HomeActivity parent, SpinnerAppLauncher lalSpinner, be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb, GridView gvDashHomeApps)
 	{
 		this.parent = parent;
 		this.lalSpinner = lalSpinner;
@@ -65,7 +67,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 			}
 
 			long tStartRetrievingInstalledApps = System.currentTimeMillis ();
-
+			
 			List<ResolveInfo> resInfs = appManager.queryInstalledApps ();
 			int size = resInfs.size ();
 			float fSize = (float) size;
@@ -78,9 +80,16 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 
 			for (int i = 0; i < size; i++)
 			{
-				App app = App.fromResolveInfo (this.context, pacMan, appManager, resInfs.get (i));
-				if (! "be.robinj.distrohopper".equals (app.getPackageName ()) && ! "be.robinj.ubuntu".equals (app.getPackageName ())) // Inception //
-					appManager.add (app, false, false);
+				ResolveInfo resInf = resInfs.get (i);
+				
+				for (int j = 0; j < this.IGNORE.length; j++)
+				{
+					if (this.IGNORE[j].equals (resInf.activityInfo.packageName))
+						continue;
+				}
+				
+				App app = App.fromResolveInfo (this.context, pacMan, appManager, resInf);
+				appManager.add (app, false, false);
 
 				this.publishProgress ((float) i, fSize);
 			}
