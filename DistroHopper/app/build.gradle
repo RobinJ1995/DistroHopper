@@ -8,8 +8,8 @@ android {
         applicationId "be.robinj.distrohopper"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 73
-        versionName "1.0b"
+        versionCode 74
+        versionName "1.0c"
     }
     buildTypes {
         release {
