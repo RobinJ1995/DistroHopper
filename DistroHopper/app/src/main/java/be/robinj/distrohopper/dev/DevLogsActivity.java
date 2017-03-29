@@ -17,7 +17,6 @@ public class DevLogsActivity extends Activity implements IObserver
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
-		super.setTheme (R.style.PreferencesTheme);
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_dev_logs);
 

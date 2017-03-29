@@ -24,8 +24,6 @@ public class ContributeActivity extends AppCompatActivity
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
-		super.setTheme (R.style.ContributeTheme);
-
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_contribute);
 		

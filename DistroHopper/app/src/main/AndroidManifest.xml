@@ -23,7 +23,8 @@
 			android:configChanges="keyboardHidden|orientation|screenSize"
 			android:label="@string/app_name"
 			android:launchMode="singleTop"
-			android:windowSoftInputMode="adjustPan">
+			android:windowSoftInputMode="adjustPan"
+			android:theme="@style/HomeTheme">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 
@@ -39,7 +40,8 @@
 		<activity
 			android:name="be.robinj.distrohopper.AboutActivity"
 			android:label="@string/title_activity_about"
-			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity">
+			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity"
+			android:theme="@style/AboutTheme">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="be.robinj.distrohopper.preferences.PreferencesActivity" />
@@ -47,7 +49,8 @@
 		<activity
 			android:name="be.robinj.distrohopper.preferences.PreferencesActivity"
 			android:label="@string/title_activity_preferences"
-			android:parentActivityName="be.robinj.distrohopper.HomeActivity">
+			android:parentActivityName="be.robinj.distrohopper.HomeActivity"
+			android:theme="@style/PreferencesTheme">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="be.robinj.distrohopper.HomeActivity" />
@@ -55,7 +58,8 @@
 		<activity
 			android:name="be.robinj.distrohopper.ContributeActivity"
 			android:label="@string/title_activity_contribute"
-			android:parentActivityName="be.robinj.distrohopper.AboutActivity">
+			android:parentActivityName="be.robinj.distrohopper.AboutActivity"
+			android:theme="@style/AboutTheme">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="be.robinj.distrohopper.AboutActivity" />
@@ -66,7 +70,8 @@
 		<activity
 			android:name="be.robinj.distrohopper.preferences.LensPreferencesActivity"
 			android:label="@string/title_activity_lens_preferences"
-			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity">
+			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity"
+			android:theme="@style/LensPreferencesTheme">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="be.robinj.distrohopper.preferences.PreferencesActivity" />
@@ -74,7 +79,8 @@
 		<activity
 			android:name="be.robinj.distrohopper.preferences.ThemePreferencesActivity"
 			android:label="@string/title_activity_theme_preferences"
-			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity">
+			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity"
+			android:theme="@style/ThemePreferencesTheme">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="be.robinj.distrohopper.preferences.PreferencesActivity" />
@@ -82,7 +88,8 @@
 		<activity
 			android:name="be.robinj.distrohopper.dev.DevLogsActivity"
 			android:label="@string/title_activity_dev_logs"
-			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity">
+			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity"
+			android:theme="@style/DevLogsTheme">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="be.robinj.distrohopper.preferences.PreferencesActivity" />

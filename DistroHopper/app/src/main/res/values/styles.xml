@@ -37,6 +37,9 @@
     <style name="LensPreferencesTheme" parent="DialogTheme">
     </style>
 
+    <style name="DevLogsTheme" parent="DialogTheme">
+    </style>
+
     <style name="actionbar_solid" parent="android:Widget.ActionBar">
         <item name="android:background">@color/transparentblack10</item>
         <item name="android:icon">@color/transparent</item>

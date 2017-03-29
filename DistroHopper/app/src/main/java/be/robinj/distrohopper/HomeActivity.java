@@ -14,6 +14,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -57,7 +58,7 @@ import be.robinj.distrohopper.widgets.WidgetHost_LongClickListener;
 import be.robinj.distrohopper.widgets.WidgetsContainer;
 
 
-public class HomeActivity extends Activity
+public class HomeActivity extends AppCompatActivity
 {
 	private LensManager lenses;
 	private AppManager apps;
@@ -86,8 +87,6 @@ public class HomeActivity extends Activity
 	@SuppressLint ("ResourceType")
 	protected void onCreate (Bundle savedInstanceState)
 	{
-		super.setTheme (R.style.HomeTheme);
-		
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_home);
 
@@ -443,7 +442,7 @@ public class HomeActivity extends Activity
 
 			if (requestCode == 1) // ActivityPreferences //
 			{
-				this.onCreate (null); // Reload activity //
+				this.recreate (); // Reload activity //
 
 				//this.overridePendingTransition (R.anim.home_to_preferences_in, R.anim.home_to_preferences_out);
 			}

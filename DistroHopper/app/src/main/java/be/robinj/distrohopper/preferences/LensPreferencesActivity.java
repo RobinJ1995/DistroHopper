@@ -26,7 +26,6 @@ public class LensPreferencesActivity extends AppCompatActivity
 	{
 		try
 		{
-			super.setTheme (R.style.LensPreferencesTheme);
 			super.onCreate (savedInstanceState);
 			setContentView (R.layout.activity_lens_preferences);
 
