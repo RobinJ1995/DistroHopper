@@ -27,7 +27,7 @@ $lastCommit = json_decode (file_get_contents ('cron/lastCommit.json'));
 			</a>
 		</div>
 		<div style="background-color: #7CBAE6;" class="launchericon" id="github">
-			<a href="https://github.com/RobinJ1995/be.robinj.ubuntu">
+			<a href="https://github.com/RobinJ1995/DistroHopper">
 				<img alt="GitHub" src="img/unity.launcher.github.png">
 			</a>
 		</div>
@@ -45,23 +45,27 @@ $lastCommit = json_decode (file_get_contents ('cron/lastCommit.json'));
 		
 		<div class="dash page" id="home">
 			<section id="intro">
-				<h1>Ubuntu Launcher</h1>
-				<p><em>The Ubuntu Unity desktop on your Android device.</em></p>
-				<p>Do you like Linux/Ubuntu? Does it seem awesome to you to be able to have the Unity desktop as your Android home screen? No? Ok, bye bye. In that case, this isn't for you.<br />This work in progress will allow you to have the Unity desktop running as your Android home/launcher screen.<p>
+				<h1>DistroHopper</h1>
+				<p><em>The Ubuntu desktop on your Android device!</em></p>
+				<p>Are you a Linux/open-source enthusiast? Whether you are or not, if it seems cool to be able to have the Linux desktop on your Android device, then this app is what you're looking for. Currently there is a choice between Ubuntu's Unity desktop, elementary OS' Pantheon desktop, and Gnome. Missing your desktop of choice? Get in touch and if there's enough interest I might just add it 😉</p>
+				<p>Features include a couple of different themes, a search feature which allows you to search from a multitude of different search sources (both local and remote), and customisation options.</p>
+				<p>If you have any suggestions or feedback, feel free to get in touch. The project is open-source with the source code publicly available at <a href="https://github.com/RobinJ1995/DistroHopper">https://github.com/RobinJ1995/DistroHopper</a>. If you're less technically-inclined but would still like to contribute, you can join the project's translation team over at <a href="https://www.transifex.com/distrohopper/">https://www.transifex.com/distrohopper/</a>.</p>
 				
-				<h2>Disclaimer</h2>
-				<p>Ubuntu is a registered trademark of Canonical Ltd, which I am not associated with. I don't take any responsibility for... anything.</p>
+				<h2>Disclaimers</h2>
+				<p>Ubuntu is a registered trademark of Canonical Ltd.<br />elementary is a registered trademark of elementary LLC.<br />Gnome is a registered trademark of the Gnome Foundation.<p>
 				
 				<h2>Download</h2>
-				<p>Here you can download the last version of Ubuntu Launcher that was released on the Google Play Store. From the next release on this app will probably no longer be called <em>Ubuntu Launcher</em>. For more information read the notice on the side/below.</p>
+				<p>You can download the latest version of DistroHopper either from the Google Play Store, or you can download the APK file here. Note that if you download and install DistroHopper via the provided APK file, you are responsible for manually keeping DistroHopper up-to-date on your device and will not automatically receive updates for it.</p>
 				<p class="download">
-					<a href="etc/be.robinj.ubuntu.apk">Download (529 KiB)</a><br />
-					<small>Latest version: 0.5.12</small>
+					<a href="https://play.google.com/store/apps/details?id=be.robinj.distrohopper">Get it from the Google Play Store</a>
+				</p>
+				<p class="download">
+					<a href="https://github.com/RobinJ1995/DistroHopper/raw/master/DistroHopper/app/app-release.apk">Download APK</a>
 				</p>
 				
 				<p id="homeScreenshot">
-					<a href="#dash#screenshots" onClick="goToPage ('ribbonscreenshots');"><img src="img/screenshots/home.png" alt="[Screenshot]" class="screenshot" /></a>
-					<a href="#dash#screenshots" onClick="goToPage ('ribbonscreenshots');"><img src="img/screenshots/about.png" alt="[Screenshot]" class="screenshot" /></a>
+					<a href="#dash#screenshots" onClick="goToPage ('ribbonscreenshots');"><img src="img/screenshots/ubuntu.png" alt="[Screenshot]" class="screenshot" /></a>
+					<a href="#dash#screenshots" onClick="goToPage ('ribbonscreenshots');"><img src="img/screenshots/gnome.png" alt="[Screenshot]" class="screenshot" /></a>
 				</p>
 			</section>
 			<section id="side">
@@ -73,17 +77,16 @@ $lastCommit = json_decode (file_get_contents ('cron/lastCommit.json'));
 					Changes: <em><?php echo $lastCommit->stats->total; ?></em>
 				</p>
 				
-				<h2>Notice</h2>
-				<p>Ubuntu Launcher got taken down from the Google Play Store due to "copyright infringement".<br />
-				Long story short; From the next release on the project will be called DistroHopper instead of Ubuntu Launcher. It may also contain a new default theme, but the Ubuntu theme will still be available.</p>
+				<h2>Note</h2>
+				<p>This project was formerly known as Ubuntu Launcher, but got taken down from the Google Play Store due to "copyright infringement". I then changed the name to DistroHopper and implemented themes for other Linux desktops as well.</p>
 			</section>
 		</div>
 		<div class="dash page" id="screenshots">
 			<section class="imagegallery">
-				<img src="img/screenshots/home.png" alt="[Home screen]" class="screenshot thumbnail" />
-				<img src="img/screenshots/dash.png" alt="[Dash]" class="screenshot thumbnail" />
-				<img src="img/screenshots/dash_search.png" alt="[Dash search]" class="screenshot thumbnail" />
-				<img src="img/screenshots/about.png" alt="[About]" class="screenshot thumbnail" />
+				<img src="img/screenshots/ubuntu.png" alt="[Ubuntu]" class="screenshot thumbnail" />
+				<img src="img/screenshots/gnome.png" alt="[Gnome]" class="screenshot thumbnail" />
+				<img src="img/screenshots/elementary.png" alt="[elementary]" class="screenshot thumbnail" />
+				<img src="img/screenshots/search.png" alt="[Search]" class="screenshot thumbnail" />
 			</section>
 		</div>
 	</div>
