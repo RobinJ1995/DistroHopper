@@ -1,0 +1,243 @@
+@import url('http://fonts.googleapis.com/css?family=Ubuntu:400,400italic,700,700italic|Ubuntu+Mono:400,400italic,700,700italic|Droid+Sans:400,700');
+
+body
+{
+	margin: 0px;
+	padding: 0px;
+	font-family: 'Ubuntu', 'Droid Sans', 'Arial', 'Verdana', sans, serif;
+	color: white;
+}
+div#desktop
+{
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	overflow: hidden;
+}
+div#desktop div.unity.panel
+{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	right: 0px;
+	height: 24px;
+	background: transparent url('../img/unity.panel.background.jpg');
+}
+	div#desktop div.unity.panel.dashOpened
+	{
+		background: transparent url('../img/unity.dashopened.png') !important;
+		border-bottom: 1px solid #504E4F;
+	}
+div#desktop div.unity.launcher
+{
+	background: transparent url('../img/unity.launcher.background.png');
+	position: absolute;
+	top: 24px;
+	left: 0px;
+	bottom: 0px;
+	width: 64px;
+	border-right: 1px solid #504E4F;
+	padding: 3px 0px 55px 0px;
+}
+	div#desktop div.unity.launcher.dashOpened
+	{
+		background: transparent url('../img/unity.dashopened.png') !important;
+	}
+	div#desktop div.unity.launcher div.launchericon
+	{
+		height: 52px;
+		width: 52px;
+		margin: 4px 6px 4px 6px;
+		border-radius: 5px;
+		background: black url('../img/unity.launcher.iconbg.png');
+		background-size: cover;
+		background-position: center;
+	}
+		div#desktop div.unity.launcher div.launchericon.dashOpened
+		{
+			background-color: grey !important;
+			opacity: 0.8;
+		}
+		div#desktop div.unity.launcher div.launchericon.bfb
+		{
+			border-radius: 0px !important;
+			background-color: transparent !important;
+			opacity: 0.97;
+			background-image: none;
+		}
+			div#desktop div.unity.launcher div.launchericon.bfb img
+			{
+				margin: 0px !important;
+				width: 52px;
+				height: 52px;
+			}
+		div#desktop div.unity.launcher div.launchericon.trash
+		{
+			background-color: #303030 !important;
+			position: absolute;
+			bottom: 3px;
+		}
+		div#desktop div.unity.launcher div.launchericon img
+		{
+			margin: 3px;
+			height: 46px;
+			width: 46px;
+		}
+			div#desktop div.unity.launcher div.launchericon img.dashOpened
+			{
+				filter: gray;
+			}
+div#desktop div.unity.dash
+{
+	display: none;
+	position: absolute;
+	left: 64px;
+	top: 24px;
+	bottom: 0px;
+	right: 0px;
+	background: transparent url('../img/unity.dashopened.png');
+	border-radius: 0px 0px 22px 0px;
+}
+	div#desktop div.unity.dash div.dash.ribbon
+	{
+		background: transparent url('../img/unity.dash.ribbon.background.png');
+		position: absolute;
+		height: 48px;
+		left: 1px;
+		right: 0px;
+		bottom: 0px;
+		text-align: center;
+	}
+		div#desktop div.unity.dash div.dash.ribbon img.ribbonicon
+		{
+			padding: 12px;
+			opacity: 0.6;
+		}
+			div#desktop div.unity.dash div.dash.ribbon img.ribbonicon:hover
+			{
+				opacity: 0.64;
+			}
+			div#desktop div.unity.dash div.dash.ribbon img.ribbonicon.active
+			{
+				opacity: 0.9;
+			}
+	div#desktop div.unity.dash div.dash.page
+	{
+		position: absolute;
+		display: none;
+		padding: 24px;
+		overflow: auto;
+		top: 0px;
+		left: 0px;
+		right: 0px;
+		bottom: 48px;
+	}
+		div.dash.page h1, div.dash.page h2, div.dash.page h3
+		{
+			margin-top: 0px;
+		}
+		img.screenshot
+		{
+			background: transparent url('../img/transparentwhite.png');
+			padding: 12px;
+			border-radius: 12px;
+			box-shadow: 0px 0px 2px 2px #654C4A;
+			margin: 8px;
+		}
+		img.thumbnail
+		{
+			width: 20%;
+			margin: 8px;
+		}
+		@media screen and (max-width: 900px)
+		{
+			img.thumbnail
+			{
+					width: 40%;
+			}
+		}
+		@media screen and (max-width: 480px)
+		{
+			img.thumbnail
+			{
+					width: 90%;
+			}
+		}
+		div.dash.page a
+		{
+			color: #EFEFEF;
+			text-decoration: none;
+			text-shadow: 0px 0px 2px #EFEFEF;
+		}
+			div.dash.page a:hover
+			{
+				text-shadow: 0px 0px 5px #EFEFEF;
+			}
+		div.dash.page#home section#intro
+		{
+			margin-right: 280px;
+		}
+		div.dash.page#home section#side
+		{
+			width: 240px;
+			position: absolute;
+			top: 24px;
+			right: 24px;
+		}
+		@media screen and (max-width: 680px)
+		{
+			div.dash.page#home section#intro
+			{
+					margin-right: 0px;
+			}
+			div.dash.page#home section#side
+			{
+					width: auto;
+					position: static;
+			}
+		}
+		div.dash.page#screenshots
+		{
+			text-align: center;
+		}
+		div.dash #home #homeScreenshot
+		{
+				text-align: center;
+		}
+			div.dash #home #homeScreenshot img
+			{
+				display: inline-block;
+				width: 200px;
+			}
+			div.dash #home .download
+			{
+				text-align: center;
+				background: transparent url('../img/transparentwhite.png');
+				padding: 12px;
+				border-radius: 12px;
+				box-shadow: 0px 0px 2px 2px #654C4A;
+			}
+				div.dash #home .download a
+				{
+					font-size: 24px;
+				}
+			
+img.ubuntu
+{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 182px;
+	height: 54px;
+	margin-left: -103px;
+	margin-top: -39px;
+	padding: 24px;
+	background: transparent url('../img/unity.dash.ribbon.background.png');
+	border-radius: 12px;
+}
+dd.revision-comment p
+{
+	margin-top: 2px;
+}
