@@ -46,7 +46,7 @@ $lastCommit = json_decode (file_get_contents ('cron/lastCommit.json'));
 		<div class="dash page" id="home">
 			<section id="intro">
 				<h1>DistroHopper</h1>
-				<p><em>The Ubuntu desktop on your Android device!</em></p>
+				<p><em>The Linux desktop on your Android device!</em></p>
 				<p>Are you a Linux/open-source enthusiast? Whether you are or not, if it seems cool to be able to have the Linux desktop on your Android device, then this app is what you're looking for. Currently there is a choice between Ubuntu's Unity desktop, elementary OS' Pantheon desktop, and Gnome. Missing your desktop of choice? Get in touch and if there's enough interest I might just add it 😉</p>
 				<p>Features include a couple of different themes, a search feature which allows you to search from a multitude of different search sources (both local and remote), and customisation options.</p>
 				<p>If you have any suggestions or feedback, feel free to get in touch. The project is open-source with the source code publicly available at <a href="https://github.com/RobinJ1995/DistroHopper">https://github.com/RobinJ1995/DistroHopper</a>. If you're less technically-inclined but would still like to contribute, you can join the project's translation team over at <a href="https://www.transifex.com/distrohopper/">https://www.transifex.com/distrohopper/</a>.</p>
