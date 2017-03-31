@@ -492,7 +492,8 @@ public class HomeActivity extends AppCompatActivity
 
 		try
 		{
-			this.widgetHost.startListening ();
+			if (this.widgetHost != null)
+				this.widgetHost.startListening ();
 		}
 		catch (Exception ex)
 		{
@@ -508,7 +509,8 @@ public class HomeActivity extends AppCompatActivity
 
 		try
 		{
-			this.widgetHost.stopListening ();
+			if (this.widgetHost != null)
+				this.widgetHost.stopListening ();
 		}
 		catch (Exception ex)
 		{
