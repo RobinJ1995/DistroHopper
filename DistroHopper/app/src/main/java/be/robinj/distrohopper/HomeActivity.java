@@ -31,7 +31,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,6 +79,7 @@ public class HomeActivity extends AppCompatActivity
 	private AsyncInitWallpaper asyncInitWallpaper;
 	private AsyncLoadApps asyncLoadApps;
 
+	public static boolean modeCustomise = false;
 	private boolean openDashWhenReady = false;
 
 	public static Theme theme = new Default ();
@@ -92,41 +95,42 @@ public class HomeActivity extends AppCompatActivity
 
 		try
 		{
-			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+			modeCustomise = false;
+			final SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 
 			// Only enable logging if dev mode is enabled // When not enabled nothing will be appended to the internal log variable //
 			Log.getInstance ().setEnabled (prefs.getBoolean ("dev", false));
 
 			// Get ALL the views! //
-			LinearLayout llLauncherAndDashContainer = (LinearLayout) this.findViewById (R.id.llLauncherAndDashContainer);
-			LinearLayout llLauncher = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llLauncher);
-			LinearLayout llLauncherAppsContainer = (LinearLayout) llLauncher.findViewById (R.id.llLauncherAppsContainer);
-			LinearLayout llLauncherPinnedApps = (LinearLayout) llLauncherAppsContainer.findViewById (R.id.llLauncherPinnedApps);
-			LinearLayout llLauncherRunningApps = (LinearLayout) llLauncherAppsContainer.findViewById (R.id.llLauncherRunningApps);
-			LinearLayout llBfbSpinnerWrapper = (LinearLayout) llLauncher.findViewById (R.id.llBfbSpinnerWrapper);
-			be.robinj.distrohopper.desktop.launcher.SpinnerAppLauncher lalSpinner = (be.robinj.distrohopper.desktop.launcher.SpinnerAppLauncher) llBfbSpinnerWrapper.findViewById (R.id.lalSpinner);
-			be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb = (be.robinj.distrohopper.desktop.launcher.AppLauncher) llBfbSpinnerWrapper.findViewById (R.id.lalBfb);
-			be.robinj.distrohopper.desktop.launcher.AppLauncher lalPreferences = (be.robinj.distrohopper.desktop.launcher.AppLauncher) llLauncher.findViewById (R.id.lalPreferences);
-			be.robinj.distrohopper.desktop.launcher.AppLauncher lalTrash = (be.robinj.distrohopper.desktop.launcher.AppLauncher) llLauncher.findViewById (R.id.lalTrash);
-			ScrollView scrLauncherAppsContainer = (ScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainer);
-			HorizontalScrollView scrLauncherAppsContainerHorizontal = (HorizontalScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainerHorizontal);
+			final LinearLayout llLauncherAndDashContainer = (LinearLayout) this.findViewById (R.id.llLauncherAndDashContainer);
+			final LinearLayout llLauncher = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llLauncher);
+			final LinearLayout llLauncherAppsContainer = (LinearLayout) llLauncher.findViewById (R.id.llLauncherAppsContainer);
+			final LinearLayout llLauncherPinnedApps = (LinearLayout) llLauncherAppsContainer.findViewById (R.id.llLauncherPinnedApps);
+			final LinearLayout llLauncherRunningApps = (LinearLayout) llLauncherAppsContainer.findViewById (R.id.llLauncherRunningApps);
+			final LinearLayout llBfbSpinnerWrapper = (LinearLayout) llLauncher.findViewById (R.id.llBfbSpinnerWrapper);
+			final be.robinj.distrohopper.desktop.launcher.SpinnerAppLauncher lalSpinner = (be.robinj.distrohopper.desktop.launcher.SpinnerAppLauncher) llBfbSpinnerWrapper.findViewById (R.id.lalSpinner);
+			final be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb = (be.robinj.distrohopper.desktop.launcher.AppLauncher) llBfbSpinnerWrapper.findViewById (R.id.lalBfb);
+			final be.robinj.distrohopper.desktop.launcher.AppLauncher lalPreferences = (be.robinj.distrohopper.desktop.launcher.AppLauncher) llLauncher.findViewById (R.id.lalPreferences);
+			final be.robinj.distrohopper.desktop.launcher.AppLauncher lalTrash = (be.robinj.distrohopper.desktop.launcher.AppLauncher) llLauncher.findViewById (R.id.lalTrash);
+			final ScrollView scrLauncherAppsContainer = (ScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainer);
+			final HorizontalScrollView scrLauncherAppsContainerHorizontal = (HorizontalScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainerHorizontal);
 			this.llDash = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llDash);
-			GridView gvDashHomeApps = (GridView) this.llDash.findViewById (R.id.gvDashHomeApps);
-			LinearLayout llDashSearchContainer = (LinearLayout) this.llDash.findViewById (R.id.llDashSearchContainer);
-			ImageView imgDashBackgroundGradient = (ImageView) this.llDash.findViewById (R.id.imgDashBackgroundGradient);
-			TextView tvDashHomeTitle = (TextView) this.llDash.findViewById (R.id.tvDashHomeTitle);
-			EditText etDashSearch = (EditText) this.llDash.findViewById (R.id.etDashSearch);
-			ListView lvDashHomeLensResults = (ListView) this.llDash.findViewById (R.id.lvDashHomeLensResults);
-			LinearLayout llDashRibbon = (LinearLayout) this.llDash.findViewById (R.id.llDashRibbon);
+			final GridView gvDashHomeApps = (GridView) this.llDash.findViewById (R.id.gvDashHomeApps);
+			final LinearLayout llDashSearchContainer = (LinearLayout) this.llDash.findViewById (R.id.llDashSearchContainer);
+			final ImageView imgDashBackgroundGradient = (ImageView) this.llDash.findViewById (R.id.imgDashBackgroundGradient);
+			final TextView tvDashHomeTitle = (TextView) this.llDash.findViewById (R.id.tvDashHomeTitle);
+			final EditText etDashSearch = (EditText) this.llDash.findViewById (R.id.etDashSearch);
+			final ListView lvDashHomeLensResults = (ListView) this.llDash.findViewById (R.id.lvDashHomeLensResults);
+			final LinearLayout llDashRibbon = (LinearLayout) this.llDash.findViewById (R.id.llDashRibbon);
 			this.wpWallpaper = (Wallpaper) this.findViewById (R.id.wpWallpaper);
-			FrameLayout flWallpaperOverlayContainer = (FrameLayout) this.findViewById (R.id.flWallpaperOverlayContainer);
+			final FrameLayout flWallpaperOverlayContainer = (FrameLayout) this.findViewById (R.id.flWallpaperOverlayContainer);
 			this.flWallpaperOverlay = (FrameLayout) flWallpaperOverlayContainer.findViewById (R.id.flWallpaperOverlay);
 			this.flWallpaperOverlayWhenDashOpened = (FrameLayout) flWallpaperOverlayContainer.findViewById (R.id.flWallpaperOverlayWhenDashOpened);
 			this.llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
-			TextView tvPanelBfb = (TextView) this.llPanel.findViewById (R.id.tvPanelBfb);
+			final TextView tvPanelBfb = (TextView) this.llPanel.findViewById (R.id.tvPanelBfb);
 			this.ibPanelDashClose = (ImageButton) this.llPanel.findViewById (R.id.ibPanelDashClose);
-			ImageButton ibPanelCog = (ImageButton) this.llPanel.findViewById (R.id.ibPanelCog);
-			WidgetsContainer vgWidgets = (WidgetsContainer) this.findViewById (R.id.vgWidgets);
+			final ImageButton ibPanelCog = (ImageButton) this.llPanel.findViewById (R.id.ibPanelCog);
+			final WidgetsContainer vgWidgets = (WidgetsContainer) this.findViewById (R.id.vgWidgets);
 
 			// Load up the theme //
 			HashMap<String, Class> themes = new HashMap<String, Class> ();
@@ -149,7 +153,7 @@ public class HomeActivity extends AppCompatActivity
 
 			// Process panel user preferences // May get removed in future as themes should probably handle this //
 			Resources res = this.getResources ();
-			float density = res.getDisplayMetrics ().density;
+			final float density = res.getDisplayMetrics ().density;
 
 			if (prefs.getBoolean ("panel_show", true))
 				this.llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
@@ -247,12 +251,16 @@ public class HomeActivity extends AppCompatActivity
 
 			Intent intent = this.getIntent ();
 			if (intent != null)
-				this.openDashWhenReady = intent.getBooleanExtra ("openDash", this.openDashWhenReady);
+			{
+				Bundle bundle = intent.getExtras ();
+				modeCustomise = intent.getBooleanExtra ("customise", modeCustomise);
+				this.openDashWhenReady = intent.getBooleanExtra ("openDash", this.openDashWhenReady) || modeCustomise;
+			}
 
 			// Take control of system status bar background //
 			if (Build.VERSION.SDK_INT >= 19)
 			{
-				LinearLayout llStatusBar = (LinearLayout) this.findViewById (R.id.llStatusBar);
+				final LinearLayout llStatusBar = (LinearLayout) this.findViewById (R.id.llStatusBar);
 
 				int llStatusBar_height = llStatusBar.getHeight ();
 				int statusBarHeight_resource = res.getIdentifier ("status_bar_height", "dimen", "android");
@@ -403,6 +411,58 @@ public class HomeActivity extends AppCompatActivity
 
 			this.flWallpaperOverlay.setBackgroundResource (HomeActivity.theme.wallpaper_overlay);
 			this.flWallpaperOverlayWhenDashOpened.setBackgroundResource (HomeActivity.theme.wallpaper_overlay_when_dash_opened);
+			
+			if (modeCustomise)
+			{
+				final SharedPreferences.Editor prefsEdit = prefs.edit ();
+				
+				final LinearLayout llDashContent = (LinearLayout) this.findViewById (R.id.llDashContent);
+				final LinearLayout llDashCustomise = (LinearLayout) this.findViewById (R.id.llDashCustomise);
+				
+				llDashContent.setVisibility (View.GONE);
+				llDashCustomise.setVisibility (View.VISIBLE);
+				
+				final SeekBar sbCustomiseLauncherIconSize = (SeekBar) this.findViewById (R.id.sbCustomiseLauncherIconSize);
+				sbCustomiseLauncherIconSize.setProgress (prefs.getInt ("launchericon_width", 36));
+				sbCustomiseLauncherIconSize.setOnSeekBarChangeListener
+				(
+					new SeekBar.OnSeekBarChangeListener ()
+					{
+						@Override
+						public void onProgressChanged (SeekBar seekBar, int i, boolean b)
+						{
+							this.update (i);
+						}
+						
+						@Override
+						public void onStartTrackingTouch (SeekBar seekBar) {}
+						
+						@Override
+						public void onStopTrackingTouch (SeekBar seekBar)
+						{
+							this.update (seekBar.getProgress ());
+						}
+						
+						private void update (int value)
+						{
+							prefsEdit.putInt ("launchericon_width", value);
+							prefsEdit.commit ();
+							
+							LinearLayout.LayoutParams ibDashClose_layoutParams = new LinearLayout.LayoutParams ((int) ((float) (48 + value) * density), LinearLayout.LayoutParams.MATCH_PARENT);
+							ibPanelDashClose.setLayoutParams (ibDashClose_layoutParams);
+							
+							lalBfb.init ();
+							lalSpinner.init ();
+							for (int i = 0; i < llLauncherPinnedApps.getChildCount (); i++)
+								((AppLauncher) llLauncherPinnedApps.getChildAt (i)).init ();
+							for (int i = 0; i < llLauncherRunningApps.getChildCount (); i++)
+								((AppLauncher) llLauncherRunningApps.getChildAt (i)).init ();
+							lalTrash.init ();
+							lalPreferences.init ();
+						}
+					}
+				);
+			}
 		}
 		catch (Exception ex)
 		{
@@ -434,8 +494,14 @@ public class HomeActivity extends AppCompatActivity
 
 			if (requestCode == 1) // ActivityPreferences //
 			{
-				this.recreate (); // Reload activity //
-
+				Intent intent = this.getIntent ();
+				
+				if (resultCode == 4) // Customise UI //
+					intent.putExtra ("customise", true);
+			
+				this.finish ();
+				this.startActivity (intent); // Reload activity //
+				
 				//this.overridePendingTransition (R.anim.home_to_preferences_in, R.anim.home_to_preferences_out);
 			}
 			else if (requestCode == 2) // Widget picked //
@@ -829,6 +895,17 @@ public class HomeActivity extends AppCompatActivity
 
 	private void closeDash (boolean track)
 	{
+		if (modeCustomise)
+		{
+			Intent intent = this.getIntent ();
+			intent.putExtra ("customise", false);
+			
+			this.finish ();
+			this.startActivity (intent);
+			
+			return;
+		}
+		
 		EditText etDashSearch = (EditText) this.findViewById (R.id.etDashSearch);
 
 		this.llDash.setVisibility (View.GONE);

@@ -217,7 +217,10 @@
 				android:orientation="vertical"
 				android:visibility="gone">
 
+				<include layout="@layout/activity_home_customise" />
+
 				<LinearLayout
+					android:id="@+id/llDashContent"
 					android:layout_width="match_parent"
 					android:layout_height="match_parent"
 					android:layout_weight="1"

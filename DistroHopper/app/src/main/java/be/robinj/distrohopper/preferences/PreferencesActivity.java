@@ -1,15 +1,15 @@
 package be.robinj.distrohopper.preferences;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
+import android.preference.*;
+import android.preference.Preference;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -76,6 +76,8 @@ public class PreferencesActivity extends PreferenceActivity
 		super.onCreate (savedInstanceState);
 
 		this.setupActionBar ();
+		
+		
 	}
 
 	/**
@@ -185,6 +187,21 @@ public class PreferencesActivity extends PreferenceActivity
 		// their values. When their values change, their summaries are updated
 		// to reflect the new value, per the Android Design guidelines.
 		//this.bindPreferenceSummaryToValue (findPreference ("example_text"));
+		
+		final Activity self = this;
+		((android.preference.Preference) this.findPreference ("dummy_customise")).setOnPreferenceClickListener (
+			new Preference.OnPreferenceClickListener ()
+			{
+				@Override
+				public boolean onPreferenceClick (Preference preference)
+				{
+					self.setResult (4);
+					self.finish ();
+					
+					return true;
+				}
+			}
+		);
 	}
 
 	@Override

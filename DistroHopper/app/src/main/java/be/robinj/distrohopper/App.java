@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.Toast;
 
 import java.io.Serializable;
 
@@ -104,6 +105,13 @@ public class App implements Serializable, Parcelable
 
 	public void launch ()
 	{
+		if (HomeActivity.modeCustomise)
+		{
+			Toast.makeText (this.context, "App launching disabled while customising UI.", Toast.LENGTH_SHORT).show (); //TODO// getString () //
+			
+			return;
+		}
+		
 		ComponentName compName = new ComponentName (this.packageName, this.activityName);
 		Intent intent = new Intent (Intent.ACTION_MAIN);
 		intent.addCategory (Intent.CATEGORY_LAUNCHER);

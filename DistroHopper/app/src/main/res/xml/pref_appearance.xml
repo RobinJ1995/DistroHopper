@@ -14,11 +14,10 @@
         <intent android:action="android.intent.action.SET_WALLPAPER" />
     </Preference>
 
-    <be.robinj.distrohopper.thirdparty.SeekBarPreference
-        android:key="launchericon_width"
-        android:title="@string/option_launchericon_size"
-        android:summary="@string/hint_launchericon_size"
-        max="72"
-        android:defaultValue="36" />
+    <Preference
+        android:key="dummy_customise"
+        android:title="Customise"
+        android:summary="Customise the look and feel.">
+    </Preference>
 
 </PreferenceScreen>
