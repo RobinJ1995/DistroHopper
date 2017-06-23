@@ -53,7 +53,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 			appManager = new AppManager (this.parent, this.parent);
 			DB db = DBFactory.open (this.context);
 
-			try
+			/*try
 			{
 				SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
 				String iconPack = prefs.getString ("iconpack", null);
@@ -64,7 +64,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 			catch (Exception ex)
 			{
 				ex.printStackTrace ();
-			}
+			}*/
 
 			long tStartRetrievingInstalledApps = System.currentTimeMillis ();
 			
@@ -81,12 +81,15 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 			for (int i = 0; i < size; i++)
 			{
 				ResolveInfo resInf = resInfs.get (i);
+				boolean skip = false;
 				
 				for (int j = 0; j < this.IGNORE.length; j++)
 				{
 					if (this.IGNORE[j].equals (resInf.activityInfo.packageName))
-						continue;
+						skip = true;
 				}
+				if (skip)
+					continue;
 				
 				App app = App.fromResolveInfo (this.context, pacMan, appManager, resInf);
 				appManager.add (app, false, false);
