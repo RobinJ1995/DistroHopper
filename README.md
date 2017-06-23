@@ -5,7 +5,7 @@ DistroHopper is a home screen replacement for Android that can resemble a number
 
 ## Where can I get it?
 
-The latest stable build can be downloaded from [ubuntu.robinj.be](http://ubuntu.robinj.be/). The current stable build is a bit old, so it still uses the old branding (Ubuntu Launcher) and contains a bit less features.
+The latest stable build can be downloaded from [ubuntu.robinj.be](http://ubuntu.robinj.be/). You will also find a link to its page on the Google Play Store there.
 
 ## How can I help?
 
