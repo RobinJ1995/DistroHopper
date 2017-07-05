@@ -15,6 +15,7 @@ public abstract class Theme
 
 	// Launcher //
 	public int launcher_location;
+	public int launcher_location_supported;
 	public int launcher_margin;
 	public int launcher_expand;
 	public int launcher_background_dynamic;

@@ -22,6 +22,7 @@ public class Gnome extends Theme
 
 		// Launcher //
 		this.launcher_location = R.integer.theme_gnome_launcher_location;
+		this.launcher_location_supported = R.array.theme_gnome_launcher_location_supported;
 		this.launcher_margin = R.array.theme_gnome_launcher_margin;
 		this.launcher_expand = R.bool.theme_gnome_launcher_expand;
 		this.launcher_background_dynamic = R.bool.theme_gnome_launcher_background_dynamic;

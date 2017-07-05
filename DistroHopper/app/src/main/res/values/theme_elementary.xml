@@ -5,6 +5,9 @@
 
     <!-- Launcher -->
     <integer name="theme_elementary_launcher_location">@integer/position_bottom</integer>
+    <array name="theme_elementary_launcher_location_supported">
+        <item>@integer/position_bottom</item>
+    </array>
     <array name="theme_elementary_launcher_margin">
         <item>0dp</item>
         <item>16dp</item>

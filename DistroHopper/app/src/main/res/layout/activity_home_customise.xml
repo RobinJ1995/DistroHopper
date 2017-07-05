@@ -34,4 +34,25 @@
             android:max="72" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/option_launcher_edge"
+            style="@style/TextAppearance.AppCompat.Title" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hint_launcher_edge" />
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/spiCustomiseLauncherEdge"></Spinner>
+
+    </LinearLayout>
 </LinearLayout>

@@ -21,6 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
@@ -32,6 +34,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -171,21 +174,6 @@ public class HomeActivity extends AppCompatActivity
 			// Start spinning the BFB //
 			lalSpinner.getProgressWheel ().spin ();
 
-			// Launcher on the left or right side of the screen? //
-			//TODO// Think of a way to implement this into the themes //
-			/*
-			if (prefs.getString ("launcher_edge", "left").equals ("right"))
-			{
-				llLauncherAndDashContainer.setGravity (Gravity.RIGHT);
-
-				llLauncherAndDashContainer.removeView (llLauncher);
-				llLauncherAndDashContainer.removeView (llDash);
-
-				llLauncherAndDashContainer.addView (llDash);
-				llLauncherAndDashContainer.addView (llLauncher);
-			}
-			*/
-
 			// Start initialising the wallpaper //
 			this.asyncInitWallpaper = new AsyncInitWallpaper (this);
 			this.asyncInitWallpaper.execute (this.wpWallpaper);
@@ -285,56 +273,8 @@ public class HomeActivity extends AppCompatActivity
 			RelativeLayout.LayoutParams llPanel_layoutParams = (RelativeLayout.LayoutParams) this.llPanel.getLayoutParams ();
 			llPanel_layoutParams.height = (int) res.getDimension (R.dimen.theme_elementary_panel_height);
 
-			boolean expandLlLauncher = res.getBoolean (HomeActivity.theme.launcher_expand);
-
-			switch (res.getInteger (HomeActivity.theme.launcher_location))
-			{
-				case Location.LEFT:
-					if (! expandLlLauncher)
-					{
-						LinearLayout.LayoutParams llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-						llLauncher.setLayoutParams (llLauncher_layoutParams);
-
-						llLauncherAndDashContainer.setGravity (Gravity.CENTER_VERTICAL);
-					}
-					break;
-				case Location.BOTTOM:
-					llLauncherAndDashContainer.setOrientation (LinearLayout.VERTICAL);
-					llLauncher.setOrientation (LinearLayout.HORIZONTAL);
-					llBfbSpinnerWrapper.setOrientation (LinearLayout.HORIZONTAL);
-					llLauncherAppsContainer.setOrientation (LinearLayout.HORIZONTAL);
-					llLauncherPinnedApps.setOrientation (LinearLayout.HORIZONTAL);
-					llLauncherRunningApps.setOrientation (LinearLayout.HORIZONTAL);
-
-					llLauncherAndDashContainer.setGravity (Gravity.BOTTOM);
-
-					llLauncherAndDashContainer.removeView (llLauncher);
-					llLauncherAndDashContainer.removeView (this.llDash);
-
-					llLauncherAndDashContainer.addView (this.llDash);
-					llLauncherAndDashContainer.addView (llLauncher);
-
-					LinearLayout.LayoutParams llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-					llLauncher.setLayoutParams (llLauncher_layoutParams);
-
-					//ScrollView.LayoutParams llLauncherAppsContainer_layoutParams = new ScrollView.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-					//llLauncherAppsContainer.setLayoutParams (llLauncherAppsContainer_layoutParams);
-
-					scrLauncherAppsContainer.setVisibility (View.GONE);
-					scrLauncherAppsContainer.removeView (llLauncherAppsContainer);
-					scrLauncherAppsContainerHorizontal.addView (llLauncherAppsContainer);
-					scrLauncherAppsContainerHorizontal.setVisibility (View.VISIBLE);
-
-					LinearLayout.LayoutParams llLauncherPinnedApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-					llLauncherPinnedApps_layoutParams.gravity = Gravity.LEFT;
-					llLauncherPinnedApps.setLayoutParams (llLauncherPinnedApps_layoutParams);
-
-					LinearLayout.LayoutParams llLauncherRunningApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-					llLauncherRunningApps_layoutParams.gravity = Gravity.LEFT;
-					llLauncherRunningApps.setLayoutParams (llLauncherRunningApps_layoutParams);
-
-					break;
-			}
+			final boolean expandLlLauncher = res.getBoolean (HomeActivity.theme.launcher_expand);
+			this.setLauncherEdge (prefs.getInt ("launcher_edge", res.getInteger (HomeActivity.theme.launcher_location)), expandLlLauncher);
 
 			int lalPreferencesLocation = res.getInteger (HomeActivity.theme.launcher_preferences_location);
 			if (! prefs.getBoolean ("panel_show", true))
@@ -414,6 +354,7 @@ public class HomeActivity extends AppCompatActivity
 			
 			if (modeCustomise)
 			{
+				final HomeActivity self = this;
 				final SharedPreferences.Editor prefsEdit = prefs.edit ();
 				
 				final LinearLayout llDashContent = (LinearLayout) this.findViewById (R.id.llDashContent);
@@ -422,6 +363,7 @@ public class HomeActivity extends AppCompatActivity
 				llDashContent.setVisibility (View.GONE);
 				llDashCustomise.setVisibility (View.VISIBLE);
 				
+				// Launcher Icon Size //
 				final SeekBar sbCustomiseLauncherIconSize = (SeekBar) this.findViewById (R.id.sbCustomiseLauncherIconSize);
 				sbCustomiseLauncherIconSize.setProgress (prefs.getInt ("launchericon_width", 36));
 				sbCustomiseLauncherIconSize.setOnSeekBarChangeListener
@@ -460,6 +402,53 @@ public class HomeActivity extends AppCompatActivity
 							lalTrash.init ();
 							lalPreferences.init ();
 						}
+					}
+				);
+				
+				// Launcher Edge //
+				final Spinner spiCustomiseLauncherEdge = (Spinner) this.findViewById (R.id.spiCustomiseLauncherEdge);
+				final int[] supporterLauncherEdges = res.getIntArray (HomeActivity.theme.launcher_location_supported);
+				final String[] edgeNames = res.getStringArray (R.array.launcher_edges);
+				final List<String> supportedEdgeNames = new ArrayList<String> ();
+				final int currentLauncherEdge = prefs.getInt ("launcher_edge", HomeActivity.theme.launcher_location);
+				int currentLauncherEdgeIndex = -1;
+				for (int i = 0; i < supporterLauncherEdges.length; i++)
+				{
+					int edge = supporterLauncherEdges[i];
+					supportedEdgeNames.add (edgeNames[edge]);
+					
+					if (edge == currentLauncherEdge)
+						currentLauncherEdgeIndex = i;
+				}
+				final String[] arrSupportedEdgeNames = supportedEdgeNames.toArray (new String[0]);
+				
+				final ArrayAdapter<String> spiCustomiseLauncherEdge_adapter = new ArrayAdapter<String> (this, android.R.layout.simple_spinner_dropdown_item, arrSupportedEdgeNames);
+				spiCustomiseLauncherEdge.setAdapter (spiCustomiseLauncherEdge_adapter);
+				spiCustomiseLauncherEdge.setSelection (currentLauncherEdgeIndex);
+				spiCustomiseLauncherEdge.setOnItemSelectedListener
+				(
+					new AdapterView.OnItemSelectedListener ()
+					{
+						@Override
+						public void onItemSelected (AdapterView<?> adapterView, View view, int i, long l)
+						{
+							int edge = supporterLauncherEdges[i];
+							boolean changing = currentLauncherEdge != edge;
+							
+							if (changing)
+							{
+								prefsEdit.putInt ("launcher_edge", edge);
+								prefsEdit.commit ();
+								
+								Intent intent = self.getIntent ();
+								intent.putExtra ("customise", true);
+								self.finish ();
+								self.startActivity (intent); // Reload activity //
+							}
+						}
+						
+						@Override
+						public void onNothingSelected (AdapterView<?> adapterView) {}
 					}
 				);
 			}
@@ -685,6 +674,76 @@ public class HomeActivity extends AppCompatActivity
 				intent.putParcelableArrayListExtra ("running", (ArrayList<App>) this.apps.getRunningApps ());
 
 			this.startService (intent);
+		}
+	}
+	
+	private void setLauncherEdge (int edge, boolean expand)
+	{
+		final LinearLayout llLauncherAndDashContainer = (LinearLayout) this.findViewById (R.id.llLauncherAndDashContainer);
+		final LinearLayout llLauncher = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llLauncher);
+		final LinearLayout llLauncherAppsContainer = (LinearLayout) llLauncher.findViewById (R.id.llLauncherAppsContainer);
+		final LinearLayout llLauncherPinnedApps = (LinearLayout) llLauncherAppsContainer.findViewById (R.id.llLauncherPinnedApps);
+		final LinearLayout llLauncherRunningApps = (LinearLayout) llLauncherAppsContainer.findViewById (R.id.llLauncherRunningApps);
+		final LinearLayout llBfbSpinnerWrapper = (LinearLayout) llLauncher.findViewById (R.id.llBfbSpinnerWrapper);final ScrollView scrLauncherAppsContainer = (ScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainer);
+		final HorizontalScrollView scrLauncherAppsContainerHorizontal = (HorizontalScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainerHorizontal);
+		
+		switch (edge)
+		{
+			case Location.RIGHT:
+				llLauncherAndDashContainer.setGravity (Gravity.RIGHT);
+				
+				llLauncherAndDashContainer.removeView (llLauncher);
+				llLauncherAndDashContainer.removeView (llDash);
+				
+				llLauncherAndDashContainer.addView (llDash);
+				llLauncherAndDashContainer.addView (llLauncher);
+				
+				break;
+			case Location.BOTTOM:
+				llLauncherAndDashContainer.setOrientation (LinearLayout.VERTICAL);
+				llLauncher.setOrientation (LinearLayout.HORIZONTAL);
+				llBfbSpinnerWrapper.setOrientation (LinearLayout.HORIZONTAL);
+				llLauncherAppsContainer.setOrientation (LinearLayout.HORIZONTAL);
+				llLauncherPinnedApps.setOrientation (LinearLayout.HORIZONTAL);
+				llLauncherRunningApps.setOrientation (LinearLayout.HORIZONTAL);
+				
+				llLauncherAndDashContainer.setGravity (Gravity.BOTTOM);
+				
+				llLauncherAndDashContainer.removeView (llLauncher);
+				llLauncherAndDashContainer.removeView (this.llDash);
+				
+				llLauncherAndDashContainer.addView (this.llDash);
+				llLauncherAndDashContainer.addView (llLauncher);
+				
+				LinearLayout.LayoutParams llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+				llLauncher.setLayoutParams (llLauncher_layoutParams);
+				
+				//ScrollView.LayoutParams llLauncherAppsContainer_layoutParams = new ScrollView.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+				//llLauncherAppsContainer.setLayoutParams (llLauncherAppsContainer_layoutParams);
+				
+				scrLauncherAppsContainer.setVisibility (View.GONE);
+				scrLauncherAppsContainer.removeView (llLauncherAppsContainer);
+				scrLauncherAppsContainerHorizontal.addView (llLauncherAppsContainer);
+				scrLauncherAppsContainerHorizontal.setVisibility (View.VISIBLE);
+				
+				LinearLayout.LayoutParams llLauncherPinnedApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+				llLauncherPinnedApps_layoutParams.gravity = Gravity.LEFT;
+				llLauncherPinnedApps.setLayoutParams (llLauncherPinnedApps_layoutParams);
+				
+				LinearLayout.LayoutParams llLauncherRunningApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+				llLauncherRunningApps_layoutParams.gravity = Gravity.LEFT;
+				llLauncherRunningApps.setLayoutParams (llLauncherRunningApps_layoutParams);
+				
+				break;
+			case Location.LEFT:
+				if (! expand)
+				{
+					llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+					llLauncher.setLayoutParams (llLauncher_layoutParams);
+					
+					llLauncherAndDashContainer.setGravity (Gravity.CENTER_VERTICAL);
+				}
+				break;
 		}
 	}
 

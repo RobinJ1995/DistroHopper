@@ -5,6 +5,9 @@
 
     <!-- Launcher -->
     <integer name="theme_gnome_launcher_location">@integer/position_left</integer>
+    <array name="theme_gnome_launcher_location_supported">
+        <item>@integer/position_left</item>
+    </array>
     <array name="theme_gnome_launcher_margin">
         <item>0dp</item>
         <item>0dp</item>

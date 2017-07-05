@@ -22,6 +22,7 @@ public class Elementary extends Theme
 
 		// Launcher //
 		this.launcher_location = R.integer.theme_elementary_launcher_location;
+		this.launcher_location_supported = R.array.theme_elementary_launcher_location_supported;
 		this.launcher_margin = R.array.theme_elementary_launcher_margin;
 		this.launcher_expand = R.bool.theme_elementary_launcher_expand;
 		this.launcher_background_dynamic = R.bool.theme_elementary_launcher_background_dynamic;
