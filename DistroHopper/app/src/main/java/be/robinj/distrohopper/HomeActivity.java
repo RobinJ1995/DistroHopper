@@ -91,7 +91,6 @@ public class HomeActivity extends AppCompatActivity
 	private PackageManagerBroadcastReceiver broadcastPackageManager;
 
 	@Override
-	@SuppressLint ("ResourceType")
 	protected void onCreate (Bundle savedInstanceState)
 	{
 		super.onCreate (savedInstanceState);
@@ -670,6 +669,7 @@ public class HomeActivity extends AppCompatActivity
 		}
 	}
 	
+	@SuppressLint ("ResourceType")
 	private void setLauncherEdge (int edge, boolean expand)
 	{
 		final LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
