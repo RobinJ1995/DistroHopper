@@ -5,6 +5,7 @@ import android.os.Build;
 import android.view.View;
 
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.theme.Theme;
 
 /**
  * Created by robin on 29/11/14.
@@ -28,7 +29,9 @@ public class ThemePreferencesButtonClickListener implements View.OnClickListener
 		try
 		{
 			SharedPreferences.Editor editor = this.prefs.edit ();
-			editor.putString ("theme", (String) view.getTag ());
+			Theme theme = (Theme) view.getTag ();
+			editor.putString ("theme", theme.getName ());
+			editor.putInt ("launcher_edge", parent.getResources ().getInteger (theme.launcher_location));
 			editor.apply ();
 
 			this.parent.finish ();

@@ -6,17 +6,25 @@
     <!-- Launcher -->
     <integer name="theme_elementary_launcher_location">@integer/position_bottom</integer>
     <array name="theme_elementary_launcher_location_supported">
+        <item>@integer/position_top</item>
+        <item>@integer/position_right</item>
         <item>@integer/position_bottom</item>
+        <item>@integer/position_left</item>
     </array>
     <array name="theme_elementary_launcher_margin">
-        <item>0dp</item>
         <item>16dp</item>
         <item>0dp</item>
         <item>16dp</item>
+        <item>0dp</item>
     </array>
     <bool name="theme_elementary_launcher_expand">false</bool>
     <bool name="theme_elementary_launcher_background_dynamic">false</bool>
-    <drawable name="theme_elementary_launcher_background">@drawable/theme_elementary_res_launcher_background</drawable>
+    <array name="theme_elementary_launcher_background">
+        <item>@drawable/theme_elementary_res_launcher_background_top</item>
+        <item>@drawable/theme_elementary_res_launcher_background_right</item>
+        <item>@drawable/theme_elementary_res_launcher_background_bottom</item>
+        <item>@drawable/theme_elementary_res_launcher_background_left</item>
+    </array>
     <integer name="theme_elementary_launcher_bfb_location">@integer/position_left</integer>
     <drawable name="theme_elementary_launcher_bfb_image">@drawable/theme_elementary_res_launcher_bfb</drawable>
     <integer name="theme_elementary_launcher_preferences_location">@integer/position_none</integer>
@@ -43,6 +51,8 @@
     <drawable name="theme_elementary_panel_close_image">@android:color/transparent</drawable>
     <integer name="theme_elementary_panel_preferences_location">@integer/position_right</integer>
     <drawable name="theme_elementary_panel_preferences_image">@drawable/theme_elementary_res_panel_cog</drawable>
+    <array name="theme_elementary_panel_swap_close_preferences_when_launcher_location">
+    </array>
 
     <!-- Dash -->
     <bool name="theme_elementary_dash_background_dynamic">false</bool>

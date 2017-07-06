@@ -46,6 +46,7 @@ public abstract class Theme
 	public int panel_close_image;
 	public int panel_preferences_location;
 	public int panel_preferences_image;
+	public int panel_swap_close_preferences_when_launcher_location;
 
 	// Dash //
 	public int dash_background_gradient;
@@ -56,4 +57,9 @@ public abstract class Theme
 	public int dash_search_background;
 	public int dash_search_text_colour;
 	public int dash_ribbon_show;
+	
+	public String getName ()
+	{
+		return this.getClass ().getSimpleName ().toLowerCase ();
+	}
 }

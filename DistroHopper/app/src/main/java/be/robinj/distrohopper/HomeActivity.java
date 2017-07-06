@@ -86,6 +86,7 @@ public class HomeActivity extends AppCompatActivity
 	private boolean openDashWhenReady = false;
 
 	public static Theme theme = new Default ();
+	private int launcherEdge = Location.NONE;
 
 	private PackageManagerBroadcastReceiver broadcastPackageManager;
 
@@ -274,7 +275,8 @@ public class HomeActivity extends AppCompatActivity
 			llPanel_layoutParams.height = (int) res.getDimension (R.dimen.theme_elementary_panel_height);
 
 			final boolean expandLlLauncher = res.getBoolean (HomeActivity.theme.launcher_expand);
-			this.setLauncherEdge (prefs.getInt ("launcher_edge", res.getInteger (HomeActivity.theme.launcher_location)), expandLlLauncher);
+			this.launcherEdge = prefs.getInt ("launcher_edge", res.getInteger (HomeActivity.theme.launcher_location));
+			this.setLauncherEdge (this.launcherEdge, expandLlLauncher);
 
 			int lalPreferencesLocation = res.getInteger (HomeActivity.theme.launcher_preferences_location);
 			if (! prefs.getBoolean ("panel_show", true))
@@ -331,15 +333,6 @@ public class HomeActivity extends AppCompatActivity
 
 			tvPanelBfb.setText (res.getString (HomeActivity.theme.panel_bfb_text));
 			tvPanelBfb.setTextColor (res.getColor (HomeActivity.theme.panel_bfb_text_colour));
-
-			TypedArray launcherMargins = res.obtainTypedArray (HomeActivity.theme.launcher_margin);
-			int launcherMarginTop = (int) launcherMargins.getDimension (0, 0);
-			int launcherMarginRight = (int) launcherMargins.getDimension (1, 0);
-			int launcherMarginBottom = (int) launcherMargins.getDimension (2, 0);
-			int launcherMarginLeft = (int) launcherMargins.getDimension (3, 0);
-
-			LinearLayout.LayoutParams llLauncher_layoutParams = (LinearLayout.LayoutParams) llLauncher.getLayoutParams ();
-			llLauncher_layoutParams.setMargins (launcherMarginLeft, launcherMarginTop, launcherMarginRight, launcherMarginBottom);
 
 			tvDashHomeTitle.setTextColor (res.getColor (HomeActivity.theme.dash_applauncher_text_colour));
 			tvDashHomeTitle.setShadowLayer (5, 2, 2, res.getColor (HomeActivity.theme.dash_applauncher_text_shadow_colour));
@@ -679,6 +672,9 @@ public class HomeActivity extends AppCompatActivity
 	
 	private void setLauncherEdge (int edge, boolean expand)
 	{
+		final LinearLayout llPanel = (LinearLayout) this.findViewById (R.id.llPanel);
+		final ImageButton ibPanelDashClose = (ImageButton) llPanel.findViewById (R.id.ibPanelDashClose);
+		final ImageButton ibPanelCog = (ImageButton) llPanel.findViewById (R.id.ibPanelCog);
 		final LinearLayout llLauncherAndDashContainer = (LinearLayout) this.findViewById (R.id.llLauncherAndDashContainer);
 		final LinearLayout llLauncher = (LinearLayout) llLauncherAndDashContainer.findViewById (R.id.llLauncher);
 		final LinearLayout llLauncherAppsContainer = (LinearLayout) llLauncher.findViewById (R.id.llLauncherAppsContainer);
@@ -686,17 +682,54 @@ public class HomeActivity extends AppCompatActivity
 		final LinearLayout llLauncherRunningApps = (LinearLayout) llLauncherAppsContainer.findViewById (R.id.llLauncherRunningApps);
 		final LinearLayout llBfbSpinnerWrapper = (LinearLayout) llLauncher.findViewById (R.id.llBfbSpinnerWrapper);final ScrollView scrLauncherAppsContainer = (ScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainer);
 		final HorizontalScrollView scrLauncherAppsContainerHorizontal = (HorizontalScrollView) llLauncher.findViewById (R.id.scrLauncherAppsContainerHorizontal);
+		LinearLayout.LayoutParams llLauncher_layoutParams = (LinearLayout.LayoutParams) llLauncher.getLayoutParams ();
+		
+		TypedArray taLauncherMargins = this.getResources ().obtainTypedArray (HomeActivity.theme.launcher_margin);
+		final int launcherMargins[] = new int[] {
+			taLauncherMargins.getLayoutDimension (0, 0),
+			taLauncherMargins.getLayoutDimension (1, 0),
+			taLauncherMargins.getLayoutDimension (2, 0),
+			taLauncherMargins.getLayoutDimension (3, 0)
+		};
+		int rotateLauncherMargins = edge + 1;
+		
+		int launcherMarginsRotated[] = new int[4];
+		for (int i = 0; i <= launcherMargins.length - 1; i++)
+			launcherMarginsRotated[(i + rotateLauncherMargins) % launcherMargins.length ] = launcherMargins[i];
 		
 		switch (edge)
 		{
-			case Location.RIGHT:
-				llLauncherAndDashContainer.setGravity (Gravity.RIGHT);
+			case Location.TOP:
+				llLauncherAndDashContainer.setOrientation (LinearLayout.VERTICAL);
+				llLauncher.setOrientation (LinearLayout.HORIZONTAL);
+				llBfbSpinnerWrapper.setOrientation (LinearLayout.HORIZONTAL);
+				llLauncherAppsContainer.setOrientation (LinearLayout.HORIZONTAL);
+				llLauncherPinnedApps.setOrientation (LinearLayout.HORIZONTAL);
+				llLauncherRunningApps.setOrientation (LinearLayout.HORIZONTAL);
 				
-				llLauncherAndDashContainer.removeView (llLauncher);
-				llLauncherAndDashContainer.removeView (llDash);
+				llLauncherAndDashContainer.setGravity (Gravity.TOP);
 				
-				llLauncherAndDashContainer.addView (llDash);
-				llLauncherAndDashContainer.addView (llLauncher);
+				/*llLauncherAndDashContainer.removeView (llLauncher);
+				llLauncherAndDashContainer.removeView (this.llDash);
+				
+				llLauncherAndDashContainer.addView (this.llDash);
+				llLauncherAndDashContainer.addView (llLauncher);*/
+				
+				llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+				
+				scrLauncherAppsContainer.setVisibility (View.GONE);
+				scrLauncherAppsContainer.removeView (llLauncherAppsContainer);
+				scrLauncherAppsContainerHorizontal.addView (llLauncherAppsContainer);
+				scrLauncherAppsContainerHorizontal.setVisibility (View.VISIBLE);
+				
+				LinearLayout.LayoutParams llLauncherPinnedApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+				llLauncherPinnedApps_layoutParams.gravity = Gravity.LEFT;
+				llLauncherPinnedApps.setLayoutParams (llLauncherPinnedApps_layoutParams);
+				
+				LinearLayout.LayoutParams llLauncherRunningApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+				llLauncherRunningApps_layoutParams.gravity = Gravity.LEFT;
+				llLauncherRunningApps.setLayoutParams (llLauncherRunningApps_layoutParams);
+				
 				
 				break;
 			case Location.BOTTOM:
@@ -715,8 +748,7 @@ public class HomeActivity extends AppCompatActivity
 				llLauncherAndDashContainer.addView (this.llDash);
 				llLauncherAndDashContainer.addView (llLauncher);
 				
-				LinearLayout.LayoutParams llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-				llLauncher.setLayoutParams (llLauncher_layoutParams);
+				llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 				
 				//ScrollView.LayoutParams llLauncherAppsContainer_layoutParams = new ScrollView.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
 				//llLauncherAppsContainer.setLayoutParams (llLauncherAppsContainer_layoutParams);
@@ -726,16 +758,25 @@ public class HomeActivity extends AppCompatActivity
 				scrLauncherAppsContainerHorizontal.addView (llLauncherAppsContainer);
 				scrLauncherAppsContainerHorizontal.setVisibility (View.VISIBLE);
 				
-				LinearLayout.LayoutParams llLauncherPinnedApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+				llLauncherPinnedApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
 				llLauncherPinnedApps_layoutParams.gravity = Gravity.LEFT;
 				llLauncherPinnedApps.setLayoutParams (llLauncherPinnedApps_layoutParams);
 				
-				LinearLayout.LayoutParams llLauncherRunningApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+				llLauncherRunningApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
 				llLauncherRunningApps_layoutParams.gravity = Gravity.LEFT;
 				llLauncherRunningApps.setLayoutParams (llLauncherRunningApps_layoutParams);
 				
 				break;
-			case Location.LEFT:
+			
+			case Location.RIGHT:
+				llLauncherAndDashContainer.setGravity (Gravity.RIGHT);
+				
+				llLauncherAndDashContainer.removeView (llLauncher);
+				llLauncherAndDashContainer.removeView (llDash);
+				
+				llLauncherAndDashContainer.addView (llDash);
+				llLauncherAndDashContainer.addView (llLauncher);
+			case Location.LEFT: // Falls through //
 				if (! expand)
 				{
 					llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -745,6 +786,28 @@ public class HomeActivity extends AppCompatActivity
 				}
 				break;
 		}
+		
+		final int[] panelSwapClosePreferencesWhenLauncherLocation = this.getResources ().getIntArray (theme.panel_swap_close_preferences_when_launcher_location);
+		boolean panelSwapClosePreferences = false;
+		for (int i = 0; i < panelSwapClosePreferencesWhenLauncherLocation.length; i++)
+		{
+			if (panelSwapClosePreferencesWhenLauncherLocation[i] == edge)
+			{
+				panelSwapClosePreferences = true;
+				
+				break;
+			}
+		}
+		if (panelSwapClosePreferences)
+		{
+			llPanel.removeView (ibPanelDashClose);
+			llPanel.addView (ibPanelDashClose, llPanel.indexOfChild (ibPanelCog));
+			llPanel.removeView (ibPanelCog);
+			llPanel.addView (ibPanelCog, 0);
+		}
+		
+		llLauncher_layoutParams.setMargins (launcherMarginsRotated[3], launcherMarginsRotated[0], launcherMarginsRotated[1], launcherMarginsRotated[2]);
+		llLauncher.setLayoutParams (llLauncher_layoutParams);
 	}
 
 	public AppManager getAppManager ()
@@ -806,7 +869,8 @@ public class HomeActivity extends AppCompatActivity
 	{
 		try
 		{
-			SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+			final SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+			final Resources res = this.getResources ();
 
 			int colour;
 			int colour_opacity = prefs.getInt ("launchericon_opacity", 204);
@@ -845,20 +909,21 @@ public class HomeActivity extends AppCompatActivity
 
 			LinearLayout llLauncher = (LinearLayout) this.findViewById (R.id.llLauncher);
 
-			if (this.getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
+			if (res.getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
 			{
 				lalBfb.setColour (colour);
 				lalPreferences.setColour (colour);
 				lalSpinner.setColour (colour);
 				lalTrash.setColour (colour);
 			}
-
+			
+			final TypedArray launcherBackgroundResources = res.obtainTypedArray (HomeActivity.theme.launcher_background);
 			if (this.getResources ().getBoolean (HomeActivity.theme.launcher_background_dynamic))
 				llLauncher.setBackgroundColor (bgColour);
 			else
-				llLauncher.setBackgroundResource (HomeActivity.theme.launcher_background);
+				llLauncher.setBackgroundResource (launcherBackgroundResources.getResourceId (this.launcherEdge, R.color.transparent));
 
-			if (this.getResources ().getBoolean (HomeActivity.theme.dash_background_dynamic))
+			if (res.getBoolean (HomeActivity.theme.dash_background_dynamic))
 				this.llDash.setBackgroundColor (bgColour);
 			else
 				this.llDash.setBackgroundResource (HomeActivity.theme.dash_background);

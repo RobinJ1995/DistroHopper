@@ -26,7 +26,7 @@ public class Gnome extends Theme
 		this.launcher_margin = R.array.theme_gnome_launcher_margin;
 		this.launcher_expand = R.bool.theme_gnome_launcher_expand;
 		this.launcher_background_dynamic = R.bool.theme_gnome_launcher_background_dynamic;
-		this.launcher_background = R.drawable.theme_gnome_launcher_background;
+		this.launcher_background = R.array.theme_gnome_launcher_background;
 		this.launcher_bfb_location = R.integer.theme_gnome_launcher_bfb_location;
 		this.launcher_bfb_image = R.drawable.theme_gnome_launcher_bfb_image;
 		this.launcher_preferences_location = R.integer.theme_gnome_launcher_preferences_location;
@@ -53,6 +53,7 @@ public class Gnome extends Theme
 		this.panel_close_image = R.drawable.theme_gnome_panel_close_image;
 		this.panel_preferences_location = R.integer.theme_gnome_panel_preferences_location;
 		this.panel_preferences_image = R.drawable.theme_gnome_panel_preferences_image;
+		this.panel_swap_close_preferences_when_launcher_location = R.array.theme_gnome_panel_swap_close_preferences_when_launcher_location;
 
 		// Dash //
 		this.dash_background_gradient = R.drawable.theme_gnome_dash_background_gradient;

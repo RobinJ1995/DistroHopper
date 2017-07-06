@@ -59,7 +59,7 @@ public class ThemePreferencesListViewAdapter extends ArrayAdapter<Theme>
 
 		ThemePreferencesButtonClickListener clickListener = new ThemePreferencesButtonClickListener (this.parent, this.prefs);
 		btnApplyTheme.setOnClickListener (clickListener);
-		btnApplyTheme.setTag (theme.getClass ().getSimpleName ().toLowerCase ());
+		btnApplyTheme.setTag (theme);
 
 		return view;
 	}
