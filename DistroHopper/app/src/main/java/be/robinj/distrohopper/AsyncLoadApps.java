@@ -50,7 +50,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 		{
 			this.context = params[0];
 
-			appManager = new AppManager (this.parent, this.parent);
+			appManager = new AppManager (this.parent);
 			DB db = DBFactory.open (this.context);
 
 			/*try
@@ -112,26 +112,6 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 			if (this.isCancelled ())
 				return null;
 
-			/*SharedPreferences pinned = this.context.getSharedPreferences ("pinned", Context.MODE_PRIVATE);
-
-			int i = 0;
-			String packageAndActivityName;
-			while ((packageAndActivityName = pinned.getString (Integer.toString (i), null)) != null)
-			{
-				if (packageAndActivityName.contains ("\n")) // Transition from the Beta builds where pinned apps were stored by either package name or activity name (which resulted in bugs because some apps share a package/activity name) //
-				{
-					String packageName = packageAndActivityName.substring (0, packageAndActivityName.indexOf ("\n"));
-					String activityName = packageAndActivityName.substring (packageAndActivityName.indexOf ("\n") + 1);
-
-					App app = appManager.findAppByPackageAndActivityName (packageName, activityName);
-
-					if (app != null) // The result of findAppByPackageName () is null if the app is no longer present on the device //
-						appManager.pin (app, false, false, false);
-				}
-
-				i++;
-			}*/
-
 			if (db.exists ("launcher_pinnedApps"))
 			{
 				App[] apps = db.getObjectArray ("launcher_pinnedApps", App.class);
@@ -147,7 +127,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this.context, ex);
+			ExceptionHandler exh = new ExceptionHandler (this.parent, ex);
 			exh.show ();
 		}
 
@@ -172,8 +152,8 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 		appManager.refreshPinnedView ();
 
 		this.gvDashHomeApps.setAdapter (new GridAdapter (this.context, appManager.getInstalledApps ()));
-		this.gvDashHomeApps.setOnItemClickListener (new AppLauncherClickListener ());
-		this.gvDashHomeApps.setOnItemLongClickListener (new AppLauncherLongClickListener ());
+		this.gvDashHomeApps.setOnItemClickListener (new AppLauncherClickListener (this.parent));
+		this.gvDashHomeApps.setOnItemLongClickListener (new AppLauncherLongClickListener (this.parent));
 
 		this.parent.asyncLoadInstalledAppsDone (appManager);
 	}

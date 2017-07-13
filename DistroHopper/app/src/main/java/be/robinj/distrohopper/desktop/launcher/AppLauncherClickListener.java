@@ -4,12 +4,20 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.HomeActivity;
 
 /**
  * Created by robin on 8/21/14.
  */
 public class AppLauncherClickListener implements OnClickListener
 {
+	private HomeActivity parent;
+	
+	public AppLauncherClickListener (HomeActivity parent)
+	{
+		this.parent = parent;
+	}
+	
 	@Override
 	public void onClick (View view)
 	{
@@ -20,7 +28,7 @@ public class AppLauncherClickListener implements OnClickListener
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (view.getContext (), ex);
+			ExceptionHandler exh = new ExceptionHandler (this.parent, ex);
 			exh.show ();
 		}
 	}

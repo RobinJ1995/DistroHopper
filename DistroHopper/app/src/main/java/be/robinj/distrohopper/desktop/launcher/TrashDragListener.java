@@ -50,7 +50,7 @@ public class TrashDragListener implements ViewGroup.OnDragListener
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (view.getContext (), ex);
+			ExceptionHandler exh = new ExceptionHandler (this.appManager.getContext (), ex);
 			exh.show ();
 		}
 

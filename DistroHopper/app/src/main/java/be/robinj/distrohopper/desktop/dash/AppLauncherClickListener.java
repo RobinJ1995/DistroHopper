@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.HomeActivity;
 import be.robinj.distrohopper.desktop.AppLauncher;
 
 /**
@@ -11,6 +12,13 @@ import be.robinj.distrohopper.desktop.AppLauncher;
  */
 public class AppLauncherClickListener implements AdapterView.OnItemClickListener
 {
+	private HomeActivity parent;
+	
+	public AppLauncherClickListener (HomeActivity parent)
+	{
+		this.parent = parent;
+	}
+	
 	@Override
 	public void onItemClick (AdapterView<?> parent, View view, int position, long id)
 	{
@@ -21,7 +29,7 @@ public class AppLauncherClickListener implements AdapterView.OnItemClickListener
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (view.getContext (), ex);
+			ExceptionHandler exh = new ExceptionHandler (this.parent, ex);
 			exh.show ();
 		}
 	}

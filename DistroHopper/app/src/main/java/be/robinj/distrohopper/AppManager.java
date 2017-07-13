@@ -48,14 +48,12 @@ public class AppManager implements Iterable<App>
 	private GridView gvDashHomeApps;
 
 	private HomeActivity parent;
-	private Context context;
 
-	public AppManager (Context context, HomeActivity parent)
+	public AppManager (HomeActivity parent)
 	{
-		this.context = context;
 		this.parent = parent;
 
-		this.iconPack = new IconPackHelper (context.getApplicationContext ());
+		this.iconPack = new IconPackHelper (parent.getApplicationContext ());
 
 		this.llLauncher = (LinearLayout) parent.findViewById (R.id.llLauncher);
 		this.llLauncherPinnedApps = (LinearLayout) this.llLauncher.findViewById (R.id.llLauncherPinnedApps);
@@ -92,7 +90,7 @@ public class AppManager implements Iterable<App>
 
 	public void add (ResolveInfo resInf, boolean checkDuplicate, boolean sortAndNotifyAdapter)
 	{
-		this.add (App.fromResolveInfo (this.context, this, resInf), checkDuplicate, sortAndNotifyAdapter);
+		this.add (App.fromResolveInfo (this.getContext (), this, resInf), checkDuplicate, sortAndNotifyAdapter);
 	}
 
 	public void addRunningApps (int colour)
@@ -111,11 +109,11 @@ public class AppManager implements Iterable<App>
 			}
 			else
 			{
-				if (! this.context.getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
-					colour = this.context.getResources ().getColor (HomeActivity.theme.launcher_applauncher_backgroundcolour);
+				if (! this.getContext ().getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
+					colour = this.getContext ().getResources ().getColor (HomeActivity.theme.launcher_applauncher_backgroundcolour);
 
-				RunningAppLauncher appLauncher = new RunningAppLauncher (this.context, app);
-				appLauncher.setOnClickListener (new AppLauncherClickListener ());
+				RunningAppLauncher appLauncher = new RunningAppLauncher (this.getContext (), app);
+				appLauncher.setOnClickListener (new AppLauncherClickListener (this.getContext ()));
 				appLauncher.setColour (colour);
 
 				this.llLauncherRunningApps.addView (appLauncher);
@@ -152,9 +150,9 @@ public class AppManager implements Iterable<App>
 		return this.apps.get (index);
 	}
 
-	public Context getContext ()
+	public HomeActivity getContext ()
 	{
-		return this.context;
+		return this.getParent ();
 	}
 
 	public IconPackHelper getIconPack ()
@@ -180,7 +178,7 @@ public class AppManager implements Iterable<App>
 	public List<App> getRunningApps ()
 	{
 		List<App> running = new ArrayList<App> ();
-		ActivityManager am = (ActivityManager) this.context.getSystemService (Context.ACTIVITY_SERVICE);
+		ActivityManager am = (ActivityManager) this.getContext ().getSystemService (Context.ACTIVITY_SERVICE);
 
 		if (Build.VERSION.SDK_INT >= 21) // ActivityManager.getRunningTasks () is deprecated //
 		{
@@ -268,13 +266,13 @@ public class AppManager implements Iterable<App>
 			boolean returnValue = this.pinned.add (app);
 
 			if (showToast)
-				Toast.makeText (this.context, app.getLabel () + " " + this.context.getResources ().getString (R.string.pinned), Toast.LENGTH_SHORT).show ();
+				Toast.makeText (this.getContext (), app.getLabel () + " " + this.getContext ().getResources ().getString (R.string.pinned), Toast.LENGTH_SHORT).show ();
 
 			if (addView)
 			{
-				be.robinj.distrohopper.desktop.launcher.AppLauncher appLauncher = new be.robinj.distrohopper.desktop.launcher.AppLauncher (this.context, app);
-				appLauncher.setOnClickListener (new AppLauncherClickListener ());
-				appLauncher.setOnLongClickListener (new AppLauncherLongClickListener ());
+				be.robinj.distrohopper.desktop.launcher.AppLauncher appLauncher = new be.robinj.distrohopper.desktop.launcher.AppLauncher (this.getContext (), app);
+				appLauncher.setOnClickListener (new AppLauncherClickListener (this.getContext ()));
+				appLauncher.setOnLongClickListener (new AppLauncherLongClickListener (this.getContext ()));
 				appLauncher.setOnDragListener (new AppLauncherDragListener (this));
 
 				this.llLauncherPinnedApps.addView (appLauncher);
@@ -288,7 +286,7 @@ public class AppManager implements Iterable<App>
 		else
 		{
 			if (showToast)
-				Toast.makeText (this.context, app.getLabel () + " " + this.context.getResources ().getString (R.string.alreadypinned), Toast.LENGTH_SHORT).show ();
+				Toast.makeText (this.getContext (), app.getLabel () + " " + this.getContext ().getResources ().getString (R.string.alreadypinned), Toast.LENGTH_SHORT).show ();
 
 			return false;
 		}
@@ -305,7 +303,7 @@ public class AppManager implements Iterable<App>
 		mainIntent.addCategory (Intent.CATEGORY_LAUNCHER);
 		if (packageName != null)
 			mainIntent.setPackage (packageName);
-		PackageManager pacMan = this.context.getPackageManager ();
+		PackageManager pacMan = this.getContext ().getPackageManager ();
 		List<ResolveInfo> apps = pacMan.queryIntentActivities (mainIntent, 0);
 
 		return apps;
@@ -317,9 +315,9 @@ public class AppManager implements Iterable<App>
 
 		for (App app : this.pinned)
 		{
-			be.robinj.distrohopper.desktop.launcher.AppLauncher appLauncher = new be.robinj.distrohopper.desktop.launcher.AppLauncher (this.context, app);
-			appLauncher.setOnClickListener (new AppLauncherClickListener ());
-			appLauncher.setOnLongClickListener (new AppLauncherLongClickListener ());
+			be.robinj.distrohopper.desktop.launcher.AppLauncher appLauncher = new be.robinj.distrohopper.desktop.launcher.AppLauncher (this.getContext (), app);
+			appLauncher.setOnClickListener (new AppLauncherClickListener (this.getContext ()));
+			appLauncher.setOnLongClickListener (new AppLauncherLongClickListener (this.getContext ()));
 			appLauncher.setOnDragListener (new AppLauncherDragListener (this));
 
 			this.llLauncherPinnedApps.addView (appLauncher);
@@ -341,7 +339,7 @@ public class AppManager implements Iterable<App>
 	public void savePinnedApps () throws SnappydbException
 	{
 		/*
-		SharedPreferences prefs = this.context.getSharedPreferences ("pinned", Context.MODE_PRIVATE);
+		SharedPreferences prefs = this.getContext ().getSharedPreferences ("pinned", Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = prefs.edit ();
 
 		editor.clear ();
@@ -358,7 +356,7 @@ public class AppManager implements Iterable<App>
 
 		editor.apply ();*/
 
-		DB db = DBFactory.open (this.context);
+		DB db = DBFactory.open (this.getContext ());
 		db.put ("launcher_pinnedApps", this.pinned.toArray ());
 		db.close ();
 
@@ -377,7 +375,7 @@ public class AppManager implements Iterable<App>
 		{
 			results = new ArrayList<App> ();
 
-			SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
+			SharedPreferences prefs = this.getContext ().getSharedPreferences ("prefs", Context.MODE_PRIVATE);
 			boolean fullSearch = prefs.getBoolean ("dashsearch_full", true);
 
 			pattern = pattern.toLowerCase ();
@@ -430,11 +428,11 @@ public class AppManager implements Iterable<App>
 		{
 			String message;
 			if (modified)
-				message = " " + this.context.getResources ().getString (R.string.unpinned);
+				message = " " + this.getContext ().getResources ().getString (R.string.unpinned);
 			else
-				message = " " + this.context.getResources ().getString (R.string.notpinned);
+				message = " " + this.getContext ().getResources ().getString (R.string.notpinned);
 
-			Toast.makeText (this.context, app.getLabel () + message, Toast.LENGTH_SHORT).show ();
+			Toast.makeText (this.getContext (), app.getLabel () + message, Toast.LENGTH_SHORT).show ();
 		}
 
 		be.robinj.distrohopper.desktop.launcher.AppLauncher appLauncher = (be.robinj.distrohopper.desktop.launcher.AppLauncher) this.llLauncherPinnedApps.findViewWithTag (app);
@@ -462,7 +460,7 @@ public class AppManager implements Iterable<App>
 		AppLauncher lalPreferences = (AppLauncher) this.llLauncher.findViewById (R.id.lalPreferences);
 		AppLauncher lalTrash = (AppLauncher) this.llLauncher.findViewById (R.id.lalTrash);
 
-		switch (this.context.getResources ().getInteger (HomeActivity.theme.launcher_preferences_location))
+		switch (this.getContext ().getResources ().getInteger (HomeActivity.theme.launcher_preferences_location))
 		{
 			case -1:
 				lalPreferences.setVisibility (View.GONE);

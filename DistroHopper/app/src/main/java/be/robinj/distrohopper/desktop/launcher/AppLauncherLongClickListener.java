@@ -6,12 +6,20 @@ import android.view.View;
 import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.HomeActivity;
 
 /**
  * Created by robin on 8/21/14.
  */
 public class AppLauncherLongClickListener implements View.OnLongClickListener
 {
+	private HomeActivity parent;
+	
+	public AppLauncherLongClickListener (HomeActivity parent)
+	{
+		this.parent = parent;
+	}
+	
 	@Override
 	public boolean onLongClick (View view)
 	{
@@ -31,7 +39,7 @@ public class AppLauncherLongClickListener implements View.OnLongClickListener
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (view.getContext (), ex);
+			ExceptionHandler exh = new ExceptionHandler (this.parent, ex);
 			exh.show ();
 		}
 

@@ -72,7 +72,7 @@ public class PackageManagerBroadcastReceiver extends BroadcastReceiver
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (context, ex);
+			ExceptionHandler exh = new ExceptionHandler (this.parent, ex);
 			exh.show ();
 		}
 	}
