@@ -146,15 +146,23 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 	@Override
 	protected void onPostExecute (AppManager appManager)
 	{
-		this.lalSpinner.setVisibility (View.GONE);
-		this.lalBfb.setVisibility (View.VISIBLE);
-
-		appManager.refreshPinnedView ();
-
-		this.gvDashHomeApps.setAdapter (new GridAdapter (this.context, appManager.getInstalledApps ()));
-		this.gvDashHomeApps.setOnItemClickListener (new AppLauncherClickListener (this.parent));
-		this.gvDashHomeApps.setOnItemLongClickListener (new AppLauncherLongClickListener (this.parent));
-
-		this.parent.asyncLoadInstalledAppsDone (appManager);
+		try
+		{
+			this.lalSpinner.setVisibility (View.GONE);
+			this.lalBfb.setVisibility (View.VISIBLE);
+			
+			appManager.refreshPinnedView ();
+			
+			this.gvDashHomeApps.setAdapter (new GridAdapter (this.context, appManager.getInstalledApps ()));
+			this.gvDashHomeApps.setOnItemClickListener (new AppLauncherClickListener (this.parent));
+			this.gvDashHomeApps.setOnItemLongClickListener (new AppLauncherLongClickListener (this.parent));
+			
+			this.parent.asyncLoadInstalledAppsDone (appManager);
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (this.parent, ex);
+			exh.show ();
+		}
 	}
 }
