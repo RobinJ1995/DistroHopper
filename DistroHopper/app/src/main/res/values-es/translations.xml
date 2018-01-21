@@ -1,14 +1,24 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Configuracion</string>
+  <string name="dash_search_hint">Buscar </string>
   <string name="dash_lens_apps_title">Aplicaciones</string>
+  <string name="dash_lens_other_title">Otro </string>
   <string name="title_activity_preferences">Preferencias</string>
   <string name="title_activity_about">Acerca de</string>
+  <string name="title_activity_lens_preferences">Buscar orígenes </string>
+  <string name="title_activity_theme_preferences">Temas </string>
+  <string name="title_activity_dev_logs">Registros </string>
+  <string name="pinned">ha sido anclado al lanzador</string>
+  <string name="unpinned">ha sido des anclado del lanzador</string>
   <string name="notpinned">no está anclado</string>
+  <string name="alreadypinned">ya esta anclado</string>
   <string name="developed_by">Desarrollado por Robin Jacobs</string>
   <string name="honourable_mentions">Menciones honorificas</string>
   <string name="button_back">Volver</string>
   <string name="button_about">Acerca de</string>
+  <string name="button_contribute">Contribuir </string>
+  <string name="button_apply">Aplicar </string>
   <string name="title_preferences">Preferencias</string>
   <string name="pref_header_general">General</string>
   <string name="pref_header_unity">Unity</string>
@@ -16,10 +26,14 @@
   <string name="pref_header_dash">Dash</string>
   <string name="pref_header_panel">Panel</string>
   <string name="pref_header_advanced">Avanzado</string>
+  <string name="pref_header_dev">Opciones de desarrollador</string>
+  <string name="pref_header_functionality">Funcionalidad </string>
+  <string name="pref_header_appearance">Apariencia </string>
   <string name="category_colourcalc">Cálculo del color dominante</string>
   <string name="option_launchericon_opacity">Opacidad de fondo del icono</string>
   <string name="hint_launchericon_opacity">Cual debe ser la opacidad del color de fondo de los iconos en el Lanzador.</string>
   <string name="hint_launcherservice_enabled">Cuando usted pasa de la mitad inferior del borde izquierdo de la pantalla, aparecerá el Lanzador, y le permite ejecutar aplicaciones que has anclado al Launcher sin tener que ir a la pantalla principal.\n(EXPERIMENTAL)</string>
+  <string name="option_launcher_running_show">Mostrar aplicaciones en ejecución</string>
   <string name="option_panel_show">Ver</string>
   <string name="hint_panel_show">Si el panel en la parte superior de la pantalla se debe mostrar o no.</string>
   <string name="option_panel_opacity">Opacidad</string>
@@ -39,6 +53,12 @@
   <string name="hint_colourcalc_hsv">Usando HSV (Matiz, Saturación, Valor) en lugar de simple RGB (Rojo, Verde, Azul) dará como resultado a colores mucho más vibrantes, pero los cálculos que se realizan son más complicados y pueden dar lugar a tiempos de carga más largos en los dispositivos más lentos.</string>
   <string name="option_dashsearch_full">Búsqueda avanzada</string>
   <string name="hint_dashsearch_full">La activación de esta opción mostrará mejores resultados de búsqueda en el Dash pero también afectará el rendimiento en los dispositivos mas lentos o los dispositivos con mas aplicaciones instaladas. Si la búsqueda Dash es lento para usted, es posible que desee considerar desactivar esto.</string>
+  <string name="option_lenses">Buscar orígenes </string>
+  <string name="option_theme">Tema </string>
+  <string name="hint_theme">Elija que distribución de Linux desea que DistroHopper se vea.</string>
+  <string name="option_dev">Modo de desarrollador </string>
+  <string name="hint_dev">Acceder a registros de depuración y otra información técnica. Habilitando esto impactara negativamente sobre el rendimiento y estabilidad. </string>
+  <string name="option_dev_logs">Registros </string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Pruebas (Si no logra destruirlo, entonces es probable que sea seguro para el consumo por el resto del mundo.)\n
 * Funcion para ayudar el cálculo del color dominante.</string>
@@ -52,4 +72,15 @@ https://github.com/Todd-Davies/ProgressWheel/</string>
   <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
   <string name="hm_commonsguy_why">* He utilizado su componente ColorMixer en la pantalla de Preferencias.\n
 https://github.com/commonsguy/cwac-colormixer</string>
+  <string name="hm_translators_name">El equipo de traducción</string>
+  <string name="hm_translators_why">Un grupo de personas han dedicado su tiempo y esfuerzo para hacer que esta aplicación este disponible en su idioma. Estoy agradecido con todos ellos por sus contribuciones con este proyecto.</string>
+  <string name="title_activity_contribute">¿Como puedo contribuir?</string>
+  <string name="contribute_intro">Gastamos mucho tiempo y trabajo duro  en el desarrollo de esta aplicación. Si quiere ayudar, hay muchas formas en las que puede hacerlo.</string>
+  <string name="contribute_translate_title">Traducir </string>
+  <string name="contribute_translate_go">Ir a Transifex</string>
+  <string name="contribute_bugs_title">Reportar errores</string>
+  <string name="contribute_bugs_go">Ir a GitHub</string>
+  <string name="contribute_donate_title">Donar </string>
+  <string name="contribute_donate_go">Donar </string>
+  <string name="theme_elementary_res_panel_bfb_text">Aplicaciones</string>
 </resources>

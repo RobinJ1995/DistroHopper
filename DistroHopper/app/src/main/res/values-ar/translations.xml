@@ -7,13 +7,13 @@
   <string name="title_activity_preferences">التفضيلات</string>
   <string name="title_activity_about">عن التطبيق</string>
   <string name="title_activity_lens_preferences">ابحث فى المصادر</string>
-  <string name="title_activity_theme_preferences">الثيمات</string>
+  <string name="title_activity_theme_preferences">السمات</string>
   <string name="title_activity_dev_logs">السجلات</string>
   <string name="pinned">قد ثبت فى مطلق البرامج</string>
   <string name="unpinned">تم الغاء تثبيته فى مطلق البرامج</string>
   <string name="notpinned">ليس مثبت</string>
   <string name="alreadypinned">هو مثبت مسبقا</string>
-  <string name="developed_by">تم تطويره من قبل روبن جيكوبس</string>
+  <string name="developed_by">تم تطويره من قبل روبن جَيكوبس</string>
   <string name="honourable_mentions">يشرفنا أن نذكرهم</string>
   <string name="button_back">رجوع</string>
   <string name="button_about">عن التطبيق</string>
@@ -33,13 +33,17 @@
   <string name="option_launchericon_size">حجم الايقونات المثبتة</string>
   <string name="hint_launchericon_size">كم حجم ايقونات التطبيقات المثبتة. المنزلق يذهب من 48 dip إلى 120 dip، مع الافتراضى (فى المنتصف) يكون 84 dip.</string>
   <string name="option_launchericon_opacity">شفافية ايقونات الخلفية</string>
+  <string name="option_launcher_running_show">إظهار التطبيقات التي تعمل</string>
   <string name="option_panel_show">أظهر</string>
   <string name="hint_panel_show">سواء القائمة فى أعلى الشاشة يجب أن تظهر ام لا.</string>
   <string name="option_panel_opacity">الشفافية</string>
   <string name="hint_panel_opacity">كم شفافية القائمة يجب ان تكون.</string>
   <string name="option_unitybackground_dynamic">لون خلفية ديناميكي</string>
+  <string name="option_launcher_edge">زاوية الشاشة</string>
+  <string name="option_lenses">مصادر البحث</string>
   <!--No longer used
     <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
     <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
         http://stackoverflow.com/a/8483078/521361</string>-->
+  <string name="contribute_translate_go">اذهب إلى Transifex</string>
 </resources>

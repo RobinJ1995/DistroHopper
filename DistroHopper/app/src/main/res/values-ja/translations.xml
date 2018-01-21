@@ -39,10 +39,6 @@
     <item>暗くする</item>
     <item>小型化そして拡大する（デフォルト）</item>
   </string-array>
-  <string-array name="keys_launcher_edge">
-    <item>左側（デフォルト）</item>
-    <item>右側</item>
-  </string-array>
   <string name="option_wallpaper">壁紙</string>
   <string name="hint_wallpaper">壁紙を変える</string>
   <string name="option_colourcalc_advanced">サンプル数を増やす</string>

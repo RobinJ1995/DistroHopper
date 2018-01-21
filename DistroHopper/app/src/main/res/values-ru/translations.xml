@@ -43,10 +43,6 @@
     <item>Затемнить</item>
     <item>Уменьшить и увеличить(по умолчанию)</item>
   </string-array>
-  <string-array name="keys_launcher_edge">
-    <item>К левой(по умолчанию)</item>
-    <item>К правой</item>
-  </string-array>
   <string name="option_wallpaper">обои</string>
   <string name="hint_wallpaper">Изменить обои</string>
   <string name="option_colourcalc_advanced">Использование большего количества образцов цвета</string>

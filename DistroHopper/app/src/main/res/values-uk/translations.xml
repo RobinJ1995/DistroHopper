@@ -57,10 +57,6 @@
     <item>Затемнити</item>
     <item>Зменшити і збільшити (за замовчуванням)</item>
   </string-array>
-  <string-array name="keys_launcher_edge">
-    <item>До лівої (за замовчуванням)</item>
-    <item>До правої</item>
-  </string-array>
   <string name="option_wallpaper">Шпалери</string>
   <string name="hint_wallpaper">Змінити шпалери</string>
   <string name="option_colourcalc_advanced">Використання більшої кількості зразків кольору</string>

@@ -43,10 +43,6 @@
     <item>Escurecido</item>
     <item>Desfoque ativo (padrão)</item>
   </string-array>
-  <string-array name="keys_launcher_edge">
-    <item>Esquerda (padrão)</item>
-    <item>Direita</item>
-  </string-array>
   <string name="option_wallpaper">Papel de Parede</string>
   <string name="hint_wallpaper">Alterar papel de parede</string>
   <string name="option_colourcalc_advanced">Aumentar amostragem</string>

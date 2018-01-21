@@ -19,6 +19,12 @@
   <string name="button_about">Über</string>
   <string name="button_contribute">Beitragen</string>
   <string name="button_apply">Anwenden</string>
+  <string-array name="launcher_edges">
+    <item>Oben</item>
+    <item>Rechts</item>
+    <item>Unten</item>
+    <item>Links</item>
+  </string-array>
   <string name="title_preferences">Einstellungen</string>
   <string name="pref_header_general">Allgemein</string>
   <string name="pref_header_unity">Unity</string>
@@ -55,10 +61,6 @@
   <string name="hint_launcher_edge">Auf welcher Seite des Bildschirms der Launcher angezeigt werden.</string>
   <string name="option_widgets_enabled">Widgets</string>
   <string name="hint_widgets_enabled">Ermöglichen <b>experimentelle</b> Widget-Unterstützung. (Es funktioniert noch nicht richtig.)</string>
-  <string-array name="keys_launcher_edge">
-    <item>Links (Standard)</item>
-    <item>Rechts</item>
-  </string-array>
   <string name="option_wallpaper">Hintergrundbild</string>
   <string name="hint_wallpaper">Hintergrundbild ändern</string>
   <string name="option_colourcalc_advanced">Mehr Samples nutzen</string>
@@ -94,6 +96,7 @@ https://github.com/Todd-Davies/ProgressWheel/</string>
   <string name="hm_commonsguy_why">*Ich habe diese Farbmixer-Komponente in den Einstellungen genutzt.\n
 https://github.com/commonsguy/cwac-colormixer</string>
   <string name="hm_translators_name">Das Übersetzungsteam</string>
+  <string name="hm_translators_why">* Ein paar Leute haben ihre Zeit und Mühe investiert um diese App in ihrer Sprache verfügbar zu machen. Ich bin all diesen Leuten für ihre Unterstützung für das Projekt dankbar.</string>
   <string name="title_activity_contribute">Wie kann ich beitragen?</string>
   <string name="contribute_intro">Viel Zeit und harte Arbeit wurde in die Entwicklung dieser App gesteckt. Wenn du helfen möchtest gibt es hierfür viele Möglichkeiten.</string>
   <string name="contribute_translate_title">Übersetzen</string>

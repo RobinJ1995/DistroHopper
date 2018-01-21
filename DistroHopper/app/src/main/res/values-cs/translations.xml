@@ -42,7 +42,6 @@ Dynamická barva pozadí</string>
   <string name="hint_unitywallpaper_blur">Metoda, která by měla být použita pro rozmazání pozadí při otevření Dash. Když se \"amp Zmenšení rozsahu a, upscale\" je vybrán a selže (nebo živé tapety je nastaveno), \"tmavší\" bude použit jako nouzové řešení.</string>
   <string name="option_launcher_edge">Okraj obrazovky</string>
   <string name="hint_launcher_edge">To which screen edge the Launcher should be attached.</string>
-  <string-array name="keys_launcher_edge"/>
   <string name="option_wallpaper">Tapeta</string>
   <string name="hint_wallpaper">Změnit tapetu</string>
   <string name="option_colourcalc_advanced">Vezme více vzorků</string>
