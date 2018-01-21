@@ -38,6 +38,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -240,7 +241,6 @@ public class HomeActivity extends AppCompatActivity
 			Intent intent = this.getIntent ();
 			if (intent != null)
 			{
-				Bundle bundle = intent.getExtras ();
 				modeCustomise = intent.getBooleanExtra ("customise", modeCustomise);
 				this.openDashWhenReady = intent.getBooleanExtra ("openDash", this.openDashWhenReady) || modeCustomise;
 			}
@@ -707,7 +707,7 @@ public class HomeActivity extends AppCompatActivity
 				llLauncherPinnedApps.setOrientation (LinearLayout.HORIZONTAL);
 				llLauncherRunningApps.setOrientation (LinearLayout.HORIZONTAL);
 				
-				llLauncherAndDashContainer.setGravity (Gravity.TOP);
+				llLauncherAndDashContainer.setGravity (Gravity.TOP | Gravity.CENTER);
 				
 				/*llLauncherAndDashContainer.removeView (llLauncher);
 				llLauncherAndDashContainer.removeView (this.llDash);
@@ -740,7 +740,7 @@ public class HomeActivity extends AppCompatActivity
 				llLauncherPinnedApps.setOrientation (LinearLayout.HORIZONTAL);
 				llLauncherRunningApps.setOrientation (LinearLayout.HORIZONTAL);
 				
-				llLauncherAndDashContainer.setGravity (Gravity.BOTTOM);
+				llLauncherAndDashContainer.setGravity (Gravity.BOTTOM | Gravity.CENTER);
 				
 				llLauncherAndDashContainer.removeView (llLauncher);
 				llLauncherAndDashContainer.removeView (this.llDash);
@@ -767,24 +767,26 @@ public class HomeActivity extends AppCompatActivity
 				llLauncherRunningApps.setLayoutParams (llLauncherRunningApps_layoutParams);
 				
 				break;
-			
 			case Location.RIGHT:
-				llLauncherAndDashContainer.setGravity (Gravity.RIGHT);
+				llLauncherAndDashContainer.setGravity (Gravity.RIGHT | Gravity.CENTER);
 				
 				llLauncherAndDashContainer.removeView (llLauncher);
 				llLauncherAndDashContainer.removeView (llDash);
 				
 				llLauncherAndDashContainer.addView (llDash);
 				llLauncherAndDashContainer.addView (llLauncher);
-			case Location.LEFT: // Falls through //
-				if (! expand)
-				{
-					llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-					llLauncher.setLayoutParams (llLauncher_layoutParams);
-					
-					llLauncherAndDashContainer.setGravity (Gravity.CENTER_VERTICAL);
-				}
+				
 				break;
+			case Location.LEFT: // Falls through //
+				llLauncherAndDashContainer.setGravity (Gravity.LEFT | Gravity.CENTER);
+				
+				break;
+		}
+		
+		if (! expand)
+		{
+			llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+			llLauncher.setLayoutParams (llLauncher_layoutParams);
 		}
 		
 		final int[] panelSwapClosePreferencesWhenLauncherLocation = this.getResources ().getIntArray (theme.panel_swap_close_preferences_when_launcher_location);

@@ -9,7 +9,7 @@ public class Default extends Theme
 {
 	public Default ()
 	{
-		this.name = "Ubuntu";
+		this.name = "Ubuntu Unity";
 		this.description = "Ubuntu's Unity desktop";
 		this.res_screenshots = new int[]
 		{

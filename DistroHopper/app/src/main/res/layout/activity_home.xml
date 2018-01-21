@@ -55,6 +55,7 @@
 			android:visibility="gone">
 		</LinearLayout>
 
+		<!-- Panel -->
 		<LinearLayout
 			android:id="@+id/llPanel"
 			android:layout_width="match_parent"
@@ -104,6 +105,7 @@
 				android:src="@drawable/panel_cog" />
 		</LinearLayout>
 
+		<!-- Launcher & Dash -->
 		<LinearLayout
 			android:id="@+id/llLauncherAndDashContainer"
 			android:layout_width="match_parent"
@@ -114,6 +116,7 @@
 			android:baselineAligned="false"
 			android:orientation="horizontal">
 
+			<!-- Launcher -->
 			<LinearLayout
 				android:id="@+id/llLauncher"
 				android:layout_width="wrap_content"
@@ -208,6 +211,7 @@
 
 			</LinearLayout>
 
+			<!-- Dash -->
 			<LinearLayout
 				android:id="@+id/llDash"
 				android:layout_width="match_parent"
