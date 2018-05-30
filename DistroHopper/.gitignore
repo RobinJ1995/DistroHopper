@@ -5,3 +5,6 @@
 .DS_Store
 .directory
 /build
+app-release.apk
+/app/release/
+/app/build/
