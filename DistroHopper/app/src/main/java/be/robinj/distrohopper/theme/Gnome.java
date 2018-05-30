@@ -43,6 +43,7 @@ public class Gnome extends Theme
 
 		// Panel //
 		this.panel_location = R.integer.theme_gnome_panel_location;
+		this.panel_location_supported = R.array.theme_gnome_panel_location_supported;
 		this.panel_height = R.dimen.theme_gnome_panel_height;
 		this.panel_background = R.drawable.theme_gnome_panel_background;
 		this.panel_background_dynamic_when_dash_opened = R.bool.theme_gnome_panel_background_dynamic_when_dash_opened;

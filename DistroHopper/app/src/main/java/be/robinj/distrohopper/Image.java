@@ -54,6 +54,10 @@ public class Image
 		return new BitmapDrawable(bitmap);
 	}
 
+	public int getAverageColour (final int alpha) {
+		return this.getAverageColour(true, true, alpha);
+	}
+
 	public int getAverageColour (boolean advanced, boolean useHsv, int alpha)
 	{
 		try

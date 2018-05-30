@@ -32,6 +32,7 @@ public class ThemePreferencesButtonClickListener implements View.OnClickListener
 			Theme theme = (Theme) view.getTag ();
 			editor.putString ("theme", theme.getName ());
 			editor.putInt ("launcher_edge", parent.getResources ().getInteger (theme.launcher_location));
+			editor.putInt ("panel_edge", parent.getResources ().getInteger (theme.panel_location));
 			editor.apply ();
 
 			this.parent.finish ();

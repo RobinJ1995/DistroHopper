@@ -13,10 +13,6 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.snappydb.DB;
-import com.snappydb.DBFactory;
-import com.snappydb.SnappydbException;
-
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -90,7 +86,7 @@ public class AppManager implements Iterable<App>
 
 	public void add (ResolveInfo resInf, boolean checkDuplicate, boolean sortAndNotifyAdapter)
 	{
-		this.add (App.fromResolveInfo (this.getContext (), this, resInf), checkDuplicate, sortAndNotifyAdapter);
+		this.add (new App(this.getContext (), this, resInf), checkDuplicate, sortAndNotifyAdapter);
 	}
 
 	public void addRunningApps (int colour)
@@ -254,12 +250,12 @@ public class AppManager implements Iterable<App>
 		this.pinned.add (newIndex, app);
 	}
 
-	public boolean pin (App app) throws SnappydbException
+	public boolean pin (App app)
 	{
 		return this.pin (app, true, true, true);
 	}
 
-	public boolean pin (App app, boolean save, boolean showToast, boolean addView) throws SnappydbException
+	public boolean pin (App app, boolean save, boolean showToast, boolean addView)
 	{
 		if (! this.isPinned (app))
 		{
@@ -324,7 +320,7 @@ public class AppManager implements Iterable<App>
 		}
 	}
 
-	public boolean remove (App app) throws SnappydbException
+	public boolean remove (App app)
 	{
 		boolean modified = this.apps.remove (app);
 		this.unpin (app, false);
@@ -336,9 +332,8 @@ public class AppManager implements Iterable<App>
 		return modified;
 	}
 
-	public void savePinnedApps () throws SnappydbException
+	public void savePinnedApps ()
 	{
-		/*
 		SharedPreferences prefs = this.getContext ().getSharedPreferences ("pinned", Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = prefs.edit ();
 
@@ -354,11 +349,7 @@ public class AppManager implements Iterable<App>
 			editor.putString (Integer.toString (i), packageAndActivityName.toString ());
 		}
 
-		editor.apply ();*/
-
-		DB db = DBFactory.open (this.getContext ());
-		db.put ("launcher_pinnedApps", this.pinned.toArray ());
-		db.close ();
+		editor.apply ();
 
 		this.parent.pinnedAppsChanged ();
 	}
@@ -410,17 +401,17 @@ public class AppManager implements Iterable<App>
 		Collections.sort (this.apps, comparator);
 	}
 
-	public boolean unpin (int index) throws SnappydbException
+	public boolean unpin (int index)
 	{
 		return this.unpin (this.pinned.get (index));
 	}
 
-	public boolean unpin (App app) throws SnappydbException
+	public boolean unpin (App app)
 	{
 		return this.unpin (app, true);
 	}
 
-	public boolean unpin (App app, boolean showToast) throws SnappydbException
+	public boolean unpin (App app, boolean showToast)
 	{
 		boolean modified = this.pinned.remove (app);
 
@@ -435,7 +426,7 @@ public class AppManager implements Iterable<App>
 			Toast.makeText (this.getContext (), app.getLabel () + message, Toast.LENGTH_SHORT).show ();
 		}
 
-		be.robinj.distrohopper.desktop.launcher.AppLauncher appLauncher = (be.robinj.distrohopper.desktop.launcher.AppLauncher) this.llLauncherPinnedApps.findViewWithTag (app);
+		be.robinj.distrohopper.desktop.launcher.AppLauncher appLauncher = this.llLauncherPinnedApps.findViewWithTag (app);
 		this.llLauncherPinnedApps.removeView (appLauncher);
 
 		this.savePinnedApps ();

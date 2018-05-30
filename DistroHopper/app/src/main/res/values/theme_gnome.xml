@@ -18,7 +18,8 @@
     <bool name="theme_gnome_launcher_expand">false</bool>
     <bool name="theme_gnome_launcher_background_dynamic">false</bool>
     <array name="theme_gnome_launcher_background">
-        <item>@color/transparent</item>
+        <item>@android:color/transparent</item>
+        <item>@android:color/transparent</item>
         <item>@drawable/theme_gnome_res_launcher_background_right</item>
         <item>@drawable/theme_gnome_res_launcher_background_bottom</item>
         <item>@drawable/theme_gnome_res_launcher_background_left</item>
@@ -39,6 +40,9 @@
 
     <!-- Panel -->
     <integer name="theme_gnome_panel_location">@integer/position_top</integer>
+    <array name="theme_gnome_panel_location_supported">
+        <item>@integer/position_top</item>
+    </array>
     <dimen name="theme_gnome_panel_height">28dp</dimen>
     <drawable name="theme_gnome_panel_background">@drawable/theme_gnome_res_panel_background</drawable>
     <bool name="theme_gnome_panel_background_dynamic_when_dash_opened">false</bool>

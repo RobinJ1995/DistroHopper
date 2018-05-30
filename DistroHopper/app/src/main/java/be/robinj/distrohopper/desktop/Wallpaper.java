@@ -151,17 +151,11 @@ public class Wallpaper extends ImageView
 		}
 	}
 
-	public int getAverageColour (int alpha)
+	public int getAverageColour(final int alpha)
 	{
-		SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
+		final Image image = new Image(this.img);
 
-		Image image = new Image (this.img);
-		return image.getAverageColour
-		(
-			prefs.getBoolean ("colourcalc_advanced", true),
-			prefs.getBoolean ("colourcalc_hsv", true),
-			alpha
-		);
+		return image.getAverageColour(alpha);
 	}
 
 	public boolean isLiveWallpaper ()

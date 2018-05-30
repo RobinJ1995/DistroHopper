@@ -5,9 +5,9 @@ package be.robinj.distrohopper.theme;
  */
 public final class Location
 {
-	public static final int NONE = -1;
-	public static final int TOP = 0;
-	public static final int RIGHT = 1;
-	public static final int BOTTOM = 2;
-	public static final int LEFT = 3;
+	public static final int NONE = 0;
+	public static final int TOP = 1;
+	public static final int RIGHT = 2;
+	public static final int BOTTOM = 3;
+	public static final int LEFT = 4;
 }

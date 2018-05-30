@@ -46,11 +46,9 @@ public class PackageManagerBroadcastReceiver extends BroadcastReceiver
 					{
 						friendlyAction = "added";
 
-						PackageManager pacMan = context.getPackageManager ();
-
 						for (ResolveInfo resInf : appManager.queryInstalledApps (packageName))
 						{
-							App app = App.fromResolveInfo (context, pacMan, appManager, resInf);
+							final App app = new App(context, appManager, resInf);
 							appManager.add (app, true, true);
 						}
 					}

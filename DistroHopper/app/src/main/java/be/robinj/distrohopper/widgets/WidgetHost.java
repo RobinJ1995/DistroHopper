@@ -7,10 +7,12 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.GridLayout;
 import android.widget.RelativeLayout;
 
 import be.robinj.distrohopper.HomeActivity;
 import be.robinj.distrohopper.RequestCode;
+import be.robinj.distrohopper.dev.Log;
 
 /**
  * Created by robin on 8/25/14.
@@ -27,7 +29,7 @@ public class WidgetHost extends AppWidgetHost
 
 		this.parent = parent;
 		this.widgetManager = widgetManager;
-		this.vgWidgets = (WidgetsContainer) parent.findViewById (hostId);
+		this.vgWidgets = parent.findViewById (hostId);
 	}
 
 	@Override
@@ -71,6 +73,8 @@ public class WidgetHost extends AppWidgetHost
 
 		this.vgWidgets.addView (container);
 
+		Log.getInstance().v(this.getClass().getSimpleName(), "Widget created: " + id);
+
 		hostView.setOnLongClickListener (new WidgetHostView_LongClickListener (container));
 	}
 
@@ -90,6 +94,8 @@ public class WidgetHost extends AppWidgetHost
 		}
 		else
 		{
+			Log.getInstance().v(this.getClass().getSimpleName(), "Widget requires configuration: " + id);
+
 			Intent intent = new Intent (AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
 			intent.setComponent (info.configure);
 			intent.putExtra (AppWidgetManager.EXTRA_APPWIDGET_ID, id);

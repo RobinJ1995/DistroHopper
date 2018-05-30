@@ -23,6 +23,7 @@
         <item>@android:color/transparent</item>
         <item>@android:color/transparent</item>
         <item>@android:color/transparent</item>
+        <item>@android:color/transparent</item>
     </array>
     <integer name="theme_default_launcher_bfb_location">@integer/position_top</integer>
     <drawable name="theme_default_launcher_bfb_image">@drawable/launcher_bfb</drawable>
@@ -40,6 +41,10 @@
 
     <!-- Panel -->
     <integer name="theme_default_panel_location">@integer/position_top</integer>
+    <array name="theme_default_panel_location_supported">
+        <item>@integer/position_top</item>
+        <item>@integer/position_none</item>
+    </array>
     <dimen name="theme_default_panel_height">28dp</dimen>
     <drawable name="theme_default_panel_background">@drawable/panel_background</drawable>
     <bool name="theme_default_panel_background_dynamic_when_dash_opened">true</bool>

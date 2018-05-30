@@ -1,18 +1,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <CheckBoxPreference
-        android:key="colourcalc_advanced"
-        android:title="@string/option_colourcalc_advanced"
-        android:summary="@string/hint_colourscalc_advanced"
-        android:defaultValue="true" />
-
-    <CheckBoxPreference
-        android:key="colourcalc_hsv"
-        android:title="@string/option_colourcalc_hsv"
-        android:summary="@string/hint_colourcalc_hsv"
-        android:defaultValue="true" />
-
-    <CheckBoxPreference
         android:key="dev"
         android:title="@string/option_dev"
         android:summary="@string/hint_dev"

@@ -21,7 +21,8 @@
     <string name="button_contribute">Contribute</string>
     <string name="button_apply">Apply</string>
 
-    <string-array name="launcher_edges">
+    <string-array name="edges">
+        <item>Hide</item>
         <item>Top</item>
         <item>Right</item>
         <item>Bottom</item>
@@ -49,6 +50,8 @@
     <string name="hint_launcher_running_show">The Launcher will show which apps are currently running. This will be indicated by a small arrow on the left side of the icon. Apps which are running but have not been pinned to the Launcher will also be shown.\nNOTE: This feature no longer works reliably from Android 5.0 onwards because of restrictions that were added to the operating system.</string>
     <string name="option_panel_show">Show</string>
     <string name="hint_panel_show">Whether the Panel at the top of the screen should be shown or not.</string>
+    <string name="option_panel_edge">Panel location</string>
+    <string name="hint_panel_edge">To which screen edge the Panel should be attached.</string>
     <string name="option_panel_opacity">Opacity</string>
     <string name="hint_panel_opacity">How opaque the Panel should be.</string>
     <string name="option_unitybackground_dynamic">Dynamic background colour</string>
@@ -60,10 +63,10 @@
     <string name="hint_unitybackground_opacity">How opaque the background colour of transparent Unity components should be.</string>
     <string name="option_unitywallpaper_blur">Wallpaper blur method</string>
     <string name="hint_unitywallpaper_blur">The method that should be used to blur the background when the Dash is opened. When \"Downscale &amp; upscale\" is chosen and it fails (or a live wallpaper is set), \"Darken\" will be used as fallback.</string>
-    <string name="option_launcher_edge">Screen edge</string>
+    <string name="option_launcher_edge">Launcher location</string>
     <string name="hint_launcher_edge">To which screen edge the Launcher should be attached.</string>
     <string name="option_widgets_enabled">Widgets</string>
-    <string name="hint_widgets_enabled">Enable <b>experimental</b> widget support. (Don\'t. It doesn\'t work yet, so it\'s no use.)</string>
+    <string name="hint_widgets_enabled">Enable <b>experimental</b> (read: <b>broken</b> widget support. (This is very experimental and not very usable in it\'t current state. So I recommend you don\'t.)</string>
 
     <string-array name="keys_unitywallpaper_blur">
         <item>Don\'t blur</item>
@@ -73,10 +76,6 @@
 
     <string name="option_wallpaper">Wallpaper</string>
     <string name="hint_wallpaper">Change wallpaper</string>
-    <string name="option_colourcalc_advanced">Take more samples</string>
-    <string name="hint_colourscalc_advanced">Taking more samples greatly increases accuracy but can result in longer loading times on slower devices.</string>
-    <string name="option_colourcalc_hsv">Use HSV</string>
-    <string name="hint_colourcalc_hsv">Using HSV (Hue, Saturation, Value) instead of plain RGB (Red, Green, Blue) will result in colours being much more vibrant, but the calculations that are being preformed are more complicated which can result in longer loading times on slower devices.</string>
     <string name="option_dashsearch_full">Advanced search</string>
     <string name="hint_dashsearch_full">Enabling this option will result in better Dash search results but will also affect performance on slower devices or devices with a lot of apps installed. If Dash search is slow for you, you might want to consider disabling this.</string>
     <string name="option_dashsearch_lenses">Use lenses</string>

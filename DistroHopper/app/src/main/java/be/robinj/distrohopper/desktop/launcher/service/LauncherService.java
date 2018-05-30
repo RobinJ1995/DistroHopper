@@ -124,7 +124,6 @@ public class LauncherService extends Service
 
 				for (App app : pinned)
 				{
-					app.fixAfterUnpackingFromParcel (this);
 					AppLauncher appLauncher = new AppLauncher (this, app);
 
 					appLauncher.setOnClickListener (new AppLauncherClickListener ());
@@ -151,8 +150,6 @@ public class LauncherService extends Service
 
 				for (App app : running)
 				{
-					app.fixAfterUnpackingFromParcel (this);
-
 					if (this.isPinned (app))
 					{
 						AppLauncher appLauncher = (AppLauncher) llLauncherPinnedApps.findViewWithTag (app.getPackageName () + "\n" + app.getActivityName ());

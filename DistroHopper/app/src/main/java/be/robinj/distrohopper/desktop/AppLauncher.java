@@ -173,16 +173,11 @@ public class AppLauncher extends LinearLayout
 			LinearLayout llBackground = (LinearLayout) this.findViewById (R.id.llBackground);
 			if (llBackground != null && (! this.special) && this.getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
 			{
-				SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
+				final SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
 
-				int avgColour = this.icon.getAverageColour
-				(
-					prefs.getBoolean ("colourcalc_advanced", true),
-					prefs.getBoolean ("colourcalc_hsv", true),
-					prefs.getInt ("launchericon_opacity", 204)
-				);
+				final int avgColour = this.icon.getAverageColour(prefs.getInt ("launchericon_opacity", 204));
 
-				GradientDrawable gd = (GradientDrawable) llBackground.getBackground ();
+				final GradientDrawable gd = (GradientDrawable) llBackground.getBackground ();
 				gd.setColor (avgColour);
 			}
 		}

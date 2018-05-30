@@ -22,7 +22,7 @@ public class DevLogsActivity extends Activity implements IObserver
 
 		this.log = Log.getInstance ();
 
-		this.tvLogs = (TextView) this.findViewById (R.id.tvLogs);
+		this.tvLogs = this.findViewById (R.id.tvLogs);
 		this.tvLogs.setText (this.log.getLog ());
 
 		this.log.attachObserver (this);

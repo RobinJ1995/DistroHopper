@@ -42,7 +42,7 @@ public class ThemePreferencesActivity extends AppCompatActivity
 			}
 		}
 
-		ListView lvThemeList = (ListView) this.findViewById (R.id.lvThemeList);
+		ListView lvThemeList = this.findViewById (R.id.lvThemeList);
 		lvThemeList.setAdapter (new ThemePreferencesListViewAdapter (this, themes));
 	}
 

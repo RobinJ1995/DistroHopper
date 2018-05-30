@@ -8,9 +8,6 @@ import android.os.AsyncTask;
 import android.view.View;
 import android.widget.GridView;
 
-import com.snappydb.DB;
-import com.snappydb.DBFactory;
-
 import java.util.List;
 
 import be.robinj.distrohopper.dev.Log;
@@ -51,7 +48,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 			this.context = params[0];
 
 			appManager = new AppManager (this.parent);
-			DB db = DBFactory.open (this.context);
+			final SharedPreferences prefsPinned = this.context.getSharedPreferences ("pinned", Context.MODE_PRIVATE);
 
 			/*try
 			{
@@ -76,11 +73,9 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 			if (this.isCancelled ())
 				return null;
 
-			PackageManager pacMan = this.context.getPackageManager ();
-
 			for (int i = 0; i < size; i++)
 			{
-				ResolveInfo resInf = resInfs.get (i);
+				final ResolveInfo resInf = resInfs.get (i);
 				boolean skip = false;
 				
 				for (int j = 0; j < this.IGNORE.length; j++)
@@ -91,7 +86,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 				if (skip)
 					continue;
 				
-				App app = App.fromResolveInfo (this.context, pacMan, appManager, resInf);
+				final App app = new App(this.context, appManager, resInf);
 				appManager.add (app, false, false);
 
 				this.publishProgress ((float) i, fSize);
@@ -112,18 +107,26 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 			if (this.isCancelled ())
 				return null;
 
-			if (db.exists ("launcher_pinnedApps"))
+			if (prefsPinned.getAll().size() > 0)
 			{
-				App[] apps = db.getObjectArray ("launcher_pinnedApps", App.class);
+				final App[] pinnedApps = new App[prefsPinned.getAll().size()];
 
-				for (App app : apps)
-				{
-					app.fixAfterUnserialize (appManager);
+				int i = 0;
+				String appInfo = null;
+				while ((appInfo = prefsPinned.getString(Integer.toString(i), null)) != null) {
+					final String[] packageAndActivityName = appInfo.split("\n");
+					pinnedApps[i] = appManager.findAppByPackageAndActivityName(packageAndActivityName[0], packageAndActivityName[1]);
+					i++;
+				}
+
+				for (final App app : pinnedApps) {
+					if (app == null) {
+						continue;
+					}
+
 					appManager.pin (app, false, false, false);
 				}
 			}
-
-			db.close ();
 		}
 		catch (Exception ex)
 		{

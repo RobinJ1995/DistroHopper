@@ -43,6 +43,7 @@ public class Elementary extends Theme
 
 		// Panel //
 		this.panel_location = R.integer.theme_elementary_panel_location;
+		this.panel_location_supported = R.array.theme_elementary_panel_location_supported;
 		this.panel_height = R.dimen.theme_default_panel_height;
 		this.panel_background = R.drawable.theme_elementary_panel_background;
 		this.panel_background_dynamic_when_dash_opened = R.bool.theme_elementary_panel_background_dynamic_when_dash_opened;

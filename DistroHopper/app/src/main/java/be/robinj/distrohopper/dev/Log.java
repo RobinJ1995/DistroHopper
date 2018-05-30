@@ -8,6 +8,7 @@ import be.robinj.distrohopper.Observed;
 public class Log extends Observed
 {
 	private StringBuilder log = new StringBuilder ();
+	private String last = null;
 	private boolean enabled = false;
 
 	private static Log instance;
@@ -64,6 +65,10 @@ public class Log extends Observed
 		return this.log.toString ();
 	}
 
+	public String getLastEntry() {
+		return this.last;
+	}
+
 	public void setEnabled (boolean enabled)
 	{
 		this.enabled = enabled;
@@ -73,13 +78,16 @@ public class Log extends Observed
 	{
 		if (this.enabled)
 		{
-			this.log.append ("[")
+			final StringBuilder entry = new StringBuilder()
+				.append ("[")
 				.append (type.toUpperCase ())
 				.append ("] ")
 				.append (tag)
 				.append (": ")
-				.append (message)
-				.append ("\n");
+				.append (message);
+			this.log.append(entry)
+				.append ("\n");;
+			this.last = entry.toString();
 
 			this.nudgeObservers ();
 		}

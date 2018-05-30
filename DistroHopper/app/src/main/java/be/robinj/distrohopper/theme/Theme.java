@@ -36,6 +36,7 @@ public abstract class Theme
 
 	// Panel //
 	public int panel_location;
+	public int panel_location_supported;
 	public int panel_height;
 	public int panel_background;
 	public int panel_background_dynamic_when_dash_opened;

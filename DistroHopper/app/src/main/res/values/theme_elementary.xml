@@ -20,6 +20,7 @@
     <bool name="theme_elementary_launcher_expand">false</bool>
     <bool name="theme_elementary_launcher_background_dynamic">false</bool>
     <array name="theme_elementary_launcher_background">
+        <item>@android:color/transparent</item>
         <item>@drawable/theme_elementary_res_launcher_background_top</item>
         <item>@drawable/theme_elementary_res_launcher_background_right</item>
         <item>@drawable/theme_elementary_res_launcher_background_bottom</item>
@@ -41,6 +42,9 @@
 
     <!-- Panel -->
     <integer name="theme_elementary_panel_location">@integer/position_top</integer>
+    <array name="theme_elementary_panel_location_supported">
+        <item>@integer/position_top</item>
+    </array>
     <dimen name="theme_elementary_panel_height">32dp</dimen>
     <drawable name="theme_elementary_panel_background">@android:color/transparent</drawable>
     <bool name="theme_elementary_panel_background_dynamic_when_dash_opened">false</bool>

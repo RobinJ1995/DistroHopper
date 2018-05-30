@@ -26,67 +26,21 @@ public class App implements Serializable, Parcelable
 	private String packageName;
 	private String activityName;
 
+	private transient ResolveInfo resInf = null;
+	private boolean labelLoaded = false;
+	private boolean iconLoaded = false;
+
 	private transient Context context;
 	private transient AppManager appManager;
 
-	public static App fromResolveInfo (Context context, AppManager appManager, ResolveInfo resInf)
-	{
-		PackageManager pacMan = context.getPackageManager ();
-
-		return App.fromResolveInfo (context, pacMan, appManager, resInf);
-	}
-
-	public static App fromResolveInfo (Context context, PackageManager pacMan, AppManager appManager, ResolveInfo resInf)
-	{
-		String label = resInf.loadLabel (pacMan).toString ();
-		String packageName = resInf.activityInfo.applicationInfo.packageName;
-		String activityName = resInf.activityInfo.name;
-
-		App app = new App (context, appManager);
-		app.setLabel (label);
-		app.setPackageName (packageName);
-		app.setActivityName (activityName);
-
-		AppIcon icon = null;
-		if (appManager.isIconPackLoaded ())
-			icon = appManager.getIconPack ().getIconForApp (app);
-		if (icon == null)
-			icon = appManager.getIconPack ().getFallbackIcon (resInf.loadIcon (pacMan));
-
-		app.setIcon (icon);
-
-		return app;
-	}
-
-	public static App fromActivityInfo (Context context, PackageManager pacMan, AppManager appManager, ActivityInfo activityInfo)
-	{
-		String label = activityInfo.loadLabel (pacMan).toString ();
-		String packageName = activityInfo.applicationInfo.packageName;
-		String activityName = activityInfo.name;
-
-		App app = new App (context, appManager);
-		app.setLabel (label);
-		app.setPackageName (packageName);
-		app.setActivityName (activityName);
-
-		AppIcon icon = null;
-		if (appManager.isIconPackLoaded ())
-			icon = appManager.getIconPack ().getIconForApp (app);
-		if (icon == null)
-			icon = appManager.getIconPack ().getFallbackIcon (activityInfo.loadIcon (pacMan));
-
-		app.setIcon (icon);
-
-		return app;
-	}
-
-	public App () // This constructor should never be invoked manually. That's SnappyDB's job. //
-	{
-	}
-
-	private App (Context context)
+	public App (Context context, AppManager appManager, ResolveInfo resInf)
 	{
 		this.context = context;
+		this.appManager = appManager;
+		this.resInf = resInf;
+
+		this.packageName = resInf.activityInfo.applicationInfo.packageName;
+		this.activityName = resInf.activityInfo.name;
 	}
 
 	private App (Parcel parcel)
@@ -95,12 +49,6 @@ public class App implements Serializable, Parcelable
 		this.description = parcel.readString ();
 		this.label = parcel.readString ();
 		this.packageName = parcel.readString ();
-	}
-
-	private App (Context context, AppManager appManager)
-	{
-		this.context = context;
-		this.appManager = appManager;
 	}
 
 	public void launch ()
@@ -137,22 +85,30 @@ public class App implements Serializable, Parcelable
 	//# Getters & Setters #//
 	public String getLabel ()
 	{
-		return label;
-	}
+		if (! this.labelLoaded) {
+			this.label = this.resInf.activityInfo.loadLabel(this.getPackageManager()).toString();
+			this.labelLoaded = true;
+		}
 
-	public void setLabel (String label)
-	{
-		this.label = label;
+		return this.label;
 	}
 
 	public AppIcon getIcon ()
 	{
-		return icon;
-	}
+		if (! this.iconLoaded) {
+			AppIcon icon = null;
+			if (this.appManager.isIconPackLoaded ()) {
+				icon = this.appManager.getIconPack().getIconForApp(this);
+			}
+			if (icon == null) {
+				icon = this.appManager.getIconPack().getFallbackIcon(this.resInf.loadIcon(this.getPackageManager()));
+			}
 
-	public void setIcon (AppIcon icon)
-	{
-		this.icon = icon;
+			this.icon = icon;
+			this.iconLoaded = true;
+		}
+
+		return this.icon;
 	}
 
 	public String getDescription ()
@@ -170,19 +126,9 @@ public class App implements Serializable, Parcelable
 		return packageName;
 	}
 
-	public void setPackageName (String packageName)
-	{
-		this.packageName = packageName;
-	}
-
 	public String getActivityName ()
 	{
 		return activityName;
-	}
-
-	public void setActivityName (String activityName)
-	{
-		this.activityName = activityName;
 	}
 
 	public AppManager getAppManager ()
@@ -193,6 +139,10 @@ public class App implements Serializable, Parcelable
 	public AppLauncher getDashAppLauncher ()
 	{
 		return new AppLauncher (this.context, this);
+	}
+
+	private PackageManager getPackageManager() {
+		return this.context.getPackageManager ();
 	}
 
 	//# Parcelable, Serializable #//
@@ -207,7 +157,7 @@ public class App implements Serializable, Parcelable
 	{
 		dest.writeString (this.activityName);
 		dest.writeString (this.description);
-		dest.writeString (this.label);
+		dest.writeString (this.getLabel());
 		dest.writeString (this.packageName);
 	}
 
@@ -223,24 +173,4 @@ public class App implements Serializable, Parcelable
 			return new App[size];
 		}
 	};
-
-	public void fixAfterUnpackingFromParcel (Context context)
-	{
-		this.context = context;
-
-		PackageManager pacMan = context.getPackageManager ();
-
-		Intent intent = new Intent ();
-		intent.setComponent (new ComponentName (this.packageName, this.activityName));
-		ResolveInfo resInf = pacMan.resolveActivity (intent, 0);
-		
-		this.icon = new AppIcon (resInf.loadIcon (pacMan));
-	}
-
-	public void fixAfterUnserialize (AppManager appManager)
-	{
-		this.appManager = appManager;
-
-		this.fixAfterUnpackingFromParcel (appManager.getContext ());
-	}
 }
