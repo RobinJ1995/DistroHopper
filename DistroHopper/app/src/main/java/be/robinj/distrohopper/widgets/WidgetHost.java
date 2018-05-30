@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.widget.RelativeLayout;
 
 import be.robinj.distrohopper.HomeActivity;
+import be.robinj.distrohopper.RequestCode;
 
 /**
  * Created by robin on 8/25/14.
@@ -93,7 +94,7 @@ public class WidgetHost extends AppWidgetHost
 			intent.setComponent (info.configure);
 			intent.putExtra (AppWidgetManager.EXTRA_APPWIDGET_ID, id);
 
-			this.parent.startActivityForResult (intent, 3);
+			this.parent.startActivityForResult (intent, RequestCode.WIDGET_CONFIGURED);
 		}
 	}
 
@@ -113,6 +114,6 @@ public class WidgetHost extends AppWidgetHost
 		addEmptyData (pickIntent);
 		*/
 
-		this.parent.startActivityForResult (intent, 2);
+		this.parent.startActivityForResult (intent, RequestCode.WIDGET_PICKED);
 	}
 }

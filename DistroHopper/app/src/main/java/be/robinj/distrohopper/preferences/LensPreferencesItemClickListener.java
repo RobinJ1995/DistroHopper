@@ -42,8 +42,8 @@ public class LensPreferencesItemClickListener implements View.OnClickListener //
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this.lensManager.getContext (), ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this.lensManager.getContext ());
 		}
 	}
 }

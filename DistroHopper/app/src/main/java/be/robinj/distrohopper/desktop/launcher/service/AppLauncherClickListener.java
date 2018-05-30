@@ -17,8 +17,8 @@ public class AppLauncherClickListener implements View.OnClickListener
 		/*}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (view.getContext (), ex); // Doesn't work //
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex); // Doesn't work //
+			exh.show (view.getContext());
 		}*/
 	}
 }

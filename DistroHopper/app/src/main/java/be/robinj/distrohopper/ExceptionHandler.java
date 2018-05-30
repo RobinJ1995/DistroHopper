@@ -4,34 +4,24 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.text.Html;
 
-import java.util.Map;
-
 import be.robinj.distrohopper.dev.Log;
 
 /**
  * Created by robin on 8/22/14.
  */
-public class ExceptionHandler
-{
-	private Context context;
-	private Exception ex;
+public class ExceptionHandler {
+	private final Throwable ex;
 
-	public ExceptionHandler (Context context, Exception ex)
-	{
-		this.context = context;
+	public ExceptionHandler(final Throwable ex) {
 		this.ex = ex;
 	}
 
-	public void show ()
+	public void show (final Context context)
 	{
-		StringBuilder message = new StringBuilder ();
-		StringBuilder stackTrace = new StringBuilder ();
+		final StringBuilder message = new StringBuilder ();
+		final String stackTrace = this.getStackTrace();
 
-		for (StackTraceElement ste : this.ex.getStackTrace ())
-			stackTrace.append (ste.toString ())
-				.append ("\n");
-
-		this.logException (stackTrace.toString ());
+		this.log(stackTrace);
 
 		message.append ("Oops! Something went wrong!\n")
 			.append ("If this happens a lot, then please send an e-mail to ")
@@ -44,13 +34,13 @@ public class ExceptionHandler
 			.append (this.ex.getMessage ())
 			.append ("\n\n")
 			.append ("Stack trace:\n")
-			.append (stackTrace.toString ());
+			.append (stackTrace);
 
-		if (this.context != null)
+		if (context != null)
 		{
 			try
 			{
-				AlertDialog.Builder dlg = new AlertDialog.Builder (this.context);
+				AlertDialog.Builder dlg = new AlertDialog.Builder (context);
 				dlg.setTitle ("(╯°□°）╯︵ ┻━┻");
 				dlg.setMessage (message.toString ());
 				dlg.setCancelable (true);
@@ -68,18 +58,66 @@ public class ExceptionHandler
 			Log.getInstance ().w (this.getClass ().getSimpleName (), "User wasn't notified that there was a problem because context == NULL");
 		}
 
-		try
-		{
-			Tracker.trackException (ex, stackTrace);
+		this.track();
+	}
+
+	public void logAndTrack() {
+		this.log();
+		this.track();
+	}
+
+	private void track() {
+		this.track(this.ex);
+	}
+
+	private void track(final Throwable ex) {
+		if (this.ex instanceof Exception) {
+			this.trackException((Exception) this.ex);
+		} else if (this.ex instanceof Error) {
+			this.trackError((Error) this.ex);
 		}
-		catch (Exception ex2)
-		{
+	}
+
+	private void trackException(final Exception ex) {
+		try {
+			Tracker.trackException (ex, this.getStackTrace(ex));
+		} catch (Exception ex2) {
 			Log.getInstance ().w (this.getClass ().getSimpleName (), "Problem description couldn't be sent: " + ex2.getMessage ());
 		}
 	}
 
-	private void logException (String stackTrace)
-	{
+	private void trackError(final Error error) {
+		try {
+			Tracker.trackEvent("error", error.getClass().getSimpleName(), this.getStackTrace(error));
+		} catch (Exception ex2) {
+			Log.getInstance ().w (this.getClass ().getSimpleName (), "Problem description couldn't be sent: " + ex2.getMessage ());
+		}
+	}
+
+	private String getStackTrace() {
+		return this.getStackTrace(this.ex);
+	}
+
+	private String getStackTrace(final Throwable ex) {
+		final StringBuilder stackTrace = new StringBuilder ();
+
+		for (final StackTraceElement ste : ex.getStackTrace ()) {
+			stackTrace.append(ste.toString())
+				.append("\n");
+		}
+
+		return stackTrace.toString();
+	}
+
+	public void log() {
+		this.log(this.ex);
+	}
+
+	public void log(final Throwable ex) {
+		this.log(this.getStackTrace(ex));
+	}
+
+	private void log(final String stackTrace) {
 		Log.getInstance ().e (this.getClass ().getSimpleName (), this.ex.getClass ().getName () + "\n\n" + this.ex.getMessage () + "\n\n" + stackTrace.toString ());
 	}
 }

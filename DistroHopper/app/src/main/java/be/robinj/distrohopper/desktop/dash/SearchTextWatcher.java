@@ -37,8 +37,8 @@ public class SearchTextWatcher implements TextWatcher
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this.apps.getContext (), ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this.apps.getContext ());
 		}
 	}
 

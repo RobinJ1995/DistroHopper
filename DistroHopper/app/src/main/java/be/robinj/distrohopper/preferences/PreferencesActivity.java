@@ -133,8 +133,8 @@ public class PreferencesActivity extends PreferenceActivity
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 
 		return super.onOptionsItemSelected (item);

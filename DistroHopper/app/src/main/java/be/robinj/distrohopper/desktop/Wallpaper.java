@@ -1,16 +1,21 @@
 package be.robinj.distrohopper.desktop;
 
+import android.Manifest;
 import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.Image;
+import be.robinj.distrohopper.Permission;
 import be.robinj.distrohopper.R;
 
 /**
@@ -48,8 +53,14 @@ public class Wallpaper extends ImageView
 
 	public void init ()
 	{
-		WallpaperManager wpman = WallpaperManager.getInstance (this.context);
-		this.img = wpman.getDrawable ();
+		final WallpaperManager wpman = WallpaperManager.getInstance(this.context);
+		final Permission permissionExternalStorage = new Permission(this.context, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+		if (permissionExternalStorage.check()) {
+			this.img = wpman.getDrawable();
+		} else {
+			this.img = this.getResources().getDrawable(R.drawable.wallpaper);
+		}
 
 		try
 		{
@@ -81,11 +92,12 @@ public class Wallpaper extends ImageView
 		{
 			this.blurred = null;
 
-			ex.printStackTrace ();
+			new ExceptionHandler(ex).logAndTrack();
 		}
 
 		WallpaperInfo info = wpman.getWallpaperInfo ();
-		this.liveWallpaper = (info != null);
+		this.liveWallpaper = (info != null
+				&& !info.getPackageName().startsWith("net.oneplus.launcher")); // OnePlus 5T always seems to use a live wallpaper, presumably for the blur animation when opening OnePlus' "shelf"
 	}
 
 	public void set ()

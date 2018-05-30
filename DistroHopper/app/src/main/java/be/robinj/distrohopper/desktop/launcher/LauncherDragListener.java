@@ -40,8 +40,8 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this.appManager.getContext (), ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this.appManager.getContext ());
 		}
 
 		return true;

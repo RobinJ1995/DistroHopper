@@ -74,8 +74,8 @@ public class InstalledApps extends Lens
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this.context, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this.context);
 		}
 	}
 }

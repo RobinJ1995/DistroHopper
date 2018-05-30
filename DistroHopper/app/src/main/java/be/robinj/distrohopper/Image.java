@@ -1,7 +1,9 @@
 package be.robinj.distrohopper;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
@@ -16,17 +18,25 @@ import be.robinj.distrohopper.dev.Log;
  */
 public class Image
 {
-	private Drawable drawable;
+	private final Drawable drawable;
 
-	public Image (Drawable drawable)
+	public Image (final Drawable drawable)
 	{
-		this.drawable = drawable;
+		if (drawable instanceof AdaptiveIconDrawable) {
+			this.drawable = adaptiveIconToDrawable((AdaptiveIconDrawable) drawable);
+		} else {
+			this.drawable = drawable;
+		}
 	}
 
 	public Image (Bitmap bitmap)
 	{
-		BitmapDrawable bmd = new BitmapDrawable (bitmap);
-		this.drawable = bmd;
+		this(new BitmapDrawable (bitmap));
+	}
+
+	public Image (AdaptiveIconDrawable adaptive)
+	{
+		this(adaptiveIconToDrawable(adaptive));
 	}
 
 	public Drawable getDrawable ()
@@ -34,9 +44,14 @@ public class Image
 		return drawable;
 	}
 
-	public void setDrawable (Drawable drawable)
-	{
-		this.drawable = drawable;
+	private static Drawable adaptiveIconToDrawable(AdaptiveIconDrawable adaptive) {
+		final Bitmap bitmap = Bitmap.createBitmap(adaptive.getIntrinsicWidth(), adaptive.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+		final Canvas canvas = new Canvas(bitmap);
+
+		adaptive.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+		adaptive.draw(canvas);
+
+		return new BitmapDrawable(bitmap);
 	}
 
 	public int getAverageColour (boolean advanced, boolean useHsv, int alpha)
@@ -265,7 +280,8 @@ public class Image
 		catch (Exception ex)
 		{
 			Log.getInstance ().e ("Image", "Failed to calculate average colour of " + this.drawable.getClass ().getSimpleName () + " object");
-			
+			new ExceptionHandler(ex).logAndTrack();
+
 			return Color.TRANSPARENT;
 		}
 	}

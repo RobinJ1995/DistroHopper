@@ -69,8 +69,8 @@ public class ContributeActivity extends AppCompatActivity
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 	}
 
@@ -84,8 +84,8 @@ public class ContributeActivity extends AppCompatActivity
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 	}
 
@@ -99,8 +99,8 @@ public class ContributeActivity extends AppCompatActivity
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 	}
 	

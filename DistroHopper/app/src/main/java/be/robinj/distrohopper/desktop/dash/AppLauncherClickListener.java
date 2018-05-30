@@ -29,8 +29,8 @@ public class AppLauncherClickListener implements AdapterView.OnItemClickListener
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this.parent, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this.parent);
 		}
 	}
 }

@@ -99,6 +99,8 @@ public class HomeActivity extends AppCompatActivity
 
 		try
 		{
+			Permission.requestBasicPermissions(this);
+
 			modeCustomise = false;
 			final SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 
@@ -447,8 +449,8 @@ public class HomeActivity extends AppCompatActivity
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 	}
 
@@ -473,7 +475,7 @@ public class HomeActivity extends AppCompatActivity
 		{
 			super.onActivityResult (requestCode, resultCode, data);
 
-			if (requestCode == 1) // ActivityPreferences //
+			if (requestCode == RequestCode.ACTIVITY_PREFERENCES)
 			{
 				Intent intent = this.getIntent ();
 				
@@ -485,14 +487,14 @@ public class HomeActivity extends AppCompatActivity
 				
 				//this.overridePendingTransition (R.anim.home_to_preferences_in, R.anim.home_to_preferences_out);
 			}
-			else if (requestCode == 2) // Widget picked //
+			else if (requestCode == RequestCode.WIDGET_PICKED)
 			{
 				if (resultCode == RESULT_OK)
 					this.widgetHost.configureWidget (data);
 				else
 					this.widgetHost.removeWidget (data);
 			}
-			else if (requestCode == 3) // Widget configured //
+			else if (requestCode == RequestCode.WIDGET_CONFIGURED)
 			{
 				if (resultCode == RESULT_OK)
 					this.widgetHost.createWidget (data);
@@ -502,8 +504,8 @@ public class HomeActivity extends AppCompatActivity
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 	}
 
@@ -519,8 +521,8 @@ public class HomeActivity extends AppCompatActivity
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 	}
 
@@ -544,8 +546,8 @@ public class HomeActivity extends AppCompatActivity
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 	}
 
@@ -561,8 +563,8 @@ public class HomeActivity extends AppCompatActivity
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 	}
 
@@ -593,8 +595,8 @@ public class HomeActivity extends AppCompatActivity
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 	}
 
@@ -611,8 +613,8 @@ public class HomeActivity extends AppCompatActivity
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 	}
 
@@ -862,8 +864,8 @@ public class HomeActivity extends AppCompatActivity
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 	}
 
@@ -934,8 +936,8 @@ public class HomeActivity extends AppCompatActivity
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 	}
 
@@ -961,8 +963,8 @@ public class HomeActivity extends AppCompatActivity
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 	}
 
@@ -974,8 +976,8 @@ public class HomeActivity extends AppCompatActivity
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 	}
 
@@ -989,12 +991,12 @@ public class HomeActivity extends AppCompatActivity
 				this.asyncLoadApps.cancel (true);
 
 			Intent intent = new Intent (this, PreferencesActivity.class);
-			this.startActivityForResult (intent, 1);
+			this.startActivityForResult (intent, RequestCode.ACTIVITY_PREFERENCES);
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 	}
 
@@ -1003,13 +1005,11 @@ public class HomeActivity extends AppCompatActivity
 		try
 		{
 			this.openDash ();
-
-
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler exh = new ExceptionHandler (this, ex);
-			exh.show ();
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
 		}
 	}
 
