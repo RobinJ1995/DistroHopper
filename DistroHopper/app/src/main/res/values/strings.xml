@@ -66,7 +66,7 @@
     <string name="option_launcher_edge">Launcher location</string>
     <string name="hint_launcher_edge">To which screen edge the Launcher should be attached.</string>
     <string name="option_widgets_enabled">Widgets</string>
-    <string name="hint_widgets_enabled">Enable <b>experimental</b> (read: <b>broken</b> widget support. (This is very experimental and not very usable in it\'t current state. So I recommend you don\'t.)</string>
+    <string name="hint_widgets_enabled">Enable <b>experimental</b> (read: <b>broken</b>) widget support.\nThis is very experimental and not very usable in itt current state. So I recommend you don\'t.</string>
 
     <string-array name="keys_unitywallpaper_blur">
         <item>Don\'t blur</item>
