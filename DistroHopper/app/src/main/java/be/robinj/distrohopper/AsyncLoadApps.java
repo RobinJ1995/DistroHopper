@@ -8,7 +8,9 @@ import android.os.AsyncTask;
 import android.view.View;
 import android.widget.GridView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.thirdparty.ProgressWheel;
@@ -67,8 +69,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 			
 			List<ResolveInfo> resInfs = appManager.queryInstalledApps ();
 			int size = resInfs.size ();
-			float fSize = (float) size;
-			this.publishProgress (0F, fSize);
+			this.publishProgress (0F, 3F);
 
 			if (this.isCancelled ())
 				return null;
@@ -88,8 +89,6 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 				
 				final App app = new App(this.context, appManager, resInf);
 				appManager.add (app, false, false);
-
-				this.publishProgress ((float) i, fSize);
 			}
 
 			long tDoneRetrievingInstalledApps = System.currentTimeMillis ();
@@ -97,36 +96,36 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 
 			Log.getInstance ().v (this.getClass ().getSimpleName (), "Data about " + size + " installed apps was retrieved from the package manager. Operation took " + tdRetrievingInstalledApps + " seconds.");
 
-			this.publishProgress (360.0F, 360.0F);
+			this.publishProgress (1F, 3F);
 
 			if (this.isCancelled ())
 				return null;
 
 			appManager.sort ();
 
+			this.publishProgress (2F, 3F);
+
 			if (this.isCancelled ())
 				return null;
 
 			if (prefsPinned.getAll().size() > 0)
 			{
-				final App[] pinnedApps = new App[prefsPinned.getAll().size()];
+				final Map<String, App> appMap = appManager.getInstalledAppsMap();
 
 				int i = 0;
-				String appInfo = null;
-				while ((appInfo = prefsPinned.getString(Integer.toString(i), null)) != null) {
-					final String[] packageAndActivityName = appInfo.split("\n");
-					pinnedApps[i] = appManager.findAppByPackageAndActivityName(packageAndActivityName[0], packageAndActivityName[1]);
-					i++;
-				}
+				String packageAndActivityName = null;
+				while ((packageAndActivityName = prefsPinned.getString(Integer.toString(i++), null)) != null) {
+					final App pinnedApp  = appMap.get(packageAndActivityName);
 
-				for (final App app : pinnedApps) {
-					if (app == null) {
+					if (pinnedApp == null) {
 						continue;
 					}
 
-					appManager.pin (app, false, false, false);
+					appManager.pin(pinnedApp, false, false, false);
 				}
 			}
+
+			this.publishProgress (3F, 3F);
 		}
 		catch (Exception ex)
 		{

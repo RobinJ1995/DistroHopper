@@ -25,7 +25,7 @@ public class Image
 	public Image (Drawable drawable) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			if (drawable instanceof AdaptiveIconDrawable) {
-				drawable = adaptiveIconToDrawable((android.graphics.drawable.AdaptiveIconDrawable) drawable);
+				drawable = adaptiveIconToDrawable((AdaptiveIconDrawable) drawable);
 			}
 		}
 

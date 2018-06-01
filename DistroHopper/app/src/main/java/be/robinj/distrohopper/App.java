@@ -131,6 +131,13 @@ public class App implements Serializable, Parcelable
 		return activityName;
 	}
 
+	public String getPackageAndActivityName() {
+		return new StringBuilder(this.getPackageName())
+				.append("\n")
+				.append(this.getActivityName())
+				.toString();
+	}
+
 	public AppManager getAppManager ()
 	{
 		return appManager;

@@ -19,8 +19,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import be.robinj.distrohopper.desktop.launcher.AppLauncher;
 import be.robinj.distrohopper.desktop.launcher.AppLauncherClickListener;
@@ -159,6 +163,16 @@ public class AppManager implements Iterable<App>
 	public List<App> getInstalledApps ()
 	{
 		return this.apps;
+	}
+
+	public Map<String, App> getInstalledAppsMap() {
+		final Map<String, App> map = new HashMap<>();
+
+		for (final App app : this.apps) {
+			map.put(app.getPackageAndActivityName(), app);
+		}
+
+		return map;
 	}
 
 	public HomeActivity getParent ()
