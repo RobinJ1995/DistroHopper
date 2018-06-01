@@ -115,10 +115,12 @@ public class HomeActivity extends AppCompatActivity
 			// Only enable logging if dev mode is enabled // When not enabled nothing will be appended to the internal log variable //
 			if (prefs.getBoolean ("dev", false)) {
 				final Log log = Log.getInstance();
-				this.logToaster = new LogToaster(this);
-
 				log.setEnabled (true);
-				log.attachObserver(this.logToaster);
+
+				if (prefs.getBoolean("dev_log_toaster", false)) {
+					this.logToaster = new LogToaster(this);
+					log.attachObserver(this.logToaster);
+				}
 			}
 
 			// Get ALL the views! //

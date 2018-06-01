@@ -9,6 +9,13 @@
 	</Preference>
 
 	<CheckBoxPreference
+		android:key="dev_log_toaster"
+		android:dependency="dev"
+		android:title="@string/option_dev_log_toaster"
+		android:summary="@string/hint_dev_log_toaster"
+		android:defaultValue="false" />
+
+	<CheckBoxPreference
 		android:key="widgets_enabled"
 		android:dependency="dev"
 		android:title="@string/option_widgets_enabled"
