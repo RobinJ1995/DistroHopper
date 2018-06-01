@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class StringCache implements Map<String, String> {
+public class StringCache implements ICache<String> {
 	private final SharedPreferences prefs;
 
 	protected StringCache(Context context, String name) {
@@ -19,7 +19,7 @@ public abstract class StringCache implements Map<String, String> {
 
 	@Override
 	public int size() {
-		return prefs.getAll().size();
+		return this.prefs.getAll().size();
 	}
 
 	@Override

@@ -16,6 +16,7 @@ import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.HomeActivity;
+import be.robinj.distrohopper.cache.AppIconCache;
 import be.robinj.distrohopper.cache.AppLabelCache;
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.thirdparty.ProgressWheel;
@@ -80,6 +81,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Integer, AppManager>
 				return null;
 
 			final AppLabelCache appLabelCache = new AppLabelCache(context);
+			final AppIconCache appIconCache = new AppIconCache(context);
 
 			for (int i = 0; i < size; i++)
 			{
@@ -94,7 +96,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Integer, AppManager>
 				if (skip)
 					continue;
 				
-				final App app = new App(this.context, appManager, resInf, appLabelCache);
+				final App app = new App(this.context, appManager, resInf, appLabelCache, appIconCache);
 				appManager.add (app, false, false);
 			}
 

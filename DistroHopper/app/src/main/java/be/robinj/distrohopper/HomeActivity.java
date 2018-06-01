@@ -41,9 +41,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import be.robinj.distrohopper.async.AsyncInitWallpaper;
+import be.robinj.distrohopper.async.AsyncLoadAppIcons;
 import be.robinj.distrohopper.async.AsyncLoadAppLabels;
 import be.robinj.distrohopper.async.AsyncLoadApps;
 import be.robinj.distrohopper.broadcast.PackageManagerBroadcastReceiver;
+import be.robinj.distrohopper.cache.AppIconCache;
 import be.robinj.distrohopper.cache.AppLabelCache;
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.dev.LogToaster;
@@ -87,6 +89,7 @@ public class HomeActivity extends AppCompatActivity
 	private AsyncInitWallpaper asyncInitWallpaper;
 	private AsyncLoadApps asyncLoadApps;
 	private AsyncLoadAppLabels asyncLoadAppLabels;
+	private AsyncLoadAppIcons asyncLoadAppIcons;
 
 	public static boolean modeCustomise = false;
 	private boolean openDashWhenReady = false;
@@ -686,6 +689,8 @@ public class HomeActivity extends AppCompatActivity
 			this.asyncLoadApps.cancel (true);
 		if (this.asyncLoadAppLabels != null)
 			this.asyncLoadAppLabels.cancel (true);
+		if (this.asyncLoadAppIcons != null)
+			this.asyncLoadAppIcons.cancel (true);
 
 		super.onDestroy ();
 	}
@@ -944,6 +949,8 @@ public class HomeActivity extends AppCompatActivity
 
 			this.asyncLoadAppLabels = new AsyncLoadAppLabels(installedApps);
 			this.asyncLoadAppLabels.execute(new AppLabelCache(this.getBaseContext()));
+			this.asyncLoadAppIcons = new AsyncLoadAppIcons(installedApps);
+			this.asyncLoadAppIcons.execute(new AppIconCache(this.getBaseContext()));
 		}
 		catch (Exception ex)
 		{

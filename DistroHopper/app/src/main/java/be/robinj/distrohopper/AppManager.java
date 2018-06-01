@@ -482,4 +482,8 @@ public class AppManager implements Iterable<App>
 	public void asyncLoadAppLabelsDone() {
 		this.gvDashHomeApps.invalidateViews();
 	}
+
+	public void asyncLoadAppIconsDone() {
+		this.gvDashHomeApps.invalidateViews();
+	}
 }

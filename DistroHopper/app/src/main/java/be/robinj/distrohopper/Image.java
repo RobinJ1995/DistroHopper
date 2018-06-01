@@ -32,11 +32,6 @@ public class Image
 		this.drawable = drawable;
 	}
 
-	public Drawable getDrawable ()
-	{
-		return drawable;
-	}
-
 	@RequiresApi(Build.VERSION_CODES.O)
 	private static Drawable adaptiveIconToDrawable(AdaptiveIconDrawable adaptive) {
 		final Bitmap bitmap = Bitmap.createBitmap(adaptive.getIntrinsicWidth(), adaptive.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -46,6 +41,27 @@ public class Image
 		adaptive.draw(canvas);
 
 		return new BitmapDrawable(bitmap);
+	}
+
+	@Override
+	public boolean equals(Object image) {
+		if (!(image instanceof Image)) {
+			return false;
+		}
+
+		final Drawable.ConstantState state1 = this.drawable.getConstantState();
+		final Drawable.ConstantState state2 = ((Image) image).getDrawable().getConstantState();
+
+		if (state1 == null) {
+			return false;
+		}
+
+		return state1.equals(state2);
+	}
+
+	public Drawable getDrawable ()
+	{
+		return drawable;
 	}
 
 	public int getAverageColour (final int alpha) {
@@ -282,5 +298,24 @@ public class Image
 
 			return Color.TRANSPARENT;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		return this.drawable.hashCode();
+	}
+
+	public Bitmap toBitmap() {
+		if (this.drawable instanceof BitmapDrawable) {
+			return ((BitmapDrawable) this.drawable).getBitmap();
+		}
+
+		final Bitmap bitmap = Bitmap.createBitmap(this.drawable.getIntrinsicWidth(), this.drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+
+		final Canvas canvas = new Canvas(bitmap);
+		this.drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+		this.drawable.draw(canvas);
+
+		return bitmap;
 	}
 }

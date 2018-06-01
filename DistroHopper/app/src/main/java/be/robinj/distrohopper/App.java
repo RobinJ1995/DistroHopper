@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.Toast;
 
+import be.robinj.distrohopper.cache.DrawableCache;
 import be.robinj.distrohopper.cache.StringCache;
 import be.robinj.distrohopper.desktop.AppIcon;
 import be.robinj.distrohopper.desktop.dash.AppLauncher;
@@ -41,13 +43,19 @@ public class App implements Parcelable
 		this.activityName = resInf.activityInfo.name;
 	}
 
-	public App (Context context, AppManager appManager, ResolveInfo resInf, StringCache appLabelCache)
+	public App(final Context context, final AppManager appManager, final ResolveInfo resInf,
+			   final StringCache appLabelCache, final DrawableCache iconCache)
 	{
 		this(context, appManager, resInf);
 
-		final String label = appLabelCache.get(this.getPackageAndActivityName());
+		final String packageAndActivityName = this.getPackageAndActivityName();
+		final String label = appLabelCache.get(packageAndActivityName);
 		if (label != null) {
 			this.label = label;
+		}
+		final Drawable icon = iconCache.get(packageAndActivityName);
+		if (icon != null) {
+			this.icon = new AppIcon(icon);
 		}
 	}
 
@@ -114,7 +122,7 @@ public class App implements Parcelable
 		this.label = label;
 		this.labelLoaded = true;
 
-		if (!old.equals(label)) {
+		if (!old.equals(label) || !appLabelCache.containsKey(this.getPackageAndActivityName())) {
 			appLabelCache.put(this.getPackageAndActivityName(), label);
 
 			return true;
@@ -123,9 +131,13 @@ public class App implements Parcelable
 		return false;
 	}
 
-	public AppIcon getIcon ()
+	public AppIcon getIcon() {
+		return this.getIcon(true);
+	}
+
+	public AppIcon getIcon (boolean useCached)
 	{
-		if (! this.iconLoaded) {
+		if (this.icon == null || (!this.iconLoaded && !useCached)) {
 			AppIcon icon = null;
 			if (this.appManager.isIconPackLoaded ()) {
 				icon = this.appManager.getIconPack().getIconForApp(this);
@@ -139,6 +151,25 @@ public class App implements Parcelable
 		}
 
 		return this.icon;
+	}
+
+	public boolean setIcon(final AppIcon icon, final DrawableCache appIconCache) {
+		final AppIcon old = this.icon;
+
+		this.icon = icon;
+		this.iconLoaded = true;
+
+		if (!old.equals(icon) || !appIconCache.containsKey(this.getPackageAndActivityName())) {
+			appIconCache.put(this.getPackageAndActivityName(), icon.getDrawable());
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isIconLoaded() {
+		return this.iconLoaded;
 	}
 
 	public String getDescription ()
