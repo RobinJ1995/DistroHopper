@@ -478,4 +478,8 @@ public class AppManager implements Iterable<App>
 		
 		this.llLauncherPinnedApps.setAlpha (1.0F);
 	}
+
+	public void asyncLoadAppLabelsDone() {
+		this.gvDashHomeApps.invalidateViews();
+	}
 }

@@ -1,4 +1,4 @@
-package be.robinj.distrohopper;
+package be.robinj.distrohopper.async;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,6 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import be.robinj.distrohopper.App;
+import be.robinj.distrohopper.AppManager;
+import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.HomeActivity;
+import be.robinj.distrohopper.cache.AppLabelCache;
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.thirdparty.ProgressWheel;
 import be.robinj.distrohopper.desktop.dash.AppLauncherClickListener;
@@ -22,7 +27,7 @@ import be.robinj.distrohopper.desktop.launcher.SpinnerAppLauncher;
 /**
  * Created by robin on 8/21/14.
  */
-public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
+public class AsyncLoadApps extends AsyncTask<Context, Integer, AppManager>
 {
 	private SpinnerAppLauncher lalSpinner;
 	private be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb;
@@ -65,14 +70,16 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 				ex.printStackTrace ();
 			}*/
 
-			long tStartRetrievingInstalledApps = System.currentTimeMillis ();
+			long tStart = System.currentTimeMillis ();
 			
 			List<ResolveInfo> resInfs = appManager.queryInstalledApps ();
 			int size = resInfs.size ();
-			this.publishProgress (0F, 3F);
+			this.publishProgress (0, 3);
 
 			if (this.isCancelled ())
 				return null;
+
+			final AppLabelCache appLabelCache = new AppLabelCache(context);
 
 			for (int i = 0; i < size; i++)
 			{
@@ -87,28 +94,32 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 				if (skip)
 					continue;
 				
-				final App app = new App(this.context, appManager, resInf);
+				final App app = new App(this.context, appManager, resInf, appLabelCache);
 				appManager.add (app, false, false);
 			}
 
 			long tDoneRetrievingInstalledApps = System.currentTimeMillis ();
-			float tdRetrievingInstalledApps = (float) (tDoneRetrievingInstalledApps - tStartRetrievingInstalledApps) / 1000F;
+			long tdRetrievingInstalledApps = tDoneRetrievingInstalledApps - tStart;
+			Log.getInstance ().v (this.getClass ().getSimpleName (), "Retrieved " + size + " apps from package manager in " + tdRetrievingInstalledApps + "ms.");
 
-			Log.getInstance ().v (this.getClass ().getSimpleName (), "Data about " + size + " installed apps was retrieved from the package manager. Operation took " + tdRetrievingInstalledApps + " seconds.");
-
-			this.publishProgress (1F, 3F);
+			this.publishProgress (1, 3);
 
 			if (this.isCancelled ())
 				return null;
 
 			appManager.sort ();
 
-			this.publishProgress (2F, 3F);
+			long tDoneSortingInstalledApps = System.currentTimeMillis ();
+			long tdSortingInstalledApps = tDoneSortingInstalledApps - tDoneRetrievingInstalledApps;
+			Log.getInstance ().v (this.getClass ().getSimpleName (), "Sorted " + size + " apps in " + tdSortingInstalledApps + "ms.");
+
+			this.publishProgress (2, 3);
 
 			if (this.isCancelled ())
 				return null;
 
-			if (prefsPinned.getAll().size() > 0)
+			final int nPinned = prefsPinned.getAll().size();
+			if (nPinned > 0)
 			{
 				final Map<String, App> appMap = appManager.getInstalledAppsMap();
 
@@ -125,7 +136,11 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 				}
 			}
 
-			this.publishProgress (3F, 3F);
+			long tDoneFilteringPinnedApps = System.currentTimeMillis ();
+			long tdFilteringPinnedApps = tDoneFilteringPinnedApps - tDoneSortingInstalledApps;
+			Log.getInstance ().v (this.getClass ().getSimpleName (), "Loaded " + nPinned + " pinned apps in " + tdFilteringPinnedApps + "ms.");
+
+			this.publishProgress (3, 3);
 		}
 		catch (Exception ex)
 		{
@@ -137,12 +152,12 @@ public class AsyncLoadApps extends AsyncTask<Context, Float, AppManager>
 	}
 
 	@Override
-	protected void onProgressUpdate (Float... progress)
+	protected void onProgressUpdate (Integer... progress)
 	{
 		super.onProgressUpdate (progress[0]);
 
 		ProgressWheel pw = this.lalSpinner.getProgressWheel ();
-		pw.setProgress ((int) (progress[0] / progress[1] * 360));
+		pw.setProgress (progress[0] / progress[1] * 360);
 	}
 
 	@Override

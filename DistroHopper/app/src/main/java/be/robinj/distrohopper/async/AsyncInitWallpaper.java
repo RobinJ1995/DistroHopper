@@ -1,7 +1,8 @@
-package be.robinj.distrohopper;
+package be.robinj.distrohopper.async;
 
 import android.os.AsyncTask;
 
+import be.robinj.distrohopper.HomeActivity;
 import be.robinj.distrohopper.desktop.Wallpaper;
 
 /**

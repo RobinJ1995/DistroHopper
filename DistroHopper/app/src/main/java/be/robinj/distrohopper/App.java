@@ -3,22 +3,20 @@ package be.robinj.distrohopper;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.Toast;
 
-import java.io.Serializable;
-
+import be.robinj.distrohopper.cache.StringCache;
 import be.robinj.distrohopper.desktop.AppIcon;
 import be.robinj.distrohopper.desktop.dash.AppLauncher;
 
 /**
  * Created by robin on 8/20/14.
  */
-public class App implements Serializable, Parcelable
+public class App implements Parcelable
 {
 	private String label;
 	private transient AppIcon icon;
@@ -41,6 +39,16 @@ public class App implements Serializable, Parcelable
 
 		this.packageName = resInf.activityInfo.applicationInfo.packageName;
 		this.activityName = resInf.activityInfo.name;
+	}
+
+	public App (Context context, AppManager appManager, ResolveInfo resInf, StringCache appLabelCache)
+	{
+		this(context, appManager, resInf);
+
+		final String label = appLabelCache.get(this.getPackageAndActivityName());
+		if (label != null) {
+			this.label = label;
+		}
 	}
 
 	private App (Parcel parcel)
@@ -83,14 +91,36 @@ public class App implements Serializable, Parcelable
 	}
 
 	//# Getters & Setters #//
-	public String getLabel ()
-	{
-		if (! this.labelLoaded) {
+	public String getLabel() {
+		return this.getLabel(true);
+	}
+
+	public String getLabel(final boolean useCached) {
+		if (this.label == null || (!this.labelLoaded && !useCached)) {
 			this.label = this.resInf.activityInfo.loadLabel(this.getPackageManager()).toString();
 			this.labelLoaded = true;
 		}
 
 		return this.label;
+	}
+
+	public boolean isLabelLoaded() {
+		return this.labelLoaded;
+	}
+
+	public boolean setLabel(final String label, final StringCache appLabelCache) {
+		final String old = this.label;
+
+		this.label = label;
+		this.labelLoaded = true;
+
+		if (!old.equals(label)) {
+			appLabelCache.put(this.getPackageAndActivityName(), label);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public AppIcon getIcon ()

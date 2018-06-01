@@ -35,14 +35,16 @@ import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import be.robinj.distrohopper.async.AsyncInitWallpaper;
+import be.robinj.distrohopper.async.AsyncLoadAppLabels;
+import be.robinj.distrohopper.async.AsyncLoadApps;
 import be.robinj.distrohopper.broadcast.PackageManagerBroadcastReceiver;
+import be.robinj.distrohopper.cache.AppLabelCache;
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.dev.LogToaster;
 import be.robinj.distrohopper.preferences.PreferencesActivity;
@@ -84,6 +86,7 @@ public class HomeActivity extends AppCompatActivity
 
 	private AsyncInitWallpaper asyncInitWallpaper;
 	private AsyncLoadApps asyncLoadApps;
+	private AsyncLoadAppLabels asyncLoadAppLabels;
 
 	public static boolean modeCustomise = false;
 	private boolean openDashWhenReady = false;
@@ -679,6 +682,8 @@ public class HomeActivity extends AppCompatActivity
 			this.asyncInitWallpaper.cancel (true);
 		if (this.asyncLoadApps != null)
 			this.asyncLoadApps.cancel (true);
+		if (this.asyncLoadAppLabels != null)
+			this.asyncLoadAppLabels.cancel (true);
 
 		super.onDestroy ();
 	}
@@ -934,6 +939,9 @@ public class HomeActivity extends AppCompatActivity
 			ifPackageManager.addDataScheme ("package");
 
 			this.registerReceiver (this.broadcastPackageManager, ifPackageManager);
+
+			this.asyncLoadAppLabels = new AsyncLoadAppLabels(installedApps);
+			this.asyncLoadAppLabels.execute(new AppLabelCache(this.getBaseContext()));
 		}
 		catch (Exception ex)
 		{
