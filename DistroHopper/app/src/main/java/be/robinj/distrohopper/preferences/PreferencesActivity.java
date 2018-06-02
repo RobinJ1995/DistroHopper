@@ -73,11 +73,10 @@ public class PreferencesActivity extends PreferenceActivity
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
+		super.setTheme (R.style.PreferencesTheme);
 		super.onCreate (savedInstanceState);
 
 		this.setupActionBar ();
-		
-		
 	}
 
 	/**
