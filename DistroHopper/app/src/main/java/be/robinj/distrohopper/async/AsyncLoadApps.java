@@ -165,8 +165,11 @@ public class AsyncLoadApps extends AsyncTask<Context, Integer, AppManager>
 	@Override
 	protected void onPostExecute (AppManager appManager)
 	{
-		try
-		{
+		try {
+			if (this.isCancelled()) {
+				return;
+			}
+
 			this.lalSpinner.setVisibility (View.GONE);
 			this.lalBfb.setVisibility (View.VISIBLE);
 			
@@ -177,9 +180,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Integer, AppManager>
 			this.gvDashHomeApps.setOnItemLongClickListener (new AppLauncherLongClickListener (this.parent));
 			
 			this.parent.asyncLoadInstalledAppsDone (appManager);
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			ExceptionHandler exh = new ExceptionHandler (ex);
 			exh.show (this.parent);
 		}

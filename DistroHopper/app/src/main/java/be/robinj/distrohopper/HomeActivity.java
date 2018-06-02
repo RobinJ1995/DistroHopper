@@ -683,14 +683,7 @@ public class HomeActivity extends AppCompatActivity
 	@Override
 	public void onDestroy ()
 	{
-		if (this.asyncInitWallpaper != null)
-			this.asyncInitWallpaper.cancel (true);
-		if (this.asyncLoadApps != null)
-			this.asyncLoadApps.cancel (true);
-		if (this.asyncLoadAppLabels != null)
-			this.asyncLoadAppLabels.cancel (true);
-		if (this.asyncLoadAppIcons != null)
-			this.asyncLoadAppIcons.cancel (true);
+		this.cancelAsyncTasks();
 
 		super.onDestroy ();
 	}
@@ -899,6 +892,17 @@ public class HomeActivity extends AppCompatActivity
 		}
 	}
 
+	private void cancelAsyncTasks() {
+		if (this.asyncInitWallpaper != null)
+			this.asyncInitWallpaper.cancel (true);
+		if (this.asyncLoadApps != null)
+			this.asyncLoadApps.cancel (true);
+		if (this.asyncLoadAppLabels != null)
+			this.asyncLoadAppLabels.cancel (true);
+		if (this.asyncLoadAppIcons != null)
+			this.asyncLoadAppIcons.cancel (true);
+	}
+
 	public AppManager getAppManager ()
 	{
 		return this.apps;
@@ -1075,10 +1079,7 @@ public class HomeActivity extends AppCompatActivity
 	{
 		try
 		{
-			if (this.asyncInitWallpaper != null)
-				this.asyncInitWallpaper.cancel (true);
-			if (this.asyncLoadApps != null)
-				this.asyncLoadApps.cancel (true);
+			this.cancelAsyncTasks();
 
 			Intent intent = new Intent (this, PreferencesActivity.class);
 			this.startActivityForResult (intent, RequestCode.ACTIVITY_PREFERENCES);

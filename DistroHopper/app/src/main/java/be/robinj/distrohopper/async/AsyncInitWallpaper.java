@@ -2,6 +2,7 @@ package be.robinj.distrohopper.async;
 
 import android.os.AsyncTask;
 
+import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.HomeActivity;
 import be.robinj.distrohopper.desktop.Wallpaper;
 
@@ -30,8 +31,17 @@ public class AsyncInitWallpaper extends AsyncTask<Wallpaper, Integer, Wallpaper>
 	@Override
 	protected void onPostExecute (Wallpaper wpWallpaper)
 	{
-		wpWallpaper.set ();
+		try {
+			if (this.isCancelled()) {
+				return;
+			}
 
-		this.parent.asyncInitWallpaperDone (wpWallpaper);
+			wpWallpaper.set();
+
+			this.parent.asyncInitWallpaperDone(wpWallpaper);
+		} catch (Exception ex) {
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this.parent);
+		}
 	}
 }

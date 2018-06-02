@@ -60,6 +60,10 @@ public class AsyncLoadAppLabels extends AsyncTask<StringCache, Integer, Integer>
 	{
 		try
 		{
+			if (this.isCancelled()) {
+				return;
+			}
+
 			appManager.asyncLoadAppLabelsDone();
 		}
 		catch (Exception ex)

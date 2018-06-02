@@ -42,24 +42,19 @@ public class AsyncLoadAppIcons extends AsyncTask<DrawableCache, Integer, Integer
 
 		Log.getInstance().v(this.getClass().getSimpleName(), n + " app icons cached in " + tdCachingAppIcons + "ms.");
 
-		if (this.isCancelled ()) {
-			return null;
-		} else if (n == 0) {
-			return n;
-		}
-
 		return n;
 	}
 
 	@Override
 	protected void onPostExecute (Integer n)
 	{
-		try
-		{
+		try {
+			if (this.isCancelled()) {
+				return;
+			}
+
 			appManager.asyncLoadAppIconsDone();
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			ExceptionHandler exh = new ExceptionHandler (ex);
 			exh.logAndTrack();
 		}
