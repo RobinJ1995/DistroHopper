@@ -22,7 +22,6 @@ public class ThemePreferencesActivity extends AppCompatActivity
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
-		super.setTheme (R.style.ThemePreferencesTheme);
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_theme_preferences);
 

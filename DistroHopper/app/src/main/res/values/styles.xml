@@ -35,6 +35,7 @@
     </style>
 
     <style name="LensPreferencesTheme" parent="DialogTheme">
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="DevLogsTheme" parent="DialogTheme">

@@ -22,7 +22,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@android:color/primary_text_dark"
             android:text="[Name]"
             android:id="@+id/tvName"
             android:layout_gravity="center_horizontal"
@@ -31,6 +32,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textColor="@android:color/secondary_text_dark"
             android:text="[Description]"
             android:id="@+id/tvDescription"
             android:layout_gravity="center_horizontal"

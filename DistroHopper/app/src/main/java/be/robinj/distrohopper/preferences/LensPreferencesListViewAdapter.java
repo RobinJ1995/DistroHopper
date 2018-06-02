@@ -37,10 +37,10 @@ public class LensPreferencesListViewAdapter extends ArrayAdapter<Lens>
 		if (view == null)
 			view = LayoutInflater.from (this.getContext ()).inflate (R.layout.widget_lens_preferences_list_item, parent, false);
 
-		TextView tvName = (TextView) view.findViewById (R.id.tvName);
-		TextView tvDescription = (TextView) view.findViewById (R.id.tvDescription);
-		ImageView imgIcon = (ImageView) view.findViewById (R.id.imgIcon);
-		CheckBox cbEnabled = (CheckBox) view.findViewById (R.id.cbEnabled);
+		TextView tvName = view.findViewById (R.id.tvName);
+		TextView tvDescription = view.findViewById (R.id.tvDescription);
+		ImageView imgIcon = view.findViewById (R.id.imgIcon);
+		CheckBox cbEnabled = view.findViewById (R.id.cbEnabled);
 
 		tvName.setText (lens.getName ());
 		tvDescription.setText (lens.getDescription ());

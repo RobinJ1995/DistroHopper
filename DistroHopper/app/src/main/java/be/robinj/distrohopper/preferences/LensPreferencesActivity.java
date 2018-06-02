@@ -31,7 +31,7 @@ public class LensPreferencesActivity extends AppCompatActivity
 
 			this.lensManager = new LensManager (this.getApplicationContext (), null, null, null, null);
 
-			this.lenses = new ArrayList<Lens> ();
+			this.lenses = new ArrayList<> ();
 
 			for (Lens lens : this.lensManager.getEnabledLenses ())
 				this.lenses.add (lens);
@@ -42,7 +42,7 @@ public class LensPreferencesActivity extends AppCompatActivity
 					this.lenses.add (lens);
 			}
 
-			DragSortListView lvList = (DragSortListView) this.findViewById (R.id.lvList);
+			DragSortListView lvList = this.findViewById (R.id.lvList);
 			lvList.setAdapter (new LensPreferencesListViewAdapter (this.getApplicationContext (), this.lensManager, this.lenses));
 			lvList.setDropListener (new LensPreferencesListViewDropListener (lvList, this.lenses));
 		}
