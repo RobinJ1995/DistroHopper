@@ -55,6 +55,9 @@ public abstract class Theme
 	public int dash_background;
 	public int dash_applauncher_text_colour;
 	public int dash_applauncher_text_shadow_colour;
+	public int dash_customise_text_colour;
+	public int dash_customise_text_shadow_colour;
+	public int dash_customise_spinner_text_colour;
 	public int dash_search_background;
 	public int dash_search_text_colour;
 	public int dash_ribbon_show;

@@ -8,11 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.Menu;
@@ -139,9 +141,6 @@ public class HomeActivity extends AppCompatActivity
 			this.llDash = this.viewFinder.get(llLauncherAndDashContainer, R.id.llDash);
 			final GridView gvDashHomeApps = this.viewFinder.get(this.llDash, R.id.gvDashHomeApps);
 			final LinearLayout llDashSearchContainer = this.viewFinder.get(this.llDash, R.id.llDashSearchContainer);
-			final ImageView imgDashBackgroundGradient = this.viewFinder.get(this.llDash, R.id.imgDashBackgroundGradient);
-			final TextView tvDashHomeTitle = this.viewFinder.get(this.llDash, R.id.tvDashHomeTitle);
-			final EditText etDashSearch = this.viewFinder.get(this.llDash, R.id.etDashSearch);
 			final ListView lvDashHomeLensResults = this.viewFinder.get(this.llDash, R.id.lvDashHomeLensResults);
 			final LinearLayout llDashRibbon = this.viewFinder.get(this.llDash, R.id.llDashRibbon);
 			this.wpWallpaper = this.viewFinder.get(R.id.wpWallpaper);
@@ -149,9 +148,7 @@ public class HomeActivity extends AppCompatActivity
 			this.flWallpaperOverlay = this.viewFinder.get(flWallpaperOverlayContainer, R.id.flWallpaperOverlay);
 			this.flWallpaperOverlayWhenDashOpened = this.viewFinder.get(flWallpaperOverlayContainer, R.id.flWallpaperOverlayWhenDashOpened);
 			this.llPanel = this.viewFinder.get(R.id.llPanel);
-			final TextView tvPanelBfb = this.viewFinder.get(this.llPanel, R.id.tvPanelBfb);
 			this.ibPanelDashClose = this.viewFinder.get(this.llPanel, R.id.ibPanelDashClose);
-			final ImageButton ibPanelCog = this.viewFinder.get(this.llPanel, R.id.ibPanelCog);
 			final WidgetsContainer vgWidgets = this.viewFinder.get(R.id.vgWidgets);
 
 			// Load up the theme //
@@ -173,8 +170,8 @@ public class HomeActivity extends AppCompatActivity
 			lalPreferences.init ();
 			lalTrash.init ();
 
-			// Process panel user preferences // May get removed in future as themes should probably handle this //
-			Resources res = this.getResources ();
+			// Process panel user preferences // Themes should probably handle this? //
+			final Resources res = this.getResources ();
 			final float density = res.getDisplayMetrics ().density;
 
 			this.setPanelEdge(prefs.getInt ("panel_edge", res.getInteger (HomeActivity.theme.panel_location)));
@@ -277,87 +274,7 @@ public class HomeActivity extends AppCompatActivity
 			}
 
 			// Apply theme //
-			this.llPanel.setBackgroundResource (HomeActivity.theme.panel_background);
-			ibPanelCog.setImageResource (HomeActivity.theme.panel_preferences_image);
-			this.ibPanelDashClose.setImageResource (HomeActivity.theme.panel_close_image);
-			imgDashBackgroundGradient.setImageResource (HomeActivity.theme.dash_background_gradient);
-			lalBfb.setIcon (res.getDrawable (HomeActivity.theme.launcher_bfb_image));
-			lalPreferences.setIcon (res.getDrawable (HomeActivity.theme.launcher_preferences_image));
-			lalTrash.setIcon (res.getDrawable (HomeActivity.theme.launcher_trash_image));
-
-			RelativeLayout.LayoutParams llPanel_layoutParams = (RelativeLayout.LayoutParams) this.llPanel.getLayoutParams ();
-			llPanel_layoutParams.height = (int) res.getDimension (R.dimen.theme_elementary_panel_height);
-
-			final boolean expandLlLauncher = res.getBoolean (HomeActivity.theme.launcher_expand);
-			this.launcherEdge = prefs.getInt ("launcher_edge", res.getInteger (HomeActivity.theme.launcher_location));
-			this.setLauncherEdge (this.launcherEdge, expandLlLauncher);
-
-			int lalPreferencesLocation = res.getInteger (HomeActivity.theme.launcher_preferences_location);
-			if (! prefs.getBoolean ("panel_show", true))
-				lalPreferencesLocation = res.getInteger (HomeActivity.theme.launcher_preferences_location_when_panel_hidden);
-
-			switch (lalPreferencesLocation)
-			{
-				case Location.NONE:
-					lalPreferences.setVisibility (View.GONE);
-					break;
-				case Location.TOP:
-				case Location.LEFT:
-					int posLlBfbSpinnerWrapper = llLauncher.indexOfChild (llBfbSpinnerWrapper);
-					int posLalPreferences = (posLlBfbSpinnerWrapper == 0 ? 1 : 0);
-
-					llLauncher.removeView (lalPreferences);
-					llLauncher.addView (lalPreferences, posLalPreferences);
-					break;
-				case Location.RIGHT:
-				case Location.BOTTOM:
-					lalPreferences.setVisibility (View.VISIBLE);
-					break;
-			}
-
-			switch (res.getInteger (HomeActivity.theme.launcher_bfb_location))
-			{
-				case Location.NONE:
-					llBfbSpinnerWrapper.setVisibility (View.GONE);
-					break;
-				case Location.TOP:
-				case Location.LEFT:
-					llBfbSpinnerWrapper.setVisibility (View.VISIBLE);
-					break;
-				case Location.RIGHT:
-				case Location.BOTTOM:
-					int posLalPreferences = llLauncher.indexOfChild (lalPreferences);
-					int posLalTrash = llLauncher.indexOfChild (lalTrash);
-					int posLlBfbSpinnerWrapper = (posLalPreferences > 1 ? posLalPreferences : posLalTrash) - 1;
-
-					llLauncher.removeView (llBfbSpinnerWrapper);
-					llLauncher.addView (llBfbSpinnerWrapper, posLlBfbSpinnerWrapper);
-					break;
-			}
-
-			switch (res.getInteger (HomeActivity.theme.panel_bfb_location))
-			{
-				case Location.NONE:
-					tvPanelBfb.setVisibility (View.GONE);
-					break;
-				case Location.LEFT:
-					tvPanelBfb.setVisibility (View.VISIBLE);
-					break;
-			}
-
-			tvPanelBfb.setText (res.getString (HomeActivity.theme.panel_bfb_text));
-			tvPanelBfb.setTextColor (res.getColor (HomeActivity.theme.panel_bfb_text_colour));
-
-			tvDashHomeTitle.setTextColor (res.getColor (HomeActivity.theme.dash_applauncher_text_colour));
-			tvDashHomeTitle.setShadowLayer (5, 2, 2, res.getColor (HomeActivity.theme.dash_applauncher_text_shadow_colour));
-
-			etDashSearch.setBackgroundResource (HomeActivity.theme.dash_search_background);
-			etDashSearch.setTextColor (res.getColor (HomeActivity.theme.dash_search_text_colour));
-
-			llDashRibbon.setVisibility (res.getBoolean (HomeActivity.theme.dash_ribbon_show) ? View.VISIBLE : View.GONE);
-
-			this.flWallpaperOverlay.setBackgroundResource (HomeActivity.theme.wallpaper_overlay);
-			this.flWallpaperOverlayWhenDashOpened.setBackgroundResource (HomeActivity.theme.wallpaper_overlay_when_dash_opened);
+			this.applyTheme(res);
 			
 			if (modeCustomise)
 			{
@@ -430,9 +347,12 @@ public class HomeActivity extends AppCompatActivity
 				}
 				final String[] arrSupportedLauncherEdgeNames = supportedLauncherEdgeNames.toArray (new String[0]);
 
+				final int spiCustomiseSpinnerTextColour = res.getColor(HomeActivity.theme.dash_customise_spinner_text_colour);
+
 				final ArrayAdapter<String> spiCustomiseLauncherEdge_adapter = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, arrSupportedLauncherEdgeNames);
 				spiCustomiseLauncherEdge.setAdapter (spiCustomiseLauncherEdge_adapter);
 				spiCustomiseLauncherEdge.setSelection (currentLauncherEdgeIndex);
+				ViewCompat.setBackgroundTintList(spiCustomiseLauncherEdge, ColorStateList.valueOf(spiCustomiseSpinnerTextColour));
 				spiCustomiseLauncherEdge.setOnItemSelectedListener
 				(
 						new AdapterView.OnItemSelectedListener ()
@@ -452,6 +372,11 @@ public class HomeActivity extends AppCompatActivity
 									intent.putExtra ("customise", true);
 									self.finish ();
 									self.startActivity (intent); // Reload activity //
+								}
+
+								// Apply spinner text colour
+								if (adapterView.getChildAt(0) instanceof TextView) {
+									((TextView) adapterView.getChildAt(0)).setTextColor(spiCustomiseSpinnerTextColour);
 								}
 							}
 
@@ -479,6 +404,7 @@ public class HomeActivity extends AppCompatActivity
 					final ArrayAdapter<String> spiCustomisePanelEdge_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, arrSupportedPanelEdgeNames);
 					spiCustomisePanelEdge.setAdapter(spiCustomisePanelEdge_adapter);
 					spiCustomisePanelEdge.setSelection(currentPanelEdgeIndex);
+					ViewCompat.setBackgroundTintList(spiCustomisePanelEdge, ColorStateList.valueOf(spiCustomiseSpinnerTextColour));
 					spiCustomisePanelEdge.setOnItemSelectedListener(
 							new AdapterView.OnItemSelectedListener() {
 								@Override
@@ -494,6 +420,11 @@ public class HomeActivity extends AppCompatActivity
 										intent.putExtra("customise", true);
 										self.finish();
 										self.startActivity(intent); // Reload activity //
+									}
+
+									// Apply spinner text colour
+									if (adapterView.getChildAt(0) instanceof TextView) {
+										((TextView) adapterView.getChildAt(0)).setTextColor(spiCustomiseSpinnerTextColour);
 									}
 								}
 
@@ -690,6 +621,139 @@ public class HomeActivity extends AppCompatActivity
 
 	private SharedPreferences getSharedPreferences() {
 		return this.getSharedPreferences("prefs", MODE_PRIVATE);
+	}
+
+	private void applyTheme(final Resources res) {
+		final SharedPreferences prefs = this.getSharedPreferences();
+
+		// Get views
+		final LinearLayout llLauncherAndDashContainer = this.viewFinder.get(R.id.llLauncherAndDashContainer);
+		final LinearLayout llLauncher = this.viewFinder.get(R.id.llLauncher);
+		final LinearLayout llBfbSpinnerWrapper = this.viewFinder.get(llLauncher, R.id.llBfbSpinnerWrapper);
+		final be.robinj.distrohopper.desktop.launcher.SpinnerAppLauncher lalSpinner = this.viewFinder.get(llBfbSpinnerWrapper, R.id.lalSpinner);
+		final be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb = this.viewFinder.get(llBfbSpinnerWrapper, R.id.lalBfb);
+		final be.robinj.distrohopper.desktop.launcher.AppLauncher lalPreferences = this.viewFinder.get(llLauncher, R.id.lalPreferences);
+		final be.robinj.distrohopper.desktop.launcher.AppLauncher lalTrash = this.viewFinder.get(llLauncher, R.id.lalTrash);
+		this.llDash = this.viewFinder.get(llLauncherAndDashContainer, R.id.llDash);
+		final LinearLayout llDashCustomise = this.viewFinder.get(this.llDash, R.id.llDashCustomise);
+		final ImageView imgDashBackgroundGradient = this.viewFinder.get(this.llDash, R.id.imgDashBackgroundGradient);
+		final TextView tvDashHomeTitle = this.viewFinder.get(this.llDash, R.id.tvDashHomeTitle);
+		final EditText etDashSearch = this.viewFinder.get(this.llDash, R.id.etDashSearch);
+		final LinearLayout llDashRibbon = this.viewFinder.get(this.llDash, R.id.llDashRibbon);
+		this.wpWallpaper = this.viewFinder.get(R.id.wpWallpaper);
+		final FrameLayout flWallpaperOverlayContainer = this.viewFinder.get(R.id.flWallpaperOverlayContainer);
+		this.flWallpaperOverlay = this.viewFinder.get(flWallpaperOverlayContainer, R.id.flWallpaperOverlay);
+		this.flWallpaperOverlayWhenDashOpened = this.viewFinder.get(flWallpaperOverlayContainer, R.id.flWallpaperOverlayWhenDashOpened);
+		this.llPanel = this.viewFinder.get(R.id.llPanel);
+		final TextView tvPanelBfb = this.viewFinder.get(this.llPanel, R.id.tvPanelBfb);
+		this.ibPanelDashClose = this.viewFinder.get(this.llPanel, R.id.ibPanelDashClose);
+		final ImageButton ibPanelCog = this.viewFinder.get(this.llPanel, R.id.ibPanelCog);
+
+		// Apply theme
+		this.llPanel.setBackgroundResource (HomeActivity.theme.panel_background);
+		ibPanelCog.setImageResource (HomeActivity.theme.panel_preferences_image);
+		this.ibPanelDashClose.setImageResource (HomeActivity.theme.panel_close_image);
+		imgDashBackgroundGradient.setImageResource (HomeActivity.theme.dash_background_gradient);
+		lalBfb.setIcon (res.getDrawable (HomeActivity.theme.launcher_bfb_image));
+		lalPreferences.setIcon (res.getDrawable (HomeActivity.theme.launcher_preferences_image));
+		lalTrash.setIcon (res.getDrawable (HomeActivity.theme.launcher_trash_image));
+
+		RelativeLayout.LayoutParams llPanel_layoutParams = (RelativeLayout.LayoutParams) this.llPanel.getLayoutParams ();
+		llPanel_layoutParams.height = (int) res.getDimension (R.dimen.theme_elementary_panel_height);
+
+		final boolean expandLlLauncher = res.getBoolean (HomeActivity.theme.launcher_expand);
+		this.launcherEdge = prefs.getInt ("launcher_edge", res.getInteger (HomeActivity.theme.launcher_location));
+		this.setLauncherEdge (this.launcherEdge, expandLlLauncher);
+
+		int lalPreferencesLocation = res.getInteger (HomeActivity.theme.launcher_preferences_location);
+		if (! prefs.getBoolean ("panel_show", true))
+			lalPreferencesLocation = res.getInteger (HomeActivity.theme.launcher_preferences_location_when_panel_hidden);
+
+		switch (lalPreferencesLocation)
+		{
+			case Location.NONE:
+				lalPreferences.setVisibility (View.GONE);
+				break;
+			case Location.TOP:
+			case Location.LEFT:
+				int posLlBfbSpinnerWrapper = llLauncher.indexOfChild (llBfbSpinnerWrapper);
+				int posLalPreferences = (posLlBfbSpinnerWrapper == 0 ? 1 : 0);
+
+				llLauncher.removeView (lalPreferences);
+				llLauncher.addView (lalPreferences, posLalPreferences);
+				break;
+			case Location.RIGHT:
+			case Location.BOTTOM:
+				lalPreferences.setVisibility (View.VISIBLE);
+				break;
+		}
+
+		switch (res.getInteger (HomeActivity.theme.launcher_bfb_location))
+		{
+			case Location.NONE:
+				llBfbSpinnerWrapper.setVisibility (View.GONE);
+				break;
+			case Location.TOP:
+			case Location.LEFT:
+				llBfbSpinnerWrapper.setVisibility (View.VISIBLE);
+				break;
+			case Location.RIGHT:
+			case Location.BOTTOM:
+				int posLalPreferences = llLauncher.indexOfChild (lalPreferences);
+				int posLalTrash = llLauncher.indexOfChild (lalTrash);
+				int posLlBfbSpinnerWrapper = (posLalPreferences > 1 ? posLalPreferences : posLalTrash) - 1;
+
+				llLauncher.removeView (llBfbSpinnerWrapper);
+				llLauncher.addView (llBfbSpinnerWrapper, posLlBfbSpinnerWrapper);
+				break;
+		}
+
+		switch (res.getInteger (HomeActivity.theme.panel_bfb_location))
+		{
+			case Location.NONE:
+				tvPanelBfb.setVisibility (View.GONE);
+				break;
+			case Location.LEFT:
+				tvPanelBfb.setVisibility (View.VISIBLE);
+				break;
+		}
+
+		tvPanelBfb.setText (res.getString (HomeActivity.theme.panel_bfb_text));
+		tvPanelBfb.setTextColor (res.getColor (HomeActivity.theme.panel_bfb_text_colour));
+
+		tvDashHomeTitle.setTextColor (res.getColor (HomeActivity.theme.dash_applauncher_text_colour));
+		tvDashHomeTitle.setShadowLayer (5, 2, 2, res.getColor (HomeActivity.theme.dash_applauncher_text_shadow_colour));
+
+		etDashSearch.setBackgroundResource (HomeActivity.theme.dash_search_background);
+		etDashSearch.setTextColor (res.getColor (HomeActivity.theme.dash_search_text_colour));
+
+		llDashRibbon.setVisibility (res.getBoolean (HomeActivity.theme.dash_ribbon_show) ? View.VISIBLE : View.GONE);
+
+		this.flWallpaperOverlay.setBackgroundResource (HomeActivity.theme.wallpaper_overlay);
+		this.flWallpaperOverlayWhenDashOpened.setBackgroundResource (HomeActivity.theme.wallpaper_overlay_when_dash_opened);
+
+		// I don't like this, but it's just too much of a pain to do it properly.
+		for (int i = 0; i < llDashCustomise.getChildCount(); i++) {
+			final View container = llDashCustomise.getChildAt(i);
+
+			if (! (container instanceof LinearLayout))
+				continue;
+
+			for (int j = 0; j < ((LinearLayout) container).getChildCount(); j++) {
+				final View view = ((LinearLayout) container).getChildAt(j);
+
+				if (view instanceof TextView) {
+					final TextView textView = (TextView) view;
+
+					textView.setTextColor(res.getColor(HomeActivity.theme.dash_customise_text_colour));
+					textView.setShadowLayer (5, 2, 2, res.getColor (HomeActivity.theme.dash_customise_text_shadow_colour));
+				} else if (view instanceof Spinner) {
+					final Spinner spinner = (Spinner) view;
+
+//					spinner.setBackgroundColor(res.getColor(HomeActivity.theme.dash_customise_spinner_background));
+				}
+			}
+		}
 	}
 
 	private void startLauncherService (boolean show)

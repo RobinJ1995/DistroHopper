@@ -64,6 +64,9 @@
     <drawable name="theme_elementary_dash_background_gradient">@android:color/transparent</drawable>
     <color name="theme_elementary_dash_applauncher_text_colour">#101010</color>
     <color name="theme_elementary_dash_applauncher_text_shadow_colour">@android:color/transparent</color>
+    <color name="theme_elementary_dash_customise_text_colour">#101010</color>
+    <color name="theme_elementary_dash_customise_text_shadow_colour">@android:color/transparent</color>
+    <color name="theme_elementary_dash_customise_spinner_text_colour">@android:color/secondary_text_light</color>
     <drawable name="theme_elementary_dash_search_background">@drawable/theme_elementary_res_dash_search_background</drawable>
     <color name="theme_elementary_dash_search_text_colour">@android:color/black</color>
     <bool name="theme_elementary_dash_ribbon_show">false</bool>
