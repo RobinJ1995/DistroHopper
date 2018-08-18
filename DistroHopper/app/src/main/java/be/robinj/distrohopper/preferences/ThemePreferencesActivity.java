@@ -27,8 +27,8 @@ public class ThemePreferencesActivity extends AppCompatActivity
 
 		List<Theme> themes = new ArrayList<Theme> ();
 		themes.add (new Default ());
-		themes.add (new Elementary ());
 		themes.add (new Gnome ());
+		themes.add (new Elementary ());
 
 		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 
