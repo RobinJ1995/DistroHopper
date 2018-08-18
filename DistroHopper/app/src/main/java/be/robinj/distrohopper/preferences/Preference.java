@@ -1,9 +1,9 @@
 package be.robinj.distrohopper.preferences;
 
 public enum Preference {
-	PANEL_EDGE("panel_edge"),
+	PANEL_EDGE("panel_edge_v2"),
 	PANEL_OPACITY("panel_opacity"),
-	LAUNCHER_EDGE("launcher_edge"),
+	LAUNCHER_EDGE("launcher_edge_v2"),
 	LAUNCHER_SHOW_RUNNING_APPS("launcher_running_show"),
 	LAUNCHERICON_WIDTH("launchericon_width"),
 	LAUNCHERICON_OPACITY("launchericon_opacity"),
