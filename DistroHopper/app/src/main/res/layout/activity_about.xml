@@ -103,7 +103,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="android-dev@robinj.be"
+                            android:text="distrohopper@robinj.be"
                             android:id="@+id/tvDevEmail"
                             android:gravity="center"
                             android:layout_weight="1"/>
@@ -164,27 +164,6 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="@string/hm_todddavies_why"
-                        android:gravity="center"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/hm_commonsguy_name"
-                        style="@style/honourable_mentions_name"
-                        android:gravity="center"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="@string/hm_commonsguy_why"
                         android:gravity="center"/>
                 </LinearLayout>
 

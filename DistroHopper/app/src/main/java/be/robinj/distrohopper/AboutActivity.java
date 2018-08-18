@@ -36,7 +36,7 @@ public class AboutActivity extends AppCompatActivity
 			ImageView ivLogo = (ImageView) this.findViewById (R.id.ivLogo);
 
 			tvDevUrl.setText (Html.fromHtml ("<a href=\"http://robinj.be/\">RobinJ.be</a>"));
-			tvDevEmail.setText (Html.fromHtml ("<a href=\"mailto:android-dev@robinj.be\">android-dev@robinj.be</a>"));
+			tvDevEmail.setText (Html.fromHtml ("<a href=\"mailto:distrohopper@robinj.be\">distrohopper@robinj.be</a>"));
 			tvVersion.setText ("v" + pkgInfo.versionName);
 
 			tvDevUrl.setMovementMethod (LinkMovementMethod.getInstance ());

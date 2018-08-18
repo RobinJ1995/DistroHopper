@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DistroHopper.iml" filepath="$PROJECT_DIR$/DistroHopper.iml" />
-      <module fileurl="file:///data/Dropbox/Projects/DistroHopper/DistroHopper/DistroHopper.iml" filepath="/data/Dropbox/Projects/DistroHopper/DistroHopper/DistroHopper.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file:///data/Dropbox/Projects/DistroHopper/DistroHopper/app/app.iml" filepath="/data/Dropbox/Projects/DistroHopper/DistroHopper/app/app.iml" />
     </modules>
   </component>
 </project>
