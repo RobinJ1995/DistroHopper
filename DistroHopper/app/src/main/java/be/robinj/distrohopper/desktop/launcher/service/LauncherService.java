@@ -16,6 +16,8 @@ import java.util.List;
 
 import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.R;
+import be.robinj.distrohopper.preferences.Preference;
+import be.robinj.distrohopper.theme.Location;
 
 /**
  * Created by robin on 8/27/14.
@@ -70,7 +72,7 @@ public class LauncherService extends Service
 		lalBfb.init ();
 
 		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
-		boolean right = prefs.getString ("launcher_edge", "left").equals ("right");
+		boolean right = prefs.getInt (Preference.LAUNCHER_EDGE.getName(), Location.LEFT) == Location.RIGHT;
 
 		this.touchListener = new TouchListener (this, right);
 		if (right)

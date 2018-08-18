@@ -30,9 +30,9 @@ public class ThemePreferencesButtonClickListener implements View.OnClickListener
 		{
 			SharedPreferences.Editor editor = this.prefs.edit ();
 			Theme theme = (Theme) view.getTag ();
-			editor.putString ("theme", theme.getName ());
-			editor.putInt ("launcher_edge", parent.getResources ().getInteger (theme.launcher_location));
-			editor.putInt ("panel_edge", parent.getResources ().getInteger (theme.panel_location));
+			editor.putString (Preference.THEME.getName(), theme.getName ());
+			editor.putInt (Preference.LAUNCHER_EDGE.getName(), parent.getResources ().getInteger (theme.launcher_location));
+			editor.putInt (Preference.PANEL_EDGE.getName(), parent.getResources ().getInteger (theme.panel_location));
 			editor.apply ();
 
 			this.parent.finish ();

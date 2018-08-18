@@ -31,6 +31,7 @@ import be.robinj.distrohopper.desktop.launcher.AppLauncherClickListener;
 import be.robinj.distrohopper.desktop.launcher.AppLauncherDragListener;
 import be.robinj.distrohopper.desktop.launcher.AppLauncherLongClickListener;
 import be.robinj.distrohopper.desktop.launcher.RunningAppLauncher;
+import be.robinj.distrohopper.preferences.Preference;
 
 /**
  * Created by robin on 8/20/14.
@@ -381,7 +382,7 @@ public class AppManager implements Iterable<App>
 			results = new ArrayList<App> ();
 
 			SharedPreferences prefs = this.getContext ().getSharedPreferences ("prefs", Context.MODE_PRIVATE);
-			boolean fullSearch = prefs.getBoolean ("dashsearch_full", true);
+			boolean fullSearch = prefs.getBoolean (Preference.DASH_SEARCH_FULL.getName(), true);
 
 			pattern = pattern.toLowerCase ();
 

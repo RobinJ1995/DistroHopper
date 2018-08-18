@@ -51,6 +51,7 @@ import be.robinj.distrohopper.cache.AppIconCache;
 import be.robinj.distrohopper.cache.AppLabelCache;
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.dev.LogToaster;
+import be.robinj.distrohopper.preferences.Preference;
 import be.robinj.distrohopper.preferences.PreferencesActivity;
 import be.robinj.distrohopper.theme.Default;
 import be.robinj.distrohopper.theme.Elementary;
@@ -118,11 +119,11 @@ public class HomeActivity extends AppCompatActivity
 			Permission.requestBasicPermissions(this);
 
 			// Only enable logging if dev mode is enabled // When not enabled nothing will be appended to the internal log variable //
-			if (prefs.getBoolean ("dev", false)) {
+			if (prefs.getBoolean (Preference.DEV.getName(), false)) {
 				final Log log = Log.getInstance();
 				log.setEnabled (true);
 
-				if (prefs.getBoolean("dev_log_toaster", false)) {
+				if (prefs.getBoolean(Preference.DEV_LOG_TOASTER.getName(), false)) {
 					this.logToaster = new LogToaster(this);
 					log.attachObserver(this.logToaster);
 				}
@@ -157,7 +158,7 @@ public class HomeActivity extends AppCompatActivity
 			themes.put ("elementary", Elementary.class);
 			themes.put ("gnome", Gnome.class);
 
-			Theme theme = (Theme) themes.get (prefs.getString ("theme", "default")).newInstance ();
+			Theme theme = (Theme) themes.get (prefs.getString (Preference.THEME.getName(), "default")).newInstance ();
 			HomeActivity.theme = theme;
 
 			// Load the launcher service //
@@ -174,9 +175,9 @@ public class HomeActivity extends AppCompatActivity
 			final Resources res = this.getResources ();
 			final float density = res.getDisplayMetrics ().density;
 
-			this.setPanelEdge(prefs.getInt ("panel_edge", res.getInteger (HomeActivity.theme.panel_location)));
+			this.setPanelEdge(prefs.getInt (Preference.PANEL_EDGE.getName(), res.getInteger (HomeActivity.theme.panel_location)));
 
-			int ibDashClose_width = (int) ((float) (48 + prefs.getInt ("launchericon_width", 36)) * density);
+			int ibDashClose_width = (int) ((float) (48 + prefs.getInt (Preference.LAUNCHERICON_WIDTH.getName(), 36)) * density);
 			LinearLayout.LayoutParams ibDashClose_layoutParams = new LinearLayout.LayoutParams (ibDashClose_width, LinearLayout.LayoutParams.MATCH_PARENT);
 			this.ibPanelDashClose.setLayoutParams (ibDashClose_layoutParams);
 
@@ -199,7 +200,7 @@ public class HomeActivity extends AppCompatActivity
 			this.widgetManager = AppWidgetManager.getInstance (this);
 			this.widgetHost = new WidgetHost (this, this.widgetManager, R.id.vgWidgets);
 
-			if (prefs.getBoolean ("widgets_enabled", false) && prefs.getBoolean ("dev", false))
+			if (prefs.getBoolean (Preference.WIDGETS_ENABLED.getName(), false) && prefs.getBoolean (Preference.DEV.getName(), false))
 				vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this.widgetHost));
 
 			// Setup layout transitions //
@@ -248,7 +249,7 @@ public class HomeActivity extends AppCompatActivity
 			flWallpaperOverlayContainer.setLayoutTransition (flWallpaperOverlayContainer_transition);
 
 			// Check if the dash should open immediately once apps have been loaded //
-			this.openDashWhenReady = prefs.getBoolean ("dash_ready_show", this.openDashWhenReady);
+			this.openDashWhenReady = prefs.getBoolean (Preference.DASH_OPEN_ON_READY.getName(), this.openDashWhenReady);
 
 			Intent intent = this.getIntent ();
 			if (intent != null)
@@ -289,7 +290,7 @@ public class HomeActivity extends AppCompatActivity
 
 				// Launcher Icon Size //
 				final SeekBar sbCustomiseLauncherIconSize = this.viewFinder.get(R.id.sbCustomiseLauncherIconSize);
-				sbCustomiseLauncherIconSize.setProgress (prefs.getInt ("launchericon_width", 36));
+				sbCustomiseLauncherIconSize.setProgress (prefs.getInt (Preference.LAUNCHERICON_WIDTH.getName(), 36));
 				sbCustomiseLauncherIconSize.setOnSeekBarChangeListener
 				(
 					new SeekBar.OnSeekBarChangeListener ()
@@ -311,7 +312,7 @@ public class HomeActivity extends AppCompatActivity
 
 						private void update (int value)
 						{
-							prefsEdit.putInt ("launchericon_width", value);
+							prefsEdit.putInt (Preference.LAUNCHERICON_WIDTH.getName(), value);
 							prefsEdit.commit ();
 
 							LinearLayout.LayoutParams ibDashClose_layoutParams = new LinearLayout.LayoutParams ((int) ((float) (48 + value) * density), LinearLayout.LayoutParams.MATCH_PARENT);
@@ -335,7 +336,7 @@ public class HomeActivity extends AppCompatActivity
 				final Spinner spiCustomiseLauncherEdge = this.viewFinder.get(R.id.spiCustomiseLauncherEdge);
 				final int[] supporterLauncherEdges = res.getIntArray (HomeActivity.theme.launcher_location_supported);
 				final List<String> supportedLauncherEdgeNames = new ArrayList<String> ();
-				final int currentLauncherEdge = prefs.getInt ("launcher_edge", HomeActivity.theme.launcher_location);
+				final int currentLauncherEdge = prefs.getInt (Preference.LAUNCHER_EDGE.getName(), HomeActivity.theme.launcher_location);
 				int currentLauncherEdgeIndex = -1;
 				for (int i = 0; i < supporterLauncherEdges.length; i++)
 				{
@@ -365,7 +366,7 @@ public class HomeActivity extends AppCompatActivity
 
 								if (changing)
 								{
-									prefsEdit.putInt ("launcher_edge", edge);
+									prefsEdit.putInt (Preference.LAUNCHER_EDGE.getName(), edge);
 									prefsEdit.commit ();
 
 									Intent intent = self.getIntent ();
@@ -390,7 +391,7 @@ public class HomeActivity extends AppCompatActivity
 				final int[] supportedPanelEdges = res.getIntArray (HomeActivity.theme.panel_location_supported);
 				if (supportedPanelEdges.length > 1) {
 					final List<String> supportedPanelEdgeNames = new ArrayList<>();
-					final int currentPanelEdge = prefs.getInt("panel_edge", HomeActivity.theme.panel_location);
+					final int currentPanelEdge = prefs.getInt(Preference.LAUNCHER_EDGE.getName(), HomeActivity.theme.panel_location);
 					int currentPanelEdgeIndex = -1;
 					for (int i = 0; i < supportedPanelEdges.length; i++) {
 						final int edge = supportedPanelEdges[i];
@@ -413,7 +414,7 @@ public class HomeActivity extends AppCompatActivity
 									boolean changing = currentPanelEdge != edge;
 
 									if (changing) {
-										prefsEdit.putInt("panel_edge", edge);
+										prefsEdit.putInt(Preference.PANEL_EDGE.getName(), edge);
 										prefsEdit.commit();
 
 										Intent intent = self.getIntent();
@@ -582,7 +583,7 @@ public class HomeActivity extends AppCompatActivity
 			{
 				SharedPreferences prefs = this.getSharedPreferences ();
 
-				if (prefs.getBoolean ("launcher_running_show", false))
+				if (prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false))
 					this.apps.addRunningApps (this.chameleonicBgColour);
 			}
 		}
@@ -662,11 +663,11 @@ public class HomeActivity extends AppCompatActivity
 		llPanel_layoutParams.height = (int) res.getDimension (R.dimen.theme_elementary_panel_height);
 
 		final boolean expandLlLauncher = res.getBoolean (HomeActivity.theme.launcher_expand);
-		this.launcherEdge = prefs.getInt ("launcher_edge", res.getInteger (HomeActivity.theme.launcher_location));
+		this.launcherEdge = prefs.getInt (Preference.LAUNCHER_EDGE.getName(), res.getInteger (HomeActivity.theme.launcher_location));
 		this.setLauncherEdge (this.launcherEdge, expandLlLauncher);
 
 		int lalPreferencesLocation = res.getInteger (HomeActivity.theme.launcher_preferences_location);
-		if (! prefs.getBoolean ("panel_show", true))
+		if (prefs.getInt (Preference.PANEL_EDGE.getName(), Location.TOP) == Location.NONE)
 			lalPreferencesLocation = res.getInteger (HomeActivity.theme.launcher_preferences_location_when_panel_hidden);
 
 		switch (lalPreferencesLocation)
@@ -742,16 +743,13 @@ public class HomeActivity extends AppCompatActivity
 			for (int j = 0; j < ((LinearLayout) container).getChildCount(); j++) {
 				final View view = ((LinearLayout) container).getChildAt(j);
 
-				if (view instanceof TextView) {
-					final TextView textView = (TextView) view;
+				if (! (view instanceof TextView))
+					continue;
 
-					textView.setTextColor(res.getColor(HomeActivity.theme.dash_customise_text_colour));
-					textView.setShadowLayer (5, 2, 2, res.getColor (HomeActivity.theme.dash_customise_text_shadow_colour));
-				} else if (view instanceof Spinner) {
-					final Spinner spinner = (Spinner) view;
+				final TextView textView = (TextView) view;
 
-//					spinner.setBackgroundColor(res.getColor(HomeActivity.theme.dash_customise_spinner_background));
-				}
+				textView.setTextColor(res.getColor(HomeActivity.theme.dash_customise_text_colour));
+				textView.setShadowLayer (5, 2, 2, res.getColor (HomeActivity.theme.dash_customise_text_shadow_colour));
 			}
 		}
 	}
@@ -760,7 +758,7 @@ public class HomeActivity extends AppCompatActivity
 	{
 		SharedPreferences prefs = this.getSharedPreferences ();
 
-		if (prefs.getBoolean ("launcherservice_enabled", false) && prefs.getBoolean ("dev", false))
+		if (prefs.getBoolean (Preference.LAUNCHERSERVICE_ENABLED.getName(), false) && prefs.getBoolean (Preference.DEV.getName(), false))
 		{
 			AppLauncher lalbfb = this.viewFinder.get(R.id.lalBfb);
 
@@ -786,12 +784,12 @@ public class HomeActivity extends AppCompatActivity
 	{
 		SharedPreferences prefs = this.getSharedPreferences ();
 
-		if (prefs.getBoolean ("launcherservice_enabled", false) && prefs.getBoolean ("dev", false))
+		if (prefs.getBoolean (Preference.LAUNCHERSERVICE_ENABLED.getName(), false) && prefs.getBoolean (Preference.DEV.getName(), false))
 		{
 			Intent intent = new Intent (this, LauncherService.class);
 			intent.putExtra ("show", show);
 			intent.putExtra ("visible", false);
-			if (show && this.apps != null && prefs.getBoolean ("launcher_running_show", false))
+			if (show && this.apps != null && prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false))
 				intent.putParcelableArrayListExtra ("running", (ArrayList<App>) this.apps.getRunningApps ());
 
 			this.startService (intent);
@@ -948,7 +946,7 @@ public class HomeActivity extends AppCompatActivity
 
 		switch (edge) {
 			case Location.TOP:
-				this.llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
+				this.llPanel.setAlpha ((float) prefs.getInt (Preference.PANEL_OPACITY.getName(), 100) / 100F);
 				break;
 			case Location.NONE:
 				this.llPanel.setVisibility (View.GONE);
@@ -996,7 +994,7 @@ public class HomeActivity extends AppCompatActivity
 
 			SharedPreferences prefs = this.getSharedPreferences ();
 
-			if (prefs.getBoolean ("launcher_running_show", false))
+			if (prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false))
 				this.apps.addRunningApps (this.chameleonicBgColour);
 
 			if (this.openDashWhenReady)
@@ -1035,11 +1033,11 @@ public class HomeActivity extends AppCompatActivity
 			final Resources res = this.getResources ();
 
 			int colour;
-			int colour_opacity = prefs.getInt ("launchericon_opacity", 204);
+			int colour_opacity = prefs.getInt (Preference.LAUNCHERICON_OPACITY.getName(), 204);
 			int bgColour;
-			int bgColour_opacity = prefs.getInt ("unitybackground_opacity", 50);
+			int bgColour_opacity = prefs.getInt (Preference.PRIMARY_COLOUR_OPACITY.getName(), 50);
 
-			if (prefs.getBoolean ("unitybackground_dynamic", true))
+			if (prefs.getBoolean (Preference.PRIMARY_COLOUR_DYAMIC.getName(), true))
 			{
 				if (wpWallpaper.isLiveWallpaper ())
 				{
@@ -1054,7 +1052,7 @@ public class HomeActivity extends AppCompatActivity
 			}
 			else
 			{
-				int col = prefs.getInt ("unitybackground_colour", Color.WHITE);
+				int col = prefs.getInt (Preference.PRIMARY_COLOUR.getName(), Color.WHITE);
 
 				int r = Color.red (col);
 				int g = Color.green (col);
@@ -1105,7 +1103,7 @@ public class HomeActivity extends AppCompatActivity
 
 		SharedPreferences prefs = this.getSharedPreferences ();
 
-		if (prefs.getBoolean ("launcher_running_show", false))
+		if (prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false))
 			this.apps.addRunningApps (this.chameleonicBgColour);
 	}
 
@@ -1198,7 +1196,7 @@ public class HomeActivity extends AppCompatActivity
 			this.ibPanelDashClose.setVisibility (View.INVISIBLE);
 		
 		SharedPreferences prefs = this.getSharedPreferences ();
-		this.llPanel.setAlpha ((float) prefs.getInt ("panel_opacity", 100) / 100F);
+		this.llPanel.setAlpha ((float) prefs.getInt (Preference.PANEL_OPACITY.getName(), 100) / 100F);
 
 		if (this.getResources ().getBoolean (HomeActivity.theme.panel_background_dynamic_when_dash_opened))
 		{

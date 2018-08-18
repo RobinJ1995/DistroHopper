@@ -13,6 +13,7 @@ import java.util.List;
 
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.R;
+import be.robinj.distrohopper.preferences.Preference;
 import be.robinj.distrohopper.thirdparty.ProgressWheel;
 
 /**
@@ -86,7 +87,7 @@ public class LensManager
 				this.enabled.add (lens);
 		}
 
-		this.maxResultsPerLens = Integer.valueOf (prefs.getString ("dashsearch_lenses_maxresults", "10"));
+		this.maxResultsPerLens = Integer.valueOf (prefs.getString (Preference.DASH_SEARCH_LENSES_MAX_RESULTS.getName(), "10"));
 	}
 
 	private SharedPreferences getPrefsLenses() {

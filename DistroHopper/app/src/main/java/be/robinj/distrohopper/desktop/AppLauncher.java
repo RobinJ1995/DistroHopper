@@ -15,6 +15,7 @@ import android.widget.TextView;
 import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.HomeActivity;
 import be.robinj.distrohopper.R;
+import be.robinj.distrohopper.preferences.Preference;
 
 /**
  * Created by robin on 8/20/14.
@@ -175,7 +176,7 @@ public class AppLauncher extends LinearLayout
 			{
 				final SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
 
-				final int avgColour = this.icon.getAverageColour(prefs.getInt ("launchericon_opacity", 204));
+				final int avgColour = this.icon.getAverageColour(prefs.getInt (Preference.LAUNCHERICON_OPACITY.getName(), 204));
 
 				final GradientDrawable gd = (GradientDrawable) llBackground.getBackground ();
 				gd.setColor (avgColour);

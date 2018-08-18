@@ -32,7 +32,7 @@ public class ThemePreferencesActivity extends AppCompatActivity
 
 		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
 
-		if (! prefs.getBoolean ("dev", false))
+		if (! prefs.getBoolean (Preference.DEV.getName(), false))
 		{
 			for (int i = 0; i < themes.size (); i++)
 			{
