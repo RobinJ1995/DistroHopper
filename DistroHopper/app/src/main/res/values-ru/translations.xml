@@ -1,10 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="action_settings">Настройки</string>
+  <string name="dash_search_hint">Найти</string>
   <string name="dash_lens_apps_title">Приложения</string>
   <string name="dash_lens_other_title">Другие</string>
   <string name="title_activity_preferences">Предпочтения</string>
   <string name="title_activity_about">О нас</string>
+  <string name="title_activity_lens_preferences">Источник поиска</string>
+  <string name="title_activity_theme_preferences">Темы</string>
   <string name="notpinned">не прикреплен</string>
   <string name="developed_by">Разработчик: Робин Якобс</string>
   <string name="honourable_mentions">Oсобая благодарность</string>
@@ -18,7 +21,11 @@
   <string name="pref_header_dash">Дэш</string>
   <string name="pref_header_panel">Панель</string>
   <string name="pref_header_advanced">Дополнительные</string>
+  <string name="pref_header_dev">Опции разработчика</string>
+  <string name="pref_header_functionality">Функциональность</string>
+  <string name="pref_header_appearance">Внешний вид</string>
   <string name="category_colourcalc">Расчет доминирующего цвета</string>
+  <string name="option_launchericon_size">Размер закрепленной иконки</string>
   <string name="option_launchericon_opacity">Непрозрачность фона икон</string>
   <string name="hint_launchericon_opacity">Настройка уровня непрозрачности фона икон.</string>
   <string name="hint_launcherservice_enabled">При проведении пальцем по нижней левой части экрана появится лаунчер который позволит запустить программы прикрепленные к нему без надобности возврата на главный экран.</string>
@@ -36,7 +43,6 @@
   <string name="hint_unitybackground_opacity">Настройка уровня непрозрачности компонентов Unity.</string>
   <string name="option_unitywallpaper_blur">Метод размытия обоев</string>
   <string name="hint_unitywallpaper_blur">Метод  размытия экрана который будет использоваться при открытии Дэша. В случае неправильной работы метода \"Уменьшить и увеличить\", метод \"Затемнение\" будет выбран автоматически.</string>
-  <string name="option_launcher_edge">Часть экрана</string>
   <string name="hint_launcher_edge">К какой стороне экрана будет прикреплен Лаунчер.</string>
   <string-array name="keys_unitywallpaper_blur">
     <item>Не размывать</item>
@@ -45,10 +51,6 @@
   </string-array>
   <string name="option_wallpaper">обои</string>
   <string name="hint_wallpaper">Изменить обои</string>
-  <string name="option_colourcalc_advanced">Использование большего количества образцов цвета</string>
-  <string name="hint_colourscalc_advanced">Использование большего количества образцов цвета увеличевает точность расчета цвета но может также привести к увеличению времени заргрузки на медленных устройствах.</string>
-  <string name="option_colourcalc_hsv">Использовать HSV</string>
-  <string name="hint_colourcalc_hsv">Использование HSV вместо обычной RGB приводит к получению гораздо более ярких цветов, но сама функция является сложной что может также привести к увеличению времени загрузки на медленных устройствах.</string>
   <string name="option_dashsearch_full">Дополнительный поиск</string>
   <string name="hint_dashsearch_full">Активация этой опции улучшит поиск в Дэш меню, но также повлияет на скорость поиска на аппаратах с большим количеством программ. В случае медленной работы поиска, выключитe эту опцию.</string>
   <string name="option_dashsearch_lenses">Использовать Линзы</string>
@@ -57,6 +59,7 @@
   <string name="hint_dashsearch_lenses_maxresults">Максимальное количество результатов поиска показанное Линзой.</string>
   <string name="option_dash_ready_show">Открыть Дэш по умолчанию</string>
   <string name="hint_dash_ready_show">Дэш будет открыт автоматически, как только все программы будут загружены .</string>
+  <string name="option_theme">Тема</string>
   <string name="hm_timvdstaaij_name">Тиму ван дер Стайу</string>
   <string name="hm_timvdstaaij_why">* Тестирование\n * Помощь с функцией расчета доминирующего цвета\n</string>
   <string name="hm_todddavies_name">Тоду Дэвису</string>

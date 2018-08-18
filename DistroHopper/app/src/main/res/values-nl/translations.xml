@@ -19,6 +19,13 @@
   <string name="button_about">Over</string>
   <string name="button_contribute">Bijdragen</string>
   <string name="button_apply">Toepassen</string>
+  <string-array name="edges">
+    <item>Verbergen</item>
+    <item>Boven</item>
+    <item>Rechts</item>
+    <item>Onder</item>
+    <item>Links</item>
+  </string-array>
   <string name="title_preferences">Voorkeuren</string>
   <string name="pref_header_general">Algemeen</string>
   <string name="pref_header_unity">Unity</string>
@@ -39,6 +46,8 @@
   <string name="option_launcher_running_show">Toon apps die uitgevoerd worden</string>
   <string name="option_panel_show">Panel tonen</string>
   <string name="hint_panel_show">Of het Panel aan de bovenkant van het scherm getoond moet worden of niet.</string>
+  <string name="option_panel_edge">Positie van het panel</string>
+  <string name="hint_panel_edge">Aan welke kant van van het scherm de panel zich moet bevinden.</string>
   <string name="option_panel_opacity">Panel-transparantie</string>
   <string name="hint_panel_opacity">Hoe transparant de Panel moet zijn. 100 procent is volledig zichtbaar en 0 procent is volledig transparant.</string>
   <string name="option_unitybackground_dynamic">Dynamisch achtergrondkleur berekenen</string>
@@ -50,10 +59,12 @@
   <string name="hint_unitybackground_opacity">Hoe transparant de achtergrondkleur van transparante Unity-componenten moet zijn. 100 procent is volledig zichtbaar en 0 procent is volledig transparant.</string>
   <string name="option_unitywallpaper_blur">Achtergrond vervagen</string>
   <string name="hint_unitywallpaper_blur">De methode die gebruikt zal worden om de achtergrond te vervagen wanneer het Dash geöpend wordt. Wanneer \"Verkleinen &amp; vergroten\" gekozen is en dit mislukt (of er een live wallpaper is ingesteld) zal er teruggevallen worden op \"Donker maken\".</string>
-  <string name="option_launcher_edge">Schermrand</string>
+  <string name="option_launcher_edge">Positie van de launcher</string>
   <string name="hint_launcher_edge">Tegen welke schermrand de Launcher zich moet bevinden.</string>
   <string name="option_widgets_enabled">Widgets</string>
-  <string name="hint_widgets_enabled"><b>Experimentele</b> ondersteuning voor widgets inschakelen. (Niet doen. Het werkt nog niet, het heeft geen zin.)</string>
+  <string name="hint_widgets_enabled">Schakel <b>experimenteel</b> (lees: <b>kapotte</b>) widget-ondersteuning in\nMomenteel is dit heel erg experimenteel en vrijwel niet bruikbaar in zijn huidige staat.</string>
+  <string name="option_dev_log_toaster">Meldingen voor logberichten</string>
+  <string name="hint_dev_log_toaster">Toon logberichten in toast-notificaties.</string>
   <string-array name="keys_unitywallpaper_blur">
     <item>Niet vervagen</item>
     <item>Donker maken</item>
@@ -61,10 +72,6 @@
   </string-array>
   <string name="option_wallpaper">Achtergrond</string>
   <string name="hint_wallpaper">Andere achtergrond kiezen</string>
-  <string name="option_colourcalc_advanced">Meer stalen nemen</string>
-  <string name="hint_colourscalc_advanced">Waneer er meer stalen genomen worden zal de meer stalen nemen zal de uitkomst van kleurberekeningen veel nauwkeuriger zijn. Dit kan echter een impact hebben op de laadtijd als u gebruikmaakt van een ouder/trager apparaat.</string>
-  <string name="option_colourcalc_hsv">Gebruik HSV</string>
-  <string name="hint_colourcalc_hsv">Gebruik HSV (Hue, Saturation, Value) in plaats van RGB (Red, Green, Blue) voor kleurberekeningen. Dit zal de uitkomst van kleurberekeningen veel levendiger maken, maar de berekeningen die uitgevoerd worden zijn ingewikkelder waardoor dit een impact kan hebben op de laadtijd als u gebruikmaakt van een ouder/trager apparaat.</string>
   <string name="option_dashsearch_full">Geavanceerd zoeken</string>
   <string name="hint_dashsearch_full">Toont betere zoekresultaten in het Dash, ten koste van prestaties op tragere apparaten of apparaten waarop veel apps geïnstalleerd zijn. Als zoeken in het Dash traag is voor u dan is het waarschijnlijk een goed idee om deze optie uit te zetten.</string>
   <string name="option_dashsearch_lenses">Gebruik lenzen</string>
