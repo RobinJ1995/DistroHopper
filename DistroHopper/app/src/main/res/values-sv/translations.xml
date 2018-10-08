@@ -35,7 +35,6 @@
   <string name="option_unitybackground_dynamic">Dynamisk bakgrundsfärg</string>
   <string name="option_unitybackground_colour">Bakgrundsfärg</string>
   <string name="option_unitybackground_opacity">Bakgrundsopacitet</string>
-  <string name="option_launcher_edge">Skärmkant</string>
   <string name="option_widgets_enabled">Gränssnittskomponent</string>
   <string-array name="keys_unitywallpaper_blur">
     <item>Sudda inte ut</item>
@@ -44,8 +43,6 @@
   </string-array>
   <string name="option_wallpaper">Skrivbordsbakgrund</string>
   <string name="hint_wallpaper">Ändra skrivbordsbakgrund</string>
-  <string name="option_colourcalc_advanced">Ta fler smakprover</string>
-  <string name="option_colourcalc_hsv">Använd HSV</string>
   <string name="option_dashsearch_full">Avancerad sökning</string>
   <string name="option_dashsearch_lenses">Använd linser</string>
   <string name="option_dashsearch_lenses_maxresults">Resultaten per lins</string>

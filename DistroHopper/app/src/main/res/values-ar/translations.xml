@@ -39,7 +39,6 @@
   <string name="option_panel_opacity">الشفافية</string>
   <string name="hint_panel_opacity">كم شفافية القائمة يجب ان تكون.</string>
   <string name="option_unitybackground_dynamic">لون خلفية ديناميكي</string>
-  <string name="option_launcher_edge">زاوية الشاشة</string>
   <string name="option_lenses">مصادر البحث</string>
   <!--No longer used
     <string name="hm_tacone_name">tacone (from Stack Overflow)</string>

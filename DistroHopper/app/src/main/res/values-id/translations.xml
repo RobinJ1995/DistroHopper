@@ -36,7 +36,6 @@
   <string name="hint_unitybackground_opacity">Bagaimana keburaman warna latar belakang dari komponen Unity yang transparan seharusnya.</string>
   <string name="option_unitywallpaper_blur">Metode blur kertas dinding</string>
   <string name="hint_unitywallpaper_blur">Metode yang harus digunakan untuk mengaburkan latar belakang saat Dasbor dibuka. Ketika \"Downscale &amp; upscale\" dipilih dan gagal (atau wallpaper hidup diatur), \"Darken\" akan digunakan sebagai fallback.</string>
-  <string name="option_launcher_edge">Tepi layar</string>
   <string name="hint_launcher_edge">Untuk memilih tepi layar Peluncur yang harus dilampirkan.</string>
   <string-array name="keys_unitywallpaper_blur">
     <item>Jangan blur</item>
@@ -45,10 +44,6 @@
   </string-array>
   <string name="option_wallpaper">Kertas Dinding</string>
   <string name="hint_wallpaper">Ubah kertas dinding</string>
-  <string name="option_colourcalc_advanced">Ambil lebih banyak sampel</string>
-  <string name="hint_colourscalc_advanced">Mengambil lebih banyak sampel sangat meningkatkan akurasi tetapi dapat menghasilkan waktu menunggu lebih lama pada perangkat yang lebih lambat.</string>
-  <string name="option_colourcalc_hsv">Gunakan HSV</string>
-  <string name="hint_colourcalc_hsv">Menggunakan HSV (Hue, Saturation, Value) bukan RGB polos (Merah, Hijau, Biru) akan menghasilkan warna yang jauh lebih hidup, tetapi perhitungan yang dikerjakan sebelumnya akan lebih rumit yang dapat menghasilkan waktu menunggu lebih lama pada perangkat yang lebih lambat.</string>
   <string name="option_dashsearch_full">Pencarian tingkat lanjut</string>
   <string name="hint_dashsearch_full">Mengaktifkan opsi ini akan menghasilkan hasil pencarian Dasbor yang lebih baik tetapi juga akan mempengaruhi kinerja pada perangkat yang lambat atau perangkat dengan banyak aplikasi yang terpasang. Jika pencarian Dasbor lambat untuk Anda, Anda mungkin ingin mempertimbangkan untuk menonaktifkan ini.</string>
   <string name="option_dashsearch_lenses">Gunakan lensa</string>

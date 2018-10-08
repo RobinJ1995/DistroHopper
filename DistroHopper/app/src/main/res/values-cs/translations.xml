@@ -40,14 +40,9 @@ Dynamická barva pozadí</string>
   <string name="hint_unitybackground_opacity">Jak průhledné barevné pozadí průhledných prvků Unity by měl být.</string>
   <string name="option_unitywallpaper_blur">Tapeta rozmazání </string>
   <string name="hint_unitywallpaper_blur">Metoda, která by měla být použita pro rozmazání pozadí při otevření Dash. Když se \"amp Zmenšení rozsahu a, upscale\" je vybrán a selže (nebo živé tapety je nastaveno), \"tmavší\" bude použit jako nouzové řešení.</string>
-  <string name="option_launcher_edge">Okraj obrazovky</string>
   <string name="hint_launcher_edge">To which screen edge the Launcher should be attached.</string>
   <string name="option_wallpaper">Tapeta</string>
   <string name="hint_wallpaper">Změnit tapetu</string>
-  <string name="option_colourcalc_advanced">Vezme více vzorků</string>
-  <string name="hint_colourscalc_advanced">Užívání více vzorků výrazně zvyšuje přesnost, ale může mít za následek jejich načítání trvat déle na pomalejších zařízeních.</string>
-  <string name="option_colourcalc_hsv">Použít HSV</string>
-  <string name="hint_colourcalc_hsv">Použití HSV (Hue, Saturation, Value) namísto prostého RGB (červená, zelená, modrá), bude mít za následek barvy jsou mnohem živější, ale výpočty, které jsou předem připravené, jsou složitější, které může mít za následek jejich načítání trvat déle na pomalejších zařízeních.</string>
   <string name="option_dashsearch_full">
 Rozšířené vyhledávání</string>
   <string name="hint_dashsearch_full">Povolení této možnosti bude mít za následek lepší výsledky Dash vyhledávání, ale také vliv na výkon na pomalejších zařízení nebo zařízení s množstvím aplikací nainstalovaných. Pokud Dash vyhledávání je pomalý pro vás, možná budete chtít, aby zvážila zakázat toto.</string>

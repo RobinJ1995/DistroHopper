@@ -334,13 +334,13 @@ public class HomeActivity extends AppCompatActivity
 				final String[] edgeNames = res.getStringArray (R.array.edges);
 
 				final Spinner spiCustomiseLauncherEdge = this.viewFinder.get(R.id.spiCustomiseLauncherEdge);
-				final int[] supporterLauncherEdges = res.getIntArray (HomeActivity.theme.launcher_location_supported);
+				final int[] supportedLauncherEdges = res.getIntArray (HomeActivity.theme.launcher_location_supported);
 				final List<String> supportedLauncherEdgeNames = new ArrayList<String> ();
 				final int currentLauncherEdge = prefs.getInt (Preference.LAUNCHER_EDGE.getName(), HomeActivity.theme.launcher_location);
 				int currentLauncherEdgeIndex = -1;
-				for (int i = 0; i < supporterLauncherEdges.length; i++)
+				for (int i = 0; i < supportedLauncherEdges.length; i++)
 				{
-					int edge = supporterLauncherEdges[i];
+					int edge = supportedLauncherEdges[i];
 					supportedLauncherEdgeNames.add (edgeNames[edge]);
 
 					if (edge == currentLauncherEdge)
@@ -361,7 +361,7 @@ public class HomeActivity extends AppCompatActivity
 							@Override
 							public void onItemSelected (AdapterView<?> adapterView, View view, int i, long l)
 							{
-								int edge = supporterLauncherEdges[i];
+								int edge = supportedLauncherEdges[i];
 								boolean changing = currentLauncherEdge != edge;
 
 								if (changing)
@@ -391,7 +391,7 @@ public class HomeActivity extends AppCompatActivity
 				final int[] supportedPanelEdges = res.getIntArray (HomeActivity.theme.panel_location_supported);
 				if (supportedPanelEdges.length > 1) {
 					final List<String> supportedPanelEdgeNames = new ArrayList<>();
-					final int currentPanelEdge = prefs.getInt(Preference.LAUNCHER_EDGE.getName(), HomeActivity.theme.panel_location);
+					final int currentPanelEdge = prefs.getInt(Preference.PANEL_EDGE.getName(), HomeActivity.theme.panel_location);
 					int currentPanelEdgeIndex = -1;
 					for (int i = 0; i < supportedPanelEdges.length; i++) {
 						final int edge = supportedPanelEdges[i];

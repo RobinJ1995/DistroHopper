@@ -19,7 +19,8 @@
   <string name="button_about">Über</string>
   <string name="button_contribute">Beitragen</string>
   <string name="button_apply">Anwenden</string>
-  <string-array name="launcher_edges">
+  <string-array name="edges">
+    <item>Verstecken</item>
     <item>Oben</item>
     <item>Rechts</item>
     <item>Unten</item>
@@ -57,16 +58,10 @@
   <string name="hint_unitybackground_opacity">Deckkraft der Hintergrundfarbe von transparenten Unity-Komponenten.</string>
   <string name="option_unitywallpaper_blur">Unschärfe-Methode für Wallpaper</string>
   <string name="hint_unitywallpaper_blur">Die Methode, welche für den Unschärfe-Effekt genutzt werden soll, wenn das Dash geöffnet ist. Schlägt "Hoch- &amp; Herunterskalieren" fehl, wird "Verdunkeln" als Fallback-Methode genutzt.</string>
-  <string name="option_launcher_edge">Bildschirmkante</string>
   <string name="hint_launcher_edge">Auf welcher Seite des Bildschirms der Launcher angezeigt werden.</string>
   <string name="option_widgets_enabled">Widgets</string>
-  <string name="hint_widgets_enabled">Ermöglichen <b>experimentelle</b> Widget-Unterstützung. (Es funktioniert noch nicht richtig.)</string>
   <string name="option_wallpaper">Hintergrundbild</string>
   <string name="hint_wallpaper">Hintergrundbild ändern</string>
-  <string name="option_colourcalc_advanced">Mehr Samples nutzen</string>
-  <string name="hint_colourscalc_advanced">Mehr Samples erhöhen die Qualität aber können auf langsameren Geräten längere Ladezeiten bedeuten.</string>
-  <string name="option_colourcalc_hsv">HSV nutzen</string>
-  <string name="hint_colourcalc_hsv">Die Nutzung von HSV(Farbton, Sättigung, Wert) anstatt RGB(Rot, Grün, Blau) wird dynamischere Farben liefern, aber die Berechnungen sind komplizierter und können längere Ladezeiten für langsamere Geräte bedeuten.</string>
   <string name="option_dashsearch_full">Erweiterte Suche</string>
   <string name="hint_dashsearch_full">Diese Option wird bessere Resultate in der Dash-Suche liefern, ist aber auch auf langsamen Geräten, oder bei vielen Apps langsamer, sodass du es dann deaktivieren solltest.</string>
   <string name="option_dashsearch_lenses">Nutze \"Lenses\"</string>

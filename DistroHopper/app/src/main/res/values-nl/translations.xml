@@ -62,7 +62,6 @@
   <string name="option_launcher_edge">Positie van de launcher</string>
   <string name="hint_launcher_edge">Tegen welke schermrand de Launcher zich moet bevinden.</string>
   <string name="option_widgets_enabled">Widgets</string>
-  <string name="hint_widgets_enabled">Schakel <b>experimenteel</b> (lees: <b>kapotte</b>) widget-ondersteuning in\nMomenteel is dit heel erg experimenteel en vrijwel niet bruikbaar in zijn huidige staat.</string>
   <string name="option_dev_log_toaster">Meldingen voor logberichten</string>
   <string name="hint_dev_log_toaster">Toon logberichten in toast-notificaties.</string>
   <string-array name="keys_unitywallpaper_blur">

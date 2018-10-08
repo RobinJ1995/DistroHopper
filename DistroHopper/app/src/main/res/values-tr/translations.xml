@@ -45,14 +45,9 @@
   <string name="option_unitybackground_opacity">Unity arka plan opaklığı</string>
   <string name="hint_unitybackground_opacity">Şeffaf Unity bileşenlerinin arka plan rengi nasıl olmalı.</string>
   <string name="option_unitywallpaper_blur">Duvar kağıdı bulanıklaşma metodu</string>
-  <string name="option_launcher_edge">Ekran kenarı</string>
   <string name="hint_launcher_edge">Başlatıcının ekranın hangi kenarına tutunacağını belirtin.</string>
   <string name="option_wallpaper">Duvar Kağıdı</string>
   <string name="hint_wallpaper">Duvar kağıdını değiştir</string>
-  <string name="option_colourcalc_advanced">Daha fazla örnek al</string>
-  <string name="hint_colourscalc_advanced">Daha fazla örnek almak kusursuzluğu arttırır ama yavaş cihazlarda yüklenme süresini uzatabilir.</string>
-  <string name="option_colourcalc_hsv">HSV Kullan</string>
-  <string name="hint_colourcalc_hsv">RGB (Kırmızı, Yeşil, Mavi) yerine HSV (Ton, Doygunluk, Parlaklık) kullanmak renklerin daha canlı olmasını sağlar, ama hesaplamalar o kadar karışıktır ki yavaş cihazlarda yüklenme süresini çok uzatabilir.</string>
   <string name="option_dashsearch_full">Gelişmiş arama</string>
   <string name="hint_dashsearch_full">Bu seçeneği kullanmak Pano aramasında daha iyi sonuç verir fakat yavaş cihazlarda ya da çok fazla uygulama yüklenmiş cihazlarda performansı düşürebilir. Eğer Pano araması sizin için yavaşsa bu seçeneği kapatmayı düşünebilirsiniz.</string>
   <string name="option_dashsearch_lenses">Lens kullan</string>

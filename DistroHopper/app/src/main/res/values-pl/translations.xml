@@ -34,13 +34,6 @@
         lewo, tym tło jest bardziej przezroczyste.</string>
   <string name="option_wallpaper">Tapeta</string>
   <string name="hint_wallpaper">Zmień tapetę</string>
-  <string name="option_colourcalc_advanced">Użyj większej ilości próbek</string>
-  <string name="hint_colourscalc_advanced">Używanie większej ilości próbek znacząco zwiększa dokładność ale może spowodować dłuższy
-        czas reakcji na słabszych urządzeniach.</string>
-  <string name="option_colourcalc_hsv">Użyj HSV</string>
-  <string name="hint_colourcalc_hsv">Użycie HSV (Hue, Saturation, Value) zamiast RGB (Red, Green, Blue) sprawi, że kolory będą
-        bardziej żywe ale obliczenia, które muszą zostać wykonane są bardziej skomplikowane co może spowodować dłuższy czas reakcji
-        na słabszych urządzeniach.</string>
   <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_todddavies_name">Todd Davies</string>
   <string name="hm_todddavies_why">* Użyłem jego komponentu ProgressWheel, ponieważ domyślny (zaokrąglony) komponent ProgressBar w

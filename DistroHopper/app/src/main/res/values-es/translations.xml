@@ -6,7 +6,7 @@
   <string name="dash_lens_other_title">Otro </string>
   <string name="title_activity_preferences">Preferencias</string>
   <string name="title_activity_about">Acerca de</string>
-  <string name="title_activity_lens_preferences">Buscar orígenes </string>
+  <string name="title_activity_lens_preferences">Buscar orígenes</string>
   <string name="title_activity_theme_preferences">Temas </string>
   <string name="title_activity_dev_logs">Registros </string>
   <string name="pinned">ha sido anclado al lanzador</string>
@@ -19,6 +19,13 @@
   <string name="button_about">Acerca de</string>
   <string name="button_contribute">Contribuir </string>
   <string name="button_apply">Aplicar </string>
+  <string-array name="edges">
+    <item>Ocultar</item>
+    <item>Arriba</item>
+    <item>Derecha</item>
+    <item>Abajo</item>
+    <item>Izquierda</item>
+  </string-array>
   <string name="title_preferences">Preferencias</string>
   <string name="pref_header_general">General</string>
   <string name="pref_header_unity">Unity</string>
@@ -30,12 +37,18 @@
   <string name="pref_header_functionality">Funcionalidad </string>
   <string name="pref_header_appearance">Apariencia </string>
   <string name="category_colourcalc">Cálculo del color dominante</string>
+  <string name="option_launchericon_size">Tamaño de Icono Anclado</string>
+  <string name="hint_launchericon_size">Como se verán los iconos para aplicaciones ancladas. El deslizador ira desde 48dpi a 120dpi, por defecto (justo en el  medio) siendo 48dpi.</string>
   <string name="option_launchericon_opacity">Opacidad de fondo del icono</string>
-  <string name="hint_launchericon_opacity">Cual debe ser la opacidad del color de fondo de los iconos en el Lanzador.</string>
+  <string name="hint_launchericon_opacity">Cuan opaco sera el color de fondo de los iconos en el Lanzador.</string>
+  <string name="option_launcherservice_enabled">Lanzador del servicio de superposicion</string>
   <string name="hint_launcherservice_enabled">Cuando usted pasa de la mitad inferior del borde izquierdo de la pantalla, aparecerá el Lanzador, y le permite ejecutar aplicaciones que has anclado al Launcher sin tener que ir a la pantalla principal.\n(EXPERIMENTAL)</string>
   <string name="option_launcher_running_show">Mostrar aplicaciones en ejecución</string>
+  <string name="hint_launcher_running_show">El Lanzador mostrara cuales aplicaciones están funcionando actualmente. Esto se indicara con una pequeña flecha en el lado izquierdo del icono. La Aplicaciones que esten corriendo y no esten ancladas al Lanzador tambien seran mostradas. NOTA: Esta caracteristica seguramente no funcionara desde Android 5.0 en adelante debido a restricciones que se han añadido al Sistema Operativo.</string>
   <string name="option_panel_show">Ver</string>
   <string name="hint_panel_show">Si el panel en la parte superior de la pantalla se debe mostrar o no.</string>
+  <string name="option_panel_edge">Ubicación del Panel</string>
+  <string name="hint_panel_edge">Borde de la pantalla al cual estará ligado el Panel.</string>
   <string name="option_panel_opacity">Opacidad</string>
   <string name="hint_panel_opacity">Como debe ser la opacidad del Panel.</string>
   <string name="option_unitybackground_dynamic">Color de fondo dinámico</string>
@@ -45,14 +58,26 @@
   <string name="message_unitybackground_colour">Utilice los deslizadores para elegir un color.</string>
   <string name="option_unitybackground_opacity">Opacidad de fondo</string>
   <string name="hint_unitybackground_opacity">Como debe ser la opacidad del color de fondo de los componentes transparentes de Unity.</string>
+  <string name="option_unitywallpaper_blur">Fondo de Pantalla con el efecto difuminado</string>
+  <string name="hint_unitywallpaper_blur">El método que debe ser usado para difuminar el fondo cuando el Tablero esta abierto. Cuando \"Bajar escala ; subir escala\" es seleccionado y falla ( o un fondo en vivo esta configurado ), sera \"Oscurecido\" como respaldo.</string>
+  <string name="option_launcher_edge">Ubicación del Lanzador</string>
+  <string name="hint_launcher_edge">Borde de la pantalla al cual estará ligado el Panel.</string>
+  <string name="option_widgets_enabled">miniaplicación</string>
+  <string name="hint_widgets_enabled">Habilitar <b>Experimental</b> (lectura: <b>Interrumpida</b>)  soporte de miniaplicación. Es experimental y no muy usable en su estado actual.</string>
+  <string-array name="keys_unitywallpaper_blur">
+    <item>No Difuminar</item>
+    <item>Oscurecer</item>
+    <item>Bajar Escala; escala alta (por defecto)</item>
+  </string-array>
   <string name="option_wallpaper">Fondo de pantalla</string>
   <string name="hint_wallpaper">Cambiar fondo de pantalla</string>
-  <string name="option_colourcalc_advanced">Tomar mas muestras</string>
-  <string name="hint_colourscalc_advanced">Tomar más muestras aumenta en gran medida la precisión, pero puede dar lugar a tiempos de carga más largos en los dispositivos más lentos.</string>
-  <string name="option_colourcalc_hsv">Usar HSV</string>
-  <string name="hint_colourcalc_hsv">Usando HSV (Matiz, Saturación, Valor) en lugar de simple RGB (Rojo, Verde, Azul) dará como resultado a colores mucho más vibrantes, pero los cálculos que se realizan son más complicados y pueden dar lugar a tiempos de carga más largos en los dispositivos más lentos.</string>
   <string name="option_dashsearch_full">Búsqueda avanzada</string>
   <string name="hint_dashsearch_full">La activación de esta opción mostrará mejores resultados de búsqueda en el Dash pero también afectará el rendimiento en los dispositivos mas lentos o los dispositivos con mas aplicaciones instaladas. Si la búsqueda Dash es lento para usted, es posible que desee considerar desactivar esto.</string>
+  <string name="option_dashsearch_lenses">Usar lentes</string>
+  <string name="hint_dashsearch_lenses">Los lentes proveen funcionalidades extra de búsqueda.</string>
+  <string name="option_dashsearch_lenses_maxresults">Resultados por lente</string>
+  <string name="option_dash_ready_show">Abrir Tablero por defecto</string>
+  <string name="hint_dash_ready_show">El Tablero se abrirá automáticamente una vez las aplicaciones carguen.</string>
   <string name="option_lenses">Buscar orígenes </string>
   <string name="option_theme">Tema </string>
   <string name="hint_theme">Elija que distribución de Linux desea que DistroHopper se vea.</string>

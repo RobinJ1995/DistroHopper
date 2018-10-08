@@ -36,7 +36,6 @@
   <string name="hint_unitybackground_opacity">Defina a opacidade da cor de fundo na composição do Unity.</string>
   <string name="option_unitywallpaper_blur">Efeito de Papel de Parede </string>
   <string name="hint_unitywallpaper_blur">Efeito de desfoque do fundo quando o Dash é aberto. Caso o modo \"Desfoque\" for definido e não funcionar corretamente (ou quando um papel de parede animado for usado), o modo \"Escurecido\" será usado como padrão automaticamente.</string>
-  <string name="option_launcher_edge">Posição do Launcher</string>
   <string name="hint_launcher_edge">Define a posição do Launcher na tela.</string>
   <string-array name="keys_unitywallpaper_blur">
     <item>Sem desfoque</item>
@@ -45,10 +44,6 @@
   </string-array>
   <string name="option_wallpaper">Papel de Parede</string>
   <string name="hint_wallpaper">Alterar papel de parede</string>
-  <string name="option_colourcalc_advanced">Aumentar amostragem</string>
-  <string name="hint_colourscalc_advanced">Ativando esse recurso, a precisão de amostragem de cores é aumentada, porém, pode resultar em um tempo de carregamento maior em dispositivos mais lentos.</string>
-  <string name="option_colourcalc_hsv">Ativar recurso HSV</string>
-  <string name="hint_colourcalc_hsv">Usando o recurso HSV (melhoria de saturação) ao invés do RGB comum, as cores se tornam muito mais vibrantes (Pode causar demora no carregamento em dispositivos mais lentos).</string>
   <string name="option_dashsearch_full">Pesquisa avançada</string>
   <string name="hint_dashsearch_full">A ativação desta opção proporcionará melhores resultados de busca \"Dash\", mas também afetará o desempenho em dispositivos mais lentos, ou em dispositivos com muitos aplicativos instalados. Recomenda-se desativar, caso haja instabilidade no recurso.</string>
   <string name="option_dashsearch_lenses">Usar lentes</string>

@@ -51,10 +51,8 @@
   <string name="hint_unitybackground_opacity">Unity部件的不透明度</string>
   <string name="option_unitywallpaper_blur">壁纸模糊法</string>
   <string name="hint_unitywallpaper_blur">启动Dash时模糊背景的方式。当“缩小比例和增大比例\"被选择而无法运作时（如使用自动更换壁纸的功能）， “变暗\"将会自动成为模糊背景的方式。</string>
-  <string name="option_launcher_edge">启动器的位置</string>
   <string name="hint_launcher_edge">选择启动器要依附在屏幕上的哪一端</string>
   <string name="option_widgets_enabled">窗口小部件</string>
-  <string name="hint_widgets_enabled">允许<b>实验性</b>窗口小部件。（请别使用，因为它还无法正常运行）</string>
   <string-array name="keys_unitywallpaper_blur">
     <item>不要模糊</item>
     <item>变暗</item>
@@ -62,10 +60,6 @@
   </string-array>
   <string name="option_wallpaper">壁纸</string>
   <string name="hint_wallpaper">更换壁纸</string>
-  <string name="option_colourcalc_advanced">更多样品</string>
-  <string name="hint_colourscalc_advanced">选择取样更多颜色会增加准确率但是会延长加载时间。</string>
-  <string name="option_colourcalc_hsv">使用HSV</string>
-  <string name="hint_colourcalc_hsv">使用HSV（色相、饱和度、明度）而不是用RGB（红绿蓝颜色模型）可以使颜色更鲜明。这也是会延长加载时间。</string>
   <string name="option_dashsearch_full">高级搜索</string>
   <string name="hint_dashsearch_full">   启用这个选项会延长加载速度。</string>
   <string name="option_dashsearch_lenses">使用透鏡</string>

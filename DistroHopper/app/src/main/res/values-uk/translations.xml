@@ -50,7 +50,6 @@
   <string name="hint_unitybackground_opacity">Налаштування рівня непрозрості компонентів Unity.</string>
   <string name="option_unitywallpaper_blur">Метод розмиття шпалер</string>
   <string name="hint_unitywallpaper_blur">Метод розмиття фону екрану, який буде використовуватися при відкритті Деша. У разі неправильної роботи методу \"Зменшити і збільшити\", метод \"Затемнення\" буде обраний автоматично.</string>
-  <string name="option_launcher_edge">Частина екрану</string>
   <string name="hint_launcher_edge">До якої сторони екрану буде прикріплений Лаунчер.</string>
   <string-array name="keys_unitywallpaper_blur">
     <item>Не розмивати</item>
@@ -59,10 +58,6 @@
   </string-array>
   <string name="option_wallpaper">Шпалери</string>
   <string name="hint_wallpaper">Змінити шпалери</string>
-  <string name="option_colourcalc_advanced">Використання більшої кількості зразків кольору</string>
-  <string name="hint_colourscalc_advanced">Використання більшої кількості зразків кольору збільшує точність, але може також призвести до збільшення часу завантаження на повільних пристроях.</string>
-  <string name="option_colourcalc_hsv">Використовувати HSV модель</string>
-  <string name="hint_colourcalc_hsv">Використання моделі HSV замість звичайної RGB робить кольори більш яскравими, але розрахунки є складнішими, що може також призвести до збільшення часу завантаження на повільних пристроях.</string>
   <string name="option_dashsearch_full">Розширений пошук</string>
   <string name="hint_dashsearch_full">Активація цієї опції покращить пошук в Деш меню, але також вплине на швидкість роботи повільних пристроїв або пристроїв з великою кількістю програм. У разі повільної роботи пошуку, виключтe цю опцію.</string>
   <string name="option_dashsearch_lenses">Використовувати лінзи</string>

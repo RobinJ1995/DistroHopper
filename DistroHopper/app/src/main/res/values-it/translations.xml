@@ -48,10 +48,6 @@
   <string name="hint_unitybackground_opacity">Quando opaco deve essere il colore di sfondo dei componenti trasparenti di Unity.</string>
   <string name="option_wallpaper">Sfondo</string>
   <string name="hint_wallpaper">Cambia sfondo</string>
-  <string name="option_colourcalc_advanced">Prendi più campioni</string>
-  <string name="hint_colourscalc_advanced">Acquisire più campioni aumenta molto l\'accuratezza ma può portare a maggiori tempi di caricamento su dispositivi più lenti.</string>
-  <string name="option_colourcalc_hsv">Utilizza HSV</string>
-  <string name="hint_colourcalc_hsv">Utilizzare HSV (Hue, Saturation, Value) invece di RGB (Red, Green, Blue) produce colori più accesi ma i calcoli eseguiti saranno più complessi e potrebbero portare a tempi di caricamento più lunghi su dispositivi lenti.</string>
   <string name="option_dashsearch_full">Ricerca avanzata</string>
   <string name="hint_dashsearch_full">Abilitando questa opzione si migliorerà la ricerca nella dashboard a discapito delle performance sui dispositivi più lenti o con molte applicazioni installate. Se la ricerca è lenta potresti considerare di disabilitare questa opzione.</string>
   <string name="option_lenses">Cerca sorgenti</string>

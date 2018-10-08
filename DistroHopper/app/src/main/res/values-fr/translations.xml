@@ -51,16 +51,10 @@
   <string name="hint_unitybackground_opacity">L\'opacité de la couleur de fond des composantes transparentes de Unity.</string>
   <string name="option_unitywallpaper_blur">Technique de floutage du fond d\'écran</string>
   <string name="hint_unitywallpaper_blur">La méthode qui sera utilisée pour flouter le fond d\'écran quand le Dash est ouvert.</string>
-  <string name="option_launcher_edge">Côté de l\'écran</string>
   <string name="hint_launcher_edge">Le côté de l\'écran auquel le Launcher sera attaché.</string>
   <string name="option_widgets_enabled">Widgets</string>
-  <string name="hint_widgets_enabled">Activez le support de widget &lt;b&gt;expérimental&lt;/ b&gt;. (Ne pas. Cela ne fonctionne pas encore, donc c'est inutile.)</string>
   <string name="option_wallpaper">Fond d\'écran</string>
   <string name="hint_wallpaper">Changer le fond d\'écran</string>
-  <string name="option_colourcalc_advanced">Prendre plus d\'échantillons</string>
-  <string name="hint_colourscalc_advanced">Prendre plus d\'échantillons augmente grandement la précision mais peu allonger les temps de chargement.</string>
-  <string name="option_colourcalc_hsv">Utiliser HSV</string>
-  <string name="hint_colourcalc_hsv">Utiliser HSV (Teinte, Saturation, Valeur) à la place de RGB (Rouge, Vert, Bleu) produira des couleurs plus vibrantes, mais créera des ralentissements sur les appareils moins puissants.</string>
   <string name="option_dashsearch_full">Recherche avancée</string>
   <string name="hint_dashsearch_full">Utiliser cette option permettra au Dash de donner de meilleurs résultats de recherche, au prix dune performance réduite sur certains appareils lents ou avec beaucoup d\'applications. Si le Dash est lent pour vous, décochez cette option.</string>
   <string name="option_dashsearch_lenses">Utiliser les lentilles</string>
