@@ -71,31 +71,20 @@ public abstract class Lens
 
 			this.showDialog (message, false);
 		}
-		else
-		{
-			throw new UnsupportedOperationException ();
-		}
 	}
 
 	public void onClick (String url, Object obj)
 	{
-		if (obj == null)
-			this.onClick (url);
-		else
-			throw new UnsupportedOperationException ();
-	}
-
-	public void onLongClick (String url)
-	{
-		throw new UnsupportedOperationException ();
+		if (obj == null) {
+			this.onClick(url);
+		}
 	}
 
 	public void onLongClick (String url, Object obj)
 	{
-		if (obj == null)
-			this.onClick (url);
-		else
-			throw new UnsupportedOperationException ();
+		if (obj == null) {
+			this.onClick(url);
+		}
 	}
 
 	protected String downloadStr (String url) throws IOException
