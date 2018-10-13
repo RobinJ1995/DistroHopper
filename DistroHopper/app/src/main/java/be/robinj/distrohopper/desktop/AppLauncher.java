@@ -16,6 +16,7 @@ import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.HomeActivity;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.preferences.Preference;
+import be.robinj.distrohopper.preferences.Preferences;
 
 /**
  * Created by robin on 8/20/14.
@@ -174,7 +175,7 @@ public class AppLauncher extends LinearLayout
 			LinearLayout llBackground = (LinearLayout) this.findViewById (R.id.llBackground);
 			if (llBackground != null && (! this.special) && this.getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
 			{
-				final SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
+				final SharedPreferences prefs = Preferences.getSharedPreferences(this.context, Preferences.PREFERENCES);
 
 				final int avgColour = this.icon.getAverageColour(prefs.getInt (Preference.LAUNCHERICON_OPACITY.getName(), 204));
 

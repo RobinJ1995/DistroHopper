@@ -52,6 +52,7 @@ import be.robinj.distrohopper.cache.AppLabelCache;
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.dev.LogToaster;
 import be.robinj.distrohopper.preferences.Preference;
+import be.robinj.distrohopper.preferences.Preferences;
 import be.robinj.distrohopper.preferences.PreferencesActivity;
 import be.robinj.distrohopper.theme.Default;
 import be.robinj.distrohopper.theme.Elementary;
@@ -621,7 +622,7 @@ public class HomeActivity extends AppCompatActivity
 	}
 
 	private SharedPreferences getSharedPreferences() {
-		return this.getSharedPreferences("prefs", MODE_PRIVATE);
+		return Preferences.getSharedPreferences(this, Preferences.PREFERENCES);
 	}
 
 	private void applyTheme(final Resources res) {
@@ -966,6 +967,10 @@ public class HomeActivity extends AppCompatActivity
 	public AppManager getAppManager ()
 	{
 		return this.apps;
+	}
+
+	public ViewFinder getViewFinder() {
+		return this.viewFinder;
 	}
 
 	//# Callbacks #//

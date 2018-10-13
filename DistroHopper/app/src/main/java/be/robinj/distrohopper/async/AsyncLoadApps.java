@@ -19,6 +19,7 @@ import be.robinj.distrohopper.HomeActivity;
 import be.robinj.distrohopper.cache.AppIconCache;
 import be.robinj.distrohopper.cache.AppLabelCache;
 import be.robinj.distrohopper.dev.Log;
+import be.robinj.distrohopper.preferences.Preferences;
 import be.robinj.distrohopper.thirdparty.ProgressWheel;
 import be.robinj.distrohopper.desktop.dash.AppLauncherClickListener;
 import be.robinj.distrohopper.desktop.dash.AppLauncherLongClickListener;
@@ -56,7 +57,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Integer, AppManager>
 			this.context = params[0];
 
 			appManager = new AppManager (this.parent);
-			final SharedPreferences prefsPinned = this.context.getSharedPreferences ("pinned", Context.MODE_PRIVATE);
+			final SharedPreferences prefsPinned = Preferences.getSharedPreferences(this.context, Preferences.PINNED_APPS);
 
 			/*try
 			{

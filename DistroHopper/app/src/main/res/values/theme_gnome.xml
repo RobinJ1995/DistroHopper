@@ -26,6 +26,7 @@
     </array>
     <integer name="theme_gnome_launcher_bfb_location">@integer/position_bottom</integer>
     <drawable name="theme_gnome_launcher_bfb_image">@drawable/theme_gnome_res_launcher_bfb</drawable>
+    <bool name="theme_gnome_launcher_bfb_hide_while_dragging">true</bool>
     <integer name="theme_gnome_launcher_preferences_location">@integer/position_none</integer>
     <drawable name="theme_gnome_launcher_preferences_image">@drawable/launcher_preferences</drawable>
     <integer name="theme_gnome_launcher_preferences_location_when_panel_hidden">@integer/position_bottom</integer>

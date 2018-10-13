@@ -17,6 +17,7 @@ import java.util.List;
 import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.preferences.Preference;
+import be.robinj.distrohopper.preferences.Preferences;
 import be.robinj.distrohopper.theme.Location;
 
 /**
@@ -71,7 +72,7 @@ public class LauncherService extends Service
 		lalBfb.setColour (R.color.transparentblack80);
 		lalBfb.init ();
 
-		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+		SharedPreferences prefs = Preferences.getSharedPreferences(this, Preferences.PREFERENCES);
 		boolean right = prefs.getInt(Preference.LAUNCHER_EDGE.getName(), Location.LEFT.n) == Location.RIGHT.n;
 
 		this.touchListener = new TouchListener (this, right);

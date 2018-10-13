@@ -14,6 +14,7 @@ import java.util.List;
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.preferences.Preference;
+import be.robinj.distrohopper.preferences.Preferences;
 import be.robinj.distrohopper.thirdparty.ProgressWheel;
 
 /**
@@ -43,7 +44,7 @@ public class LensManager
 			this.lvDashHomeLensResults = (ListView) llDashHomeLensesContainer.findViewById (R.id.lvDashHomeLensResults);
 		this.pwDashSearchProgress = pwDashSearchProgress;
 
-		final SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
+		final SharedPreferences prefs = Preferences.getSharedPreferences(this.context, Preferences.PREFERENCES);
 		final SharedPreferences prefsLenses = this.getPrefsLenses();
 
 		if (apps != null)
@@ -91,7 +92,7 @@ public class LensManager
 	}
 
 	private SharedPreferences getPrefsLenses() {
-		return this.context.getSharedPreferences ("lenses", Context.MODE_PRIVATE);
+		return Preferences.getSharedPreferences(this.context, Preferences.LENSES);
 	}
 
 	public void disableLens (Lens lens)

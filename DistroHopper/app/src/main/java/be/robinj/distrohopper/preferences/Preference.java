@@ -1,5 +1,7 @@
 package be.robinj.distrohopper.preferences;
 
+import android.content.SharedPreferences;
+
 public enum Preference {
 	PANEL_EDGE("panel_edge_v2"),
 	PANEL_OPACITY("panel_opacity"),

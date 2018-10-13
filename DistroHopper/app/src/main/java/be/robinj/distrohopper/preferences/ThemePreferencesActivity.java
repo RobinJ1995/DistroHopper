@@ -30,7 +30,7 @@ public class ThemePreferencesActivity extends AppCompatActivity
 		themes.add (new Gnome ());
 		themes.add (new Elementary ());
 
-		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
+		SharedPreferences prefs = Preferences.getSharedPreferences(this, Preferences.PREFERENCES);
 
 		if (! prefs.getBoolean (Preference.DEV.getName(), false))
 		{

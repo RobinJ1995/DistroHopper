@@ -27,6 +27,7 @@ public abstract class Theme
 	public int launcher_background;
 	public int launcher_bfb_location;
 	public int launcher_bfb_image;
+	public int launcher_bfb_hide_while_dragging;
 	public int launcher_preferences_location;
 	public int launcher_preferences_image;
 	public int launcher_preferences_location_when_panel_hidden;

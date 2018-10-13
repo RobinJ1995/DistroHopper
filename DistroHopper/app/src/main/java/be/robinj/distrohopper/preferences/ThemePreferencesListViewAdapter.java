@@ -29,7 +29,7 @@ public class ThemePreferencesListViewAdapter extends ArrayAdapter<Theme>
 		super (parent, R.layout.widget_theme_preferences_list_item, themes);
 
 		this.parent = parent;
-		this.prefs = this.getContext ().getSharedPreferences ("prefs", Context.MODE_PRIVATE);
+		this.prefs = Preferences.getSharedPreferences(this.getContext(), Preferences.PREFERENCES);
 	}
 
 	@Override

@@ -32,6 +32,8 @@ import be.robinj.distrohopper.desktop.launcher.AppLauncherDragListener;
 import be.robinj.distrohopper.desktop.launcher.AppLauncherLongClickListener;
 import be.robinj.distrohopper.desktop.launcher.RunningAppLauncher;
 import be.robinj.distrohopper.preferences.Preference;
+import be.robinj.distrohopper.preferences.Preferences;
+import be.robinj.distrohopper.theme.Location;
 
 /**
  * Created by robin on 8/20/14.
@@ -56,10 +58,10 @@ public class AppManager implements Iterable<App>
 
 		this.iconPack = new IconPackHelper (parent.getApplicationContext ());
 
-		this.llLauncher = (LinearLayout) parent.findViewById (R.id.llLauncher);
-		this.llLauncherPinnedApps = (LinearLayout) this.llLauncher.findViewById (R.id.llLauncherPinnedApps);
-		this.llLauncherRunningApps = (LinearLayout) this.llLauncher.findViewById (R.id.llLauncherRunningApps);
-		this.gvDashHomeApps = (GridView) parent.findViewById (R.id.gvDashHomeApps);
+		this.llLauncher = parent.getViewFinder().get(R.id.llLauncher);
+		this.llLauncherPinnedApps = parent.getViewFinder().get(this.llLauncher, R.id.llLauncherPinnedApps);
+		this.llLauncherRunningApps = parent.getViewFinder().get(this.llLauncher, R.id.llLauncherRunningApps);
+		this.gvDashHomeApps = parent.getViewFinder().get(R.id.gvDashHomeApps);
 	}
 
 	public void add (App app)
@@ -349,7 +351,7 @@ public class AppManager implements Iterable<App>
 
 	public void savePinnedApps ()
 	{
-		SharedPreferences prefs = this.getContext ().getSharedPreferences ("pinned", Context.MODE_PRIVATE);
+		SharedPreferences prefs = Preferences.getSharedPreferences(this.getContext(), Preferences.PINNED_APPS);
 		SharedPreferences.Editor editor = prefs.edit ();
 
 		editor.clear ();
@@ -381,7 +383,7 @@ public class AppManager implements Iterable<App>
 		{
 			results = new ArrayList<App> ();
 
-			SharedPreferences prefs = this.getContext ().getSharedPreferences ("prefs", Context.MODE_PRIVATE);
+			SharedPreferences prefs = Preferences.getSharedPreferences(this.getContext(), Preferences.PREFERENCES);
 			boolean fullSearch = prefs.getBoolean (Preference.DASH_SEARCH_FULL.getName(), true);
 
 			pattern = pattern.toLowerCase ();
@@ -452,9 +454,13 @@ public class AppManager implements Iterable<App>
 	/*# Event handlers #*/
 	public void startedDraggingPinnedApp ()
 	{
-		AppLauncher lalPreferences = (AppLauncher) this.llLauncher.findViewById (R.id.lalPreferences);
-		AppLauncher lalTrash = (AppLauncher) this.llLauncher.findViewById (R.id.lalTrash);
+		final AppLauncher lalBfb = this.parent.getViewFinder().get(this.llLauncher, R.id.lalBfb);
+		final AppLauncher lalPreferences = this.parent.getViewFinder().get(this.llLauncher, R.id.lalPreferences);
+		final AppLauncher lalTrash = this.parent.getViewFinder().get(this.llLauncher, R.id.lalTrash);
 
+		if (this.parent.getResources().getBoolean(HomeActivity.theme.launcher_bfb_hide_while_dragging)) {
+			lalBfb.setVisibility(View.GONE);
+		}
 		lalPreferences.setVisibility (View.GONE);
 		lalTrash.setVisibility (View.VISIBLE);
 		
@@ -463,18 +469,14 @@ public class AppManager implements Iterable<App>
 
 	public void stoppedDraggingPinnedApp ()
 	{
-		AppLauncher lalPreferences = (AppLauncher) this.llLauncher.findViewById (R.id.lalPreferences);
-		AppLauncher lalTrash = (AppLauncher) this.llLauncher.findViewById (R.id.lalTrash);
+		final AppLauncher lalBfb = this.parent.getViewFinder().get(this.llLauncher, R.id.lalBfb);
+		final AppLauncher lalPreferences = this.parent.getViewFinder().get(this.llLauncher, R.id.lalPreferences);
+		final AppLauncher lalTrash = this.parent.getViewFinder().get(this.llLauncher, R.id.lalTrash);
 
-		switch (this.getContext ().getResources ().getInteger (HomeActivity.theme.launcher_preferences_location))
-		{
-			case -1:
-				lalPreferences.setVisibility (View.GONE);
-				break;
-			default:
-				lalPreferences.setVisibility (View.VISIBLE);
-				break;
-		}
+		final Context context = this.getContext();
+		final Location lalPreferences_location = HomeActivity.theme.lalPreferences_getLocation(context.getResources(), Preferences.getSharedPreferences(context));
+		lalBfb.setVisibility(View.VISIBLE);
+		lalPreferences.setVisibility (lalPreferences_location == Location.NONE ? View.GONE : View.VISIBLE);
 		lalTrash.setVisibility (View.GONE);
 		
 		this.llLauncherPinnedApps.setAlpha (1.0F);

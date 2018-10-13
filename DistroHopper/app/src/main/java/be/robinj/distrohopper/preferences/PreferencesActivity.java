@@ -67,7 +67,7 @@ public class PreferencesActivity extends PreferenceActivity
 	@Override
 	public SharedPreferences getSharedPreferences (String name, int mode) // I'll decide for myself which file I want to store the preferences in, thanks. //
 	{
-		return super.getSharedPreferences ("prefs", MODE_PRIVATE);
+		return super.getSharedPreferences (Preferences.PREFERENCES, MODE_PRIVATE);
 	}
 
 	@Override

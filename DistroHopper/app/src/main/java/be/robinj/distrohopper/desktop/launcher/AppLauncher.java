@@ -13,6 +13,7 @@ import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.HomeActivity;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.preferences.Preference;
+import be.robinj.distrohopper.preferences.Preferences;
 
 /**
  * Created by robin on 8/20/14.
@@ -44,7 +45,7 @@ public class AppLauncher extends be.robinj.distrohopper.desktop.AppLauncher
 	{
 		float density = this.getResources ().getDisplayMetrics ().density;
 
-		SharedPreferences prefs = this.getContext ().getSharedPreferences ("prefs", Context.MODE_PRIVATE);
+		SharedPreferences prefs = Preferences.getSharedPreferences(this.getContext(), Preferences.PREFERENCES);
 		int width = (int) ((float) (48 + prefs.getInt (Preference.LAUNCHERICON_WIDTH.getName(), 36)) * density);
 		int height = width - (int) (4F * density);
 

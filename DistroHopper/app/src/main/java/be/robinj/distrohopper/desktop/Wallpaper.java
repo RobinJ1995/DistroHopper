@@ -18,6 +18,7 @@ import be.robinj.distrohopper.Image;
 import be.robinj.distrohopper.Permission;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.preferences.Preference;
+import be.robinj.distrohopper.preferences.Preferences;
 
 /**
  * Created by robin on 8/21/14.
@@ -66,7 +67,7 @@ public class Wallpaper extends ImageView
 		try
 		{
 			//TODO// Huge memory hog! Need to get rid of this. //
-			SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
+			SharedPreferences prefs = Preferences.getSharedPreferences(this.context, Preferences.PREFERENCES);
 			this.mode = prefs.getString (Preference.WALLPAPER_BLUR_MODE.getName(), "darken");
 
 			if (mode.equals ("scale"))

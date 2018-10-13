@@ -29,6 +29,7 @@ public class Default extends Theme
 		this.launcher_background = R.array.theme_default_launcher_background;
 		this.launcher_bfb_location = R.integer.theme_default_launcher_bfb_location;
 		this.launcher_bfb_image = R.drawable.theme_default_launcher_bfb_image;
+		this.launcher_bfb_hide_while_dragging = R.bool.theme_default_launcher_bfb_hide_while_dragging;
 		this.launcher_preferences_location = R.integer.theme_default_launcher_preferences_location;
 		this.launcher_preferences_image = R.drawable.theme_default_launcher_preferences_image;
 		this.launcher_preferences_location_when_panel_hidden = R.integer.theme_default_launcher_preferences_location_when_panel_hidden;
