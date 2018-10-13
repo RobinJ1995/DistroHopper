@@ -72,7 +72,7 @@ public class LauncherService extends Service
 		lalBfb.init ();
 
 		SharedPreferences prefs = this.getSharedPreferences ("prefs", MODE_PRIVATE);
-		boolean right = prefs.getInt (Preference.LAUNCHER_EDGE.getName(), Location.LEFT) == Location.RIGHT;
+		boolean right = prefs.getInt(Preference.LAUNCHER_EDGE.getName(), Location.LEFT.n) == Location.RIGHT.n;
 
 		this.touchListener = new TouchListener (this, right);
 		if (right)

@@ -3,11 +3,26 @@ package be.robinj.distrohopper.theme;
 /**
  * Created by robin on 21/01/15.
  */
-public final class Location
+public enum Location
 {
-	public static final int NONE = 0;
-	public static final int TOP = 1;
-	public static final int RIGHT = 2;
-	public static final int BOTTOM = 3;
-	public static final int LEFT = 4;
+	NONE(0),
+	TOP(1),
+	RIGHT(2),
+	BOTTOM(3),
+	LEFT(4);
+
+	public final int n;
+
+	Location(final int n) {
+		this.n = n;
+	}
+
+	@Override
+	public String toString() {
+		return this.name();
+	}
+
+	public static Location of(final int n) {
+		return Location.values()[n];
+	}
 }

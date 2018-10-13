@@ -98,7 +98,7 @@ public class HomeActivity extends AppCompatActivity
 	private boolean openDashWhenReady = false;
 
 	public static Theme theme = new Default ();
-	private int launcherEdge = Location.NONE;
+	private Location launcherEdge = Location.NONE;
 
 	private PackageManagerBroadcastReceiver broadcastPackageManager;
 
@@ -175,7 +175,7 @@ public class HomeActivity extends AppCompatActivity
 			final Resources res = this.getResources ();
 			final float density = res.getDisplayMetrics ().density;
 
-			this.setPanelEdge(prefs.getInt (Preference.PANEL_EDGE.getName(), res.getInteger (HomeActivity.theme.panel_location)));
+			this.setPanelEdge(Location.of(prefs.getInt(Preference.PANEL_EDGE.getName(), res.getInteger(HomeActivity.theme.panel_location))));
 
 			int ibDashClose_width = (int) ((float) (48 + prefs.getInt (Preference.LAUNCHERICON_WIDTH.getName(), 36)) * density);
 			LinearLayout.LayoutParams ibDashClose_layoutParams = new LinearLayout.LayoutParams (ibDashClose_width, LinearLayout.LayoutParams.MATCH_PARENT);
@@ -663,43 +663,41 @@ public class HomeActivity extends AppCompatActivity
 		llPanel_layoutParams.height = (int) res.getDimension (R.dimen.theme_elementary_panel_height);
 
 		final boolean expandLlLauncher = res.getBoolean (HomeActivity.theme.launcher_expand);
-		this.launcherEdge = prefs.getInt (Preference.LAUNCHER_EDGE.getName(), res.getInteger (HomeActivity.theme.launcher_location));
+		this.launcherEdge = Location.of(prefs.getInt(Preference.LAUNCHER_EDGE.getName(), res.getInteger (HomeActivity.theme.launcher_location)));
 		this.setLauncherEdge (this.launcherEdge, expandLlLauncher);
 
-		int lalPreferencesLocation = res.getInteger (HomeActivity.theme.launcher_preferences_location);
-		if (prefs.getInt (Preference.PANEL_EDGE.getName(), Location.TOP) == Location.NONE)
-			lalPreferencesLocation = res.getInteger (HomeActivity.theme.launcher_preferences_location_when_panel_hidden);
+		final Location lalPreferencesLocation = HomeActivity.theme.lalPreferences_getLocation(res, prefs);
 
 		switch (lalPreferencesLocation)
 		{
-			case Location.NONE:
+			case NONE:
 				lalPreferences.setVisibility (View.GONE);
 				break;
-			case Location.TOP:
-			case Location.LEFT:
+			case TOP:
+			case LEFT:
 				int posLlBfbSpinnerWrapper = llLauncher.indexOfChild (llBfbSpinnerWrapper);
 				int posLalPreferences = (posLlBfbSpinnerWrapper == 0 ? 1 : 0);
 
 				llLauncher.removeView (lalPreferences);
 				llLauncher.addView (lalPreferences, posLalPreferences);
 				break;
-			case Location.RIGHT:
-			case Location.BOTTOM:
+			case RIGHT:
+			case BOTTOM:
 				lalPreferences.setVisibility (View.VISIBLE);
 				break;
 		}
 
-		switch (res.getInteger (HomeActivity.theme.launcher_bfb_location))
+		switch (Location.of(res.getInteger (HomeActivity.theme.launcher_bfb_location)))
 		{
-			case Location.NONE:
+			case NONE:
 				llBfbSpinnerWrapper.setVisibility (View.GONE);
 				break;
-			case Location.TOP:
-			case Location.LEFT:
+			case TOP:
+			case LEFT:
 				llBfbSpinnerWrapper.setVisibility (View.VISIBLE);
 				break;
-			case Location.RIGHT:
-			case Location.BOTTOM:
+			case RIGHT:
+			case BOTTOM:
 				int posLalPreferences = llLauncher.indexOfChild (lalPreferences);
 				int posLalTrash = llLauncher.indexOfChild (lalTrash);
 				int posLlBfbSpinnerWrapper = (posLalPreferences > 1 ? posLalPreferences : posLalTrash) - 1;
@@ -709,12 +707,12 @@ public class HomeActivity extends AppCompatActivity
 				break;
 		}
 
-		switch (res.getInteger (HomeActivity.theme.panel_bfb_location))
+		switch (Location.of(res.getInteger (HomeActivity.theme.panel_bfb_location)))
 		{
-			case Location.NONE:
+			case NONE:
 				tvPanelBfb.setVisibility (View.GONE);
 				break;
-			case Location.LEFT:
+			case LEFT:
 				tvPanelBfb.setVisibility (View.VISIBLE);
 				break;
 		}
@@ -797,7 +795,7 @@ public class HomeActivity extends AppCompatActivity
 	}
 	
 	@SuppressLint ("ResourceType")
-	private void setLauncherEdge (int edge, boolean expand)
+	private void setLauncherEdge (final Location edge, final boolean expand)
 	{
 		final LinearLayout llPanel = this.viewFinder.get(R.id.llPanel);
 		final ImageButton ibPanelDashClose = this.viewFinder.get(llPanel, R.id.ibPanelDashClose);
@@ -819,15 +817,15 @@ public class HomeActivity extends AppCompatActivity
 				taLauncherMargins.getLayoutDimension (2, 0),
 				taLauncherMargins.getLayoutDimension (3, 0)
 		};
-		int rotateLauncherMargins = edge;
+		int rotateLauncherMargins = edge.n;
 
 		int launcherMarginsRotated[] = new int[4];
 		for (int i = 0; i <= launcherMargins.length - 1; i++)
-			launcherMarginsRotated[(i + rotateLauncherMargins) % launcherMargins.length ] = launcherMargins[i];
+			launcherMarginsRotated[(i + rotateLauncherMargins) % launcherMargins.length] = launcherMargins[i];
 
 		switch (edge)
 		{
-			case Location.TOP:
+			case TOP:
 				llLauncherAndDashContainer.setOrientation (LinearLayout.VERTICAL);
 				llLauncher.setOrientation (LinearLayout.HORIZONTAL);
 				llBfbSpinnerWrapper.setOrientation (LinearLayout.HORIZONTAL);
@@ -860,7 +858,7 @@ public class HomeActivity extends AppCompatActivity
 
 
 				break;
-			case Location.BOTTOM:
+			case BOTTOM:
 				llLauncherAndDashContainer.setOrientation (LinearLayout.VERTICAL);
 				llLauncher.setOrientation (LinearLayout.HORIZONTAL);
 				llBfbSpinnerWrapper.setOrientation (LinearLayout.HORIZONTAL);
@@ -895,7 +893,7 @@ public class HomeActivity extends AppCompatActivity
 				llLauncherRunningApps.setLayoutParams (llLauncherRunningApps_layoutParams);
 
 				break;
-			case Location.RIGHT:
+			case RIGHT:
 				llLauncherAndDashContainer.setGravity (Gravity.RIGHT | Gravity.CENTER);
 
 				llLauncherAndDashContainer.removeView (llLauncher);
@@ -905,7 +903,7 @@ public class HomeActivity extends AppCompatActivity
 				llLauncherAndDashContainer.addView (llLauncher);
 
 				break;
-			case Location.LEFT: // Falls through //
+			case LEFT: // Falls through //
 				llLauncherAndDashContainer.setGravity (Gravity.LEFT | Gravity.CENTER);
 
 				break;
@@ -921,7 +919,7 @@ public class HomeActivity extends AppCompatActivity
 		boolean panelSwapClosePreferences = false;
 		for (int i = 0; i < panelSwapClosePreferencesWhenLauncherLocation.length; i++)
 		{
-			if (panelSwapClosePreferencesWhenLauncherLocation[i] == edge)
+			if (panelSwapClosePreferencesWhenLauncherLocation[i] == edge.n)
 			{
 				panelSwapClosePreferences = true;
 
@@ -940,15 +938,15 @@ public class HomeActivity extends AppCompatActivity
 		llLauncher.setLayoutParams (llLauncher_layoutParams);
 	}
 
-	private void setPanelEdge (final int edge)
+	private void setPanelEdge (final Location edge)
 	{
 		final SharedPreferences prefs = this.getSharedPreferences();
 
 		switch (edge) {
-			case Location.TOP:
+			case TOP:
 				this.llPanel.setAlpha ((float) prefs.getInt (Preference.PANEL_OPACITY.getName(), 100) / 100F);
 				break;
-			case Location.NONE:
+			case NONE:
 				this.llPanel.setVisibility (View.GONE);
 				break;
 		}
@@ -1081,7 +1079,7 @@ public class HomeActivity extends AppCompatActivity
 			if (this.getResources ().getBoolean (HomeActivity.theme.launcher_background_dynamic))
 				llLauncher.setBackgroundColor (bgColour);
 			else
-				llLauncher.setBackgroundResource (launcherBackgroundResources.getResourceId (this.launcherEdge, R.color.transparent));
+				llLauncher.setBackgroundResource (launcherBackgroundResources.getResourceId(this.launcherEdge.n, R.color.transparent));
 
 			if (res.getBoolean (HomeActivity.theme.dash_background_dynamic))
 				this.llDash.setBackgroundColor (bgColour);

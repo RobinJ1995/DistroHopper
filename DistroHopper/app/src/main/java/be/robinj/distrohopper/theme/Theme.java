@@ -1,5 +1,10 @@
 package be.robinj.distrohopper.theme;
 
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+
+import be.robinj.distrohopper.preferences.Preference;
+
 /**
  * Created by robin on 21/01/15.
  */
@@ -65,5 +70,13 @@ public abstract class Theme
 	public String getName ()
 	{
 		return this.getClass ().getSimpleName ().toLowerCase ();
+	}
+
+	public Location lalPreferences_getLocation(final Resources res, final SharedPreferences prefs) {
+		if (prefs.getInt(Preference.PANEL_EDGE.getName(), Location.TOP.n) == Location.NONE.n) {
+			return Location.of(res.getInteger (this.launcher_preferences_location_when_panel_hidden));
+		}
+
+		return Location.of(res.getInteger(this.launcher_preferences_location));
 	}
 }
