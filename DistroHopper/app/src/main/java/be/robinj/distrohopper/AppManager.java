@@ -463,6 +463,7 @@ public class AppManager implements Iterable<App>
 		}
 		lalPreferences.setVisibility (View.GONE);
 		lalTrash.setVisibility (View.VISIBLE);
+		this.parent.closeDash();
 		
 		this.llLauncherPinnedApps.setAlpha (0.9F);
 	}

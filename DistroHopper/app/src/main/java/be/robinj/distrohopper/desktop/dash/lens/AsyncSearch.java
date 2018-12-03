@@ -21,7 +21,7 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 	private final static int PROGRESS_WHEEL_DELAY = 240;
 
 	private LensManager lensManager;
-	private List<LensSearchResultCollection> results = new ArrayList<LensSearchResultCollection> ();
+	private List<LensSearchResultCollection> results = new ArrayList<> ();
 	private CollectionGridAdapter adapter;
 
 	private ProgressWheel progressWheel;

@@ -12,7 +12,6 @@ import be.robinj.distrohopper.ExceptionHandler;
 /**
  * Created by robin on 03/09/14.
  */
-@TargetApi (Build.VERSION_CODES.HONEYCOMB)
 public class LauncherDragListener implements ViewGroup.OnDragListener
 {
 	private AppManager appManager;

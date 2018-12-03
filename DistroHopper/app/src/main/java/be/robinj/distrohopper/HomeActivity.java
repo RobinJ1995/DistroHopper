@@ -1170,7 +1170,7 @@ public class HomeActivity extends AppCompatActivity
 	}
 
 	//# Dash #//
-	private void closeDash ()
+	void closeDash ()
 	{
 		this.closeDash (false);
 	}
@@ -1223,7 +1223,7 @@ public class HomeActivity extends AppCompatActivity
 			Tracker.trackEvent ("Home", "Dash closed", "Dash");
 	}
 
-	private void openDash ()
+	void openDash ()
 	{
 		this.openDash (false);
 	}

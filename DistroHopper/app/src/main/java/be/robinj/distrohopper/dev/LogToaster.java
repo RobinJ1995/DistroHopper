@@ -16,11 +16,8 @@ public class LogToaster implements IObserver {
 
 	@Override
 	public void nudge() {
-		this.parent.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				Toast.makeText(parent, log.getLastEntry(), Toast.LENGTH_LONG).show();
-			}
-		});
+		this.parent.runOnUiThread(() ->
+			Toast.makeText(parent, log.getLastEntry(), Toast.LENGTH_LONG).show()
+		);
 	}
 }
