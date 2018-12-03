@@ -69,6 +69,8 @@
     <string name="hint_widgets_enabled">Enable <b>experimental</b> (read: <b>broken</b>) widget support.\nThis is very experimental and not very usable in its current state.</string>
     <string name="option_dev_log_toaster">Log toasts</string>
     <string name="hint_dev_log_toaster">Show log items in toast messages.</string>
+    <string name="option_customise">Customise</string>
+    <string name="hint_customise">Customise the look and feel.</string>
 
     <string-array name="keys_unitywallpaper_blur">
         <item>Don\'t blur</item>

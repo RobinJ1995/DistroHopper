@@ -16,8 +16,8 @@
 
     <Preference
         android:key="dummy_customise"
-        android:title="Customise"
-        android:summary="Customise the look and feel.">
+        android:title="@string/option_customise"
+        android:summary="@string/hint_customise">
     </Preference>
 
 </PreferenceScreen>

@@ -8,12 +8,24 @@
   <string name="title_activity_about">О нас</string>
   <string name="title_activity_lens_preferences">Источник поиска</string>
   <string name="title_activity_theme_preferences">Темы</string>
+  <string name="title_activity_dev_logs">Логи</string>
+  <string name="pinned">был прикреплен к лаунчеру</string>
+  <string name="unpinned">был отсоединен от лаунчера</string>
   <string name="notpinned">не прикреплен</string>
+  <string name="alreadypinned">уже прикреплен</string>
   <string name="developed_by">Разработчик: Робин Якобс</string>
   <string name="honourable_mentions">Oсобая благодарность</string>
   <string name="button_back">Назад</string>
   <string name="button_about">О нас</string>
   <string name="button_contribute">Помочь проекту</string>
+  <string name="button_apply">Применить</string>
+  <string-array name="edges">
+    <item>Спрятать</item>
+    <item>Вверх</item>
+    <item>Справа</item>
+    <item>Вниз</item>
+    <item>Слева</item>
+  </string-array>
   <string name="title_preferences">Предпочтения</string>
   <string name="pref_header_general">Общие</string>
   <string name="pref_header_unity">Юнити</string>
@@ -21,17 +33,20 @@
   <string name="pref_header_dash">Дэш</string>
   <string name="pref_header_panel">Панель</string>
   <string name="pref_header_advanced">Дополнительные</string>
-  <string name="pref_header_dev">Опции разработчика</string>
+  <string name="pref_header_dev">Опции для разработчиков</string>
   <string name="pref_header_functionality">Функциональность</string>
   <string name="pref_header_appearance">Внешний вид</string>
   <string name="category_colourcalc">Расчет доминирующего цвета</string>
-  <string name="option_launchericon_size">Размер закрепленной иконки</string>
+  <string name="option_launchericon_size">Размер прикрепленной иконки</string>
   <string name="option_launchericon_opacity">Непрозрачность фона икон</string>
   <string name="hint_launchericon_opacity">Настройка уровня непрозрачности фона икон.</string>
+  <string name="option_launcherservice_enabled">Сервис наложения лаунчера</string>
   <string name="hint_launcherservice_enabled">При проведении пальцем по нижней левой части экрана появится лаунчер который позволит запустить программы прикрепленные к нему без надобности возврата на главный экран.</string>
   <string name="option_launcher_running_show">Показать текущие приложения</string>
   <string name="option_panel_show">Показать панель</string>
   <string name="hint_panel_show">Показать панель в верхней части экрана.</string>
+  <string name="option_panel_edge">Расположение панели</string>
+  <string name="hint_panel_edge">К какой стороне экрана панель должна быть прикреплена</string>
   <string name="option_panel_opacity">Непрозрачности панели</string>
   <string name="hint_panel_opacity">Настройка уровня непрозрачности панели.</string>
   <string name="option_unitybackground_dynamic">Автоматический выбор цвета фона Unity</string>
@@ -43,7 +58,12 @@
   <string name="hint_unitybackground_opacity">Настройка уровня непрозрачности компонентов Unity.</string>
   <string name="option_unitywallpaper_blur">Метод размытия обоев</string>
   <string name="hint_unitywallpaper_blur">Метод  размытия экрана который будет использоваться при открытии Дэша. В случае неправильной работы метода \"Уменьшить и увеличить\", метод \"Затемнение\" будет выбран автоматически.</string>
+  <string name="option_launcher_edge">Расположение лаунчера</string>
   <string name="hint_launcher_edge">К какой стороне экрана будет прикреплен Лаунчер.</string>
+  <string name="option_widgets_enabled">Виджет</string>
+  <string name="hint_widgets_enabled">Включить <b>экспериментальную</b> (читать: <b>сломанную</b>) поддержку виджетов.\nДанный функционал является весьма нестабильным и едва пригодным к использованию.</string>
+  <string name="option_dev_log_toaster">Всплывающие логи</string>
+  <string name="hint_dev_log_toaster">Показывать логи в виде всплывающих сообщений</string>
   <string-array name="keys_unitywallpaper_blur">
     <item>Не размывать</item>
     <item>Затемнить</item>
@@ -59,7 +79,10 @@
   <string name="hint_dashsearch_lenses_maxresults">Максимальное количество результатов поиска показанное Линзой.</string>
   <string name="option_dash_ready_show">Открыть Дэш по умолчанию</string>
   <string name="hint_dash_ready_show">Дэш будет открыт автоматически, как только все программы будут загружены .</string>
+  <string name="option_lenses">Источники поиска</string>
   <string name="option_theme">Тема</string>
+  <string name="option_dev">Режим разработчика</string>
+  <string name="option_dev_logs">Логи</string>
   <string name="hm_timvdstaaij_name">Тиму ван дер Стайу</string>
   <string name="hm_timvdstaaij_why">* Тестирование\n * Помощь с функцией расчета доминирующего цвета\n</string>
   <string name="hm_todddavies_name">Тоду Дэвису</string>
@@ -72,12 +95,15 @@ https://github.com/Todd-Davies/ProgressWheel/</string>
   <string name="hm_commonsguy_name">Марку Мерфи (Commonsware)</string>
   <string name="hm_commonsguy_why">* Я использовал его компонент ColorMixer в окне настроек.\n
 https://github.com/commonsguy/cwac-colormixer</string>
+  <string name="hm_translators_name">Команда переводчиков</string>
   <string name="title_activity_contribute">Как я могу помочь?</string>
   <string name="contribute_intro">Данный проект потребовал больших усилий, временных и финансовых затрат. Если вы хотите помочь дальнейшему развитию проекта, сделайте это нижеприведенными способами.</string>
+  <string name="contribute_translate_title">Перевод</string>
   <string name="contribute_translate_go">Перейти на Transifex</string>
   <string name="contribute_bugs_title">Сообщить об ошибке</string>
   <string name="contribute_bugs_go">Перейти на GitHub</string>
   <string name="contribute_donate_title">Сделать пожертвование</string>
   <string name="contribute_donate_description">Если вы желаете окaзать проекту финансовую помощь, вы всегда можете сделать это с помощью кнопки \"Сделать пожертвование\". \n Примечание: Оказывая финансовую помощь, вы не получаете никаких превелигий и ничего не покупаете. Мы будем очень благодарны за оказанную вами финансовую поддержку, но вы не должны ожидать получения дополнительных функций.</string>
   <string name="contribute_donate_go">Сделать пожертвование</string>
+  <string name="theme_elementary_res_panel_bfb_text">Приложения</string>
 </resources>
