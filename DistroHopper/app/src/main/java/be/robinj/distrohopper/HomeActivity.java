@@ -105,6 +105,8 @@ public class HomeActivity extends AppCompatActivity
 
 	private LogToaster logToaster;
 
+	private boolean isDashOpened = false;
+
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
@@ -1177,6 +1179,10 @@ public class HomeActivity extends AppCompatActivity
 
 	private void closeDash (boolean track)
 	{
+		if (! this.isDashOpened) {
+			return;
+		}
+
 		if (modeCustomise)
 		{
 			Intent intent = this.getIntent ();
@@ -1221,6 +1227,8 @@ public class HomeActivity extends AppCompatActivity
 
 		if (track)
 			Tracker.trackEvent ("Home", "Dash closed", "Dash");
+
+		this.isDashOpened = false;
 	}
 
 	void openDash ()
@@ -1230,6 +1238,10 @@ public class HomeActivity extends AppCompatActivity
 
 	private void openDash (boolean track)
 	{
+		if (this.isDashOpened) {
+			return;
+		}
+
 		this.llDash.setVisibility (View.VISIBLE);
 		this.wpWallpaper.blur ();
 		this.llPanel.setAlpha (1F);
@@ -1253,6 +1265,8 @@ public class HomeActivity extends AppCompatActivity
 
 		if (track)
 			Tracker.trackEvent ("Home", "Dash opened", "Dash");
+
+		this.isDashOpened = true;
 	}
 
 	//# Checks #//

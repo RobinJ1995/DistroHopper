@@ -36,6 +36,7 @@ public class TrashDragListener implements ViewGroup.OnDragListener
 			switch (event.getAction ())
 			{
 				case DragEvent.ACTION_DRAG_ENTERED:
+					this.appManager.startedDraggingPinnedApp();
 					lalTrash.setColour (Color.rgb (255, 40, 40));
 					break;
 				case DragEvent.ACTION_DROP: // Falls through //
