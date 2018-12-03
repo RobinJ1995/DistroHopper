@@ -92,7 +92,7 @@ public class LocalFiles extends Lens
 
 			Intent intent = new Intent ();
 			intent.setAction (Intent.ACTION_VIEW);
-			intent.setDataAndType (Uri.fromFile (file), mime);
+			intent.setDataAndType (Uri.parse (file.getPath()), mime);
 			intent.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
 
 			this.context.startActivity (intent);
