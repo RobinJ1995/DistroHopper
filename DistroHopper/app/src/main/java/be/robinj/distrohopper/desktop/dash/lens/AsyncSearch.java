@@ -1,6 +1,8 @@
 package be.robinj.distrohopper.desktop.dash.lens;
 
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.ListView;
 
@@ -9,17 +11,23 @@ import java.util.List;
 
 import be.robinj.distrohopper.thirdparty.ProgressWheel;
 
+import static be.robinj.distrohopper.Utils.runOnUiThread;
+
 /**
  * Created by robin on 25/11/14.
  */
 public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgressUpdate, List<LensSearchResultCollection>>
 {
+	private final static int PROGRESS_WHEEL_DELAY = 240;
+
 	private LensManager lensManager;
 	private List<LensSearchResultCollection> results = new ArrayList<LensSearchResultCollection> ();
 	private CollectionGridAdapter adapter;
 
 	private ProgressWheel progressWheel;
 	private ListView lvDashHomeLensResults;
+
+	private volatile boolean finished = false;
 
 	public AsyncSearch (LensManager lensManager, ProgressWheel progressWheel, ListView lvDashHomeLensResults)
 	{
@@ -35,7 +43,23 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 		super.onPreExecute ();
 
 		this.lensManager.showLensesContainer ();
-		this.progressWheel.setVisibility (View.VISIBLE);
+
+		final Runnable setProgressWheelVisible = () -> {
+			try {
+				Thread.sleep(PROGRESS_WHEEL_DELAY);
+			} catch (final InterruptedException e) {
+				return;
+			}
+
+			runOnUiThread(() -> {
+				if (this.finished || this.isCancelled()) {
+					return;
+				}
+
+				this.progressWheel.setVisibility (View.VISIBLE);
+			});
+		};
+		new Thread(setProgressWheelVisible).start();
 
 		this.adapter = new be.robinj.distrohopper.desktop.dash.lens.CollectionGridAdapter (this.lensManager.getContext (), this.results);
 		this.lvDashHomeLensResults.setAdapter (this.adapter);
@@ -95,7 +119,6 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 		AsyncSearchProgressUpdate update = progressUpdate[0];
 
 		this.progressWheel.setProgress ((int) ((float) update.getProgress () / (float) update.getNLenses () * 360));
-		//this.progressWheel.invalidate ();
 
 		LensSearchResultCollection collection = update.getCollection ();
 		if (collection != null)
@@ -108,6 +131,8 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 	@Override
 	protected void onPostExecute (List<LensSearchResultCollection> results)
 	{
+		this.finished = true;
+
 		super.onPostExecute (results);
 
 		this.progressWheel.setVisibility (View.GONE);
