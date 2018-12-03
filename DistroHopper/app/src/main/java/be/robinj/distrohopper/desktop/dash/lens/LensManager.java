@@ -23,7 +23,7 @@ import be.robinj.distrohopper.thirdparty.ProgressWheel;
 public class LensManager
 {
 	private Context context;
-	private LinkedHashMap<String, Lens> lenses = new LinkedHashMap<String, Lens> ();
+	private LinkedHashMap<String, Lens> lenses = new LinkedHashMap<> ();
 	private List<Lens> enabled;
 	private AsyncSearch asyncSearch;
 
@@ -53,7 +53,6 @@ public class LensManager
 		this.lenses.put ("AskUbuntu", new AskUbuntu (context));
 		this.lenses.put ("DuckDuckGo", new DuckDuckGo (context));
 		this.lenses.put ("GitHub", new GitHub (context));
-		this.lenses.put ("GooglePlus", new GooglePlus (context));
 		this.lenses.put ("InstalledApps", new InstalledApps (context, apps));
 		this.lenses.put ("LocalFiles", new LocalFiles (context)); // LocalFiles needs to show an AlertDialog in some cases, thus it needs the activity's Context (which AppsManager has) in stead of the Application Context (this.context). //
 		this.lenses.put ("Reddit", new Reddit (context));
