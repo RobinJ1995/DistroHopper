@@ -31,7 +31,6 @@
 
     <string name="title_preferences">Preferences</string>
     <string name="pref_header_general">General</string>
-    <string name="pref_header_unity">Unity</string>
     <string name="pref_header_launcher">Launcher</string>
     <string name="pref_header_dash">Dash</string>
     <string name="pref_header_panel">Panel</string>
@@ -39,30 +38,10 @@
     <string name="pref_header_dev">Developer options</string>
     <string name="pref_header_functionality">Functionality</string>
     <string name="pref_header_appearance">Appearance</string>
-    <string name="category_colourcalc">Dominant colour calculation</string>
     <string name="option_launchericon_size">Pinned icon size</string>
     <string name="hint_launchericon_size">How large icons for pinned apps should be. The slider goes from 48dip to 120dip, with the default (right in the middle) being 84dip.</string>
-    <string name="option_launchericon_opacity">Icon background opacity</string>
-    <string name="hint_launchericon_opacity">How opaque the background colour of icons in the Launcher should be.</string>
-    <string name="option_launcherservice_enabled">Launcher overlay service</string>
-    <string name="hint_launcherservice_enabled">When you swipe from the bottom half of the left edge of the screen, the Launcher will appear, allowing you to launch apps which you have pinned to the Launcher without having to go to the home screen.\n(EXPERIMENTAL)</string>
-    <string name="option_launcher_running_show">Show running apps</string>
-    <string name="hint_launcher_running_show">The Launcher will show which apps are currently running. This will be indicated by a small arrow on the left side of the icon. Apps which are running but have not been pinned to the Launcher will also be shown.\nNOTE: This feature no longer works reliably from Android 5.0 onwards because of restrictions that were added to the operating system.</string>
-    <string name="option_panel_show">Show</string>
-    <string name="hint_panel_show">Whether the Panel at the top of the screen should be shown or not.</string>
     <string name="option_panel_edge">Panel location</string>
     <string name="hint_panel_edge">To which screen edge the Panel should be attached.</string>
-    <string name="option_panel_opacity">Opacity</string>
-    <string name="hint_panel_opacity">How opaque the Panel should be.</string>
-    <string name="option_unitybackground_dynamic">Dynamic background colour</string>
-    <string name="hint_unitybackground_dynamic">Dynamically pick the background colour of transparent Unity components (Launcher, and the Dash and Panel when the Dash is opened) based on the dominant colour of the wallpaper. This won\'t work when a live wallpaper is set, in which case it will fall back to a transparent black.</string>
-    <string name="option_unitybackground_colour">Background colour</string>
-    <string name="hint_unitybackground_colour">The background colour that should be used for transparent Unity components.</string>
-    <string name="message_unitybackground_colour">Use the sliders to pick a colour.</string>
-    <string name="option_unitybackground_opacity">Background opacity</string>
-    <string name="hint_unitybackground_opacity">How opaque the background colour of transparent Unity components should be.</string>
-    <string name="option_unitywallpaper_blur">Wallpaper blur method</string>
-    <string name="hint_unitywallpaper_blur">The method that should be used to blur the background when the Dash is opened. When \"Downscale &amp; upscale\" is chosen and it fails (or a live wallpaper is set), \"Darken\" will be used as fallback.</string>
     <string name="option_launcher_edge">Launcher location</string>
     <string name="hint_launcher_edge">To which screen edge the Launcher should be attached.</string>
     <string name="option_widgets_enabled">Widgets</string>
@@ -72,20 +51,8 @@
     <string name="option_customise">Customise</string>
     <string name="hint_customise">Customise the look and feel.</string>
 
-    <string-array name="keys_unitywallpaper_blur">
-        <item>Don\'t blur</item>
-        <item>Darken</item>
-        <item>Downscale &amp; upscale (default)</item>
-    </string-array>
-
     <string name="option_wallpaper">Wallpaper</string>
     <string name="hint_wallpaper">Change wallpaper</string>
-    <string name="option_dashsearch_full">Advanced search</string>
-    <string name="hint_dashsearch_full">Enabling this option will result in better Dash search results but will also affect performance on slower devices or devices with a lot of apps installed. If Dash search is slow for you, you might want to consider disabling this.</string>
-    <string name="option_dashsearch_lenses">Use lenses</string>
-    <string name="hint_dashsearch_lenses">Lenses provide extra search functionality. Using lenses you can search other services like DuckDuckGo, Stack Overflow, or even your local files, right from the Dash.</string>
-    <string name="option_dashsearch_lenses_maxresults">Results per lens</string>
-    <string name="hint_dashsearch_lenses_maxresults">The maximum number of search results that is shown from each lens.</string>
     <string name="option_dash_ready_show">Open Dash by default</string>
     <string name="hint_dash_ready_show">The Dash will automatically be opened once apps are loaded.</string>
     <string name="option_lenses">Search sources</string>
@@ -95,20 +62,10 @@
     <string name="option_dev">Developer mode</string>
     <string name="hint_dev">Access debug logs and other technical information. Enabling this will negatively impact performance and stability.</string>
     <string name="option_dev_logs">Logs</string>
-    <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
     <string name="hm_timvdstaaij_why">* Testing (If he doesn\'t manage to wreck it then it\'s probably safe for consumption by the rest of the world.)\n
         * Help with the dominant colour calculation function.</string>
-    <string name="hm_todddavies_name">Todd Davies</string>
     <string name="hm_todddavies_why">* I used his ProgressWheel component, since the default (round) Android ProgressBar component can\'t actually indicate progress.\n
         https://github.com/Todd-Davies/ProgressWheel/</string>
-    <!-- No longer used
-    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
-    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
-        http://stackoverflow.com/a/8483078/521361</string>
-    -->
-    <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
-    <string name="hm_commonsguy_why">* I used his ColorMixer component in the Preferences screen.\n
-        https://github.com/commonsguy/cwac-colormixer</string>
     <string name="hm_translators_name">The Translation Team</string>
     <string name="hm_translators_why">* A couple of people devoted time and effort to make this app available in their respective languages. I am grateful towards all of these people for their contributions to the project.</string>
     <string name="title_activity_contribute">How can I contribute?</string>
@@ -124,7 +81,6 @@
     <string name="contribute_donate_title">Donate</string>
     <string name="contribute_donate_description">If you want, you can also make a monetary donation to the developer. Donations are handled via PayPal. You will be able to pick the amount of money you\'d like to donate.
         \nNote: It\'s a donation. I am not selling anything, and you are not buying anything. Donations are greatly appreciated, but you will not gain any additional features because of it. All features of this application are available free of charge.</string>
-    <string name="contribute_donate_go">Donate</string>
 
     <string name="theme_elementary_res_panel_bfb_text">Applications</string>
 </resources>
