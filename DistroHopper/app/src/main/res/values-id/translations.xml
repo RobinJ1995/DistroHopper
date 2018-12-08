@@ -13,58 +13,18 @@
   <string name="button_contribute">Kontribusi</string>
   <string name="title_preferences">Preferensi</string>
   <string name="pref_header_general">Umum</string>
-  <string name="pref_header_unity">Unity</string>
   <string name="pref_header_launcher">Peluncur</string>
   <string name="pref_header_dash">Dasbor</string>
   <string name="pref_header_panel">Panel</string>
   <string name="pref_header_advanced">Tingkat Lanjut</string>
-  <string name="category_colourcalc">Perhitungan warna dominan</string>
-  <string name="option_launchericon_opacity">Opasitas ikon latar belakang</string>
-  <string name="hint_launchericon_opacity">Bagaimana keburaman warna latar belakang ikon dari peluncur seharusnya.</string>
-  <string name="hint_launcherservice_enabled">Ketika anda menggeser dari bagian bawah tepi kiri layar, Peluncur akan muncul, memungkinkan anda untuk memulai aplikasi yang telah anda sematkan ke peluncur tanpa perlu pergi ke layar awal.\n(EKPERIMENTAL)</string>
-  <string name="option_launcher_running_show">Tampilkan aplikasi yang sedang berjalan</string>
-  <string name="option_panel_show">Tampilkan</string>
-  <string name="hint_panel_show">Apakah Panel di bagian atas layar harus ditampilkan atau tidak.</string>
-  <string name="option_panel_opacity">Keburaman</string>
-  <string name="hint_panel_opacity">Bagaimana keburaman Panel seharusnya.</string>
-  <string name="option_unitybackground_dynamic">Warna latar belakang yang dinamis</string>
-  <string name="hint_unitybackground_dynamic">Secara dinamis memilih warna latar belakang dari komponen Unity transparan (Peluncur, dan Dasbor, dan Panel ketika Dasbor dibuka) berdasarkan warna dominan dari kertas dinding. Ini tida bekerja ketika kertas dinding diatur, yang mana akan kembali ke hitam transparan.</string>
-  <string name="option_unitybackground_colour">Warna latar belakang</string>
-  <string name="hint_unitybackground_colour">Warna latar belakang yang harus digunakan untuk komponen Unity yang transparan.</string>
-  <string name="message_unitybackground_colour">Gunakan slider untuk memilih warna</string>
-  <string name="option_unitybackground_opacity">Keburaman latar belakang</string>
-  <string name="hint_unitybackground_opacity">Bagaimana keburaman warna latar belakang dari komponen Unity yang transparan seharusnya.</string>
-  <string name="option_unitywallpaper_blur">Metode blur kertas dinding</string>
-  <string name="hint_unitywallpaper_blur">Metode yang harus digunakan untuk mengaburkan latar belakang saat Dasbor dibuka. Ketika \"Downscale &amp; upscale\" dipilih dan gagal (atau wallpaper hidup diatur), \"Darken\" akan digunakan sebagai fallback.</string>
   <string name="hint_launcher_edge">Untuk memilih tepi layar Peluncur yang harus dilampirkan.</string>
-  <string-array name="keys_unitywallpaper_blur">
-    <item>Jangan blur</item>
-    <item>Gelapkan</item>
-    <item>Downscale &amp; upscale (default)</item>
-  </string-array>
   <string name="option_wallpaper">Kertas Dinding</string>
   <string name="hint_wallpaper">Ubah kertas dinding</string>
-  <string name="option_dashsearch_full">Pencarian tingkat lanjut</string>
-  <string name="hint_dashsearch_full">Mengaktifkan opsi ini akan menghasilkan hasil pencarian Dasbor yang lebih baik tetapi juga akan mempengaruhi kinerja pada perangkat yang lambat atau perangkat dengan banyak aplikasi yang terpasang. Jika pencarian Dasbor lambat untuk Anda, Anda mungkin ingin mempertimbangkan untuk menonaktifkan ini.</string>
-  <string name="option_dashsearch_lenses">Gunakan lensa</string>
-  <string name="hint_dashsearch_lenses">Lensa menyediakan fungsi pencarian ekstra. Menggunakan lensa Anda dapat mencari layanan lain seperti DuckDuckGo, Stack Overflow, atau bahkan file lokal Anda, langsung dari Dasbor.</string>
-  <string name="option_dashsearch_lenses_maxresults">Hasil per lensa</string>
-  <string name="hint_dashsearch_lenses_maxresults">Jumlah maksimum hasil pencarian yang ditampilkan dari setiap lensa.</string>
   <string name="option_dash_ready_show">Buka Dasbor secara standar</string>
-  <string name="hint_dash_ready_show">Dasbor secara otomatis akan dibuka setelah aplikasi dimuat.</string>
-  <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Pengujian (Jika ia tidak berhasil menghancurkannya maka mungkin aman untuk dikonsumsi oleh seluruh dunia.)\n
 * Bantuan dengan fungsi perhitungan warna dominan.</string>
-  <string name="hm_todddavies_name">Todd Davies</string>
   <string name="hm_todddavies_why">* Saya menggunakan komponen ProgressWheel nya, karena komponen standar (round) Android ProgressBar tidak benar-benar menunjukkan kemajuan.\n
 https://github.com/Todd-Davies/ProgressWheel/</string>
-  <!--No longer used
-    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
-    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
-        http://stackoverflow.com/a/8483078/521361</string>-->
-  <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
-  <string name="hm_commonsguy_why">* Saya menggunakan komponen ColorMixer di Preferensi layar.\n
-https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Bagaimana Saya bisa berkontribusi?</string>
   <string name="contribute_intro">Waktu yang lama dan kerja keras telah dilakukan untuk mengembangkan aplikasi ini. Jika Anda ingin membantu, ada beberapa cara di mana Anda dapat melakukannya.</string>
   <string name="contribute_translate_description">DistroHopper tersedia dalam beberapa bahasa. Hal ini karena relawan memberikan proyek dengan terjemahannya. Jika DistroHopper belum diterjemahkan ke dalam bahasa Anda dan Anda mengerti bahasa Inggris (dan Anda memiliki pengetahuan yang cukup tentang Linux), kemudian membantu dengan terjemahan adalah cara yang baik untuk membantu. \nTranslasi untuk DistroHopper dikelola di Transifex. Yang perlu Anda lakukan adalah permintaan untuk bergabung dengan tim penerjemah. Setelah itu saya akan menyetujui permintaan Anda dan Anda siap untu menterjemahkan.</string>
@@ -73,6 +33,5 @@ https://github.com/commonsguy/cwac-colormixer</string>
   <string name="contribute_bugs_go">Pergi ke GitHub</string>
   <string name="contribute_donate_title">Donasi</string>
   <string name="contribute_donate_description">Jika Anda ingin, Anda juga dapat membuat sumbangan moneter untuk pengembang. Sumbangan ditangani melalui PayPal. Anda akan dapat memilih jumlah uang yang ingin Anda donasikan. \ nCatatan: Ini sumbangan. Saya tidak menjual apa-apa, dan Anda tidak membeli apa-apa. Sumbangan yang sangat dihargai, tetapi Anda tidak akan mendapatkan fitur tambahan karena itu. Semua fitur dari aplikasi ini tersedia gratis.</string>
-  <string name="contribute_donate_go">Donasi</string>
   <string name="theme_elementary_res_panel_bfb_text">Aplikasi</string>
 </resources>

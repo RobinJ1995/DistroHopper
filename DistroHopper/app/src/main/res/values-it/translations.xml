@@ -21,7 +21,6 @@
   <string name="button_apply">Applica</string>
   <string name="title_preferences">Preferenze</string>
   <string name="pref_header_general">Generali</string>
-  <string name="pref_header_unity">Unity</string>
   <string name="pref_header_launcher">Launcher</string>
   <string name="pref_header_dash">Dash</string>
   <string name="pref_header_panel">Pannello</string>
@@ -29,47 +28,19 @@
   <string name="pref_header_dev">Opzioni sviluppatore</string>
   <string name="pref_header_functionality">Funzionalità</string>
   <string name="pref_header_appearance">Aspetto</string>
-  <string name="category_colourcalc">Calcolo colore dominante</string>
   <string name="option_launchericon_size">Fissa grandezza icone</string>
-  <string name="option_launchericon_opacity">Opacità sfondo icone</string>
-  <string name="hint_launchericon_opacity">Quanto deve essere opaco il colore di sfondo delle icone.</string>
-  <string name="hint_launcherservice_enabled">Il launchr comparirà facendo swipe dalla metà inferiore sinistra del bordo dello schermo, permettendoti di aprire applicazioni senza dover tornare alla home.\n(SPERIMENTALE)</string>
-  <string name="option_launcher_running_show">Mostra app avviate</string>
-  <string name="option_panel_show">Visualizza</string>
-  <string name="hint_panel_show">Imposta se il pannello nella parte alta dello schermo deve essere visibile o no.</string>
-  <string name="option_panel_opacity">Opacità</string>
-  <string name="hint_panel_opacity">Quanto opaco dovrebbe essere il pannello.</string>
-  <string name="option_unitybackground_dynamic">Colore di sfondo dinamico</string>
-  <string name="hint_unitybackground_dynamic">Selezione dinamica del colore di sfonto dei componenti trasparenti di Unity (Luncher, Dash e Pannello quando la Dash è aperta) basata sul colore predominante dello sfondo. Non funziona se è impostato uno sfondo animato, in tal caso verrà utilizzato un nero trasparente.</string>
-  <string name="option_unitybackground_colour">Colore di sfondo</string>
-  <string name="hint_unitybackground_colour">Il colore di sfondo che sarà utilizzato per i componenti trasparenti di Unity.</string>
-  <string name="message_unitybackground_colour">Utilizza gli slider per scegliere un colore.</string>
-  <string name="option_unitybackground_opacity">Opacità dello sfondo</string>
-  <string name="hint_unitybackground_opacity">Quando opaco deve essere il colore di sfondo dei componenti trasparenti di Unity.</string>
   <string name="option_wallpaper">Sfondo</string>
   <string name="hint_wallpaper">Cambia sfondo</string>
-  <string name="option_dashsearch_full">Ricerca avanzata</string>
-  <string name="hint_dashsearch_full">Abilitando questa opzione si migliorerà la ricerca nella dashboard a discapito delle performance sui dispositivi più lenti o con molte applicazioni installate. Se la ricerca è lenta potresti considerare di disabilitare questa opzione.</string>
   <string name="option_lenses">Cerca sorgenti</string>
   <string name="option_dev_logs">Logs</string>
-  <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Testing (se non riesce a romperlo probabilmente è sicuro per tutto il resto del mondo)\n
 * Aiuto con la funzione di calcolo del colore dominante</string>
-  <string name="hm_todddavies_name">Todd Davies</string>
   <string name="hm_todddavies_why">* Ho utilizzato il suo componente ProgressWheel dato che il componente ProgressBar di default su Android (round) non visualizza correttamente l\'avanzamento.\n
 https://github.com/Todd-Davies/ProgressWheel/</string>
-  <!--No longer used
-    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
-    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
-        http://stackoverflow.com/a/8483078/521361</string>-->
-  <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
-  <string name="hm_commonsguy_why">* Ho utilizzato il suo componente ColorMixer nella schermata delle preferenze.\n
-https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Come posso contribuire?</string>
   <string name="contribute_translate_go">Vai su Transifex</string>
   <string name="contribute_bugs_title">Segnala Bug</string>
   <string name="contribute_bugs_go">Vai su GitHub</string>
   <string name="contribute_donate_title">Dona</string>
-  <string name="contribute_donate_go">Dona</string>
   <string name="theme_elementary_res_panel_bfb_text">Applicazioni</string>
 </resources>

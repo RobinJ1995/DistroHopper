@@ -11,50 +11,17 @@
   <string name="button_about">このアプリについて</string>
   <string name="title_preferences">設定</string>
   <string name="pref_header_general">一般</string>
-  <string name="pref_header_unity">Unity</string>
   <string name="pref_header_launcher">ランチャー</string>
   <string name="pref_header_dash">ダッシュ</string>
   <string name="pref_header_panel">パネル</string>
   <string name="pref_header_advanced">詳細</string>
-  <string name="category_colourcalc">支配色算定</string>
-  <string name="option_launchericon_opacity">ランチャーアイコンの背景不透明度</string>
-  <string name="hint_launchericon_opacity">ランチャーに置いているアイコンの背景の不透明さの程度です。</string>
-  <string name="hint_launcherservice_enabled">画面の下側で左端からスワイプすると、ランチャーが表示されて、ﾎｰﾑ画面に戻らずに留められたアプリを開始できます。これはべーた機能です。</string>
-  <string name="option_panel_show">パネルを表示する</string>
-  <string name="hint_panel_show">画面の上端にパネルを表示するか否か。</string>
-  <string name="option_panel_opacity">パネルの不透明度</string>
-  <string name="hint_panel_opacity">パネルの不透明さの程度です。</string>
-  <string name="option_unitybackground_dynamic">Unityの背景色を自動化する</string>
-  <string name="hint_unitybackground_dynamic">透明なUnityコンポーネント（ランチャーや、ダッシュが表示されているままのパネルとダッシュ）の背景色を壁紙の支配色に基づいて動的に選択するか否か。ライブ壁紙が設定されたらこの機能は効果がなくて、背景色は透明な黒になります。</string>
-  <string name="option_unitybackground_colour">&gt;Unityの背景色</string>
-  <string name="hint_unitybackground_colour">透明なUnityコンポーネントの背景色です。</string>
-  <string name="message_unitybackground_colour">スライダーを使って色を選べてください。</string>
-  <string name="option_unitybackground_opacity">Unityの背景不透明度</string>
-  <string name="hint_unitybackground_opacity">透明なUnityコンポーネントの背景の不透明さの程度です。</string>
-  <string name="option_unitywallpaper_blur">壁紙のぼやけ方</string>
   <string name="hint_launcher_edge">ランチャーは画面のどちら側に表示されている</string>
-  <string-array name="keys_unitywallpaper_blur">
-    <item>何もしない</item>
-    <item>暗くする</item>
-    <item>小型化そして拡大する（デフォルト）</item>
-  </string-array>
   <string name="option_wallpaper">壁紙</string>
   <string name="hint_wallpaper">壁紙を変える</string>
-  <string name="option_dashsearch_full">高度な検索</string>
-  <string name="hint_dashsearch_full">この機能を使えばダッシュの検索結果はよくなりますが、動きの遅いデバイスや大勢のアプリがインストールされたデバイスの場合、パフォーマンスに影響を及びます。検索は不活発に見られる場合はこの機能を無効にするよう勧めます。</string>
   <string name="option_dash_ready_show">デフォルトでダッシュを表示する</string>
-  <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">＊ βテスト（彼がアプリを破壊できないなら絶対無理だと思います）\n
 ＊ 支配色の算定方式での手伝い\n
 ＊ 日本語版</string>
-  <string name="hm_todddavies_name">Todd Davies</string>
   <string name="hm_todddavies_why">＊ 彼が開発したProgressWheelというコンポーネントを利用しました。\n
         https://github.com/Todd-Davies/ProgressWheel/</string>
-  <!--No longer used
-    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
-    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
-        http://stackoverflow.com/a/8483078/521361</string>-->
-  <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
-  <string name="hm_commonsguy_why">＊ 彼が開発したColorMixerというコンポーネントを設定画面のために利用しました。\n
-        https://github.com/commonsguy/cwac-colormixer</string>
 </resources>

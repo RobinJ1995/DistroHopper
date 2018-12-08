@@ -16,60 +16,20 @@
   <string name="button_apply">Použít</string>
   <string name="title_preferences">Předvolby</string>
   <string name="pref_header_general">Obecný</string>
-  <string name="pref_header_unity">Unity</string>
   <string name="pref_header_launcher">Launcher</string>
   <string name="pref_header_dash">Dash</string>
   <string name="pref_header_panel">Panel</string>
   <string name="pref_header_advanced">Pokročilý</string>
-  <string name="category_colourcalc">Převládajicí barvy</string>
-  <string name="option_launchericon_opacity">Průhlednost pozadí ikon</string>
-  <string name="hint_launchericon_opacity">Jak průhledné barvy pozadí ikon ve spouštěči by měla být.</string>
-  <string name="hint_launcherservice_enabled">Při táhnutí ze spodní poloviny levého okraje obrazovky, se objeví Launcher, která vám umožní spustit aplikace, které jste připnul na Launcher, aniž by museli jít na domovskou obrazovku. \ N (experimentální)</string>
-  <string name="option_launcher_running_show">Ukázat běžící aplikace</string>
-  <string name="option_panel_show">Ukázat</string>
-  <string name="hint_panel_show">Zde je panel v horní části obrazovky je třeba uvést, nebo ne.</string>
-  <string name="option_panel_opacity">Průhlednost</string>
-  <string name="hint_panel_opacity">Jak průhledný panel by měl být.</string>
-  <string name="option_unitybackground_dynamic">
-Dynamická barva pozadí</string>
-  <string name="hint_unitybackground_dynamic">Dynamicky vybrat barvu pozadí průsvitnými částmi Unity (Launcher, a Dash a panelu při otevření Dash) na základě dominantní barvou tapety. To nebude fungovat, pokud je živé tapety nastavení, v tom případě, že bude klesat zpět do průhledné černé.</string>
-  <string name="option_unitybackground_colour">Barva pozadí</string>
-  <string name="hint_unitybackground_colour">Barvu pozadí, které by měly být použity pro průhledné součásti Unity.</string>
-  <string name="message_unitybackground_colour">Pomocí posuvníků vybrat barvu.</string>
-  <string name="option_unitybackground_opacity"> Průhlednost pozadí</string>
-  <string name="hint_unitybackground_opacity">Jak průhledné barevné pozadí průhledných prvků Unity by měl být.</string>
-  <string name="option_unitywallpaper_blur">Tapeta rozmazání </string>
-  <string name="hint_unitywallpaper_blur">Metoda, která by měla být použita pro rozmazání pozadí při otevření Dash. Když se \"amp Zmenšení rozsahu a, upscale\" je vybrán a selže (nebo živé tapety je nastaveno), \"tmavší\" bude použit jako nouzové řešení.</string>
   <string name="hint_launcher_edge">To which screen edge the Launcher should be attached.</string>
   <string name="option_wallpaper">Tapeta</string>
   <string name="hint_wallpaper">Změnit tapetu</string>
-  <string name="option_dashsearch_full">
-Rozšířené vyhledávání</string>
-  <string name="hint_dashsearch_full">Povolení této možnosti bude mít za následek lepší výsledky Dash vyhledávání, ale také vliv na výkon na pomalejších zařízení nebo zařízení s množstvím aplikací nainstalovaných. Pokud Dash vyhledávání je pomalý pro vás, možná budete chtít, aby zvážila zakázat toto.</string>
-  <string name="option_dashsearch_lenses">Použít objektivy</string>
-  <string name="hint_dashsearch_lenses">
-Objekty poskytují další funkce pro vyhledávání. Pomocí objektů můžete hledat další služby, jako je DuckDuckGo, přetečení zásobníku, nebo dokonce na místní soubory přímo z Dash.</string>
-  <string name="option_dashsearch_lenses_maxresults">Výsledky na objekty</string>
-  <string name="hint_dashsearch_lenses_maxresults">Maximální počet výsledků vyhledávání, které je zřejmé z každého objektivu</string>
   <string name="option_dash_ready_show">Otevřené Dash ve výchozím nastavení</string>
-  <string name="hint_dash_ready_show">
-Dash se automaticky otevře, jakmile aplikace jsou načteny.</string>
   <string name="option_theme">Motiv</string>
   <string name="hint_theme">Vyberte si, které Linux distribuce chcete DistroHopper vypadat.</string>
-  <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Testing (If he doesn\'t manage to wreck it then it\'s probably safe for consumption by the rest of the world.)\n
         * Help with the dominant colour calculation function.</string>
-  <string name="hm_todddavies_name">Todd Davies</string>
   <string name="hm_todddavies_why">* I used his ProgressWheel component, since the default (round) Android ProgressBar component can\'t actually indicate progress.\n
         https://github.com/Todd-Davies/ProgressWheel/</string>
-  <!--No longer used
-    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
-    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
-        http://stackoverflow.com/a/8483078/521361</string>-->
-  <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
-  <string name="hm_commonsguy_why">
-* Použil jsem jeho ColorMixer komponentu na obrazovce Předvolby.
-https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Jak mohu přispět ?</string>
   <string name="contribute_intro">Hodně času a tvrdé práce šla do vývoje této aplikace. Pokud byste chtěli pomoct, existuje několik způsobů, jak můžete tak učinit.</string>
   <string name="contribute_translate_go">Přejít na Transifex</string>
@@ -77,6 +37,5 @@ https://github.com/commonsguy/cwac-colormixer</string>
   <string name="contribute_bugs_go">Přejít na GitHub</string>
   <string name="contribute_donate_title">Darovat</string>
   <string name="contribute_donate_description">Pokud chcete, můžete si také peněžní dar pro vývojáře. Dary jsou zpracovány prostřednictvím PayPal. Budete mít možnost vybrat částku, kterou chcete darovat. Poznámka: Je to dar. Já neprodávám nic, a nejste něco koupit. Dary jsou velmi ocenil, ale nebudete získávat žádné další funkce, protože to. Všechny funkce této aplikace jsou k dispozici zdarma.</string>
-  <string name="contribute_donate_go">Darovat</string>
   <string name="theme_elementary_res_panel_bfb_text">Aplikace</string>
 </resources>

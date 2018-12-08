@@ -13,56 +13,16 @@
   <string name="button_contribute">Contribua</string>
   <string name="title_preferences">Preferências</string>
   <string name="pref_header_general">Geral</string>
-  <string name="pref_header_unity">Unity</string>
   <string name="pref_header_launcher">Launcher</string>
   <string name="pref_header_dash">Dash</string>
   <string name="pref_header_panel">Painel</string>
   <string name="pref_header_advanced">Avançado</string>
-  <string name="category_colourcalc">Cálculo de cor predominante</string>
-  <string name="option_launchericon_opacity">Opacidade de fundo dos ícones no Launcher</string>
-  <string name="hint_launchericon_opacity">Define a opacidade da cor de fundo dos ícones no Launcher.</string>
-  <string name="hint_launcherservice_enabled">Deslizando o dedo no canto inferior esquerdo da tela, o Launcher aparece, permitindo alternar entre os aplicativos fixados sem precisar voltar à tela inicial. (EXPERIMENTAL)</string>
-  <string name="option_launcher_running_show">Mostrar aplicativos em uso</string>
-  <string name="option_panel_show">Exibir Painel</string>
-  <string name="hint_panel_show">Se o painel, no topo do Launcher, deve aparecer ou não.</string>
-  <string name="option_panel_opacity">Opacidade do painel</string>
-  <string name="hint_panel_opacity">Define a opacidade do painel.</string>
-  <string name="option_unitybackground_dynamic">Cor de fundo dinâmica do Unity</string>
-  <string name="hint_unitybackground_dynamic">Escolher automaticamente a cor de fundo do Unity (Launcher, Dash e Painel) de acordo com o papel de parede utilizado. Esse recurso pode não funcionar em alguns papéis de parede animados.</string>
-  <string name="option_unitybackground_colour">Cor de fundo do Unity</string>
-  <string name="hint_unitybackground_colour">Cor de fundo que deve ser utilizada na composição do Unity.</string>
-  <string name="message_unitybackground_colour">Use as barras para definir uma cor.</string>
-  <string name="option_unitybackground_opacity">Opacidade de fundo do Unity</string>
-  <string name="hint_unitybackground_opacity">Defina a opacidade da cor de fundo na composição do Unity.</string>
-  <string name="option_unitywallpaper_blur">Efeito de Papel de Parede </string>
-  <string name="hint_unitywallpaper_blur">Efeito de desfoque do fundo quando o Dash é aberto. Caso o modo \"Desfoque\" for definido e não funcionar corretamente (ou quando um papel de parede animado for usado), o modo \"Escurecido\" será usado como padrão automaticamente.</string>
   <string name="hint_launcher_edge">Define a posição do Launcher na tela.</string>
-  <string-array name="keys_unitywallpaper_blur">
-    <item>Sem desfoque</item>
-    <item>Escurecido</item>
-    <item>Desfoque ativo (padrão)</item>
-  </string-array>
   <string name="option_wallpaper">Papel de Parede</string>
   <string name="hint_wallpaper">Alterar papel de parede</string>
-  <string name="option_dashsearch_full">Pesquisa avançada</string>
-  <string name="hint_dashsearch_full">A ativação desta opção proporcionará melhores resultados de busca \"Dash\", mas também afetará o desempenho em dispositivos mais lentos, ou em dispositivos com muitos aplicativos instalados. Recomenda-se desativar, caso haja instabilidade no recurso.</string>
-  <string name="option_dashsearch_lenses">Usar lentes</string>
-  <string name="hint_dashsearch_lenses">As Lentes fornecem funcionalidade de pesquisa extra. Usando as lentes você pode pesquisar no Dash à partir de outros serviços como DuckDuckGo, Stack Overflow, ou mesmo em seus arquivos locais.</string>
-  <string name="option_dashsearch_lenses_maxresults">Resultados por Lente</string>
-  <string name="hint_dashsearch_lenses_maxresults">O número máximo de resultados da pesquisa, que é mostrada a partir de cada lente.</string>
   <string name="option_dash_ready_show">Abrir Dash por padrão</string>
-  <string name="hint_dash_ready_show">O Menu de Aplicativos deve abrir automaticamente quando voltar à tela inicial.</string>
-  <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Testando (Se não consegue destruí­-lo, então é seguro pro resto do mundo) * Ajuda com cálculo de cor predominante.</string>
-  <string name="hm_todddavies_name">Todd Davies</string>
   <string name="hm_todddavies_why">* Usei o componente ProgressWheel, uma vez que o componente padrão (round) ProgressBar Android não indica o progresso. \n         https://github.com/Todd-Davies/ProgressWheel/</string>
-  <!--No longer used
-    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
-    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
-        http://stackoverflow.com/a/8483078/521361</string>-->
-  <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
-  <string name="hm_commonsguy_why">* Uso do ColorMixer na tela de preferências.
-https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Como posso contribuir?</string>
   <string name="contribute_intro">Desenvolver um aplicativo como este demanda tempo e trabalho duro. Se você tem interesse em ajudar, veja como fazer:</string>
   <string name="contribute_translate_go">Ir para Transifex</string>
@@ -70,6 +30,5 @@ https://github.com/commonsguy/cwac-colormixer</string>
   <string name="contribute_bugs_go">Ir para GitHub</string>
   <string name="contribute_donate_title">Doando</string>
   <string name="contribute_donate_description">Se você quiser, você também pode fazer uma doação em dinheiro para o desenvolvedor. Doações são feitas através do PayPal. Você poderá escolher o valor que gostaria de doar. Nota: É uma doação. Não estamos vendendo nada, e você não está comprando nada. Doações são muito bem vindas, mas você não vai ganhar nenhum recurso adicional por causa disso. Todas as funcionalidades deste aplicativo estão disponíveis gratuitamente para todos.</string>
-  <string name="contribute_donate_go">Doar</string>
   <string name="theme_elementary_res_panel_bfb_text">Aplicativos</string>
 </resources>

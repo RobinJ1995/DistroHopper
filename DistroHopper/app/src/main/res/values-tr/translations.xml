@@ -21,56 +21,23 @@
   <string name="button_apply">Uygula</string>
   <string name="title_preferences">Tercihler</string>
   <string name="pref_header_general">Genel</string>
-  <string name="pref_header_unity">Unity</string>
   <string name="pref_header_launcher">Başlatıcı</string>
   <string name="pref_header_dash">Pano</string>
   <string name="pref_header_panel">Panel</string>
   <string name="pref_header_advanced">Gelişmiş</string>
   <string name="pref_header_dev">Geliştirici seçenekleri</string>
   <string name="pref_header_appearance">Görünüm</string>
-  <string name="category_colourcalc">Baskın renk hesaplaması</string>
-  <string name="option_launchericon_opacity">Başlatıcı ikon arka planı opaklığı</string>
-  <string name="hint_launchericon_opacity">Başlatıcı ikonlarının opaklığı nasıl olmalı.</string>
-  <string name="hint_launcherservice_enabled">Ekranın sol alt sınırından sürüklediğinizde, Başlatıcı görünür, Başlatıcıya eklediğiniz uygulamaları ana ekrana gitmeden başlatmanıza izin verir.\n(DENEYİMSEL)</string>
-  <string name="option_launcher_running_show">Çalışan uygulamaları göster</string>
-  <string name="option_panel_show">Paneli Göster</string>
-  <string name="hint_panel_show">Panelin ekranın üstünde görüntülenip görüntülenmeyeceği.</string>
-  <string name="option_panel_opacity">Panel opaklığı</string>
-  <string name="hint_panel_opacity">Panelin opaklığı nasıl olmalı</string>
-  <string name="option_unitybackground_dynamic">Dinamik Unity arka plan rengi</string>
-  <string name="hint_unitybackground_dynamic">Şeffaf Unity bileşenlerinin(Başlatıcı, Dash ve panel,  Dash açıldığında) rengini duvar kağıdının baskın renginden seç. Canlı duvar kağıdı varsa bu çalışmaz, ve şeffaf siyaha dönecek.</string>
-  <string name="option_unitybackground_colour">Unity arka plan rengi</string>
-  <string name="hint_unitybackground_colour">Şeffaf Unity bileşenleri için kullanılacak renk nasıl olmalı.</string>
-  <string name="message_unitybackground_colour">Bir renk seçmek için kaydırıcıları kullanın.</string>
-  <string name="option_unitybackground_opacity">Unity arka plan opaklığı</string>
-  <string name="hint_unitybackground_opacity">Şeffaf Unity bileşenlerinin arka plan rengi nasıl olmalı.</string>
-  <string name="option_unitywallpaper_blur">Duvar kağıdı bulanıklaşma metodu</string>
   <string name="hint_launcher_edge">Başlatıcının ekranın hangi kenarına tutunacağını belirtin.</string>
   <string name="option_wallpaper">Duvar Kağıdı</string>
   <string name="hint_wallpaper">Duvar kağıdını değiştir</string>
-  <string name="option_dashsearch_full">Gelişmiş arama</string>
-  <string name="hint_dashsearch_full">Bu seçeneği kullanmak Pano aramasında daha iyi sonuç verir fakat yavaş cihazlarda ya da çok fazla uygulama yüklenmiş cihazlarda performansı düşürebilir. Eğer Pano araması sizin için yavaşsa bu seçeneği kapatmayı düşünebilirsiniz.</string>
-  <string name="option_dashsearch_lenses">Lens kullan</string>
-  <string name="hint_dashsearch_lenses">Lensler ekstra arama kaabiliyeti sunar. Lens kullanarak DuckDuckGo, Stack Overflow gibi diğer arama servislerini veya kendi lokal dosyalarınızı Pano\'dan arayabilirsiniz.</string>
   <string name="option_dash_ready_show">Pano\'yu varsayılan olarak aç</string>
-  <string name="hint_dash_ready_show">Uygulamalar yüklendiğinde Pano otomatik olarak açılacaktır.</string>
-  <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Test (Eğer yanlış bir şeyler yapmadıysa kullanmak dünyanın geri kalanı için güvenlidir.)\n
 * Baskın renk hesaplama fonksiyonunda yardım.</string>
-  <string name="hm_todddavies_name">Todd Davies</string>
   <string name="hm_todddavies_why">* Onun ProgressWheel bileşenini kullandım, çünkü Android\'in ilerleme çubuğu ilerlemeyi tam gösteremiyor.\n
         https://github.com/Todd-Davies/ProgressWheel/</string>
-  <!--No longer used
-    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
-    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
-        http://stackoverflow.com/a/8483078/521361</string>-->
-  <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
-  <string name="hm_commonsguy_why">* Tercihler ekranında onun ColorMixer (Renk karıştırıcı) bileşenini kullandım.\n
-        https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Nasıl destek olabilirim?</string>
   <string name="contribute_translate_go">Transifex\'e git</string>
   <string name="contribute_bugs_title">Hata Raporla</string>
   <string name="contribute_bugs_go">Github\'a git</string>
   <string name="contribute_donate_title">Bağış Yap</string>
-  <string name="contribute_donate_go">Bağış Yap</string>
 </resources>

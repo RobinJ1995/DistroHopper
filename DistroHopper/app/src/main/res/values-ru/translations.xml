@@ -28,7 +28,6 @@
   </string-array>
   <string name="title_preferences">Предпочтения</string>
   <string name="pref_header_general">Общие</string>
-  <string name="pref_header_unity">Юнити</string>
   <string name="pref_header_launcher">Лаунчер</string>
   <string name="pref_header_dash">Дэш</string>
   <string name="pref_header_panel">Панель</string>
@@ -36,65 +35,25 @@
   <string name="pref_header_dev">Опции для разработчиков</string>
   <string name="pref_header_functionality">Функциональность</string>
   <string name="pref_header_appearance">Внешний вид</string>
-  <string name="category_colourcalc">Расчет доминирующего цвета</string>
   <string name="option_launchericon_size">Размер прикрепленной иконки</string>
-  <string name="option_launchericon_opacity">Непрозрачность фона икон</string>
-  <string name="hint_launchericon_opacity">Настройка уровня непрозрачности фона икон.</string>
-  <string name="option_launcherservice_enabled">Сервис наложения лаунчера</string>
-  <string name="hint_launcherservice_enabled">При проведении пальцем по нижней левой части экрана появится лаунчер который позволит запустить программы прикрепленные к нему без надобности возврата на главный экран.</string>
-  <string name="option_launcher_running_show">Показать текущие приложения</string>
-  <string name="option_panel_show">Показать панель</string>
-  <string name="hint_panel_show">Показать панель в верхней части экрана.</string>
   <string name="option_panel_edge">Расположение панели</string>
   <string name="hint_panel_edge">К какой стороне экрана панель должна быть прикреплена</string>
-  <string name="option_panel_opacity">Непрозрачности панели</string>
-  <string name="hint_panel_opacity">Настройка уровня непрозрачности панели.</string>
-  <string name="option_unitybackground_dynamic">Автоматический выбор цвета фона Unity</string>
-  <string name="hint_unitybackground_dynamic">Автоматический выбор цвета фона компонентов Unity а также лаунчера, дэша и панели (если дэш отркыт). Программa выбирает цвет фона ориентируясь на доминантный цвет обоев. Однако это не расчитано на работу с живыми обоями. В этом случае используется стандартный черный прозрачный фон.</string>
-  <string name="option_unitybackground_colour">Цвет фона Unity</string>
-  <string name="hint_unitybackground_colour">Настройка цвета фона компонентов Unity.</string>
-  <string name="message_unitybackground_colour">Используйте ползунки чтобы изменить цвет</string>
-  <string name="option_unitybackground_opacity">Непрозрачность фона Unity</string>
-  <string name="hint_unitybackground_opacity">Настройка уровня непрозрачности компонентов Unity.</string>
-  <string name="option_unitywallpaper_blur">Метод размытия обоев</string>
-  <string name="hint_unitywallpaper_blur">Метод  размытия экрана который будет использоваться при открытии Дэша. В случае неправильной работы метода \"Уменьшить и увеличить\", метод \"Затемнение\" будет выбран автоматически.</string>
   <string name="option_launcher_edge">Расположение лаунчера</string>
   <string name="hint_launcher_edge">К какой стороне экрана будет прикреплен Лаунчер.</string>
   <string name="option_widgets_enabled">Виджет</string>
   <string name="hint_widgets_enabled">Включить <b>экспериментальную</b> (читать: <b>сломанную</b>) поддержку виджетов.\nДанный функционал является весьма нестабильным и едва пригодным к использованию.</string>
   <string name="option_dev_log_toaster">Всплывающие логи</string>
   <string name="hint_dev_log_toaster">Показывать логи в виде всплывающих сообщений</string>
-  <string-array name="keys_unitywallpaper_blur">
-    <item>Не размывать</item>
-    <item>Затемнить</item>
-    <item>Уменьшить и увеличить(по умолчанию)</item>
-  </string-array>
   <string name="option_wallpaper">обои</string>
   <string name="hint_wallpaper">Изменить обои</string>
-  <string name="option_dashsearch_full">Дополнительный поиск</string>
-  <string name="hint_dashsearch_full">Активация этой опции улучшит поиск в Дэш меню, но также повлияет на скорость поиска на аппаратах с большим количеством программ. В случае медленной работы поиска, выключитe эту опцию.</string>
-  <string name="option_dashsearch_lenses">Использовать Линзы</string>
-  <string name="hint_dashsearch_lenses">Линзы обеспечивают дополнительные возможности для функции поискa. С помощью Линз вы можете осуществить поиск по внешнем услугам таких как DuckDuckGo, Stack Overflow, а также по локальным файлам, непосредственно из Дэша.</string>
-  <string name="option_dashsearch_lenses_maxresults">Количество результатов поиска на каждую Линзу </string>
-  <string name="hint_dashsearch_lenses_maxresults">Максимальное количество результатов поиска показанное Линзой.</string>
   <string name="option_dash_ready_show">Открыть Дэш по умолчанию</string>
-  <string name="hint_dash_ready_show">Дэш будет открыт автоматически, как только все программы будут загружены .</string>
   <string name="option_lenses">Источники поиска</string>
   <string name="option_theme">Тема</string>
   <string name="option_dev">Режим разработчика</string>
   <string name="option_dev_logs">Логи</string>
-  <string name="hm_timvdstaaij_name">Тиму ван дер Стайу</string>
   <string name="hm_timvdstaaij_why">* Тестирование\n * Помощь с функцией расчета доминирующего цвета\n</string>
-  <string name="hm_todddavies_name">Тоду Дэвису</string>
   <string name="hm_todddavies_why">* Я использовал его компонент ProgressWheel, потому что стандартный компонент Android ProgressBar не хорошо работает.\n
 https://github.com/Todd-Davies/ProgressWheel/</string>
-  <!--No longer used
-    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
-    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
-        http://stackoverflow.com/a/8483078/521361</string>-->
-  <string name="hm_commonsguy_name">Марку Мерфи (Commonsware)</string>
-  <string name="hm_commonsguy_why">* Я использовал его компонент ColorMixer в окне настроек.\n
-https://github.com/commonsguy/cwac-colormixer</string>
   <string name="hm_translators_name">Команда переводчиков</string>
   <string name="title_activity_contribute">Как я могу помочь?</string>
   <string name="contribute_intro">Данный проект потребовал больших усилий, временных и финансовых затрат. Если вы хотите помочь дальнейшему развитию проекта, сделайте это нижеприведенными способами.</string>
@@ -104,6 +63,5 @@ https://github.com/commonsguy/cwac-colormixer</string>
   <string name="contribute_bugs_go">Перейти на GitHub</string>
   <string name="contribute_donate_title">Сделать пожертвование</string>
   <string name="contribute_donate_description">Если вы желаете окaзать проекту финансовую помощь, вы всегда можете сделать это с помощью кнопки \"Сделать пожертвование\". \n Примечание: Оказывая финансовую помощь, вы не получаете никаких превелигий и ничего не покупаете. Мы будем очень благодарны за оказанную вами финансовую поддержку, но вы не должны ожидать получения дополнительных функций.</string>
-  <string name="contribute_donate_go">Сделать пожертвование</string>
   <string name="theme_elementary_res_panel_bfb_text">Приложения</string>
 </resources>

@@ -21,7 +21,6 @@
   <string name="button_apply">Застосувати</string>
   <string name="title_preferences">Уподобання</string>
   <string name="pref_header_general">Загальні</string>
-  <string name="pref_header_unity">Unity</string>
   <string name="pref_header_launcher">Лаунчер</string>
   <string name="pref_header_dash">Dash</string>
   <string name="pref_header_panel">Панель</string>
@@ -29,43 +28,12 @@
   <string name="pref_header_dev">Опції для розробників</string>
   <string name="pref_header_functionality">Функціональність</string>
   <string name="pref_header_appearance">Вигляд</string>
-  <string name="category_colourcalc">Розрахунок домінуючого кольору</string>
   <string name="option_launchericon_size">Встановлений розмір іконки</string>
   <string name="hint_launchericon_size">Якого розміру повинні бути іконки? Слайдер варіюється від 48dip до 120dip, стандартно - 84dip.</string>
-  <string name="option_launchericon_opacity">Непрозорість фону іконки</string>
-  <string name="hint_launchericon_opacity">Налаштування рівня непрозорості фону іконки</string>
-  <string name="hint_launcherservice_enabled">При проведенні пальцем по нижній лівій частині екрану з\'явиться Лаунчер, який дозволить запустити програми прикріплені до нього без потреби повернення на головний екран.</string>
-  <string name="option_launcher_running_show">Показати активні додатки</string>
-  <string name="hint_launcher_running_show">Лаунчер покаже, які додатки працюють в даний момент. Вони позначатимуться невеликою стрілкою з лівої сторони іконки. Також будуть показані активні додатки не закріплені в Лаунчері.\nПримітка: Ця властивість не працює починаючи з  Android 5.0 і далі через обмеження додані до цих операційних систем.</string>
-  <string name="option_panel_show">Показати панель</string>
-  <string name="hint_panel_show">Показати панель у верхній частині екрану.</string>
-  <string name="option_panel_opacity">Непрозорість панелі</string>
-  <string name="hint_panel_opacity">Налаштування рівня непрозорості панелі.</string>
-  <string name="option_unitybackground_dynamic">Автоматичний вибір кольору фону Unity</string>
-  <string name="hint_unitybackground_dynamic">Автоматичний вибір кольору фону компонентів Unity, а також лаунчера, деша і панелі, якщо деш відкритий. Программa вибирає колір фону орієнтуючись на домінантний колір шпалер. Однак це не розраховано на роботу з живими шпалерами. У цьому випадку використовується стандартний чорний прозорий фон.</string>
-  <string name="option_unitybackground_colour">Колір фону Unity</string>
-  <string name="hint_unitybackground_colour">Налаштування кольору фону компонентів Unity.</string>
-  <string name="message_unitybackground_colour">Використовуйте повзунки, щоб вибрати колір.</string>
-  <string name="option_unitybackground_opacity">Непрозорість фону Unity</string>
-  <string name="hint_unitybackground_opacity">Налаштування рівня непрозрості компонентів Unity.</string>
-  <string name="option_unitywallpaper_blur">Метод розмиття шпалер</string>
-  <string name="hint_unitywallpaper_blur">Метод розмиття фону екрану, який буде використовуватися при відкритті Деша. У разі неправильної роботи методу \"Зменшити і збільшити\", метод \"Затемнення\" буде обраний автоматично.</string>
   <string name="hint_launcher_edge">До якої сторони екрану буде прикріплений Лаунчер.</string>
-  <string-array name="keys_unitywallpaper_blur">
-    <item>Не розмивати</item>
-    <item>Затемнити</item>
-    <item>Зменшити і збільшити (за замовчуванням)</item>
-  </string-array>
   <string name="option_wallpaper">Шпалери</string>
   <string name="hint_wallpaper">Змінити шпалери</string>
-  <string name="option_dashsearch_full">Розширений пошук</string>
-  <string name="hint_dashsearch_full">Активація цієї опції покращить пошук в Деш меню, але також вплине на швидкість роботи повільних пристроїв або пристроїв з великою кількістю програм. У разі повільної роботи пошуку, виключтe цю опцію.</string>
-  <string name="option_dashsearch_lenses">Використовувати лінзи</string>
-  <string name="hint_dashsearch_lenses">Лінзи забезпечують додаткові можливості для функції пошуку. За допомогою лінз ви можете здійснити пошук по зовнішніх сервісах, таких як DuckDuckGo, Stack Overflow, а також по локальних файлах, безпосередньо з Деша.</string>
-  <string name="option_dashsearch_lenses_maxresults">Кількість результатів пошуку для кожної Лінзи</string>
-  <string name="hint_dashsearch_lenses_maxresults">Максимальна кількість результатів пошуку з кожної лінзи.</string>
   <string name="option_dash_ready_show">Відкривати Деш за замовчуванням</string>
-  <string name="hint_dash_ready_show">Деш буде відкрито автоматично, як тільки всі програми будуть завантажені.</string>
   <string name="option_lenses">Джерела пошуку</string>
   <string name="hint_lenses">Виберіть, які джерела пошуку ви хочете використовувати, і в якому порядку їх результати будуть з\'являтися у Панелі. Коли ви використовуєте Панель для пошуку, ваш запит відправляється до усіх включених джерел і відображаються їхні результати.</string>
   <string name="option_theme">Тема</string>
@@ -73,19 +41,10 @@
   <string name="option_dev">Режим розробника</string>
   <string name="hint_dev">Отримайте доступ до логів та іншої технічної інформації. Увімкнення цієї функції негативно вплине на швидкість та стабільність роботи додатка.</string>
   <string name="option_dev_logs">Логи</string>
-  <string name="hm_timvdstaaij_name">Тіму ван дер Стайї</string>
   <string name="hm_timvdstaaij_why">* Тестування\n 
 * Допомога з функцією розрахунку домінуючого кольору\n</string>
-  <string name="hm_todddavies_name">Тоду Девісу</string>
   <string name="hm_todddavies_why">* Я використав його компонент ProgressWheel, тому що стандартний компонент Android ProgressBar не працює правильно.\n
 https://github.com/Todd-Davies/ProgressWheel/</string>
-  <!--No longer used
-    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
-    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
-        http://stackoverflow.com/a/8483078/521361</string>-->
-  <string name="hm_commonsguy_name">Марку Мерфі (Commonsware)</string>
-  <string name="hm_commonsguy_why">* Я використав його компонент ColorMixer у вікні Уподобань.\n
-https://github.com/commonsguy/cwac-colormixer</string>
   <string name="title_activity_contribute">Як я можу допомогти?</string>
   <string name="contribute_intro">На цей проект було витрачено багато сил, часу і фінансів. Якщо ви хочете допомогти подальшому розвитку проекту, зробіть це одним з нижчеперечислених способів.</string>
   <string name="contribute_translate_go">Перейти на Transifex</string>
@@ -95,6 +54,5 @@ https://github.com/commonsguy/cwac-colormixer</string>
   <string name="contribute_bugs_go">Перейти на GitHub</string>
   <string name="contribute_donate_title">Зробити пожертву</string>
   <string name="contribute_donate_description">Якщо ви бажаєте надати проекту фінансову допомогу, ви завжди можете зробити це за допомогою кнопки \"Зробити пожертву\" (через сервіс PayPal). \nПримітка: Надаючи фінансову допомогу, ви нічого не купуєте. Ми будемо дуже вдячні за надану вами фінансову підтримку, але ви не отримаєте додаткових функцій.</string>
-  <string name="contribute_donate_go">Зробити пожертву</string>
   <string name="theme_elementary_res_panel_bfb_text">Додатки</string>
 </resources>

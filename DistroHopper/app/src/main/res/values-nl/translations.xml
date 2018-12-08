@@ -28,7 +28,6 @@
   </string-array>
   <string name="title_preferences">Voorkeuren</string>
   <string name="pref_header_general">Algemeen</string>
-  <string name="pref_header_unity">Unity</string>
   <string name="pref_header_launcher">Launcher</string>
   <string name="pref_header_dash">Dash</string>
   <string name="pref_header_panel">Panel</string>
@@ -36,49 +35,21 @@
   <string name="pref_header_dev">Ontwikkelaarsopties</string>
   <string name="pref_header_functionality">Functionaliteit</string>
   <string name="pref_header_appearance">Uiterlijk</string>
-  <string name="category_colourcalc">Dominante kleurberekening</string>
   <string name="option_launchericon_size">Grootte van de Launcher</string>
   <string name="hint_launchericon_size">Hoe groot de pictogrammen moeten zijn van apps die vastgemaakt zijn aan de launcher. De slider gaat van 48dip tot 120dip, met 84dip als de standaardgrootte (precies in het midden).</string>
-  <string name="option_launchericon_opacity">Transparantie van Launcher-pictogrammen</string>
-  <string name="hint_launchericon_opacity">De transparantie van de achtergrondkleur van pictogrammen die vastgemaakt zijn aan de Launcher. 100 procent is volledig zichtbaar en 0 procent is volledig transparant.</string>
-  <string name="option_launcherservice_enabled">Launcher overlayservice</string>
-  <string name="hint_launcherservice_enabled">Bij een swipe van de onderste helft van de linkerkant van het scherm zal de Launcher verschijnen, zodat u apps kan starten zonder eerst naar de home screen te moeten gaan.\n(EXPERIMENTEEL)</string>
-  <string name="option_launcher_running_show">Toon apps die uitgevoerd worden</string>
-  <string name="option_panel_show">Panel tonen</string>
-  <string name="hint_panel_show">Of het Panel aan de bovenkant van het scherm getoond moet worden of niet.</string>
   <string name="option_panel_edge">Positie van het panel</string>
   <string name="hint_panel_edge">Aan welke kant van van het scherm de panel zich moet bevinden.</string>
-  <string name="option_panel_opacity">Panel-transparantie</string>
-  <string name="hint_panel_opacity">Hoe transparant de Panel moet zijn. 100 procent is volledig zichtbaar en 0 procent is volledig transparant.</string>
-  <string name="option_unitybackground_dynamic">Dynamisch achtergrondkleur berekenen</string>
-  <string name="hint_unitybackground_dynamic">De achtergrondkleur voor transparante Unity-componenten (Launcher, Dash en Panel) kan dynamisch berekend worden aan de hand van de ingestelde achtergrond. Dit zal niet werken wanneer er een live wallpaper is ingesteld, in welk geval er teruggevallen wordt op een transparante zwarte achtergrond.</string>
-  <string name="option_unitybackground_colour">Achtergrondkleur</string>
-  <string name="hint_unitybackground_colour">De achtergrondkleur die gebruikt moet worden voor transparante Unity-componenten.</string>
-  <string name="message_unitybackground_colour">Gebruik de schuifbalken om een kleur te kiezen.</string>
-  <string name="option_unitybackground_opacity">Transparantie van achtergrondkleur</string>
-  <string name="hint_unitybackground_opacity">Hoe transparant de achtergrondkleur van transparante Unity-componenten moet zijn. 100 procent is volledig zichtbaar en 0 procent is volledig transparant.</string>
-  <string name="option_unitywallpaper_blur">Achtergrond vervagen</string>
-  <string name="hint_unitywallpaper_blur">De methode die gebruikt zal worden om de achtergrond te vervagen wanneer het Dash geöpend wordt. Wanneer \"Verkleinen &amp; vergroten\" gekozen is en dit mislukt (of er een live wallpaper is ingesteld) zal er teruggevallen worden op \"Donker maken\".</string>
   <string name="option_launcher_edge">Positie van de launcher</string>
   <string name="hint_launcher_edge">Tegen welke schermrand de Launcher zich moet bevinden.</string>
   <string name="option_widgets_enabled">Widgets</string>
+  <string name="hint_widgets_enabled">Schakel <b>experimentele</b> widget-ondersteuning in.\nDit is erg experimenteel en is eigenlijk nog niet erg bruikbaar is zijn huidige staat.</string>
   <string name="option_dev_log_toaster">Meldingen voor logberichten</string>
   <string name="hint_dev_log_toaster">Toon logberichten in toast-notificaties.</string>
-  <string-array name="keys_unitywallpaper_blur">
-    <item>Niet vervagen</item>
-    <item>Donker maken</item>
-    <item>Verkleinen &amp; vergroten (standaard)</item>
-  </string-array>
+  <string name="option_customise">Aanpassen</string>
+  <string name="hint_customise">Pas het uiterlijk aan.</string>
   <string name="option_wallpaper">Achtergrond</string>
   <string name="hint_wallpaper">Andere achtergrond kiezen</string>
-  <string name="option_dashsearch_full">Geavanceerd zoeken</string>
-  <string name="hint_dashsearch_full">Toont betere zoekresultaten in het Dash, ten koste van prestaties op tragere apparaten of apparaten waarop veel apps geïnstalleerd zijn. Als zoeken in het Dash traag is voor u dan is het waarschijnlijk een goed idee om deze optie uit te zetten.</string>
-  <string name="option_dashsearch_lenses">Gebruik lenzen</string>
-  <string name="hint_dashsearch_lenses">Lenzen bieden extra zoekfunctionaliteit. Met behulp van lenzen kunnen onder andere services als DuckDuckGo, Stack Overflow, of lokale bestanden doorzocht worden vanuit het Dash.</string>
-  <string name="option_dashsearch_lenses_maxresults">Resultaten per lens</string>
-  <string name="hint_dashsearch_lenses_maxresults">Het maxmimum aantal resultaten dat getoond moet worden van elke lens.</string>
   <string name="option_dash_ready_show">Dash standaard openen</string>
-  <string name="hint_dash_ready_show">Het Dash zal automatisch geöpend worden wanneer de apps geladen zijn.</string>
   <string name="option_lenses">Zoekbronnen</string>
   <string name="hint_lenses">Kies uit welke bronnen zoekresultaten verzameld moeten worden, en in welke volgorde ze getoond worden. Wanneer je een zoekopdracht uitvoerd wordt deze naar alle ingeschakelde zoekbronnen verstuurd en worden vervolgens hun resultaten getoond.</string>
   <string name="option_theme">Thema</string>
@@ -86,19 +57,10 @@
   <string name="option_dev">Ontwikkelaarsmodus</string>
   <string name="hint_dev">Toegang tot debuglogs en andere technische informatie, en experimentele functionaliteit. Het inschakelen van deze optie zal een negatieve impact hebben op de prestaties en stabiliteit van de app.</string>
   <string name="option_dev_logs">Logs</string>
-  <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Testen (Als hij het niet kapot krijgt kan ik er meestal wel vanuit gaan dat het ook veilig is voor consumptie door de rest van de wereld.)\n
 * Hulp met de kleursberekeningsfuncties.</string>
-  <string name="hm_todddavies_name">Todd Davies</string>
   <string name="hm_todddavies_why">* Ik heb zijn ProgressWheel-component gebruik aangezien Android\'s gewone (ronde) ProgressBar-component geen voortgang kan aangeven.\n
         https://github.com/Todd-Davies/ProgressWheel/</string>
-  <!--No longer used
-    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
-    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
-        http://stackoverflow.com/a/8483078/521361</string>-->
-  <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
-  <string name="hm_commonsguy_why">* Ik heb zijn ColorMixer-component gebruik in het voorkeurenscherm.\n
-        https://github.com/commonsguy/cwac-colormixer</string>
   <string name="hm_translators_name">Het Vertaalteam</string>
   <string name="hm_translators_why">* Een aantal mensen hebben er tijd en moeite ingestopt om deze app beschikbaar te maken in hun eigen taal. Ik wil hen graag allen bedanken voor hun bijdrage aan het project.</string>
   <string name="title_activity_contribute">Hoe kan ik bijdragen?</string>
@@ -111,7 +73,6 @@
   <string name="contribute_bugs_description">Als er ergens een fout zit in DistroHopper betekent dat niet noodzakelijk dat ik me daar van bewust ben. Ontwikkelaars zijn over het algemeen vrij slecht in het testen van hun eigen toepassingen, omdat zij deze enkel zullen gebruiken op de manier waarvoor ze ontwikkeld zijn. Sommige problemen doen zich ook enkel voor in specifieke gevallen (bijvoorbeeld op een specifiek apparaat dat een specifieke versie van Android draait en een aantal extra opties heeft ingeschakeld). Dus wanneer je een fout vindt in DistroHopper (of je een goed idee hebt) kan je een steentje bijdragen door dit te melden. \nDeze meldingen worden bijgehouden op GitHub. Als GitHub te technisch voor u is mag je ook altijd een e-mail sturen naar android-dev@robinj.be. Gelieve je e-mail in het Nederlands of Engels op te stellen, en zo veel mogelijk (nuttige) informatie door te geven.</string>
   <string name="contribute_bugs_go">Ga naar GitHub</string>
   <string name="contribute_donate_title">Doneren</string>
-  <string name="contribute_donate_description">Indien gewenst kan je ook een donatie maken aan de ontwikkelaar. Donaties worden afgehandeld via PayPal. U krijgt zelf de mogelijkheid om te kiezen hoeveel u wil doneren. \nOpmerking: Het gaat hier om een donatie. Ik verkoop niets, en u koopt niets. Donaties worden erg geapprecieerd, maar u zal hierdoor geen extra functionaliteit krijgen. Alle opties van deze toepassing zijn gratis te gebruiken.</string>
-  <string name="contribute_donate_go">Doneren</string>
+  <string name="contribute_donate_description">Indien gewenst kan je ook een donatie maken aan de ontwikkelaar. Donaties worden afgehandeld via PayPal. U krijgt zelf de mogelijkheid om te kiezen hoeveel u wil doneren. \nOpmerking: Het gaat hier om een donatie. Ik verkoop niets, en u koopt niets. Donaties worden erg gewaardeerd, maar u zal hierdoor geen extra functionaliteit krijgen. Alle opties van deze toepassing zijn gratis te gebruiken.</string>
   <string name="theme_elementary_res_panel_bfb_text">Applicaties</string>
 </resources>

@@ -12,16 +12,22 @@
   <string name="pinned">a été attaché au Launcher</string>
   <string name="unpinned">a été détaché du Launcher</string>
   <string name="notpinned">n\'est pas attaché</string>
-  <string name="alreadypinned">Est déjà fixé</string>
+  <string name="alreadypinned">est déjà fixé</string>
   <string name="developed_by">Développé par Robin Jacobs</string>
   <string name="honourable_mentions">Mentions honorables</string>
   <string name="button_back">Retour</string>
   <string name="button_about">À propos</string>
   <string name="button_contribute">Contribuer</string>
   <string name="button_apply">Appliquer</string>
+  <string-array name="edges">
+    <item>Caché</item>
+    <item>Top</item>
+    <item>Droit</item>
+    <item>Bas</item>
+    <item>Gauche</item>
+  </string-array>
   <string name="title_preferences">Préférences</string>
   <string name="pref_header_general">Général</string>
-  <string name="pref_header_unity">Unity</string>
   <string name="pref_header_launcher">Launcher</string>
   <string name="pref_header_dash">Dash</string>
   <string name="pref_header_panel">Panneau</string>
@@ -29,60 +35,24 @@
   <string name="pref_header_dev">Option développeur</string>
   <string name="pref_header_functionality">Fonctionnalité</string>
   <string name="pref_header_appearance">Apparence</string>
-  <string name="category_colourcalc">Calcul de couleur dominante</string>
   <string name="option_launchericon_size">Taille d\'icone fixé</string>
   <string name="hint_launchericon_size">La taille des icônes pour les applications épinglées devrait être. Le curseur passe de 48dip à 120 dip, avec la valeur par défaut (droite dans le milieu) a été de 84 dip.</string>
-  <string name="option_launchericon_opacity">Opacité du fond des icônes</string>
-  <string name="hint_launchericon_opacity">L\'opacité du fond des icônes du Launcher.</string>
-  <string name="option_launcherservice_enabled">Rendre le Launcher disponible dans les autres apps</string>
-  <string name="hint_launcherservice_enabled">Quand vous glissez du côté bas-gauche de l\'écran, le Launcher apparaît, vous permettant de lancer vos applications attachées au Launcher sans retourner à l\'écran d\'accueil.\n(EXPÉRIMENTAL)</string>
-  <string name="option_launcher_running_show">Montrer les applications ouvertes</string>
-  <string name="hint_launcher_running_show">Le lanceur affichera les applications en cours d\'exécution. Ceci sera indiqué par une petite flèche sur le côté gauche de l\'icône. Les applications qui sont en cours d\'exécution mais qui n\'ont pas été fixées au lanceur seront également affichées. \nNOTE: cette fonctionnalité ne fonctionne plus de manière fiable à partir d\'Android 5.0 en raison des restrictions ajoutées au système d\'exploitation.</string>
-  <string name="option_panel_show">Afficher</string>
-  <string name="hint_panel_show">Si le panneau au haut de l\'écran devrait être affiché ou non.</string>
-  <string name="option_panel_opacity">Opacité</string>
-  <string name="hint_panel_opacity">L\'opacité du panneau.</string>
-  <string name="option_unitybackground_dynamic">Couleur de fond dynamique</string>
-  <string name="hint_unitybackground_dynamic">Choisir la couleur de fond des composantes transparentes de Unity de manière dynamique, selon la couleur dominante du fond d\'écran. Cette option ne fonctionne pas avec les fonds d\'écran animés et résultera en un noir transparent.</string>
-  <string name="option_unitybackground_colour">Couleur de fond</string>
-  <string name="hint_unitybackground_colour">La couleur de fond des composantes transparentes de Unity.</string>
-  <string name="message_unitybackground_colour">Utilisez les curseurs pour choisir une couleur.</string>
-  <string name="option_unitybackground_opacity">Opacité du fond</string>
-  <string name="hint_unitybackground_opacity">L\'opacité de la couleur de fond des composantes transparentes de Unity.</string>
-  <string name="option_unitywallpaper_blur">Technique de floutage du fond d\'écran</string>
-  <string name="hint_unitywallpaper_blur">La méthode qui sera utilisée pour flouter le fond d\'écran quand le Dash est ouvert.</string>
   <string name="hint_launcher_edge">Le côté de l\'écran auquel le Launcher sera attaché.</string>
   <string name="option_widgets_enabled">Widgets</string>
   <string name="option_wallpaper">Fond d\'écran</string>
   <string name="hint_wallpaper">Changer le fond d\'écran</string>
-  <string name="option_dashsearch_full">Recherche avancée</string>
-  <string name="hint_dashsearch_full">Utiliser cette option permettra au Dash de donner de meilleurs résultats de recherche, au prix dune performance réduite sur certains appareils lents ou avec beaucoup d\'applications. Si le Dash est lent pour vous, décochez cette option.</string>
-  <string name="option_dashsearch_lenses">Utiliser les lentilles</string>
-  <string name="hint_dashsearch_lenses">Les lentilles permettent d\'afficher des résultats de recherche de services tels que DuckDuckGo, Stack Overflow, ou même les fichiers locaux, directement à partir du Dash.</string>
-  <string name="option_dashsearch_lenses_maxresults">Résultats par lentille</string>
-  <string name="hint_dashsearch_lenses_maxresults">Le nombre maximal de résultats de recherche affichés par lentille.</string>
   <string name="option_dash_ready_show">Ouvrir le Dash par défaut</string>
-  <string name="hint_dash_ready_show">Une fois que les applications sont chargées, le Dash s\'ouvrira automatiquement.</string>
   <string name="option_lenses">Recherches des sources</string>
   <string name="hint_lenses">Choisir les lentilles que vous voulez utiliser et leur ordre dans le Dash. Lorsque vous ferez une recherche dans le Dash, vous obtiendrez des résultats de toutes les lentilles activées.</string>
   <string name="option_theme">Theme</string>
-  <string name="hint_theme">Choisissez la distribution Linux à laquelle vous souhaitez que Distro Hopper ressemble.</string>
+  <string name="hint_theme">Choisissez la distribution Linux à laquelle vous souhaitez que DistroHopper ressemble.</string>
   <string name="option_dev">Mode développeur</string>
   <string name="hint_dev">Accédez aux journaux de débogage et à d\'autres informations techniques. En activant cela, cela aura un impact négatif sur les performances et la stabilité.</string>
   <string name="option_dev_logs">Journaux</string>
-  <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">* Testing (If he doesn\'t manage to wreck it then it\'s probably safe for consumption by the rest of the world.)\n
         * Help with the dominant colour calculation function.</string>
-  <string name="hm_todddavies_name">Todd Davies</string>
   <string name="hm_todddavies_why">* I used his ProgressWheel component, since the default (round) Android ProgressBar component can\'t actually indicate progress.\n
         https://github.com/Todd-Davies/ProgressWheel/</string>
-  <!--No longer used
-    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
-    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
-        http://stackoverflow.com/a/8483078/521361</string>-->
-  <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
-  <string name="hm_commonsguy_why">* I used his ColorMixer component in the Preferences screen.\n
-        https://github.com/commonsguy/cwac-colormixer</string>
   <string name="hm_translators_name">L\'équipe de traduction</string>
   <string name="hm_translators_why">* Quelques personnes ont consacré du temps et des efforts pour rendre cette application disponible dans leurs langues respectives. Je suis reconnaissant à toutes ces personnes pour leur contribution au projet.</string>
   <string name="title_activity_contribute">Comment contribuer?</string>
@@ -96,6 +66,5 @@
   <string name="contribute_bugs_go">Allez sur Github</string>
   <string name="contribute_donate_title">Faire un don</string>
   <string name="contribute_donate_description">Si vous voulez, vous pouvez aussi faire un don monétaire au développeur. Les dons sont gérés via PayPal. Vous pouvez décider de la somme que vous voulez donner. \nNote: C\'est un don. Le développeur ne vend rien, et vous n\'achetez rien. Les dons sont appréciés, mais vous ne gagnerez pas de privilèges en en faisant. DistroHopper est entièrement gratuit.</string>
-  <string name="contribute_donate_go">Donner</string>
   <string name="theme_elementary_res_panel_bfb_text">Applications</string>
 </resources>

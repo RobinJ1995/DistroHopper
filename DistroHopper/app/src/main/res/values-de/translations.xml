@@ -28,7 +28,6 @@
   </string-array>
   <string name="title_preferences">Einstellungen</string>
   <string name="pref_header_general">Allgemein</string>
-  <string name="pref_header_unity">Unity</string>
   <string name="pref_header_launcher">Startmenü</string>
   <string name="pref_header_dash">Dash</string>
   <string name="pref_header_panel">Taskleiste</string>
@@ -36,40 +35,13 @@
   <string name="pref_header_dev">Entwickleroptionen</string>
   <string name="pref_header_functionality">Funktionalität</string>
   <string name="pref_header_appearance">Aussehen</string>
-  <string name="category_colourcalc">Bevorzugte Farbberechnung</string>
   <string name="option_launchericon_size">Größe angepinnter Icons</string>
   <string name="hint_launchericon_size">Die Breite angepinnter Icons. Der Regler geht von 48dip bis 120dip. Der Standard ist 84dip(Genau in der Mitte).</string>
-  <string name="option_launchericon_opacity">Deckkraft des Iconhintergrundes</string>
-  <string name="hint_launchericon_opacity">Deckkraft der Hintergrundfarbe der Icons im Startmenü.</string>
-  <string name="option_launcherservice_enabled">Launcher overlay service</string>
-  <string name="hint_launcherservice_enabled">Wenn du von der unteren linken Seite wischt, wird die Taskleiste erscheinen und dir erlauben die angehefteten Apps, ohne zum Homemenü wechseln zu müssen, zu starten.(EXPERIMENTELL)</string>
-  <string name="option_launcher_running_show">Zeige laufende Anwendungen</string>
-  <string name="hint_launcher_running_show">Der Launcher zeigt die derzeit laufenden Anwendungen. Dies wird durch einen kleinen Pfeil an der linken Seite des Icons angezeigt. Laufende Anwendungen dich nicht bereits angeheftet wurden, werden trotzdem gezeigt.</string>
-  <string name="option_panel_show">Zeige Leiste</string>
-  <string name="hint_panel_show">Soll die Leiste am oberen Bildschirmrand gezeigt werden oder nicht.</string>
-  <string name="option_panel_opacity">Deckkraft</string>
-  <string name="hint_panel_opacity">Deckkraft der Taskleiste.</string>
-  <string name="option_unitybackground_dynamic">Dynamische Hintergrundfarben</string>
-  <string name="hint_unitybackground_dynamic">Die Farbe der transparenten Unity-Komponenten(dss Startmenüs, die Dashoberfläche und die Taskleiste) werden nach der Farbe des Hintergrundes gewählt. Bei Live-Hintergründen wird es ein durchsichtiges Schwarz.</string>
-  <string name="option_unitybackground_colour">Hintergrundfarbe</string>
-  <string name="hint_unitybackground_colour">Die Hintergrundfarbe für durchsichtige Unity-Komponenten.</string>
-  <string name="message_unitybackground_colour">Verwende die Regler um eine Farbe zu wählen.</string>
-  <string name="option_unitybackground_opacity">Hintergrunddeckkraft</string>
-  <string name="hint_unitybackground_opacity">Deckkraft der Hintergrundfarbe von transparenten Unity-Komponenten.</string>
-  <string name="option_unitywallpaper_blur">Unschärfe-Methode für Wallpaper</string>
-  <string name="hint_unitywallpaper_blur">Die Methode, welche für den Unschärfe-Effekt genutzt werden soll, wenn das Dash geöffnet ist. Schlägt "Hoch- &amp; Herunterskalieren" fehl, wird "Verdunkeln" als Fallback-Methode genutzt.</string>
   <string name="hint_launcher_edge">Auf welcher Seite des Bildschirms der Launcher angezeigt werden.</string>
   <string name="option_widgets_enabled">Widgets</string>
   <string name="option_wallpaper">Hintergrundbild</string>
   <string name="hint_wallpaper">Hintergrundbild ändern</string>
-  <string name="option_dashsearch_full">Erweiterte Suche</string>
-  <string name="hint_dashsearch_full">Diese Option wird bessere Resultate in der Dash-Suche liefern, ist aber auch auf langsamen Geräten, oder bei vielen Apps langsamer, sodass du es dann deaktivieren solltest.</string>
-  <string name="option_dashsearch_lenses">Nutze \"Lenses\"</string>
-  <string name="hint_dashsearch_lenses">Lenses bieten zusätzliche Suchfunktionalitäten. Durch die Nutzung von Lenses können verschiedene Suchdienste wie DuckDuckGo, Stack Overflow, oder sogar eine Suche für die lokalen Dateien, direkt vom Dash genutzt werden.</string>
-  <string name="option_dashsearch_lenses_maxresults">Suchergebnisse pro Lens</string>
-  <string name="hint_dashsearch_lenses_maxresults">Die maximale Anzahl an Suchergebnissen, die in jeder Lens gezeigt werden.</string>
   <string name="option_dash_ready_show">Öffne standardmäßig den Dash</string>
-  <string name="hint_dash_ready_show">Der Dash wird automatisch geöffnet, sobald die Apps geladen wurden.</string>
   <string name="option_lenses">Lenses</string>
   <string name="hint_lenses">Wähle welche Lenses genutzt werden sollen und in welcher Reihenfolge die Suchergebnisse im Dash angezeigt werden sollen. Wenn im Dash gesucht wird, wird die Suchanfrage gleichzeitig an alle aktivierten Lenses gesandt und die Suchergebnisse werden angezeigt.</string>
   <string name="option_theme">Thema</string>
@@ -77,19 +49,10 @@
   <string name="option_dev">Entwicklermodus</string>
   <string name="hint_dev">Greife auf Debuglogs und andere technische Informationen zu. Aktivierung wird sich negativ auf Performance und stabilität auswirken.</string>
   <string name="option_dev_logs">Logs</string>
-  <string name="hm_timvdstaaij_name">Tim van der Staaij</string>
   <string name="hm_timvdstaaij_why">*Tester (Wenn er es nicht zum Absturz bringen konnte ist es für den Rest der Welt benutzbar).\n
 *Hilfe bei der Farbberechnungsfunktion.</string>
-  <string name="hm_todddavies_name">Todd Davies</string>
   <string name="hm_todddavies_why">*Ich habe dieses Prozess-Rad genutzt, seit das Standart(runde) Android Rad keine laufenden Prozesse erkennen kann\n
 https://github.com/Todd-Davies/ProgressWheel/</string>
-  <!--No longer used
-    <string name="hm_tacone_name">tacone (from Stack Overflow)</string>
-    <string name="hm_tacone_why">* I used his ExpandableHeightGridView component.\n
-        http://stackoverflow.com/a/8483078/521361</string>-->
-  <string name="hm_commonsguy_name">Mark Murphy (Commonsware)</string>
-  <string name="hm_commonsguy_why">*Ich habe diese Farbmixer-Komponente in den Einstellungen genutzt.\n
-https://github.com/commonsguy/cwac-colormixer</string>
   <string name="hm_translators_name">Das Übersetzungsteam</string>
   <string name="hm_translators_why">* Ein paar Leute haben ihre Zeit und Mühe investiert um diese App in ihrer Sprache verfügbar zu machen. Ich bin all diesen Leuten für ihre Unterstützung für das Projekt dankbar.</string>
   <string name="title_activity_contribute">Wie kann ich beitragen?</string>
@@ -102,6 +65,5 @@ https://github.com/commonsguy/cwac-colormixer</string>
   <string name="contribute_bugs_go">Gehe zu GitHub</string>
   <string name="contribute_donate_title">Spende</string>
   <string name="contribute_donate_description">Wenn du willst, kannst du auch eine finanzielle Spende an den Entwickler senden. Spenden werden per PayPal übermittelt. Du kannst selbst entscheiden, wieviel zu spenden möchtest. \nBeachte: Es handelt sich um eine Spende. Ich verkaufe nichts und du kaufst damit nichts. Spenden sind sehr willkommen aber ich stelle hierfür keine zusätzlichen Features zur Verfügung. Alle Features dieser Applikation sind frei (im Sinne für ohne Kosten).</string>
-  <string name="contribute_donate_go">Spenden</string>
   <string name="theme_elementary_res_panel_bfb_text">Anwendungen</string>
 </resources>
