@@ -45,18 +45,7 @@ public class Image
 
 	@Override
 	public boolean equals(Object image) {
-		if (!(image instanceof Image)) {
-			return false;
-		}
-
-		final Drawable.ConstantState state1 = this.drawable.getConstantState();
-		final Drawable.ConstantState state2 = ((Image) image).getDrawable().getConstantState();
-
-		if (state1 == null) {
-			return false;
-		}
-
-		return state1.equals(state2);
+		return this.drawable.equals(image);
 	}
 
 	public Drawable getDrawable ()
@@ -65,91 +54,76 @@ public class Image
 	}
 
 	public int getAverageColour (final int alpha) {
-		return this.getAverageColour(true, true, alpha);
+		return this.getAverageColour(true, alpha);
 	}
 
-	public int getAverageColour (boolean advanced, boolean useHsv, int alpha)
+	public int getAverageColour (boolean useHsv, int alpha)
 	{
 		try
 		{
 			Debug.assertCondition (this.drawable != null);
 			
-			BitmapDrawable bmd = (BitmapDrawable) this.getDrawable ();
-			Bitmap bm = bmd.getBitmap ();
+			final BitmapDrawable bmd = (BitmapDrawable) this.getDrawable ();
+			final Bitmap bm = bmd.getBitmap ();
 			
 			int width = bm.getWidth ();
 			int height = bm.getHeight ();
-			
-			int[] colours;
-			if (advanced)
-			{
-				List<Integer> lColours = new ArrayList<Integer> ();
-				
-				int[] posMiddle = new int[]
-					{
-						width / 2,
-						height / 2
-					};
-				
-				for (float i = 0.05F; i < 1.0F; i *= 1.25F) // 0% = middle // 100% = outer edge //
+
+			final List<Integer> lColours = new ArrayList<> ();
+
+			int[] posMiddle = new int[]
 				{
-					for (int j = 0; j < 4; j++) // 0 = up // 1 = right // 2 = down // 3 = left //
-					{
-						float x = (float) posMiddle[0];
-						float y = (float) posMiddle[1];
-						
-						switch (j)
-						{
-							case 0: // up //
-								y -= y * i;
-								break;
-							case 1: // up right //
-								y -= (y * i) * 0.75F;
-								x += (x * i) * 0.75F;
-								break;
-							case 2: // right //
-								x += x * i;
-								break;
-							case 3: // down right //
-								y += (y * i) * 0.75F;
-								x += (x * i) * 0.75F;
-								break;
-							case 4: // down //
-								y += y * i;
-								break;
-							case 5: // down left //
-								y += (y * i) * 0.75F;
-								x -= (x * i) * 0.75F;
-								break;
-							case 6: // left //
-								x -= x * i;
-								break;
-							case 7: // up left //
-								y -= (y * i) * 0.75F;
-								x -= (x * i) * 0.75F;
-								break;
-						}
-						
-						int colour = bm.getPixel ((int) x, (int) y);
-						lColours.add (colour);
-					}
-				}
-				
-				colours = new int[lColours.size ()];
-				for (int i = 0; i < colours.length; i++)
-					colours[i] = lColours.get (i);
-			} else
+					width / 2,
+					height / 2
+				};
+
+			for (float i = 0.05F; i < 1.0F; i *= 1.25F) // 0% = middle // 100% = outer edge //
 			{
-				colours = new int[5];
-				colours[0] = bm.getPixel (width / 2, height / 2); // | - | //
-				//colours[1] = colours[0]; // - // Middle counts twice //
-				colours[1] = bm.getPixel (width / 3, height / 3); // |'  | //
-				colours[2] = bm.getPixel ((width / 3) * 2, (height / 3) * 2); // |  .| //
-				colours[3] = bm.getPixel (width / 3, (height / 3) * 2); // |.  | //
-				colours[4] = bm.getPixel ((width / 3) * 2, height / 3); // |  '| //
+				for (int j = 0; j < 4; j++) // 0 = up // 1 = right // 2 = down // 3 = left //
+				{
+					float x = (float) posMiddle[0];
+					float y = (float) posMiddle[1];
+
+					switch (j)
+					{
+						case 0: // up //
+							y -= y * i;
+							break;
+						case 1: // up right //
+							y -= (y * i) * 0.75F;
+							x += (x * i) * 0.75F;
+							break;
+						case 2: // right //
+							x += x * i;
+							break;
+						case 3: // down right //
+							y += (y * i) * 0.75F;
+							x += (x * i) * 0.75F;
+							break;
+						case 4: // down //
+							y += y * i;
+							break;
+						case 5: // down left //
+							y += (y * i) * 0.75F;
+							x -= (x * i) * 0.75F;
+							break;
+						case 6: // left //
+							x -= x * i;
+							break;
+						case 7: // up left //
+							y -= (y * i) * 0.75F;
+							x -= (x * i) * 0.75F;
+							break;
+					}
+
+					int colour = bm.getPixel ((int) x, (int) y);
+					lColours.add (colour);
+				}
 			}
-			
-			int result;
+
+			final int[] colours = new int[lColours.size ()];
+			for (int i = 0; i < colours.length; i++)
+				colours[i] = lColours.get (i);
 			
 			if (useHsv)
 			{
@@ -253,43 +227,40 @@ public class Image
 					}
 				}
 				
-				result = Color.HSVToColor (alpha, new float[] {mostUsedHue, 0.9F, 1.0F});
-			} else
-			{
-				int[] average = new int[3];
-				int total = 0; // Dropping transparent pixels, so the amount of colours I added up isn't necessarily the same as colours.length //
-				
-				for (int i = 0; i < colours.length; i++)
-				{
-					int[] rgb = new int[]
-						{
-							Color.red (colours[i]),
-							Color.green (colours[i]),
-							Color.blue (colours[i]),
-							Color.alpha (colours[i])
-						};
-					
-					if (rgb[3] > 40) // Don't care about pixels which are more than ~85% transparent //
-					{
-						total++;
-						
-						average[0] += rgb[0];
-						average[1] += rgb[1];
-						average[2] += rgb[2];
-					}
-				}
-				
-				if (total <= 0)
-					return Color.argb (alpha, 40, 40, 40);
-				
-				average[0] /= total;
-				average[1] /= total;
-				average[2] /= total;
-				
-				result = Color.argb (alpha, average[0], average[1], average[2]);
+				return Color.HSVToColor (alpha, new float[] {mostUsedHue, 0.9F, 1.0F});
 			}
-			
-			return result;
+
+			int[] average = new int[3];
+			int total = 0; // Dropping transparent pixels, so the amount of colours I added up isn't necessarily the same as colours.length //
+
+			for (int i = 0; i < colours.length; i++)
+			{
+				int[] rgb = new int[]
+					{
+						Color.red (colours[i]),
+						Color.green (colours[i]),
+						Color.blue (colours[i]),
+						Color.alpha (colours[i])
+					};
+
+				if (rgb[3] > 40) // Don't care about pixels which are more than ~85% transparent //
+				{
+					total++;
+
+					average[0] += rgb[0];
+					average[1] += rgb[1];
+					average[2] += rgb[2];
+				}
+			}
+
+			if (total <= 0)
+				return Color.argb (alpha, 40, 40, 40);
+
+			average[0] /= total;
+			average[1] /= total;
+			average[2] /= total;
+
+			return Color.argb (alpha, average[0], average[1], average[2]);
 		}
 		catch (Exception ex)
 		{
