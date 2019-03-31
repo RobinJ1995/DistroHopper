@@ -25,9 +25,13 @@ import be.robinj.distrohopper.dev.Log;
 public class DrawableCache implements ICache<Drawable> {
 	private final SharedPreferences prefs;
 	private final String cachePath;
+	private final Set<String> keys;
+	private final String name;
 
-	protected DrawableCache(Context context, String name) {
+	protected DrawableCache(final Context context, final String name) {
+		this.name = name;
 		this.prefs = context.getSharedPreferences("cache_" + name, Context.MODE_PRIVATE);
+		this.keys = this.prefs.getStringSet("keys", new HashSet<>());
 		this.cachePath = context.getCacheDir().getPath() + "/";
 	}
 
@@ -38,9 +42,13 @@ public class DrawableCache implements ICache<Drawable> {
 			.toString();
 	}
 
+	private synchronized void commitKeys() {
+		this.prefs.edit().putStringSet("keys", this.keys).commit();
+	}
+
 	@Override
 	public int size() {
-		return this.prefs.getAll().size();
+		return this.keys.size();
 	}
 
 	@Override
@@ -49,9 +57,8 @@ public class DrawableCache implements ICache<Drawable> {
 	}
 
 	@Override
-	public boolean containsKey(Object key) {
-		final Set<String> keys = this.prefs.getStringSet("keys", Collections.<String>emptySet());
-		if (!keys.contains(key)) {
+	public synchronized boolean containsKey(Object key) {
+		if (!this.keys.contains(key)) {
 			return false;
 		}
 
@@ -64,7 +71,7 @@ public class DrawableCache implements ICache<Drawable> {
 	}
 
 	@Override
-	public Drawable get(Object key) {
+	public synchronized Drawable get(Object key) {
 		if (!this.containsKey(key)) {
 			return null;
 		}
@@ -73,7 +80,11 @@ public class DrawableCache implements ICache<Drawable> {
 	}
 
 	@Override
-	public Drawable put(String key, Drawable value) {
+	public synchronized Drawable put(final String key, final Drawable value) {
+		return this.put(key, value, true);
+	}
+
+	private synchronized Drawable put(final String key, final Drawable value, final boolean commit) {
 		final Drawable old = this.get(key);
 
 		try {
@@ -81,9 +92,10 @@ public class DrawableCache implements ICache<Drawable> {
 			final FileOutputStream outputStream = new FileOutputStream(this.getPath(key));
 			bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
 
-			final Set<String> keys = this.prefs.getStringSet("keys", new HashSet<String>());
-			keys.add(key);
-			this.prefs.edit().putStringSet("keys", keys).apply();
+			this.keys.add(key);
+			if (commit) {
+				this.commitKeys();
+			}
 		} catch (FileNotFoundException ex) {
 			new ExceptionHandler(ex).logAndTrack();
 
@@ -94,42 +106,50 @@ public class DrawableCache implements ICache<Drawable> {
 	}
 
 	@Override
-	public Drawable remove(Object key) {
+	public synchronized Drawable remove(final Object key) {
+		return this.remove(key, true);
+	}
+
+	private synchronized Drawable remove(final Object key, final boolean commit) {
 		final Drawable drawable = this.get(key);
 
 		if (drawable != null) {
 			new File(this.getPath(key.toString())).delete();
 		}
 
-		final Set<String> keys = this.prefs.getStringSet("keys", new HashSet<String>());
-		keys.remove(key);
-		this.prefs.edit().putStringSet("keys", keys).apply();
+		this.keys.remove(key);
+		if (commit) {
+			this.commitKeys();
+		}
 
 		return drawable;
 	}
 
 	@Override
-	public void putAll(@NonNull Map<? extends String, ? extends Drawable> map) {
+	public synchronized void putAll(@NonNull Map<? extends String, ? extends Drawable> map) {
 		for (final String key : map.keySet()) {
-			this.put(key, map.get(key));
+			this.put(key, map.get(key), false);
 		}
+
+		this.commitKeys();
 	}
 
 	@Override
-	public void clear() {
+	public synchronized void clear() {
 		for (final String key : this.keySet()) {
-			this.remove(key);
+			this.remove(key, false);
 		}
+
+		this.commitKeys();
 	}
 
 	@NonNull
 	@Override
-	public Set<String> keySet() {
+	public synchronized Set<String> keySet() {
 		final Set<String> keys = this.prefs.getStringSet("keys", new HashSet<String>());
 
 		for (final String key : keys) {
 			if (! this.containsKey(key)) {
-				keys.remove(key);
 				this.remove(key);
 			}
 		}
@@ -139,7 +159,7 @@ public class DrawableCache implements ICache<Drawable> {
 
 	@NonNull
 	@Override
-	public Collection<Drawable> values() {
+	public synchronized Collection<Drawable> values() {
 		final Set<Drawable> values = new HashSet<>();
 
 		for (final String key : this.keySet()) {
@@ -151,7 +171,7 @@ public class DrawableCache implements ICache<Drawable> {
 
 	@NonNull
 	@Override
-	public Set<Entry<String, Drawable>> entrySet() {
+	public synchronized Set<Entry<String, Drawable>> entrySet() {
 		final Set<Entry<String, Drawable>> set = new HashSet<>();
 
 		for (final Object key : this.keySet()) {
@@ -159,5 +179,10 @@ public class DrawableCache implements ICache<Drawable> {
 		}
 
 		return set;
+	}
+
+	@Override
+	public String getName() {
+		return this.name;
 	}
 }

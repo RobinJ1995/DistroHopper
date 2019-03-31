@@ -24,8 +24,6 @@ import be.robinj.distrohopper.R;
  */
 public class LocalFiles extends Lens
 {
-	//TODO// This lens will only work on API level 11+ //
-
 	public LocalFiles (Context context)
 	{
 		super (context);

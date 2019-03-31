@@ -2,13 +2,12 @@ package be.robinj.distrohopper.async;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.GridView;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,8 +15,7 @@ import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.HomeActivity;
-import be.robinj.distrohopper.cache.AppIconCache;
-import be.robinj.distrohopper.cache.AppLabelCache;
+import be.robinj.distrohopper.cache.ICache;
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.preferences.Preferences;
 import be.robinj.distrohopper.thirdparty.ProgressWheel;
@@ -31,20 +29,28 @@ import be.robinj.distrohopper.desktop.launcher.SpinnerAppLauncher;
  */
 public class AsyncLoadApps extends AsyncTask<Context, Integer, AppManager>
 {
-	private SpinnerAppLauncher lalSpinner;
-	private be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb;
-	private GridView gvDashHomeApps;
-	private HomeActivity parent;
+	private final SpinnerAppLauncher lalSpinner;
+	private final be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb;
+	private final GridView gvDashHomeApps;
+	private final HomeActivity parent;
 	private Context context;
+
+	private ICache<Drawable> appIconCache;
+	private ICache<String> appLabelCache;
 	
 	private static final String[] IGNORE = {"be.robinj.distrohopper", "be.robinj.ubuntu"}; // Inception //
 
-	public AsyncLoadApps (HomeActivity parent, SpinnerAppLauncher lalSpinner, be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb, GridView gvDashHomeApps)
+	public AsyncLoadApps (HomeActivity parent, SpinnerAppLauncher lalSpinner,
+						  be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb,
+						  GridView gvDashHomeApps, ICache<Drawable> appIconCache,
+						  ICache<String> appLabelCache)
 	{
 		this.parent = parent;
 		this.lalSpinner = lalSpinner;
 		this.lalBfb = lalBfb;
 		this.gvDashHomeApps = gvDashHomeApps;
+		this.appIconCache = appIconCache;
+		this.appLabelCache = appLabelCache;
 	}
 
 	@Override
@@ -81,9 +87,6 @@ public class AsyncLoadApps extends AsyncTask<Context, Integer, AppManager>
 			if (this.isCancelled ())
 				return null;
 
-			final AppLabelCache appLabelCache = new AppLabelCache(context);
-			final AppIconCache appIconCache = new AppIconCache(context);
-
 			for (int i = 0; i < size; i++)
 			{
 				final ResolveInfo resInf = resInfs.get (i);
@@ -97,7 +100,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Integer, AppManager>
 				if (skip)
 					continue;
 				
-				final App app = new App(this.context, appManager, resInf, appLabelCache, appIconCache);
+				final App app = new App(this.context, appManager, resInf, this.appLabelCache, this.appIconCache);
 				appManager.add (app, false, false);
 			}
 

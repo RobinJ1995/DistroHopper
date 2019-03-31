@@ -49,6 +49,8 @@ import be.robinj.distrohopper.async.AsyncLoadApps;
 import be.robinj.distrohopper.broadcast.PackageManagerBroadcastReceiver;
 import be.robinj.distrohopper.cache.AppIconCache;
 import be.robinj.distrohopper.cache.AppLabelCache;
+import be.robinj.distrohopper.cache.ExpiringCache;
+import be.robinj.distrohopper.cache.ICache;
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.dev.LogToaster;
 import be.robinj.distrohopper.preferences.Preference;
@@ -107,6 +109,9 @@ public class HomeActivity extends AppCompatActivity
 
 	private boolean isDashOpened = false;
 
+	private ICache appLabelCache;
+	private ICache appIconCache;
+
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
 	{
@@ -131,6 +136,11 @@ public class HomeActivity extends AppCompatActivity
 					log.attachObserver(this.logToaster);
 				}
 			}
+
+			// Initialise caches //
+			this.appLabelCache = new AppLabelCache(this.getBaseContext());
+			this.appIconCache = new ExpiringCache(this.getBaseContext(),
+					new AppIconCache(this.getBaseContext()), AppIconCache.EXPIRATION);
 
 			// Get ALL the views! //
 			final LinearLayout llLauncherAndDashContainer = this.viewFinder.get(R.id.llLauncherAndDashContainer);
@@ -196,7 +206,7 @@ public class HomeActivity extends AppCompatActivity
 			this.asyncInitWallpaper.execute (this.wpWallpaper);
 
 			// Start loading apps from the package manager //
-			this.asyncLoadApps = new AsyncLoadApps (this, lalSpinner, lalBfb, gvDashHomeApps);
+			this.asyncLoadApps = new AsyncLoadApps (this, lalSpinner, lalBfb, gvDashHomeApps, this.appIconCache, this.appLabelCache);
 			this.asyncLoadApps.execute (this.getApplicationContext ());
 
 			// Initialise the widget host //
@@ -1019,9 +1029,9 @@ public class HomeActivity extends AppCompatActivity
 			this.registerReceiver (this.broadcastPackageManager, ifPackageManager);
 
 			this.asyncLoadAppLabels = new AsyncLoadAppLabels(installedApps);
-			this.asyncLoadAppLabels.execute(new AppLabelCache(this.getBaseContext()));
+			this.asyncLoadAppLabels.execute(this.appLabelCache);
 			this.asyncLoadAppIcons = new AsyncLoadAppIcons(installedApps);
-			this.asyncLoadAppIcons.execute(new AppIconCache(this.getBaseContext()));
+			this.asyncLoadAppIcons.execute(this.appIconCache);
 		}
 		catch (Exception ex)
 		{

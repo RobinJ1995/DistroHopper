@@ -10,11 +10,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class StringCache implements ICache<String> {
+public class LongCache implements ICache<Long> {
 	private final String name;
 	private final SharedPreferences prefs;
 
-	protected StringCache(Context context, String name) {
+	protected LongCache(Context context, String name) {
 		this.name = name;
 		this.prefs = context.getSharedPreferences("cache_" + name, Context.MODE_PRIVATE);
 	}
@@ -40,26 +40,34 @@ public class StringCache implements ICache<String> {
 	}
 
 	@Override
-	public String get(Object key) {
+	public Long get(Object key) {
 		return this.get(key, null);
 	}
 
-	public String get(Object key, String defaultValue) {
-		return this.prefs.getString(key.toString(), defaultValue);
+	public synchronized Long get(Object key, Long defaultValue) {
+		if (! this.prefs.contains(key.toString())) {
+			return defaultValue;
+		}
+
+		return this.prefs.getLong(key.toString(), 0L);
 	}
 
 	@Override
-	public synchronized String put(String key, String value) {
-		final String old = this.prefs.getString(key, null);
+	public synchronized Long put(String key, Long value) {
+		final Long old = this.prefs.contains(key)
+				? this.prefs.getLong(key, 0L)
+				: null;
 
-		this.prefs.edit().putString(key, value).apply();
+		this.prefs.edit().putLong(key, value).apply();
 
 		return old;
 	}
 
 	@Override
-	public synchronized String remove(Object key) {
-		final String old = this.prefs.getString(key.toString(), null);
+	public synchronized Long remove(Object key) {
+		final Long old = this.prefs.contains(key.toString())
+				? this.prefs.getLong(key.toString(), 0L)
+				: null;
 
 		this.prefs.edit().remove(key.toString()).apply();
 
@@ -67,14 +75,14 @@ public class StringCache implements ICache<String> {
 	}
 
 	@Override
-	public synchronized void putAll(@NonNull Map<? extends String, ? extends String> map) {
+	public void putAll(@NonNull Map<? extends String, ? extends Long> map) {
 		final SharedPreferences.Editor editor = this.prefs.edit();
 
 		for (final String key : map.keySet()) {
-			editor.putString(key, map.get(key));
+			editor.putLong(key, map.get(key));
 		}
 
-		editor.apply();
+		editor.commit();
 	}
 
 	@Override
@@ -90,18 +98,18 @@ public class StringCache implements ICache<String> {
 
 	@NonNull
 	@Override
-	public Collection<String> values() {
-		return (Collection<String>) this.prefs.getAll().values();
+	public Collection<Long> values() {
+		return (Collection<Long>) this.prefs.getAll().values();
 	}
 
 	@NonNull
 	@Override
-	public synchronized Set<Entry<String, String>> entrySet() {
+	public synchronized Set<Entry<String, Long>> entrySet() {
 		final Map data = this.prefs.getAll();
-		final Set<Entry<String, String>> set = new HashSet<>();
+		final Set<Entry<String, Long>> set = new HashSet<>();
 
 		for (final Object key : data.keySet()) {
-			set.add(new AbstractMap.SimpleEntry<>(key.toString(), data.get(key).toString()));
+			set.add(new AbstractMap.SimpleEntry<>(key.toString(), (Long) data.get(key)));
 		}
 
 		return set;

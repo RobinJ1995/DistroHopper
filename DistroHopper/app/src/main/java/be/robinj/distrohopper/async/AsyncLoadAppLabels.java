@@ -5,10 +5,10 @@ import android.os.AsyncTask;
 import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
-import be.robinj.distrohopper.cache.StringCache;
+import be.robinj.distrohopper.cache.ICache;
 import be.robinj.distrohopper.dev.Log;
 
-public class AsyncLoadAppLabels extends AsyncTask<StringCache, Integer, Integer>
+public class AsyncLoadAppLabels extends AsyncTask<ICache<String>, Integer, Integer>
 {
 	private final AppManager appManager;
 
@@ -18,9 +18,9 @@ public class AsyncLoadAppLabels extends AsyncTask<StringCache, Integer, Integer>
 	}
 
 	@Override
-	protected Integer doInBackground (StringCache... params)
+	protected Integer doInBackground (ICache<String>... params)
 	{
-		final StringCache appLabelCache = params[0];
+		final ICache<String> appLabelCache = params[0];
 		int n = 0;
 
 		long tStart = System.currentTimeMillis ();

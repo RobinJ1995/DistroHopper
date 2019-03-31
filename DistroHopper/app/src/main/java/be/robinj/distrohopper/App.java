@@ -10,8 +10,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.Toast;
 
-import be.robinj.distrohopper.cache.DrawableCache;
-import be.robinj.distrohopper.cache.StringCache;
+import be.robinj.distrohopper.cache.ICache;
 import be.robinj.distrohopper.desktop.AppIcon;
 import be.robinj.distrohopper.desktop.dash.AppLauncher;
 
@@ -44,7 +43,7 @@ public class App implements Parcelable
 	}
 
 	public App(final Context context, final AppManager appManager, final ResolveInfo resInf,
-			   final StringCache appLabelCache, final DrawableCache iconCache)
+			   final ICache<String> appLabelCache, final ICache<Drawable> iconCache)
 	{
 		this(context, appManager, resInf);
 
@@ -116,7 +115,7 @@ public class App implements Parcelable
 		return this.labelLoaded;
 	}
 
-	public boolean setLabel(final String label, final StringCache appLabelCache) {
+	public boolean setLabel(final String label, final ICache<String> appLabelCache) {
 		final String old = this.label;
 
 		this.label = label;
@@ -153,13 +152,11 @@ public class App implements Parcelable
 		return this.icon;
 	}
 
-	public boolean setIcon(final AppIcon icon, final DrawableCache appIconCache) {
-		final AppIcon old = this.icon;
-
+	public boolean setIcon(final AppIcon icon, final ICache<Drawable> appIconCache) {
 		this.icon = icon;
 		this.iconLoaded = true;
 
-		if (!old.equals(icon) || !appIconCache.containsKey(this.getPackageAndActivityName())) {
+		if (! appIconCache.containsKey(this.getPackageAndActivityName())) { // There's no proper way to check equality without comparing all pixels
 			appIconCache.put(this.getPackageAndActivityName(), icon.getDrawable());
 
 			return true;
