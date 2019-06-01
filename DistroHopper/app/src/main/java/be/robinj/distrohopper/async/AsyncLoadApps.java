@@ -82,7 +82,6 @@ public class AsyncLoadApps extends AsyncTask<Context, Integer, AppManager>
 			
 			List<ResolveInfo> resInfs = appManager.queryInstalledApps ();
 			int size = resInfs.size ();
-			this.publishProgress (0, 3);
 
 			if (this.isCancelled ())
 				return null;
@@ -163,7 +162,7 @@ public class AsyncLoadApps extends AsyncTask<Context, Integer, AppManager>
 		super.onProgressUpdate (progress[0]);
 
 		ProgressWheel pw = this.lalSpinner.getProgressWheel ();
-		pw.setProgress (progress[0] / progress[1] * 360);
+		pw.setProgress (Math.round((progress[0].floatValue() / progress[1].floatValue()) * 360F));
 	}
 
 	@Override

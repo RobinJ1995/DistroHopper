@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.robinj.distrohopper.R;
+import be.robinj.distrohopper.theme.Cinnamon;
 import be.robinj.distrohopper.theme.Default;
 import be.robinj.distrohopper.theme.Elementary;
 import be.robinj.distrohopper.theme.Gnome;
@@ -26,9 +27,10 @@ public class ThemePreferencesActivity extends AppCompatActivity
 		setContentView (R.layout.activity_theme_preferences);
 
 		List<Theme> themes = new ArrayList<Theme> ();
-		themes.add (new Default ());
-		themes.add (new Gnome ());
-		themes.add (new Elementary ());
+		themes.add (new Default());
+		themes.add (new Gnome());
+		themes.add (new Elementary());
+		themes.add (new Cinnamon());
 
 		SharedPreferences prefs = Preferences.getSharedPreferences(this, Preferences.PREFERENCES);
 

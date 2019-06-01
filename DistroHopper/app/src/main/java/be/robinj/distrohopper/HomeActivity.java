@@ -56,6 +56,7 @@ import be.robinj.distrohopper.dev.LogToaster;
 import be.robinj.distrohopper.preferences.Preference;
 import be.robinj.distrohopper.preferences.Preferences;
 import be.robinj.distrohopper.preferences.PreferencesActivity;
+import be.robinj.distrohopper.theme.Cinnamon;
 import be.robinj.distrohopper.theme.Default;
 import be.robinj.distrohopper.theme.Elementary;
 import be.robinj.distrohopper.theme.Gnome;
@@ -166,10 +167,11 @@ public class HomeActivity extends AppCompatActivity
 			final WidgetsContainer vgWidgets = this.viewFinder.get(R.id.vgWidgets);
 
 			// Load up the theme //
-			HashMap<String, Class> themes = new HashMap<String, Class> ();
+			HashMap<String, Class> themes = new HashMap<> ();
 			themes.put ("default", Default.class);
 			themes.put ("elementary", Elementary.class);
 			themes.put ("gnome", Gnome.class);
+			themes.put ("cinnamon", Cinnamon.class);
 
 			Theme theme = (Theme) themes.get (prefs.getString (Preference.THEME.getName(), "default")).newInstance ();
 			HomeActivity.theme = theme;
