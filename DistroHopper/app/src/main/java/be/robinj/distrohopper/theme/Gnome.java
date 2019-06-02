@@ -11,11 +11,6 @@ public class Gnome extends Theme
 	{
 		this.name = "Gnome";
 		this.description = "Gnome Shell";
-		this.res_screenshots = new int[]
-		{
-			R.drawable.theme_gnome_screenshot0,
-			R.drawable.theme_gnome_screenshot1
-		};
 
 		this.wallpaper_overlay = R.drawable.theme_gnome_wallpaper_overlay;
 		this.wallpaper_overlay_when_dash_opened = R.drawable.theme_gnome_wallpaper_overlay_when_dash_opened;

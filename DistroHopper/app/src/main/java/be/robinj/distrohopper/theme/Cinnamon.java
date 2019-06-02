@@ -10,8 +10,7 @@ public class Cinnamon extends Theme
 	public Cinnamon()
 	{
 		this.name = "Cinnamon";
-		this.description = "Cinnamon";
-		this.res_screenshots = new int[] {};
+		this.description = "Linux Mint's Cinnamon desktop";
 
 		this.wallpaper_overlay = R.drawable.theme_cinnamon_wallpaper_overlay;
 		this.wallpaper_overlay_when_dash_opened = R.drawable.theme_cinnamon_wallpaper_overlay_when_dash_opened;

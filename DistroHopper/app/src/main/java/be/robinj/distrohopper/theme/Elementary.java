@@ -11,11 +11,6 @@ public class Elementary extends Theme
 	{
 		this.name = "elementary OS";
 		this.description = "elementary OS's Patheon desktop";
-		this.res_screenshots = new int[]
-		{
-			R.drawable.theme_elementary_screenshot0,
-			R.drawable.theme_elementary_screenshot1
-		};
 
 		this.wallpaper_overlay = R.drawable.theme_elementary_wallpaper_overlay;
 		this.wallpaper_overlay_when_dash_opened = R.drawable.theme_elementary_wallpaper_overlay_when_dash_opened;

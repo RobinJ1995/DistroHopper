@@ -12,7 +12,6 @@ public abstract class Theme
 {
 	public String name;
 	public String description;
-	public int[] res_screenshots;
 	public boolean dev_only = false;
 
 	public int wallpaper_overlay;

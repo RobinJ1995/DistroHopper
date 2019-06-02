@@ -42,16 +42,4 @@
             android:layout_height="wrap_content"
             android:text="@string/button_apply" />
     </LinearLayout>
-
-    <HorizontalScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:id="@+id/llScreenshots"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </LinearLayout>
-    </HorizontalScrollView>
 </LinearLayout>

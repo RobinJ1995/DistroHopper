@@ -11,11 +11,6 @@ public class Default extends Theme
 	{
 		this.name = "Ubuntu Unity";
 		this.description = "Ubuntu's Unity desktop";
-		this.res_screenshots = new int[]
-		{
-			R.drawable.theme_default_screenshot0,
-			R.drawable.theme_default_screenshot1
-		};
 
 		this.wallpaper_overlay = R.drawable.theme_default_wallpaper_overlay;
 		this.wallpaper_overlay_when_dash_opened = R.drawable.theme_default_wallpaper_overlay_when_dash_opened;

@@ -43,19 +43,9 @@ public class ThemePreferencesListViewAdapter extends ArrayAdapter<Theme>
 		TextView tvName = (TextView) view.findViewById (R.id.tvName);
 		TextView tvDescription = (TextView) view.findViewById (R.id.tvDescription);
 		Button btnApplyTheme = (Button) view.findViewById (R.id.btnApplyTheme);
-		LinearLayout llScreenshots = (LinearLayout) view.findViewById (R.id.llScreenshots);
 
 		tvName.setText (theme.name);
 		tvDescription.setText (theme.description);
-		llScreenshots.removeAllViews ();
-		for (int res_screenshot : theme.res_screenshots)
-		{
-			ImageView ivScreenshot = new ImageView (this.getContext ());
-			ivScreenshot.setImageResource (res_screenshot);
-			ivScreenshot.setScaleType (ImageView.ScaleType.CENTER_INSIDE);
-
-			llScreenshots.addView (ivScreenshot);
-		}
 
 		ThemePreferencesButtonClickListener clickListener = new ThemePreferencesButtonClickListener (this.parent, this.prefs);
 		btnApplyTheme.setOnClickListener (clickListener);
