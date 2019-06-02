@@ -48,9 +48,10 @@ public class LocalFiles extends Lens
 	}
 
 	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
-	public List<LensSearchResult> search (String str) throws IOException, JSONException
+	public List<LensSearchResult> search (final String str, final int maxResults) throws IOException, JSONException
 	{
 		List<LensSearchResult> results = new ArrayList<LensSearchResult> ();
+		int nResults = 0;
 
 		String[] projection = new String[]
 		{
@@ -67,6 +68,10 @@ public class LocalFiles extends Lens
 			LensSearchResult result = new LensSearchResult (this.context, file.getName (), file.toString (), this.icon);
 
 			results.add (result);
+
+			if (++nResults >= maxResults) {
+				break;
+			}
 		}
 
 		return results;

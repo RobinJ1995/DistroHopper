@@ -371,9 +371,21 @@ public class AppManager implements Iterable<App>
 		this.parent.pinnedAppsChanged ();
 	}
 
-	public List<App> search (String pattern)
+	public List<App> search (final String pattern) {
+		return this.search(pattern, Integer.MAX_VALUE);
+	}
+
+	/**
+	 * Search apps based on provided pattern.
+	 *
+	 * @param pattern: Pattern to search for.
+	 * @param maxResults: Maximum number of results ot return. NOTE: This is ignored when pattern is empty.
+	 * @return results
+	 */
+	public List<App> search (String pattern, final int maxResults)
 	{
 		List<App> results;
+		int nResults = 0;
 
 		if (pattern.length () == 0)
 		{
@@ -390,16 +402,26 @@ public class AppManager implements Iterable<App>
 
 			for (App app : this.apps)
 			{
-				if (app.getLabel ().toLowerCase ().startsWith (pattern))
-					results.add (app);
+				if (app.getLabel ().toLowerCase ().startsWith (pattern)) {
+					results.add(app);
+
+					if (++nResults >= maxResults) {
+						return results;
+					}
+				}
 			}
 
 			if (fullSearch)
 			{
 				for (App app : this.apps)
 				{
-					if ((! results.contains (app)) && (app.getLabel ().toLowerCase ().contains (pattern)))
-						results.add (app);
+					if ((! results.contains (app)) && (app.getLabel ().toLowerCase ().contains (pattern))) {
+						results.add(app);
+
+						if (++nResults >= maxResults) {
+							return results;
+						}
+					}
 				}
 			}
 		}

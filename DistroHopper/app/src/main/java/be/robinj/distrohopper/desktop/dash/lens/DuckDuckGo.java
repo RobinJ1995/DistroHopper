@@ -37,7 +37,7 @@ public class DuckDuckGo extends Lens
 		return "DuckDuckGo search results";
 	}
 
-	public List<LensSearchResult> search (String str) throws IOException, JSONException
+	public List<LensSearchResult> search (final String str, final int maxResults) throws IOException, JSONException
 	{
 		String apiResults = this.downloadStr (this.API.replace ("{:QUERY:}", URLEncoder.encode (str, "UTF-8")));
 
@@ -70,6 +70,10 @@ public class DuckDuckGo extends Lens
 						results.add (result);
 					}
 				}
+			}
+
+			if (results.size() >= maxResults) {
+				break;
 			}
 		}
 

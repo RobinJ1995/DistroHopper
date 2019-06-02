@@ -37,13 +37,15 @@ public class SuperUser extends Lens
 		return "Super User search results";
 	}
 
-	public List<LensSearchResult> search (String str) throws IOException, JSONException
+	public List<LensSearchResult> search (final String str, final int maxResults) throws IOException, JSONException
 	{
 		String apiResults = this.downloadStr (this.API.replace ("{:QUERY:}", URLEncoder.encode (str, "UTF-8")));
 
 		JSONObject json = new JSONObject (apiResults);
 		JSONArray items = json.getJSONArray ("items");
 		List<LensSearchResult> results = new ArrayList<LensSearchResult> ();
+
+		int nResults = 0;
 
 		for (int i = 0; i < items.length (); i++)
 		{
@@ -54,6 +56,10 @@ public class SuperUser extends Lens
 				LensSearchResult result = new LensSearchResult (this.context, item.getString ("title"), item.getString ("link"), this.icon);
 
 				results.add (result);
+
+				if (++nResults >= maxResults) {
+					return results;
+				}
 			}
 		}
 

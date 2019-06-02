@@ -90,11 +90,13 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 
 				try
 				{
-					lensResults = lens.search (pattern);
+					lensResults = lens.search (pattern, maxResultsPerLens);
 
 					if (lensResults.size () > 0)
 					{
-						lensResults = lensResults.subList (0, lensResults.size () > maxResultsPerLens ? maxResultsPerLens : lensResults.size ());
+						if (lensResults.size() > maxResultsPerLens) {
+							lensResults = lensResults.subList(0, maxResultsPerLens);
+						}
 
 						collection = new LensSearchResultCollection (lens, lensResults);
 					}

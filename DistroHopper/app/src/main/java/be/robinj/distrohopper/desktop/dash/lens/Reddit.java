@@ -37,12 +37,14 @@ public class Reddit extends Lens
 		return "Reddit search results";
 	}
 
-	public List<LensSearchResult> search (String str) throws IOException, JSONException
+	public List<LensSearchResult> search (final String str, final int maxResults) throws IOException, JSONException
 	{
 		String apiResults = this.downloadStr (this.API.replace ("{:QUERY:}", URLEncoder.encode (str, "UTF-8")));
 
 		List<LensSearchResult> results = new ArrayList<LensSearchResult> ();
 		JSONObject json = new JSONObject (apiResults);
+
+		int nResults = 0;
 
 		if (json.has ("data"))
 		{
@@ -61,6 +63,10 @@ public class Reddit extends Lens
 						LensSearchResult result = new LensSearchResult (this.context, itemData.getString ("title"), itemData.getString ("url"), this.icon);
 
 						results.add (result);
+
+						if (++nResults >= maxResults) {
+							return results;
+						}
 					}
 				}
 			}

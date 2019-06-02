@@ -24,6 +24,8 @@ import java.util.List;
  */
 public abstract class Lens
 {
+	private static final int DEFAULT_MAX_RESULTS = 20;
+
 	protected Context context;
 
 	protected Drawable icon;
@@ -33,7 +35,11 @@ public abstract class Lens
 		this.context = context;
 	}
 
-	public abstract List<LensSearchResult> search (String str) throws IOException, JSONException;
+	public List<LensSearchResult> search (final String str) throws IOException, JSONException {
+		return this.search(str, DEFAULT_MAX_RESULTS);
+	}
+
+	public abstract List<LensSearchResult> search (final String str, final int maxResults) throws IOException, JSONException;
 
 	public abstract String getName ();
 

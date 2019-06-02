@@ -44,9 +44,9 @@ public class InstalledApps extends Lens
 		return "Search installed apps";
 	}
 
-	public List<LensSearchResult> search (String str) throws IOException, JSONException
+	public List<LensSearchResult> search (final String str, final int maxResults) throws IOException, JSONException
 	{
-		List<App> appResults = this.apps.search (str);
+		List<App> appResults = this.apps.search (str, maxResults);
 		List<LensSearchResult> results = new ArrayList<LensSearchResult> ();
 
 		for (App app : appResults)
