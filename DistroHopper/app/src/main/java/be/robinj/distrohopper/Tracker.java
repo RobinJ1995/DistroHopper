@@ -1,7 +1,5 @@
 package be.robinj.distrohopper;
 
-import com.google.android.gms.analytics.HitBuilders;
-
 import java.util.Map;
 
 /**
@@ -9,18 +7,6 @@ import java.util.Map;
  */
 public class Tracker
 {
-	public static void trackEvent (String category, String action, String label)
-	{
-		Tracker.getTracker ().send
-		(
-			new HitBuilders.EventBuilder ()
-				.setCategory (category)
-				.setAction (action)
-				.setLabel (label)
-				.build ()
-		);
-	}
-
 	public static void trackException (Exception ex)
 	{
 		StringBuilder stackTrace = new StringBuilder ();
@@ -50,10 +36,5 @@ public class Tracker
 			.build ();
 
 		Tracker.getTracker ().send (data);
-	}
-
-	private static com.google.android.gms.analytics.Tracker getTracker ()
-	{
-		return Application.getTracker ();
 	}
 }

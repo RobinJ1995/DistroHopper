@@ -1,7 +1,7 @@
 DistroHopper
 ============
 
-DistroHopper is a home screen replacement for Android that can resemble a number of different Linux desktops, including Ubuntu's Unity desktop, elementary OS's Pantheon desktop and the Gnome desktop.
+DistroHopper is a home screen replacement for Android that can resemble a number of different Linux desktops, including Ubuntu's Unity desktop, elementary OS's Pantheon desktop, the Gnome desktop, and Linux Mint's Cinnamon desktop.
 
 ## Where can I get it?
 

@@ -83,4 +83,6 @@
         \nNote: It\'s a donation. I am not selling anything, and you are not buying anything. Donations are greatly appreciated, but you will not gain any additional features because of it. All features of this application are available free of charge.</string>
 
     <string name="theme_elementary_res_panel_bfb_text">Applications</string>
+
+    <string name="toast_sending_crash_report">Sending crash report...</string>
 </resources>

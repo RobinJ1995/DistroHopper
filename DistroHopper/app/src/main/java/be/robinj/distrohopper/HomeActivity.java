@@ -1184,12 +1184,7 @@ public class HomeActivity extends AppCompatActivity
 	}
 
 	//# Dash #//
-	void closeDash ()
-	{
-		this.closeDash (false);
-	}
-
-	private void closeDash (boolean track)
+	private void closeDash ()
 	{
 		if (! this.isDashOpened) {
 			return;
@@ -1230,6 +1225,7 @@ public class HomeActivity extends AppCompatActivity
 			}
 		}
 
+
 		InputMethodManager imm = (InputMethodManager) this.getSystemService (Context.INPUT_METHOD_SERVICE);
 		if (imm != null)
 			imm.hideSoftInputFromWindow (this.getWindow ().getDecorView ().getRootView ().getWindowToken (), 0);
@@ -1237,18 +1233,10 @@ public class HomeActivity extends AppCompatActivity
 		this.flWallpaperOverlay.setVisibility (View.VISIBLE);
 		this.flWallpaperOverlayWhenDashOpened.setVisibility (View.INVISIBLE);
 
-		if (track)
-			Tracker.trackEvent ("Home", "Dash closed", "Dash");
-
 		this.isDashOpened = false;
 	}
 
-	void openDash ()
-	{
-		this.openDash (false);
-	}
-
-	private void openDash (boolean track)
+	private void openDash ()
 	{
 		if (this.isDashOpened) {
 			return;
@@ -1274,9 +1262,6 @@ public class HomeActivity extends AppCompatActivity
 
 		this.flWallpaperOverlay.setVisibility (View.INVISIBLE);
 		this.flWallpaperOverlayWhenDashOpened.setVisibility (View.VISIBLE);
-
-		if (track)
-			Tracker.trackEvent ("Home", "Dash opened", "Dash");
 
 		this.isDashOpened = true;
 	}

@@ -39,6 +39,10 @@ dependencies {
     compile 'com.android.support:appcompat-v7:27.1.1'
     compile 'com.android.support:gridlayout-v7:27.1.1'
     compile 'asia.ivity.android:drag-sort-listview:1.0'
-    compile 'com.google.android.gms:play-services-analytics:7.5.0'
-    compile 'org.sufficientlysecure:donations:2.5'
+    compile 'org.sufficientlysecure:donations:2.6'
+
+    // ACRA
+    def acraVersion = '5.3.0'
+    implementation "ch.acra:acra-http:$acraVersion"
+    implementation "ch.acra:acra-toast:$acraVersion"
 }
