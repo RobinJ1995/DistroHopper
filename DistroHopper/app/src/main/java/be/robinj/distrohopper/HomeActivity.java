@@ -1129,10 +1129,10 @@ public class HomeActivity extends AppCompatActivity
 	{
 		try
 		{
-			if (this.llDash.getVisibility () == View.VISIBLE)
-				this.closeDash (true);
+			if (this.llDash.getVisibility() == View.VISIBLE)
+				this.closeDash();
 			else
-				this.openDash (true);
+				this.openDash();
 		}
 		catch (Exception ex)
 		{
@@ -1184,7 +1184,7 @@ public class HomeActivity extends AppCompatActivity
 	}
 
 	//# Dash #//
-	private void closeDash ()
+	public void closeDash ()
 	{
 		if (! this.isDashOpened) {
 			return;
@@ -1236,7 +1236,7 @@ public class HomeActivity extends AppCompatActivity
 		this.isDashOpened = false;
 	}
 
-	private void openDash ()
+	public void openDash ()
 	{
 		if (this.isDashOpened) {
 			return;

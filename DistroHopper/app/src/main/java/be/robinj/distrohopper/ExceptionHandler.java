@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.text.Html;
 
+import org.acra.ACRA;
+
 import be.robinj.distrohopper.dev.Log;
 
 /**
@@ -71,24 +73,8 @@ public class ExceptionHandler {
 	}
 
 	private void track(final Throwable ex) {
-		if (this.ex instanceof Exception) {
-			this.trackException((Exception) this.ex);
-		} else if (this.ex instanceof Error) {
-			this.trackError((Error) this.ex);
-		}
-	}
-
-	private void trackException(final Exception ex) {
 		try {
-			Tracker.trackException (ex, this.getStackTrace(ex));
-		} catch (Exception ex2) {
-			Log.getInstance ().w (this.getClass ().getSimpleName (), "Problem description couldn't be sent: " + ex2.getMessage ());
-		}
-	}
-
-	private void trackError(final Error error) {
-		try {
-			Tracker.trackEvent("error", error.getClass().getSimpleName(), this.getStackTrace(error));
+			ACRA.getErrorReporter().handleSilentException(ex);
 		} catch (Exception ex2) {
 			Log.getInstance ().w (this.getClass ().getSimpleName (), "Problem description couldn't be sent: " + ex2.getMessage ());
 		}
