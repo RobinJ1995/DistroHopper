@@ -1,7 +1,7 @@
 package be.robinj.distrohopper.cache;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.Collection;
 import java.util.HashMap;

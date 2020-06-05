@@ -4,12 +4,12 @@ def properties = new Properties()
 properties.load(new FileInputStream(rootProject.file("secret.properties")))
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 29
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "be.robinj.distrohopper"
-        minSdkVersion 16
-        targetSdkVersion 27
+        minSdkVersion 19
+        targetSdkVersion 29
         versionCode 93
         versionName "2.4.0"
         buildConfigField "String", "ACRA_USERNAME", "\"" + properties['acra_username'] + "\""
@@ -39,14 +39,14 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.android.support:support-v4:27.1.1'
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support:gridlayout-v7:27.1.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
     implementation 'asia.ivity.android:drag-sort-listview:1.0'
     implementation 'org.sufficientlysecure:donations:2.6'
 
     // ACRA
-    def acraVersion = '5.3.0'
+    def acraVersion = '5.5.1'
     implementation "ch.acra:acra-http:$acraVersion"
     implementation "ch.acra:acra-toast:$acraVersion"
 }

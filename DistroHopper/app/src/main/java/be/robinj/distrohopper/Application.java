@@ -13,15 +13,13 @@ import org.acra.sender.HttpSender;
 /**
  * Created by robin on 8/22/14.
  */
-@AcraCore(buildConfigClass = BuildConfig.class,
-	reportFormat = StringFormat.JSON,
-	alsoReportToAndroidFramework = true)
-@AcraHttpSender(uri = "acrarium.robinj.be/report",
+@AcraCore(reportFormat = StringFormat.JSON)
+@AcraHttpSender(uri = "https://acrarium.robinj.be/report",
 	basicAuthLogin = BuildConfig.ACRA_USERNAME,
 	basicAuthPassword = BuildConfig.ACRA_PASSWORD,
 	httpMethod = HttpSender.Method.POST)
 @AcraToast(resText = R.string.toast_sending_crash_report,
-		length = Toast.LENGTH_SHORT)
+	length = Toast.LENGTH_SHORT)
 public class Application extends android.app.Application
 {
 	@Override

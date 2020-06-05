@@ -12,3 +12,4 @@ app-release.apk
 /app/build/
 /.idea/
 iconpack/
+secret.properties

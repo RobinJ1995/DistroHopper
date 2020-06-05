@@ -14,8 +14,8 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -1129,10 +1129,11 @@ public class HomeActivity extends AppCompatActivity
 	{
 		try
 		{
-			if (this.llDash.getVisibility() == View.VISIBLE)
+			if (this.llDash.getVisibility() == View.VISIBLE) {
 				this.closeDash();
-			else
+			} else {
 				this.openDash();
+			}
 		}
 		catch (Exception ex)
 		{

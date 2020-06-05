@@ -24,6 +24,7 @@ public class ExceptionHandler {
 		final String stackTrace = this.getStackTrace();
 
 		this.log(stackTrace);
+		this.track();
 
 		message.append ("Oops! Something went wrong!\n")
 			.append ("If this happens a lot, then please send an e-mail to ")
@@ -59,8 +60,6 @@ public class ExceptionHandler {
 		{
 			Log.getInstance ().w (this.getClass ().getSimpleName (), "User wasn't notified that there was a problem because context == NULL");
 		}
-
-		this.track();
 	}
 
 	public void logAndTrack() {
