@@ -14,7 +14,7 @@ import org.acra.sender.HttpSender;
  * Created by robin on 8/22/14.
  */
 @AcraCore(reportFormat = StringFormat.JSON)
-@AcraHttpSender(uri = "https://acrarium.robinj.be/report",
+@AcraHttpSender(uri = "https://acra.robinj.be/report",
 	basicAuthLogin = BuildConfig.ACRA_USERNAME,
 	basicAuthPassword = BuildConfig.ACRA_PASSWORD,
 	httpMethod = HttpSender.Method.POST)
