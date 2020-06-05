@@ -11,3 +11,5 @@ app-release.apk
 /app/release/
 /app/build/
 /.idea/
+iconpack/
+secret.properties

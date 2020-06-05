@@ -10,7 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.*;
 import android.preference.Preference;
-import android.support.v4.app.NavUtils;
+import androidx.core.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 

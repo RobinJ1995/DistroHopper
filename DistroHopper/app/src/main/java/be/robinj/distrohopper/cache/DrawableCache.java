@@ -3,24 +3,20 @@ package be.robinj.distrohopper.cache;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.nio.file.Files;
 import java.util.AbstractMap;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.Image;
-import be.robinj.distrohopper.dev.Log;
 
 public class DrawableCache implements ICache<Drawable> {
 	private final SharedPreferences prefs;

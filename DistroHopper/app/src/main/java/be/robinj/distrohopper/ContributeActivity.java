@@ -1,14 +1,12 @@
 package be.robinj.distrohopper;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,8 +61,6 @@ public class ContributeActivity extends AppCompatActivity
 	{
 		try
 		{
-			Tracker.trackEvent ("Contribute", "Transifex", "click");
-
 			this.openUrl ("https://www.transifex.com/projects/p/distrohopper/");
 		}
 		catch (Exception ex)
@@ -78,8 +74,6 @@ public class ContributeActivity extends AppCompatActivity
 	{
 		try
 		{
-			Tracker.trackEvent ("Contribute", "GitHub", "click");
-
 			this.openUrl ("https://github.com/RobinJ1995/DistroHopper/issues");
 		}
 		catch (Exception ex)
@@ -93,8 +87,6 @@ public class ContributeActivity extends AppCompatActivity
 	{
 		try
 		{
-			Tracker.trackEvent ("Contribute", "Donate", "click");
-
 			this.openUrl ("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=broederjacobs%40gmail%2ecom&lc=BE&item_name=Ubuntu%20Launcher&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted");
 		}
 		catch (Exception ex)
