@@ -1,9 +1,14 @@
 package be.robinj.distrohopper.desktop.dash.lens;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+
+import be.robinj.distrohopper.R;
+import be.robinj.distrohopper.preferences.Preference;
+import be.robinj.distrohopper.preferences.Preferences;
 
 /**
  * Created by robin on 4/11/14.

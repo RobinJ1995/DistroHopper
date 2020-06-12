@@ -13,6 +13,7 @@ public enum Preference {
 	DASH_OPEN_ON_READY("dash_ready_show"),
 	DASH_SEARCH_FULL("dashsearch_full"),
 	DASH_SEARCH_LENSES_MAX_RESULTS("dashsearch_lenses_maxresults"),
+	DASHICON_WIDTH("dashicon_width", 24),
 	WALLPAPER_BLUR_MODE("unitywallpaper_blur"),
 	PRIMARY_COLOUR("unitybackground_colour"),
 	PRIMARY_COLOUR_OPACITY("unitybackground_opacity"),
@@ -23,13 +24,23 @@ public enum Preference {
 	DEV_LOG_TOASTER("dev_log_toaster");
 
 	private final String name;
+	private final Object defaultValue;
+
+	Preference(final String name, final Object defaultValue) {
+		this.name = name;
+		this.defaultValue = defaultValue;
+	}
 
 	Preference(final String name) {
-		this.name = name;
+		this(name, null);
 	}
 
 	public String getName() {
 		return this.name;
+	}
+
+	public <T> T getDefault() {
+		return (T) this.defaultValue;
 	}
 
 	@Override

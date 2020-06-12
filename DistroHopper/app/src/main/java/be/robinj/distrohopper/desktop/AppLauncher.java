@@ -30,7 +30,7 @@ public class AppLauncher extends LinearLayout
 
 	private Context context;
 
-	private App app;
+	protected App app;
 
 	protected AppLauncher (Context context, App app, int layout, int layoutSpecial)
 	{
@@ -43,7 +43,11 @@ public class AppLauncher extends LinearLayout
 		this.icon = app.getIcon ();
 		this.setTag (app);
 
-		this.onFinishInflate ();
+		this.labelChanged();
+		this.descriptionChanged();
+		this.specialChanged();
+		this.iconChanged();
+		this.init();
 	}
 
 	protected AppLauncher (Context context, AttributeSet attrs, int layout, int layoutSpecial) // This constructor shouldn't be called directly //
@@ -70,8 +74,9 @@ public class AppLauncher extends LinearLayout
 		if (styleAttrs != null)
 			styleAttrs.recycle ();
 
-		if (! this.isInEditMode ()) // Don't run init method when rendering preview in IDE //
-			this.init ();
+		if (! this.isInEditMode()) { // Don't run init method when rendering preview in IDE //
+			this.init();
+		}
 	}
 
 	@Override

@@ -321,6 +321,7 @@
 										android:layout_height="match_parent"
 										android:choiceMode="singleChoice"
 										android:columnWidth="@dimen/dash_applauncher_width"
+										android:gravity="center"
 										android:numColumns="auto_fit" />
 								</LinearLayout>
 							</LinearLayout>

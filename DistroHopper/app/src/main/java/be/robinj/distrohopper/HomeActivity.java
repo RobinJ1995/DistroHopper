@@ -208,7 +208,9 @@ public class HomeActivity extends AppCompatActivity
 			this.asyncInitWallpaper.execute (this.wpWallpaper);
 
 			// Start loading apps from the package manager //
-			this.asyncLoadApps = new AsyncLoadApps (this, lalSpinner, lalBfb, gvDashHomeApps, this.appIconCache, this.appLabelCache);
+			this.asyncLoadApps = new AsyncLoadApps (this, lalSpinner, lalBfb,
+					gvDashHomeApps, this.appIconCache, this.appLabelCache, density,
+					prefs.getInt(Preference.DASHICON_WIDTH.getName(), Preference.DASHICON_WIDTH.getDefault()));
 			this.asyncLoadApps.execute (this.getApplicationContext ());
 
 			// Initialise the widget host //
@@ -344,6 +346,33 @@ public class HomeActivity extends AppCompatActivity
 						}
 					}
 				);
+
+				// Dash Icon Size //
+				final SeekBar sbCustomiseDashIconSize = this.viewFinder.get(R.id.sbCustomiseDashIconSize);
+				sbCustomiseDashIconSize.setProgress (prefs.getInt (Preference.DASHICON_WIDTH.getName(), Preference.DASHICON_WIDTH.getDefault()));
+				sbCustomiseDashIconSize.setOnSeekBarChangeListener(
+					new SeekBar.OnSeekBarChangeListener () {
+						@Override
+						public void onProgressChanged (final SeekBar seekBar, final int i, final boolean b)
+						{
+							this.update (i);
+						}
+
+						@Override
+						public void onStartTrackingTouch (final SeekBar seekBar) {}
+
+						@Override
+						public void onStopTrackingTouch (final SeekBar seekBar)
+						{
+							this.update(seekBar.getProgress ());
+						}
+
+						private void update (final int value)
+						{
+							prefsEdit.putInt(Preference.DASHICON_WIDTH.getName(), value);
+							prefsEdit.commit();
+						}
+					});
 
 				// Launcher Edge //
 				final String[] edgeNames = res.getStringArray (R.array.edges);
@@ -675,11 +704,12 @@ public class HomeActivity extends AppCompatActivity
 		lalTrash.setIcon (res.getDrawable (HomeActivity.theme.launcher_trash_image));
 
 		RelativeLayout.LayoutParams llPanel_layoutParams = (RelativeLayout.LayoutParams) this.llPanel.getLayoutParams ();
-		llPanel_layoutParams.height = (int) res.getDimension (R.dimen.theme_elementary_panel_height);
+		llPanel_layoutParams.height = (int) res.getDimension (HomeActivity.theme.panel_height);
 
 		final boolean expandLlLauncher = res.getBoolean (HomeActivity.theme.launcher_expand);
 		this.launcherEdge = Location.of(prefs.getInt(Preference.LAUNCHER_EDGE.getName(), res.getInteger (HomeActivity.theme.launcher_location)));
 		this.setLauncherEdge (this.launcherEdge, expandLlLauncher);
+		this.setDashIconWidth(prefs.getInt(Preference.DASHICON_WIDTH.getName(), Preference.DASHICON_WIDTH.getDefault()));
 
 		final Location lalPreferencesLocation = HomeActivity.theme.lalPreferences_getLocation(res, prefs);
 
@@ -965,6 +995,19 @@ public class HomeActivity extends AppCompatActivity
 				this.llPanel.setVisibility (View.GONE);
 				break;
 		}
+	}
+
+	/**
+	 * Set the width of icons in the Dash.
+	 * @param width The value of the {@link Preference#DASHICON_WIDTH} user preference.
+	 */
+	private void setDashIconWidth(final int width) {
+		final float density = this.getResources().getDisplayMetrics().density;
+
+		final GridView gvDashHomeApps = this.viewFinder.get(R.id.gvDashHomeApps);
+		gvDashHomeApps.setColumnWidth(Math.round((80 // 80 is the minimum
+				+ width)
+				* density)); // Adjust for the screen's pixel density
 	}
 
 	private void cancelAsyncTasks() {

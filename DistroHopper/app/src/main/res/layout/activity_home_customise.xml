@@ -59,6 +59,29 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/option_dashicon_size"
+            style="@style/TextAppearance.AppCompat.Title" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hint_dashicon_size" />
+        <SeekBar
+            android:id="@+id/sbCustomiseDashIconSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progress="24"
+            android:max="48" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/llCustomisePanelEdge">
 

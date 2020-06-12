@@ -21,11 +21,16 @@ import be.robinj.distrohopper.R;
 /**
  * Created by robin on 8/21/14.
  */
-public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollection>
-{
-	public CollectionGridAdapter (Context context, List<LensSearchResultCollection> coll)
-	{
+public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollection>  {
+	private final float displayDensity;
+	private final int dashIconWidth;
+
+	public CollectionGridAdapter(final Context context, final List<LensSearchResultCollection> coll,
+								 final float displayDensity, final int dashIconWidth) {
 		super (context, R.layout.widget_dash_lens_result_collection, coll);
+
+		this.displayDensity = displayDensity;
+		this.dashIconWidth = dashIconWidth;
 	}
 
 	@Override
@@ -39,6 +44,9 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 
 		TextView tvLabel = (TextView) view.findViewById (R.id.tvLabel);
 		GridView gvResults = (GridView) view.findViewById (R.id.gvResults);
+		gvResults.setColumnWidth(Math.round((80 // 80 is the minimum
+				+ this.dashIconWidth)
+				* this.displayDensity)); // Adjust for the screen's pixel density
 
 		tvLabel.setText (coll.getLens ().getName ());
 		tvLabel.setTextColor (view.getResources ().getColor (HomeActivity.theme.dash_applauncher_text_colour));
@@ -69,7 +77,7 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 
 		if (show)
 		{
-			gvResults.setAdapter (new GridAdapter (this.getContext (), results));
+			gvResults.setAdapter (new GridAdapter (this.getContext (), results, this.displayDensity, this.dashIconWidth));
 			gvResults.setOnItemClickListener (new LensSearchResultClickListener (coll.getLens ()));
 			gvResults.setOnItemLongClickListener (new LensSearchResultLongClickListener (coll.getLens ()));
 

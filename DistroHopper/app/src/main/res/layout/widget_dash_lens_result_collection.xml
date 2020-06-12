@@ -35,6 +35,7 @@
             android:choiceMode="singleChoice"
             android:numColumns="auto_fit"
             android:scrollbars="none"
+            android:gravity="center"
             android:columnWidth="@dimen/dash_applauncher_width" />
     </LinearLayout>
 

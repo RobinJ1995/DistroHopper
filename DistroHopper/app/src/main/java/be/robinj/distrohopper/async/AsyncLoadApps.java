@@ -37,13 +37,17 @@ public class AsyncLoadApps extends AsyncTask<Context, Integer, AppManager>
 
 	private ICache<Drawable> appIconCache;
 	private ICache<String> appLabelCache;
+
+	private final float displayDensity;
+	private final int dashIconWidth;
 	
 	private static final String[] IGNORE = {"be.robinj.distrohopper", "be.robinj.ubuntu"}; // Inception //
 
 	public AsyncLoadApps (HomeActivity parent, SpinnerAppLauncher lalSpinner,
 						  be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb,
 						  GridView gvDashHomeApps, ICache<Drawable> appIconCache,
-						  ICache<String> appLabelCache)
+						  ICache<String> appLabelCache, final float displayDensity,
+						  final int dashIconWidth)
 	{
 		this.parent = parent;
 		this.lalSpinner = lalSpinner;
@@ -51,6 +55,8 @@ public class AsyncLoadApps extends AsyncTask<Context, Integer, AppManager>
 		this.gvDashHomeApps = gvDashHomeApps;
 		this.appIconCache = appIconCache;
 		this.appLabelCache = appLabelCache;
+		this.displayDensity = displayDensity;
+		this.dashIconWidth = dashIconWidth;
 	}
 
 	@Override
@@ -178,7 +184,8 @@ public class AsyncLoadApps extends AsyncTask<Context, Integer, AppManager>
 			
 			appManager.refreshPinnedView ();
 			
-			this.gvDashHomeApps.setAdapter (new GridAdapter (this.context, appManager.getInstalledApps ()));
+			this.gvDashHomeApps.setAdapter(new GridAdapter(
+					this.context, appManager.getInstalledApps(), this.displayDensity, this.dashIconWidth));
 			this.gvDashHomeApps.setOnItemClickListener (new AppLauncherClickListener (this.parent));
 			this.gvDashHomeApps.setOnItemLongClickListener (new AppLauncherLongClickListener (this.parent));
 			

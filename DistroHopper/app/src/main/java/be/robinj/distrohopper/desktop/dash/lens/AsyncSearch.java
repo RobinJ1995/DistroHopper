@@ -27,14 +27,20 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 	private ProgressWheel progressWheel;
 	private ListView lvDashHomeLensResults;
 
+	private final float displayDensity;
+	private final int dashIconWidth;
+
 	private volatile boolean finished = false;
 
-	public AsyncSearch (LensManager lensManager, ProgressWheel progressWheel, ListView lvDashHomeLensResults)
-	{
+	public AsyncSearch(final LensManager lensManager, final ProgressWheel progressWheel,
+					   final ListView lvDashHomeLensResults, final float displayDensity,
+					   final int dashIconWidth) {
 		this.lensManager = lensManager;
 
 		this.progressWheel = progressWheel;
 		this.lvDashHomeLensResults = lvDashHomeLensResults;
+		this.displayDensity = displayDensity;
+		this.dashIconWidth = dashIconWidth;
 	}
 
 	@Override
@@ -61,7 +67,8 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 		};
 		new Thread(setProgressWheelVisible).start();
 
-		this.adapter = new be.robinj.distrohopper.desktop.dash.lens.CollectionGridAdapter (this.lensManager.getContext (), this.results);
+		this.adapter = new be.robinj.distrohopper.desktop.dash.lens.CollectionGridAdapter(
+				this.lensManager.getContext (), this.results, this.displayDensity, this.dashIconWidth);
 		this.lvDashHomeLensResults.setAdapter (this.adapter);
 	}
 

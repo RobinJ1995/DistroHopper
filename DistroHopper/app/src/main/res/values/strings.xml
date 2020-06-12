@@ -40,6 +40,8 @@
     <string name="pref_header_appearance">Appearance</string>
     <string name="option_launchericon_size">Pinned icon size</string>
     <string name="hint_launchericon_size">How large icons for pinned apps should be. The slider goes from 48dip to 120dip, with the default (right in the middle) being 84dip.</string>
+    <string name="option_dashicon_size">Dash icon size</string>
+    <string name="hint_dashicon_size">How large app icons and search results in the Dash should be.</string>
     <string name="option_panel_edge">Panel location</string>
     <string name="hint_panel_edge">To which screen edge the Panel should be attached.</string>
     <string name="option_launcher_edge">Launcher location</string>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@+id/llDashLensSearchResult"
       android:orientation="vertical"
       android:layout_width="@dimen/dash_lenssearchresult_width"
       android:layout_height="@dimen/dash_lenssearchresult_height"
