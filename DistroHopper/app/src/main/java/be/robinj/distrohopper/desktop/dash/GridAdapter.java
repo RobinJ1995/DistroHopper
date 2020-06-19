@@ -30,8 +30,6 @@ public class GridAdapter extends ArrayAdapter<App> {
 					   final int dashIconWidth) {
 		super (context, R.layout.widget_dash_applauncher, apps);
 
-
-		Log.getInstance().i("app icon size", "80 + " + dashIconWidth + " * " + displayDensity);
 		this.iconWidth = Math.round((80 + dashIconWidth) * displayDensity);
 	}
 

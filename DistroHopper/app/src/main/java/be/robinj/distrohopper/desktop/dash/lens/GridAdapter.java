@@ -25,7 +25,7 @@ public class GridAdapter extends ArrayAdapter<LensSearchResult> {
 					   final float displayDensity, final int dashIconWidth) {
 		super (context, R.layout.widget_dash_lens_result, results);
 
-		this.iconWidth = Math.round(((int)Preference.DASHICON_WIDTH.getDefault() + dashIconWidth) * displayDensity);
+		this.iconWidth = Math.round((80 + dashIconWidth) * displayDensity);
 	}
 
 	@Override
