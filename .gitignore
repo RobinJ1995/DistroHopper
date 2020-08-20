@@ -9,3 +9,8 @@
 /build
 /captures
 .externalNativeBuild
+secret.properties
+app-release.apk
+/app/release/
+/app/build/
+
