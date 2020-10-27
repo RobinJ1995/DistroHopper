@@ -1,0 +1,1 @@
+Homescreen, der das Aussehen verschiedener Linux-Desktops annehmen kann
