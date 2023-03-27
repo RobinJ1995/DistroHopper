@@ -75,8 +75,6 @@
   <string name="contribute_bugs_title">Problemen melden</string>
   <string name="contribute_bugs_description">Als er ergens een fout zit in DistroHopper betekent dat niet noodzakelijk dat ik me daar van bewust ben. Ontwikkelaars zijn over het algemeen vrij slecht in het testen van hun eigen toepassingen, omdat zij deze enkel zullen gebruiken op de manier waarvoor ze ontwikkeld zijn. Sommige problemen doen zich ook enkel voor in specifieke gevallen (bijvoorbeeld op een specifiek apparaat dat een specifieke versie van Android draait en een aantal extra opties heeft ingeschakeld). Dus wanneer je een fout vindt in DistroHopper (of je een goed idee hebt) kan je een steentje bijdragen door dit te melden. \nDeze meldingen worden bijgehouden op GitHub. Als GitHub te technisch voor u is mag je ook altijd een e-mail sturen naar android-dev@robinj.be. Gelieve je e-mail in het Nederlands of Engels op te stellen, en zo veel mogelijk (nuttige) informatie door te geven.</string>
   <string name="contribute_bugs_go">Ga naar GitHub</string>
-  <string name="contribute_donate_title">Doneren</string>
-  <string name="contribute_donate_description">Indien gewenst kan je ook een donatie maken aan de ontwikkelaar. Donaties worden afgehandeld via PayPal. U krijgt zelf de mogelijkheid om te kiezen hoeveel u wil doneren. \nOpmerking: Het gaat hier om een donatie. Ik verkoop niets, en u koopt niets. Donaties worden erg gewaardeerd, maar u zal hierdoor geen extra functionaliteit krijgen. Alle opties van deze toepassing zijn gratis te gebruiken.</string>
   <string name="theme_elementary_res_panel_bfb_text">Applicaties</string>
   <string name="toast_sending_crash_report">Crashrapport wordt verstuurd...</string>
 </resources>
