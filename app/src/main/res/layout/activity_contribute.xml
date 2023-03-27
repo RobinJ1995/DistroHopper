@@ -68,25 +68,6 @@
                 android:onClick="btnBugs_clicked"
                 android:layout_gravity="center_horizontal"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/contribute_donate_title"
-                android:layout_gravity="center_horizontal"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/contribute_donate_description"
-                android:layout_gravity="center_horizontal"/>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/flDonate"
-                android:background="@color/background_material_dark"></FrameLayout>
-
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

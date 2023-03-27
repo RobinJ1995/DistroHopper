@@ -43,7 +43,6 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
     implementation 'asia.ivity.android:drag-sort-listview:1.0'
-    implementation 'org.sufficientlysecure:donations:2.6'
 
     // ACRA
     def acraVersion = '5.5.1'

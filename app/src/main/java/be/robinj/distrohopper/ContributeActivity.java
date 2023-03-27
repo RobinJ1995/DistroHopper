@@ -11,8 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import org.sufficientlysecure.donations.DonationsFragment;
-
 
 public class ContributeActivity extends AppCompatActivity
 {
@@ -24,12 +22,6 @@ public class ContributeActivity extends AppCompatActivity
 	{
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_contribute);
-		
-		FragmentTransaction fragmentTransaction = this.getSupportFragmentManager ().beginTransaction ();
-		// I know I'm supposed to keep my key hidden but... come on. This app is open source, and donations don't unlock any additional features. If they want to circumvent it they can easily do so, and they would gain absolutely nothing from it anyway. //
-		DonationsFragment donationsFragment = DonationsFragment.newInstance (false, true, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAogL8ClXWCd9fMZrDISjCN0Dtzv5E06CAZpRihm2QH6vMP64mCMkTPUb/0ti4kIwyO3OVO7uJYLgdmHnGLyjuACknRrlVD94IzQLlwRMtSyhZClhLEsaKJEUl4CM2l6ZKgdxBJNYFnRRWcnYCo5n5e5UagPcXirPPXidsxj3OYe6bLHXP27uECB6h6yeq2XU4Rs9VejgC+5BYyPB5N7xbsVBMD8k2ym8EO1qGzJoXlkUS9pS5To5pO7/1tUZRAw0eXtNoO4p/LjF8HkLuN0GhnqL3cjjxIy2S/rC+3ypWDqo1ndoLRbYRMbPTxkbZ0a8MIXW36yXw/iSZfospi5/d/QIDAQAB", IAP_CATALOG, IAP_CATALOG_VALUES, false, null, null, null, false, null, null, false, null);
-		fragmentTransaction.replace (R.id.flDonate, donationsFragment, "donationsFragment");
-		fragmentTransaction.commit ();
 	}
 
 

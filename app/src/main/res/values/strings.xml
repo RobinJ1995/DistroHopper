@@ -80,9 +80,6 @@
     <string name="contribute_bugs_description">If there is a bug in DistroHopper, that does not necessarily mean that I am aware of its existence. Developers are generally quite bad at testing their own applications as they will only use them in a way they are intended to be used. Some problems also only exist in certain specific circumstances (for example a certain device running a specific version of Android with some extra options enabled). So if you find a bug in DistroHopper (or if you have a feature request) you can help out by reporting it.
         \nBug reports for DistroHopper are kept on GitHub. If GitHub is too technical for you, you can also just send an e-mail to android-dev@robinj.be. Just make sure it\'s in English or Dutch. Please provide as much (relevant) information as possible.</string>
     <string name="contribute_bugs_go">Go to GitHub</string>
-    <string name="contribute_donate_title">Donate</string>
-    <string name="contribute_donate_description">If you want, you can also make a monetary donation to the developer. Donations are handled via PayPal. You will be able to pick the amount of money you\'d like to donate.
-        \nNote: It\'s a donation. I am not selling anything, and you are not buying anything. Donations are greatly appreciated, but you will not gain any additional features because of it. All features of this application are available free of charge.</string>
 
     <string name="theme_elementary_res_panel_bfb_text">Applications</string>
 
