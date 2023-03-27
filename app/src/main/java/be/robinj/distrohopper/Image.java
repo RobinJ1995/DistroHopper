@@ -7,19 +7,24 @@ import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import be.robinj.distrohopper.dev.Debug;
 import be.robinj.distrohopper.dev.Log;
 
+import static java.lang.String.format;
+
 /**
  * Created by robin on 8/22/14.
  */
-public class Image
-{
+public class Image {
+	private static final Log LOG = Log.getInstance();
 	private final Drawable drawable;
 
 	public Image (Drawable drawable) {
@@ -57,12 +62,20 @@ public class Image
 		return this.getAverageColour(true, alpha);
 	}
 
-	public int getAverageColour (boolean useHsv, int alpha)
+	public Integer getAverageColour (boolean useHsv, int alpha)
 	{
 		try
 		{
 			Debug.assertCondition (this.drawable != null);
-			
+
+			final Drawable drawable = this.getDrawable();
+
+			if (!(drawable instanceof BitmapDrawable)) {
+				LOG.w("Image", format("Expected to get a BitmapDrawable, but got a %s instead.", drawable.getClass().getSimpleName()));
+
+				return Color.TRANSPARENT;
+			}
+
 			final BitmapDrawable bmd = (BitmapDrawable) this.getDrawable ();
 			final Bitmap bm = bmd.getBitmap ();
 			

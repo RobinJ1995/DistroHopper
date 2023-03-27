@@ -14,6 +14,8 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Gravity;
@@ -509,33 +511,31 @@ public class HomeActivity extends AppCompatActivity
 	{
 		try
 		{
-			super.onActivityResult (requestCode, resultCode, data);
+			super.onActivityResult(requestCode, resultCode, data);
 
-			if (requestCode == RequestCode.ACTIVITY_PREFERENCES)
-			{
-				Intent intent = this.getIntent ();
-				
-				if (resultCode == 4) // Customise UI //
-					intent.putExtra ("customise", true);
-			
-				this.finish ();
-				this.startActivity (intent); // Reload activity //
-				
+			if (requestCode == RequestCode.ACTIVITY_PREFERENCES) {
+				final Intent intent = this.getIntent();
+
+				if (resultCode == 4) { // Customise UI //
+					intent.putExtra("customise", true);
+				}
+
+				this.finish();
+				this.startActivity(intent); // Reload activity //
+
 				//this.overridePendingTransition (R.anim.home_to_preferences_in, R.anim.home_to_preferences_out);
-			}
-			else if (requestCode == RequestCode.WIDGET_PICKED)
-			{
-				if (resultCode == RESULT_OK)
-					this.widgetHost.configureWidget (data);
-				else
-					this.widgetHost.removeWidget (data);
-			}
-			else if (requestCode == RequestCode.WIDGET_CONFIGURED)
-			{
-				if (resultCode == RESULT_OK)
-					this.widgetHost.createWidget (data);
-				else
-					this.widgetHost.removeWidget (data);
+			} else if (requestCode == RequestCode.WIDGET_PICKED) {
+				if (resultCode == RESULT_OK) {
+					this.widgetHost.configureWidget(data);
+				} else {
+					this.widgetHost.removeWidget(data);
+				}
+			} else if (requestCode == RequestCode.WIDGET_CONFIGURED) {
+				if (resultCode == RESULT_OK) {
+					this.widgetHost.createWidget(data);
+				} else {
+					this.widgetHost.removeWidget(data);
+				}
 			}
 		}
 		catch (Exception ex)
@@ -543,6 +543,13 @@ public class HomeActivity extends AppCompatActivity
 			ExceptionHandler exh = new ExceptionHandler (ex);
 			exh.show (this);
 		}
+	}
+
+	@Override
+	public void onRequestPermissionsResult(final int requestCode,
+	                                       @NonNull final String[] permissions,
+	                                       @NonNull final int[] grantResults) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 	}
 
 	@Override
@@ -590,17 +597,19 @@ public class HomeActivity extends AppCompatActivity
 	@Override
 	protected void onStop ()
 	{
-		try
-		{
+		try {
 			Log.getInstance().detachObserver(this.logToaster);
-
-			if (this.widgetHost != null)
-				this.widgetHost.stopListening ();
-		}
-		catch (Exception ex)
-		{
+		} catch (final Exception ex) {
 			ExceptionHandler exh = new ExceptionHandler (ex);
-			exh.show (this);
+			exh.logAndTrack();
+		}
+
+		try {
+			if (this.widgetHost != null) {
+				this.widgetHost.stopListening();
+			}
+		} catch (final Exception ex) {
+			// ¯\_(ツ)_/¯
 		}
 
 		super.onStop ();

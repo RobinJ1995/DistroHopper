@@ -13,6 +13,10 @@ import android.widget.Toast;
 import be.robinj.distrohopper.cache.ICache;
 import be.robinj.distrohopper.desktop.AppIcon;
 import be.robinj.distrohopper.desktop.dash.AppLauncher;
+import be.robinj.distrohopper.dev.Log;
+
+import static java.lang.String.format;
+
 
 /**
  * Created by robin on 8/20/14.
@@ -68,20 +72,26 @@ public class App implements Parcelable
 
 	public void launch ()
 	{
-		if (HomeActivity.modeCustomise)
-		{
-			Toast.makeText (this.context, "App launching disabled while customising UI.", Toast.LENGTH_SHORT).show (); //TODO// getString () //
-			
+		if (HomeActivity.modeCustomise) {
+			Toast.makeText(this.context, "App launching disabled while customising UI.", Toast.LENGTH_SHORT).show(); //TODO// getString () //
+
 			return;
 		}
-		
-		ComponentName compName = new ComponentName (this.packageName, this.activityName);
-		Intent intent = new Intent (Intent.ACTION_MAIN);
-		intent.addCategory (Intent.CATEGORY_LAUNCHER);
-		intent.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-		intent.setComponent (compName);
 
-		this.context.startActivity (intent);
+		try {
+			final ComponentName compName = new ComponentName(this.packageName, this.activityName);
+			final Intent intent = new Intent(Intent.ACTION_MAIN);
+			intent.addCategory(Intent.CATEGORY_LAUNCHER);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+			intent.setComponent(compName);
+
+			this.context.startActivity(intent);
+		} catch (final Exception ex) {
+			final String errorMessage = format("Failed to launch %s/%s: %s.",
+					this.packageName, this.activityName, ex.getClass().getSimpleName());
+			Log.getInstance().e("App", errorMessage);
+			Toast.makeText(this.context, errorMessage, Toast.LENGTH_SHORT).show(); //TODO// getString () //
+		}
 	}
 
 	@Override
