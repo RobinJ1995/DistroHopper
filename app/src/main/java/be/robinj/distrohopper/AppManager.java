@@ -310,14 +310,14 @@ public class AppManager implements Iterable<App>
 		return this.queryInstalledApps (null);
 	}
 
-	public List<ResolveInfo> queryInstalledApps (String packageName)
-	{
-		Intent mainIntent = new Intent (Intent.ACTION_MAIN);
-		mainIntent.addCategory (Intent.CATEGORY_LAUNCHER);
-		if (packageName != null)
-			mainIntent.setPackage (packageName);
-		PackageManager pacMan = this.getContext ().getPackageManager ();
-		List<ResolveInfo> apps = pacMan.queryIntentActivities (mainIntent, 0);
+	public List<ResolveInfo> queryInstalledApps(final String packageName) {
+		final Intent mainIntent = new Intent(Intent.ACTION_MAIN);
+		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+		if (packageName != null) {
+			mainIntent.setPackage(packageName);
+		}
+		final PackageManager pacMan = this.getContext().getPackageManager();
+		List<ResolveInfo> apps = pacMan.queryIntentActivities(mainIntent, 0);
 
 		return apps;
 	}

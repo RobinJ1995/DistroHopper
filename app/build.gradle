@@ -4,14 +4,14 @@ def properties = new Properties()
 properties.load(new FileInputStream(rootProject.file("secret.properties")))
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 33
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "be.robinj.distrohopper"
         minSdkVersion 19
-        targetSdkVersion 29
-        versionCode 96
-        versionName "2.6.1"
+        targetSdkVersion 33
+        versionCode 97
+        versionName "2.6.2"
         buildConfigField "String", "ACRA_USERNAME", "\"" + properties['acra_username'] + "\""
         buildConfigField "String", "ACRA_PASSWORD", "\"" + properties['acra_password'] + "\""
     }
