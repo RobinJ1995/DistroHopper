@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -40,8 +41,8 @@ import be.robinj.distrohopper.theme.Location;
  */
 public class AppManager implements Iterable<App>
 {
-	private List<App> apps = new ArrayList<App> ();
-	private List<App> pinned = new ArrayList<App> ();
+	private List<App> apps = new CopyOnWriteArrayList<App>();
+	private List<App> pinned = new CopyOnWriteArrayList<App>();
 
 	private IconPackHelper iconPack;
 
