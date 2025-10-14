@@ -88,7 +88,7 @@ class Wallpaper : ImageView {
                     bmdBlurred = BitmapDrawable(bmBlurred)
                     this.blurred = bmdBlurred
                 }
-            } catch (ex: OutOfMemoryError) // I'd prefer the image not being blurred over the app crashing //
+            } catch (ex: Exception) // I'd prefer the image not being blurred over the app crashing //
             {
                 this.img = null
                 this.blurred = null
