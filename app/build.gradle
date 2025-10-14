@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 def properties = new Properties()
 properties.load(new FileInputStream(rootProject.file("secret.properties")))
@@ -33,6 +34,9 @@ android {
     lint {
         disable 'MissingTranslation', 'ExtraTranslation'
     }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 repositories {
@@ -47,6 +51,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
     implementation 'asia.ivity.android:drag-sort-listview:1.0'
+    implementation 'androidx.core:core-ktx:1.17.0'
 
     // ACRA
     def acraVersion = '5.5.1'
