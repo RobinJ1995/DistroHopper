@@ -11,8 +11,8 @@ android {
         applicationId "be.robinj.distrohopper"
         minSdkVersion 29
         targetSdkVersion 36
-        versionCode 99
-        versionName "2.6.3"
+        versionCode 100
+        versionName "2.6.4"
         buildConfigField "String", "ACRA_USERNAME", "\"" + properties['acra_username'] + "\""
         buildConfigField "String", "ACRA_PASSWORD", "\"" + properties['acra_password'] + "\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -28,14 +28,14 @@ android {
         buildConfig true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     lint {
         disable 'MissingTranslation', 'ExtraTranslation'
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 }
 
