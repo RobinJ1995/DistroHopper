@@ -5,11 +5,11 @@ properties.load(new FileInputStream(rootProject.file("secret.properties")))
 
 android {
     namespace "be.robinj.distrohopper"
-    compileSdkVersion 33
+    compileSdkVersion 36
     defaultConfig {
         applicationId "be.robinj.distrohopper"
         minSdkVersion 23
-        targetSdkVersion 33
+        targetSdkVersion 36
         versionCode 99
         versionName "2.6.3"
         buildConfigField "String", "ACRA_USERNAME", "\"" + properties['acra_username'] + "\""
