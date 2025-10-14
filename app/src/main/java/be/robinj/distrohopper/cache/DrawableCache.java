@@ -85,6 +85,9 @@ public class DrawableCache implements ICache<Drawable> {
 
 		try {
 			final Bitmap bitmap = new Image(value).toBitmap();
+			if (bitmap == null) {
+				return null;
+			}
 			final FileOutputStream outputStream = new FileOutputStream(this.getPath(key));
 			bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
 

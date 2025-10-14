@@ -294,7 +294,15 @@ public class Image {
 			return ((BitmapDrawable) this.drawable).getBitmap();
 		}
 
-		final Bitmap bitmap = Bitmap.createBitmap(this.drawable.getIntrinsicWidth(), this.drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+		int width = this.drawable.getIntrinsicWidth();
+		int height = this.drawable.getIntrinsicHeight();
+
+		if (width <= 0 || height <= 0) {
+			Log.getInstance().w(this.getClass().getSimpleName(), String.format("Can't create bitmap of width=%s height=%s", width, height));
+			return null;
+		}
+
+		final Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
 		final Canvas canvas = new Canvas(bitmap);
 		this.drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
