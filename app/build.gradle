@@ -4,8 +4,8 @@ def properties = new Properties()
 properties.load(new FileInputStream(rootProject.file("secret.properties")))
 
 android {
+    namespace "be.robinj.distrohopper"
     compileSdkVersion 33
-    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "be.robinj.distrohopper"
         minSdkVersion 23
@@ -14,6 +14,7 @@ android {
         versionName "2.6.3"
         buildConfigField "String", "ACRA_USERNAME", "\"" + properties['acra_username'] + "\""
         buildConfigField "String", "ACRA_PASSWORD", "\"" + properties['acra_password'] + "\""
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -22,19 +23,22 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions {
-        disable 'MissingTranslation'
-        disable 'ExtraTranslation'
+    buildFeatures {
+        buildConfig true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    lint {
+        disable 'MissingTranslation', 'ExtraTranslation'
     }
 }
 
 repositories {
     maven {
         url "http://repo.commonsware.com.s3.amazonaws.com"
+        allowInsecureProtocol = true
     }
 }
 
@@ -48,4 +52,9 @@ dependencies {
     def acraVersion = '5.5.1'
     implementation "ch.acra:acra-http:$acraVersion"
     implementation "ch.acra:acra-toast:$acraVersion"
+
+    // Android instrumentation tests
+    androidTestImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
