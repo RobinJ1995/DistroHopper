@@ -61,6 +61,9 @@
     <string name="hint_lenses">Choose which source searches you want to use and in which order you want their results to appear in the Dash. When you do a search in the Dash, your query is sent to all enabled lenses and their results are shown.</string>
     <string name="option_theme">Theme</string>
     <string name="hint_theme">Choose which Linux distribution you want DistroHopper to look like.</string>
+    <string name="option_icon_pack">Icon pack</string>
+    <string name="hint_icon_pack">Choose a third-party icon pack to apply to app icons.</string>
+    <string name="option_icon_pack_none">None</string>
     <string name="option_dev">Developer mode</string>
     <string name="hint_dev">Access debug logs and other technical information. Enabling this will negatively impact performance and stability.</string>
     <string name="option_dev_logs">Logs</string>

@@ -20,6 +20,7 @@ import be.robinj.distrohopper.AboutActivity;
 import be.robinj.distrohopper.ContributeActivity;
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.R;
+import be.robinj.distrohopper.cache.AppIconCache;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -165,6 +166,7 @@ public class PreferencesActivity extends PreferenceActivity
 		fakeHeader.setTitle (R.string.pref_header_appearance);
 		this.getPreferenceScreen ().addPreference (fakeHeader);
 		this.addPreferencesFromResource (R.xml.pref_appearance);
+		PreferencesActivity.initIconPackList(this);
 
 		fakeHeader = new PreferenceCategory (this);
 		fakeHeader.setTitle (R.string.pref_header_functionality);
@@ -200,6 +202,77 @@ public class PreferencesActivity extends PreferenceActivity
 				}
 			}
 		);
+	}
+
+	private static void initIconPackList(final PreferenceActivity act) {
+		try {
+			final ListPreference lpIconPack =
+					(ListPreference) act.findPreference(be.robinj.distrohopper.preferences.Preference.ICON_PACK.getName());
+			if (lpIconPack == null) return;
+
+			final be.robinj.distrohopper.IconPackHelper helper =
+					new be.robinj.distrohopper.IconPackHelper(act.getApplicationContext());
+			final java.util.Map<String, android.content.pm.ResolveInfo> packs = helper.getIconPacks();
+
+			final java.util.List<CharSequence> entries = new java.util.ArrayList<>();
+			final java.util.List<CharSequence> entryValues = new java.util.ArrayList<>();
+
+			// Add "None" option
+			entries.add(act.getString(be.robinj.distrohopper.R.string.option_icon_pack_none));
+			entryValues.add("");
+
+			final android.content.pm.PackageManager pm = act.getPackageManager();
+			for (java.util.Map.Entry<String, android.content.pm.ResolveInfo> e : packs.entrySet()) {
+				final String packageName = e.getKey();
+				final CharSequence label = e.getValue().loadLabel(pm);
+				entries.add(label != null ? label : packageName);
+				entryValues.add(packageName);
+			}
+
+			lpIconPack.setEntries(entries.toArray(new CharSequence[0]));
+			lpIconPack.setEntryValues(entryValues.toArray(new CharSequence[0]));
+
+			final android.content.SharedPreferences prefs = be.robinj.distrohopper.preferences.Preferences.getSharedPreferences(act, be.robinj.distrohopper.preferences.Preferences.PREFERENCES);
+			final String current = prefs.getString(be.robinj.distrohopper.preferences.Preference.ICON_PACK.getName(), "");
+			if (current == null || current.isEmpty()) {
+				lpIconPack.setSummary(act.getString(be.robinj.distrohopper.R.string.option_icon_pack_none));
+			} else {
+				final android.content.pm.ResolveInfo resInf = packs.get(current);
+				if (resInf != null) {
+					final CharSequence label = resInf.loadLabel(pm);
+					lpIconPack.setSummary(label != null ? label : current);
+				} else {
+					lpIconPack.setSummary(current);
+				}
+			}
+
+			lpIconPack.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(android.preference.Preference preference, Object newValue) {
+					final String value = String.valueOf(newValue);
+					if (value == null || value.isEmpty()) {
+						preference.setSummary(act.getString(be.robinj.distrohopper.R.string.option_icon_pack_none));
+					} else {
+						final android.content.pm.ResolveInfo resInf = packs.get(value);
+						if (resInf != null) {
+							final CharSequence label = resInf.loadLabel(pm);
+							preference.setSummary(label != null ? label : value);
+						} else {
+							preference.setSummary(value);
+						}
+					}
+					// Clear the app icon cache so the newly selected icon pack can take effect
+					try {
+						new AppIconCache(act.getApplicationContext()).clear();
+					} catch (Exception ex) {
+						new ExceptionHandler(ex).logAndTrack();
+					}
+					return true;
+				}
+			});
+		} catch (Exception ex) {
+			new ExceptionHandler(ex).logAndTrack();
+		}
 	}
 
 	@Override
@@ -258,6 +331,13 @@ public class PreferencesActivity extends PreferenceActivity
 		{
 			super.onCreate (savedInstanceState);
 			addPreferencesFromResource (R.xml.pref_appearance);
+
+			// Populate icon pack list dynamically
+			try {
+				PreferencesActivity.initIconPackList((PreferenceActivity) getActivity());
+			} catch (Exception ex) {
+				new ExceptionHandler(ex).logAndTrack();
+			}
 
 			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
 			// to their values. When their values change, their summaries are
