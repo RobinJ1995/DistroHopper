@@ -20,6 +20,7 @@ public enum Preference {
 	PRIMARY_COLOUR_DYAMIC("unitybackground_dynamic"),
 	WIDGETS_ENABLED("widgets_enabled"),
 	THEME("theme"),
+	ICON_PACK("icon_pack"),
 	DEV("dev"),
 	DEV_LOG_TOASTER("dev_log_toaster");
 

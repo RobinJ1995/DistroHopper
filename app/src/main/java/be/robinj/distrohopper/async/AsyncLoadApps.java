@@ -17,6 +17,7 @@ import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.HomeActivity;
 import be.robinj.distrohopper.cache.ICache;
 import be.robinj.distrohopper.dev.Log;
+import be.robinj.distrohopper.preferences.Preference;
 import be.robinj.distrohopper.preferences.Preferences;
 import be.robinj.distrohopper.thirdparty.ProgressWheel;
 import be.robinj.distrohopper.desktop.dash.AppLauncherClickListener;
@@ -71,18 +72,16 @@ public class AsyncLoadApps extends AsyncTask<Context, Integer, AppManager>
 			appManager = new AppManager (this.parent);
 			final SharedPreferences prefsPinned = Preferences.getSharedPreferences(this.context, Preferences.PINNED_APPS);
 
-			/*try
-			{
-				SharedPreferences prefs = this.context.getSharedPreferences ("prefs", Context.MODE_PRIVATE);
-				String iconPack = prefs.getString ("iconpack", null);
-
-				if (iconPack != null)
-					appManager.loadIconPack ("com.numix.icons_circle");
+			// Load selected icon pack before any icons are requested
+			try {
+				final SharedPreferences prefs = Preferences.getSharedPreferences(this.context);
+				final String iconPack = prefs.getString(Preference.ICON_PACK.getName(), "");
+				if (!iconPack.isEmpty()) {
+					appManager.loadIconPack(iconPack);
+				}
+			} catch (Exception ex) {
+				new ExceptionHandler(ex).logAndTrack();
 			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace ();
-			}*/
 
 			long tStart = System.currentTimeMillis ();
 			

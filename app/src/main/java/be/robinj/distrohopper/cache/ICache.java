@@ -2,6 +2,6 @@ package be.robinj.distrohopper.cache;
 
 import java.util.Map;
 
-public interface ICache<T extends Object> extends Map<String, T> {
+public interface ICache<T> extends Map<String, T> {
 	String getName();
 }

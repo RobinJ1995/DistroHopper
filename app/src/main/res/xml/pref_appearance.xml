@@ -14,6 +14,12 @@
         <intent android:action="android.intent.action.SET_WALLPAPER" />
     </Preference>
 
+    <ListPreference
+        android:key="icon_pack"
+        android:title="@string/option_icon_pack"
+        android:summary="@string/hint_icon_pack"
+        android:defaultValue=""/>
+
     <Preference
         android:key="dummy_customise"
         android:title="@string/option_customise"

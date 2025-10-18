@@ -11,8 +11,8 @@ android {
         applicationId "be.robinj.distrohopper"
         minSdkVersion 29
         targetSdkVersion 36
-        versionCode 101
-        versionName "2.6.5"
+        versionCode 102
+        versionName "2.7.0"
         buildConfigField "String", "ACRA_USERNAME", "\"" + properties['acra_username'] + "\""
         buildConfigField "String", "ACRA_PASSWORD", "\"" + properties['acra_password'] + "\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

@@ -17,6 +17,7 @@ import java.util.Set;
 
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.Image;
+import be.robinj.distrohopper.dev.Log;
 
 public class DrawableCache implements ICache<Drawable> {
 	private final SharedPreferences prefs;
@@ -135,11 +136,14 @@ public class DrawableCache implements ICache<Drawable> {
 
 	@Override
 	public synchronized void clear() {
-		for (final String key : this.keySet()) {
+		int nKeysRemoved = 0;
+		for (final String key : Set.copyOf(this.keySet())) {
 			this.remove(key, false);
+			nKeysRemoved++;
 		}
 
 		this.commitKeys();
+		Log.getInstance().i(this.getClass().getSimpleName(), String.format("Cleared cache (removed %s keys)", nKeysRemoved));
 	}
 
 	@NonNull
