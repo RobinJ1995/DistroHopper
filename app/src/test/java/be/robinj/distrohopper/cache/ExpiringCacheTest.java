@@ -7,34 +7,34 @@ import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.core.app.ApplicationProvider;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
 /**
- * Integration tests for ExpiringCache.
+ * Tests for ExpiringCache.
  *
- * All reads go through pruneItem() (correct expiry logic), while size/isEmpty/
- * keySet go through prune() which has an inverted condition and removes
- * non-expired entries — those paths are not tested here.
+ * Reads go through pruneItem() (correct expiry logic). The prune() method has an
+ * inverted condition that removes non-expired entries — size/isEmpty/keySet paths
+ * are not tested here.
  */
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
 public class ExpiringCacheTest {
 
     private static final String CACHE_NAME = "test_expiring_cache";
-    private static final long LONG_TTL  = 60_000L; // 60 s — effectively "no expiry" for tests
-    private static final long SHORT_TTL =    100L; // 100 ms — expires quickly
+    private static final long LONG_TTL  = 60_000L;
+    private static final long SHORT_TTL =    100L;
 
     private Context context;
     private TestStringCache inner;
 
     @Before
     public void setUp() {
-        context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        context = ApplicationProvider.getApplicationContext();
         inner = new TestStringCache(context, CACHE_NAME);
         inner.clear();
     }
@@ -42,11 +42,10 @@ public class ExpiringCacheTest {
     @After
     public void tearDown() {
         inner.clear();
-        // Also clear the companion expiration cache that ExpiringCache creates internally.
         new TestStringCache(context, CACHE_NAME + "_expiration").clear();
     }
 
-    // ── Basic put/get ─────────────────────────────────────────────────────────
+    // ── Basic put/get ──────────────────────────────────────────────────────────
 
     @Test
     public void putAndGetRoundTripWithinTTL() {
@@ -80,10 +79,10 @@ public class ExpiringCacheTest {
         assertEquals("second", cache.get("key"));
     }
 
-    // ── Expiry via get() / pruneItem() ────────────────────────────────────────
+    // ── Expiry via get() / pruneItem() ─────────────────────────────────────────
 
     @Test
-    public void itemIsRetrievableImmediatelyAfterPut() throws InterruptedException {
+    public void itemIsRetrievableImmediatelyAfterPut() {
         ExpiringCache<String> cache = makeCache(SHORT_TTL);
         cache.put("key", "value");
         assertEquals("value", cache.get("key"));
@@ -99,9 +98,9 @@ public class ExpiringCacheTest {
 
     @Test
     public void freshItemDoesNotExpireBeforeTTL() throws InterruptedException {
-        ExpiringCache<String> cache = makeCache(SHORT_TTL * 10); // 1 s TTL
+        ExpiringCache<String> cache = makeCache(SHORT_TTL * 10);
         cache.put("key", "value");
-        Thread.sleep(SHORT_TTL); // well within TTL
+        Thread.sleep(SHORT_TTL);
         assertEquals("Item should still be present within TTL", "value", cache.get("key"));
     }
 
@@ -173,7 +172,6 @@ public class ExpiringCacheTest {
     // ── helpers ───────────────────────────────────────────────────────────────
 
     private ExpiringCache<String> makeCache(long ttlMillis) {
-        // LongCache uses SharedPreferences named "cache_<innerName>_expiration"
         return new ExpiringCache<>(context, inner, ttlMillis);
     }
 }

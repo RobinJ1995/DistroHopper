@@ -10,46 +10,37 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.not;
 
-import android.view.View;
-
-import androidx.test.espresso.IdlingRegistry;
-import androidx.test.espresso.IdlingResource;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.core.app.ActivityScenario;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.LooperMode;
+import org.robolectric.shadows.ShadowLooper;
 
-/**
- * Tests the Dash search UI: field state, container switching, and
- * the synchronous empty-search reset path in LensManager.
- */
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
+@LooperMode(LooperMode.Mode.LEGACY)
 public class DashSearchUiTest {
 
-    @Rule
-    public ActivityScenarioRule<HomeActivity> activityRule =
-            new ActivityScenarioRule<>(HomeActivity.class);
-
-    private IdlingResource appsLoadedIdlingResource;
+    private ActivityScenario<HomeActivity> scenario;
 
     @Before
     public void setUp() {
-        activityRule.getScenario().onActivity(activity ->
-                appsLoadedIdlingResource = new BfbVisibleIdlingResource(
-                        activity.findViewById(R.id.lalBfb)));
-        IdlingRegistry.getInstance().register(appsLoadedIdlingResource);
+        HomeActivityTest.seedPackageManager();
+        scenario = ActivityScenario.launch(HomeActivity.class);
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
     }
 
     @After
     public void tearDown() {
-        IdlingRegistry.getInstance().unregister(appsLoadedIdlingResource);
+        scenario.close();
     }
 
-    // ── Initial state ─────────────────────────────────────────────────────────
+    // ── Initial state ──────────────────────────────────────────────────────────
 
     @Test
     public void searchFieldIsEmptyWhenDashFirstOpens() {
@@ -80,7 +71,6 @@ public class DashSearchUiTest {
 
     @Test
     public void clearingSearchRestoresAppGridImmediately() {
-        // LensManager.startSearch("") is synchronous — no async wait needed.
         onView(withId(R.id.lalBfb)).perform(click());
         onView(withId(R.id.etDashSearch)).perform(replaceText("settings"));
         onView(withId(R.id.etDashSearch)).perform(replaceText(""));
@@ -101,7 +91,7 @@ public class DashSearchUiTest {
     public void searchFieldClearsWhenDashIsClosedWithBackButton() {
         onView(withId(R.id.lalBfb)).perform(click());
         onView(withId(R.id.etDashSearch)).perform(replaceText("something"));
-        pressBack(); // closeDash() calls etDashSearch.setText("")
+        pressBack();
         onView(withId(R.id.lalBfb)).perform(click());
         onView(withId(R.id.etDashSearch)).check(matches(withText("")));
     }
@@ -121,28 +111,6 @@ public class DashSearchUiTest {
         onView(withId(R.id.etDashSearch)).perform(replaceText("filter"));
         pressBack();
         onView(withId(R.id.lalBfb)).perform(click());
-        // After reopening, LensManager shows apps container (empty search on open)
         onView(withId(R.id.llDashHomeAppsContainer)).check(matches(isDisplayed()));
-    }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
-
-    private static class BfbVisibleIdlingResource implements IdlingResource {
-        private final View bfbView;
-        private ResourceCallback callback;
-
-        BfbVisibleIdlingResource(View bfbView) { this.bfbView = bfbView; }
-
-        @Override public String getName() { return "BfbVisible"; }
-
-        @Override
-        public boolean isIdleNow() {
-            boolean idle = bfbView != null && bfbView.getVisibility() == View.VISIBLE;
-            if (idle && callback != null) callback.onTransitionToIdle();
-            return idle;
-        }
-
-        @Override
-        public void registerIdleTransitionCallback(ResourceCallback cb) { this.callback = cb; }
     }
 }
