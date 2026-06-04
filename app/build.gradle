@@ -2,7 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 def properties = new Properties()
-properties.load(new FileInputStream(rootProject.file("secret.properties")))
+def secretFile = rootProject.file("secret.properties")
+if (secretFile.exists()) {
+    properties.load(new FileInputStream(secretFile))
+}
 
 android {
     namespace "be.robinj.distrohopper"
@@ -13,8 +16,8 @@ android {
         targetSdkVersion 36
         versionCode 101
         versionName "2.6.5"
-        buildConfigField "String", "ACRA_USERNAME", "\"" + properties['acra_username'] + "\""
-        buildConfigField "String", "ACRA_PASSWORD", "\"" + properties['acra_password'] + "\""
+        buildConfigField "String", "ACRA_USERNAME", "\"" + (properties['acra_username'] ?: "") + "\""
+        buildConfigField "String", "ACRA_PASSWORD", "\"" + (properties['acra_password'] ?: "") + "\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -26,6 +29,12 @@ android {
     }
     buildFeatures {
         buildConfig true
+    }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -58,7 +67,15 @@ dependencies {
     implementation "ch.acra:acra-http:$acraVersion"
     implementation "ch.acra:acra-toast:$acraVersion"
 
-    // Android instrumentation tests
+    // Robolectric – runs on the JVM, no emulator needed
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.11.1'
+    testImplementation 'androidx.test:core:1.5.0'
+    testImplementation 'androidx.test.ext:junit:1.1.5'
+    testImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    testImplementation 'androidx.test.espresso:espresso-intents:3.5.1'
+
+    // Minimal androidTest runner kept for any future on-device tests
     androidTestImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
