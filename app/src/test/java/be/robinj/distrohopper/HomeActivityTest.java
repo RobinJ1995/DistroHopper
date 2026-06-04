@@ -124,6 +124,7 @@ public class HomeActivityTest {
         });
 
         onView(withId(R.id.etDashSearch)).perform(replaceText("zzznomatch"));
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
         onView(withId(R.id.gvDashHomeApps)).check((view, ex) -> {
             if (ex != null) throw ex;
             assertTrue(((GridView) view).getAdapter().getCount() < fullCount[0]);
