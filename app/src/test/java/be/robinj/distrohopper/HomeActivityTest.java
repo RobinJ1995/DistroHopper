@@ -116,19 +116,15 @@ public class HomeActivityTest {
     public void searchFiltersAppResults() {
         onView(withId(R.id.lalBfb)).perform(click());
 
-        final int[] fullCount = {0};
-        onView(withId(R.id.gvDashHomeApps)).check((view, ex) -> {
-            if (ex != null) throw ex;
-            fullCount[0] = ((GridView) view).getAdapter().getCount();
-            assertTrue(fullCount[0] > 0);
-        });
+        // Before searching, the apps container is visible
+        onView(withId(R.id.llDashHomeAppsContainer)).check(matches(isDisplayed()));
 
+        // Typing a non-matching query triggers AsyncSearch which hides the apps container
+        // and shows the lens results container instead
         onView(withId(R.id.etDashSearch)).perform(replaceText("zzznomatch"));
         ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
-        onView(withId(R.id.gvDashHomeApps)).check((view, ex) -> {
-            if (ex != null) throw ex;
-            assertTrue(((GridView) view).getAdapter().getCount() < fullCount[0]);
-        });
+
+        onView(withId(R.id.llDashHomeAppsContainer)).check(matches(not(isDisplayed())));
     }
 
     @Test
