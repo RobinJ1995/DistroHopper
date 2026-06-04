@@ -2,7 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 def properties = new Properties()
-properties.load(new FileInputStream(rootProject.file("secret.properties")))
+def secretFile = rootProject.file("secret.properties")
+if (secretFile.exists()) {
+    properties.load(new FileInputStream(secretFile))
+}
 
 android {
     namespace "be.robinj.distrohopper"
@@ -13,8 +16,8 @@ android {
         targetSdkVersion 36
         versionCode 101
         versionName "2.6.5"
-        buildConfigField "String", "ACRA_USERNAME", "\"" + properties['acra_username'] + "\""
-        buildConfigField "String", "ACRA_PASSWORD", "\"" + properties['acra_password'] + "\""
+        buildConfigField "String", "ACRA_USERNAME", "\"" + (properties['acra_username'] ?: "") + "\""
+        buildConfigField "String", "ACRA_PASSWORD", "\"" + (properties['acra_password'] ?: "") + "\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
