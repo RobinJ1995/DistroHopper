@@ -19,18 +19,22 @@ public class Application extends android.app.Application
 	protected void attachBaseContext(final Context base) {
 		super.attachBaseContext(base);
 
-		CoreConfigurationBuilder builder = new CoreConfigurationBuilder()
-				.withReportFormat(StringFormat.JSON);
-		builder.getPluginConfigurationBuilder(HttpSenderConfigurationBuilder.class)
-				.withUri("https://acra.robinj.be/report")
-				.withBasicAuthLogin(BuildConfig.ACRA_USERNAME)
-				.withBasicAuthPassword(BuildConfig.ACRA_PASSWORD)
-				.withHttpMethod(HttpSender.Method.POST)
-				.withEnabled(true);
-		builder.getPluginConfigurationBuilder(ToastConfigurationBuilder.class)
-				.withText(base.getString(R.string.toast_sending_crash_report))
-				.withLength(Toast.LENGTH_SHORT)
-				.withEnabled(true);
-		ACRA.init(this, builder);
+		ACRA.init(this, new CoreConfigurationBuilder()
+				.withReportFormat(StringFormat.JSON)
+				.withPluginConfigurations(
+						new HttpSenderConfigurationBuilder()
+								.withUri("https://acra.robinj.be/report")
+								.withBasicAuthLogin(BuildConfig.ACRA_USERNAME)
+								.withBasicAuthPassword(BuildConfig.ACRA_PASSWORD)
+								.withHttpMethod(HttpSender.Method.POST)
+								.withEnabled(true)
+								.build(),
+						new ToastConfigurationBuilder()
+								.withText(base.getString(R.string.toast_sending_crash_report))
+								.withLength(Toast.LENGTH_SHORT)
+								.withEnabled(true)
+								.build()
+				)
+		);
 	}
 }
