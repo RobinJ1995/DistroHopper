@@ -1,0 +1,70 @@
+package be.robinj.distrohopper
+
+import android.app.Application
+import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.content.pm.ApplicationInfo
+import android.content.pm.ResolveInfo
+import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
+import be.robinj.distrohopper.preferences.Preferences
+import org.robolectric.Robolectric
+import org.robolectric.Shadows
+import org.robolectric.shadows.ShadowLooper
+
+internal object ActivityTestSupport {
+    private val packages = listOf(
+        Triple("com.example.alpha", "AlphaActivity", "Alpha"),
+        Triple("com.example.beta", "BetaActivity", "Beta"),
+        Triple("com.example.gamma", "GammaActivity", "Gamma"),
+        Triple("com.example.settings", "SettingsActivity", "Settings"),
+        Triple("com.example.zeta", "ZetaActivity", "Zeta"),
+    )
+
+    fun seedPackageManager() {
+        val application = ApplicationProvider.getApplicationContext<Application>()
+        val packageManager = Shadows.shadowOf(application.packageManager)
+        val launcherIntent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
+
+        packages.forEach { (packageName, activityName, label) ->
+            val resolveInfo = resolveInfo(packageName, activityName, label)
+            packageManager.addResolveInfoForIntent(launcherIntent, resolveInfo)
+            packageManager.addResolveInfoForIntent(
+                Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER).setPackage(packageName),
+                resolveInfo,
+            )
+        }
+    }
+
+    fun resolveInfo(packageName: String, activityName: String, label: String): ResolveInfo {
+        val activityInfo = ActivityInfo().apply {
+            this.packageName = packageName
+            name = activityName
+            nonLocalizedLabel = label
+            applicationInfo = ApplicationInfo().apply {
+                this.packageName = packageName
+                enabled = true
+            }
+        }
+
+        return ResolveInfo().apply {
+            this.activityInfo = activityInfo
+            nonLocalizedLabel = label
+        }
+    }
+
+    fun launchHome(): ActivityScenario<HomeActivity> {
+        val application = ApplicationProvider.getApplicationContext<Application>()
+        listOf(Preferences.PREFERENCES, Preferences.PINNED_APPS, Preferences.LENSES).forEach {
+            application.getSharedPreferences(it, 0).edit().clear().commit()
+        }
+        HomeActivity.modeCustomise = false
+        seedPackageManager()
+        return ActivityScenario.launch(HomeActivity::class.java).also { drainTasks() }
+    }
+
+    fun drainTasks() {
+        Robolectric.flushBackgroundThreadScheduler()
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+    }
+}

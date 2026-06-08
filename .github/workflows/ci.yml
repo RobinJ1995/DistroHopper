@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main, 'claude/**' ]
+    branches: [ master, 'claude/**' ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   unit-tests:
@@ -26,8 +26,8 @@ jobs:
           echo "acra_username=" > secret.properties
           echo "acra_password=" >> secret.properties
 
-      - name: Run unit tests
-        run: ./gradlew testDebugUnitTest
+      - name: Run unit tests and coverage
+        run: ./gradlew jacocoTestReport
 
       - name: Upload test results
         if: always()
@@ -35,3 +35,10 @@ jobs:
         with:
           name: unit-test-results
           path: app/build/reports/tests/testDebugUnitTest/
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: unit-test-coverage
+          path: app/build/reports/jacoco/jacocoTestReport/

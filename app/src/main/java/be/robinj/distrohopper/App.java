@@ -10,6 +10,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.Toast;
 
+import java.util.Objects;
+
 import be.robinj.distrohopper.cache.ICache;
 import be.robinj.distrohopper.desktop.AppIcon;
 import be.robinj.distrohopper.desktop.dash.AppLauncher;
@@ -107,6 +109,11 @@ public class App implements Parcelable
 		return (this.getPackageName ().equals (app.getPackageName ()) && this.getActivityName ().equals (app.getActivityName ()));
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.packageName, this.activityName);
+	}
+
 	//# Getters & Setters #//
 	public String getLabel() {
 		return this.getLabel(true);
@@ -131,7 +138,7 @@ public class App implements Parcelable
 		this.label = label;
 		this.labelLoaded = true;
 
-		if (!old.equals(label) || !appLabelCache.containsKey(this.getPackageAndActivityName())) {
+		if (!Objects.equals(old, label) || !appLabelCache.containsKey(this.getPackageAndActivityName())) {
 			appLabelCache.put(this.getPackageAndActivityName(), label);
 
 			return true;

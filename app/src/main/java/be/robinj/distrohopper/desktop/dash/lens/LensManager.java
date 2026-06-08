@@ -118,8 +118,9 @@ public class LensManager
 
 	public void enableLens (String name)
 	{
-		if (! this.isLensEnabled (name))
-			this.enabled.add (this.lenses.get (name));
+		final Lens lens = this.lenses.get(name);
+		if (lens != null && ! this.enabled.contains(lens))
+			this.enabled.add (lens);
 
 		this.saveEnabledLenses ();
 	}

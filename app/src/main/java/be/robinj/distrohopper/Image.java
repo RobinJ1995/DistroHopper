@@ -50,7 +50,14 @@ public class Image {
 
 	@Override
 	public boolean equals(Object image) {
-		return this.drawable.equals(image);
+		if (this == image) {
+			return true;
+		}
+		if (!(image instanceof Image)) {
+			return false;
+		}
+
+		return this.drawable.equals(((Image) image).drawable);
 	}
 
 	public Drawable getDrawable ()
