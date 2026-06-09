@@ -1,14 +1,12 @@
 package be.robinj.distrohopper.desktop.dash.lens;
 
-import android.annotation.TargetApi;
 import android.content.ActivityNotFoundException;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.MediaStore;
-import android.webkit.MimeTypeMap;
 
 import org.json.JSONException;
 
@@ -41,36 +39,39 @@ public class LocalFiles extends Lens
 		return "Search results for files on your device";
 	}
 
-	@Override
-	public int getMinSDKVersion ()
-	{
-		return 11;
-	}
-
-	@TargetApi (Build.VERSION_CODES.HONEYCOMB)
 	public List<LensSearchResult> search (final String str, final int maxResults) throws IOException, JSONException
 	{
 		List<LensSearchResult> results = new ArrayList<LensSearchResult> ();
-		int nResults = 0;
 
 		String[] projection = new String[]
 		{
+			MediaStore.Files.FileColumns._ID,
+			MediaStore.Files.FileColumns.DISPLAY_NAME,
 			MediaStore.Files.FileColumns.DATA
 		};
-		String selection = MediaStore.Files.FileColumns.TITLE + " LIKE '%" + str.replace ("'", "''") + "%'";
-		Cursor cursor = this.context.getContentResolver ().query (MediaStore.Files.getContentUri ("external"), projection, selection, null, null);
+		String selection = MediaStore.Files.FileColumns.TITLE + " LIKE ?";
+		String[] selectionArgs = new String[] { "%" + str + "%" };
+		Uri contentUri = MediaStore.Files.getContentUri ("external");
 
-		while (cursor.moveToNext ())
+		try (Cursor cursor = this.context.getContentResolver ().query (contentUri, projection, selection, selectionArgs, null))
 		{
-			String path = cursor.getString (0);
-			File file = new File (path);
+			if (cursor == null) {
+				return results;
+			}
 
-			LensSearchResult result = new LensSearchResult (this.context, file.getName (), file.toString (), this.icon);
+			while (cursor.moveToNext () && results.size () < maxResults)
+			{
+				long id = cursor.getLong (0);
+				String name = cursor.getString (1);
+				if (name == null)
+				{
+					String path = cursor.getString (2);
+					name = path == null ? Long.toString (id) : new File (path).getName ();
+				}
 
-			results.add (result);
+				Uri fileUri = ContentUris.withAppendedId (contentUri, id);
 
-			if (++nResults >= maxResults) {
-				break;
+				results.add (new LensSearchResult (this.context, name, fileUri.toString (), this.icon));
 			}
 		}
 
@@ -82,21 +83,17 @@ public class LocalFiles extends Lens
 	{
 		try
 		{
-			File file = new File (url);
+			Uri uri = Uri.parse (url);
 
-			String extension = MimeTypeMap.getFileExtensionFromUrl (url);
-			String mime = "*/*";
-
-			if (extension != null)
-			{
-				MimeTypeMap map = MimeTypeMap.getSingleton ();
-				mime = map.getMimeTypeFromExtension (extension);
+			String mime = this.context.getContentResolver ().getType (uri);
+			if (mime == null) {
+				mime = "*/*";
 			}
 
 			Intent intent = new Intent ();
 			intent.setAction (Intent.ACTION_VIEW);
-			intent.setDataAndType (Uri.parse (file.getPath()), mime);
-			intent.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.setDataAndType (uri, mime);
+			intent.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
 			this.context.startActivity (intent);
 		}
