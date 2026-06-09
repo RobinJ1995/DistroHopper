@@ -43,7 +43,7 @@ public class LensManager
 		this.enabled = new ArrayList<Lens> ();
 		this.llDashHomeAppsContainer = llDashHomeAppsContainer;
 		this.llDashHomeLensesContainer = llDashHomeLensesContainer;
-		if (llDashHomeAppsContainer != null)
+		if (llDashHomeLensesContainer != null)
 			this.lvDashHomeLensResults = (ListView) llDashHomeLensesContainer.findViewById (R.id.lvDashHomeLensResults);
 		this.pwDashSearchProgress = pwDashSearchProgress;
 
