@@ -7,10 +7,14 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.AbstractMap;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -28,19 +32,35 @@ public class DrawableCache implements ICache<Drawable> {
 	protected DrawableCache(final Context context, final String name) {
 		this.name = name;
 		this.prefs = context.getSharedPreferences("cache_" + name, Context.MODE_PRIVATE);
-		this.keys = this.prefs.getStringSet("keys", new HashSet<>());
+		// The set returned by getStringSet() must never be modified, so take a copy //
+		this.keys = new HashSet<>(this.prefs.getStringSet("keys", Collections.emptySet()));
 		this.cachePath = context.getCacheDir().getPath() + "/";
 	}
 
 	private String getPath(final String key) {
 		return new StringBuilder(this.cachePath)
-			.append(key.hashCode())
+			.append(hash(key))
 			.append(".png")
 			.toString();
 	}
 
+	private static String hash(final String key) {
+		try {
+			final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			final byte[] bytes = digest.digest(key.getBytes(StandardCharsets.UTF_8));
+			final StringBuilder hex = new StringBuilder(bytes.length * 2);
+			for (final byte b : bytes) {
+				hex.append(String.format("%02x", b));
+			}
+
+			return hex.toString();
+		} catch (final NoSuchAlgorithmException ex) {
+			throw new IllegalStateException(ex); // SHA-256 is available on every Android version
+		}
+	}
+
 	private synchronized void commitKeys() {
-		this.prefs.edit().putStringSet("keys", this.keys).commit();
+		this.prefs.edit().putStringSet("keys", new HashSet<>(this.keys)).commit();
 	}
 
 	@Override
@@ -89,14 +109,15 @@ public class DrawableCache implements ICache<Drawable> {
 			if (bitmap == null) {
 				return null;
 			}
-			final FileOutputStream outputStream = new FileOutputStream(this.getPath(key));
-			bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+			try (final FileOutputStream outputStream = new FileOutputStream(this.getPath(key))) {
+				bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+			}
 
 			this.keys.add(key);
 			if (commit) {
 				this.commitKeys();
 			}
-		} catch (FileNotFoundException ex) {
+		} catch (IOException ex) {
 			new ExceptionHandler(ex).logAndTrack();
 
 			return null;
@@ -149,15 +170,13 @@ public class DrawableCache implements ICache<Drawable> {
 	@NonNull
 	@Override
 	public synchronized Set<String> keySet() {
-		final Set<String> keys = this.prefs.getStringSet("keys", new HashSet<String>());
-
-		for (final String key : keys) {
+		for (final String key : new HashSet<>(this.keys)) {
 			if (! this.containsKey(key)) {
 				this.remove(key);
 			}
 		}
 
-		return keys;
+		return new HashSet<>(this.keys);
 	}
 
 	@NonNull
