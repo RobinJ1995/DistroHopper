@@ -109,7 +109,8 @@ public class AppManager implements Iterable<App>
 			if (this.isPinned (app))
 			{
 				AppLauncher appLauncher = (AppLauncher) this.llLauncherPinnedApps.findViewWithTag (app);
-				appLauncher.setRunning (true);
+				if (appLauncher != null)
+					appLauncher.setRunning (true);
 			}
 			else
 			{
