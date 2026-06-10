@@ -26,14 +26,15 @@ import static java.util.Collections.emptySet;
 public class DrawableCache implements ICache<Drawable> {
 	private final SharedPreferences prefs;
 	private final String cachePath;
-	private final Set<String> keys;
+	/** Always an immutable set; updated copy-on-write. */
+	private Set<String> keys;
 	private final String name;
 
 	protected DrawableCache(final Context context, final String name) {
 		this.name = name;
 		this.prefs = context.getSharedPreferences("cache_" + name, Context.MODE_PRIVATE);
-		// The set returned by getStringSet() must never be modified, so take a copy //
-		this.keys = new HashSet<>(this.prefs.getStringSet("keys", emptySet()));
+		// The set returned by getStringSet() must never be modified, so take an immutable copy //
+		this.keys = Set.copyOf(this.prefs.getStringSet("keys", emptySet()));
 		this.cachePath = context.getCacheDir().getPath() + "/";
 	}
 
@@ -47,7 +48,19 @@ public class DrawableCache implements ICache<Drawable> {
 	}
 
 	private synchronized void commitKeys() {
-		this.prefs.edit().putStringSet("keys", Set.copyOf(this.keys)).commit();
+		this.prefs.edit().putStringSet("keys", this.keys).commit(); // this.keys is immutable, so no aliasing risk //
+	}
+
+	private synchronized void addKey(final String key) {
+		final Set<String> updated = new HashSet<>(this.keys);
+		updated.add(key);
+		this.keys = Set.copyOf(updated);
+	}
+
+	private synchronized void removeKey(final Object key) {
+		final Set<String> updated = new HashSet<>(this.keys);
+		updated.remove(key);
+		this.keys = Set.copyOf(updated);
 	}
 
 	@Override
@@ -100,7 +113,7 @@ public class DrawableCache implements ICache<Drawable> {
 				bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
 			}
 
-			this.keys.add(key);
+			this.addKey(key);
 			if (commit) {
 				this.commitKeys();
 			}
@@ -125,7 +138,7 @@ public class DrawableCache implements ICache<Drawable> {
 			new File(this.getPath(key.toString())).delete();
 		}
 
-		this.keys.remove(key);
+		this.removeKey(key);
 		if (commit) {
 			this.commitKeys();
 		}
@@ -145,7 +158,7 @@ public class DrawableCache implements ICache<Drawable> {
 	@Override
 	public synchronized void clear() {
 		int nKeysRemoved = 0;
-		for (final String key : Set.copyOf(this.keySet())) {
+		for (final String key : this.keySet()) {
 			this.remove(key, false);
 			nKeysRemoved++;
 		}
@@ -157,13 +170,13 @@ public class DrawableCache implements ICache<Drawable> {
 	@NonNull
 	@Override
 	public synchronized Set<String> keySet() {
-		for (final String key : Set.copyOf(this.keys)) {
+		for (final String key : this.keys) { // safe: this.keys is reassigned, never mutated //
 			if (! this.containsKey(key)) {
 				this.remove(key);
 			}
 		}
 
-		return Set.copyOf(this.keys);
+		return this.keys;
 	}
 
 	@NonNull
