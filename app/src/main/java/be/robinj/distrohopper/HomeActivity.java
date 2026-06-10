@@ -670,6 +670,12 @@ public class HomeActivity extends AppCompatActivity
 	{
 		this.cancelAsyncTasks();
 
+		if (this.broadcastPackageManager != null)
+		{
+			this.unregisterReceiver (this.broadcastPackageManager);
+			this.broadcastPackageManager = null;
+		}
+
 		super.onDestroy ();
 	}
 
