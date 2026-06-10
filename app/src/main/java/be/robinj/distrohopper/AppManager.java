@@ -198,6 +198,8 @@ public class AppManager implements Iterable<App>
 		if (Build.VERSION.SDK_INT >= 21) // ActivityManager.getRunningTasks () is deprecated //
 		{
 			List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = am.getRunningAppProcesses ();
+			if (runningAppProcesses == null)
+				return running;
 
 			for (ActivityManager.RunningAppProcessInfo appProcess : runningAppProcesses)
 			{
