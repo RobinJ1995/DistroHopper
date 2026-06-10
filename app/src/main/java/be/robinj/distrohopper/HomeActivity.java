@@ -198,10 +198,6 @@ public class HomeActivity extends AppCompatActivity
 			LinearLayout.LayoutParams ibDashClose_layoutParams = new LinearLayout.LayoutParams (ibDashClose_width, LinearLayout.LayoutParams.MATCH_PARENT);
 			this.ibPanelDashClose.setLayoutParams (ibDashClose_layoutParams);
 
-			RelativeLayout.LayoutParams vgWidgets_layoutParams = (RelativeLayout.LayoutParams) vgWidgets.getLayoutParams ();
-			vgWidgets_layoutParams.setMargins (ibDashClose_width, 0, 0, 0);
-			vgWidgets.setLayoutParams (vgWidgets_layoutParams);
-
 			// Start spinning the BFB //
 			lalSpinner.getProgressWheel ().spin ();
 
@@ -214,13 +210,6 @@ public class HomeActivity extends AppCompatActivity
 					gvDashHomeApps, this.appIconCache, this.appLabelCache, density,
 					prefs.getInt(Preference.DASHICON_WIDTH.getName(), Preference.DASHICON_WIDTH.getDefault()));
 			this.asyncLoadApps.execute (this.getApplicationContext ());
-
-			// Initialise the widget host //
-			this.widgetManager = AppWidgetManager.getInstance (this);
-			this.widgetHost = new WidgetHost (this, this.widgetManager, R.id.vgWidgets);
-
-			if (prefs.getBoolean (Preference.WIDGETS_ENABLED.getName(), false) && prefs.getBoolean (Preference.DEV.getName(), false))
-				vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this.widgetHost));
 
 			// Setup layout transitions //
 			LayoutTransition gvDashHomeApps_transition = new LayoutTransition ();
@@ -295,7 +284,41 @@ public class HomeActivity extends AppCompatActivity
 
 			// Apply theme //
 			this.applyTheme(res);
-			
+
+			// Initialise the widget host // After applyTheme(), which determines the launcher edge //
+			this.widgetManager = AppWidgetManager.getInstance (this);
+			this.widgetHost = new WidgetHost (this, this.widgetManager, vgWidgets);
+
+			if (prefs.getBoolean (Preference.WIDGETS_ENABLED.getName(), true))
+			{
+				vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this.widgetHost));
+				vgWidgets.setOnClickListener (new View.OnClickListener ()
+				{
+					@Override
+					public void onClick (final View view)
+					{
+						vgWidgets.exitEditMode ();
+					}
+				});
+
+				// Keep the widget area clear of the launcher, even when the launcher resizes //
+				llLauncher.addOnLayoutChangeListener (new View.OnLayoutChangeListener ()
+				{
+					@Override
+					public void onLayoutChange (final View view, final int left, final int top, final int right, final int bottom,
+							final int oldLeft, final int oldTop, final int oldRight, final int oldBottom)
+					{
+						HomeActivity.this.updateWidgetAreaInsets (vgWidgets, view);
+					}
+				});
+
+				this.widgetHost.restoreWidgets ();
+			}
+			else
+			{
+				vgWidgets.setVisibility (View.GONE);
+			}
+
 			if (modeCustomise)
 			{
 				final HomeActivity self = this;
@@ -524,18 +547,10 @@ public class HomeActivity extends AppCompatActivity
 				this.startActivity(intent); // Reload activity //
 
 				//this.overridePendingTransition (R.anim.home_to_preferences_in, R.anim.home_to_preferences_out);
-			} else if (requestCode == RequestCode.WIDGET_PICKED) {
-				if (resultCode == RESULT_OK) {
-					this.widgetHost.configureWidget(data);
-				} else {
-					this.widgetHost.removeWidget(data);
-				}
+			} else if (requestCode == RequestCode.WIDGET_BOUND) {
+				this.widgetHost.onBindResult(resultCode);
 			} else if (requestCode == RequestCode.WIDGET_CONFIGURED) {
-				if (resultCode == RESULT_OK) {
-					this.widgetHost.createWidget(data);
-				} else {
-					this.widgetHost.removeWidget(data);
-				}
+				this.widgetHost.onConfigureResult(resultCode);
 			}
 		}
 		catch (Exception ex)
@@ -557,7 +572,11 @@ public class HomeActivity extends AppCompatActivity
 	{
 		try
 		{
-			if (this.llDash.getVisibility () == View.VISIBLE)
+			final WidgetsContainer vgWidgets = this.viewFinder.get(R.id.vgWidgets);
+
+			if (vgWidgets.hasEditModeChild ())
+				vgWidgets.exitEditMode ();
+			else if (this.llDash.getVisibility () == View.VISIBLE)
 				this.closeDash ();
 			else if (! this.isDefaultLauncher ())
 				super.onBackPressed ();
@@ -996,6 +1015,32 @@ public class HomeActivity extends AppCompatActivity
 
 		llLauncher_layoutParams.setMargins (launcherMarginsRotated[3], launcherMarginsRotated[0], launcherMarginsRotated[1], launcherMarginsRotated[2]);
 		llLauncher.setLayoutParams (llLauncher_layoutParams);
+	}
+
+	/**
+	 * Pad the widget area so that widgets only occupy the part of the home screen that is not
+	 * covered by the launcher. The panel is already excluded by the layout itself.
+	 */
+	private void updateWidgetAreaInsets (final WidgetsContainer vgWidgets, final View llLauncher)
+	{
+		switch (this.launcherEdge)
+		{
+			case LEFT:
+				vgWidgets.setPadding (llLauncher.getWidth (), 0, 0, 0);
+				break;
+			case RIGHT:
+				vgWidgets.setPadding (0, 0, llLauncher.getWidth (), 0);
+				break;
+			case TOP:
+				vgWidgets.setPadding (0, llLauncher.getHeight (), 0, 0);
+				break;
+			case BOTTOM:
+				vgWidgets.setPadding (0, 0, 0, llLauncher.getHeight ());
+				break;
+			default:
+				vgWidgets.setPadding (0, 0, 0, 0);
+				break;
+		}
 	}
 
 	private void setPanelEdge (final Location edge)

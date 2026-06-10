@@ -1,16 +1,17 @@
 package be.robinj.distrohopper.widgets;
 
-import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
+import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.widget.GridLayout;
-import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import java.util.List;
 
 import be.robinj.distrohopper.HomeActivity;
+import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.RequestCode;
 import be.robinj.distrohopper.dev.Log;
 
@@ -19,17 +20,25 @@ import be.robinj.distrohopper.dev.Log;
  */
 public class WidgetHost extends AppWidgetHost
 {
-	private HomeActivity parent;
-	private AppWidgetManager widgetManager;
-	private WidgetsContainer vgWidgets;
+	/** Must stay stable across builds; never derive this from a resource id. */
+	public static final int HOST_ID = 0xD1570;
 
-	public WidgetHost (HomeActivity parent, AppWidgetManager widgetManager, int hostId)
+	private final HomeActivity parent;
+	private final AppWidgetManager widgetManager;
+	private final WidgetsContainer vgWidgets;
+	private final WidgetPersistence persistence;
+
+	private int pendingAppWidgetId = -1;
+	private AppWidgetProviderInfo pendingInfo;
+
+	public WidgetHost (HomeActivity parent, AppWidgetManager widgetManager, WidgetsContainer vgWidgets)
 	{
-		super (parent.getApplicationContext (), hostId);
+		super (parent.getApplicationContext (), HOST_ID);
 
 		this.parent = parent;
 		this.widgetManager = widgetManager;
-		this.vgWidgets = parent.findViewById (hostId);
+		this.vgWidgets = vgWidgets;
+		this.persistence = new WidgetPersistence (parent.getApplicationContext ());
 	}
 
 	@Override
@@ -38,88 +47,164 @@ public class WidgetHost extends AppWidgetHost
 		return new WidgetHostView (context, this);
 	}
 
-	public void removeWidget (AppWidgetHostView hostView)
+	/**
+	 * Recreate the views for all persisted widgets, pruning any whose provider is gone.
+	 */
+	public void restoreWidgets ()
 	{
-		this.deleteAppWidgetId (hostView.getAppWidgetId ());
-		this.vgWidgets.removeView (hostView);
-	}
+		final List<WidgetLayout> layouts = this.persistence.load ();
+		boolean pruned = false;
 
-	public void removeWidget (Intent data) throws Exception
-	{
-		if (data != null)
+		for (final WidgetLayout layout : layouts)
 		{
-			Bundle bundle = data.getExtras ();
-			int id = bundle.getInt (AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+			if (this.widgetManager.getAppWidgetInfo (layout.appWidgetId) == null)
+			{
+				this.deleteAppWidgetId (layout.appWidgetId);
+				pruned = true;
 
-			if (id == -1)
-				throw new Exception ("Didn't receive a widget ID");
-
-			this.deleteAppWidgetId (id);
+				Log.getInstance ().w (this.getClass ().getSimpleName (), "Pruned stale widget: " + layout.appWidgetId);
+			}
+			else
+			{
+				this.addWidget (layout.appWidgetId, layout, false);
+			}
 		}
+
+		if (pruned)
+			this.persist ();
 	}
 
-	public void createWidget (Intent data) throws Exception
+	private void addWidget (final int appWidgetId, final WidgetLayout layout, final boolean persist)
 	{
-		Bundle bundle = data.getExtras ();
-		int id = bundle.getInt (AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+		final AppWidgetProviderInfo info = this.widgetManager.getAppWidgetInfo (appWidgetId);
 
-		if (id == -1)
-			throw new Exception ("Didn't receive a widget ID");
+		if (info == null)
+		{
+			this.deleteAppWidgetId (appWidgetId);
 
-		AppWidgetProviderInfo info = this.widgetManager.getAppWidgetInfo (id);
-		WidgetHostView hostView = (WidgetHostView) this.createView (this.parent, id, info);
+			return;
+		}
 
-		WidgetContainer container = new WidgetContainer (this.parent.getApplicationContext (), null, hostView);
+		final WidgetHostView hostView = (WidgetHostView) this.createView (this.parent, appWidgetId, info);
+		final WidgetContainer container = new WidgetContainer (this.parent, this, hostView);
 
-		this.vgWidgets.addView (container);
-
-		Log.getInstance().v(this.getClass().getSimpleName(), "Widget created: " + id);
+		this.vgWidgets.addView (container, new WidgetsContainer.LayoutParams (layout));
 
 		hostView.setOnLongClickListener (new WidgetHostView_LongClickListener (container));
+
+		Log.getInstance ().v (this.getClass ().getSimpleName (), "Widget added: " + appWidgetId);
+
+		if (persist)
+			this.persist ();
 	}
 
-	public void configureWidget (Intent data) throws Exception
+	public void removeWidget (final WidgetContainer container)
 	{
-		Bundle bundle = data.getExtras ();
-		int id = bundle.getInt (AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+		this.deleteAppWidgetId (container.getAppWidgetId ());
+		this.vgWidgets.removeView (container);
+		this.persist ();
+	}
 
-		AppWidgetProviderInfo info = this.widgetManager.getAppWidgetInfo (id);
+	public void persist ()
+	{
+		this.persistence.save (this.vgWidgets.collectLayouts (null));
+	}
 
-		if (id == -1)
-			throw new Exception ("Didn't receive a widget ID");
+	public void showPicker ()
+	{
+		new WidgetPickerDialog (this.parent, this).show ();
+	}
 
-		if (info.configure == null)
+	public void onProviderChosen (final AppWidgetProviderInfo info)
+	{
+		this.pendingAppWidgetId = this.allocateAppWidgetId ();
+		this.pendingInfo = info;
+
+		final boolean bound = this.widgetManager.bindAppWidgetIdIfAllowed (
+			this.pendingAppWidgetId, info.getProfile (), info.provider, null);
+
+		if (bound)
 		{
-			this.createWidget (data);
+			this.configurePendingWidget ();
 		}
 		else
 		{
-			Log.getInstance().v(this.getClass().getSimpleName(), "Widget requires configuration: " + id);
+			final Intent intent = new Intent (AppWidgetManager.ACTION_APPWIDGET_BIND);
+			intent.putExtra (AppWidgetManager.EXTRA_APPWIDGET_ID, this.pendingAppWidgetId);
+			intent.putExtra (AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.provider);
+			intent.putExtra (AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE, info.getProfile ());
 
-			Intent intent = new Intent (AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
-			intent.setComponent (info.configure);
-			intent.putExtra (AppWidgetManager.EXTRA_APPWIDGET_ID, id);
-
-			this.parent.startActivityForResult (intent, RequestCode.WIDGET_CONFIGURED);
+			this.parent.startActivityForResult (intent, RequestCode.WIDGET_BOUND);
 		}
 	}
 
-	public void selectWidget ()
+	public void onBindResult (final int resultCode)
 	{
-		int id = this.allocateAppWidgetId ();
+		if (resultCode == HomeActivity.RESULT_OK)
+			this.configurePendingWidget ();
+		else
+			this.cancelPendingWidget ();
+	}
 
-		Intent intent = new Intent (AppWidgetManager.ACTION_APPWIDGET_PICK);
-		intent.putExtra (AppWidgetManager.EXTRA_APPWIDGET_ID, id);
+	public void onConfigureResult (final int resultCode)
+	{
+		if (resultCode == HomeActivity.RESULT_OK)
+			this.placePendingWidget ();
+		else
+			this.cancelPendingWidget ();
+	}
 
-		/*
-		ArrayList customInfo = new ArrayList();
-		pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_INFO, customInfo);
-		ArrayList customExtras = new ArrayList();
-		pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_EXTRAS, customExtras);
+	private void configurePendingWidget ()
+	{
+		if (this.pendingInfo != null && this.pendingInfo.configure != null)
+		{
+			Log.getInstance ().v (this.getClass ().getSimpleName (), "Widget requires configuration: " + this.pendingAppWidgetId);
 
-		addEmptyData (pickIntent);
-		*/
+			this.startAppWidgetConfigureActivityForResult (
+				this.parent, this.pendingAppWidgetId, 0, RequestCode.WIDGET_CONFIGURED, null);
+		}
+		else
+		{
+			this.placePendingWidget ();
+		}
+	}
 
-		this.parent.startActivityForResult (intent, RequestCode.WIDGET_PICKED);
+	private void placePendingWidget ()
+	{
+		final int appWidgetId = this.pendingAppWidgetId;
+		final AppWidgetProviderInfo info = this.pendingInfo;
+
+		this.pendingAppWidgetId = -1;
+		this.pendingInfo = null;
+
+		if (appWidgetId == -1 || info == null)
+			return;
+
+		final int colSpan = WidgetGrid.spanForSize (info.minWidth, this.vgWidgets.getCellWidth (), WidgetGrid.COLS);
+		final int rowSpan = WidgetGrid.spanForSize (info.minHeight, this.vgWidgets.getCellHeight (), WidgetGrid.ROWS);
+
+		final WidgetLayout layout = WidgetGrid.findFreeRect (this.vgWidgets.collectLayouts (null), colSpan, rowSpan);
+
+		if (layout == null)
+		{
+			this.deleteAppWidgetId (appWidgetId);
+
+			Toast.makeText (this.parent, R.string.widget_no_room, Toast.LENGTH_LONG).show ();
+
+			return;
+		}
+
+		layout.appWidgetId = appWidgetId;
+
+		this.addWidget (appWidgetId, layout, true);
+	}
+
+	private void cancelPendingWidget ()
+	{
+		if (this.pendingAppWidgetId != -1)
+			this.deleteAppWidgetId (this.pendingAppWidgetId);
+
+		this.pendingAppWidgetId = -1;
+		this.pendingInfo = null;
 	}
 }

@@ -15,13 +15,6 @@
 		android:summary="@string/hint_dev_log_toaster"
 		android:defaultValue="false" />
 
-	<CheckBoxPreference
-		android:key="widgets_enabled"
-		android:dependency="dev"
-		android:title="@string/option_widgets_enabled"
-		android:summary="@string/hint_widgets_enabled"
-		android:defaultValue="false" />
-
 	<!--<CheckBoxPreference
 		android:key="launcher_running_show"
 		android:dependency="dev"
@@ -36,11 +29,6 @@
 		android:dependency="dev"
 		android:defaultValue="false" />
 
-	<CheckBoxPreference
-		android:key="widgets_enabled"
-		android:title="@string/option_widgets_enabled"
-		android:summary="@string/hint_widgets_enabled"
-		android:dependency="dev"
-		android:defaultValue="false" />-->
+	-->
 
 </PreferenceScreen>
