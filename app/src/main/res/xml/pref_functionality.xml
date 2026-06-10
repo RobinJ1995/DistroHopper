@@ -14,4 +14,10 @@
         android:summary="@string/hint_dash_ready_show"
         android:defaultValue="false" />
 
+    <CheckBoxPreference
+        android:key="widgets_enabled"
+        android:title="@string/option_widgets_enabled"
+        android:summary="@string/hint_widgets_enabled"
+        android:defaultValue="true" />
+
 </PreferenceScreen>
