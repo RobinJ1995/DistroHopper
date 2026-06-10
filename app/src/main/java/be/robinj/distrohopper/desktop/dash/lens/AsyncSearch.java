@@ -31,6 +31,7 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 	private final int dashIconWidth;
 
 	private volatile boolean finished = false;
+	private Thread progressWheelDelayThread;
 
 	public AsyncSearch(final LensManager lensManager, final ProgressWheel progressWheel,
 					   final ListView lvDashHomeLensResults, final float displayDensity,
@@ -54,6 +55,8 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 			try {
 				Thread.sleep(PROGRESS_WHEEL_DELAY);
 			} catch (final InterruptedException e) {
+				Thread.currentThread().interrupt();
+
 				return;
 			}
 
@@ -65,7 +68,8 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 				this.progressWheel.setVisibility (View.VISIBLE);
 			});
 		};
-		new Thread(setProgressWheelVisible).start();
+		this.progressWheelDelayThread = new Thread(setProgressWheelVisible);
+		this.progressWheelDelayThread.start();
 
 		this.adapter = new be.robinj.distrohopper.desktop.dash.lens.CollectionGridAdapter(
 				this.lensManager.getContext (), this.results, this.displayDensity, this.dashIconWidth);
@@ -76,7 +80,6 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 	protected List<LensSearchResultCollection> doInBackground (String... params)
 	{
 		String pattern = params[0];
-		this.results.clear ();
 
 		if (pattern.length () > 0)
 		{
@@ -141,6 +144,7 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 	protected void onPostExecute (List<LensSearchResultCollection> results)
 	{
 		this.finished = true;
+		this.stopProgressWheelDelayThread ();
 
 		super.onPostExecute (results);
 
@@ -152,7 +156,19 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 	{
 		super.onCancelled ();
 
+		this.stopProgressWheelDelayThread ();
+
+		// Deliberately not hiding the wheel: a cancelled search almost always means the user
+		// typed another character and a new search is starting, so hiding it here would make
+		// the wheel flicker on every keystroke. //
 		this.progressWheel.setProgress (0);
+	}
+
+	private void stopProgressWheelDelayThread ()
+	{
+		if (this.progressWheelDelayThread != null) {
+			this.progressWheelDelayThread.interrupt ();
+		}
 	}
 
 	protected class AsyncSearchProgressUpdate
