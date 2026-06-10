@@ -156,7 +156,6 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 	{
 		super.onCancelled ();
 
-		this.finished = true;
 		this.stopProgressWheelDelayThread ();
 
 		// Deliberately not hiding the wheel: a cancelled search almost always means the user
