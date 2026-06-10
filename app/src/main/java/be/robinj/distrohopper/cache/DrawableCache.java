@@ -170,13 +170,20 @@ public class DrawableCache implements ICache<Drawable> {
 	@NonNull
 	@Override
 	public synchronized Set<String> keySet() {
-		for (final String key : this.keys) { // safe: this.keys is reassigned, never mutated //
+		this.removeKeysWithoutBackingFile();
+
+		return this.keys;
+	}
+
+	// The cache directory can be purged by the system or the user at any time, independently //
+	// of the key set persisted in SharedPreferences - so before relying on the key set, drop //
+	// keys whose backing file has disappeared. //
+	private synchronized void removeKeysWithoutBackingFile() {
+		for (final String key : this.keys) {
 			if (! this.containsKey(key)) {
 				this.remove(key);
 			}
 		}
-
-		return this.keys;
 	}
 
 	@NonNull
