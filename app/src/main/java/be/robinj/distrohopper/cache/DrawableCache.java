@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -21,6 +20,8 @@ import java.util.UUID;
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.Image;
 import be.robinj.distrohopper.dev.Log;
+
+import static java.util.Collections.emptySet;
 
 public class DrawableCache implements ICache<Drawable> {
 	private final SharedPreferences prefs;
@@ -32,7 +33,7 @@ public class DrawableCache implements ICache<Drawable> {
 		this.name = name;
 		this.prefs = context.getSharedPreferences("cache_" + name, Context.MODE_PRIVATE);
 		// The set returned by getStringSet() must never be modified, so take a copy //
-		this.keys = new HashSet<>(this.prefs.getStringSet("keys", Collections.emptySet()));
+		this.keys = new HashSet<>(this.prefs.getStringSet("keys", emptySet()));
 		this.cachePath = context.getCacheDir().getPath() + "/";
 	}
 
@@ -46,7 +47,7 @@ public class DrawableCache implements ICache<Drawable> {
 	}
 
 	private synchronized void commitKeys() {
-		this.prefs.edit().putStringSet("keys", new HashSet<>(this.keys)).commit();
+		this.prefs.edit().putStringSet("keys", Set.copyOf(this.keys)).commit();
 	}
 
 	@Override
@@ -156,13 +157,13 @@ public class DrawableCache implements ICache<Drawable> {
 	@NonNull
 	@Override
 	public synchronized Set<String> keySet() {
-		for (final String key : new HashSet<>(this.keys)) {
+		for (final String key : Set.copyOf(this.keys)) {
 			if (! this.containsKey(key)) {
 				this.remove(key);
 			}
 		}
 
-		return new HashSet<>(this.keys);
+		return Set.copyOf(this.keys);
 	}
 
 	@NonNull
