@@ -1,7 +1,10 @@
 package be.robinj.distrohopper.desktop.dash.lens
 
 import android.content.Context
+import android.widget.LinearLayout
+import android.widget.ListView
 import androidx.test.core.app.ApplicationProvider
+import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import org.junit.Assert.*
@@ -75,5 +78,23 @@ class LensManagerTest {
         assertEquals("LocalFiles", prefs.getString("1", null))
         assertEquals("GitHub", prefs.getString("2", null))
         assertNull(prefs.getString("3", null))
+    }
+
+    @Test fun constructionToleratesMissingLensesContainer() {
+        // The apps container being present must not make the constructor dereference the
+        // (absent) lenses container.
+        LensManager(context, LinearLayout(context), null, null, null)
+    }
+
+    @Test fun lensResultsViewIsResolvedFromTheLensesContainer() {
+        val lensesContainer = LinearLayout(context)
+        val lensResults = ListView(context).apply { id = R.id.lvDashHomeLensResults }
+        lensesContainer.addView(lensResults)
+
+        val manager = LensManager(context, null, lensesContainer, null, null)
+
+        val field = LensManager::class.java.getDeclaredField("lvDashHomeLensResults")
+        field.isAccessible = true
+        assertSame(lensResults, field.get(manager))
     }
 }
