@@ -9,12 +9,14 @@ import androidx.annotation.NonNull;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.Image;
@@ -35,11 +37,10 @@ public class DrawableCache implements ICache<Drawable> {
 	}
 
 	private String getPath(final String key) {
-		// Keys are "<package>\n<activity>" component names (see App.getPackageAndActivityName()),
-		// which are unique per app and can't contain ':' themselves - so the key doubles as a
-		// collision-free filename once the newline (and '/', for safety) are swapped out. //
+		// Name-based UUID (an MD5 of the key): deterministic and collision-free in practice,
+		// with a fixed-length filename whatever the length of the component name in the key. //
 		return new StringBuilder(this.cachePath)
-			.append(key.replace('\n', ':').replace('/', ':'))
+			.append(UUID.nameUUIDFromBytes(key.getBytes(StandardCharsets.UTF_8)))
 			.append(".png")
 			.toString();
 	}
