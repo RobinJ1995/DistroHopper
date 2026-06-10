@@ -7,40 +7,60 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.Image;
 import be.robinj.distrohopper.dev.Log;
 
+import static java.util.Collections.emptySet;
+
 public class DrawableCache implements ICache<Drawable> {
 	private final SharedPreferences prefs;
 	private final String cachePath;
-	private final Set<String> keys;
+	/** Always an immutable set; updated copy-on-write. */
+	private Set<String> keys;
 	private final String name;
 
 	protected DrawableCache(final Context context, final String name) {
 		this.name = name;
 		this.prefs = context.getSharedPreferences("cache_" + name, Context.MODE_PRIVATE);
-		this.keys = this.prefs.getStringSet("keys", new HashSet<>());
+		// The set returned by getStringSet() must never be modified, so take an immutable copy //
+		this.keys = Set.copyOf(this.prefs.getStringSet("keys", emptySet()));
 		this.cachePath = context.getCacheDir().getPath() + "/";
 	}
 
 	private String getPath(final String key) {
+		// Name-based UUID (an MD5 of the key): deterministic and collision-free in practice,
+		// with a fixed-length filename whatever the length of the component name in the key. //
 		return new StringBuilder(this.cachePath)
-			.append(key.hashCode())
+			.append(UUID.nameUUIDFromBytes(key.getBytes(StandardCharsets.UTF_8)))
 			.append(".png")
 			.toString();
 	}
 
 	private synchronized void commitKeys() {
-		this.prefs.edit().putStringSet("keys", this.keys).commit();
+		this.prefs.edit().putStringSet("keys", this.keys).commit(); // this.keys is immutable, so no aliasing risk //
+	}
+
+	private synchronized void addKey(final String key) {
+		final Set<String> updated = new HashSet<>(this.keys);
+		updated.add(key);
+		this.keys = Set.copyOf(updated);
+	}
+
+	private synchronized void removeKey(final Object key) {
+		final Set<String> updated = new HashSet<>(this.keys);
+		updated.remove(key);
+		this.keys = Set.copyOf(updated);
 	}
 
 	@Override
@@ -89,14 +109,15 @@ public class DrawableCache implements ICache<Drawable> {
 			if (bitmap == null) {
 				return null;
 			}
-			final FileOutputStream outputStream = new FileOutputStream(this.getPath(key));
-			bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+			try (final FileOutputStream outputStream = new FileOutputStream(this.getPath(key))) {
+				bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+			}
 
-			this.keys.add(key);
+			this.addKey(key);
 			if (commit) {
 				this.commitKeys();
 			}
-		} catch (FileNotFoundException ex) {
+		} catch (IOException ex) {
 			new ExceptionHandler(ex).logAndTrack();
 
 			return null;
@@ -117,7 +138,7 @@ public class DrawableCache implements ICache<Drawable> {
 			new File(this.getPath(key.toString())).delete();
 		}
 
-		this.keys.remove(key);
+		this.removeKey(key);
 		if (commit) {
 			this.commitKeys();
 		}
@@ -137,7 +158,7 @@ public class DrawableCache implements ICache<Drawable> {
 	@Override
 	public synchronized void clear() {
 		int nKeysRemoved = 0;
-		for (final String key : Set.copyOf(this.keySet())) {
+		for (final String key : this.keySet()) {
 			this.remove(key, false);
 			nKeysRemoved++;
 		}
@@ -149,15 +170,20 @@ public class DrawableCache implements ICache<Drawable> {
 	@NonNull
 	@Override
 	public synchronized Set<String> keySet() {
-		final Set<String> keys = this.prefs.getStringSet("keys", new HashSet<String>());
+		this.removeKeysWithoutBackingFile();
 
-		for (final String key : keys) {
+		return this.keys;
+	}
+
+	// The cache directory can be purged by the system or the user at any time, independently //
+	// of the key set persisted in SharedPreferences - so before relying on the key set, drop //
+	// keys whose backing file has disappeared. //
+	private synchronized void removeKeysWithoutBackingFile() {
+		for (final String key : this.keys) {
 			if (! this.containsKey(key)) {
 				this.remove(key);
 			}
 		}
-
-		return keys;
 	}
 
 	@NonNull
