@@ -9,9 +9,6 @@ import androidx.annotation.NonNull;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,25 +35,13 @@ public class DrawableCache implements ICache<Drawable> {
 	}
 
 	private String getPath(final String key) {
+		// Keys are "<package>\n<activity>" component names (see App.getPackageAndActivityName()),
+		// which are unique per app and can't contain ':' themselves - so the key doubles as a
+		// collision-free filename once the newline (and '/', for safety) are swapped out. //
 		return new StringBuilder(this.cachePath)
-			.append(hash(key))
+			.append(key.replace('\n', ':').replace('/', ':'))
 			.append(".png")
 			.toString();
-	}
-
-	private static String hash(final String key) {
-		try {
-			final MessageDigest digest = MessageDigest.getInstance("SHA-256");
-			final byte[] bytes = digest.digest(key.getBytes(StandardCharsets.UTF_8));
-			final StringBuilder hex = new StringBuilder(bytes.length * 2);
-			for (final byte b : bytes) {
-				hex.append(String.format("%02x", b));
-			}
-
-			return hex.toString();
-		} catch (final NoSuchAlgorithmException ex) {
-			throw new IllegalStateException(ex); // SHA-256 is available on every Android version
-		}
 	}
 
 	private synchronized void commitKeys() {
