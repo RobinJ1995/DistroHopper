@@ -42,13 +42,15 @@ class AsyncSearchTest {
         ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
     }
 
-    @Test fun cancellingSearchHidesTheProgressWheel() {
+    @Test fun cancellingSearchKeepsAnAlreadyVisibleProgressWheel() {
+        // A cancelled search almost always means the user typed another character and a new
+        // search starts right away; hiding the wheel here would make it flicker per keystroke.
         search.startSearchUi()
         progressWheel.visibility = View.VISIBLE // the wheel already appeared
 
         search.cancelSearchUi()
 
-        assertEquals(View.GONE, progressWheel.visibility)
+        assertEquals(View.VISIBLE, progressWheel.visibility)
     }
 
     @Test fun progressWheelDoesNotAppearAfterCancellation() {

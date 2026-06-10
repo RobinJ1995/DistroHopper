@@ -159,8 +159,10 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 		this.finished = true;
 		this.stopProgressWheelDelayThread ();
 
+		// Deliberately not hiding the wheel: a cancelled search almost always means the user
+		// typed another character and a new search is starting, so hiding it here would make
+		// the wheel flicker on every keystroke. //
 		this.progressWheel.setProgress (0);
-		this.progressWheel.setVisibility (View.GONE);
 	}
 
 	private void stopProgressWheelDelayThread ()
