@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 
 /**
@@ -25,6 +26,8 @@ import java.util.List;
 public abstract class Lens
 {
 	private static final int DEFAULT_MAX_RESULTS = 20;
+	private static final int CONNECT_TIMEOUT_MS = 10000;
+	private static final int READ_TIMEOUT_MS = 10000;
 
 	protected Context context;
 
@@ -93,42 +96,45 @@ public abstract class Lens
 		}
 	}
 
+	protected URLConnection openConnection (String url) throws IOException
+	{
+		URLConnection connection = new URL (url).openConnection ();
+		connection.setConnectTimeout (CONNECT_TIMEOUT_MS);
+		connection.setReadTimeout (READ_TIMEOUT_MS);
+
+		return connection;
+	}
+
 	protected String downloadStr (String url) throws IOException
 	{
-		URL urlObj = new URL (url);
-		InputStreamReader streamReader = new InputStreamReader (urlObj.openStream ());
-		BufferedReader reader = new BufferedReader (streamReader);
+		try (BufferedReader reader = new BufferedReader (new InputStreamReader (this.openConnection (url).getInputStream ())))
+		{
+			StringBuilder str = new StringBuilder ();
+			String line = null;
 
-		StringBuilder str = new StringBuilder ();
-		String line = null;
+			while ((line = reader.readLine ()) != null)
+				str.append (line);
 
-		while ((line = reader.readLine ()) != null)
-			str.append (line);
-
-		reader.close ();
-
-		return str.toString ();
+			return str.toString ();
+		}
 	}
 
 	protected Drawable downloadImage (String url) throws IOException
 	{
-		URL urlObj = new URL (url);
-		InputStream in = new BufferedInputStream (urlObj.openStream ());
-		ByteArrayOutputStream out = new ByteArrayOutputStream ();
-		byte[] buffer = new byte[1024];
+		try (InputStream in = new BufferedInputStream (this.openConnection (url).getInputStream ());
+			ByteArrayOutputStream out = new ByteArrayOutputStream ())
+		{
+			byte[] buffer = new byte[1024];
 
-		int x = 0;
+			int x = 0;
 
-		while ((x = in.read (buffer)) != -1)
-			out.write (buffer, 0, x);
+			while ((x = in.read (buffer)) != -1)
+				out.write (buffer, 0, x);
 
-		out.close ();
-		in.close ();
+			byte[] imageBytes = out.toByteArray ();
 
-		byte[] imageBytes = out.toByteArray ();
-		Drawable image = new BitmapDrawable (BitmapFactory.decodeByteArray (imageBytes, 0, imageBytes.length));
-
-		return image;
+			return new BitmapDrawable (BitmapFactory.decodeByteArray (imageBytes, 0, imageBytes.length));
+		}
 	}
 
 	protected void showDialog (String message)
