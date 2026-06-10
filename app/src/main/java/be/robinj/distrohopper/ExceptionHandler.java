@@ -2,6 +2,7 @@ package be.robinj.distrohopper;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.os.Looper;
 import android.text.Html;
 
 import org.acra.ACRA;
@@ -41,24 +42,36 @@ public class ExceptionHandler {
 
 		if (context != null)
 		{
-			try
+			if (Looper.myLooper () == Looper.getMainLooper ())
 			{
-				AlertDialog.Builder dlg = new AlertDialog.Builder (context);
-				dlg.setTitle ("(╯°□°）╯︵ ┻━┻");
-				dlg.setMessage (message.toString ());
-				dlg.setCancelable (true);
-				dlg.setNeutralButton ("OK", null);
-
-				dlg.show ();
+				this.showDialog (context, message.toString ());
 			}
-			catch (Exception ex2)
+			else
 			{
-				Log.getInstance ().e (this.getClass ().getSimpleName (), "Couldn't show AlertDialog");
+				Utils.runOnUiThread (() -> this.showDialog (context, message.toString ()));
 			}
 		}
 		else
 		{
 			Log.getInstance ().w (this.getClass ().getSimpleName (), "User wasn't notified that there was a problem because context == NULL");
+		}
+	}
+
+	private void showDialog (final Context context, final String message)
+	{
+		try
+		{
+			AlertDialog.Builder dlg = new AlertDialog.Builder (context);
+			dlg.setTitle ("(╯°□°）╯︵ ┻━┻");
+			dlg.setMessage (message);
+			dlg.setCancelable (true);
+			dlg.setNeutralButton ("OK", null);
+
+			dlg.show ();
+		}
+		catch (Exception ex2)
+		{
+			Log.getInstance ().e (this.getClass ().getSimpleName (), "Couldn't show AlertDialog: " + ex2.getMessage ());
 		}
 	}
 
