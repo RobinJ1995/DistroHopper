@@ -21,6 +21,8 @@
 			android:layout_height="match_parent"
 			android:scaleType="centerCrop" />
 
+		<include layout="@layout/activity_home_widgets" />
+
 		<FrameLayout
 			android:id="@+id/flWallpaperOverlayContainer"
 			android:layout_width="match_parent"
@@ -39,8 +41,6 @@
 				android:visibility="gone">
 			</FrameLayout>
 		</FrameLayout>
-
-		<include layout="@layout/activity_home_widgets" />
 
 		<LinearLayout
 			android:id="@+id/llStatusBar"
