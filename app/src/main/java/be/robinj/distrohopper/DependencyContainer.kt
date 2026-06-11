@@ -15,7 +15,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
  * one per test); [of] is the lookup used by code that only has a [Context].
  */
 class DependencyContainer(context: Context) {
-	val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
+	@set:VisibleForTesting // Tests substitute deterministic dispatchers //
+	var dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 	val prefs: PreferencesRepository = PreferencesRepository(context)
 	val themeManager: ThemeManager = ThemeManager(this.prefs)
 

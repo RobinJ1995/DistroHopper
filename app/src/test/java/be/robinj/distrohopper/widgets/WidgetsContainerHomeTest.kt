@@ -35,6 +35,7 @@ class WidgetsContainerHomeTest {
         application.getSharedPreferences(Preferences.PREFERENCES, 0)
             .edit().putBoolean(Preference.WIDGETS_ENABLED.getName(), false).commit()
         DependencyContainer.of(ApplicationProvider.getApplicationContext()).customiseMode.value = false
+        ActivityTestSupport.installTestDispatchers()
         ActivityTestSupport.seedPackageManager()
 
         ActivityScenario.launch(HomeActivity::class.java).use { scenario ->

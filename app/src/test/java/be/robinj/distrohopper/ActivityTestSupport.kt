@@ -8,6 +8,7 @@ import android.content.pm.ResolveInfo
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.preferences.Preferences
+import kotlinx.coroutines.Dispatchers
 import org.robolectric.Robolectric
 import org.robolectric.Shadows
 import org.robolectric.shadows.ShadowLooper
@@ -59,8 +60,24 @@ internal object ActivityTestSupport {
             application.getSharedPreferences(it, 0).edit().clear().commit()
         }
         DependencyContainer.of(ApplicationProvider.getApplicationContext()).customiseMode.value = false
+        installTestDispatchers()
         seedPackageManager()
         return ActivityScenario.launch(HomeActivity::class.java).also { drainTasks() }
+    }
+
+    /**
+     * StartupLoader's background work must run inline so that drainTasks()
+     * deterministically completes it: the IO dispatcher is replaced with
+     * Unconfined while the main dispatcher stays looper-backed (drained by
+     * Robolectric).
+     */
+    fun installTestDispatchers() {
+        DependencyContainer.of(ApplicationProvider.getApplicationContext<Application>())
+            .dispatchers = object : DispatcherProvider {
+                override val main = Dispatchers.Main
+                override val io = Dispatchers.Unconfined
+                override val default = Dispatchers.Unconfined
+            }
     }
 
     fun drainTasks() {

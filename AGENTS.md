@@ -129,8 +129,15 @@ etc/                                        — design assets (SVG/XCF sources, 
   drag-and-drop framework (`WidgetsContainer_DragListener`) and shares the
   launcher's drag-to-trash mechanism — `TrashDragListener` in
   `desktop/launcher/` recognises widget drags via the drag's local state.
-- **`async/`** — `AsyncTask`-style background loaders for apps, icons,
-  labels, and wallpaper.
+- Background loading uses Kotlin coroutines: `home/StartupLoader` runs the
+  startup sequence (wallpaper init → app list → label/icon caches, strictly
+  in that order — both the wallpaper and app paths touch the BFB) in the
+  activity's `lifecycleScope` on the `DependencyContainer`'s
+  `DispatcherProvider`; `home/AppsLoader` holds the blocking halves. Tests
+  swap the IO dispatcher for `Dispatchers.Unconfined` via
+  `ActivityTestSupport.installTestDispatchers()` so `drainTasks()` is
+  deterministic. (`desktop/dash/lens/AsyncSearch` is the one remaining
+  `AsyncTask`.)
 - **`broadcast/`** — `PackageManagerBroadcastReceiver`: reacts to app
   install/uninstall to keep `AppManager` current.
 - **`cache/`** — `AppIconCache`.

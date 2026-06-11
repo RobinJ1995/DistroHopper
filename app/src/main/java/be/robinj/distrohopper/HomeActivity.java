@@ -31,10 +31,6 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import be.robinj.distrohopper.async.AsyncInitWallpaper;
-import be.robinj.distrohopper.async.AsyncLoadAppIcons;
-import be.robinj.distrohopper.async.AsyncLoadAppLabels;
-import be.robinj.distrohopper.async.AsyncLoadApps;
 import be.robinj.distrohopper.broadcast.PackageManagerBroadcastReceiver;
 import be.robinj.distrohopper.cache.AppIconCache;
 import be.robinj.distrohopper.cache.AppLabelCache;
@@ -47,6 +43,7 @@ import be.robinj.distrohopper.home.HomeStateBinder;
 import be.robinj.distrohopper.home.HomeViewModel;
 import be.robinj.distrohopper.home.LauncherEdgeController;
 import be.robinj.distrohopper.home.LayoutTransitionConfigurer;
+import be.robinj.distrohopper.home.StartupLoader;
 import be.robinj.distrohopper.home.ThemeApplier;
 import be.robinj.distrohopper.home.WallpaperColourApplier;
 import be.robinj.distrohopper.dev.LogToaster;
@@ -81,10 +78,7 @@ public class HomeActivity extends AppCompatActivity
 
 	LinearLayout llDash;
 
-	private AsyncInitWallpaper asyncInitWallpaper;
-	private AsyncLoadApps asyncLoadApps;
-	private AsyncLoadAppLabels asyncLoadAppLabels;
-	private AsyncLoadAppIcons asyncLoadAppIcons;
+	private StartupLoader startupLoader;
 
 	private boolean openDashWhenReady = false;
 
@@ -201,18 +195,8 @@ public class HomeActivity extends AppCompatActivity
 			// Start spinning the BFB //
 			lalSpinner.getProgressWheel ().spin ();
 
-			// Start initialising the wallpaper //
-			this.asyncInitWallpaper = new AsyncInitWallpaper (this);
-			this.asyncInitWallpaper.execute (wpWallpaper);
-
 			// Cross-window blur can be toggled at runtime (e.g. battery saver) //
 			this.getWindowManager ().addCrossWindowBlurEnabledListener (this.dash.getCrossWindowBlurListener ());
-
-			// Start loading apps from the package manager //
-			this.asyncLoadApps = new AsyncLoadApps (this, lalSpinner, lalBfb,
-					gvDashHomeApps, this.appIconCache, this.appLabelCache, density,
-					prefs.getInt(Preference.DASHICON_WIDTH.getName(), Preference.DASHICON_WIDTH.getDefault()));
-			this.asyncLoadApps.execute (this.getApplicationContext ());
 
 			// Setup layout transitions //
 			LayoutTransitionConfigurer.apply (this.viewFinder, res);
@@ -290,6 +274,12 @@ public class HomeActivity extends AppCompatActivity
 					this.startActivity (relaunchIntent); // Reload activity //
 				}).show ();
 			}
+
+			// Start loading: wallpaper, apps, then label/icon caches //
+			this.startupLoader = new StartupLoader (this, container.getDispatchers ());
+			this.startupLoader.start (wpWallpaper, lalSpinner, lalBfb, gvDashHomeApps,
+					this.appLabelCache, this.appIconCache, density,
+					prefs.getInt (Preference.DASHICON_WIDTH.getName(), Preference.DASHICON_WIDTH.getDefault()));
 		}
 		catch (Exception ex)
 		{
@@ -479,8 +469,6 @@ public class HomeActivity extends AppCompatActivity
 	@Override
 	public void onDestroy ()
 	{
-		this.cancelAsyncTasks();
-
 		if (this.dash != null)
 			this.getWindowManager ().removeCrossWindowBlurEnabledListener (this.dash.getCrossWindowBlurListener ());
 
@@ -545,17 +533,6 @@ public class HomeActivity extends AppCompatActivity
 
 
 
-	private void cancelAsyncTasks() {
-		if (this.asyncInitWallpaper != null)
-			this.asyncInitWallpaper.cancel (true);
-		if (this.asyncLoadApps != null)
-			this.asyncLoadApps.cancel (true);
-		if (this.asyncLoadAppLabels != null)
-			this.asyncLoadAppLabels.cancel (true);
-		if (this.asyncLoadAppIcons != null)
-			this.asyncLoadAppIcons.cancel (true);
-	}
-
 	public AppManager getAppManager ()
 	{
 		return this.apps;
@@ -617,11 +594,6 @@ public class HomeActivity extends AppCompatActivity
 			ifPackageManager.addDataScheme ("package");
 
 			this.registerReceiver (this.broadcastPackageManager, ifPackageManager);
-
-			this.asyncLoadAppLabels = new AsyncLoadAppLabels(installedApps);
-			this.asyncLoadAppLabels.execute(this.appLabelCache);
-			this.asyncLoadAppIcons = new AsyncLoadAppIcons(installedApps);
-			this.asyncLoadAppIcons.execute(this.appIconCache);
 		}
 		catch (Exception ex)
 		{
@@ -688,7 +660,8 @@ public class HomeActivity extends AppCompatActivity
 	{
 		try
 		{
-			this.cancelAsyncTasks();
+			if (this.startupLoader != null)
+				this.startupLoader.cancel ();
 
 			Intent intent = new Intent (this, PreferencesActivity.class);
 			this.startActivityForResult (intent, RequestCode.ACTIVITY_PREFERENCES);
