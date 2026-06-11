@@ -15,6 +15,16 @@ import org.acra.sender.HttpSender;
  */
 public class Application extends android.app.Application
 {
+	private DependencyContainer dependencyContainer;
+
+	public synchronized DependencyContainer getDependencyContainer() {
+		if (this.dependencyContainer == null) {
+			this.dependencyContainer = new DependencyContainer(this);
+		}
+
+		return this.dependencyContainer;
+	}
+
 	@Override
 	protected void attachBaseContext(final Context base) {
 		super.attachBaseContext(base);

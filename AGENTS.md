@@ -49,6 +49,14 @@ etc/                                        — design assets (SVG/XCF sources, 
     `InsetsHelper` handles system bar / display cutout insets (e.g. keeping
     UI clear of the 3-button navigation bar).
   - `Observed`/`IObserver` — small homegrown observer pattern.
+  - `DependencyContainer` — hand-wired container for shared objects
+    (`PreferencesRepository`, `DispatcherProvider`, …), owned by `Application`
+    and looked up via `DependencyContainer.of(context)`. **Hard rule: no DI
+    frameworks (Hilt/Dagger/Koin) in this project** — all wiring is explicit.
+    Tests can substitute the whole container via
+    `DependencyContainer.override`.
+  - `DispatcherProvider` — indirection over coroutine dispatchers so tests
+    can inject deterministic ones.
   - `AboutActivity`, `ContributeActivity` — informational screens.
 - **`desktop/`** — the desktop surface itself (`Wallpaper`, `AppIcon`, drag
   listeners). The activity is transparent over the system wallpaper
@@ -72,7 +80,10 @@ etc/                                        — design assets (SVG/XCF sources, 
 - **`preferences/`** — `PreferencesActivity` (settings UI built
   programmatically with `PreferenceScreen`/categories), plus dedicated
   activities for lens ordering (`LensPreferencesActivity`) and theme
-  selection (`ThemePreferencesActivity`).
+  selection (`ThemePreferencesActivity`). `PreferencesRepository` provides
+  typed and observable (`valueFlow`, a Kotlin `Flow`) access to the main
+  "prefs" file keyed by the `Preference` enum — prefer it over raw
+  `SharedPreferences` in new code.
 - **`theme/`** — one class per supported desktop look (`Default`, `Gnome`,
   `Elementary`, `Cinnamon`), implementing the `Theme` interface; `Location`
   describes where UI elements sit per theme.
