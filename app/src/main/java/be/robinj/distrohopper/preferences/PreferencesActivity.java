@@ -109,6 +109,28 @@ public class PreferencesActivity extends AppCompatActivity
 
 			this.initIconPackList ();
 
+			this.findPreference ("dummy_wallpaper").setOnPreferenceClickListener (
+				new Preference.OnPreferenceClickListener ()
+				{
+					@Override
+					public boolean onPreferenceClick (Preference preference)
+					{
+						try
+						{
+							startActivity (Intent.createChooser (
+								new Intent (Intent.ACTION_SET_WALLPAPER),
+								getString (R.string.option_wallpaper)));
+						}
+						catch (Exception ex)
+						{
+							new ExceptionHandler (ex).show (requireActivity ());
+						}
+
+						return true;
+					}
+				}
+			);
+
 			this.findPreference ("dummy_customise").setOnPreferenceClickListener (
 				new Preference.OnPreferenceClickListener ()
 				{

@@ -9,9 +9,9 @@
     </Preference>
 
     <Preference
+        android:key="dummy_wallpaper"
         android:title="@string/option_wallpaper"
         android:summary="@string/hint_wallpaper">
-        <intent android:action="android.intent.action.SET_WALLPAPER" />
     </Preference>
 
     <ListPreference
