@@ -10,6 +10,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.theme.Cinnamon;
 import be.robinj.distrohopper.theme.Default;
@@ -25,6 +26,7 @@ public class ThemePreferencesActivity extends AppCompatActivity
 	{
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_theme_preferences);
+		InsetsHelper.applySystemBarsPadding (this);
 
 		List<Theme> themes = new ArrayList<Theme> ();
 		themes.add (new Default());
