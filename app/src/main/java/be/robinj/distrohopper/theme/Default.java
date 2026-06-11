@@ -64,5 +64,6 @@ public class Default extends Theme
 		this.dash_search_background = R.drawable.theme_default_dash_search_background;
 		this.dash_search_text_colour = R.color.theme_default_dash_search_text_colour;
 		this.dash_ribbon_show = R.bool.theme_default_dash_ribbon_show;
+		this.dash_blur_radius = R.dimen.theme_default_dash_blur_radius;
 	}
 }

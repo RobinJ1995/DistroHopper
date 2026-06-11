@@ -71,4 +71,5 @@
     <drawable name="theme_elementary_dash_search_background">@drawable/theme_elementary_res_dash_search_background</drawable>
     <color name="theme_elementary_dash_search_text_colour">@android:color/black</color>
     <bool name="theme_elementary_dash_ribbon_show">false</bool>
+    <dimen name="theme_elementary_dash_blur_radius">5dp</dimen>
 </resources>

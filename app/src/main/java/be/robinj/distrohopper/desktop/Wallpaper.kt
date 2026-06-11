@@ -3,20 +3,16 @@ package be.robinj.distrohopper.desktop
 import android.Manifest
 import android.app.WallpaperManager
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.view.Window
 import android.widget.ImageView
 import be.robinj.distrohopper.ExceptionHandler
 import be.robinj.distrohopper.Image
 import be.robinj.distrohopper.Permission
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.dev.Log
-import be.robinj.distrohopper.preferences.Preference
-import be.robinj.distrohopper.preferences.Preferences
-import androidx.core.graphics.scale
 
 /**
  * Created by robin on 8/21/14.
@@ -24,8 +20,6 @@ import androidx.core.graphics.scale
 class Wallpaper : ImageView {
     private val context: Context
     private var img: Drawable? = null
-    private var blurred: Drawable? = null
-    private var mode: String? = null
 
     var isLiveWallpaper: Boolean = false
         private set
@@ -54,7 +48,7 @@ class Wallpaper : ImageView {
         if (permissionExternalStorage.check()) {
             LOG.i(
                 "Wallpaper",
-                "READ_EXTERNAL_STORAGE permission granted. Trying to obtain and blur wallpaper..."
+                "READ_EXTERNAL_STORAGE permission granted. Trying to obtain wallpaper..."
             )
             try {
                 /*
@@ -64,33 +58,9 @@ class Wallpaper : ImageView {
 				 * Very useful for home screen replacements like these.
 				 */
                 this.img = wpman.getDrawable()
-
-                //TODO// Huge memory hog! Need to get rid of this. //
-                val prefs = Preferences.getSharedPreferences(this.context, Preferences.PREFERENCES)
-                this.mode = prefs.getString(Preference.WALLPAPER_BLUR_MODE.getName(), "darken")
-
-                if (mode == "scale") {
-                    val blurred = wpman.getDrawable()
-
-                    var bmdBlurred = blurred as BitmapDrawable?
-                    var bmBlurred = bmdBlurred!!.bitmap
-
-                    val origWidth = bmBlurred.width.toFloat()
-                    val origHeight = bmBlurred.height.toFloat()
-
-                    val width = 200
-                    val height = (origHeight * (200f / origWidth)).toInt()
-
-                    bmBlurred = bmBlurred.scale(width, height)
-                        .scale(origWidth.toInt(), origHeight.toInt())
-
-                    bmdBlurred = BitmapDrawable(bmBlurred)
-                    this.blurred = bmdBlurred
-                }
-            } catch (ex: Exception) // I'd prefer the image not being blurred over the app crashing //
+            } catch (ex: Exception) // Only needed for the average colour; not worth crashing over //
             {
                 this.img = null
-                this.blurred = null
 
                 ExceptionHandler(ex).logAndTrack()
             }
@@ -100,7 +70,6 @@ class Wallpaper : ImageView {
                 "READ_EXTERNAL_STORAGE permission not granted or Android version >= 13."
             )
             this.img = null
-            this.blurred = null
         }
 
         val info = wpman.wallpaperInfo
@@ -110,51 +79,28 @@ class Wallpaper : ImageView {
     }
 
     fun set() {
-        if (this.img == null && this.blurred == null) {
-            return
-        }
+        this.setImageDrawable(null)
+        this.setBackgroundColor(this.resources.getColor(R.color.transparent))
+    }
 
-        if (this.mode != "no") {
-            if (this.isLiveWallpaper || this.blurred == null || this.mode == "darken") {
-                this.setImageDrawable(null)
-                this.setBackgroundColor(this.resources.getColor(R.color.transparent))
-            } else {
-                this.setImageDrawable(this.img)
-                this.setBackgroundDrawable(null) // setBackgroundDrawable is deprecated, but setBackground is unspported on older versions of Android //
-            }
+    /*
+     * The system wallpaper lives in a separate window behind the (transparent) activity, so
+     * blurring it is only possible with cross-window blur. That can be unavailable at runtime
+     * (battery saver, device config), in which case this view darkens it instead.
+     */
+    fun blur(window: Window, radiusPx: Int) {
+        if (window.windowManager.isCrossWindowBlurEnabled) {
+            window.setBackgroundBlurRadius(radiusPx)
+            this.setBackgroundColor(this.resources.getColor(R.color.transparent))
+        } else {
+            window.setBackgroundBlurRadius(0)
+            this.setBackgroundColor(this.resources.getColor(R.color.transparentblack60))
         }
     }
 
-    fun blur() {
-        if (this.img == null && this.blurred == null) {
-            return
-        }
-
-        if (this.mode != "no") {
-            if (this.isLiveWallpaper || this.blurred == null || this.mode == "darken") {
-                this.setImageDrawable(null)
-                this.setBackgroundColor(this.resources.getColor(R.color.transparentblack60))
-            } else {
-                this.setImageDrawable(this.blurred)
-                this.setBackgroundDrawable(null) // setBackgroundDrawable is deprecated, but setBackground is unspported on older versions of Android //
-            }
-        }
-    }
-
-    fun unblur() {
-        if (this.img == null && this.blurred == null) {
-            return
-        }
-
-        if (this.mode != "no") {
-            if (this.isLiveWallpaper || this.blurred == null || this.mode == "darken") {
-                this.setImageDrawable(null)
-                this.setBackgroundColor(this.resources.getColor(R.color.transparent))
-            } else {
-                this.setImageDrawable(this.img)
-                this.setBackgroundDrawable(null) // setBackgroundDrawable is deprecated, but setBackground is unspported on older versions of Android //
-            }
-        }
+    fun unblur(window: Window) {
+        window.setBackgroundBlurRadius(0)
+        this.setBackgroundColor(this.resources.getColor(R.color.transparent))
     }
 
     fun getAverageColour(alpha: Int): Int {

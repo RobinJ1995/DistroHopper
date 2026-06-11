@@ -17,7 +17,7 @@ vary considerably across the codebase — older Java alongside newer Kotlin.
 ## Build & test
 
 - Single-module Gradle project: the `:app` module is the entire application.
-- `compileSdk`/`targetSdk` 36, `minSdk` 29. Mixed Java/Kotlin.
+- `compileSdk`/`targetSdk` 36, `minSdk` 31. Mixed Java/Kotlin.
 - Build: `./gradlew assembleDebug`
 - Unit tests: `./gradlew testDebugUnitTest` — JVM tests under
   `app/src/test/`, written in Kotlin using Robolectric (they exercise real
@@ -51,7 +51,12 @@ etc/                                        — design assets (SVG/XCF sources, 
   - `Observed`/`IObserver` — small homegrown observer pattern.
   - `AboutActivity`, `ContributeActivity` — informational screens.
 - **`desktop/`** — the desktop surface itself (`Wallpaper`, `AppIcon`, drag
-  listeners).
+  listeners). The activity is transparent over the system wallpaper
+  (`windowShowWallpaper`), which lives in a separate system-owned window:
+  when the dash opens it is blurred via cross-window blur
+  (`Window#setBackgroundBlurRadius`, with a darken fallback in `Wallpaper`
+  when blur is disabled at runtime, e.g. battery saver), while widgets —
+  which live in the activity's own window — get a `RenderEffect` blur.
   - **`desktop/launcher/`** — the Unity-style launcher bar (the dock of
     pinned/running app icons) and its click/drag listeners. Note there are
     several distinct `AppLauncher` classes in different packages — they are

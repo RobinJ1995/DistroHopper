@@ -72,4 +72,5 @@
     <drawable name="theme_default_dash_search_background">@drawable/dash_search_background</drawable>
     <color name="theme_default_dash_search_text_colour">@android:color/white</color>
     <bool name="theme_default_dash_ribbon_show">true</bool>
+    <dimen name="theme_default_dash_blur_radius">10dp</dimen>
 </resources>

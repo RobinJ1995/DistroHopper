@@ -14,7 +14,6 @@ public enum Preference {
 	DASH_SEARCH_FULL("dashsearch_full"),
 	DASH_SEARCH_LENSES_MAX_RESULTS("dashsearch_lenses_maxresults"),
 	DASHICON_WIDTH("dashicon_width", 24),
-	WALLPAPER_BLUR_MODE("unitywallpaper_blur"),
 	PRIMARY_COLOUR("unitybackground_colour"),
 	PRIMARY_COLOUR_OPACITY("unitybackground_opacity"),
 	PRIMARY_COLOUR_DYAMIC("unitybackground_dynamic"),

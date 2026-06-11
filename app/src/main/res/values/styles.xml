@@ -4,6 +4,9 @@
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowShowWallpaper">true</item>
+        <!-- Required for Window#setBackgroundBlurRadius; a transparent background alone doesn't
+             make Window#isTranslucent() true, and DecorView ignores the blur radius otherwise. -->
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <style name="HomeTheme" parent="AppTheme">

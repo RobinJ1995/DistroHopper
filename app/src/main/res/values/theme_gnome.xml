@@ -69,4 +69,5 @@
     <drawable name="theme_gnome_dash_search_background">@drawable/theme_gnome_res_dash_search_background</drawable>
     <color name="theme_gnome_dash_search_text_colour">@android:color/white</color>
     <bool name="theme_gnome_dash_ribbon_show">false</bool>
+    <dimen name="theme_gnome_dash_blur_radius">20dp</dimen>
 </resources>

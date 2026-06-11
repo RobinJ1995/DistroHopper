@@ -3,7 +3,6 @@ package be.robinj.distrohopper.widgets
 import android.appwidget.AppWidgetProviderInfo
 import android.content.ClipData
 import android.content.Context
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -231,12 +230,10 @@ class WidgetContainer internal constructor(
 	}
 
 	/** The provider's maximum resize width in px, or 0 when unspecified. */
-	private fun maxResizeWidthPx(): Int =
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) this.info?.maxResizeWidth ?: 0 else 0
+	private fun maxResizeWidthPx(): Int = this.info?.maxResizeWidth ?: 0
 
 	/** The provider's maximum resize height in px, or 0 when unspecified. */
-	private fun maxResizeHeightPx(): Int =
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) this.info?.maxResizeHeight ?: 0 else 0
+	private fun maxResizeHeightPx(): Int = this.info?.maxResizeHeight ?: 0
 
 	/**
 	 * Hand the move off to the system drag-and-drop framework. The widget itself becomes

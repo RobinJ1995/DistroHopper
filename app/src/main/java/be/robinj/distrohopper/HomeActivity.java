@@ -12,6 +12,8 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -45,6 +47,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 
 import be.robinj.distrohopper.async.AsyncInitWallpaper;
 import be.robinj.distrohopper.async.AsyncLoadAppIcons;
@@ -115,6 +118,13 @@ public class HomeActivity extends AppCompatActivity
 	private LogToaster logToaster;
 
 	private boolean isDashOpened = false;
+
+	private final Consumer<Boolean> crossWindowBlurListener = enabled ->
+	{
+		if (this.isDashOpened)
+			this.wpWallpaper.blur (this.getWindow (),
+					this.getResources ().getDimensionPixelSize (HomeActivity.theme.dash_blur_radius));
+	};
 
 	private ICache appLabelCache;
 	private ICache appIconCache;
@@ -225,6 +235,9 @@ public class HomeActivity extends AppCompatActivity
 			// Start initialising the wallpaper //
 			this.asyncInitWallpaper = new AsyncInitWallpaper (this);
 			this.asyncInitWallpaper.execute (this.wpWallpaper);
+
+			// Cross-window blur can be toggled at runtime (e.g. battery saver) //
+			this.getWindowManager ().addCrossWindowBlurEnabledListener (this.crossWindowBlurListener);
 
 			// Start loading apps from the package manager //
 			this.asyncLoadApps = new AsyncLoadApps (this, lalSpinner, lalBfb,
@@ -715,6 +728,8 @@ public class HomeActivity extends AppCompatActivity
 	public void onDestroy ()
 	{
 		this.cancelAsyncTasks();
+
+		this.getWindowManager ().removeCrossWindowBlurEnabledListener (this.crossWindowBlurListener);
 
 		if (this.broadcastPackageManager != null)
 		{
@@ -1349,7 +1364,9 @@ public class HomeActivity extends AppCompatActivity
 		EditText etDashSearch = this.viewFinder.get(R.id.etDashSearch);
 
 		this.llDash.setVisibility (View.GONE);
-		this.wpWallpaper.unblur ();
+		this.wpWallpaper.unblur (this.getWindow ());
+		final WidgetsContainer vgWidgets = this.viewFinder.get(R.id.vgWidgets);
+		vgWidgets.setRenderEffect (null);
 		etDashSearch.setText ("");
 		etDashSearch.clearFocus ();
 
@@ -1385,7 +1402,11 @@ public class HomeActivity extends AppCompatActivity
 		}
 
 		this.llDash.setVisibility (View.VISIBLE);
-		this.wpWallpaper.blur ();
+		final int blurRadius = this.getResources ().getDimensionPixelSize (HomeActivity.theme.dash_blur_radius);
+		this.wpWallpaper.blur (this.getWindow (), blurRadius);
+		final WidgetsContainer vgWidgets = this.viewFinder.get(R.id.vgWidgets);
+		vgWidgets.setRenderEffect (
+				RenderEffect.createBlurEffect (blurRadius, blurRadius, Shader.TileMode.CLAMP));
 		this.llPanel.setAlpha (1F);
 
 		if (this.getResources ().getInteger (HomeActivity.theme.panel_close_location) != -1)

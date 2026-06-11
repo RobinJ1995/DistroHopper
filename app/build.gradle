@@ -16,7 +16,7 @@ android {
     compileSdk 36
     defaultConfig {
         applicationId "be.robinj.distrohopper"
-        minSdk 29
+        minSdk 31
         targetSdk 36
         versionCode 101
         versionName "2.6.5"
