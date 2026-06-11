@@ -97,6 +97,11 @@ public class PreferencesActivity extends AppCompatActivity
 		{
 			this.getPreferenceManager ().setSharedPreferencesName (Preferences.PREFERENCES);
 
+			// No root PreferenceScreen exists until one is set; give the categories
+			// below something to attach to //
+			this.setPreferenceScreen (
+				this.getPreferenceManager ().createPreferenceScreen (this.requireContext ()));
+
 			this.addCategory (R.string.pref_header_appearance, R.xml.pref_appearance);
 			this.addCategory (R.string.pref_header_functionality, R.xml.pref_functionality);
 			this.addCategory (R.string.pref_header_advanced, R.xml.pref_advanced);
