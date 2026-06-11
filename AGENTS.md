@@ -77,7 +77,12 @@ etc/                                        — design assets (SVG/XCF sources, 
     are idempotent) so UI reactions stay synchronous; the flows are the
     state of record. Customise mode lives as a `MutableStateFlow` on the
     `DependencyContainer` (not the ViewModel) because `App.launch()` checks
-    it with only a Context.
+    it with only a Context. The ViewModel also exposes preference flows
+    that apply live without recreating the activity (panel opacity,
+    launcher/dash icon widths, show-running-apps) — the customise-mode
+    seekbars only write the preference and the binder applies it. Theme,
+    launcher/panel edge, and widgets-enabled changes still recreate the
+    activity (wholesale view-tree surgery).
   - `ThemeApplier` — applies the active theme's resources to the views.
   - `LauncherEdgeController` — repositions/reorients the launcher bar per
     edge, panel edge handling, and widget-area insets; owns the current

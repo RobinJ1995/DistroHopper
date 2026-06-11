@@ -152,7 +152,7 @@ public class HomeActivity extends AppCompatActivity
 			this.wallpaperColourApplier = new WallpaperColourApplier (this, this.viewFinder, this.theme, this.edgeController);
 			this.viewModel = new ViewModelProvider (this, new HomeViewModel.Factory (container))
 					.get (HomeViewModel.class);
-			HomeStateBinder.bind (this, this.viewModel, this.dash);
+			HomeStateBinder.bind (this, this.viewModel, this.dash, this.themeApplier);
 			container.getCustomiseMode ().setValue (false);
 
 			// Lay out edge-to-edge on every API level; SDK 35+ enforces it anyway. The status

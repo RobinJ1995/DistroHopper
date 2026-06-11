@@ -5,7 +5,6 @@ import android.content.res.ColorStateList
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.Spinner
@@ -13,7 +12,6 @@ import android.widget.TextView
 import androidx.core.view.ViewCompat
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.ViewFinder
-import be.robinj.distrohopper.desktop.launcher.AppLauncher
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.theme.Theme
@@ -34,17 +32,6 @@ class CustomiseModeUi(
 		val res = this.activity.resources
 		val prefs = Preferences.getSharedPreferences(this.activity)
 		val prefsEdit = prefs.edit()
-		val density = res.displayMetrics.density
-
-		val llLauncher = this.viewFinder.get<LinearLayout>(R.id.llLauncher)
-		val llLauncherPinnedApps = this.viewFinder.get<LinearLayout>(R.id.llLauncherPinnedApps)
-		val llLauncherRunningApps = this.viewFinder.get<LinearLayout>(R.id.llLauncherRunningApps)
-		val llBfbSpinnerWrapper = this.viewFinder.get<LinearLayout>(llLauncher, R.id.llBfbSpinnerWrapper)
-		val lalSpinner = this.viewFinder.get<AppLauncher>(llBfbSpinnerWrapper, R.id.lalSpinner)
-		val lalBfb = this.viewFinder.get<AppLauncher>(llBfbSpinnerWrapper, R.id.lalBfb)
-		val lalPreferences = this.viewFinder.get<AppLauncher>(llLauncher, R.id.lalPreferences)
-		val lalTrash = this.viewFinder.get<AppLauncher>(llLauncher, R.id.lalTrash)
-		val ibPanelDashClose = this.viewFinder.get<ImageButton>(R.id.ibPanelDashClose)
 
 		val llDashContent = this.viewFinder.get<LinearLayout>(R.id.llDashContent)
 		val llDashCustomise = this.viewFinder.get<LinearLayout>(R.id.llDashCustomise)
@@ -52,7 +39,8 @@ class CustomiseModeUi(
 		llDashContent.visibility = View.GONE
 		llDashCustomise.visibility = View.VISIBLE
 
-		// Launcher Icon Size //
+		// Launcher Icon Size // Writing the preference is enough: HomeStateBinder
+		// observes it and re-initialises the launcher icons //
 		val sbCustomiseLauncherIconSize = this.viewFinder.get<SeekBar>(R.id.sbCustomiseLauncherIconSize)
 		sbCustomiseLauncherIconSize.progress = prefs.getInt(Preference.LAUNCHERICON_WIDTH.getName(), 36)
 		sbCustomiseLauncherIconSize.setOnSeekBarChangeListener(
@@ -70,20 +58,6 @@ class CustomiseModeUi(
 				private fun update(value: Int) {
 					prefsEdit.putInt(Preference.LAUNCHERICON_WIDTH.getName(), value)
 					prefsEdit.commit()
-
-					val ibDashClose_layoutParams = LinearLayout.LayoutParams(
-						((48 + value).toFloat() * density).toInt(),
-						LinearLayout.LayoutParams.MATCH_PARENT)
-					ibPanelDashClose.layoutParams = ibDashClose_layoutParams
-
-					lalBfb.init()
-					lalSpinner.init()
-					for (j in 0 until llLauncherPinnedApps.childCount)
-						(llLauncherPinnedApps.getChildAt(j) as AppLauncher).init()
-					for (j in 0 until llLauncherRunningApps.childCount)
-						(llLauncherRunningApps.getChildAt(j) as AppLauncher).init()
-					lalTrash.init()
-					lalPreferences.init()
 				}
 			})
 

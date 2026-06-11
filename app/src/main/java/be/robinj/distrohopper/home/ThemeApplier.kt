@@ -141,7 +141,7 @@ class ThemeApplier(
 	 * Set the width of icons in the Dash.
 	 * @param width The value of the [Preference.DASHICON_WIDTH] user preference.
 	 */
-	private fun applyDashIconWidth(width: Int) {
+	fun applyDashIconWidth(width: Int) {
 		val density = this.activity.resources.displayMetrics.density
 
 		this.viewFinder.get<GridView>(R.id.gvDashHomeApps).setColumnWidth(Math.round((80 // 80 is the minimum
