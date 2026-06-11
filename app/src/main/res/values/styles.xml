@@ -16,19 +16,14 @@
         <item name="android:backgroundDimAmount">0.8</item>
     </style>
 
-    <style name="HoloDialogTheme" parent="android:Theme.Holo.Wallpaper">
-        <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:backgroundDimAmount">0.8</item>
-        <item name="android:actionBarStyle">@style/actionbar_solid</item>
-    </style>
-
     <style name="AboutTheme" parent="DialogTheme">
     </style>
 
     <style name="ContributeTheme" parent="DialogTheme">
     </style>
 
-    <style name="PreferencesTheme" parent="HoloDialogTheme">
+    <style name="PreferencesTheme" parent="DialogTheme">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
     <style name="ThemePreferencesTheme" parent="DialogTheme">
@@ -39,11 +34,6 @@
     </style>
 
     <style name="DevLogsTheme" parent="DialogTheme">
-    </style>
-
-    <style name="actionbar_solid" parent="android:Widget.ActionBar">
-        <item name="android:background">@color/transparentblack10</item>
-        <item name="android:icon">@color/transparent</item>
     </style>
 
     <style name="textshadow_2px_black" parent="android:TextAppearance.Holo.Widget.TextView">

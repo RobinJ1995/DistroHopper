@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.desktop.dash.lens.Lens;
 import be.robinj.distrohopper.desktop.dash.lens.LensManager;
@@ -28,6 +29,7 @@ public class LensPreferencesActivity extends AppCompatActivity
 		{
 			super.onCreate (savedInstanceState);
 			setContentView (R.layout.activity_lens_preferences);
+			InsetsHelper.applySystemBarsPadding (this);
 
 			this.lensManager = new LensManager (this.getApplicationContext (), null, null, null, null);
 
