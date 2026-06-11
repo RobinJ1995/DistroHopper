@@ -1,6 +1,5 @@
 package be.robinj.distrohopper;
 
-import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -8,12 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.graphics.RenderEffect;
-import android.graphics.Shader;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,31 +16,19 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.appcompat.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.SeekBar;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import be.robinj.distrohopper.async.AsyncInitWallpaper;
 import be.robinj.distrohopper.async.AsyncLoadAppIcons;
@@ -58,6 +40,12 @@ import be.robinj.distrohopper.cache.AppLabelCache;
 import be.robinj.distrohopper.cache.ExpiringCache;
 import be.robinj.distrohopper.cache.ICache;
 import be.robinj.distrohopper.dev.Log;
+import be.robinj.distrohopper.home.CustomiseModeUi;
+import be.robinj.distrohopper.home.DashController;
+import be.robinj.distrohopper.home.LauncherEdgeController;
+import be.robinj.distrohopper.home.LayoutTransitionConfigurer;
+import be.robinj.distrohopper.home.ThemeApplier;
+import be.robinj.distrohopper.home.WallpaperColourApplier;
 import be.robinj.distrohopper.dev.LogToaster;
 import be.robinj.distrohopper.preferences.Preference;
 import be.robinj.distrohopper.preferences.Preferences;
@@ -89,13 +77,6 @@ public class HomeActivity extends AppCompatActivity
 	private ViewFinder viewFinder;
 
 	LinearLayout llDash;
-	LinearLayout llPanel;
-	ImageButton ibPanelDashClose;
-	Wallpaper wpWallpaper;
-	FrameLayout flWallpaperOverlay;
-	FrameLayout flWallpaperOverlayWhenDashOpened;
-
-	private int chameleonicBgColour = Color.argb (25, 0, 0, 0);
 
 	private AsyncInitWallpaper asyncInitWallpaper;
 	private AsyncLoadApps asyncLoadApps;
@@ -106,21 +87,15 @@ public class HomeActivity extends AppCompatActivity
 	private boolean openDashWhenReady = false;
 
 	private Theme theme = new Default ();
-	private Location launcherEdge = Location.NONE;
-	private Insets navigationInsets = Insets.NONE;
+
+	private LauncherEdgeController edgeController;
+	private DashController dash;
+	private ThemeApplier themeApplier;
+	private WallpaperColourApplier wallpaperColourApplier;
 
 	private PackageManagerBroadcastReceiver broadcastPackageManager;
 
 	private LogToaster logToaster;
-
-	private boolean isDashOpened = false;
-
-	private final Consumer<Boolean> crossWindowBlurListener = enabled ->
-	{
-		if (this.isDashOpened)
-			this.wpWallpaper.blur (this.getWindow (),
-					this.getResources ().getDimensionPixelSize (this.theme.dash_blur_radius));
-	};
 
 	private ICache appLabelCache;
 	private ICache appIconCache;
@@ -167,16 +142,18 @@ public class HomeActivity extends AppCompatActivity
 			final be.robinj.distrohopper.desktop.launcher.AppLauncher lalTrash = this.viewFinder.get(llLauncher, R.id.lalTrash);
 			this.llDash = this.viewFinder.get(llLauncherAndDashContainer, R.id.llDash);
 			final GridView gvDashHomeApps = this.viewFinder.get(this.llDash, R.id.gvDashHomeApps);
-			final LinearLayout llDashSearchContainer = this.viewFinder.get(this.llDash, R.id.llDashSearchContainer);
-			final ListView lvDashHomeLensResults = this.viewFinder.get(this.llDash, R.id.lvDashHomeLensResults);
-			final LinearLayout llDashRibbon = this.viewFinder.get(this.llDash, R.id.llDashRibbon);
-			this.wpWallpaper = this.viewFinder.get(R.id.wpWallpaper);
-			final FrameLayout flWallpaperOverlayContainer = this.viewFinder.get(R.id.flWallpaperOverlayContainer);
-			this.flWallpaperOverlay = this.viewFinder.get(flWallpaperOverlayContainer, R.id.flWallpaperOverlay);
-			this.flWallpaperOverlayWhenDashOpened = this.viewFinder.get(flWallpaperOverlayContainer, R.id.flWallpaperOverlayWhenDashOpened);
-			this.llPanel = this.viewFinder.get(R.id.llPanel);
-			this.ibPanelDashClose = this.viewFinder.get(this.llPanel, R.id.ibPanelDashClose);
+			final Wallpaper wpWallpaper = this.viewFinder.get(R.id.wpWallpaper);
+			final LinearLayout llPanel = this.viewFinder.get(R.id.llPanel);
+			final ImageButton ibPanelDashClose = this.viewFinder.get(llPanel, R.id.ibPanelDashClose);
 			final WidgetsContainer vgWidgets = this.viewFinder.get(R.id.vgWidgets);
+
+			// Load up the theme and wire up the controllers that manage the views //
+			final DependencyContainer container = DependencyContainer.of (this);
+			this.theme = container.getThemeManager ().getCurrent ();
+			this.edgeController = new LauncherEdgeController (this, this.viewFinder, this.theme, container.getPrefs ());
+			this.dash = new DashController (this, this.viewFinder, this.theme, container.getPrefs ());
+			this.themeApplier = new ThemeApplier (this, this.viewFinder, this.theme, this.edgeController);
+			this.wallpaperColourApplier = new WallpaperColourApplier (this, this.viewFinder, this.theme, this.edgeController);
 
 			// Lay out edge-to-edge on every API level; SDK 35+ enforces it anyway. The status
 			// bar is compensated for by llStatusBar below. Tappable element insets keep the
@@ -188,15 +165,12 @@ public class HomeActivity extends AppCompatActivity
 			ViewCompat.setOnApplyWindowInsetsListener (llLauncherAndDashContainer, (v, windowInsets) ->
 			{
 				final Insets insets = windowInsets.getInsets (WindowInsetsCompat.Type.tappableElement ());
-				this.navigationInsets = insets;
+				this.edgeController.setNavigationInsets (insets);
 				v.setPadding (insets.left, 0, insets.right, insets.bottom);
-				this.updateWidgetAreaInsets (vgWidgets, llLauncher);
+				this.edgeController.updateWidgetAreaInsets (vgWidgets, llLauncher);
 
 				return windowInsets;
 			});
-
-			// Load up the theme //
-			this.theme = DependencyContainer.of (this).getThemeManager ().getCurrent ();
 
 			// Load the launcher service //
 			Intent launcherServiceIntent = new Intent (this, LauncherService.class);
@@ -212,21 +186,21 @@ public class HomeActivity extends AppCompatActivity
 			final Resources res = this.getResources ();
 			final float density = res.getDisplayMetrics ().density;
 
-			this.setPanelEdge(Location.of(prefs.getInt(Preference.PANEL_EDGE.getName(), res.getInteger(this.theme.panel_location))));
+			this.edgeController.applyPanelEdge(Location.of(prefs.getInt(Preference.PANEL_EDGE.getName(), res.getInteger(this.theme.panel_location))));
 
 			int ibDashClose_width = (int) ((float) (48 + prefs.getInt (Preference.LAUNCHERICON_WIDTH.getName(), 36)) * density);
 			LinearLayout.LayoutParams ibDashClose_layoutParams = new LinearLayout.LayoutParams (ibDashClose_width, LinearLayout.LayoutParams.MATCH_PARENT);
-			this.ibPanelDashClose.setLayoutParams (ibDashClose_layoutParams);
+			ibPanelDashClose.setLayoutParams (ibDashClose_layoutParams);
 
 			// Start spinning the BFB //
 			lalSpinner.getProgressWheel ().spin ();
 
 			// Start initialising the wallpaper //
 			this.asyncInitWallpaper = new AsyncInitWallpaper (this);
-			this.asyncInitWallpaper.execute (this.wpWallpaper);
+			this.asyncInitWallpaper.execute (wpWallpaper);
 
 			// Cross-window blur can be toggled at runtime (e.g. battery saver) //
-			this.getWindowManager ().addCrossWindowBlurEnabledListener (this.crossWindowBlurListener);
+			this.getWindowManager ().addCrossWindowBlurEnabledListener (this.dash.getCrossWindowBlurListener ());
 
 			// Start loading apps from the package manager //
 			this.asyncLoadApps = new AsyncLoadApps (this, lalSpinner, lalBfb,
@@ -235,49 +209,7 @@ public class HomeActivity extends AppCompatActivity
 			this.asyncLoadApps.execute (this.getApplicationContext ());
 
 			// Setup layout transitions //
-			LayoutTransition gvDashHomeApps_transition = new LayoutTransition ();
-			gvDashHomeApps_transition.setDuration (180);
-			gvDashHomeApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
-			gvDashHomeApps.setLayoutTransition (gvDashHomeApps_transition);
-
-			LayoutTransition lvDashHomeLensResults_transition = new LayoutTransition ();
-			lvDashHomeLensResults_transition.setDuration (180);
-			lvDashHomeLensResults_transition.setStartDelay (LayoutTransition.APPEARING, 0);
-			lvDashHomeLensResults.setLayoutTransition (lvDashHomeLensResults_transition);
-
-			LayoutTransition llLauncherPinnedApps_transition = new LayoutTransition ();
-			llLauncherPinnedApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
-			llLauncherPinnedApps.setLayoutTransition (llLauncherPinnedApps_transition);
-
-			LayoutTransition llLauncherRunningApps_transition = new LayoutTransition ();
-			llLauncherRunningApps_transition.setStartDelay (LayoutTransition.APPEARING, 0);
-			llLauncherRunningApps.setLayoutTransition (llLauncherRunningApps_transition);
-
-			LayoutTransition llDashSearchContainer_transition = new LayoutTransition ();
-			llDashSearchContainer_transition.setStartDelay (LayoutTransition.APPEARING, 0);
-			llDashSearchContainer_transition.setStartDelay (LayoutTransition.DISAPPEARING, 0);
-			llDashSearchContainer_transition.setStartDelay (LayoutTransition.CHANGE_APPEARING, 0);
-			llDashSearchContainer_transition.setStartDelay (LayoutTransition.CHANGE_DISAPPEARING, 0);
-			llDashSearchContainer_transition.setStartDelay (LayoutTransition.CHANGING, 0);
-			llDashSearchContainer.setLayoutTransition (llDashSearchContainer_transition);
-
-			LayoutTransition llLauncherAndDashContainer_transition = new LayoutTransition ();
-			llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.APPEARING, 0);
-			llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.DISAPPEARING, 0);
-			llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.CHANGE_APPEARING, 0);
-			llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.CHANGE_DISAPPEARING, 0);
-			llLauncherAndDashContainer_transition.setStartDelay (LayoutTransition.CHANGING, 0);
-			llLauncherAndDashContainer_transition.setDuration (res.getInteger (android.R.integer.config_shortAnimTime));
-			llLauncherAndDashContainer.setLayoutTransition (llLauncherAndDashContainer_transition);
-
-			LayoutTransition flWallpaperOverlayContainer_transition = new LayoutTransition ();
-			flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.APPEARING, 0);
-			flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.DISAPPEARING, 0);
-			flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.CHANGE_APPEARING, 0);
-			flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.CHANGE_DISAPPEARING, 0);
-			flWallpaperOverlayContainer_transition.setStartDelay (LayoutTransition.CHANGING, 0);
-			flWallpaperOverlayContainer_transition.setDuration (res.getInteger (android.R.integer.config_shortAnimTime));
-			flWallpaperOverlayContainer.setLayoutTransition (flWallpaperOverlayContainer_transition);
+			LayoutTransitionConfigurer.apply (this.viewFinder, res);
 
 			// Check if the dash should open immediately once apps have been loaded //
 			this.openDashWhenReady = prefs.getBoolean (Preference.DASH_OPEN_ON_READY.getName(), this.openDashWhenReady);
@@ -303,7 +235,7 @@ public class HomeActivity extends AppCompatActivity
 			llStatusBar.setVisibility (View.VISIBLE);
 
 			// Apply theme //
-			this.applyTheme(res);
+			this.themeApplier.apply ();
 
 			// Initialise the widget host // After applyTheme(), which determines the launcher edge //
 			this.widgetManager = AppWidgetManager.getInstance (this);
@@ -329,7 +261,7 @@ public class HomeActivity extends AppCompatActivity
 					public void onLayoutChange (final View view, final int left, final int top, final int right, final int bottom,
 							final int oldLeft, final int oldTop, final int oldRight, final int oldBottom)
 					{
-						HomeActivity.this.updateWidgetAreaInsets (vgWidgets, view);
+						HomeActivity.this.edgeController.updateWidgetAreaInsets (vgWidgets, view);
 					}
 				});
 
@@ -342,191 +274,13 @@ public class HomeActivity extends AppCompatActivity
 
 			if (modeCustomise)
 			{
-				final HomeActivity self = this;
-				final SharedPreferences.Editor prefsEdit = prefs.edit ();
-
-				final LinearLayout llDashContent = this.viewFinder.get(R.id.llDashContent);
-				final LinearLayout llDashCustomise = this.viewFinder.get(R.id.llDashCustomise);
-
-				llDashContent.setVisibility (View.GONE);
-				llDashCustomise.setVisibility (View.VISIBLE);
-
-				// Launcher Icon Size //
-				final SeekBar sbCustomiseLauncherIconSize = this.viewFinder.get(R.id.sbCustomiseLauncherIconSize);
-				sbCustomiseLauncherIconSize.setProgress (prefs.getInt (Preference.LAUNCHERICON_WIDTH.getName(), 36));
-				sbCustomiseLauncherIconSize.setOnSeekBarChangeListener
-				(
-					new SeekBar.OnSeekBarChangeListener ()
-					{
-						@Override
-						public void onProgressChanged (SeekBar seekBar, int i, boolean b)
-						{
-							this.update (i);
-						}
-
-						@Override
-						public void onStartTrackingTouch (SeekBar seekBar) {}
-
-						@Override
-						public void onStopTrackingTouch (SeekBar seekBar)
-						{
-							this.update (seekBar.getProgress ());
-						}
-
-						private void update (int value)
-						{
-							prefsEdit.putInt (Preference.LAUNCHERICON_WIDTH.getName(), value);
-							prefsEdit.commit ();
-
-							LinearLayout.LayoutParams ibDashClose_layoutParams = new LinearLayout.LayoutParams ((int) ((float) (48 + value) * density), LinearLayout.LayoutParams.MATCH_PARENT);
-							ibPanelDashClose.setLayoutParams (ibDashClose_layoutParams);
-
-							lalBfb.init ();
-							lalSpinner.init ();
-							for (int i = 0; i < llLauncherPinnedApps.getChildCount (); i++)
-								((AppLauncher) llLauncherPinnedApps.getChildAt (i)).init ();
-							for (int i = 0; i < llLauncherRunningApps.getChildCount (); i++)
-								((AppLauncher) llLauncherRunningApps.getChildAt (i)).init ();
-							lalTrash.init ();
-							lalPreferences.init ();
-						}
-					}
-				);
-
-				// Dash Icon Size //
-				final SeekBar sbCustomiseDashIconSize = this.viewFinder.get(R.id.sbCustomiseDashIconSize);
-				sbCustomiseDashIconSize.setProgress (prefs.getInt (Preference.DASHICON_WIDTH.getName(), Preference.DASHICON_WIDTH.getDefault()));
-				sbCustomiseDashIconSize.setOnSeekBarChangeListener(
-					new SeekBar.OnSeekBarChangeListener () {
-						@Override
-						public void onProgressChanged (final SeekBar seekBar, final int i, final boolean b)
-						{
-							this.update (i);
-						}
-
-						@Override
-						public void onStartTrackingTouch (final SeekBar seekBar) {}
-
-						@Override
-						public void onStopTrackingTouch (final SeekBar seekBar)
-						{
-							this.update(seekBar.getProgress ());
-						}
-
-						private void update (final int value)
-						{
-							prefsEdit.putInt(Preference.DASHICON_WIDTH.getName(), value);
-							prefsEdit.commit();
-						}
-					});
-
-				// Launcher Edge //
-				final String[] edgeNames = res.getStringArray (R.array.edges);
-
-				final Spinner spiCustomiseLauncherEdge = this.viewFinder.get(R.id.spiCustomiseLauncherEdge);
-				final int[] supportedLauncherEdges = res.getIntArray (this.theme.launcher_location_supported);
-				final List<String> supportedLauncherEdgeNames = new ArrayList<String> ();
-				final int currentLauncherEdge = prefs.getInt (Preference.LAUNCHER_EDGE.getName(), this.theme.launcher_location);
-				int currentLauncherEdgeIndex = -1;
-				for (int i = 0; i < supportedLauncherEdges.length; i++)
+				new CustomiseModeUi (this, this.viewFinder, this.theme, () ->
 				{
-					int edge = supportedLauncherEdges[i];
-					supportedLauncherEdgeNames.add (edgeNames[edge]);
-
-					if (edge == currentLauncherEdge)
-						currentLauncherEdgeIndex = i;
-				}
-				final String[] arrSupportedLauncherEdgeNames = supportedLauncherEdgeNames.toArray (new String[0]);
-
-				final int spiCustomiseSpinnerTextColour = res.getColor(this.theme.dash_customise_spinner_text_colour);
-
-				final ArrayAdapter<String> spiCustomiseLauncherEdge_adapter = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, arrSupportedLauncherEdgeNames);
-				spiCustomiseLauncherEdge.setAdapter (spiCustomiseLauncherEdge_adapter);
-				spiCustomiseLauncherEdge.setSelection (currentLauncherEdgeIndex);
-				ViewCompat.setBackgroundTintList(spiCustomiseLauncherEdge, ColorStateList.valueOf(spiCustomiseSpinnerTextColour));
-				spiCustomiseLauncherEdge.setOnItemSelectedListener
-				(
-						new AdapterView.OnItemSelectedListener ()
-						{
-							@Override
-							public void onItemSelected (AdapterView<?> adapterView, View view, int i, long l)
-							{
-								int edge = supportedLauncherEdges[i];
-								boolean changing = currentLauncherEdge != edge;
-
-								if (changing)
-								{
-									prefsEdit.putInt (Preference.LAUNCHER_EDGE.getName(), edge);
-									prefsEdit.commit ();
-
-									Intent intent = self.getIntent ();
-									intent.putExtra ("customise", true);
-									self.finish ();
-									self.startActivity (intent); // Reload activity //
-								}
-
-								// Apply spinner text colour
-								if (adapterView.getChildAt(0) instanceof TextView) {
-									((TextView) adapterView.getChildAt(0)).setTextColor(spiCustomiseSpinnerTextColour);
-								}
-							}
-
-							@Override
-							public void onNothingSelected (AdapterView<?> adapterView) {}
-						}
-				);
-
-				// Panel Edge //
-				final Spinner spiCustomisePanelEdge = this.viewFinder.get(R.id.spiCustomisePanelEdge);
-				final int[] supportedPanelEdges = res.getIntArray (this.theme.panel_location_supported);
-				if (supportedPanelEdges.length > 1) {
-					final List<String> supportedPanelEdgeNames = new ArrayList<>();
-					final int currentPanelEdge = prefs.getInt(Preference.PANEL_EDGE.getName(), this.theme.panel_location);
-					int currentPanelEdgeIndex = -1;
-					for (int i = 0; i < supportedPanelEdges.length; i++) {
-						final int edge = supportedPanelEdges[i];
-						supportedPanelEdgeNames.add(edgeNames[edge]);
-
-						if (edge == currentPanelEdge)
-							currentPanelEdgeIndex = i;
-					}
-					final String[] arrSupportedPanelEdgeNames = supportedPanelEdgeNames.toArray(new String[0]);
-
-					final ArrayAdapter<String> spiCustomisePanelEdge_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, arrSupportedPanelEdgeNames);
-					spiCustomisePanelEdge.setAdapter(spiCustomisePanelEdge_adapter);
-					spiCustomisePanelEdge.setSelection(currentPanelEdgeIndex);
-					ViewCompat.setBackgroundTintList(spiCustomisePanelEdge, ColorStateList.valueOf(spiCustomiseSpinnerTextColour));
-					spiCustomisePanelEdge.setOnItemSelectedListener(
-							new AdapterView.OnItemSelectedListener() {
-								@Override
-								public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-									int edge = supportedPanelEdges[i];
-									boolean changing = currentPanelEdge != edge;
-
-									if (changing) {
-										prefsEdit.putInt(Preference.PANEL_EDGE.getName(), edge);
-										prefsEdit.commit();
-
-										Intent intent = self.getIntent();
-										intent.putExtra("customise", true);
-										self.finish();
-										self.startActivity(intent); // Reload activity //
-									}
-
-									// Apply spinner text colour
-									if (adapterView.getChildAt(0) instanceof TextView) {
-										((TextView) adapterView.getChildAt(0)).setTextColor(spiCustomiseSpinnerTextColour);
-									}
-								}
-
-								@Override
-								public void onNothingSelected(AdapterView<?> adapterView) {
-								}
-							}
-					);
-				} else {
-					this.viewFinder.get(llDashCustomise, R.id.llCustomisePanelEdge).setVisibility(View.GONE);
-				}
+					final Intent relaunchIntent = this.getIntent ();
+					relaunchIntent.putExtra ("customise", true);
+					this.finish ();
+					this.startActivity (relaunchIntent); // Reload activity //
+				}).show ();
 			}
 		}
 		catch (Exception ex)
@@ -685,7 +439,7 @@ public class HomeActivity extends AppCompatActivity
 				SharedPreferences prefs = this.getSharedPreferences ();
 
 				if (prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false))
-					this.apps.addRunningApps (this.chameleonicBgColour);
+					this.apps.addRunningApps (this.dash.getChameleonicBgColour ());
 			}
 		}
 		catch (Exception ex)
@@ -718,7 +472,8 @@ public class HomeActivity extends AppCompatActivity
 	{
 		this.cancelAsyncTasks();
 
-		this.getWindowManager ().removeCrossWindowBlurEnabledListener (this.crossWindowBlurListener);
+		if (this.dash != null)
+			this.getWindowManager ().removeCrossWindowBlurEnabledListener (this.dash.getCrossWindowBlurListener ());
 
 		if (this.broadcastPackageManager != null)
 		{
@@ -733,134 +488,6 @@ public class HomeActivity extends AppCompatActivity
 		return Preferences.getSharedPreferences(this, Preferences.PREFERENCES);
 	}
 
-	private void applyTheme(final Resources res) {
-		final SharedPreferences prefs = this.getSharedPreferences();
-
-		// Get views
-		final LinearLayout llLauncherAndDashContainer = this.viewFinder.get(R.id.llLauncherAndDashContainer);
-		final LinearLayout llLauncher = this.viewFinder.get(R.id.llLauncher);
-		final LinearLayout llBfbSpinnerWrapper = this.viewFinder.get(llLauncher, R.id.llBfbSpinnerWrapper);
-		final be.robinj.distrohopper.desktop.launcher.SpinnerAppLauncher lalSpinner = this.viewFinder.get(llBfbSpinnerWrapper, R.id.lalSpinner);
-		final be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb = this.viewFinder.get(llBfbSpinnerWrapper, R.id.lalBfb);
-		final be.robinj.distrohopper.desktop.launcher.AppLauncher lalPreferences = this.viewFinder.get(llLauncher, R.id.lalPreferences);
-		final be.robinj.distrohopper.desktop.launcher.AppLauncher lalTrash = this.viewFinder.get(llLauncher, R.id.lalTrash);
-		this.llDash = this.viewFinder.get(llLauncherAndDashContainer, R.id.llDash);
-		final LinearLayout llDashCustomise = this.viewFinder.get(this.llDash, R.id.llDashCustomise);
-		final ImageView imgDashBackgroundGradient = this.viewFinder.get(this.llDash, R.id.imgDashBackgroundGradient);
-		final TextView tvDashHomeTitle = this.viewFinder.get(this.llDash, R.id.tvDashHomeTitle);
-		final EditText etDashSearch = this.viewFinder.get(this.llDash, R.id.etDashSearch);
-		final LinearLayout llDashRibbon = this.viewFinder.get(this.llDash, R.id.llDashRibbon);
-		this.wpWallpaper = this.viewFinder.get(R.id.wpWallpaper);
-		final FrameLayout flWallpaperOverlayContainer = this.viewFinder.get(R.id.flWallpaperOverlayContainer);
-		this.flWallpaperOverlay = this.viewFinder.get(flWallpaperOverlayContainer, R.id.flWallpaperOverlay);
-		this.flWallpaperOverlayWhenDashOpened = this.viewFinder.get(flWallpaperOverlayContainer, R.id.flWallpaperOverlayWhenDashOpened);
-		this.llPanel = this.viewFinder.get(R.id.llPanel);
-		final TextView tvPanelBfb = this.viewFinder.get(this.llPanel, R.id.tvPanelBfb);
-		this.ibPanelDashClose = this.viewFinder.get(this.llPanel, R.id.ibPanelDashClose);
-		final ImageButton ibPanelCog = this.viewFinder.get(this.llPanel, R.id.ibPanelCog);
-
-		// Apply theme
-		this.llPanel.setBackgroundResource (this.theme.panel_background);
-		ibPanelCog.setImageResource (this.theme.panel_preferences_image);
-		this.ibPanelDashClose.setImageResource (this.theme.panel_close_image);
-		imgDashBackgroundGradient.setImageResource (this.theme.dash_background_gradient);
-		lalBfb.setIcon (res.getDrawable (this.theme.launcher_bfb_image));
-		lalPreferences.setIcon (res.getDrawable (this.theme.launcher_preferences_image));
-		lalTrash.setIcon (res.getDrawable (this.theme.launcher_trash_image));
-
-		RelativeLayout.LayoutParams llPanel_layoutParams = (RelativeLayout.LayoutParams) this.llPanel.getLayoutParams ();
-		llPanel_layoutParams.height = (int) res.getDimension (this.theme.panel_height);
-
-		final boolean expandLlLauncher = res.getBoolean (this.theme.launcher_expand);
-		this.launcherEdge = Location.of(prefs.getInt(Preference.LAUNCHER_EDGE.getName(), res.getInteger (this.theme.launcher_location)));
-		this.setLauncherEdge (this.launcherEdge, expandLlLauncher);
-		this.setDashIconWidth(prefs.getInt(Preference.DASHICON_WIDTH.getName(), Preference.DASHICON_WIDTH.getDefault()));
-
-		final Location lalPreferencesLocation = this.theme.lalPreferences_getLocation(res, prefs);
-
-		switch (lalPreferencesLocation)
-		{
-			case NONE:
-				lalPreferences.setVisibility (View.GONE);
-				break;
-			case TOP:
-			case LEFT:
-				int posLlBfbSpinnerWrapper = llLauncher.indexOfChild (llBfbSpinnerWrapper);
-				int posLalPreferences = (posLlBfbSpinnerWrapper == 0 ? 1 : 0);
-
-				llLauncher.removeView (lalPreferences);
-				llLauncher.addView (lalPreferences, posLalPreferences);
-				break;
-			case RIGHT:
-			case BOTTOM:
-				lalPreferences.setVisibility (View.VISIBLE);
-				break;
-		}
-
-		switch (Location.of(res.getInteger (this.theme.launcher_bfb_location)))
-		{
-			case NONE:
-				llBfbSpinnerWrapper.setVisibility (View.GONE);
-				break;
-			case TOP:
-			case LEFT:
-				llBfbSpinnerWrapper.setVisibility (View.VISIBLE);
-				break;
-			case RIGHT:
-			case BOTTOM:
-				int posLalPreferences = llLauncher.indexOfChild (lalPreferences);
-				int posLalTrash = llLauncher.indexOfChild (lalTrash);
-				int posLlBfbSpinnerWrapper = (posLalPreferences > 1 ? posLalPreferences : posLalTrash) - 1;
-
-				llLauncher.removeView (llBfbSpinnerWrapper);
-				llLauncher.addView (llBfbSpinnerWrapper, posLlBfbSpinnerWrapper);
-				break;
-		}
-
-		switch (Location.of(res.getInteger (this.theme.panel_bfb_location)))
-		{
-			case NONE:
-				tvPanelBfb.setVisibility (View.GONE);
-				break;
-			case LEFT:
-				tvPanelBfb.setVisibility (View.VISIBLE);
-				break;
-		}
-
-		tvPanelBfb.setText (res.getString (this.theme.panel_bfb_text));
-		tvPanelBfb.setTextColor (res.getColor (this.theme.panel_bfb_text_colour));
-
-		tvDashHomeTitle.setTextColor (res.getColor (this.theme.dash_applauncher_text_colour));
-		tvDashHomeTitle.setShadowLayer (5, 2, 2, res.getColor (this.theme.dash_applauncher_text_shadow_colour));
-
-		etDashSearch.setBackgroundResource (this.theme.dash_search_background);
-		etDashSearch.setTextColor (res.getColor (this.theme.dash_search_text_colour));
-
-		llDashRibbon.setVisibility (res.getBoolean (this.theme.dash_ribbon_show) ? View.VISIBLE : View.GONE);
-
-		this.flWallpaperOverlay.setBackgroundResource (this.theme.wallpaper_overlay);
-		this.flWallpaperOverlayWhenDashOpened.setBackgroundResource (this.theme.wallpaper_overlay_when_dash_opened);
-
-		// I don't like this, but it's just too much of a pain to do it properly.
-		for (int i = 0; i < llDashCustomise.getChildCount(); i++) {
-			final View container = llDashCustomise.getChildAt(i);
-
-			if (! (container instanceof LinearLayout))
-				continue;
-
-			for (int j = 0; j < ((LinearLayout) container).getChildCount(); j++) {
-				final View view = ((LinearLayout) container).getChildAt(j);
-
-				if (! (view instanceof TextView))
-					continue;
-
-				final TextView textView = (TextView) view;
-
-				textView.setTextColor(res.getColor(this.theme.dash_customise_text_colour));
-				textView.setShadowLayer (5, 2, 2, res.getColor (this.theme.dash_customise_text_shadow_colour));
-			}
-		}
-	}
 
 	private void startLauncherService (boolean show)
 	{
@@ -872,7 +499,7 @@ public class HomeActivity extends AppCompatActivity
 
 			Intent intent = new Intent (this, LauncherService.class);
 			intent.putParcelableArrayListExtra ("pinned", (ArrayList<App>) this.apps.getPinned ());
-			intent.putExtra ("bgColour", this.chameleonicBgColour);
+			intent.putExtra ("bgColour", this.dash.getChameleonicBgColour ());
 			intent.putExtra ("colour", lalbfb.getColour ());
 			intent.putExtra ("start", true);
 			intent.putExtra ("show", show);
@@ -905,205 +532,9 @@ public class HomeActivity extends AppCompatActivity
 	}
 	
 	@SuppressLint ("ResourceType")
-	private void setLauncherEdge (final Location edge, final boolean expand)
-	{
-		final LinearLayout llPanel = this.viewFinder.get(R.id.llPanel);
-		final ImageButton ibPanelDashClose = this.viewFinder.get(llPanel, R.id.ibPanelDashClose);
-		final ImageButton ibPanelCog = this.viewFinder.get(llPanel, R.id.ibPanelCog);
-		final LinearLayout llLauncherAndDashContainer = this.viewFinder.get(R.id.llLauncherAndDashContainer);
-		final LinearLayout llLauncher = this.viewFinder.get(llLauncherAndDashContainer, R.id.llLauncher);
-		final LinearLayout llLauncherAppsContainer = this.viewFinder.get(llLauncher, R.id.llLauncherAppsContainer);
-		final LinearLayout llLauncherPinnedApps = this.viewFinder.get(R.id.llLauncherPinnedApps);
-		final LinearLayout llLauncherRunningApps = this.viewFinder.get(R.id.llLauncherRunningApps);
-		final LinearLayout llBfbSpinnerWrapper = this.viewFinder.get(llLauncher, R.id.llBfbSpinnerWrapper);
-		final ScrollView scrLauncherAppsContainer = this.viewFinder.get(llLauncher, R.id.scrLauncherAppsContainer);
-		final HorizontalScrollView scrLauncherAppsContainerHorizontal = this.viewFinder.get(llLauncher, R.id.scrLauncherAppsContainerHorizontal);
-		LinearLayout.LayoutParams llLauncher_layoutParams = (LinearLayout.LayoutParams) llLauncher.getLayoutParams ();
-
-		TypedArray taLauncherMargins = this.getResources ().obtainTypedArray (this.theme.launcher_margin);
-		final int launcherMargins[] = new int[] {
-				taLauncherMargins.getLayoutDimension (0, 0),
-				taLauncherMargins.getLayoutDimension (1, 0),
-				taLauncherMargins.getLayoutDimension (2, 0),
-				taLauncherMargins.getLayoutDimension (3, 0)
-		};
-		int rotateLauncherMargins = edge.n;
-
-		int launcherMarginsRotated[] = new int[4];
-		for (int i = 0; i <= launcherMargins.length - 1; i++)
-			launcherMarginsRotated[(i + rotateLauncherMargins) % launcherMargins.length] = launcherMargins[i];
-
-		switch (edge)
-		{
-			case TOP:
-				llLauncherAndDashContainer.setOrientation (LinearLayout.VERTICAL);
-				llLauncher.setOrientation (LinearLayout.HORIZONTAL);
-				llBfbSpinnerWrapper.setOrientation (LinearLayout.HORIZONTAL);
-				llLauncherAppsContainer.setOrientation (LinearLayout.HORIZONTAL);
-				llLauncherPinnedApps.setOrientation (LinearLayout.HORIZONTAL);
-				llLauncherRunningApps.setOrientation (LinearLayout.HORIZONTAL);
-
-				llLauncherAndDashContainer.setGravity (Gravity.TOP | Gravity.CENTER);
-				
-				/*llLauncherAndDashContainer.removeView (llLauncher);
-				llLauncherAndDashContainer.removeView (this.llDash);
-				
-				llLauncherAndDashContainer.addView (this.llDash);
-				llLauncherAndDashContainer.addView (llLauncher);*/
-
-				llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-				scrLauncherAppsContainer.setVisibility (View.GONE);
-				scrLauncherAppsContainer.removeView (llLauncherAppsContainer);
-				scrLauncherAppsContainerHorizontal.addView (llLauncherAppsContainer);
-				scrLauncherAppsContainerHorizontal.setVisibility (View.VISIBLE);
-
-				LinearLayout.LayoutParams llLauncherPinnedApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-				llLauncherPinnedApps_layoutParams.gravity = Gravity.LEFT;
-				llLauncherPinnedApps.setLayoutParams (llLauncherPinnedApps_layoutParams);
-
-				LinearLayout.LayoutParams llLauncherRunningApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-				llLauncherRunningApps_layoutParams.gravity = Gravity.LEFT;
-				llLauncherRunningApps.setLayoutParams (llLauncherRunningApps_layoutParams);
 
 
-				break;
-			case BOTTOM:
-				llLauncherAndDashContainer.setOrientation (LinearLayout.VERTICAL);
-				llLauncher.setOrientation (LinearLayout.HORIZONTAL);
-				llBfbSpinnerWrapper.setOrientation (LinearLayout.HORIZONTAL);
-				llLauncherAppsContainer.setOrientation (LinearLayout.HORIZONTAL);
-				llLauncherPinnedApps.setOrientation (LinearLayout.HORIZONTAL);
-				llLauncherRunningApps.setOrientation (LinearLayout.HORIZONTAL);
 
-				llLauncherAndDashContainer.setGravity (Gravity.BOTTOM | Gravity.CENTER);
-
-				llLauncherAndDashContainer.removeView (llLauncher);
-				llLauncherAndDashContainer.removeView (this.llDash);
-
-				llLauncherAndDashContainer.addView (this.llDash);
-				llLauncherAndDashContainer.addView (llLauncher);
-
-				llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-				//ScrollView.LayoutParams llLauncherAppsContainer_layoutParams = new ScrollView.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-				//llLauncherAppsContainer.setLayoutParams (llLauncherAppsContainer_layoutParams);
-
-				scrLauncherAppsContainer.setVisibility (View.GONE);
-				scrLauncherAppsContainer.removeView (llLauncherAppsContainer);
-				scrLauncherAppsContainerHorizontal.addView (llLauncherAppsContainer);
-				scrLauncherAppsContainerHorizontal.setVisibility (View.VISIBLE);
-
-				llLauncherPinnedApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-				llLauncherPinnedApps_layoutParams.gravity = Gravity.LEFT;
-				llLauncherPinnedApps.setLayoutParams (llLauncherPinnedApps_layoutParams);
-
-				llLauncherRunningApps_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-				llLauncherRunningApps_layoutParams.gravity = Gravity.LEFT;
-				llLauncherRunningApps.setLayoutParams (llLauncherRunningApps_layoutParams);
-
-				break;
-			case RIGHT:
-				llLauncherAndDashContainer.setGravity (Gravity.RIGHT | Gravity.CENTER);
-
-				llLauncherAndDashContainer.removeView (llLauncher);
-				llLauncherAndDashContainer.removeView (llDash);
-
-				llLauncherAndDashContainer.addView (llDash);
-				llLauncherAndDashContainer.addView (llLauncher);
-
-				break;
-			case LEFT: // Falls through //
-				llLauncherAndDashContainer.setGravity (Gravity.LEFT | Gravity.CENTER);
-
-				break;
-		}
-
-		if (! expand)
-		{
-			llLauncher_layoutParams = new LinearLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			llLauncher.setLayoutParams (llLauncher_layoutParams);
-		}
-
-		final int[] panelSwapClosePreferencesWhenLauncherLocation = this.getResources ().getIntArray (theme.panel_swap_close_preferences_when_launcher_location);
-		boolean panelSwapClosePreferences = false;
-		for (int i = 0; i < panelSwapClosePreferencesWhenLauncherLocation.length; i++)
-		{
-			if (panelSwapClosePreferencesWhenLauncherLocation[i] == edge.n)
-			{
-				panelSwapClosePreferences = true;
-
-				break;
-			}
-		}
-		if (panelSwapClosePreferences)
-		{
-			llPanel.removeView (ibPanelDashClose);
-			llPanel.addView (ibPanelDashClose, llPanel.indexOfChild (ibPanelCog));
-			llPanel.removeView (ibPanelCog);
-			llPanel.addView (ibPanelCog, 0);
-		}
-
-		llLauncher_layoutParams.setMargins (launcherMarginsRotated[3], launcherMarginsRotated[0], launcherMarginsRotated[1], launcherMarginsRotated[2]);
-		llLauncher.setLayoutParams (llLauncher_layoutParams);
-	}
-
-	/**
-	 * Pad the widget area so that widgets only occupy the part of the home screen that is not
-	 * covered by the launcher or the navigation bar. The panel is already excluded by the layout
-	 * itself. The navigation insets are added separately because they pad the launcher's parent
-	 * container, so they are not included in the launcher's own dimensions.
-	 */
-	private void updateWidgetAreaInsets (final WidgetsContainer vgWidgets, final View llLauncher)
-	{
-		final Insets nav = this.navigationInsets;
-
-		switch (this.launcherEdge)
-		{
-			case LEFT:
-				vgWidgets.setPadding (llLauncher.getWidth () + nav.left, 0, nav.right, nav.bottom);
-				break;
-			case RIGHT:
-				vgWidgets.setPadding (nav.left, 0, llLauncher.getWidth () + nav.right, nav.bottom);
-				break;
-			case TOP:
-				vgWidgets.setPadding (nav.left, llLauncher.getHeight (), nav.right, nav.bottom);
-				break;
-			case BOTTOM:
-				vgWidgets.setPadding (nav.left, 0, nav.right, llLauncher.getHeight () + nav.bottom);
-				break;
-			default:
-				vgWidgets.setPadding (nav.left, 0, nav.right, nav.bottom);
-				break;
-		}
-	}
-
-	private void setPanelEdge (final Location edge)
-	{
-		final SharedPreferences prefs = this.getSharedPreferences();
-
-		switch (edge) {
-			case TOP:
-				this.llPanel.setAlpha ((float) prefs.getInt (Preference.PANEL_OPACITY.getName(), 100) / 100F);
-				break;
-			case NONE:
-				this.llPanel.setVisibility (View.GONE);
-				break;
-		}
-	}
-
-	/**
-	 * Set the width of icons in the Dash.
-	 * @param width The value of the {@link Preference#DASHICON_WIDTH} user preference.
-	 */
-	private void setDashIconWidth(final int width) {
-		final float density = this.getResources().getDisplayMetrics().density;
-
-		final GridView gvDashHomeApps = this.viewFinder.get(R.id.gvDashHomeApps);
-		gvDashHomeApps.setColumnWidth(Math.round((80 // 80 is the minimum
-				+ width)
-				* density)); // Adjust for the screen's pixel density
-	}
 
 	private void cancelAsyncTasks() {
 		if (this.asyncInitWallpaper != null)
@@ -1160,7 +591,7 @@ public class HomeActivity extends AppCompatActivity
 			}
 
 			if (prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false))
-				this.apps.addRunningApps (this.chameleonicBgColour);
+				this.apps.addRunningApps (this.dash.getChameleonicBgColour ());
 
 			if (this.openDashWhenReady)
 				this.openDash ();
@@ -1194,51 +625,7 @@ public class HomeActivity extends AppCompatActivity
 	{
 		try
 		{
-			final Resources res = this.getResources ();
-
-			final int colour_opacity = res.getInteger (this.theme.launcher_applauncher_backgroundcolour_opacity);
-			final int bgColour_opacity = res.getInteger (this.theme.dynamic_background_opacity);
-
-			final int colour;
-			final int bgColour;
-			if (wpWallpaper.isLiveWallpaper ())
-			{
-				colour = Color.argb (40, 40, 40, 40);
-				bgColour = Color.argb (bgColour_opacity, 40, 40, 40);
-			}
-			else
-			{
-				colour = wpWallpaper.getAverageColour (colour_opacity);
-				bgColour = wpWallpaper.getAverageColour (bgColour_opacity);
-			}
-
-			be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb = this.viewFinder.get(R.id.lalBfb);
-			be.robinj.distrohopper.desktop.launcher.AppLauncher lalPreferences = this.viewFinder.get(R.id.lalPreferences);
-			be.robinj.distrohopper.desktop.launcher.AppLauncher lalSpinner = this.viewFinder.get(R.id.lalSpinner);
-			be.robinj.distrohopper.desktop.launcher.AppLauncher lalTrash = this.viewFinder.get(R.id.lalTrash);
-
-			LinearLayout llLauncher = this.viewFinder.get(R.id.llLauncher);
-
-			if (res.getBoolean (this.theme.launcher_applauncher_backgroundcolour_dynamic))
-			{
-				lalBfb.setColour (colour);
-				lalPreferences.setColour (colour);
-				lalSpinner.setColour (colour);
-				lalTrash.setColour (colour);
-			}
-
-			final TypedArray launcherBackgroundResources = res.obtainTypedArray (this.theme.launcher_background);
-			if (this.getResources ().getBoolean (this.theme.launcher_background_dynamic))
-				llLauncher.setBackgroundColor (bgColour);
-			else
-				llLauncher.setBackgroundResource (launcherBackgroundResources.getResourceId(this.launcherEdge.n, R.color.transparent));
-
-			if (res.getBoolean (this.theme.dash_background_dynamic))
-				this.llDash.setBackgroundColor (bgColour);
-			else
-				this.llDash.setBackgroundResource (this.theme.dash_background);
-
-			this.chameleonicBgColour = bgColour;
+			this.dash.setChameleonicBgColour (this.wallpaperColourApplier.apply (wpWallpaper));
 		}
 		catch (Exception ex)
 		{
@@ -1254,7 +641,7 @@ public class HomeActivity extends AppCompatActivity
 		SharedPreferences prefs = this.getSharedPreferences ();
 
 		if (prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false))
-			this.apps.addRunningApps (this.chameleonicBgColour);
+			this.apps.addRunningApps (this.dash.getChameleonicBgColour ());
 	}
 
 	//# Event handlers #//
@@ -1320,7 +707,7 @@ public class HomeActivity extends AppCompatActivity
 	//# Dash #//
 	public void closeDash ()
 	{
-		if (! this.isDashOpened) {
+		if (! this.dash.isOpen ()) {
 			return;
 		}
 
@@ -1328,76 +715,19 @@ public class HomeActivity extends AppCompatActivity
 		{
 			Intent intent = this.getIntent ();
 			intent.putExtra ("customise", false);
-			
+
 			this.finish ();
 			this.startActivity (intent);
-			
+
 			return;
 		}
-		
-		EditText etDashSearch = this.viewFinder.get(R.id.etDashSearch);
 
-		this.llDash.setVisibility (View.GONE);
-		this.wpWallpaper.unblur (this.getWindow ());
-		final WidgetsContainer vgWidgets = this.viewFinder.get(R.id.vgWidgets);
-		vgWidgets.setRenderEffect (null);
-		etDashSearch.setText ("");
-		etDashSearch.clearFocus ();
-
-		if (this.getResources ().getInteger (this.theme.panel_close_location) != -1)
-			this.ibPanelDashClose.setVisibility (View.INVISIBLE);
-		
-		SharedPreferences prefs = this.getSharedPreferences ();
-		this.llPanel.setAlpha ((float) prefs.getInt (Preference.PANEL_OPACITY.getName(), 100) / 100F);
-
-		if (this.getResources ().getBoolean (this.theme.panel_background_dynamic_when_dash_opened))
-		{
-			this.llPanel.setBackgroundResource (this.theme.panel_background);
-
-			LinearLayout llStatusBar = this.viewFinder.get(R.id.llStatusBar);
-			llStatusBar.setBackgroundColor (this.getResources ().getColor (android.R.color.black));
-		}
-
-
-		InputMethodManager imm = (InputMethodManager) this.getSystemService (Context.INPUT_METHOD_SERVICE);
-		if (imm != null)
-			imm.hideSoftInputFromWindow (this.getWindow ().getDecorView ().getRootView ().getWindowToken (), 0);
-
-		this.flWallpaperOverlay.setVisibility (View.VISIBLE);
-		this.flWallpaperOverlayWhenDashOpened.setVisibility (View.INVISIBLE);
-
-		this.isDashOpened = false;
+		this.dash.close ();
 	}
 
 	public void openDash ()
 	{
-		if (this.isDashOpened) {
-			return;
-		}
-
-		this.llDash.setVisibility (View.VISIBLE);
-		final int blurRadius = this.getResources ().getDimensionPixelSize (this.theme.dash_blur_radius);
-		this.wpWallpaper.blur (this.getWindow (), blurRadius);
-		final WidgetsContainer vgWidgets = this.viewFinder.get(R.id.vgWidgets);
-		vgWidgets.setRenderEffect (
-				RenderEffect.createBlurEffect (blurRadius, blurRadius, Shader.TileMode.CLAMP));
-		this.llPanel.setAlpha (1F);
-
-		if (this.getResources ().getInteger (this.theme.panel_close_location) != -1)
-			this.ibPanelDashClose.setVisibility (View.VISIBLE);
-
-		if (this.getResources ().getBoolean (this.theme.panel_background_dynamic_when_dash_opened))
-		{
-			this.llPanel.setBackgroundColor (this.chameleonicBgColour);
-
-			LinearLayout llStatusBar = this.viewFinder.get(R.id.llStatusBar);
-			llStatusBar.setBackgroundColor (this.chameleonicBgColour);
-		}
-
-		this.flWallpaperOverlay.setVisibility (View.INVISIBLE);
-		this.flWallpaperOverlayWhenDashOpened.setVisibility (View.VISIBLE);
-
-		this.isDashOpened = true;
+		this.dash.open ();
 	}
 
 	//# Checks #//

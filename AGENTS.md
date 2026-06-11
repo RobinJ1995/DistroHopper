@@ -40,7 +40,8 @@ etc/                                        — design assets (SVG/XCF sources, 
 
 - **Root package** — core glue:
   - `HomeActivity` — the launcher's main activity; hosts the desktop UI and
-    wires most components together.
+    wires the components together. The heavy view work lives in the `home/`
+    controllers (below); keep HomeActivity to lifecycle handling and wiring.
   - `AppManager` — central registry of installed/pinned/running apps; the
     model behind both the launcher and the dash.
   - `App`, `Application`, `AppComparatorAlphabetical` — app model classes.
@@ -58,6 +59,22 @@ etc/                                        — design assets (SVG/XCF sources, 
   - `DispatcherProvider` — indirection over coroutine dispatchers so tests
     can inject deterministic ones.
   - `AboutActivity`, `ContributeActivity` — informational screens.
+- **`home/`** — Kotlin controller/applier classes extracted from
+  HomeActivity, each owning one concern of the home screen and constructed
+  in `onCreate` with the `ViewFinder` plus what they need from the
+  `DependencyContainer`:
+  - `ThemeApplier` — applies the active theme's resources to the views.
+  - `LauncherEdgeController` — repositions/reorients the launcher bar per
+    edge, panel edge handling, and widget-area insets; owns the current
+    `launcherEdge` and navigation insets.
+  - `DashController` — opens/closes the dash (visibility, wallpaper and
+    widget blur, panel state); owns `isOpen` and the chameleonic background
+    colour. The customise-mode "close = relaunch" branch stays in
+    HomeActivity because it manipulates the activity's intent.
+  - `WallpaperColourApplier` — applies the wallpaper's average colour to
+    launcher/dash for chameleonic themes.
+  - `CustomiseModeUi` — the customise-mode seekbars/spinners inside the dash.
+  - `LayoutTransitionConfigurer` — the appear/disappear animations.
 - **`desktop/`** — the desktop surface itself (`Wallpaper`, `AppIcon`, drag
   listeners). The activity is transparent over the system wallpaper
   (`windowShowWallpaper`), which lives in a separate system-owned window:
