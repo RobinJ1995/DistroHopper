@@ -16,7 +16,10 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.Menu;
@@ -105,6 +108,7 @@ public class HomeActivity extends AppCompatActivity
 
 	public static Theme theme = new Default ();
 	private Location launcherEdge = Location.NONE;
+	private Insets navigationInsets = Insets.NONE;
 
 	private PackageManagerBroadcastReceiver broadcastPackageManager;
 
@@ -167,6 +171,23 @@ public class HomeActivity extends AppCompatActivity
 			this.llPanel = this.viewFinder.get(R.id.llPanel);
 			this.ibPanelDashClose = this.viewFinder.get(this.llPanel, R.id.ibPanelDashClose);
 			final WidgetsContainer vgWidgets = this.viewFinder.get(R.id.vgWidgets);
+
+			// Lay out edge-to-edge on every API level; SDK 35+ enforces it anyway. The status
+			// bar is compensated for by llStatusBar below. Tappable element insets keep the
+			// launcher and dash clear of the 3-button navigation bar, while remaining zero for
+			// gesture navigation so the launcher still extends behind the gesture pill. The
+			// wallpaper and the launcher/dash backgrounds keep covering the whole screen, as
+			// backgrounds are drawn over padding. //
+			WindowCompat.setDecorFitsSystemWindows (this.getWindow (), false);
+			ViewCompat.setOnApplyWindowInsetsListener (llLauncherAndDashContainer, (v, windowInsets) ->
+			{
+				final Insets insets = windowInsets.getInsets (WindowInsetsCompat.Type.tappableElement ());
+				this.navigationInsets = insets;
+				v.setPadding (insets.left, 0, insets.right, insets.bottom);
+				this.updateWidgetAreaInsets (vgWidgets, llLauncher);
+
+				return windowInsets;
+			});
 
 			// Load up the theme //
 			HashMap<String, Class> themes = new HashMap<> ();
@@ -1027,26 +1048,30 @@ public class HomeActivity extends AppCompatActivity
 
 	/**
 	 * Pad the widget area so that widgets only occupy the part of the home screen that is not
-	 * covered by the launcher. The panel is already excluded by the layout itself.
+	 * covered by the launcher or the navigation bar. The panel is already excluded by the layout
+	 * itself. The navigation insets are added separately because they pad the launcher's parent
+	 * container, so they are not included in the launcher's own dimensions.
 	 */
 	private void updateWidgetAreaInsets (final WidgetsContainer vgWidgets, final View llLauncher)
 	{
+		final Insets nav = this.navigationInsets;
+
 		switch (this.launcherEdge)
 		{
 			case LEFT:
-				vgWidgets.setPadding (llLauncher.getWidth (), 0, 0, 0);
+				vgWidgets.setPadding (llLauncher.getWidth () + nav.left, 0, nav.right, nav.bottom);
 				break;
 			case RIGHT:
-				vgWidgets.setPadding (0, 0, llLauncher.getWidth (), 0);
+				vgWidgets.setPadding (nav.left, 0, llLauncher.getWidth () + nav.right, nav.bottom);
 				break;
 			case TOP:
-				vgWidgets.setPadding (0, llLauncher.getHeight (), 0, 0);
+				vgWidgets.setPadding (nav.left, llLauncher.getHeight (), nav.right, nav.bottom);
 				break;
 			case BOTTOM:
-				vgWidgets.setPadding (0, 0, 0, llLauncher.getHeight ());
+				vgWidgets.setPadding (nav.left, 0, nav.right, llLauncher.getHeight () + nav.bottom);
 				break;
 			default:
-				vgWidgets.setPadding (0, 0, 0, 0);
+				vgWidgets.setPadding (nav.left, 0, nav.right, nav.bottom);
 				break;
 		}
 	}
