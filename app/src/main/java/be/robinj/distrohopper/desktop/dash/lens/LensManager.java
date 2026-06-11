@@ -58,6 +58,7 @@ public class LensManager
 		this.lenses.put ("AskUbuntu", new AskUbuntu (context));
 		this.lenses.put ("DuckDuckGo", new DuckDuckGo (context));
 		this.lenses.put ("GitHub", new GitHub (context));
+		this.lenses.put ("GooglePlay", new GooglePlay (context));
 		this.lenses.put ("InstalledApps", new InstalledApps (context, apps));
 		this.lenses.put ("LocalFiles", new LocalFiles (context)); // LocalFiles needs to show an AlertDialog in some cases, thus it needs the activity's Context (which AppsManager has) instead of the Application Context (this.context). //
 		this.lenses.put ("Reddit", new Reddit (context));
