@@ -5,6 +5,7 @@ import android.view.View
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.ActivityTestSupport
+import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
@@ -33,7 +34,7 @@ class WidgetsContainerHomeTest {
         }
         application.getSharedPreferences(Preferences.PREFERENCES, 0)
             .edit().putBoolean(Preference.WIDGETS_ENABLED.getName(), false).commit()
-        HomeActivity.modeCustomise = false
+        DependencyContainer.of(ApplicationProvider.getApplicationContext()).customiseMode.value = false
         ActivityTestSupport.seedPackageManager()
 
         ActivityScenario.launch(HomeActivity::class.java).use { scenario ->

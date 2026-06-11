@@ -74,7 +74,7 @@ public class App implements Parcelable
 
 	public void launch ()
 	{
-		if (HomeActivity.modeCustomise) {
+		if (DependencyContainer.of (this.context).getCustomiseMode ().getValue ()) {
 			Toast.makeText(this.context, "App launching disabled while customising UI.", Toast.LENGTH_SHORT).show(); //TODO// getString () //
 
 			return;

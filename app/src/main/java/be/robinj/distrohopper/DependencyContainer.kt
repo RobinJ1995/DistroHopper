@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import be.robinj.distrohopper.preferences.PreferencesRepository
 import be.robinj.distrohopper.theme.ThemeManager
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * Hand-wired dependency container for objects shared across the app.
@@ -17,6 +18,13 @@ class DependencyContainer(context: Context) {
 	val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 	val prefs: PreferencesRepository = PreferencesRepository(context)
 	val themeManager: ThemeManager = ThemeManager(this.prefs)
+
+	/**
+	 * Whether the home screen is in customise mode (icon size sliders, edge
+	 * spinners). App-wide rather than on HomeViewModel because App.launch()
+	 * checks it with only a Context at hand.
+	 */
+	val customiseMode: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
 	companion object {
 		@JvmStatic

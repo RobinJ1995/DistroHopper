@@ -3,6 +3,7 @@ package be.robinj.distrohopper
 import android.content.Intent
 import android.os.Parcel
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.cache.TestStringCache
 import org.junit.After
 import org.junit.Assert.*
@@ -19,7 +20,7 @@ class AppTest {
     private lateinit var scenario: ActivityScenario<HomeActivity>
 
     @Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
-    @After fun tearDown() { HomeActivity.modeCustomise = false; scenario.close() }
+    @After fun tearDown() { DependencyContainer.of(ApplicationProvider.getApplicationContext()).customiseMode.value = false; scenario.close() }
 
     @Test fun launchStartsMainLauncherIntentForComponent() {
         scenario.onActivity { activity ->
@@ -36,7 +37,7 @@ class AppTest {
         scenario.onActivity { activity ->
             val shadow = Shadows.shadowOf(activity)
             while (shadow.nextStartedActivity != null) { }
-            HomeActivity.modeCustomise = true; activity.appManager[0].launch()
+            DependencyContainer.of(ApplicationProvider.getApplicationContext()).customiseMode.value = true; activity.appManager[0].launch()
             assertNull(shadow.nextStartedActivity)
         }
     }

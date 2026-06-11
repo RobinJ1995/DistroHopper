@@ -63,6 +63,15 @@ etc/                                        — design assets (SVG/XCF sources, 
   HomeActivity, each owning one concern of the home screen and constructed
   in `onCreate` with the `ViewFinder` plus what they need from the
   `DependencyContainer`:
+  - `HomeViewModel` — AndroidX ViewModel holding the screen's state as
+    `StateFlow`s (e.g. `dashOpen`); survives `recreate()` (but not the
+    finish-and-restart relaunches used for edge changes). It never touches
+    views; `HomeStateBinder` collects its flows into the controllers.
+    HomeActivity's event handlers also call the controllers directly (they
+    are idempotent) so UI reactions stay synchronous; the flows are the
+    state of record. Customise mode lives as a `MutableStateFlow` on the
+    `DependencyContainer` (not the ViewModel) because `App.launch()` checks
+    it with only a Context.
   - `ThemeApplier` — applies the active theme's resources to the views.
   - `LauncherEdgeController` — repositions/reorients the launcher bar per
     edge, panel edge handling, and widget-area insets; owns the current

@@ -58,7 +58,7 @@ internal object ActivityTestSupport {
         listOf(Preferences.PREFERENCES, Preferences.PINNED_APPS, Preferences.LENSES).forEach {
             application.getSharedPreferences(it, 0).edit().clear().commit()
         }
-        HomeActivity.modeCustomise = false
+        DependencyContainer.of(ApplicationProvider.getApplicationContext()).customiseMode.value = false
         seedPackageManager()
         return ActivityScenario.launch(HomeActivity::class.java).also { drainTasks() }
     }

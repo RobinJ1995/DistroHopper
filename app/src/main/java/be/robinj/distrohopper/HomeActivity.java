@@ -16,6 +16,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,6 +43,8 @@ import be.robinj.distrohopper.cache.ICache;
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.home.CustomiseModeUi;
 import be.robinj.distrohopper.home.DashController;
+import be.robinj.distrohopper.home.HomeStateBinder;
+import be.robinj.distrohopper.home.HomeViewModel;
 import be.robinj.distrohopper.home.LauncherEdgeController;
 import be.robinj.distrohopper.home.LayoutTransitionConfigurer;
 import be.robinj.distrohopper.home.ThemeApplier;
@@ -83,11 +86,11 @@ public class HomeActivity extends AppCompatActivity
 	private AsyncLoadAppLabels asyncLoadAppLabels;
 	private AsyncLoadAppIcons asyncLoadAppIcons;
 
-	public static boolean modeCustomise = false;
 	private boolean openDashWhenReady = false;
 
 	private Theme theme = new Default ();
 
+	private HomeViewModel viewModel;
 	private LauncherEdgeController edgeController;
 	private DashController dash;
 	private ThemeApplier themeApplier;
@@ -109,7 +112,6 @@ public class HomeActivity extends AppCompatActivity
 
 		try
 		{
-			modeCustomise = false;
 			final SharedPreferences prefs = this.getSharedPreferences ();
 
 			Permission.requestBasicPermissions(this);
@@ -154,6 +156,10 @@ public class HomeActivity extends AppCompatActivity
 			this.dash = new DashController (this, this.viewFinder, this.theme, container.getPrefs ());
 			this.themeApplier = new ThemeApplier (this, this.viewFinder, this.theme, this.edgeController);
 			this.wallpaperColourApplier = new WallpaperColourApplier (this, this.viewFinder, this.theme, this.edgeController);
+			this.viewModel = new ViewModelProvider (this, new HomeViewModel.Factory (container))
+					.get (HomeViewModel.class);
+			HomeStateBinder.bind (this, this.viewModel, this.dash);
+			container.getCustomiseMode ().setValue (false);
 
 			// Lay out edge-to-edge on every API level; SDK 35+ enforces it anyway. The status
 			// bar is compensated for by llStatusBar below. Tappable element insets keep the
@@ -217,8 +223,10 @@ public class HomeActivity extends AppCompatActivity
 			Intent intent = this.getIntent ();
 			if (intent != null)
 			{
-				modeCustomise = intent.getBooleanExtra ("customise", modeCustomise);
-				this.openDashWhenReady = intent.getBooleanExtra ("openDash", this.openDashWhenReady) || modeCustomise;
+				container.getCustomiseMode ().setValue (
+						intent.getBooleanExtra ("customise", container.getCustomiseMode ().getValue ()));
+				this.openDashWhenReady = intent.getBooleanExtra ("openDash", this.openDashWhenReady)
+						|| container.getCustomiseMode ().getValue ();
 			}
 
 			// Take control of system status bar background //
@@ -272,7 +280,7 @@ public class HomeActivity extends AppCompatActivity
 				vgWidgets.setVisibility (View.GONE);
 			}
 
-			if (modeCustomise)
+			if (container.getCustomiseMode ().getValue ())
 			{
 				new CustomiseModeUi (this, this.viewFinder, this.theme, () ->
 				{
@@ -346,7 +354,8 @@ public class HomeActivity extends AppCompatActivity
 		// delivered here instead of to a new instance; adopt it and recreate if needed //
 		this.setIntent(intent);
 
-		if (intent.getBooleanExtra("customise", false) != modeCustomise) {
+		if (intent.getBooleanExtra("customise", false)
+				!= DependencyContainer.of(this).getCustomiseMode().getValue()) {
 			this.recreate();
 		}
 	}
@@ -711,7 +720,7 @@ public class HomeActivity extends AppCompatActivity
 			return;
 		}
 
-		if (modeCustomise)
+		if (DependencyContainer.of (this).getCustomiseMode ().getValue ())
 		{
 			Intent intent = this.getIntent ();
 			intent.putExtra ("customise", false);
@@ -722,11 +731,13 @@ public class HomeActivity extends AppCompatActivity
 			return;
 		}
 
+		this.viewModel.closeDash ();
 		this.dash.close ();
 	}
 
 	public void openDash ()
 	{
+		this.viewModel.openDash ();
 		this.dash.open ();
 	}
 
