@@ -605,14 +605,6 @@ public class HomeActivity extends AppCompatActivity
 	}
 
 	@Override
-	public void onNewIntent (Intent intent)
-	{
-		super.onNewIntent (intent);
-
-		this.setIntent (intent);
-	}
-
-	@Override
 	protected void onStart ()
 	{
 		super.onStart ();
