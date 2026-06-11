@@ -2,6 +2,7 @@ package be.robinj.distrohopper
 
 import android.app.Application
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.content.pm.ApplicationInfo
 import android.content.pm.ResolveInfo
@@ -54,15 +55,22 @@ internal object ActivityTestSupport {
         }
     }
 
-    fun launchHome(): ActivityScenario<HomeActivity> {
+    fun launchHome(
+        customise: Boolean = false,
+        configurePrefs: (SharedPreferences.Editor) -> Unit = {},
+    ): ActivityScenario<HomeActivity> {
         val application = ApplicationProvider.getApplicationContext<Application>()
         listOf(Preferences.PREFERENCES, Preferences.PINNED_APPS, Preferences.LENSES).forEach {
             application.getSharedPreferences(it, 0).edit().clear().commit()
         }
+        application.getSharedPreferences(Preferences.PREFERENCES, 0).edit()
+            .also(configurePrefs).commit()
         DependencyContainer.of(ApplicationProvider.getApplicationContext()).customiseMode.value = false
         installTestDispatchers()
         seedPackageManager()
-        return ActivityScenario.launch(HomeActivity::class.java).also { drainTasks() }
+        val intent = Intent(application, HomeActivity::class.java)
+            .apply { if (customise) putExtra("customise", true) }
+        return ActivityScenario.launch<HomeActivity>(intent).also { drainTasks() }
     }
 
     /**

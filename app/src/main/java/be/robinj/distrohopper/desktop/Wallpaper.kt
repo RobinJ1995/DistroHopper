@@ -22,7 +22,7 @@ class Wallpaper : ImageView {
     private var img: Drawable? = null
 
     var isLiveWallpaper: Boolean = false
-        private set
+        internal set
 
     constructor(context: Context) : super(context) {
         this.context = context
