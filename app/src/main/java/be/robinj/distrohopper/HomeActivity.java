@@ -537,7 +537,9 @@ public class HomeActivity extends AppCompatActivity
 			super.onActivityResult(requestCode, resultCode, data);
 
 			if (requestCode == RequestCode.ACTIVITY_PREFERENCES) {
-				final Intent intent = this.getIntent();
+				// Use a fresh intent rather than mutating getIntent(); the old intent may
+				// still carry a customise extra from a previous relaunch //
+				final Intent intent = new Intent(this, HomeActivity.class);
 
 				if (resultCode == 4) { // Customise UI //
 					intent.putExtra("customise", true);
@@ -557,6 +559,20 @@ public class HomeActivity extends AppCompatActivity
 		{
 			ExceptionHandler exh = new ExceptionHandler (ex);
 			exh.show (this);
+		}
+	}
+
+	@Override
+	protected void onNewIntent (final Intent intent)
+	{
+		super.onNewIntent(intent);
+
+		// launchMode is singleTop, so the relaunch intent from onActivityResult() can be
+		// delivered here instead of to a new instance; adopt it and recreate if needed //
+		this.setIntent(intent);
+
+		if (intent.getBooleanExtra("customise", false) != modeCustomise) {
+			this.recreate();
 		}
 	}
 
