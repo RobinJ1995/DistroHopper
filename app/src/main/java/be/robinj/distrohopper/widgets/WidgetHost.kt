@@ -60,7 +60,13 @@ class WidgetHost(
 			return
 		}
 
-		val hostView = this.createView(this.parent, appWidgetId, info) as WidgetHostView
+		// The host view must NOT be created with the activity context: AppCompatActivity
+		// installs a LayoutInflater factory that swaps TextView for AppCompatTextView, and
+		// RemoteViews inflation clones that inflater. AppCompat views then read appcompat
+		// attribute ids against the widget package's theme, where they resolve to other
+		// types, crashing inflation ("Couldn't add widget"). The application context's
+		// inflater is factory-free, so widget layouts inflate plain framework views //
+		val hostView = this.createView(this.parent.applicationContext, appWidgetId, info) as WidgetHostView
 		val container = WidgetContainer(this.parent, this, hostView)
 
 		this.vgWidgets.addView(container, WidgetsContainer.LayoutParams(layout))
