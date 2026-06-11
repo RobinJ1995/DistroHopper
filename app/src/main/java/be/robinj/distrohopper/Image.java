@@ -6,10 +6,8 @@ import android.graphics.Color;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,16 +26,13 @@ public class Image {
 	private final Drawable drawable;
 
 	public Image (Drawable drawable) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			if (drawable instanceof AdaptiveIconDrawable) {
-				drawable = adaptiveIconToDrawable((AdaptiveIconDrawable) drawable);
-			}
+		if (drawable instanceof AdaptiveIconDrawable) {
+			drawable = adaptiveIconToDrawable((AdaptiveIconDrawable) drawable);
 		}
 
 		this.drawable = drawable;
 	}
 
-	@RequiresApi(Build.VERSION_CODES.O)
 	private static Drawable adaptiveIconToDrawable(AdaptiveIconDrawable adaptive) {
 		final Bitmap bitmap = Bitmap.createBitmap(adaptive.getIntrinsicWidth(), adaptive.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
 		final Canvas canvas = new Canvas(bitmap);

@@ -1,7 +1,5 @@
 package be.robinj.distrohopper.desktop.launcher;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;

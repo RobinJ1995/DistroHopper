@@ -7,7 +7,6 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.util.AttributeSet
 import android.widget.ImageView
 import be.robinj.distrohopper.ExceptionHandler
@@ -165,7 +164,7 @@ class Wallpaper : ImageView {
                 val image = Image(this.img)
 
                 return image.getAverageColour(alpha)
-            } else if (Build.VERSION.SDK_INT >= 27) {
+            } else {
                 LOG.v("Wallpaper", "Trying to obtain primary wallpaper colour from Android...")
                 val wpman = WallpaperManager.getInstance(this.context)
                 val primaryColour =

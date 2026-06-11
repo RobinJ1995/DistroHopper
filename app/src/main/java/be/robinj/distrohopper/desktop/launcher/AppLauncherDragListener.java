@@ -1,7 +1,5 @@
 package be.robinj.distrohopper.desktop.launcher;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import be.robinj.distrohopper.ExceptionHandler;
 /**
  * Created by robin on 03/09/14.
  */
-@TargetApi (Build.VERSION_CODES.HONEYCOMB)
 public class AppLauncherDragListener implements ViewGroup.OnDragListener
 {
 	private AppManager appManager;
@@ -47,10 +44,7 @@ public class AppLauncherDragListener implements ViewGroup.OnDragListener
 				case DragEvent.ACTION_DRAG_ENDED: // Falls through //
 					this.appManager.stoppedDraggingPinnedApp ();
 				case DragEvent.ACTION_DRAG_EXITED:
-					if (Build.VERSION.SDK_INT >= 14)
-						appLauncher.animate ().setStartDelay (0).setDuration (120).alpha (0.9F);
-					else
-						appLauncher.setAlpha (0.9F);
+					appLauncher.animate ().setStartDelay (0).setDuration (120).alpha (0.9F);
 					break;
 			}
 		}

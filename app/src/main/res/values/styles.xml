@@ -7,6 +7,7 @@
     </style>
 
     <style name="HomeTheme" parent="AppTheme">
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="DialogTheme" parent="Theme.AppCompat">

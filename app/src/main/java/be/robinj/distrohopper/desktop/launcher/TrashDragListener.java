@@ -1,8 +1,6 @@
 package be.robinj.distrohopper.desktop.launcher;
 
-import android.annotation.TargetApi;
 import android.graphics.Color;
-import android.os.Build;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +12,6 @@ import be.robinj.distrohopper.widgets.WidgetContainer;
 /**
  * Created by robin on 03/09/14.
  */
-@TargetApi (Build.VERSION_CODES.HONEYCOMB)
 public class TrashDragListener implements ViewGroup.OnDragListener
 {
 	private AppManager appManager;

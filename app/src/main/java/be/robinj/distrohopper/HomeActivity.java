@@ -12,7 +12,6 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -289,20 +288,17 @@ public class HomeActivity extends AppCompatActivity
 			}
 
 			// Take control of system status bar background //
-			if (Build.VERSION.SDK_INT >= 19)
-			{
-				final LinearLayout llStatusBar = this.viewFinder.get(R.id.llStatusBar);
+			final LinearLayout llStatusBar = this.viewFinder.get(R.id.llStatusBar);
 
-				int llStatusBar_height = llStatusBar.getHeight ();
-				int statusBarHeight_resource = res.getIdentifier ("status_bar_height", "dimen", "android");
+			int llStatusBar_height = llStatusBar.getHeight ();
+			int statusBarHeight_resource = res.getIdentifier ("status_bar_height", "dimen", "android");
 
-				if (statusBarHeight_resource > 0)
-					llStatusBar_height = res.getDimensionPixelSize (statusBarHeight_resource);
+			if (statusBarHeight_resource > 0)
+				llStatusBar_height = res.getDimensionPixelSize (statusBarHeight_resource);
 
-				RelativeLayout.LayoutParams llStatusBar_layoutParams = new RelativeLayout.LayoutParams (ViewGroup.LayoutParams.MATCH_PARENT, llStatusBar_height);
-				llStatusBar.setLayoutParams (llStatusBar_layoutParams);
-				llStatusBar.setVisibility (View.VISIBLE);
-			}
+			RelativeLayout.LayoutParams llStatusBar_layoutParams = new RelativeLayout.LayoutParams (ViewGroup.LayoutParams.MATCH_PARENT, llStatusBar_height);
+			llStatusBar.setLayoutParams (llStatusBar_layoutParams);
+			llStatusBar.setVisibility (View.VISIBLE);
 
 			// Apply theme //
 			this.applyTheme(res);
@@ -1367,11 +1363,8 @@ public class HomeActivity extends AppCompatActivity
 		{
 			this.llPanel.setBackgroundResource (HomeActivity.theme.panel_background);
 
-			if (Build.VERSION.SDK_INT >= 19)
-			{
-				LinearLayout llStatusBar = this.viewFinder.get(R.id.llStatusBar);
-				llStatusBar.setBackgroundColor (this.getResources ().getColor (android.R.color.black));
-			}
+			LinearLayout llStatusBar = this.viewFinder.get(R.id.llStatusBar);
+			llStatusBar.setBackgroundColor (this.getResources ().getColor (android.R.color.black));
 		}
 
 
@@ -1402,11 +1395,8 @@ public class HomeActivity extends AppCompatActivity
 		{
 			this.llPanel.setBackgroundColor (this.chameleonicBgColour);
 
-			if (Build.VERSION.SDK_INT >= 19)
-			{
-				LinearLayout llStatusBar = this.viewFinder.get(R.id.llStatusBar);
-				llStatusBar.setBackgroundColor (this.chameleonicBgColour);
-			}
+			LinearLayout llStatusBar = this.viewFinder.get(R.id.llStatusBar);
+			llStatusBar.setBackgroundColor (this.chameleonicBgColour);
 		}
 
 		this.flWallpaperOverlay.setVisibility (View.INVISIBLE);

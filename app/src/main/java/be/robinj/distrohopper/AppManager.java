@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.os.Build;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
@@ -195,47 +194,27 @@ public class AppManager implements Iterable<App>
 		List<App> running = new ArrayList<App> ();
 		ActivityManager am = (ActivityManager) this.getContext ().getSystemService (Context.ACTIVITY_SERVICE);
 
-		if (Build.VERSION.SDK_INT >= 21) // ActivityManager.getRunningTasks () is deprecated //
+		List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = am.getRunningAppProcesses ();
+		if (runningAppProcesses == null)
+			return running;
+
+		for (ActivityManager.RunningAppProcessInfo appProcess : runningAppProcesses)
 		{
-			List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = am.getRunningAppProcesses ();
-			if (runningAppProcesses == null)
-				return running;
-
-			for (ActivityManager.RunningAppProcessInfo appProcess : runningAppProcesses)
+			Integer[] importantImportances = new Integer[]
 			{
-				Integer[] importantImportances = new Integer[]
-				{
-					ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND,
-					ActivityManager.RunningAppProcessInfo.IMPORTANCE_PERCEPTIBLE,
-					ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE,
-					ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND,
-					ActivityManager.RunningAppProcessInfo.IMPORTANCE_SERVICE
-				};
+				ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND,
+				ActivityManager.RunningAppProcessInfo.IMPORTANCE_PERCEPTIBLE,
+				ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE,
+				ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND,
+				ActivityManager.RunningAppProcessInfo.IMPORTANCE_SERVICE
+			};
 
-				if (Arrays.asList (importantImportances).contains (appProcess.importance))
-				{
-					for (App app : this.findAppsByPackageName (appProcess.processName))
-						running.add (app);
-				}
-			}
-		}
-		else
-		{
-			List<ActivityManager.RunningTaskInfo> runningTasks = am.getRunningTasks (16);
-
-			for (ActivityManager.RunningTaskInfo task : runningTasks)
+			if (Arrays.asList (importantImportances).contains (appProcess.importance))
 			{
-				String packageName = task.baseActivity.getPackageName ();
-				String activityName = task.baseActivity.getClassName ();
-
-				App app = this.findAppByPackageAndActivityName (packageName, activityName);
-
-				if (app != null)
+				for (App app : this.findAppsByPackageName (appProcess.processName))
 					running.add (app);
 			}
 		}
-
-
 
 		return running;
 	}
