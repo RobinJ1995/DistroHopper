@@ -1205,37 +1205,22 @@ public class HomeActivity extends AppCompatActivity
 	{
 		try
 		{
-			final SharedPreferences prefs = this.getSharedPreferences ();
 			final Resources res = this.getResources ();
 
-			int colour;
-			int colour_opacity = prefs.getInt (Preference.LAUNCHERICON_OPACITY.getName(), 204);
-			int bgColour;
-			int bgColour_opacity = prefs.getInt (Preference.PRIMARY_COLOUR_OPACITY.getName(), 50);
+			final int colour_opacity = res.getInteger (HomeActivity.theme.launcher_applauncher_backgroundcolour_opacity);
+			final int bgColour_opacity = res.getInteger (HomeActivity.theme.dynamic_background_opacity);
 
-			if (prefs.getBoolean (Preference.PRIMARY_COLOUR_DYAMIC.getName(), true))
+			final int colour;
+			final int bgColour;
+			if (wpWallpaper.isLiveWallpaper ())
 			{
-				if (wpWallpaper.isLiveWallpaper ())
-				{
-					colour = Color.argb (40, 40, 40, 40);
-					bgColour = Color.argb (bgColour_opacity, 40, 40, 40);
-				}
-				else
-				{
-					colour = wpWallpaper.getAverageColour (colour_opacity);
-					bgColour = wpWallpaper.getAverageColour (bgColour_opacity);
-				}
+				colour = Color.argb (40, 40, 40, 40);
+				bgColour = Color.argb (bgColour_opacity, 40, 40, 40);
 			}
 			else
 			{
-				int col = prefs.getInt (Preference.PRIMARY_COLOUR.getName(), Color.WHITE);
-
-				int r = Color.red (col);
-				int g = Color.green (col);
-				int b = Color.blue (col);
-
-				colour = Color.argb (colour_opacity, r, g, b);
-				bgColour = Color.argb (bgColour_opacity, r, g, b);
+				colour = wpWallpaper.getAverageColour (colour_opacity);
+				bgColour = wpWallpaper.getAverageColour (bgColour_opacity);
 			}
 
 			be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb = this.viewFinder.get(R.id.lalBfb);

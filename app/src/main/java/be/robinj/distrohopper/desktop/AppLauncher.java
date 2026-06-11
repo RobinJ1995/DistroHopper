@@ -2,7 +2,6 @@ package be.robinj.distrohopper.desktop;
 
 import android.app.Service;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -15,8 +14,6 @@ import android.widget.TextView;
 import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.HomeActivity;
 import be.robinj.distrohopper.R;
-import be.robinj.distrohopper.preferences.Preference;
-import be.robinj.distrohopper.preferences.Preferences;
 
 /**
  * Created by robin on 8/20/14.
@@ -180,9 +177,8 @@ public class AppLauncher extends LinearLayout
 			LinearLayout llBackground = (LinearLayout) this.findViewById (R.id.llBackground);
 			if (llBackground != null && (! this.special) && this.getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
 			{
-				final SharedPreferences prefs = Preferences.getSharedPreferences(this.context, Preferences.PREFERENCES);
-
-				final int avgColour = this.icon.getAverageColour(prefs.getInt (Preference.LAUNCHERICON_OPACITY.getName(), 204));
+				final int avgColour = this.icon.getAverageColour(this.getResources ().getInteger (
+						HomeActivity.theme.launcher_applauncher_backgroundcolour_opacity));
 
 				final GradientDrawable gd = (GradientDrawable) llBackground.getBackground ();
 				gd.setColor (avgColour);

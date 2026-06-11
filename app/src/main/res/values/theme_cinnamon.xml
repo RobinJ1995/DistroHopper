@@ -2,6 +2,7 @@
 <resources>
     <drawable name="theme_cinnamon_wallpaper_overlay">@android:color/transparent</drawable>
     <drawable name="theme_cinnamon_wallpaper_overlay_when_dash_opened">@android:color/transparent</drawable>
+    <integer name="theme_cinnamon_dynamic_background_opacity">50</integer>
 
     <!-- Launcher -->
     <integer name="theme_cinnamon_launcher_location">@integer/position_bottom</integer>
@@ -35,6 +36,7 @@
     <drawable name="theme_cinnamon_launcher_trash_image">@drawable/launcher_trash</drawable>
     <bool name="theme_cinnamon_launcher_applauncher_backgroundcolour_dynamic">false</bool>
     <color name="theme_cinnamon_launcher_applauncher_backgroundcolour">@android:color/transparent</color>
+    <integer name="theme_cinnamon_launcher_applauncher_backgroundcolour_opacity">204</integer>
     <drawable name="theme_cinnamon_launcher_applauncher_background">@drawable/blank_gradient</drawable>
     <drawable name="theme_cinnamon_launcher_applauncher_gradient">@android:color/transparent</drawable>
     <drawable name="theme_cinnamon_launcher_applauncher_running">@drawable/theme_cinnamon_res_launcher_app_running</drawable>

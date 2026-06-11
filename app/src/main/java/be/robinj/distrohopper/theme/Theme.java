@@ -16,6 +16,7 @@ public abstract class Theme
 
 	public int wallpaper_overlay;
 	public int wallpaper_overlay_when_dash_opened;
+	public int dynamic_background_opacity;
 
 	// Launcher //
 	public int launcher_location;
@@ -33,6 +34,7 @@ public abstract class Theme
 	public int launcher_trash_image;
 	public int launcher_applauncher_backgroundcolour_dynamic;
 	public int launcher_applauncher_backgroundcolour;
+	public int launcher_applauncher_backgroundcolour_opacity;
 	public int launcher_applauncher_background;
 	public int launcher_applauncher_gradient;
 	public int launcher_applauncher_running;

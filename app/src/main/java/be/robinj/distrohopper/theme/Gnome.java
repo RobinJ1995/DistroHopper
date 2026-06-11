@@ -14,6 +14,7 @@ public class Gnome extends Theme
 
 		this.wallpaper_overlay = R.drawable.theme_gnome_wallpaper_overlay;
 		this.wallpaper_overlay_when_dash_opened = R.drawable.theme_gnome_wallpaper_overlay_when_dash_opened;
+		this.dynamic_background_opacity = R.integer.theme_gnome_dynamic_background_opacity;
 
 		// Launcher //
 		this.launcher_location = R.integer.theme_gnome_launcher_location;
@@ -31,6 +32,7 @@ public class Gnome extends Theme
 		this.launcher_trash_image = R.drawable.theme_gnome_launcher_trash_image;
 		this.launcher_applauncher_backgroundcolour_dynamic = R.bool.theme_gnome_launcher_applauncher_backgroundcolour_dynamic;
 		this.launcher_applauncher_backgroundcolour = R.color.theme_gnome_launcher_applauncher_backgroundcolour;
+		this.launcher_applauncher_backgroundcolour_opacity = R.integer.theme_gnome_launcher_applauncher_backgroundcolour_opacity;
 		this.launcher_applauncher_background = R.drawable.theme_gnome_launcher_applauncher_background;
 		this.launcher_applauncher_gradient = R.drawable.theme_gnome_launcher_applauncher_gradient;
 		this.launcher_applauncher_running = R.drawable.theme_gnome_launcher_applauncher_running;
