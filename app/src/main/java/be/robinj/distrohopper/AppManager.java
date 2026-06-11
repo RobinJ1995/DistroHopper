@@ -1,68 +1,54 @@
 package be.robinj.distrohopper;
 
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import be.robinj.distrohopper.desktop.launcher.AppLauncher;
-import be.robinj.distrohopper.desktop.launcher.AppLauncherClickListener;
-import be.robinj.distrohopper.desktop.launcher.AppLauncherDragListener;
-import be.robinj.distrohopper.desktop.launcher.AppLauncherLongClickListener;
-import be.robinj.distrohopper.desktop.launcher.RunningAppLauncher;
-import be.robinj.distrohopper.preferences.Preference;
-import be.robinj.distrohopper.preferences.Preferences;
-import be.robinj.distrohopper.theme.Location;
-import be.robinj.distrohopper.theme.Theme;
+import be.robinj.distrohopper.home.LauncherBarBinder;
 
 /**
  * Created by robin on 8/20/14.
+ *
+ * Facade over the app model (AppRepository) and the launcher-bar/dash view
+ * binding (home.LauncherBarBinder), keeping the API its many callers
+ * (listeners, lenses, the broadcast receiver) already use.
  */
 public class AppManager implements Iterable<App>
 {
-	private List<App> apps = new CopyOnWriteArrayList<App>();
-	private List<App> pinned = new CopyOnWriteArrayList<App>();
+	private final AppRepository repository;
 
-	private IconPackHelper iconPack;
+	private final IconPackHelper iconPack;
 
-	private LinearLayout llLauncher;
-	private LinearLayout llLauncherPinnedApps;
-	private LinearLayout llLauncherRunningApps;
-	private GridView gvDashHomeApps;
+	private final HomeActivity parent;
 
-	private HomeActivity parent;
+	private LauncherBarBinder binder;
 
 	public AppManager (HomeActivity parent)
 	{
 		this.parent = parent;
-
+		this.repository = new AppRepository (parent);
 		this.iconPack = new IconPackHelper (parent.getApplicationContext ());
+	}
 
-		this.llLauncher = parent.getViewFinder().get(R.id.llLauncher);
-		this.llLauncherPinnedApps = parent.getViewFinder().get(this.llLauncher, R.id.llLauncherPinnedApps);
-		this.llLauncherRunningApps = parent.getViewFinder().get(this.llLauncher, R.id.llLauncherRunningApps);
-		this.gvDashHomeApps = parent.getViewFinder().get(R.id.gvDashHomeApps);
+	/** Lazy so that AppManager can be constructed on a background thread. */
+	private LauncherBarBinder getBinder ()
+	{
+		if (this.binder == null)
+			this.binder = new LauncherBarBinder (this);
+
+		return this.binder;
+	}
+
+	public AppRepository getRepository ()
+	{
+		return this.repository;
 	}
 
 	public void add (App app)
@@ -72,18 +58,10 @@ public class AppManager implements Iterable<App>
 
 	public void add (App app, boolean checkDuplicate, boolean sortAndNotifyAdapter)
 	{
-		if (! (checkDuplicate && this.apps.contains (app)))
+		if (this.repository.add (app, checkDuplicate) && sortAndNotifyAdapter)
 		{
-			this.apps.add (app);
-
-			if (sortAndNotifyAdapter)
-			{
-				this.sort ();
-
-				ArrayAdapter adapter = (ArrayAdapter) this.gvDashHomeApps.getAdapter ();
-				if (adapter != null)
-					adapter.notifyDataSetChanged ();
-			}
+			this.repository.sort ();
+			this.getBinder ().notifyDashAdapterChanged ();
 		}
 	}
 
@@ -99,61 +77,22 @@ public class AppManager implements Iterable<App>
 
 	public void addRunningApps (int colour)
 	{
-		this.llLauncherRunningApps.removeAllViews ();
-
-		for (int i = 0; i < this.llLauncherPinnedApps.getChildCount (); i++)
-			((AppLauncher) this.llLauncherPinnedApps.getChildAt (i)).setRunning (false);
-
-		for (App app : this.getRunningApps ())
-		{
-			if (this.isPinned (app))
-			{
-				AppLauncher appLauncher = (AppLauncher) this.llLauncherPinnedApps.findViewWithTag (app);
-				if (appLauncher != null)
-					appLauncher.setRunning (true);
-			}
-			else
-			{
-				final Theme theme = DependencyContainer.of (this.getContext ()).getThemeManager ().getCurrent ();
-				if (! this.getContext ().getResources ().getBoolean (theme.launcher_applauncher_backgroundcolour_dynamic))
-					colour = this.getContext ().getResources ().getColor (theme.launcher_applauncher_backgroundcolour);
-
-				RunningAppLauncher appLauncher = new RunningAppLauncher (this.getContext (), app);
-				appLauncher.setOnClickListener (new AppLauncherClickListener (this.getContext ()));
-				appLauncher.setColour (colour);
-
-				this.llLauncherRunningApps.addView (appLauncher);
-			}
-		}
+		this.getBinder ().addRunningApps (colour);
 	}
 
 	public App findAppByPackageAndActivityName (String packageName, String activityName)
 	{
-		for (App app : this.apps)
-		{
-			if (packageName.equals (app.getPackageName ()) && activityName.equals (app.getActivityName ()))
-				return app;
-		}
-
-		return null;
+		return this.repository.findAppByPackageAndActivityName (packageName, activityName);
 	}
 
 	public List<App> findAppsByPackageName (String packageName)
 	{
-		List<App> results = new ArrayList<App> ();
-
-		for (App app : this.apps)
-		{
-			if (packageName.equals (app.getPackageName ()))
-				results.add (app);
-		}
-
-		return results;
+		return this.repository.findAppsByPackageName (packageName);
 	}
 
 	public App get (int index)
 	{
-		return this.apps.get (index);
+		return this.repository.get (index);
 	}
 
 	public HomeActivity getContext ()
@@ -168,17 +107,11 @@ public class AppManager implements Iterable<App>
 
 	public List<App> getInstalledApps ()
 	{
-		return this.apps;
+		return this.repository.getInstalledLive ();
 	}
 
 	public Map<String, App> getInstalledAppsMap() {
-		final Map<String, App> map = new HashMap<>();
-
-		for (final App app : this.apps) {
-			map.put(app.getPackageAndActivityName(), app);
-		}
-
-		return map;
+		return this.repository.installedAppsMap ();
 	}
 
 	public HomeActivity getParent ()
@@ -188,42 +121,17 @@ public class AppManager implements Iterable<App>
 
 	public List<App> getPinned ()
 	{
-		return this.pinned;
+		return this.repository.getPinnedLive ();
 	}
 
 	public List<App> getRunningApps ()
 	{
-		List<App> running = new ArrayList<App> ();
-		ActivityManager am = (ActivityManager) this.getContext ().getSystemService (Context.ACTIVITY_SERVICE);
-
-		List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = am.getRunningAppProcesses ();
-		if (runningAppProcesses == null)
-			return running;
-
-		for (ActivityManager.RunningAppProcessInfo appProcess : runningAppProcesses)
-		{
-			Integer[] importantImportances = new Integer[]
-			{
-				ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND,
-				ActivityManager.RunningAppProcessInfo.IMPORTANCE_PERCEPTIBLE,
-				ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE,
-				ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND,
-				ActivityManager.RunningAppProcessInfo.IMPORTANCE_SERVICE
-			};
-
-			if (Arrays.asList (importantImportances).contains (appProcess.importance))
-			{
-				for (App app : this.findAppsByPackageName (appProcess.processName))
-					running.add (app);
-			}
-		}
-
-		return running;
+		return this.repository.getRunningApps ();
 	}
 
 	public int indexOfPinned (App app)
 	{
-		return this.pinned.indexOf (app);
+		return this.repository.indexOfPinned (app);
 	}
 
 	public boolean isIconPackLoaded ()
@@ -233,12 +141,12 @@ public class AppManager implements Iterable<App>
 
 	public boolean isPinned (App app)
 	{
-		return this.pinned.contains (app);
+		return this.repository.isPinned (app);
 	}
 
 	public Iterator<App> iterator ()
 	{
-		return this.apps.iterator ();
+		return this.repository.getInstalledLive ().iterator ();
 	}
 
 	public void loadIconPack (String name) throws IOException, XmlPullParserException, PackageManager.NameNotFoundException
@@ -248,8 +156,7 @@ public class AppManager implements Iterable<App>
 
 	public void movePinnedApp (int oldIndex, int newIndex)
 	{
-		App app = this.pinned.remove (oldIndex);
-		this.pinned.add (newIndex, app);
+		this.repository.movePinnedApp (oldIndex, newIndex);
 	}
 
 	public boolean pin (App app)
@@ -259,27 +166,18 @@ public class AppManager implements Iterable<App>
 
 	public boolean pin (App app, boolean save, boolean showToast, boolean addView)
 	{
-		if (! this.isPinned (app))
+		if (this.repository.pin (app))
 		{
-			boolean returnValue = this.pinned.add (app);
-
 			if (showToast)
 				Toast.makeText (this.getContext (), app.getLabel () + " " + this.getContext ().getResources ().getString (R.string.pinned), Toast.LENGTH_SHORT).show ();
 
 			if (addView)
-			{
-				be.robinj.distrohopper.desktop.launcher.AppLauncher appLauncher = new be.robinj.distrohopper.desktop.launcher.AppLauncher (this.getContext (), app);
-				appLauncher.setOnClickListener (new AppLauncherClickListener (this.getContext ()));
-				appLauncher.setOnLongClickListener (new AppLauncherLongClickListener (this.getContext ()));
-				appLauncher.setOnDragListener (new AppLauncherDragListener (this));
-
-				this.llLauncherPinnedApps.addView (appLauncher);
-			}
+				this.getBinder ().addPinnedAppView (app);
 
 			if (save)
 				this.savePinnedApps ();
 
-			return returnValue;
+			return true;
 		}
 		else
 		{
@@ -296,62 +194,27 @@ public class AppManager implements Iterable<App>
 	}
 
 	public List<ResolveInfo> queryInstalledApps(final String packageName) {
-		final Intent mainIntent = new Intent(Intent.ACTION_MAIN);
-		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-		if (packageName != null) {
-			mainIntent.setPackage(packageName);
-		}
-		final PackageManager pacMan = this.getContext().getPackageManager();
-		List<ResolveInfo> apps = pacMan.queryIntentActivities(mainIntent, 0);
-
-		return apps;
+		return this.repository.queryInstalledApps (packageName);
 	}
 
 	public void refreshPinnedView ()
 	{
-		this.llLauncherPinnedApps.removeAllViews ();
-
-		for (App app : this.pinned)
-		{
-			be.robinj.distrohopper.desktop.launcher.AppLauncher appLauncher = new be.robinj.distrohopper.desktop.launcher.AppLauncher (this.getContext (), app);
-			appLauncher.setOnClickListener (new AppLauncherClickListener (this.getContext ()));
-			appLauncher.setOnLongClickListener (new AppLauncherLongClickListener (this.getContext ()));
-			appLauncher.setOnDragListener (new AppLauncherDragListener (this));
-
-			this.llLauncherPinnedApps.addView (appLauncher);
-		}
+		this.getBinder ().refreshPinnedView ();
 	}
 
 	public boolean remove (App app)
 	{
-		boolean modified = this.apps.remove (app);
+		boolean modified = this.repository.remove (app);
 		this.unpin (app, false);
 
-		ArrayAdapter adapter = (ArrayAdapter) this.gvDashHomeApps.getAdapter ();
-		if (adapter != null)
-			adapter.notifyDataSetChanged ();
+		this.getBinder ().notifyDashAdapterChanged ();
 
 		return modified;
 	}
 
 	public void savePinnedApps ()
 	{
-		SharedPreferences prefs = Preferences.getSharedPreferences(this.getContext(), Preferences.PINNED_APPS);
-		SharedPreferences.Editor editor = prefs.edit ();
-
-		editor.clear ();
-
-		for (int i = 0; i < this.pinned.size (); i++)
-		{
-			App app = this.pinned.get (i);
-			StringBuilder packageAndActivityName = new StringBuilder (app.getPackageName ())
-				.append ("\n")
-				.append (app.getActivityName ());
-
-			editor.putString (Integer.toString (i), packageAndActivityName.toString ());
-		}
-
-		editor.apply ();
+		this.repository.savePinnedApps ();
 
 		this.parent.pinnedAppsChanged ();
 	}
@@ -369,65 +232,22 @@ public class AppManager implements Iterable<App>
 	 */
 	public List<App> search (String pattern, final int maxResults)
 	{
-		List<App> results;
-		int nResults = 0;
-
-		if (pattern.length () == 0)
-		{
-			results = new ArrayList<App> (this.apps);
-		}
-		else
-		{
-			results = new ArrayList<App> ();
-
-			SharedPreferences prefs = Preferences.getSharedPreferences(this.getContext(), Preferences.PREFERENCES);
-			boolean fullSearch = prefs.getBoolean (Preference.DASH_SEARCH_FULL.getName(), true);
-
-			pattern = pattern.toLowerCase ();
-
-			for (App app : this.apps)
-			{
-				if (app.getLabel ().toLowerCase ().startsWith (pattern)) {
-					results.add(app);
-
-					if (++nResults >= maxResults) {
-						return results;
-					}
-				}
-			}
-
-			if (fullSearch)
-			{
-				for (App app : this.apps)
-				{
-					if ((! results.contains (app)) && (app.getLabel ().toLowerCase ().contains (pattern))) {
-						results.add(app);
-
-						if (++nResults >= maxResults) {
-							return results;
-						}
-					}
-				}
-			}
-		}
-
-		return results;
+		return this.repository.search (pattern, maxResults);
 	}
 
 	public int size ()
 	{
-		return this.apps.size ();
+		return this.repository.size ();
 	}
 
 	public void sort ()
 	{
-		AppComparatorAlphabetical comparator = new AppComparatorAlphabetical ();
-		Collections.sort (this.apps, comparator);
+		this.repository.sort ();
 	}
 
 	public boolean unpin (int index)
 	{
-		return this.unpin (this.pinned.get (index));
+		return this.unpin (this.repository.getPinnedLive ().get (index));
 	}
 
 	public boolean unpin (App app)
@@ -437,7 +257,7 @@ public class AppManager implements Iterable<App>
 
 	public boolean unpin (App app, boolean showToast)
 	{
-		boolean modified = this.pinned.remove (app);
+		boolean modified = this.repository.unpin (app);
 
 		if (showToast)
 		{
@@ -450,8 +270,7 @@ public class AppManager implements Iterable<App>
 			Toast.makeText (this.getContext (), app.getLabel () + message, Toast.LENGTH_SHORT).show ();
 		}
 
-		be.robinj.distrohopper.desktop.launcher.AppLauncher appLauncher = this.llLauncherPinnedApps.findViewWithTag (app);
-		this.llLauncherPinnedApps.removeView (appLauncher);
+		this.getBinder ().removePinnedAppView (app);
 
 		this.savePinnedApps ();
 
@@ -461,42 +280,19 @@ public class AppManager implements Iterable<App>
 	/*# Event handlers #*/
 	public void startedDraggingPinnedApp ()
 	{
-		final AppLauncher lalBfb = this.parent.getViewFinder().get(this.llLauncher, R.id.lalBfb);
-		final AppLauncher lalPreferences = this.parent.getViewFinder().get(this.llLauncher, R.id.lalPreferences);
-		final AppLauncher lalTrash = this.parent.getViewFinder().get(this.llLauncher, R.id.lalTrash);
-
-		final Theme theme = DependencyContainer.of (this.getContext ()).getThemeManager ().getCurrent ();
-		if (this.parent.getResources().getBoolean(theme.launcher_bfb_hide_while_dragging)) {
-			lalBfb.setVisibility(View.GONE);
-		}
-		lalPreferences.setVisibility (View.GONE);
-		lalTrash.setVisibility (View.VISIBLE);
-		this.parent.closeDash();
-		
-		this.llLauncherPinnedApps.setAlpha (0.9F);
+		this.getBinder ().startedDraggingPinnedApp ();
 	}
 
 	public void stoppedDraggingPinnedApp ()
 	{
-		final AppLauncher lalBfb = this.parent.getViewFinder().get(this.llLauncher, R.id.lalBfb);
-		final AppLauncher lalPreferences = this.parent.getViewFinder().get(this.llLauncher, R.id.lalPreferences);
-		final AppLauncher lalTrash = this.parent.getViewFinder().get(this.llLauncher, R.id.lalTrash);
-
-		final Context context = this.getContext();
-		final Theme theme = DependencyContainer.of (context).getThemeManager ().getCurrent ();
-		final Location lalPreferences_location = theme.lalPreferences_getLocation(context.getResources(), Preferences.getSharedPreferences(context));
-		lalBfb.setVisibility(View.VISIBLE);
-		lalPreferences.setVisibility (lalPreferences_location == Location.NONE ? View.GONE : View.VISIBLE);
-		lalTrash.setVisibility (View.GONE);
-		
-		this.llLauncherPinnedApps.setAlpha (1.0F);
+		this.getBinder ().stoppedDraggingPinnedApp ();
 	}
 
 	public void asyncLoadAppLabelsDone() {
-		this.gvDashHomeApps.invalidateViews();
+		this.getBinder ().invalidateDashViews ();
 	}
 
 	public void asyncLoadAppIconsDone() {
-		this.gvDashHomeApps.invalidateViews();
+		this.getBinder ().invalidateDashViews ();
 	}
 }

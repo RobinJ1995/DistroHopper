@@ -42,8 +42,14 @@ etc/                                        — design assets (SVG/XCF sources, 
   - `HomeActivity` — the launcher's main activity; hosts the desktop UI and
     wires the components together. The heavy view work lives in the `home/`
     controllers (below); keep HomeActivity to lifecycle handling and wiring.
-  - `AppManager` — central registry of installed/pinned/running apps; the
-    model behind both the launcher and the dash.
+  - `AppManager` — facade over the app model and its view binding, keeping
+    the API its many callers (listeners, lenses, the broadcast receiver)
+    already use. The actual model is `AppRepository` (installed/pinned
+    lists with `StateFlow` snapshots plus live lists — the dash grid is
+    backed by the live installed list); the launcher-bar/dash view sync is
+    `home/LauncherBarBinder` (resolved lazily so AppManager can be
+    constructed on a background thread). Prefer `AppRepository` directly
+    in new model-level code.
   - `App`, `Application`, `AppComparatorAlphabetical` — app model classes.
   - `IconPackHelper`, `Image`, `Utils`, `ViewFinder`, `InsetsHelper`,
     `Permission`, `RequestCode`, `ExceptionHandler` — support/utilities.
@@ -83,6 +89,8 @@ etc/                                        — design assets (SVG/XCF sources, 
   - `WallpaperColourApplier` — applies the wallpaper's average colour to
     launcher/dash for chameleonic themes.
   - `CustomiseModeUi` — the customise-mode seekbars/spinners inside the dash.
+  - `LauncherBarBinder` — keeps the launcher bar's pinned/running icons and
+    the dash grid in sync with `AppRepository` (via the `AppManager` facade).
   - `LayoutTransitionConfigurer` — the appear/disappear animations.
 - **`desktop/`** — the desktop surface itself (`Wallpaper`, `AppIcon`, drag
   listeners). The activity is transparent over the system wallpaper
