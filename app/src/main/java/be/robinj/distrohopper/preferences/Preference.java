@@ -13,7 +13,6 @@ public enum Preference {
 	DASH_SEARCH_FULL("dashsearch_full"),
 	DASH_SEARCH_LENSES_MAX_RESULTS("dashsearch_lenses_maxresults"),
 	DASHICON_WIDTH("dashicon_width", 24),
-	LAUNCH_ANIMATION("launch_animation", true),
 	WIDGETS_ENABLED("widgets_enabled"),
 	THEME("theme"),
 	ICON_PACK("icon_pack"),

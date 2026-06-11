@@ -21,8 +21,6 @@ import be.robinj.distrohopper.cache.ICache;
 import be.robinj.distrohopper.desktop.AppIcon;
 import be.robinj.distrohopper.desktop.dash.AppLauncher;
 import be.robinj.distrohopper.dev.Log;
-import be.robinj.distrohopper.preferences.Preference;
-import be.robinj.distrohopper.preferences.Preferences;
 
 import static java.lang.String.format;
 
@@ -111,10 +109,7 @@ public class App implements Parcelable
 	@Nullable
 	private Bundle makeLaunchAnimation (@Nullable final View sourceView)
 	{
-		if (sourceView == null
-				|| !Preferences.getSharedPreferences(this.context).getBoolean(
-						Preference.LAUNCH_ANIMATION.getName(),
-						Preference.LAUNCH_ANIMATION.<Boolean>getDefault())) {
+		if (sourceView == null) {
 			return null;
 		}
 
