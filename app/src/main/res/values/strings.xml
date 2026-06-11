@@ -66,6 +66,8 @@
     <string name="option_icon_pack">Icon pack</string>
     <string name="hint_icon_pack">Choose a third-party icon pack to apply to app icons.</string>
     <string name="option_icon_pack_none">None</string>
+    <string name="option_crash_reports">Send crash reports</string>
+    <string name="hint_crash_reports">Automatically send anonymous crash reports to help fix bugs. Reports go to a private server and are never shared with third parties.</string>
     <string name="option_dev">Developer mode</string>
     <string name="hint_dev">Access debug logs and other technical information. Enabling this will negatively impact performance and stability.</string>
     <string name="option_dev_logs">Logs</string>

@@ -19,7 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.acra.ACRA;
+
 import be.robinj.distrohopper.AboutActivity;
+import be.robinj.distrohopper.BuildConfig;
 import be.robinj.distrohopper.ContributeActivity;
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.IconPackHelper;
@@ -108,6 +111,7 @@ public class PreferencesActivity extends AppCompatActivity
 			this.addCategory (R.string.pref_header_dev, R.xml.pref_dev);
 
 			this.initIconPackList ();
+			this.initCrashReportsPreference ();
 
 			this.findPreference ("dummy_wallpaper").setOnPreferenceClickListener (
 				new Preference.OnPreferenceClickListener ()
@@ -152,6 +156,40 @@ public class PreferencesActivity extends AppCompatActivity
 			header.setTitle (titleRes);
 			this.getPreferenceScreen ().addPreference (header);
 			this.addPreferencesFromResource (prefsRes);
+		}
+
+		private void initCrashReportsPreference ()
+		{
+			final Preference crashPref = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.CRASH_REPORTS_ENABLED.getName ());
+			if (crashPref == null) return;
+
+			if (! BuildConfig.ACRA_CONFIGURED)
+			{
+				// No crash-report credentials were provided at build time, so the
+				// option can never do anything: hide it entirely. //
+				if (crashPref.getParent () != null)
+					crashPref.getParent ().removePreference (crashPref);
+				return;
+			}
+
+			// Apply toggles immediately, without waiting for an app restart. //
+			crashPref.setOnPreferenceChangeListener (new Preference.OnPreferenceChangeListener ()
+			{
+				@Override
+				public boolean onPreferenceChange (Preference preference, Object newValue)
+				{
+					try
+					{
+						ACRA.getErrorReporter ().setEnabled (Boolean.TRUE.equals (newValue));
+					}
+					catch (Exception ex)
+					{
+						new ExceptionHandler (ex).logAndTrack ();
+					}
+					return true;
+				}
+			});
 		}
 
 		private void initIconPackList ()

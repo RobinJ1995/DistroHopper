@@ -22,6 +22,8 @@ android {
         versionName "2.6.5"
         buildConfigField "String", "ACRA_USERNAME", "\"" + (properties['acra_username'] ?: "") + "\""
         buildConfigField "String", "ACRA_PASSWORD", "\"" + (properties['acra_password'] ?: "") + "\""
+        def acraConfigured = ((properties['acra_username'] ?: "") != "") && ((properties['acra_password'] ?: "") != "")
+        buildConfigField "boolean", "ACRA_CONFIGURED", acraConfigured.toString()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
