@@ -128,7 +128,6 @@ public class PreferencesActivity extends AppCompatActivity
 		{
 			final PreferenceCategory header = new PreferenceCategory (this.requireContext ());
 			header.setTitle (titleRes);
-			header.setIconSpaceReserved (false);
 			this.getPreferenceScreen ().addPreference (header);
 			this.addPreferencesFromResource (prefsRes);
 		}

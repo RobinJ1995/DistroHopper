@@ -23,7 +23,31 @@
     </style>
 
     <style name="PreferencesTheme" parent="DialogTheme">
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="preferenceTheme">@style/AppPreferenceThemeOverlay</item>
+    </style>
+
+    <!-- Don't reserve icon space; the framework preferences this app used before didn't either. -->
+    <style name="AppPreferenceThemeOverlay" parent="PreferenceThemeOverlay">
+        <item name="preferenceStyle">@style/AppPreference</item>
+        <item name="checkBoxPreferenceStyle">@style/AppCheckBoxPreference</item>
+        <item name="dialogPreferenceStyle">@style/AppDialogPreference</item>
+        <item name="preferenceCategoryStyle">@style/AppPreferenceCategory</item>
+    </style>
+
+    <style name="AppPreference" parent="Preference.Material">
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="AppCheckBoxPreference" parent="Preference.CheckBoxPreference.Material">
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="AppDialogPreference" parent="Preference.DialogPreference.Material">
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="AppPreferenceCategory" parent="Preference.Category.Material">
+        <item name="iconSpaceReserved">false</item>
     </style>
 
     <style name="ThemePreferencesTheme" parent="DialogTheme">
