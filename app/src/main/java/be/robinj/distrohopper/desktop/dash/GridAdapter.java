@@ -14,7 +14,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import be.robinj.distrohopper.App;
-import be.robinj.distrohopper.HomeActivity;
+import be.robinj.distrohopper.DependencyContainer;
+import be.robinj.distrohopper.theme.Theme;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.preferences.Preference;
@@ -45,8 +46,9 @@ public class GridAdapter extends ArrayAdapter<App> {
 		ImageView imgIcon = (ImageView) view.findViewById (R.id.imgIcon);
 
 		tvLabel.setText (appLauncher.getLabel ());
-		tvLabel.setTextColor (view.getResources ().getColor (HomeActivity.theme.dash_applauncher_text_colour));
-		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (HomeActivity.theme.dash_applauncher_text_shadow_colour));
+		final Theme theme = DependencyContainer.of (view.getContext ()).getThemeManager ().getCurrent ();
+		tvLabel.setTextColor (view.getResources ().getColor (theme.dash_applauncher_text_colour));
+		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (theme.dash_applauncher_text_shadow_colour));
 		imgIcon.setImageDrawable (appLauncher.getIcon ().getDrawable ());
 
 		final int width = this.iconWidth;

@@ -10,7 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import be.robinj.distrohopper.App;
-import be.robinj.distrohopper.HomeActivity;
+import be.robinj.distrohopper.DependencyContainer;
+import be.robinj.distrohopper.theme.Theme;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.preferences.Preference;
 import be.robinj.distrohopper.preferences.Preferences;
@@ -58,20 +59,22 @@ public class AppLauncher extends be.robinj.distrohopper.desktop.AppLauncher
 
 	protected void applyTheme ()
 	{
+		final Theme theme = DependencyContainer.of (this.getContext ()).getThemeManager ().getCurrent ();
+
 		ViewGroup llBackground = (ViewGroup) this.findViewById (R.id.llBackground);
-		llBackground.setBackgroundResource (HomeActivity.theme.launcher_applauncher_background);
+		llBackground.setBackgroundResource (theme.launcher_applauncher_background);
 
 		ViewGroup llGradient = (ViewGroup) this.findViewById (R.id.llGradient);
-		llGradient.setBackgroundResource (HomeActivity.theme.launcher_applauncher_gradient);
+		llGradient.setBackgroundResource (theme.launcher_applauncher_gradient);
 
 		if (this.getId () != R.id.lalSpinner)
 		{
 			ImageView imgRunning = (ImageView) this.findViewById (R.id.imgRunning);
-			imgRunning.setImageResource (HomeActivity.theme.launcher_applauncher_running);
+			imgRunning.setImageResource (theme.launcher_applauncher_running);
 		}
 
-		if (! this.getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
-			this.setColour (this.getResources ().getColor (HomeActivity.theme.launcher_applauncher_backgroundcolour));
+		if (! this.getResources ().getBoolean (theme.launcher_applauncher_backgroundcolour_dynamic))
+			this.setColour (this.getResources ().getColor (theme.launcher_applauncher_backgroundcolour));
 	}
 
 	public int getColour ()

@@ -12,11 +12,8 @@ import java.util.List;
 
 import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
-import be.robinj.distrohopper.theme.Cinnamon;
-import be.robinj.distrohopper.theme.Default;
-import be.robinj.distrohopper.theme.Elementary;
-import be.robinj.distrohopper.theme.Gnome;
 import be.robinj.distrohopper.theme.Theme;
+import be.robinj.distrohopper.theme.ThemeRegistry;
 
 public class ThemePreferencesActivity extends AppCompatActivity
 {
@@ -29,10 +26,8 @@ public class ThemePreferencesActivity extends AppCompatActivity
 		InsetsHelper.applySystemBarsPadding (this);
 
 		List<Theme> themes = new ArrayList<Theme> ();
-		themes.add (new Default());
-		themes.add (new Gnome());
-		themes.add (new Elementary());
-		themes.add (new Cinnamon());
+		for (final kotlin.jvm.functions.Function0<Theme> factory : ThemeRegistry.INSTANCE.getThemes ().values ())
+			themes.add (factory.invoke ());
 
 		SharedPreferences prefs = Preferences.getSharedPreferences(this, Preferences.PREFERENCES);
 

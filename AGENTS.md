@@ -86,7 +86,12 @@ etc/                                        — design assets (SVG/XCF sources, 
   `SharedPreferences` in new code.
 - **`theme/`** — one class per supported desktop look (`Default`, `Gnome`,
   `Elementary`, `Cinnamon`), implementing the `Theme` interface; `Location`
-  describes where UI elements sit per theme.
+  describes where UI elements sit per theme. `ThemeRegistry` is the single
+  list of available themes (also drives the theme picker's order);
+  `ThemeManager` (on the `DependencyContainer`) resolves the active theme
+  from preferences — use `DependencyContainer.of(context).themeManager.current`
+  rather than holding `Theme` references in statics. Switching themes still
+  recreates `HomeActivity`.
 - **`widgets/`** — home-screen widget hosting (mostly Kotlin): `WidgetHost`
   (AppWidgetHost), `WidgetPersistence`, `WidgetPickerDialog`.
   `WidgetsContainer` lays widgets out on an invisible 8×8 grid

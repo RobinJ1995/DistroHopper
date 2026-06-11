@@ -6,7 +6,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import be.robinj.distrohopper.App;
-import be.robinj.distrohopper.HomeActivity;
+import be.robinj.distrohopper.DependencyContainer;
+import be.robinj.distrohopper.theme.Theme;
 import be.robinj.distrohopper.R;
 
 /**
@@ -32,8 +33,9 @@ public class RunningAppLauncher extends AppLauncher
 	{
 		super.applyTheme ();
 
-		if (! this.getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
-			this.setColour (this.getResources ().getColor (HomeActivity.theme.launcher_applauncher_backgroundcolour));
+		final Theme theme = DependencyContainer.of (this.getContext ()).getThemeManager ().getCurrent ();
+		if (! this.getResources ().getBoolean (theme.launcher_applauncher_backgroundcolour_dynamic))
+			this.setColour (this.getResources ().getColor (theme.launcher_applauncher_backgroundcolour));
 	}
 
 	@Override

@@ -15,7 +15,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import be.robinj.distrohopper.HomeActivity;
+import be.robinj.distrohopper.DependencyContainer;
+import be.robinj.distrohopper.theme.Theme;
 import be.robinj.distrohopper.R;
 
 /**
@@ -49,8 +50,9 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 				* this.displayDensity)); // Adjust for the screen's pixel density
 
 		tvLabel.setText (coll.getLens ().getName ());
-		tvLabel.setTextColor (view.getResources ().getColor (HomeActivity.theme.dash_applauncher_text_colour));
-		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (HomeActivity.theme.dash_applauncher_text_shadow_colour));
+		final Theme theme = DependencyContainer.of (view.getContext ()).getThemeManager ().getCurrent ();
+		tvLabel.setTextColor (view.getResources ().getColor (theme.dash_applauncher_text_colour));
+		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (theme.dash_applauncher_text_shadow_colour));
 
 		List<LensSearchResult> results = coll.getResults ();
 		if (results == null)

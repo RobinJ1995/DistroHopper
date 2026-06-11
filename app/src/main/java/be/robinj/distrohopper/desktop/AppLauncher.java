@@ -12,7 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import be.robinj.distrohopper.App;
-import be.robinj.distrohopper.HomeActivity;
+import be.robinj.distrohopper.DependencyContainer;
+import be.robinj.distrohopper.theme.Theme;
 import be.robinj.distrohopper.R;
 
 /**
@@ -175,10 +176,11 @@ public class AppLauncher extends LinearLayout
 			imgIcon.setImageDrawable (this.icon.getDrawable ());
 
 			LinearLayout llBackground = (LinearLayout) this.findViewById (R.id.llBackground);
-			if (llBackground != null && (! this.special) && this.getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
+			final Theme theme = DependencyContainer.of (this.getContext ()).getThemeManager ().getCurrent ();
+			if (llBackground != null && (! this.special) && this.getResources ().getBoolean (theme.launcher_applauncher_backgroundcolour_dynamic))
 			{
 				final int avgColour = this.icon.getAverageColour(this.getResources ().getInteger (
-						HomeActivity.theme.launcher_applauncher_backgroundcolour_opacity));
+						theme.launcher_applauncher_backgroundcolour_opacity));
 
 				final GradientDrawable gd = (GradientDrawable) llBackground.getBackground ();
 				gd.setColor (avgColour);

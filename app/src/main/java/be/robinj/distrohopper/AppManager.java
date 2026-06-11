@@ -34,6 +34,7 @@ import be.robinj.distrohopper.desktop.launcher.RunningAppLauncher;
 import be.robinj.distrohopper.preferences.Preference;
 import be.robinj.distrohopper.preferences.Preferences;
 import be.robinj.distrohopper.theme.Location;
+import be.robinj.distrohopper.theme.Theme;
 
 /**
  * Created by robin on 8/20/14.
@@ -113,8 +114,9 @@ public class AppManager implements Iterable<App>
 			}
 			else
 			{
-				if (! this.getContext ().getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
-					colour = this.getContext ().getResources ().getColor (HomeActivity.theme.launcher_applauncher_backgroundcolour);
+				final Theme theme = DependencyContainer.of (this.getContext ()).getThemeManager ().getCurrent ();
+				if (! this.getContext ().getResources ().getBoolean (theme.launcher_applauncher_backgroundcolour_dynamic))
+					colour = this.getContext ().getResources ().getColor (theme.launcher_applauncher_backgroundcolour);
 
 				RunningAppLauncher appLauncher = new RunningAppLauncher (this.getContext (), app);
 				appLauncher.setOnClickListener (new AppLauncherClickListener (this.getContext ()));
@@ -463,7 +465,8 @@ public class AppManager implements Iterable<App>
 		final AppLauncher lalPreferences = this.parent.getViewFinder().get(this.llLauncher, R.id.lalPreferences);
 		final AppLauncher lalTrash = this.parent.getViewFinder().get(this.llLauncher, R.id.lalTrash);
 
-		if (this.parent.getResources().getBoolean(HomeActivity.theme.launcher_bfb_hide_while_dragging)) {
+		final Theme theme = DependencyContainer.of (this.getContext ()).getThemeManager ().getCurrent ();
+		if (this.parent.getResources().getBoolean(theme.launcher_bfb_hide_while_dragging)) {
 			lalBfb.setVisibility(View.GONE);
 		}
 		lalPreferences.setVisibility (View.GONE);
@@ -480,7 +483,8 @@ public class AppManager implements Iterable<App>
 		final AppLauncher lalTrash = this.parent.getViewFinder().get(this.llLauncher, R.id.lalTrash);
 
 		final Context context = this.getContext();
-		final Location lalPreferences_location = HomeActivity.theme.lalPreferences_getLocation(context.getResources(), Preferences.getSharedPreferences(context));
+		final Theme theme = DependencyContainer.of (context).getThemeManager ().getCurrent ();
+		final Location lalPreferences_location = theme.lalPreferences_getLocation(context.getResources(), Preferences.getSharedPreferences(context));
 		lalBfb.setVisibility(View.VISIBLE);
 		lalPreferences.setVisibility (lalPreferences_location == Location.NONE ? View.GONE : View.VISIBLE);
 		lalTrash.setVisibility (View.GONE);
