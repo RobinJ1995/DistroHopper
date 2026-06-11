@@ -20,6 +20,12 @@
         android:summary="@string/hint_icon_pack"
         android:defaultValue=""/>
 
+    <CheckBoxPreference
+        android:key="launch_animation"
+        android:title="@string/option_launch_animation"
+        android:summary="@string/hint_launch_animation"
+        android:defaultValue="true" />
+
     <Preference
         android:key="dummy_customise"
         android:title="@string/option_customise"

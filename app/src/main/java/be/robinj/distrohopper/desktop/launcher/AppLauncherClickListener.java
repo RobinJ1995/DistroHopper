@@ -24,7 +24,7 @@ public class AppLauncherClickListener implements OnClickListener
 		try
 		{
 			AppLauncher appLauncher = (AppLauncher) view;
-			appLauncher.getApp ().launch ();
+			appLauncher.getApp ().launch (view);
 		}
 		catch (Exception ex)
 		{

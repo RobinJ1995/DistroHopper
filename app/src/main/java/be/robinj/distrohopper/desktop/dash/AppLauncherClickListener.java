@@ -25,7 +25,7 @@ public class AppLauncherClickListener implements AdapterView.OnItemClickListener
 		try
 		{
 			AppLauncher appLauncher = (AppLauncher) view.getTag ();
-			appLauncher.getApp ().launch ();
+			appLauncher.getApp ().launch (view);
 		}
 		catch (Exception ex)
 		{

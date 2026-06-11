@@ -18,7 +18,7 @@ public class AppLauncher extends be.robinj.distrohopper.desktop.launcher.AppLaun
 
 	public void launch ()
 	{
-		this.getApp ().launch ();
+		this.getApp ().launch (this);
 
 		this.parent.swipeLeft ();
 	}

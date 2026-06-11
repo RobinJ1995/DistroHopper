@@ -455,7 +455,12 @@ public class HomeActivity extends AppCompatActivity
 
 		try
 		{
-			this.overridePendingTransition (R.anim.home_to_app_in, R.anim.home_to_app_out);
+			// Overriding the transition here would replace the ActivityOptions clip reveal
+			// animation set in App.launch(), so only do it when that animation is disabled //
+			if (!this.getSharedPreferences ().getBoolean (
+					Preference.LAUNCH_ANIMATION.getName (),
+					Preference.LAUNCH_ANIMATION.<Boolean>getDefault ()))
+				this.overridePendingTransition (R.anim.home_to_app_in, R.anim.home_to_app_out);
 
 			this.showLauncherService (true);
 		}

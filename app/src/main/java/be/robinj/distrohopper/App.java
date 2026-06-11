@@ -1,14 +1,19 @@
 package be.robinj.distrohopper;
 
+import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
@@ -16,6 +21,8 @@ import be.robinj.distrohopper.cache.ICache;
 import be.robinj.distrohopper.desktop.AppIcon;
 import be.robinj.distrohopper.desktop.dash.AppLauncher;
 import be.robinj.distrohopper.dev.Log;
+import be.robinj.distrohopper.preferences.Preference;
+import be.robinj.distrohopper.preferences.Preferences;
 
 import static java.lang.String.format;
 
@@ -74,6 +81,11 @@ public class App implements Parcelable
 
 	public void launch ()
 	{
+		this.launch(null);
+	}
+
+	public void launch (@Nullable final View sourceView)
+	{
 		if (DependencyContainer.of (this.context).getCustomiseMode ().getValue ()) {
 			Toast.makeText(this.context, "App launching disabled while customising UI.", Toast.LENGTH_SHORT).show(); //TODO// getString () //
 
@@ -87,13 +99,36 @@ public class App implements Parcelable
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 			intent.setComponent(compName);
 
-			this.context.startActivity(intent);
+			this.context.startActivity(intent, this.makeLaunchAnimation(sourceView));
 		} catch (final Exception ex) {
 			final String errorMessage = format("Failed to launch %s/%s: %s.",
 					this.packageName, this.activityName, ex.getClass().getSimpleName());
 			Log.getInstance().e("App", errorMessage);
 			Toast.makeText(this.context, errorMessage, Toast.LENGTH_SHORT).show(); //TODO// getString () //
 		}
+	}
+
+	@Nullable
+	private Bundle makeLaunchAnimation (@Nullable final View sourceView)
+	{
+		if (sourceView == null
+				|| !Preferences.getSharedPreferences(this.context).getBoolean(
+						Preference.LAUNCH_ANIMATION.getName(),
+						Preference.LAUNCH_ANIMATION.<Boolean>getDefault())) {
+			return null;
+		}
+
+		// Reveal from the icon glyph rather than the whole item view where possible //
+		View origin = sourceView.findViewById(R.id.imgIcon);
+		if (origin == null || origin.getWidth() == 0 || origin.getHeight() == 0) {
+			origin = sourceView;
+		}
+		if (origin.getWidth() == 0 || origin.getHeight() == 0) {
+			return null;
+		}
+
+		return ActivityOptions.makeClipRevealAnimation(
+				origin, 0, 0, origin.getWidth(), origin.getHeight()).toBundle();
 	}
 
 	@Override
