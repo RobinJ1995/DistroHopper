@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.widgets.WidgetContainer;
 
 /**
  * Created by robin on 03/09/14.
@@ -26,6 +27,11 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 	{
 		try
 		{
+			// Widget drags are handled by WidgetsContainer_DragListener and the trash's
+			// own listener; reacting here would hide the trash mid-drag //
+			if (event.getLocalState () instanceof WidgetContainer)
+				return false;
+
 			switch (event.getAction ())
 			{
 				case DragEvent.ACTION_DRAG_ENTERED:

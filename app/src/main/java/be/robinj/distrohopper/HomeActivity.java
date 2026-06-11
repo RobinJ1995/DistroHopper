@@ -78,6 +78,7 @@ import be.robinj.distrohopper.desktop.launcher.service.LauncherService;
 import be.robinj.distrohopper.widgets.WidgetHost;
 import be.robinj.distrohopper.widgets.WidgetHost_LongClickListener;
 import be.robinj.distrohopper.widgets.WidgetsContainer;
+import be.robinj.distrohopper.widgets.WidgetsContainer_DragListener;
 
 
 public class HomeActivity extends AppCompatActivity
@@ -313,6 +314,7 @@ public class HomeActivity extends AppCompatActivity
 			if (prefs.getBoolean (Preference.WIDGETS_ENABLED.getName(), true))
 			{
 				vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this.widgetHost));
+				vgWidgets.setOnDragListener (new WidgetsContainer_DragListener (this));
 				vgWidgets.setOnClickListener (new View.OnClickListener ()
 				{
 					@Override

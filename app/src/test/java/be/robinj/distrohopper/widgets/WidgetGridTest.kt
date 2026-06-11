@@ -36,6 +36,34 @@ class WidgetGridTest {
         assertEquals(1, WidgetGrid.spanForSize(100, 0, 8))
     }
 
+    @Test fun clampSpanEnforcesMinimumSize() {
+        // 250px minimum on 100px cells -> at least 3 cells //
+        assertEquals(3, WidgetGrid.clampSpan(1, 250, 0, 100, 8))
+        assertEquals(4, WidgetGrid.clampSpan(4, 250, 0, 100, 8))
+    }
+
+    @Test fun clampSpanEnforcesMaximumSize() {
+        // 250px maximum on 100px cells -> at most 2 cells //
+        assertEquals(2, WidgetGrid.clampSpan(5, 0, 250, 100, 8))
+        assertEquals(1, WidgetGrid.clampSpan(1, 0, 250, 100, 8))
+    }
+
+    @Test fun clampSpanTreatsZeroAsUnspecified() {
+        assertEquals(1, WidgetGrid.clampSpan(1, 0, 0, 100, 8))
+        assertEquals(8, WidgetGrid.clampSpan(8, 0, 0, 100, 8))
+    }
+
+    @Test fun clampSpanKeepsMaxAboveMinWhenLimitsConflict() {
+        // Max below min -> min wins //
+        assertEquals(3, WidgetGrid.clampSpan(1, 250, 150, 100, 8))
+    }
+
+    @Test fun clampSpanClampsToGrid() {
+        assertEquals(8, WidgetGrid.clampSpan(1, 5000, 0, 100, 8))
+        assertEquals(1, WidgetGrid.clampSpan(0, 0, 0, 100, 8))
+        assertEquals(1, WidgetGrid.clampSpan(0, 0, 0, 0, 8))
+    }
+
     @Test fun overlapsDetectsIntersection() {
         val a = WidgetLayout(1, 0, 0, 2, 2)
 

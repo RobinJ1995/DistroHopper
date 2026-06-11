@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.widgets.WidgetContainer;
 
 /**
  * Created by robin on 03/09/14.
@@ -40,8 +41,15 @@ public class TrashDragListener implements ViewGroup.OnDragListener
 					lalTrash.setColour (Color.rgb (255, 40, 40));
 					break;
 				case DragEvent.ACTION_DROP: // Falls through //
-					int index = Integer.parseInt (event.getClipData ().getDescription ().getLabel ().toString ());
-					this.appManager.unpin (index);
+					if (event.getLocalState () instanceof WidgetContainer)
+					{
+						((WidgetContainer) event.getLocalState ()).removeWidget ();
+					}
+					else
+					{
+						int index = Integer.parseInt (event.getClipData ().getDescription ().getLabel ().toString ());
+						this.appManager.unpin (index);
+					}
 
 					this.appManager.stoppedDraggingPinnedApp ();
 				case DragEvent.ACTION_DRAG_EXITED:

@@ -1,12 +1,17 @@
 package be.robinj.distrohopper.widgets;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import be.robinj.distrohopper.R;
 
 /**
  * The widget area of the home screen. Positions its children on an invisible
@@ -16,9 +21,59 @@ import java.util.List;
  */
 public class WidgetsContainer extends ViewGroup
 {
+	private final Paint snapLinePaint = new Paint (Paint.ANTI_ALIAS_FLAG);
+
+	// While an edge is being dragged, the line shows where it will snap on release //
+	private boolean snapLineVisible = false;
+	private boolean snapLineVertical = false;
+	private float snapLinePos;
+	private float snapLineFrom;
+	private float snapLineTo;
+
 	public WidgetsContainer (Context context, AttributeSet attrs)
 	{
 		super (context, attrs);
+
+		this.snapLinePaint.setColor (context.getColor (R.color.transparent50));
+		this.snapLinePaint.setStrokeWidth (TypedValue.applyDimension (
+			TypedValue.COMPLEX_UNIT_DIP, 2, context.getResources ().getDisplayMetrics ()));
+		this.snapLinePaint.setStrokeCap (Paint.Cap.ROUND);
+	}
+
+	public void showSnapLine (final boolean vertical, final float pos, final float from, final float to)
+	{
+		this.snapLineVisible = true;
+		this.snapLineVertical = vertical;
+		this.snapLinePos = pos;
+		this.snapLineFrom = from;
+		this.snapLineTo = to;
+
+		this.invalidate ();
+	}
+
+	public void hideSnapLine ()
+	{
+		if (! this.snapLineVisible)
+			return;
+
+		this.snapLineVisible = false;
+
+		this.invalidate ();
+	}
+
+	@Override
+	protected void dispatchDraw (final Canvas canvas)
+	{
+		super.dispatchDraw (canvas);
+
+		// On top of the children, so the line stays visible over the dragged widget //
+		if (! this.snapLineVisible)
+			return;
+
+		if (this.snapLineVertical)
+			canvas.drawLine (this.snapLinePos, this.snapLineFrom, this.snapLinePos, this.snapLineTo, this.snapLinePaint);
+		else
+			canvas.drawLine (this.snapLineFrom, this.snapLinePos, this.snapLineTo, this.snapLinePos, this.snapLinePaint);
 	}
 
 	public int getCellWidth ()

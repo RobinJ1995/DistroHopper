@@ -35,6 +35,30 @@ object WidgetGrid {
 		return ceil(sizePx.toDouble() / cellSizePx.toDouble()).toInt().coerceIn(1, max)
 	}
 
+	/**
+	 * Clamp a span (in cells) to the provider's pixel size limits.
+	 * A [minPx] or [maxPx] of 0 or less means "unspecified".
+	 */
+	@JvmStatic
+	fun clampSpan(span: Int, minPx: Int, maxPx: Int, cellSizePx: Int, gridMax: Int): Int {
+		if (cellSizePx <= 0) {
+			return span.coerceIn(1, gridMax)
+		}
+
+		val minSpan = if (minPx > 0) {
+			ceil(minPx.toDouble() / cellSizePx.toDouble()).toInt().coerceIn(1, gridMax)
+		} else {
+			1
+		}
+		val maxSpan = if (maxPx > 0) {
+			(maxPx / cellSizePx).coerceIn(minSpan, gridMax)
+		} else {
+			gridMax
+		}
+
+		return span.coerceIn(minSpan, maxSpan)
+	}
+
 	@JvmStatic
 	fun overlaps(a: WidgetLayout, b: WidgetLayout): Boolean =
 		a.col < b.col + b.colSpan &&

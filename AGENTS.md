@@ -71,9 +71,17 @@ etc/                                        — design assets (SVG/XCF sources, 
 - **`theme/`** — one class per supported desktop look (`Default`, `Gnome`,
   `Elementary`, `Cinnamon`), implementing the `Theme` interface; `Location`
   describes where UI elements sit per theme.
-- **`widgets/`** — home-screen widget hosting: `WidgetHost`, `WidgetGrid`,
-  `WidgetContainer`, `WidgetPersistence`, `WidgetPickerDialog` (mostly
-  Kotlin).
+- **`widgets/`** — home-screen widget hosting (mostly Kotlin): `WidgetHost`
+  (AppWidgetHost), `WidgetPersistence`, `WidgetPickerDialog`.
+  `WidgetsContainer` lays widgets out on an invisible 8×8 grid
+  (`WidgetGrid` holds the pure grid maths — snapping, span clamping,
+  overlap checks). Long-pressing a widget puts its `WidgetContainer` into
+  edit mode: edge handles resize by touch (clamped to the provider's
+  `min`/`maxResize*` limits and `resizeMode`, with a snap-indicator line
+  drawn by `WidgetsContainer`), while dragging the body uses the system
+  drag-and-drop framework (`WidgetsContainer_DragListener`) and shares the
+  launcher's drag-to-trash mechanism — `TrashDragListener` in
+  `desktop/launcher/` recognises widget drags via the drag's local state.
 - **`async/`** — `AsyncTask`-style background loaders for apps, icons,
   labels, and wallpaper.
 - **`broadcast/`** — `PackageManagerBroadcastReceiver`: reacts to app
