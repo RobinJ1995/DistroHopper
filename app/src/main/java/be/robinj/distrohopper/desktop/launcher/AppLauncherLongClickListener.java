@@ -35,7 +35,7 @@ public class AppLauncherLongClickListener implements View.OnLongClickListener
 			View.DragShadowBuilder dragShadowBuilder = new View.DragShadowBuilder (view);
 
 			view.startDrag (data, dragShadowBuilder, item, 0);
-			appManager.startedDraggingPinnedApp ();
+			appManager.startedDraggingPinnedApp (app);
 		}
 		catch (Exception ex)
 		{

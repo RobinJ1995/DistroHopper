@@ -36,7 +36,17 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 					this.appManager.startedDraggingPinnedApp ();
 					break;
 				case DragEvent.ACTION_DROP:
+					// A drop on the bar itself — most often on the empty slot kept
+					// open for the dragged icon — commits the previewed order //
+					this.appManager.droppedPinnedApp ();
+					this.appManager.stoppedDraggingPinnedApp ();
+					break;
 				case DragEvent.ACTION_DRAG_EXITED:
+					this.appManager.stoppedDraggingPinnedApp ();
+					break;
+				case DragEvent.ACTION_DRAG_ENDED:
+					// Restores the bar if the drag ended without a drop on it //
+					this.appManager.endedDraggingPinnedApp ();
 					this.appManager.stoppedDraggingPinnedApp ();
 					break;
 			}

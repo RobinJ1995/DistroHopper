@@ -26,8 +26,8 @@ public class AppLauncherDragListener implements ViewGroup.OnDragListener
 	{
 		try
 		{
-			// Widget drags carry a non-numeric clip label and are handled by
-			// WidgetsContainer_DragListener and the trash's own listener //
+			// Widget drags are handled by WidgetsContainer_DragListener and the trash's
+			// own listener //
 			if (event.getLocalState () instanceof WidgetContainer)
 				return false;
 
@@ -37,20 +37,17 @@ public class AppLauncherDragListener implements ViewGroup.OnDragListener
 			switch (event.getAction ())
 			{
 				case DragEvent.ACTION_DRAG_ENTERED:
-					appLauncher.animate ().setStartDelay (0).setDuration (120).alpha (0.2F);
+					// Shift the empty slot over to this icon's position so that the
+					// other icons slide over and preview the new order //
+					this.appManager.draggedPinnedAppOver (app);
 					break;
-				case DragEvent.ACTION_DROP: // Falls through //
-					int oldIndex = Integer.parseInt (event.getClipData ().getDescription ().getLabel ().toString ());
-					int newIndex = this.appManager.indexOfPinned (app);
-
-					this.appManager.movePinnedApp (oldIndex, newIndex);
-					this.appManager.refreshPinnedView ();
-
-					this.appManager.savePinnedApps ();
-				case DragEvent.ACTION_DRAG_ENDED: // Falls through //
+				case DragEvent.ACTION_DROP:
+					this.appManager.droppedPinnedApp ();
 					this.appManager.stoppedDraggingPinnedApp ();
-				case DragEvent.ACTION_DRAG_EXITED:
-					appLauncher.animate ().setStartDelay (0).setDuration (120).alpha (0.9F);
+					break;
+				case DragEvent.ACTION_DRAG_ENDED:
+					this.appManager.endedDraggingPinnedApp ();
+					this.appManager.stoppedDraggingPinnedApp ();
 					break;
 			}
 		}

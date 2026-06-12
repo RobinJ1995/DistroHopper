@@ -283,6 +283,26 @@ public class AppManager implements Iterable<App>
 		this.getBinder ().startedDraggingPinnedApp ();
 	}
 
+	public void startedDraggingPinnedApp (App app)
+	{
+		this.getBinder ().startedDraggingPinnedApp (app);
+	}
+
+	public void draggedPinnedAppOver (App app)
+	{
+		this.getBinder ().draggedPinnedAppOver (app);
+	}
+
+	public void droppedPinnedApp ()
+	{
+		this.getBinder ().droppedPinnedApp ();
+	}
+
+	public void endedDraggingPinnedApp ()
+	{
+		this.getBinder ().endedDraggingPinnedApp ();
+	}
+
 	public void stoppedDraggingPinnedApp ()
 	{
 		this.getBinder ().stoppedDraggingPinnedApp ();

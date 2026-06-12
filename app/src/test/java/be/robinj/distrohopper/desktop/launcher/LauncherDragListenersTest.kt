@@ -99,12 +99,13 @@ class LauncherDragListenersTest {
 			val betaLauncher = activity
 				.findViewById<LinearLayout>(R.id.llLauncherPinnedApps)
 				.findViewWithTag<AppLauncher>(beta)
-			val clip = ClipData.newPlainText("0", "app") // alpha's pinned index
 			val listener = AppLauncherDragListener(manager)
 
+			manager.startedDraggingPinnedApp(alpha) // the long press starts the drag //
+			assertTrue(listener.onDrag(betaLauncher, // hovering shifts the empty slot here //
+				DragEvents.obtain(DragEvent.ACTION_DRAG_ENTERED)))
 			assertTrue(listener.onDrag(betaLauncher,
-				DragEvents.obtain(DragEvent.ACTION_DROP,
-					clipDescription = clip.description, clipData = clip)))
+				DragEvents.obtain(DragEvent.ACTION_DROP)))
 
 			assertEquals(listOf(beta, alpha), manager.pinned)
 			val persisted = activity.getSharedPreferences(Preferences.PINNED_APPS, 0)

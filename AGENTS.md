@@ -96,6 +96,11 @@ etc/                                        — design assets (SVG/XCF sources, 
   - `CustomiseModeUi` — the customise-mode seekbars/spinners inside the dash.
   - `LauncherBarBinder` — keeps the launcher bar's pinned/running icons and
     the dash grid in sync with `AppRepository` (via the `AppManager` facade).
+    Also owns the drag-to-reorder preview: while a pinned icon is dragged its
+    view stays in the bar as an invisible placeholder, shifted under the drag
+    so the other icons slide over (via the container's `LayoutTransition`)
+    and the empty slot shows where the drop would land; the model is only
+    touched on drop.
   - `LayoutTransitionConfigurer` — the appear/disappear animations.
 - **`desktop/`** — the desktop surface itself (`Wallpaper`, `AppIcon`, drag
   listeners). The activity is transparent over the system wallpaper
