@@ -95,7 +95,25 @@ object AppsLoader {
 			}
 		}
 
-		Log.getInstance().v(this.javaClass.simpleName, "Loaded " + nPinned + " pinned apps in "
+		val prefs = Preferences.getSharedPreferences(context)
+		if (prefs.getBoolean(Preference.DEFAULT_PINS_PENDING.getName(), false)) {
+			val defaults = DefaultPinnedApps.select(
+				appManager.installedApps,
+				appManager.pinned,
+				context.packageManager,
+			)
+			for (app in defaults) {
+				appManager.pin(app, false, false, false)
+			}
+			if (defaults.isNotEmpty()) {
+				appManager.repository.savePinnedApps()
+			}
+			prefs.edit()
+				.remove(Preference.DEFAULT_PINS_PENDING.getName())
+				.apply()
+		}
+
+		Log.getInstance().v(this.javaClass.simpleName, "Loaded " + appManager.pinned.size + " pinned apps in "
 			+ (System.currentTimeMillis() - tDoneSortingInstalledApps) + "ms.")
 
 		onProgress(3, 3)

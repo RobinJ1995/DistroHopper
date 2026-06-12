@@ -69,6 +69,9 @@
     <string name="option_rerun_onboarding">Run setup wizard again</string>
     <string name="hint_rerun_onboarding">The first-run setup wizard will be shown the next time DistroHopper starts.</string>
     <string name="toast_rerun_onboarding">Setup wizard will run on next start</string>
+    <string name="option_pin_default_apps">Pin default apps</string>
+    <string name="hint_pin_default_apps">Run the first-use app pinning again on next start.</string>
+    <string name="toast_pin_default_apps">Default apps will be pinned on next start</string>
     <string name="option_set_default_launcher">Set as home screen</string>
     <string name="hint_set_default_launcher">Make DistroHopper your default home screen, so that it appears whenever you press the home button.</string>
     <string name="title_activity_contribute">How can I contribute?</string>

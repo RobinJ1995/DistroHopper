@@ -148,8 +148,15 @@ etc/                                        — design assets (SVG/XCF sources, 
   `OnboardingGate.shouldShow` before any initialisation and redirects
   (finishing itself) on first run; Finish sets the `SETUP_COMPLETED`
   preference and relaunches `HomeActivity` so the chosen theme applies via
-  the usual recreate path. Users with a `theme` preference from before the
-  wizard existed are marked completed silently — the wizard writes
+  the usual recreate path. A genuine first wizard run also arms a one-time
+  default-pin marker unless the manifest `broadcast/AppUpgradeReceiver`
+  recorded that this APK arrived as an update (upgrades are never eligible);
+  after installed apps load, `home/AppsLoader` consumes it by pinning the
+  first known available browser, email app, and known camera app (missing
+  categories are skipped). Developer wizard resets do not
+  re-arm this marker. A developer preference can explicitly queue the same
+  default-pin pass for the next start. Users with a `theme` preference from
+  before the wizard existed are marked completed silently — the wizard writes
   `SETUP_STARTED` on launch so its own theme write (made as soon as a card
   is tapped) doesn't trip that grandfathering when a run is interrupted.
   The wizard's permission page is the app's only storage permission prompt

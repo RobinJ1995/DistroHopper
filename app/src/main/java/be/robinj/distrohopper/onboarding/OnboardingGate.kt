@@ -31,7 +31,17 @@ object OnboardingGate {
 	/** Recorded by the wizard before it writes anything else (see [shouldShow]). */
 	@JvmStatic
 	fun markStarted(prefs: PreferencesRepository) {
-		prefs.edit { putBoolean(Preference.SETUP_STARTED.getName(), true) }
+		val firstRun = !prefs.getBoolean(Preference.SETUP_STARTED, false)
+			&& !prefs.getBoolean(Preference.SETUP_COMPLETED, false)
+		val defaultPinsEligible = !prefs.getBoolean(
+			Preference.DEFAULT_PINS_AUTO_INELIGIBLE, false)
+
+		prefs.edit {
+			putBoolean(Preference.SETUP_STARTED.getName(), true)
+			if (firstRun && defaultPinsEligible) {
+				putBoolean(Preference.DEFAULT_PINS_PENDING.getName(), true)
+			}
+		}
 	}
 
 	@JvmStatic
@@ -44,6 +54,7 @@ object OnboardingGate {
 	fun reset(prefs: PreferencesRepository) {
 		prefs.edit {
 			remove(Preference.SETUP_COMPLETED.getName())
+			remove(Preference.DEFAULT_PINS_PENDING.getName())
 			// Keeps the existing theme preference from re-grandfathering //
 			putBoolean(Preference.SETUP_STARTED.getName(), true)
 		}

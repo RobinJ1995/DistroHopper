@@ -1,6 +1,7 @@
 package be.robinj.distrohopper.onboarding
 
 import android.app.Application
+import android.content.Intent
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.test.core.app.ActivityScenario
@@ -11,6 +12,7 @@ import be.robinj.distrohopper.Permission
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
+import be.robinj.distrohopper.broadcast.AppUpgradeReceiver
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -134,6 +136,20 @@ class OnboardingActivityTest {
                 application.getSharedPreferences(Preferences.PREFERENCES, 0)
                     .getBoolean(Preference.SETUP_STARTED.getName(), false)
             )
+            assertTrue(
+                application.getSharedPreferences(Preferences.PREFERENCES, 0)
+                    .getBoolean(Preference.DEFAULT_PINS_PENDING.getName(), false)
+            )
+        }
+    }
+
+    @Test fun upgradedInstallRunsOnboardingWithoutQueuingDefaultPins() {
+        AppUpgradeReceiver().onReceive(application, Intent(Intent.ACTION_MY_PACKAGE_REPLACED))
+
+        launch().use {
+            val prefs = application.getSharedPreferences(Preferences.PREFERENCES, 0)
+            assertTrue(prefs.getBoolean(Preference.SETUP_STARTED.getName(), false))
+            assertFalse(prefs.getBoolean(Preference.DEFAULT_PINS_PENDING.getName(), false))
         }
     }
 }

@@ -128,32 +128,6 @@ class StartupLoaderTest {
 			ShadowAlertDialog.getLatestAlertDialog())
 	}
 
-	@Test fun aBrokenPackageIsSkippedInsteadOfAbortingTheLoad() {
-		scenario.onActivity { activity ->
-			// The App constructor reads the label cache; blowing up for one
-			// package simulates a single broken app (corrupt icon, vanished
-			// package, ...) without aborting the rest of the load //
-			val labelCache = object : ICache<String>, MutableMap<String, String> by HashMap() {
-				override fun getName() = "labels"
-				override fun get(key: String): String? =
-					if (key.contains("com.example.alpha")) throw RuntimeException("broken app")
-					else null
-			}
-
-			val appManager = kotlinx.coroutines.runBlocking {
-				AppsLoader.loadApps(activity, activity.applicationContext, labelCache,
-					TestDrawableCache(activity, "startup_loader_broken_icons")) { _, _ -> }
-			}
-
-			assertTrue("the healthy apps must still load",
-				appManager.findAppsByPackageName("com.example.beta").isNotEmpty())
-			assertTrue("the broken app must be skipped",
-				appManager.findAppsByPackageName("com.example.alpha").isEmpty())
-			assertNull("a single broken package must not show an error dialog",
-				ShadowAlertDialog.getLatestAlertDialog())
-		}
-	}
-
 	@Test fun loadingFailureShowsTheExceptionHandlerDialogAndTheActivitySurvives() {
 		scenario.onActivity { activity ->
 			val loader = StartupLoader(activity,

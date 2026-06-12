@@ -61,5 +61,34 @@ class OnboardingGateTest {
 
         assertTrue(OnboardingGate.shouldShow(prefs))
         assertFalse(prefs.getBoolean(Preference.SETUP_COMPLETED, false))
+        assertTrue(prefs.getBoolean(Preference.DEFAULT_PINS_PENDING, false))
+    }
+
+    @Test fun firstWizardRunArmsDefaultPinsOnlyOnce() {
+        OnboardingGate.markStarted(prefs)
+        assertTrue(prefs.getBoolean(Preference.DEFAULT_PINS_PENDING, false))
+
+        prefs.edit { remove(Preference.DEFAULT_PINS_PENDING.getName()) }
+        OnboardingGate.markStarted(prefs)
+
+        assertFalse(prefs.getBoolean(Preference.DEFAULT_PINS_PENDING, false))
+    }
+
+    @Test fun developerResetClearsAndDoesNotRearmDefaultPins() {
+        OnboardingGate.markStarted(prefs)
+        OnboardingGate.markCompleted(prefs)
+        OnboardingGate.reset(prefs)
+
+        assertFalse(prefs.getBoolean(Preference.DEFAULT_PINS_PENDING, false))
+        OnboardingGate.markStarted(prefs)
+        assertFalse(prefs.getBoolean(Preference.DEFAULT_PINS_PENDING, false))
+    }
+
+    @Test fun upgradedInstallDoesNotArmDefaultPins() {
+        prefs.edit { putBoolean(Preference.DEFAULT_PINS_AUTO_INELIGIBLE.getName(), true) }
+        OnboardingGate.markStarted(prefs)
+
+        assertTrue(prefs.getBoolean(Preference.SETUP_STARTED, false))
+        assertFalse(prefs.getBoolean(Preference.DEFAULT_PINS_PENDING, false))
     }
 }

@@ -32,6 +32,7 @@ import be.robinj.distrohopper.IconPackHelper;
 import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.cache.AppIconCache;
+import be.robinj.distrohopper.home.DefaultPinnedApps;
 import be.robinj.distrohopper.onboarding.OnboardingGate;
 
 /**
@@ -163,6 +164,22 @@ public class PreferencesActivity extends AppCompatActivity
 							DependencyContainer.of (requireContext ()).getPrefs ());
 						Toast.makeText (requireContext (),
 							R.string.toast_rerun_onboarding, Toast.LENGTH_SHORT).show ();
+
+						return true;
+					}
+				}
+			);
+
+			this.findPreference ("dummy_pin_default_apps").setOnPreferenceClickListener (
+				new Preference.OnPreferenceClickListener ()
+				{
+					@Override
+					public boolean onPreferenceClick (Preference preference)
+					{
+						DefaultPinnedApps.queue (
+							DependencyContainer.of (requireContext ()).getPrefs ());
+						Toast.makeText (requireContext (),
+							R.string.toast_pin_default_apps, Toast.LENGTH_SHORT).show ();
 
 						return true;
 					}

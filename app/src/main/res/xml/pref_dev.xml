@@ -21,6 +21,12 @@
 		android:title="@string/option_rerun_onboarding"
 		android:summary="@string/hint_rerun_onboarding" />
 
+	<Preference
+		android:key="dummy_pin_default_apps"
+		android:dependency="dev"
+		android:title="@string/option_pin_default_apps"
+		android:summary="@string/hint_pin_default_apps" />
+
 	<!--<CheckBoxPreference
 		android:key="launcher_running_show"
 		android:dependency="dev"

@@ -87,6 +87,14 @@
 
 		<service android:name="be.robinj.distrohopper.desktop.launcher.service.LauncherService" />
 
+		<receiver
+			android:name="be.robinj.distrohopper.broadcast.AppUpgradeReceiver"
+			android:exported="false">
+			<intent-filter>
+				<action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+			</intent-filter>
+		</receiver>
+
 		<activity
 			android:name="be.robinj.distrohopper.preferences.LensPreferencesActivity"
 			android:label="@string/title_activity_lens_preferences"

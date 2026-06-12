@@ -17,6 +17,8 @@ public enum Preference {
 	ICON_PACK("icon_pack"),
 	SETUP_COMPLETED("setup_completed"),
 	SETUP_STARTED("setup_started"),
+	DEFAULT_PINS_PENDING("default_pins_pending"),
+	DEFAULT_PINS_AUTO_INELIGIBLE("default_pins_auto_ineligible"),
 	DEV("dev"),
 	DEV_LOG_TOASTER("dev_log_toaster");
 
