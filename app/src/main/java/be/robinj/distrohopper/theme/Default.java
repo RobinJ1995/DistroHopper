@@ -27,6 +27,7 @@ public class Default extends Theme
 		this.launcher_background = R.array.theme_default_launcher_background;
 		this.launcher_bfb_location = R.integer.theme_default_launcher_bfb_location;
 		this.launcher_bfb_image = R.drawable.theme_default_launcher_bfb_image;
+		this.launcher_bfb_image_vertical = R.drawable.theme_default_launcher_bfb_image_vertical;
 		this.launcher_bfb_hide_while_dragging = R.bool.theme_default_launcher_bfb_hide_while_dragging;
 		this.launcher_preferences_location = R.integer.theme_default_launcher_preferences_location;
 		this.launcher_preferences_image = R.drawable.theme_default_launcher_preferences_image;
@@ -35,6 +36,8 @@ public class Default extends Theme
 		this.launcher_applauncher_backgroundcolour_dynamic = R.bool.theme_default_launcher_applauncher_backgroundcolour_dynamic;
 		this.launcher_applauncher_backgroundcolour = R.color.theme_default_launcher_applauncher_backgroundcolour;
 		this.launcher_applauncher_backgroundcolour_opacity = R.integer.theme_default_launcher_applauncher_backgroundcolour_opacity;
+		this.launcher_applauncher_margin = R.dimen.theme_default_launcher_applauncher_margin;
+		this.launcher_applauncher_margin_edge = R.dimen.theme_default_launcher_applauncher_margin_edge;
 		this.launcher_applauncher_background = R.drawable.theme_default_launcher_applauncher_background;
 		this.launcher_applauncher_gradient = R.drawable.theme_default_launcher_applauncher_gradient;
 		this.launcher_applauncher_running = R.drawable.theme_default_launcher_applauncher_running;

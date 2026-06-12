@@ -37,6 +37,7 @@ public abstract class Theme
 	public int launcher_background;
 	public int launcher_bfb_location;
 	public int launcher_bfb_image;
+	public int launcher_bfb_image_vertical;
 	public int launcher_bfb_hide_while_dragging;
 	public int launcher_preferences_location;
 	public int launcher_preferences_image;
@@ -45,6 +46,8 @@ public abstract class Theme
 	public int launcher_applauncher_backgroundcolour_dynamic;
 	public int launcher_applauncher_backgroundcolour;
 	public int launcher_applauncher_backgroundcolour_opacity;
+	public int launcher_applauncher_margin;
+	public int launcher_applauncher_margin_edge;
 	public int launcher_applauncher_background;
 	public int launcher_applauncher_gradient;
 	public int launcher_applauncher_running;

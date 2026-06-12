@@ -14,6 +14,7 @@ object ThemeRegistry {
 		"elementary" to ::Elementary,
 		"cinnamon" to ::Cinnamon,
 		"plasma" to ::Plasma,
+		"mate" to ::Mate,
 	)
 
 	/** Falls back to the default theme for unknown or null names. */

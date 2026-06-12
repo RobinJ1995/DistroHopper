@@ -64,6 +64,13 @@ public class AppLauncher extends be.robinj.distrohopper.desktop.AppLauncher
 		ViewGroup llBackground = (ViewGroup) this.findViewById (R.id.llBackground);
 		llBackground.setBackgroundResource (theme.launcher_applauncher_background);
 
+		final int margin = this.getResources ().getDimensionPixelSize (theme.launcher_applauncher_margin);
+		final int marginEdge = this.getResources ().getDimensionPixelSize (theme.launcher_applauncher_margin_edge);
+		final LinearLayout.LayoutParams llBackground_layoutParams =
+				(LinearLayout.LayoutParams) llBackground.getLayoutParams ();
+		llBackground_layoutParams.setMargins (0, marginEdge, margin, marginEdge);
+		llBackground.setLayoutParams (llBackground_layoutParams);
+
 		ViewGroup llGradient = (ViewGroup) this.findViewById (R.id.llGradient);
 		llGradient.setBackgroundResource (theme.launcher_applauncher_gradient);
 

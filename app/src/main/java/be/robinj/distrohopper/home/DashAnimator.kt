@@ -42,6 +42,7 @@ import kotlin.math.min
  *  - CINNAMON: the dash slides in from the launcher's edge of the screen.
  *  - ELEMENTARY: the dash fades and zooms in from the Applications label.
  *  - UNITY: the dash fades in.
+ *  - MATE: the whole dash fades and zooms out of the BFB.
  * Everything is reversed on close.
  */
 class DashAnimator(
@@ -158,6 +159,8 @@ class DashAnimator(
 					duration)
 				DashAnimation.ELEMENTARY -> this.buildElementaryAnimators(opening, freshOpen,
 					llDash, duration)
+				DashAnimation.MATE -> this.buildMateAnimators(opening, freshOpen, llDash,
+					duration)
 				else -> this.buildUnityAnimators(opening, freshOpen, llDash, duration)
 			}
 		}
@@ -304,6 +307,110 @@ class DashAnimator(
 			).setDuration(duration))
 	}
 
+	/*
+	 * The whole dash genies out of the BFB (the menu button): on close it
+	 * first squeezes horizontally into the button's column, then gets pulled
+	 * vertically into the button (opening plays the phases in reverse). A
+	 * true genie warps the surface along curves, which would require
+	 * snapshotting the dash into a mesh-distorted bitmap; the staggered
+	 * squeeze-then-slurp reads very similarly at these durations.
+	 */
+	private fun buildMateAnimators(opening: Boolean, freshOpen: Boolean, llDash: View,
+			duration: Long): List<Animator> {
+		val bfb = this.viewFinder.get<View>(R.id.lalBfb)
+
+		val genieDuration = duration * GENIE_DURATION_SCALE / 100L
+		val phase = genieDuration * GENIE_PHASE_PERCENT / 100L
+		val overlap = genieDuration - phase
+
+		/*
+		 * The collapsed dash matches the BFB's own bounds exactly, so the
+		 * dash looks like it expands out of (and gets slurped back into) the
+		 * button itself. Scaling by s about pivot P maps the dash's edge to
+		 * P * (1 - s), so P = target_edge / (1 - s) puts the collapsed
+		 * dash's edge on the BFB's edge (and, with s = bfb / dash, its far
+		 * edge on the BFB's far edge). The squeeze happens along the
+		 * launcher's axis first: a horizontal launcher squeezes the dash to
+		 * the button's width and then pulls it down/up into the button; a
+		 * vertical launcher squeezes to the button's height and then pulls
+		 * it sideways.
+		 */
+		val endScaleX: Float
+		val endScaleY: Float
+		if (bfb.isShown && bfb.width > 0 && llDash.width > 0 && llDash.height > 0) {
+			val bfbLocation = IntArray(2)
+			val dashLocation = IntArray(2)
+			bfb.getLocationOnScreen(bfbLocation)
+			llDash.getLocationOnScreen(dashLocation)
+			val dashScreenX = dashLocation[0] - llDash.translationX
+			val dashScreenY = dashLocation[1] - llDash.translationY
+
+			/*
+			 * The launcher's own padding leaves the BFB a few dp short of the
+			 * screen edge; the collapsed dash hugs the edge instead of
+			 * showing that sliver of a gap.
+			 */
+			val hug = EDGE_HUG_DP * this.activity.resources.displayMetrics.density
+			var targetLeft = bfbLocation[0].toFloat()
+			var targetWidth = bfb.width.toFloat()
+			if (targetLeft < hug) {
+				targetWidth += targetLeft
+				targetLeft = 0F
+			}
+			var targetTop = bfbLocation[1].toFloat()
+			var targetHeight = bfb.height.toFloat()
+			if (targetTop < hug) {
+				targetHeight += targetTop
+				targetTop = 0F
+			}
+			val screenWidth = this.activity.resources.displayMetrics.widthPixels
+			val screenHeight = this.activity.resources.displayMetrics.heightPixels
+			if (screenWidth - (targetLeft + targetWidth) < hug) {
+				targetWidth = screenWidth - targetLeft
+			}
+			if (screenHeight - (targetTop + targetHeight) < hug) {
+				targetHeight = screenHeight - targetTop
+			}
+
+			endScaleX = targetWidth / llDash.width
+			endScaleY = targetHeight / llDash.height
+			llDash.pivotX = (targetLeft - dashScreenX) / (1F - endScaleX)
+			llDash.pivotY = (targetTop - dashScreenY) / (1F - endScaleY)
+		} else { // No BFB to slurp into; collapse towards the dash's centre //
+			endScaleX = GENIE_END_SCALE_FALLBACK
+			endScaleY = GENIE_END_SCALE_FALLBACK
+			llDash.resetPivot()
+		}
+		val verticalLauncher =
+			this.launcherEdge() == Location.LEFT || this.launcherEdge() == Location.RIGHT
+
+		if (freshOpen) {
+			llDash.alpha = 0F
+			llDash.scaleX = endScaleX
+			llDash.scaleY = endScaleY
+		}
+
+		val scaleX = ObjectAnimator.ofFloat(llDash, View.SCALE_X,
+			if (opening) 1F else endScaleX).setDuration(phase)
+		val scaleY = ObjectAnimator.ofFloat(llDash, View.SCALE_Y,
+			if (opening) 1F else endScaleY).setDuration(phase)
+		val squeeze = if (verticalLauncher) scaleY else scaleX
+		val slurp = if (verticalLauncher) scaleX else scaleY
+		val alpha = alphaAnimator(llDash, if (opening) 1F else 0F, genieDuration / 4)
+
+		if (opening) { // Pulled out of the button: slurp phase first, then unsqueeze //
+			slurp.startDelay = 0L
+			squeeze.startDelay = overlap
+			alpha.startDelay = 0L
+		} else { // Slurped into the button: squeeze first, then pull in //
+			squeeze.startDelay = 0L
+			slurp.startDelay = overlap
+			alpha.startDelay = genieDuration - genieDuration / 4
+		}
+
+		return listOf(scaleX, scaleY, alpha)
+	}
+
 	private fun buildUnityAnimators(opening: Boolean, freshOpen: Boolean, llDash: View,
 			duration: Long): List<Animator> {
 		if (freshOpen) {
@@ -447,6 +554,10 @@ class DashAnimator(
 		private const val ICON_STAGGER_STEP_MS = 12L
 		private const val ICON_STAGGER_MAX_MS = 100L
 		private const val GENIE_START_SCALE = 0.15F
+		private const val GENIE_END_SCALE_FALLBACK = 0.06F
+		private const val EDGE_HUG_DP = 16F
+		private const val GENIE_DURATION_SCALE = 160L // percent of the base duration //
+		private const val GENIE_PHASE_PERCENT = 62L // each phase's share, so they overlap //
 		private const val NO_BFB_START_SCALE = 0.6F
 		private const val ZOOM_START_SCALE = 0.2F
 		private val OPEN_INTERPOLATOR: TimeInterpolator = PathInterpolator(0.4F, 0F, 0.2F, 1F)

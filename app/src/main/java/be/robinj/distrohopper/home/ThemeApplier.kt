@@ -57,7 +57,6 @@ class ThemeApplier(
 		ibPanelCog.setImageResource(this.theme.panel_preferences_image)
 		ibPanelDashClose.setImageResource(this.theme.panel_close_image)
 		imgDashBackgroundGradient.setImageResource(this.theme.dash_background_gradient)
-		lalBfb.setIcon(res.getDrawable(this.theme.launcher_bfb_image))
 		lalPreferences.setIcon(res.getDrawable(this.theme.launcher_preferences_image))
 		lalTrash.setIcon(res.getDrawable(this.theme.launcher_trash_image))
 
@@ -67,6 +66,10 @@ class ThemeApplier(
 		val expandLlLauncher = res.getBoolean(this.theme.launcher_expand)
 		val launcherEdge = Location.of(prefs.getInt(Preference.LAUNCHER_EDGE.getName(),
 			res.getInteger(this.theme.launcher_location)))
+		lalBfb.setIcon(res.getDrawable(when (launcherEdge) {
+			Location.LEFT, Location.RIGHT -> this.theme.launcher_bfb_image_vertical
+			else -> this.theme.launcher_bfb_image
+		}))
 		this.edgeController.applyLauncherEdge(launcherEdge, expandLlLauncher)
 		this.applyDashIconWidth(prefs.getInt(Preference.DASHICON_WIDTH.getName(),
 			Preference.DASHICON_WIDTH.getDefault()))
