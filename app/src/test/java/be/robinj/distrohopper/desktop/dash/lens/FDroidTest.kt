@@ -1,0 +1,98 @@
+package be.robinj.distrohopper.desktop.dash.lens
+
+import android.app.Application
+import android.content.Context
+import android.content.Intent
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import androidx.test.core.app.ApplicationProvider
+import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows
+
+@RunWith(RobolectricTestRunner::class)
+class FDroidTest {
+    private lateinit var application: Application
+
+    @Before fun setUp() {
+        application = ApplicationProvider.getApplicationContext()
+    }
+
+    /** One entry from the F-Droid search_apps API. */
+    private fun app(name: String, pkg: String, iconUrl: String): String =
+        """{"name":"$name","summary":"A test app.","icon":"$iconUrl","url":"https://f-droid.org/en/packages/$pkg"}"""
+
+    private fun page(vararg apps: String): String = """{"apps":[${apps.joinToString(",")}]}"""
+
+    private class FakeFDroid(
+        context: Context,
+        private val json: String,
+    ) : FDroid(context) {
+        val requestedIconUrls = mutableListOf<String>()
+
+        override fun fetchSearch(url: String): String = json
+        override fun downloadImage(url: String): Drawable {
+            requestedIconUrls.add(url)
+            return ColorDrawable()
+        }
+    }
+
+    @Test fun parsesAppResults() {
+        val lens = FakeFDroid(application, page(
+            app("Wire • Secure Messenger", "com.wire", "https://icons.example/wire.png"),
+            app("Meshenger", "d.d.meshenger", "https://icons.example/meshenger.png"),
+        ))
+
+        val results = lens.search("messenger", 10)
+
+        assertEquals(listOf("Wire • Secure Messenger", "Meshenger"), results.map { it.name })
+        assertEquals(
+            listOf(
+                "https://f-droid.org/packages/com.wire/",
+                "https://f-droid.org/packages/d.d.meshenger/",
+            ),
+            results.map { it.url },
+        )
+    }
+
+    @Test fun downloadsEachAppsOwnIcon() {
+        val lens = FakeFDroid(application, page(
+            app("Wire", "com.wire", "https://icons.example/wire.png"),
+        ))
+
+        lens.search("wire", 10)
+
+        assertEquals(listOf("https://icons.example/wire.png"), lens.requestedIconUrls)
+    }
+
+    @Test fun respectsMaxResults() {
+        val lens = FakeFDroid(application, page(
+            app("One", "com.example.one", "https://icons.example/1.png"),
+            app("Two", "com.example.two", "https://icons.example/2.png"),
+            app("Three", "com.example.three", "https://icons.example/3.png"),
+        ))
+
+        assertEquals(2, lens.search("app", 2).size)
+    }
+
+    @Test fun returnsEmptyWhenNothingMatches() {
+        val lens = FakeFDroid(application, """{"apps":[]}""")
+
+        assertTrue(lens.search("zzzznope", 10).isEmpty())
+    }
+
+    @Test fun clickTargetsTheFDroidClient() {
+        val lens = FDroid(application)
+
+        lens.onClick("https://f-droid.org/packages/com.wire/")
+
+        val intent = Shadows.shadowOf(application).nextStartedActivity
+        assertEquals(Intent.ACTION_VIEW, intent.action)
+        assertEquals("https://f-droid.org/packages/com.wire/", intent.dataString)
+        assertEquals("org.fdroid.fdroid", intent.`package`)
+        assertTrue(intent.flags and Intent.FLAG_ACTIVITY_NEW_TASK != 0)
+    }
+}
