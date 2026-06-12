@@ -10,6 +10,8 @@ import org.acra.config.ToastConfigurationBuilder;
 import org.acra.data.StringFormat;
 import org.acra.sender.HttpSender;
 
+import be.robinj.distrohopper.preferences.Preferences;
+
 /**
  * Created by robin on 8/22/14.
  */
@@ -29,6 +31,12 @@ public class Application extends android.app.Application
 	protected void attachBaseContext(final Context base) {
 		super.attachBaseContext(base);
 
+		// Crash reporting is only active when ACRA credentials were provided at
+		// build time AND the user has not opted out (defaults to on). //
+		final boolean reportingEnabled = CrashReporting.isEnabled(
+				BuildConfig.ACRA_CONFIGURED,
+				base.getSharedPreferences(Preferences.PREFERENCES, MODE_PRIVATE));
+
 		ACRA.init(this, new CoreConfigurationBuilder()
 				.withReportFormat(StringFormat.JSON)
 				.withPluginConfigurations(
@@ -37,12 +45,12 @@ public class Application extends android.app.Application
 								.withBasicAuthLogin(BuildConfig.ACRA_USERNAME)
 								.withBasicAuthPassword(BuildConfig.ACRA_PASSWORD)
 								.withHttpMethod(HttpSender.Method.POST)
-								.withEnabled(true)
+								.withEnabled(reportingEnabled)
 								.build(),
 						new ToastConfigurationBuilder()
 								.withText(base.getString(R.string.toast_sending_crash_report))
 								.withLength(Toast.LENGTH_SHORT)
-								.withEnabled(true)
+								.withEnabled(reportingEnabled)
 								.build()
 				)
 		);
