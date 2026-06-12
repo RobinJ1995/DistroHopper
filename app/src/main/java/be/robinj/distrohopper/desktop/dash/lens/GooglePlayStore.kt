@@ -22,7 +22,7 @@ import java.util.regex.Pattern
  * parsing is deliberately tolerant and degrades gracefully (no results simply
  * means no results) instead of throwing.
  */
-open class GooglePlay(context: Context) : Lens(context) {
+open class GooglePlayStore(context: Context) : AppStoreLens(context) {
     private val api = "https://play.google.com/store/search?c=apps&q={:QUERY:}&hl=en&gl=us"
 
     private val lensIcon: Drawable = context.resources.getDrawable(R.drawable.dash_search_lens_googleplay)
@@ -55,6 +55,10 @@ open class GooglePlay(context: Context) : Lens(context) {
         val results = ArrayList<LensSearchResult>()
 
         for (app in apps.values) {
+            if (isInstalled(app.packageName)) {
+                continue
+            }
+
             results.add(
                 LensSearchResult(context, app.title, "market://details?id=${app.packageName}", iconFor(app.iconUrl))
             )

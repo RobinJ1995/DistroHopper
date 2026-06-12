@@ -21,7 +21,7 @@ import java.util.regex.Pattern
  * app's F-Droid page in the F-Droid client when it is installed, otherwise in
  * the browser.
  */
-open class FDroid(context: Context) : Lens(context) {
+open class FDroid(context: Context) : AppStoreLens(context) {
     private val api = "https://search.f-droid.org/api/search_apps?q={:QUERY:}&lang=en"
 
     private val lensIcon: Drawable = context.resources.getDrawable(R.drawable.dash_search_lens_fdroid)
@@ -48,6 +48,10 @@ open class FDroid(context: Context) : Lens(context) {
 
             val pkg = PACKAGE_PATTERN.matcher(app.getString("url"))
             if (!pkg.find()) {
+                continue
+            }
+
+            if (isInstalled(pkg.group(1))) {
                 continue
             }
 

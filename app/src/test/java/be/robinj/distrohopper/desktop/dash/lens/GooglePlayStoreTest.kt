@@ -14,7 +14,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows
 
 @RunWith(RobolectricTestRunner::class)
-class GooglePlayTest {
+class GooglePlayStoreTest {
     private lateinit var application: Application
 
     @Before fun setUp() {
@@ -33,10 +33,10 @@ class GooglePlayTest {
     private fun page(vararg apps: String): String =
         "AF_initDataCallback({key: 'ds:4', hash: '1', data:[[[${apps.joinToString(",")}]]], sideChannel: {}});"
 
-    private class FakeGooglePlay(
+    private class FakeGooglePlayStore(
         context: Context,
         private val html: String,
-    ) : GooglePlay(context) {
+    ) : GooglePlayStore(context) {
         val requestedIconUrls = mutableListOf<String>()
 
         override fun fetchSearchHtml(url: String): String = html
@@ -47,7 +47,7 @@ class GooglePlayTest {
     }
 
     @Test fun parsesAppResults() {
-        val lens = FakeGooglePlay(application, page(
+        val lens = FakeGooglePlayStore(application, page(
             appNode("WhatsApp Messenger", "com.whatsapp", "https://play-lh.googleusercontent.com/whatsapp"),
             appNode("Telegram", "org.telegram.messenger", "https://play-lh.googleusercontent.com/telegram"),
         ))
@@ -64,7 +64,7 @@ class GooglePlayTest {
     @Test fun preservesAllCapsTitles() {
         // An all-caps / token-shaped title (e.g. "X", "AIDE") must survive rather
         // than falling back to the package name.
-        val lens = FakeGooglePlay(application, page(
+        val lens = FakeGooglePlayStore(application, page(
             appNode("X", "com.twitter.android", "https://play-lh.googleusercontent.com/x"),
             appNode("AIDE", "com.aide.ui", "https://play-lh.googleusercontent.com/aide"),
         ))
@@ -75,7 +75,7 @@ class GooglePlayTest {
     }
 
     @Test fun downloadsEachAppsOwnIcon() {
-        val lens = FakeGooglePlay(application, page(
+        val lens = FakeGooglePlayStore(application, page(
             appNode("WhatsApp Messenger", "com.whatsapp", "https://play-lh.googleusercontent.com/whatsapp"),
         ))
 
@@ -87,7 +87,7 @@ class GooglePlayTest {
     }
 
     @Test fun dedupesByPackage() {
-        val lens = FakeGooglePlay(application, page(
+        val lens = FakeGooglePlayStore(application, page(
             appNode("WhatsApp Messenger", "com.whatsapp", "https://play-lh.googleusercontent.com/whatsapp"),
             appNode("WhatsApp Messenger", "com.whatsapp", "https://play-lh.googleusercontent.com/whatsapp2"),
         ))
@@ -98,7 +98,7 @@ class GooglePlayTest {
     }
 
     @Test fun respectsMaxResults() {
-        val lens = FakeGooglePlay(application, page(
+        val lens = FakeGooglePlayStore(application, page(
             appNode("App One", "com.example.one", "https://play-lh.googleusercontent.com/one"),
             appNode("App Two", "com.example.two", "https://play-lh.googleusercontent.com/two"),
             appNode("App Three", "com.example.three", "https://play-lh.googleusercontent.com/three"),
@@ -109,8 +109,20 @@ class GooglePlayTest {
         assertEquals(2, results.size)
     }
 
+    @Test fun hidesInstalledApps() {
+        val packageInfo = android.content.pm.PackageInfo().apply { packageName = "com.whatsapp" }
+        Shadows.shadowOf(application.packageManager).installPackage(packageInfo)
+
+        val lens = FakeGooglePlayStore(application, page(
+            appNode("WhatsApp Messenger", "com.whatsapp", "https://play-lh.googleusercontent.com/whatsapp"),
+            appNode("Telegram", "org.telegram.messenger", "https://play-lh.googleusercontent.com/telegram"),
+        ))
+
+        assertEquals(listOf("Telegram"), lens.search("messenger", 10).map { it.name })
+    }
+
     @Test fun returnsEmptyWhenNothingParses() {
-        val lens = FakeGooglePlay(application, "<html>no embedded app data here</html>")
+        val lens = FakeGooglePlayStore(application, "<html>no embedded app data here</html>")
 
         val results = lens.search("obscure query", 10)
 
@@ -120,7 +132,7 @@ class GooglePlayTest {
     }
 
     @Test fun clickOpensPlayStoreApp() {
-        val lens = GooglePlay(application)
+        val lens = GooglePlayStore(application)
 
         lens.onClick("market://details?id=com.whatsapp")
 

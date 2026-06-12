@@ -78,6 +78,18 @@ class FDroidTest {
         assertEquals(2, lens.search("app", 2).size)
     }
 
+    @Test fun hidesInstalledApps() {
+        val packageInfo = android.content.pm.PackageInfo().apply { packageName = "com.wire" }
+        Shadows.shadowOf(application.packageManager).installPackage(packageInfo)
+
+        val lens = FakeFDroid(application, page(
+            app("Wire", "com.wire", "https://icons.example/wire.png"),
+            app("Meshenger", "d.d.meshenger", "https://icons.example/meshenger.png"),
+        ))
+
+        assertEquals(listOf("Meshenger"), lens.search("messenger", 10).map { it.name })
+    }
+
     @Test fun returnsEmptyWhenNothingMatches() {
         val lens = FakeFDroid(application, """{"apps":[]}""")
 
