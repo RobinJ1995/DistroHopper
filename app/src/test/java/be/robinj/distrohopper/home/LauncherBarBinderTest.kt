@@ -12,6 +12,7 @@ import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
 import be.robinj.distrohopper.desktop.launcher.RunningAppLauncher
+import be.robinj.distrohopper.preferences.PreferencesActivity
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -34,6 +35,12 @@ class LauncherBarBinderTest {
 
 	private fun app(activity: HomeActivity, packageName: String): App =
 		activity.appManager.findAppsByPackageName(packageName).first()
+
+	private fun settingsShortcut(activity: HomeActivity): App =
+		activity.appManager.findAppByPackageAndActivityName(
+			activity.packageName,
+			PreferencesActivity::class.java.name,
+		)
 
 	private fun pinnedContainer(activity: HomeActivity): LinearLayout =
 		activity.findViewById(R.id.llLauncherPinnedApps)
@@ -60,6 +67,22 @@ class LauncherBarBinderTest {
 			binder.removePinnedAppView(app)
 			assertEquals(0, container.childCount)
 			assertNull(container.findViewWithTag<AppLauncher>(app))
+		}
+	}
+
+	@Test fun addAndRemoveSettingsShortcutViewRoundTripThroughTheViewTag() {
+		scenario.onActivity { activity ->
+			val binder = LauncherBarBinder(activity.appManager)
+			val settings = settingsShortcut(activity)
+			val container = pinnedContainer(activity)
+
+			binder.addPinnedAppView(settings)
+			assertEquals(1, container.childCount)
+			assertNotNull(container.findViewWithTag<AppLauncher>(settings))
+
+			binder.removePinnedAppView(settings)
+			assertEquals(0, container.childCount)
+			assertNull(container.findViewWithTag<AppLauncher>(settings))
 		}
 	}
 

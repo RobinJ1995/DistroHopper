@@ -6,6 +6,7 @@
     <string name="dash_lens_apps_title">Applications</string>
     <string name="dash_lens_other_title">Other</string>
     <string name="title_activity_preferences">Preferences</string>
+    <string name="shortcut_label_distrohopper_settings">DistroHopper Settings</string>
     <string name="title_activity_about">About</string>
     <string name="title_activity_lens_preferences">Search sources</string>
     <string name="title_activity_theme_preferences">Themes</string>

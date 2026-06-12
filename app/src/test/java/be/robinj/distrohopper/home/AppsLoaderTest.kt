@@ -9,12 +9,14 @@ import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.cache.ICache
 import be.robinj.distrohopper.cache.TestDrawableCache
 import be.robinj.distrohopper.preferences.Preference
+import be.robinj.distrohopper.preferences.PreferencesActivity
 import be.robinj.distrohopper.preferences.Preferences
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -107,6 +109,31 @@ class AppsLoaderTest {
 		assertEquals("com.android.camera2\nCameraActivity", pinned.getString("3", null))
 		assertFalse(Preferences.getSharedPreferences(this.application)
 			.getBoolean(Preference.DEFAULT_PINS_PENDING.getName(), false))
+	}
+
+	@Test fun pinnedSettingsShortcutIsRestoredFromPreferences() {
+		val settingsIdentity = "${this.application.packageName}\n${PreferencesActivity::class.java.name}"
+		Preferences.getSharedPreferences(this.application, Preferences.PINNED_APPS).edit()
+			.putString("0", settingsIdentity)
+			.commit()
+
+		this.scenario.onActivity { activity ->
+			val appManager = runBlocking {
+				AppsLoader.loadApps(
+					activity,
+					activity.applicationContext,
+					HashLabelCache(),
+					TestDrawableCache(activity, "apps_loader_settings_pin_icons"),
+				) { _, _ -> }
+			}
+			val settings = appManager.findAppByPackageAndActivityName(
+				activity.packageName,
+				PreferencesActivity::class.java.name,
+			)
+
+			assertEquals(listOf("DistroHopper Settings"), appManager.pinned.map { it.label })
+			assertSame(settings, appManager.pinned.single())
+		}
 	}
 
 	@Test fun defaultAttemptIsConsumedWhenNothingMatches() {

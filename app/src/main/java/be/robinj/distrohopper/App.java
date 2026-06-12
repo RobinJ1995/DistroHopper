@@ -16,6 +16,7 @@ import be.robinj.distrohopper.cache.ICache;
 import be.robinj.distrohopper.desktop.AppIcon;
 import be.robinj.distrohopper.desktop.dash.AppLauncher;
 import be.robinj.distrohopper.dev.Log;
+import be.robinj.distrohopper.preferences.PreferencesActivity;
 
 import static java.lang.String.format;
 
@@ -32,8 +33,15 @@ public class App implements Parcelable
 	private String activityName;
 
 	private transient ResolveInfo resInf = null;
+	// Normal apps are resolved from PackageManager and launch via ACTION_MAIN.
+	// Internal DistroHopper-only shortcuts (for example Settings) are not public
+	// launcher components, so they carry an explicit intent instead.
+	private transient Intent launchIntent = null;
 	private boolean labelLoaded = false;
 	private boolean iconLoaded = false;
+	// Customise mode blocks launching external apps while the user is editing the
+	// launcher, but Settings must stay reachable so users can leave/fix that mode.
+	private boolean launchAllowedInCustomiseMode = false;
 
 	private transient Context context;
 	private transient AppManager appManager;
@@ -64,6 +72,35 @@ public class App implements Parcelable
 		}
 	}
 
+	private App (Context context, AppManager appManager, String packageName, String activityName,
+					 String label, AppIcon icon, Intent launchIntent, boolean launchAllowedInCustomiseMode)
+	{
+		this.context = context;
+		this.appManager = appManager;
+		this.packageName = packageName;
+		this.activityName = activityName;
+		this.label = label;
+		this.icon = icon;
+		this.launchIntent = launchIntent;
+		this.launchAllowedInCustomiseMode = launchAllowedInCustomiseMode;
+		this.labelLoaded = label != null;
+		this.iconLoaded = icon != null;
+	}
+
+	/**
+	 * Creates the DistroHopper Settings entry shown inside DistroHopper's own
+	 * dash. This is deliberately not a manifest LAUNCHER activity/alias: other
+	 * launchers should still only see DistroHopper itself.
+	 */
+	public static App settingsShortcut (Context context, AppManager appManager)
+	{
+		final Intent launchIntent = new Intent (context, PreferencesActivity.class);
+		launchIntent.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+
+		return new App (context, appManager, context.getPackageName (), PreferencesActivity.class.getName (),
+				context.getString (R.string.shortcut_label_distrohopper_settings), null, launchIntent, true);
+	}
+
 	private App (Parcel parcel)
 	{
 		this.activityName = parcel.readString ();
@@ -74,18 +111,26 @@ public class App implements Parcelable
 
 	public void launch ()
 	{
-		if (DependencyContainer.of (this.context).getCustomiseMode ().getValue ()) {
+		if ((! this.launchAllowedInCustomiseMode) && DependencyContainer.of (this.context).getCustomiseMode ().getValue ()) {
 			Toast.makeText(this.context, "App launching disabled while customising UI.", Toast.LENGTH_SHORT).show(); //TODO// getString () //
 
 			return;
 		}
 
 		try {
-			final ComponentName compName = new ComponentName(this.packageName, this.activityName);
-			final Intent intent = new Intent(Intent.ACTION_MAIN);
-			intent.addCategory(Intent.CATEGORY_LAUNCHER);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-			intent.setComponent(compName);
+			final Intent intent;
+			// Internal shortcuts use their explicit in-app intent. PackageManager apps
+			// keep the Android launcher intent shape expected by external activities.
+			if (this.launchIntent != null) {
+				intent = new Intent (this.launchIntent);
+			}
+			else {
+				final ComponentName compName = new ComponentName(this.packageName, this.activityName);
+				intent = new Intent(Intent.ACTION_MAIN);
+				intent.addCategory(Intent.CATEGORY_LAUNCHER);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+				intent.setComponent(compName);
+			}
 
 			this.context.startActivity(intent);
 		} catch (final Exception ex) {
@@ -121,8 +166,10 @@ public class App implements Parcelable
 
 	public String getLabel(final boolean useCached) {
 		if (this.label == null || (!this.labelLoaded && !useCached)) {
-			this.label = this.resInf.activityInfo.loadLabel(this.getPackageManager()).toString();
-			this.labelLoaded = true;
+			if (this.resInf != null) {
+				this.label = this.resInf.activityInfo.loadLabel(this.getPackageManager()).toString();
+				this.labelLoaded = true;
+			}
 		}
 
 		return this.label;
@@ -159,7 +206,7 @@ public class App implements Parcelable
 				icon = this.appManager.getIconPack().getIconForApp(this);
 			}
 			if (icon == null) {
-				icon = this.appManager.getIconPack().getFallbackIcon(this.resInf.loadIcon(this.getPackageManager()));
+				icon = this.appManager.getIconPack().getFallbackIcon(this.loadFallbackIcon());
 			}
 
 			this.icon = icon;
@@ -167,6 +214,18 @@ public class App implements Parcelable
 		}
 
 		return this.icon;
+	}
+
+	private Drawable loadFallbackIcon ()
+	{
+		if (this.resInf != null) {
+			return this.resInf.loadIcon(this.getPackageManager());
+		}
+
+		// Internal shortcuts are not backed by PackageManager ResolveInfo; use
+		// DistroHopper's own icon so the Settings shortcut has the same icon as
+		// the app entry it replaces.
+		return this.context.getApplicationInfo ().loadIcon (this.getPackageManager ());
 	}
 
 	public boolean setIcon(final AppIcon icon, final ICache<Drawable> appIconCache) {
