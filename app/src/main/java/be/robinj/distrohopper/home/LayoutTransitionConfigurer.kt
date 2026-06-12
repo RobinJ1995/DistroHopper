@@ -28,9 +28,13 @@ object LayoutTransitionConfigurer {
 		viewFinder.get<ListView>(R.id.lvDashHomeLensResults).layoutTransition = lvDashHomeLensResults_transition
 
 		// Zero delays and a short duration so that, while reordering icons by
-		// drag, the siblings slide over immediately as the empty slot moves //
+		// drag, the siblings slide over immediately as the empty slot moves.
+		// DISAPPEARING must stay disabled: it would keep a removed icon as a
+		// transient child until its animation ends, making the reorder's
+		// immediate removeView+addView throw "child already has a parent" //
 		val llLauncherPinnedApps_transition = LayoutTransition()
 		llLauncherPinnedApps_transition.setDuration(180L)
+		llLauncherPinnedApps_transition.disableTransitionType(LayoutTransition.DISAPPEARING)
 		this.zeroStartDelays(llLauncherPinnedApps_transition)
 		viewFinder.get<LinearLayout>(R.id.llLauncherPinnedApps).layoutTransition = llLauncherPinnedApps_transition
 

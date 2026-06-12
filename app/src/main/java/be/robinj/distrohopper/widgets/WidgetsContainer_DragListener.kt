@@ -36,8 +36,10 @@ internal class WidgetsContainer_DragListener(
 			DragEvent.ACTION_DRAG_ENDED -> {
 				this.vgWidgets.hideMoveTarget()
 
-				// Not via appManager: widgets are draggable before app loading finishes //
-				LauncherBarBinder.stoppedDragging(this.parent)
+				// Not via appManager: widgets are draggable before app loading finishes.
+				// Posted: mutating views (even just visibility) during ENDED
+				// dispatch throws a ConcurrentModificationException //
+				view.post { LauncherBarBinder.stoppedDragging(this.parent) }
 			}
 		}
 

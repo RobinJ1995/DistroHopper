@@ -46,8 +46,14 @@ public class AppLauncherDragListener implements ViewGroup.OnDragListener
 					this.appManager.stoppedDraggingPinnedApp ();
 					break;
 				case DragEvent.ACTION_DRAG_ENDED:
-					this.appManager.endedDraggingPinnedApp ();
-					this.appManager.stoppedDraggingPinnedApp ();
+					// Posted: ENDED is dispatched by iterating each container's
+					// drag-interested children, and mutating views (even just
+					// visibility) modifies that set — a ConcurrentModificationException //
+					view.post (() ->
+					{
+						this.appManager.endedDraggingPinnedApp ();
+						this.appManager.stoppedDraggingPinnedApp ();
+					});
 					break;
 			}
 		}

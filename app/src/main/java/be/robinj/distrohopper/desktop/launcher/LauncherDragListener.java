@@ -41,13 +41,18 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 					this.appManager.droppedPinnedApp ();
 					this.appManager.stoppedDraggingPinnedApp ();
 					break;
-				case DragEvent.ACTION_DRAG_EXITED:
-					this.appManager.stoppedDraggingPinnedApp ();
-					break;
+				// No ACTION_DRAG_EXITED case: spurious exits fire while the icons
+				// animate out of the way (and when hovering the trash), briefly
+				// flickering the bar out of drag mode; ENDED always follows anyway //
 				case DragEvent.ACTION_DRAG_ENDED:
-					// Restores the bar if the drag ended without a drop on it //
-					this.appManager.endedDraggingPinnedApp ();
-					this.appManager.stoppedDraggingPinnedApp ();
+					// Restores the bar if the drag ended without a drop on it.
+					// Posted: mutating views (even just visibility) during ENDED
+					// dispatch throws a ConcurrentModificationException //
+					view.post (() ->
+					{
+						this.appManager.endedDraggingPinnedApp ();
+						this.appManager.stoppedDraggingPinnedApp ();
+					});
 					break;
 			}
 		}
