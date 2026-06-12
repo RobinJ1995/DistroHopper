@@ -67,5 +67,6 @@ public class Cinnamon extends Theme
 		this.dash_search_text_colour = R.color.theme_cinnamon_dash_search_text_colour;
 		this.dash_ribbon_show = R.bool.theme_cinnamon_dash_ribbon_show;
 		this.dash_blur_radius = R.dimen.theme_cinnamon_dash_blur_radius;
+		this.dash_animation = R.integer.theme_cinnamon_dash_animation;
 	}
 }

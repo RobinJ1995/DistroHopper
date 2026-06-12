@@ -74,4 +74,5 @@
     <color name="theme_elementary_dash_search_text_colour">@android:color/black</color>
     <bool name="theme_elementary_dash_ribbon_show">false</bool>
     <dimen name="theme_elementary_dash_blur_radius">5dp</dimen>
+    <integer name="theme_elementary_dash_animation">@integer/dash_animation_none</integer>
 </resources>

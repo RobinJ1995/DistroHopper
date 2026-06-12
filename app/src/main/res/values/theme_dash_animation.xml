@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Values match be.robinj.distrohopper.theme.DashAnimation -->
+    <integer name="dash_animation_none">0</integer>
+    <integer name="dash_animation_genie">1</integer>
+</resources>

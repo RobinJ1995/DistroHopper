@@ -3,8 +3,6 @@ package be.robinj.distrohopper.home
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
-import android.graphics.RenderEffect
-import android.graphics.Shader
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -23,8 +21,10 @@ import java.util.function.Consumer
 /**
  * Opens and closes the dash: shows/hides the dash itself, blurs the system
  * wallpaper (cross-window) and the widgets (RenderEffect), and adjusts the
- * panel. Extracted from HomeActivity; the customise-mode relaunch on close
- * stays there, as it manipulates the activity's intent.
+ * panel. The visual work (instant or animated, per the theme's dash_animation)
+ * is delegated to DashAnimator. Extracted from HomeActivity; the
+ * customise-mode relaunch on close stays there, as it manipulates the
+ * activity's intent.
  */
 class DashController(
 	private val activity: Activity,
@@ -37,6 +37,8 @@ class DashController(
 
 	/** Average wallpaper colour; set once the wallpaper has been analysed. */
 	var chameleonicBgColour: Int = Color.argb(25, 0, 0, 0)
+
+	private val animator = DashAnimator(this.activity, this.viewFinder, this.theme)
 
 	/** Cross-window blur can be toggled at runtime (e.g. battery saver). */
 	val crossWindowBlurListener: Consumer<Boolean> = Consumer {
@@ -51,14 +53,10 @@ class DashController(
 			return
 		}
 
-		val llDash = this.viewFinder.get<LinearLayout>(R.id.llDash)
 		val llPanel = this.viewFinder.get<LinearLayout>(R.id.llPanel)
 
-		llDash.visibility = View.VISIBLE
-		val blurRadius = this.activity.resources.getDimensionPixelSize(this.theme.dash_blur_radius)
-		this.viewFinder.get<Wallpaper>(R.id.wpWallpaper).blur(this.activity.window, blurRadius)
-		this.viewFinder.get<WidgetsContainer>(R.id.vgWidgets).setRenderEffect(
-			RenderEffect.createBlurEffect(blurRadius.toFloat(), blurRadius.toFloat(), Shader.TileMode.CLAMP))
+		this.animator.open(
+			this.activity.resources.getDimensionPixelSize(this.theme.dash_blur_radius))
 		llPanel.alpha = 1F
 
 		if (this.activity.resources.getInteger(this.theme.panel_close_location) != -1)
@@ -70,9 +68,6 @@ class DashController(
 				.setBackgroundColor(this.chameleonicBgColour)
 		}
 
-		this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlay).visibility = View.INVISIBLE
-		this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened).visibility = View.VISIBLE
-
 		this.isOpen = true
 	}
 
@@ -81,13 +76,19 @@ class DashController(
 			return
 		}
 
-		val llDash = this.viewFinder.get<LinearLayout>(R.id.llDash)
 		val llPanel = this.viewFinder.get<LinearLayout>(R.id.llPanel)
 		val etDashSearch = this.viewFinder.get<EditText>(R.id.etDashSearch)
 
-		llDash.visibility = View.GONE
-		this.viewFinder.get<Wallpaper>(R.id.wpWallpaper).unblur(this.activity.window)
-		this.viewFinder.get<WidgetsContainer>(R.id.vgWidgets).setRenderEffect(null)
+		this.animator.close(
+			this.activity.resources.getDimensionPixelSize(this.theme.dash_blur_radius)) {
+			this.viewFinder.get<LinearLayout>(R.id.llDash).visibility = View.GONE
+			this.viewFinder.get<Wallpaper>(R.id.wpWallpaper).unblur(this.activity.window)
+			this.viewFinder.get<WidgetsContainer>(R.id.vgWidgets).setRenderEffect(null)
+
+			this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlay).visibility = View.VISIBLE
+			this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened).visibility =
+				View.INVISIBLE
+		}
 		etDashSearch.setText("")
 		etDashSearch.clearFocus()
 
@@ -105,9 +106,6 @@ class DashController(
 		val imm = this.activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
 		imm?.hideSoftInputFromWindow(
 			this.activity.window.decorView.rootView.windowToken, 0)
-
-		this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlay).visibility = View.VISIBLE
-		this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened).visibility = View.INVISIBLE
 
 		this.isOpen = false
 	}
