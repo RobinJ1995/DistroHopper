@@ -17,6 +17,8 @@ public enum Preference {
 	CRASH_REPORTING_ENABLED("crash_reporting_enabled"),
 	THEME("theme"),
 	ICON_PACK("icon_pack"),
+	SETUP_COMPLETED("setup_completed"),
+	SETUP_STARTED("setup_started"),
 	DEV("dev"),
 	DEV_LOG_TOASTER("dev_log_toaster");
 

@@ -25,6 +25,7 @@ import be.robinj.distrohopper.AboutActivity;
 import be.robinj.distrohopper.BuildConfig;
 import be.robinj.distrohopper.ContributeActivity;
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.HomeRole;
 import be.robinj.distrohopper.IconPackHelper;
 import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
@@ -148,6 +149,40 @@ public class PreferencesActivity extends AppCompatActivity
 					}
 				}
 			);
+
+			this.findPreference ("dummy_set_default_launcher").setOnPreferenceClickListener (
+				new Preference.OnPreferenceClickListener ()
+				{
+					@Override
+					public boolean onPreferenceClick (Preference preference)
+					{
+						try
+						{
+							startActivity (HomeRole.requestIntent (requireContext ()));
+						}
+						catch (Exception ex)
+						{
+							new ExceptionHandler (ex).show (requireActivity ());
+						}
+
+						return true;
+					}
+				}
+			);
+		}
+
+		@Override
+		public void onResume ()
+		{
+			super.onResume ();
+
+			// Only offer to set DistroHopper as the home screen while it isn't;
+			// re-checked here in case the user just made it so //
+			final Preference setDefaultLauncher = this.findPreference ("dummy_set_default_launcher");
+			if (setDefaultLauncher != null)
+			{
+				setDefaultLauncher.setVisible (! HomeRole.isHeld (this.requireContext ()));
+			}
 		}
 
 		private void addCategory (final int titleRes, final int prefsRes)

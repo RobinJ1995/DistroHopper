@@ -52,7 +52,9 @@ etc/                                        — design assets (SVG/XCF sources, 
     in new model-level code.
   - `App`, `Application`, `AppComparatorAlphabetical` — app model classes.
   - `IconPackHelper`, `Image`, `Utils`, `ViewFinder`, `InsetsHelper`,
-    `Permission`, `RequestCode`, `ExceptionHandler` — support/utilities.
+    `Permission`, `RequestCode`, `ExceptionHandler`, `HomeRole` —
+    support/utilities. `HomeRole` wraps the HOME-role (default launcher)
+    checks/request intent used by the wizard and the preferences screen.
     `InsetsHelper` handles system bar / display cutout insets (e.g. keeping
     UI clear of the 3-button navigation bar).
   - `Observed`/`IObserver` — small homegrown observer pattern.
@@ -121,6 +123,22 @@ etc/                                        — design assets (SVG/XCF sources, 
     (`InstalledApps`, `LocalFiles`, `DuckDuckGo`, `GitHub`, Stack Exchange
     sites, `Reddit`, …) coordinated by `LensManager` with `AsyncSearch` and
     result/collection adapters.
+- **`onboarding/`** — the first-run wizard. `OnboardingActivity` is a
+  full-screen ViewPager2 pager (theme choice, runtime permission prompts,
+  set-as-default-home via `RoleManager.ROLE_HOME`) shown over the wallpaper.
+  `HomeActivity.onCreate` checks `OnboardingGate.shouldShow` before any
+  initialisation and redirects (finishing itself) on first run; Done/Skip
+  set the `SETUP_COMPLETED` preference and relaunch `HomeActivity` so the
+  chosen theme applies via the usual recreate path. Users with a `theme`
+  preference from before the wizard existed are marked completed silently —
+  the wizard writes `SETUP_STARTED` on launch so its own theme write (made
+  as soon as a card is tapped) doesn't trip that grandfathering when a run
+  is interrupted. The permission page is dropped on devices where the
+  wallpaper permission isn't grantable (Android 13+), so the page list is
+  per-device.
+  Tests that launch `HomeActivity` with fresh prefs must seed
+  `SETUP_COMPLETED` (done by `ActivityTestSupport.launchHome()`) or they
+  will be redirected to the wizard.
 - **`preferences/`** — `PreferencesActivity` (settings UI built
   programmatically with `PreferenceScreen`/categories), plus dedicated
   activities for lens ordering (`LensPreferencesActivity`) and theme
