@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.ViewFinder
 import be.robinj.distrohopper.desktop.Wallpaper
+import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.preferences.PreferencesRepository
 import be.robinj.distrohopper.theme.Theme
 import java.util.function.Consumer
@@ -54,9 +55,23 @@ class DashController(
 		BackgroundFade(this.activity.resources, this.theme.panel_background,
 			this.theme.panel_background_when_dash_opened)
 	}
+	/*
+	 * The themed dash-opened status bar background only applies in the
+	 * normal configuration (resting on statusbar_background). When the
+	 * resolver picks the panel-not-on-top background instead, the status bar
+	 * keeps it through dash open/close — otherwise opening the dash would
+	 * paint the opaque dash-opened layer under the (possibly transparent)
+	 * resting layer, and closing could never restore it.
+	 */
 	private val statusBarFade by lazy {
-		BackgroundFade(this.activity.resources, this.theme.statusbar_background,
-			this.theme.statusbar_background_when_dash_opened)
+		val resting = this.theme.statusbar_background_resolved(this.activity.resources,
+			Preferences.getSharedPreferences(this.activity))
+		BackgroundFade(this.activity.resources, resting,
+			if (resting == this.theme.statusbar_background) {
+				this.theme.statusbar_background_when_dash_opened
+			} else {
+				resting
+			})
 	}
 
 	private class BackgroundFade(res: Resources, restingRes: Int, dashOpenedRes: Int) {
@@ -145,7 +160,8 @@ class DashController(
 		if (this.activity.resources.getBoolean(this.theme.panel_background_dynamic_when_dash_opened)) {
 			llPanel.setBackgroundResource(this.theme.panel_background)
 			this.viewFinder.get<LinearLayout>(R.id.llStatusBar)
-				.setBackgroundResource(this.theme.statusbar_background)
+				.setBackgroundResource(this.theme.statusbar_background_resolved(
+					this.activity.resources, Preferences.getSharedPreferences(this.activity)))
 		} else {
 			this.panelFade.animateTo(dashOpened = false, DashAnimator.CLOSE_DURATION_MS)
 			this.statusBarFade.animateTo(dashOpened = false, DashAnimator.CLOSE_DURATION_MS)

@@ -43,6 +43,7 @@ import kotlin.math.min
  *  - ELEMENTARY: the dash fades and zooms in from the Applications label.
  *  - UNITY: the dash fades in.
  *  - MATE: the whole dash fades and zooms out of the BFB.
+ *  - COSMIC: the dash fades in with a slight zoom.
  * Everything is reversed on close.
  */
 class DashAnimator(
@@ -160,6 +161,8 @@ class DashAnimator(
 				DashAnimation.ELEMENTARY -> this.buildElementaryAnimators(opening, freshOpen,
 					llDash, duration)
 				DashAnimation.MATE -> this.buildMateAnimators(opening, freshOpen, llDash,
+					duration)
+				DashAnimation.COSMIC -> this.buildCosmicAnimators(opening, freshOpen, llDash,
 					duration)
 				else -> this.buildUnityAnimators(opening, freshOpen, llDash, duration)
 			}
@@ -411,6 +414,27 @@ class DashAnimator(
 		return listOf(scaleX, scaleY, alpha)
 	}
 
+	/* The dash fades in with a slight zoom from its resting size. */
+	private fun buildCosmicAnimators(opening: Boolean, freshOpen: Boolean, llDash: View,
+			duration: Long): List<Animator> {
+		llDash.resetPivot()
+
+		if (freshOpen) {
+			llDash.alpha = 0F
+			llDash.scaleX = COSMIC_START_SCALE
+			llDash.scaleY = COSMIC_START_SCALE
+		}
+
+		val targetScale = if (opening) 1F else COSMIC_START_SCALE
+
+		return listOf(
+			alphaAnimator(llDash, if (opening) 1F else 0F, duration),
+			ObjectAnimator.ofPropertyValuesHolder(llDash,
+				PropertyValuesHolder.ofFloat(View.SCALE_X, targetScale),
+				PropertyValuesHolder.ofFloat(View.SCALE_Y, targetScale),
+			).setDuration(duration))
+	}
+
 	private fun buildUnityAnimators(opening: Boolean, freshOpen: Boolean, llDash: View,
 			duration: Long): List<Animator> {
 		if (freshOpen) {
@@ -560,6 +584,7 @@ class DashAnimator(
 		private const val GENIE_PHASE_PERCENT = 62L // each phase's share, so they overlap //
 		private const val NO_BFB_START_SCALE = 0.6F
 		private const val ZOOM_START_SCALE = 0.2F
+		private const val COSMIC_START_SCALE = 0.9F
 		private val OPEN_INTERPOLATOR: TimeInterpolator = PathInterpolator(0.4F, 0F, 0.2F, 1F)
 		private val CLOSE_INTERPOLATOR: TimeInterpolator = PathInterpolator(0.4F, 0F, 1F, 1F)
 		private val BLUR_OPEN_INTERPOLATOR: TimeInterpolator = AccelerateInterpolator(2.5F)

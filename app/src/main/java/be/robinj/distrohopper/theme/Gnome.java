@@ -51,6 +51,7 @@ public class Gnome extends Theme
 		this.panel_background = R.drawable.theme_gnome_panel_background;
 		this.panel_background_when_dash_opened = R.drawable.theme_gnome_panel_background_when_dash_opened;
 		this.statusbar_background = R.drawable.theme_gnome_statusbar_background;
+		this.statusbar_background_when_panel_not_top = R.drawable.theme_gnome_statusbar_background_when_panel_not_top;
 		this.statusbar_background_when_dash_opened = R.drawable.theme_gnome_statusbar_background_when_dash_opened;
 		this.panel_background_dynamic_when_dash_opened = R.bool.theme_gnome_panel_background_dynamic_when_dash_opened;
 		this.panel_bfb_location = R.integer.theme_gnome_panel_bfb_location;
@@ -73,6 +74,7 @@ public class Gnome extends Theme
 		this.dash_customise_text_shadow_colour = R.color.theme_gnome_dash_customise_text_shadow_colour;
 		this.dash_customise_spinner_text_colour = R.color.theme_gnome_dash_customise_spinner_text_colour;
 		this.dash_search_background = R.drawable.theme_gnome_dash_search_background;
+		this.dash_search_width = R.dimen.theme_gnome_dash_search_width;
 		this.dash_search_text_colour = R.color.theme_gnome_dash_search_text_colour;
 		this.dash_ribbon_show = R.bool.theme_gnome_dash_ribbon_show;
 		this.dash_blur_radius = R.dimen.theme_gnome_dash_blur_radius;

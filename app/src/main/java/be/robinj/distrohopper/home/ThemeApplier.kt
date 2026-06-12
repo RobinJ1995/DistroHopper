@@ -53,7 +53,7 @@ class ThemeApplier(
 		// Apply theme
 		llPanel.setBackgroundResource(this.theme.panel_background)
 		this.viewFinder.get<LinearLayout>(R.id.llStatusBar)
-			.setBackgroundResource(this.theme.statusbar_background)
+			.setBackgroundResource(this.theme.statusbar_background_resolved(res, prefs))
 		ibPanelCog.setImageResource(this.theme.panel_preferences_image)
 		ibPanelDashClose.setImageResource(this.theme.panel_close_image)
 		imgDashBackgroundGradient.setImageResource(this.theme.dash_background_gradient)
@@ -127,6 +127,18 @@ class ThemeApplier(
 
 		etDashSearch.setBackgroundResource(this.theme.dash_search_background)
 		etDashSearch.setTextColor(res.getColor(this.theme.dash_search_text_colour))
+		/*
+		 * Themes can pin the search field to a fixed width, centred (COSMIC's
+		 * library search does not span the dash); 0 keeps it full-width.
+		 */
+		val searchWidth = res.getDimensionPixelSize(this.theme.dash_search_width)
+		if (searchWidth > 0) {
+			val searchParams = etDashSearch.layoutParams as LinearLayout.LayoutParams
+			searchParams.width = searchWidth
+			etDashSearch.layoutParams = searchParams
+			this.viewFinder.get<LinearLayout>(llDash, R.id.llDashSearchContainer).gravity =
+				android.view.Gravity.CENTER_HORIZONTAL
+		}
 
 		llDashRibbon.visibility =
 			if (res.getBoolean(this.theme.dash_ribbon_show)) View.VISIBLE else View.GONE

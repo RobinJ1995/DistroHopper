@@ -57,6 +57,7 @@
     <drawable name="theme_elementary_panel_background">@android:color/transparent</drawable>
     <drawable name="theme_elementary_panel_background_when_dash_opened">@android:color/transparent</drawable>
     <drawable name="theme_elementary_statusbar_background">@android:color/transparent</drawable>
+    <drawable name="theme_elementary_statusbar_background_when_panel_not_top">@android:color/transparent</drawable>
     <drawable name="theme_elementary_statusbar_background_when_dash_opened">@android:color/transparent</drawable>
     <bool name="theme_elementary_panel_background_dynamic_when_dash_opened">false</bool>
     <integer name="theme_elementary_panel_bfb_location">@integer/position_left</integer>
@@ -79,6 +80,7 @@
     <color name="theme_elementary_dash_customise_text_colour">#101010</color>
     <color name="theme_elementary_dash_customise_text_shadow_colour">@android:color/transparent</color>
     <color name="theme_elementary_dash_customise_spinner_text_colour">@android:color/secondary_text_light</color>
+    <dimen name="theme_elementary_dash_search_width">0dp</dimen>
     <drawable name="theme_elementary_dash_search_background">@drawable/theme_elementary_res_dash_search_background</drawable>
     <color name="theme_elementary_dash_search_text_colour">@android:color/black</color>
     <bool name="theme_elementary_dash_ribbon_show">false</bool>

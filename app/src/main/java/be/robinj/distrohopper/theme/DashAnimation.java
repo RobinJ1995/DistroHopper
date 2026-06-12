@@ -12,7 +12,8 @@ public enum DashAnimation
 	CINNAMON(2), // Dash slides in from the launcher's edge of the screen //
 	ELEMENTARY(3), // Dash fades and zooms in from the Applications label //
 	UNITY(4), // Dash and panel changes fade //
-	MATE(5); // The whole dash genies out of the BFB //
+	MATE(5), // The whole dash genies out of the BFB //
+	COSMIC(6); // The dash fades in with a slight zoom //
 
 	public final int n;
 

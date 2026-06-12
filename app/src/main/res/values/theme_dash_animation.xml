@@ -7,4 +7,5 @@
     <integer name="dash_animation_elementary">3</integer>
     <integer name="dash_animation_unity">4</integer>
     <integer name="dash_animation_mate">5</integer>
+    <integer name="dash_animation_cosmic">6</integer>
 </resources>

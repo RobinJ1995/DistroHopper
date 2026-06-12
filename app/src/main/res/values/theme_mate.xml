@@ -59,6 +59,7 @@
     <drawable name="theme_mate_panel_background">@drawable/theme_mate_res_panel_background</drawable>
     <drawable name="theme_mate_panel_background_when_dash_opened">@drawable/theme_mate_res_panel_background</drawable>
     <drawable name="theme_mate_statusbar_background">@drawable/theme_mate_res_panel_background</drawable>
+    <drawable name="theme_mate_statusbar_background_when_panel_not_top">@drawable/theme_mate_res_panel_background</drawable>
     <drawable name="theme_mate_statusbar_background_when_dash_opened">@drawable/theme_mate_res_panel_background</drawable>
     <bool name="theme_mate_panel_background_dynamic_when_dash_opened">false</bool>
     <integer name="theme_mate_panel_bfb_location">@integer/position_none</integer>
@@ -81,6 +82,7 @@
     <color name="theme_mate_dash_customise_text_colour">#212121</color>
     <color name="theme_mate_dash_customise_text_shadow_colour">@android:color/transparent</color>
     <color name="theme_mate_dash_customise_spinner_text_colour">@android:color/secondary_text_light</color>
+    <dimen name="theme_mate_dash_search_width">0dp</dimen>
     <drawable name="theme_mate_dash_search_background">@drawable/theme_mate_res_dash_search_background</drawable>
     <color name="theme_mate_dash_search_text_colour">@android:color/black</color>
     <bool name="theme_mate_dash_ribbon_show">false</bool>

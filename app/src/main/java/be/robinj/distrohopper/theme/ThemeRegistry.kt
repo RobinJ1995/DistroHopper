@@ -15,6 +15,7 @@ object ThemeRegistry {
 		"cinnamon" to ::Cinnamon,
 		"plasma" to ::Plasma,
 		"mate" to ::Mate,
+		"cosmic" to ::Cosmic,
 	)
 
 	/** Falls back to the default theme for unknown or null names. */

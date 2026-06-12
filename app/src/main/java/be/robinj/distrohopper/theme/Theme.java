@@ -61,6 +61,7 @@ public abstract class Theme
 	public int panel_background;
 	public int panel_background_when_dash_opened;
 	public int statusbar_background;
+	public int statusbar_background_when_panel_not_top;
 	public int statusbar_background_when_dash_opened;
 	public int panel_background_dynamic_when_dash_opened;
 	public int panel_bfb_location;
@@ -83,6 +84,7 @@ public abstract class Theme
 	public int dash_customise_text_shadow_colour;
 	public int dash_customise_spinner_text_colour;
 	public int dash_search_background;
+	public int dash_search_width;
 	public int dash_search_text_colour;
 	public int dash_ribbon_show;
 	public int dash_blur_radius;
@@ -91,6 +93,36 @@ public abstract class Theme
 	public String getName ()
 	{
 		return this.getClass ().getSimpleName ().toLowerCase ();
+	}
+
+	/*
+	 * Whenever the panel does not sit at the top of the screen (hidden, or
+	 * moved to another edge by the complementary placement rule), themes can
+	 * choose a different status bar background (COSMIC goes transparent).
+	 */
+	public int statusbar_background_resolved (final Resources res, final SharedPreferences prefs)
+	{
+		int panelEdge = prefs.getInt (Preference.PANEL_EDGE.getName (),
+				res.getInteger (this.panel_location));
+
+		if (panelEdge != Location.NONE.n)
+		{
+			boolean supportsBottom = false;
+			for (final int supported : res.getIntArray (this.panel_location_supported))
+				supportsBottom |= supported == Location.BOTTOM.n;
+
+			if (supportsBottom)
+			{
+				final int launcherEdge = prefs.getInt (Preference.LAUNCHER_EDGE.getName (),
+						res.getInteger (this.launcher_location));
+				panelEdge = launcherEdge == Location.TOP.n ? Location.BOTTOM.n : Location.TOP.n;
+			}
+		}
+
+		if (panelEdge != Location.TOP.n)
+			return this.statusbar_background_when_panel_not_top;
+
+		return this.statusbar_background;
 	}
 
 	public Location lalPreferences_getLocation(final Resources res, final SharedPreferences prefs) {
