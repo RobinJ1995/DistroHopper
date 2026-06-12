@@ -30,15 +30,23 @@ class LocalFilesTest {
         lens = LocalFiles(application)
     }
 
-    private fun mediaCursor(vararg rows: Pair<Long, String>): MatrixCursor {
+    private fun mediaCursor(vararg rows: Triple<Long, String, String?>): MatrixCursor {
         val cursor = MatrixCursor(arrayOf(
             MediaStore.Files.FileColumns._ID,
             MediaStore.Files.FileColumns.DISPLAY_NAME,
             MediaStore.Files.FileColumns.DATA,
+            MediaStore.Files.FileColumns.MIME_TYPE,
         ))
-        rows.forEach { (id, name) -> cursor.addRow(arrayOf<Any>(id, name, "/storage/emulated/0/$name")) }
+        rows.forEach { (id, name, mime) ->
+            cursor.addRow(arrayOf<Any?>(id, name, "/storage/emulated/0/$name", mime))
+        }
         return cursor
     }
+
+    private fun mediaCursor(vararg rows: Pair<Long, String>): MatrixCursor =
+        mediaCursor(*rows.map { (id, name) -> Triple(id, name, null) }.toTypedArray())
+
+    // ── Existing tests ─────────────────────────────────────────────────────────
 
     @Test fun searchReturnsResultsFromMediaStore() {
         provider.cursorToReturn = mediaCursor(1L to "notes.txt", 2L to "notes2.txt")
@@ -112,11 +120,92 @@ class LocalFilesTest {
         assertEquals("*/*", intent.type)
     }
 
+    // ── New tests ──────────────────────────────────────────────────────────────
+
+    @Test fun searchPassesSortOrderDateModifiedDesc() {
+        provider.cursorToReturn = mediaCursor()
+        lens.search("txt", 10)
+        assertNotNull(provider.lastSortOrder)
+        assertTrue(provider.lastSortOrder!!.contains(MediaStore.Files.FileColumns.DATE_MODIFIED))
+        assertTrue(provider.lastSortOrder!!.uppercase().contains("DESC"))
+    }
+
+    @Test fun searchUsesDisplayNameColumnNotTitle() {
+        provider.cursorToReturn = mediaCursor()
+        lens.search("notes", 10)
+        assertNotNull(provider.lastSelection)
+        assertTrue(provider.lastSelection!!.contains(MediaStore.Files.FileColumns.DISPLAY_NAME))
+        assertFalse(provider.lastSelection!!.contains(MediaStore.Files.FileColumns.TITLE))
+    }
+
+    @Test fun searchExcludesHiddenFiles() {
+        provider.cursorToReturn = mediaCursor(
+            Triple(1L, ".hidden", null),
+            Triple(2L, "visible.txt", null),
+        )
+        val results = lens.search("", 10)
+        assertEquals(1, results.size)
+        assertEquals("visible.txt", results[0].name)
+    }
+
+    @Test fun mimeTypeImageResultUsesImageIcon() {
+        provider.cursorToReturn = mediaCursor(Triple(1L, "photo.jpg", "image/jpeg"))
+        val results = lens.search("photo", 10)
+        assertEquals(1, results.size)
+        val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_image)
+        val notExpected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_generic)
+        assertEquals(expected.constantState, results[0].icon.constantState)
+        assertNotEquals(notExpected.constantState, results[0].icon.constantState)
+    }
+
+    @Test fun mimeTypeVideoResultUsesVideoIcon() {
+        provider.cursorToReturn = mediaCursor(Triple(1L, "movie.mp4", "video/mp4"))
+        val results = lens.search("movie", 10)
+        assertEquals(1, results.size)
+        val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_video)
+        assertEquals(expected.constantState, results[0].icon.constantState)
+    }
+
+    @Test fun mimeTypeAudioResultUsesAudioIcon() {
+        provider.cursorToReturn = mediaCursor(Triple(1L, "song.mp3", "audio/mpeg"))
+        val results = lens.search("song", 10)
+        assertEquals(1, results.size)
+        val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_audio)
+        assertEquals(expected.constantState, results[0].icon.constantState)
+    }
+
+    @Test fun mimeTypePdfResultUsesDocumentIcon() {
+        provider.cursorToReturn = mediaCursor(Triple(1L, "report.pdf", "application/pdf"))
+        val results = lens.search("report", 10)
+        assertEquals(1, results.size)
+        val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_document)
+        assertEquals(expected.constantState, results[0].icon.constantState)
+    }
+
+    @Test fun mimeTypeTextResultUsesDocumentIcon() {
+        provider.cursorToReturn = mediaCursor(Triple(1L, "readme.txt", "text/plain"))
+        val results = lens.search("readme", 10)
+        assertEquals(1, results.size)
+        val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_document)
+        assertEquals(expected.constantState, results[0].icon.constantState)
+    }
+
+    @Test fun nullMimeTypeResultUsesGenericIcon() {
+        provider.cursorToReturn = mediaCursor(Triple(1L, "unknown.bin", null))
+        val results = lens.search("unknown", 10)
+        assertEquals(1, results.size)
+        val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_generic)
+        assertEquals(expected.constantState, results[0].icon.constantState)
+    }
+
+    // ── Infrastructure ─────────────────────────────────────────────────────────
+
     private class RecordingMediaProvider : ContentProvider() {
         var cursorToReturn: Cursor? = null
         var typeToReturn: String? = null
         var lastSelection: String? = null
         var lastSelectionArgs: Array<out String>? = null
+        var lastSortOrder: String? = null
 
         override fun onCreate() = true
 
@@ -124,6 +213,7 @@ class LocalFilesTest {
                            selectionArgs: Array<out String>?, sortOrder: String?): Cursor? {
             this.lastSelection = selection
             this.lastSelectionArgs = selectionArgs
+            this.lastSortOrder = sortOrder
             return this.cursorToReturn
         }
 
