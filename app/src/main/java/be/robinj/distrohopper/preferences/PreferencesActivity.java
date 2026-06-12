@@ -160,11 +160,17 @@ public class PreferencesActivity extends AppCompatActivity
 
 		private void initCrashReportsPreference ()
 		{
+			this.applyCrashReportsPreference (BuildConfig.ACRA_CONFIGURED);
+		}
+
+		// Package-private so it can be driven with either flag value from tests. //
+		void applyCrashReportsPreference (final boolean acraConfigured)
+		{
 			final Preference crashPref = this.findPreference (
 				be.robinj.distrohopper.preferences.Preference.CRASH_REPORTS_ENABLED.getName ());
 			if (crashPref == null) return;
 
-			if (! BuildConfig.ACRA_CONFIGURED)
+			if (! acraConfigured)
 			{
 				// No crash-report credentials were provided at build time, so the
 				// option can never do anything: hide it entirely. //
