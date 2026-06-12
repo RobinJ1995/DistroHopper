@@ -146,8 +146,10 @@ etc/                                        — design assets (SVG/XCF sources, 
   `min`/`maxResize*` limits and `resizeMode`, with a snap-indicator line
   drawn by `WidgetsContainer`), while dragging the body uses the system
   drag-and-drop framework (`WidgetsContainer_DragListener`) and shares the
-  launcher's drag-to-trash mechanism — `TrashDragListener` in
-  `desktop/launcher/` recognises widget drags via the drag's local state.
+  launcher's drag-to-trash mechanism. The free-moving system drag shadow is
+  accompanied by a snapped landing indicator drawn on `WidgetsContainer`;
+  HomeActivity attaches the listener to the topmost launcher/dash container
+  and the listener translates its drag coordinates into widget-grid space.
 - Background loading uses Kotlin coroutines: `home/StartupLoader` runs the
   startup sequence (wallpaper init → app list → label/icon caches, strictly
   in that order — both the wallpaper and app paths touch the BFB) in the

@@ -60,14 +60,10 @@ class WidgetContainerTest {
 			container.editMode = true
 			val lalTrash = activity.findViewById<View>(R.id.lalTrash)
 
-			// Crossing the touch slop on the centre overlay hands off to the
-			// system drag-and-drop framework and shows the trash //
 			touch(container, R.id.widgetOverlayCenter, MotionEvent.ACTION_DOWN, 300F, 300F)
 			touch(container, R.id.widgetOverlayCenter, MotionEvent.ACTION_MOVE, 350F, 300F)
 			assertEquals(View.VISIBLE, lalTrash.visibility)
 
-			// A stray move event delivered before the framework takes over the
-			// touch stream must not start a second drag //
 			be.robinj.distrohopper.home.LauncherBarBinder.stoppedDragging(activity)
 			assertTrue(touch(container, R.id.widgetOverlayCenter,
 				MotionEvent.ACTION_MOVE, 360F, 300F))
@@ -261,6 +257,7 @@ class WidgetContainerTest {
 
 			assertEquals(5, lp(container).col)
 			assertEquals(6, lp(container).row)
+			assertTrue(container.parent.isLayoutRequested)
 			val persisted = WidgetPersistence(activity.applicationContext).load().single()
 			assertEquals(5, persisted.col)
 			assertEquals(6, persisted.row)
@@ -301,8 +298,6 @@ class WidgetContainerTest {
 			touch(container, R.id.widgetOverlayCenter, MotionEvent.ACTION_DOWN, 250F, 250F)
 			touch(container, R.id.widgetOverlayCenter, MotionEvent.ACTION_MOVE, 250F + CELL, 250F)
 
-			// The grab offset is recorded relative to the widget's top-left corner
-			// and the launcher bar switches to drag mode (trash visible).
 			assertEquals(50 + CELL, container.dragGrabOffsetX)
 			assertEquals(50, container.dragGrabOffsetY)
 			assertEquals(View.VISIBLE, activity.findViewById<View>(R.id.lalTrash).visibility)

@@ -6,40 +6,35 @@ import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.home.LauncherBarBinder
 
 /**
- * Drives the move of a widget that is being dragged via the system drag-and-drop
- * framework (started in WidgetContainer). The widget itself follows the finger as a
- * cell-snapped preview; dropping commits the move, dropping anywhere else (including
- * the launcher's trash icon, which removes the widget) reverts it.
+ * Handles widget drops over the topmost desktop layer while the system drag shadow
+ * follows the finger. The underlying widget grid draws the snapped landing target.
  */
 internal class WidgetsContainer_DragListener(
 	private val parent: HomeActivity,
+	private val vgWidgets: WidgetsContainer,
 ) : View.OnDragListener {
 	override fun onDrag(view: View, event: DragEvent): Boolean {
 		val container = event.localState as? WidgetContainer ?: return false
-		val vgWidgets = view as? WidgetsContainer ?: return false
 
 		when (event.action) {
 			DragEvent.ACTION_DRAG_LOCATION -> {
+				val (col, row) = this.snap(view, container, event)
 				val lp = container.layoutParams as WidgetsContainer.LayoutParams
-				val (col, row) = this.snap(vgWidgets, container, event)
+				val candidate = WidgetLayout(
+					container.appWidgetId, col, row, lp.colSpan, lp.rowSpan)
+				val fits = WidgetGrid.fits(this.vgWidgets.collectLayouts(container), candidate)
 
-				lp.previewLeftPx = vgWidgets.paddingLeft + col * vgWidgets.cellWidth
-				lp.previewTopPx = vgWidgets.paddingTop + row * vgWidgets.cellHeight
-
-				vgWidgets.requestLayout()
+				this.vgWidgets.showMoveTarget(col, row, lp.colSpan, lp.rowSpan, fits)
 			}
 			DragEvent.ACTION_DROP -> {
-				val (col, row) = this.snap(vgWidgets, container, event)
+				val (col, row) = this.snap(view, container, event)
 
 				container.commitMove(col, row)
+				this.vgWidgets.hideMoveTarget()
 			}
+			DragEvent.ACTION_DRAG_EXITED -> this.vgWidgets.hideMoveTarget()
 			DragEvent.ACTION_DRAG_ENDED -> {
-				// Also fires when the drag is cancelled, dropped outside the grid, or
-				// dropped on the trash (in which case the container is already gone) //
-				if (container.parent != null) {
-					(container.layoutParams as WidgetsContainer.LayoutParams).clearPreview()
-					vgWidgets.requestLayout()
-				}
+				this.vgWidgets.hideMoveTarget()
 
 				// Not via appManager: widgets are draggable before app loading finishes //
 				LauncherBarBinder.stoppedDragging(this.parent)
@@ -50,17 +45,24 @@ internal class WidgetsContainer_DragListener(
 	}
 
 	private fun snap(
-		vgWidgets: WidgetsContainer,
+		receiver: View,
 		container: WidgetContainer,
 		event: DragEvent,
 	): Pair<Int, Int> {
 		val lp = container.layoutParams as WidgetsContainer.LayoutParams
+		val receiverLocation = IntArray(2)
+		val gridLocation = IntArray(2)
+		receiver.getLocationOnScreen(receiverLocation)
+		this.vgWidgets.getLocationOnScreen(gridLocation)
 
-		val left = event.x.toInt() - container.dragGrabOffsetX - vgWidgets.paddingLeft
-		val top = event.y.toInt() - container.dragGrabOffsetY - vgWidgets.paddingTop
-
-		val col = WidgetGrid.snapToCell(left, vgWidgets.cellWidth, WidgetGrid.COLS - lp.colSpan)
-		val row = WidgetGrid.snapToCell(top, vgWidgets.cellHeight, WidgetGrid.ROWS - lp.rowSpan)
+		val gridX = event.x.toInt() + receiverLocation[0] - gridLocation[0]
+		val gridY = event.y.toInt() + receiverLocation[1] - gridLocation[1]
+		val left = gridX - container.dragGrabOffsetX - this.vgWidgets.paddingLeft
+		val top = gridY - container.dragGrabOffsetY - this.vgWidgets.paddingTop
+		val col = WidgetGrid.snapToCell(
+			left, this.vgWidgets.cellWidth, WidgetGrid.COLS - lp.colSpan)
+		val row = WidgetGrid.snapToCell(
+			top, this.vgWidgets.cellHeight, WidgetGrid.ROWS - lp.rowSpan)
 
 		return col to row
 	}

@@ -43,7 +43,7 @@ class WidgetContainer internal constructor(
 	private var systemDragStarted = false
 
 	// Where the finger grabbed the widget, relative to its top-left corner;
-	// used by WidgetsContainer_DragListener to position the snapped preview //
+	// used by WidgetsContainer_DragListener to position the landing indicator //
 	internal var dragGrabOffsetX = 0
 	internal var dragGrabOffsetY = 0
 
@@ -131,8 +131,8 @@ class WidgetContainer internal constructor(
 					}
 
 					if (view.id == R.id.widgetOverlayCenter) {
-						// Moving is handled by the system drag-and-drop framework so the
-						// widget can also be dropped on the launcher's trash icon //
+						// The system drag shadow moves freely across the screen and can be
+						// dropped on the launcher's trash icon //
 						this.systemDragStarted = true
 						this.startMoveDrag(parent, e)
 
@@ -245,11 +245,6 @@ class WidgetContainer internal constructor(
 	/** The provider's maximum resize height in px, or 0 when unspecified. */
 	private fun maxResizeHeightPx(): Int = this.info?.maxResizeHeight ?: 0
 
-	/**
-	 * Hand the move off to the system drag-and-drop framework. The widget itself becomes
-	 * a snapped preview driven by [WidgetsContainer_DragListener]; dropping on the
-	 * launcher's trash icon removes it (see TrashDragListener).
-	 */
 	private fun startMoveDrag(parent: WidgetsContainer, e: MotionEvent) {
 		val location = IntArray(2)
 		parent.getLocationOnScreen(location)
@@ -318,5 +313,6 @@ class WidgetContainer internal constructor(
 		lp.row = candidate.row
 
 		this.widgetHost.persist()
+		parent.requestLayout()
 	}
 }

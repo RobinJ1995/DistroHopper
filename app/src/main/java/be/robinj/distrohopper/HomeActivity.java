@@ -244,7 +244,8 @@ public class HomeActivity extends AppCompatActivity
 			if (prefs.getBoolean (Preference.WIDGETS_ENABLED.getName(), true))
 			{
 				vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this.widgetHost));
-				vgWidgets.setOnDragListener (new WidgetsContainer_DragListener (this));
+				llLauncherAndDashContainer.setOnDragListener (
+						new WidgetsContainer_DragListener (this, vgWidgets));
 				vgWidgets.setOnClickListener (new View.OnClickListener ()
 				{
 					@Override

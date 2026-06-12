@@ -2,7 +2,9 @@ package be.robinj.distrohopper.widgets;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -22,6 +24,8 @@ import be.robinj.distrohopper.R;
 public class WidgetsContainer extends ViewGroup
 {
 	private final Paint snapLinePaint = new Paint (Paint.ANTI_ALIAS_FLAG);
+	private final Paint moveTargetFillPaint = new Paint (Paint.ANTI_ALIAS_FLAG);
+	private final Paint moveTargetStrokePaint = new Paint (Paint.ANTI_ALIAS_FLAG);
 
 	// While an edge is being dragged, the line shows where it will snap on release //
 	private boolean snapLineVisible = false;
@@ -29,6 +33,11 @@ public class WidgetsContainer extends ViewGroup
 	private float snapLinePos;
 	private float snapLineFrom;
 	private float snapLineTo;
+	private boolean moveTargetVisible = false;
+	private int moveTargetCol;
+	private int moveTargetRow;
+	private int moveTargetColSpan;
+	private int moveTargetRowSpan;
 
 	public WidgetsContainer (Context context, AttributeSet attrs)
 	{
@@ -38,6 +47,53 @@ public class WidgetsContainer extends ViewGroup
 		this.snapLinePaint.setStrokeWidth (TypedValue.applyDimension (
 			TypedValue.COMPLEX_UNIT_DIP, 2, context.getResources ().getDisplayMetrics ()));
 		this.snapLinePaint.setStrokeCap (Paint.Cap.ROUND);
+		this.moveTargetFillPaint.setColor (Color.argb (48, 255, 255, 255));
+		this.moveTargetStrokePaint.setColor (Color.argb (190, 255, 255, 255));
+		this.moveTargetStrokePaint.setStyle (Paint.Style.STROKE);
+		this.moveTargetStrokePaint.setStrokeWidth (TypedValue.applyDimension (
+				TypedValue.COMPLEX_UNIT_DIP, 2, context.getResources ().getDisplayMetrics ()));
+	}
+
+	public void showMoveTarget (final int col, final int row, final int colSpan, final int rowSpan,
+			final boolean valid)
+	{
+		this.moveTargetVisible = true;
+		this.moveTargetCol = col;
+		this.moveTargetRow = row;
+		this.moveTargetColSpan = colSpan;
+		this.moveTargetRowSpan = rowSpan;
+		this.moveTargetFillPaint.setColor (valid
+				? Color.argb (48, 255, 255, 255)
+				: Color.argb (64, 255, 40, 40));
+		this.moveTargetStrokePaint.setColor (valid
+				? Color.argb (190, 255, 255, 255)
+				: Color.argb (220, 255, 40, 40));
+
+		this.invalidate ();
+	}
+
+	public void hideMoveTarget ()
+	{
+		if (! this.moveTargetVisible)
+			return;
+
+		this.moveTargetVisible = false;
+		this.invalidate ();
+	}
+
+	boolean isMoveTargetVisible ()
+	{
+		return this.moveTargetVisible;
+	}
+
+	int getMoveTargetCol ()
+	{
+		return this.moveTargetCol;
+	}
+
+	int getMoveTargetRow ()
+	{
+		return this.moveTargetRow;
 	}
 
 	public void showSnapLine (final boolean vertical, final float pos, final float from, final float to)
@@ -65,6 +121,22 @@ public class WidgetsContainer extends ViewGroup
 	protected void dispatchDraw (final Canvas canvas)
 	{
 		super.dispatchDraw (canvas);
+
+		if (this.moveTargetVisible)
+		{
+			final int cellWidth = this.getCellWidth ();
+			final int cellHeight = this.getCellHeight ();
+			final float radius = TypedValue.applyDimension (
+					TypedValue.COMPLEX_UNIT_DIP, 12, this.getResources ().getDisplayMetrics ());
+			final RectF target = new RectF (
+					this.getPaddingLeft () + this.moveTargetCol * cellWidth,
+					this.getPaddingTop () + this.moveTargetRow * cellHeight,
+					this.getPaddingLeft () + (this.moveTargetCol + this.moveTargetColSpan) * cellWidth,
+					this.getPaddingTop () + (this.moveTargetRow + this.moveTargetRowSpan) * cellHeight);
+
+			canvas.drawRoundRect (target, radius, radius, this.moveTargetFillPaint);
+			canvas.drawRoundRect (target, radius, radius, this.moveTargetStrokePaint);
+		}
 
 		// On top of the children, so the line stays visible over the dragged widget //
 		if (! this.snapLineVisible)
