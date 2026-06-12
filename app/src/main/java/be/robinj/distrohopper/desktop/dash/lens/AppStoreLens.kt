@@ -5,8 +5,7 @@ import android.content.pm.PackageManager
 
 /**
  * Base class for lenses that search an app store catalogue (Google Play,
- * F-Droid, …). Provides the shared logic for hiding results the user already
- * has installed.
+ * F-Droid, …).
  */
 abstract class AppStoreLens(context: Context) : Lens(context) {
     /** Whether an app with the given package name is installed on this device. */
