@@ -288,6 +288,11 @@ public class AppManager implements Iterable<App>
 		this.getBinder ().startedDraggingPinnedApp (app);
 	}
 
+	public void startedDraggingDashApp (App app)
+	{
+		this.getBinder ().startedDraggingDashApp (app);
+	}
+
 	public void draggedPinnedAppOver (App app)
 	{
 		this.getBinder ().draggedPinnedAppOver (app);

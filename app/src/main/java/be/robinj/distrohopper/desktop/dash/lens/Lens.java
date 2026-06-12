@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.view.View;
 
 import org.json.JSONException;
 
@@ -98,7 +99,7 @@ public abstract class Lens
 		}
 	}
 
-	public void onLongClick (String url, Object obj)
+	public void onLongClick (String url, Object obj, View view)
 	{
 		if (obj == null) {
 			this.onClick(url);

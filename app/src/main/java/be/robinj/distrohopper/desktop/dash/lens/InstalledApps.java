@@ -1,6 +1,7 @@
 package be.robinj.distrohopper.desktop.dash.lens;
 
 import android.content.Context;
+import android.view.View;
 
 import org.json.JSONException;
 
@@ -12,6 +13,7 @@ import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.R;
+import be.robinj.distrohopper.desktop.dash.AppLauncherLongClickListener;
 
 /**
  * Created by robin on 5/11/14.
@@ -64,13 +66,13 @@ public class InstalledApps extends Lens
 	}
 
 	@Override
-	public void onLongClick (String url, Object obj)
+	public void onLongClick (String url, Object obj, View view)
 	{
 		try
 		{
-			App app = (App) obj;
-
-			this.apps.pin (app);
+			// Same as a long press on the dash grid: drag to the launcher to
+			// pin at the drop position, or to move an already pinned icon //
+			AppLauncherLongClickListener.startAppDrag (view, (App) obj);
 		}
 		catch (Exception ex)
 		{

@@ -53,8 +53,8 @@ class LensTest {
     }
 
     @Test fun objectLongClickDelegatesOnlyWhenObjectIsNull() {
-        lens.onLongClick("https://example.com", Any()); assertNull(Shadows.shadowOf(application).nextStartedActivity)
-        lens.onLongClick("https://example.com", null); assertNotNull(Shadows.shadowOf(application).nextStartedActivity)
+        lens.onLongClick("https://example.com", Any(), null); assertNull(Shadows.shadowOf(application).nextStartedActivity)
+        lens.onLongClick("https://example.com", null, null); assertNotNull(Shadows.shadowOf(application).nextStartedActivity)
     }
 
     @Test fun defaultMinimumSdkIsMinusOne() = assertEquals(-1, lens.minSDKVersion)

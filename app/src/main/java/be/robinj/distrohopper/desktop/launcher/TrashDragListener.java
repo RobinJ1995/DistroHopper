@@ -5,6 +5,7 @@ import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.HomeActivity;
@@ -47,6 +48,10 @@ public class TrashDragListener implements ViewGroup.OnDragListener
 					if (event.getLocalState () instanceof WidgetContainer)
 					{
 						((WidgetContainer) event.getLocalState ()).removeWidget ();
+					}
+					else if (event.getLocalState () instanceof App)
+					{
+						// A not-yet-pinned app dragged from the dash: nothing to unpin //
 					}
 					else
 					{

@@ -110,7 +110,15 @@ etc/                                        — design assets (SVG/XCF sources, 
     view stays in the bar as an invisible placeholder, shifted under the drag
     so the other icons slide over (via the container's `LayoutTransition`)
     and the empty slot shows where the drop would land; the model is only
-    touched on drop.
+    touched on drop. Long-pressing an unpinned app in the dash grid or in
+    the InstalledApps lens results starts the same kind of drag
+    (pin-by-drop, via `dash.AppLauncherLongClickListener.startAppDrag`):
+    the placeholder opens at the end of the bar and the app is pinned at
+    whichever slot it is dropped on — long-pressing an already-pinned app
+    moves its existing icon instead.
+    Gotcha: views must not be mutated (not even visibility) while
+    ACTION_DRAG_ENDED is being dispatched — post such work instead, or the
+    framework throws a ConcurrentModificationException.
   - `LayoutTransitionConfigurer` — the appear/disappear animations.
 - **`desktop/`** — the desktop surface itself (`Wallpaper`, `AppIcon`, drag
   listeners). The activity is transparent over the system wallpaper

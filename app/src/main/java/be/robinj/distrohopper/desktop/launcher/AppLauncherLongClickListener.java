@@ -34,8 +34,11 @@ public class AppLauncherLongClickListener implements View.OnLongClickListener
 			ClipData data = new ClipData (Integer.toString (index), new String[]{"text/plain"}, item);
 			View.DragShadowBuilder dragShadowBuilder = new View.DragShadowBuilder (view);
 
-			view.startDrag (data, dragShadowBuilder, item, 0);
-			appManager.startedDraggingPinnedApp (app);
+			// Only enter drag mode if the drag really started: doing so without
+			// an active drag would leave the bar stuck, as no ACTION_DRAG_ENDED
+			// will ever restore it //
+			if (view.startDrag (data, dragShadowBuilder, item, 0))
+				appManager.startedDraggingPinnedApp (app);
 		}
 		catch (Exception ex)
 		{

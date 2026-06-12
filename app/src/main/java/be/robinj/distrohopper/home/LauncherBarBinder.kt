@@ -111,6 +111,23 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	}
 
 	/**
+	 * A not-yet-pinned app dragged from the dash: a placeholder slot opens
+	 * at the end of the bar and follows the drag like a reorder; the app is
+	 * only actually pinned if it is dropped on the bar.
+	 */
+	fun startedDraggingDashApp(app: App) {
+		val appLauncher = this.pinnedAppLauncher(app)
+		appLauncher.visibility = View.INVISIBLE
+		this.llLauncherPinnedApps.addView(appLauncher)
+
+		this.draggedPinnedApp = appLauncher
+		this.draggedPinnedAppOldIndex = NOT_YET_PINNED
+		this.draggedPinnedAppDropped = false
+
+		this.startedDraggingPinnedApp()
+	}
+
+	/**
 	 * The drag is hovering over another pinned icon: shift the placeholder
 	 * into that icon's slot, so that the icons in between slide over
 	 * (animated by the container's LayoutTransition) and the empty slot
@@ -133,10 +150,24 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	/** Commits the order previewed by the placeholder's position. */
 	fun droppedPinnedApp() {
 		val dragged = this.draggedPinnedApp ?: return
+		val newIndex = this.llLauncherPinnedApps.indexOfChild(dragged)
+		if (newIndex < 0)
+			return
 		this.draggedPinnedAppDropped = true
 
-		val newIndex = this.llLauncherPinnedApps.indexOfChild(dragged)
-		if (newIndex >= 0 && newIndex != this.draggedPinnedAppOldIndex) {
+		if (this.draggedPinnedAppOldIndex == NOT_YET_PINNED) {
+			// A dash app dropped onto the bar: pin appends it to the model,
+			// then shift it to the previewed slot //
+			if (!this.appManager.pin(dragged.tag as App, false, false, false)) {
+				this.draggedPinnedAppDropped = false // pinned meanwhile: let ended rebuild //
+				return
+			}
+
+			val appendedIndex = this.appManager.pinned.size - 1
+			if (newIndex != appendedIndex)
+				this.appManager.movePinnedApp(appendedIndex, newIndex)
+			this.appManager.savePinnedApps()
+		} else if (newIndex != this.draggedPinnedAppOldIndex) {
 			this.appManager.movePinnedApp(this.draggedPinnedAppOldIndex, newIndex)
 			this.appManager.savePinnedApps()
 		}
@@ -164,6 +195,9 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	}
 
 	companion object {
+		/** draggedPinnedAppOldIndex value for a dash app not yet in the pinned model. */
+		private const val NOT_YET_PINNED = -1
+
 		/*
 		 * The drag decorations only touch views, not the app model, and widget
 		 * drags can start before app loading has finished — so these are usable

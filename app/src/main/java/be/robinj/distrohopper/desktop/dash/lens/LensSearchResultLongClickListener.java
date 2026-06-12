@@ -22,7 +22,7 @@ public class LensSearchResultLongClickListener implements AdapterView.OnItemLong
 		String url = result.getUrl ();
 		Object obj = result.getObj ();
 
-		this.lens.onLongClick (url, obj);
+		this.lens.onLongClick (url, obj, view);
 
 		return true;
 	}

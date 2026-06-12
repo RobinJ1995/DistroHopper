@@ -10,6 +10,7 @@ import be.robinj.distrohopper.R
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
@@ -127,6 +128,66 @@ class LauncherBarBinderReorderTest {
 
             assertEquals(listOf(alpha, beta, gamma), activity.appManager.pinned)
             assertEquals(listOf(alpha, beta, gamma), viewOrder(activity))
+        }
+    }
+
+    @Test fun draggingADashAppOpensAPlaceholderSlotAtTheEndOfTheBar() {
+        scenario.onActivity { activity ->
+            val (alpha, beta, gamma) = pinThree(activity)
+            val zeta = activity.appManager.findAppsByPackageName("com.example.zeta").first()
+
+            activity.appManager.startedDraggingDashApp(zeta)
+
+            assertEquals(listOf(alpha, beta, gamma, zeta), viewOrder(activity))
+            val placeholder = pinnedContainer(activity).findViewWithTag<AppLauncher>(zeta)
+            assertEquals(View.INVISIBLE, placeholder.visibility)
+            assertEquals(listOf(alpha, beta, gamma), activity.appManager.pinned)
+        }
+    }
+
+    @Test fun droppingADashAppPinsItAtThePreviewedSlot() {
+        scenario.onActivity { activity ->
+            val (alpha, beta, gamma) = pinThree(activity)
+            val zeta = activity.appManager.findAppsByPackageName("com.example.zeta").first()
+
+            activity.appManager.startedDraggingDashApp(zeta)
+            activity.appManager.draggedPinnedAppOver(beta)
+            activity.appManager.droppedPinnedApp()
+            activity.appManager.endedDraggingPinnedApp()
+
+            assertEquals(listOf(alpha, zeta, beta, gamma), activity.appManager.pinned)
+            assertEquals(listOf(alpha, zeta, beta, gamma), viewOrder(activity))
+            assertEquals(View.VISIBLE,
+                pinnedContainer(activity).findViewWithTag<AppLauncher>(zeta).visibility)
+        }
+    }
+
+    @Test fun droppingADashAppWithoutHoveringPinsItAtTheEnd() {
+        scenario.onActivity { activity ->
+            val (alpha, beta, gamma) = pinThree(activity)
+            val zeta = activity.appManager.findAppsByPackageName("com.example.zeta").first()
+
+            activity.appManager.startedDraggingDashApp(zeta)
+            activity.appManager.droppedPinnedApp()
+            activity.appManager.endedDraggingPinnedApp()
+
+            assertEquals(listOf(alpha, beta, gamma, zeta), activity.appManager.pinned)
+            assertEquals(listOf(alpha, beta, gamma, zeta), viewOrder(activity))
+        }
+    }
+
+    @Test fun cancellingADashAppDragPinsNothingAndRemovesThePlaceholder() {
+        scenario.onActivity { activity ->
+            val (alpha, beta, gamma) = pinThree(activity)
+            val zeta = activity.appManager.findAppsByPackageName("com.example.zeta").first()
+
+            activity.appManager.startedDraggingDashApp(zeta)
+            activity.appManager.draggedPinnedAppOver(alpha)
+            activity.appManager.endedDraggingPinnedApp()
+
+            assertEquals(listOf(alpha, beta, gamma), activity.appManager.pinned)
+            assertEquals(listOf(alpha, beta, gamma), viewOrder(activity))
+            assertFalse(activity.appManager.isPinned(zeta))
         }
     }
 }
