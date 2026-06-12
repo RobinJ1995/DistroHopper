@@ -57,6 +57,7 @@ public class LensManager
 
 		this.lenses.put ("AskUbuntu", new AskUbuntu (context));
 		this.lenses.put ("DuckDuckGo", new DuckDuckGo (context));
+		this.lenses.put ("FDroid", new FDroid (context));
 		this.lenses.put ("GitHub", new GitHub (context));
 		this.lenses.put ("GooglePlay", new GooglePlay (context));
 		this.lenses.put ("InstalledApps", new InstalledApps (context, apps));
