@@ -58,9 +58,12 @@ class WidgetsContainerDragListenerTest {
 		return Fixture(receiver, grid, container, WidgetsContainer_DragListener(activity, grid))
 	}
 
+	// The root FrameLayout is detached from the activity window so
+	// View.getLocationOnScreen() returns [0, 0] for all views in Robolectric.
+	// Event coordinates are therefore in the grid's own coordinate space directly.
 	private fun receiverPositionForCell(col: Int, row: Int): Pair<Float, Float> =
-		(CELL + col * CELL + CELL / 2).toFloat() to
-			(2 * CELL + row * CELL + CELL / 2).toFloat()
+		(col * CELL + CELL / 2).toFloat() to
+			(row * CELL + CELL / 2).toFloat()
 
 	private fun lp(container: WidgetContainer): WidgetsContainer.LayoutParams =
 		container.layoutParams as WidgetsContainer.LayoutParams

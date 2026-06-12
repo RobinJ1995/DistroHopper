@@ -59,21 +59,21 @@ class LocalFiles(context: Context) : Lens(context) {
 		return results
 	}
 
-	private fun iconForMime(mime: String?): Drawable {
-		val resId = when {
-			mime == null -> R.drawable.ic_file_generic
-			mime.startsWith("image/") -> R.drawable.ic_file_image
-			mime.startsWith("video/") -> R.drawable.ic_file_video
-			mime.startsWith("audio/") -> R.drawable.ic_file_audio
-			mime.startsWith("text/")
-				|| mime == "application/pdf"
-				|| mime.startsWith("application/msword")
-				|| mime.startsWith("application/vnd.openxmlformats-officedocument")
-				|| mime.startsWith("application/vnd.oasis.opendocument") -> R.drawable.ic_file_document
-			else -> R.drawable.ic_file_generic
-		}
-		return context.resources.getDrawable(resId)
+	internal fun mimeTypeIconRes(mime: String?): Int = when {
+		mime == null -> R.drawable.ic_file_generic
+		mime.startsWith("image/") -> R.drawable.ic_file_image
+		mime.startsWith("video/") -> R.drawable.ic_file_video
+		mime.startsWith("audio/") -> R.drawable.ic_file_audio
+		mime.startsWith("text/")
+			|| mime == "application/pdf"
+			|| mime.startsWith("application/msword")
+			|| mime.startsWith("application/vnd.openxmlformats-officedocument")
+			|| mime.startsWith("application/vnd.oasis.opendocument") -> R.drawable.ic_file_document
+		else -> R.drawable.ic_file_generic
 	}
+
+	private fun iconForMime(mime: String?): Drawable =
+		context.resources.getDrawable(mimeTypeIconRes(mime))
 
 	override fun onClick(url: String) {
 		try {

@@ -12,7 +12,6 @@ import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
 import be.robinj.distrohopper.desktop.launcher.RunningAppLauncher
-import be.robinj.distrohopper.preferences.PreferencesActivity
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -37,10 +36,7 @@ class LauncherBarBinderTest {
 		activity.appManager.findAppsByPackageName(packageName).first()
 
 	private fun settingsShortcut(activity: HomeActivity): App =
-		activity.appManager.findAppByPackageAndActivityName(
-			activity.packageName,
-			PreferencesActivity::class.java.name,
-		)
+		ActivityTestSupport.settingsShortcut(activity)
 
 	private fun pinnedContainer(activity: HomeActivity): LinearLayout =
 		activity.findViewById(R.id.llLauncherPinnedApps)

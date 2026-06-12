@@ -31,16 +31,7 @@ internal object ActivityTestSupport {
         val packageManager = Shadows.shadowOf(application.packageManager)
         val launcherIntent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
 
-        // Include DistroHopper's real launcher entry so tests exercise the
-        // production replacement path: AppsLoader must hide this entry and add
-        // the internal Settings shortcut instead.
-        val launcherApps = packages + Triple(
-            application.packageName,
-            HomeActivity::class.java.name,
-            application.getString(R.string.app_name),
-        )
-
-        launcherApps.forEach { (packageName, activityName, label) ->
+        packages.forEach { (packageName, activityName, label) ->
             val resolveInfo = resolveInfo(packageName, activityName, label)
             packageManager.addResolveInfoForIntent(launcherIntent, resolveInfo)
             packageManager.addResolveInfoForIntent(
@@ -49,6 +40,12 @@ internal object ActivityTestSupport {
             )
         }
     }
+
+    fun settingsShortcut(activity: HomeActivity): App =
+        requireNotNull(activity.appManager.findAppByPackageAndActivityName(
+            activity.packageName,
+            "be.robinj.distrohopper.preferences.PreferencesActivity",
+        ))
 
     fun resolveInfo(packageName: String, activityName: String, label: String): ResolveInfo {
         val activityInfo = ActivityInfo().apply {

@@ -61,8 +61,13 @@ public class PackageManagerBroadcastReceiver extends BroadcastReceiver
 					{
 						friendlyAction = "removed";
 
-						for (App app : appManager.findAppsByPackageName (packageName))
-							appManager.remove (app);
+						// Our own package is represented by the internal Settings shortcut;
+						// never remove it via the package-removed broadcast.
+						if (! packageName.equals (context.getPackageName ()))
+						{
+							for (App app : appManager.findAppsByPackageName (packageName))
+								appManager.remove (app);
+						}
 					}
 				}
 				else

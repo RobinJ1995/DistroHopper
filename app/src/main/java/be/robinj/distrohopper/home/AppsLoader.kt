@@ -2,13 +2,17 @@ package be.robinj.distrohopper.home
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.content.ComponentName
+import android.content.Intent
 import be.robinj.distrohopper.App
 import be.robinj.distrohopper.AppManager
 import be.robinj.distrohopper.ExceptionHandler
 import be.robinj.distrohopper.HomeActivity
+import be.robinj.distrohopper.R
 import be.robinj.distrohopper.cache.ICache
 import be.robinj.distrohopper.dev.Log
 import be.robinj.distrohopper.preferences.Preference
+import be.robinj.distrohopper.preferences.PreferencesActivity
 import be.robinj.distrohopper.preferences.Preferences
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
@@ -20,7 +24,7 @@ import kotlinx.coroutines.ensureActive
  * checkpoints the AsyncTasks had.
  */
 object AppsLoader {
-	private val IGNORE = arrayOf("be.robinj.ubuntu") // Legacy package name //
+	private val IGNORE = arrayOf("be.robinj.ubuntu") // Legacy package //
 
 	suspend fun loadApps(
 		parent: HomeActivity,
@@ -51,12 +55,10 @@ object AppsLoader {
 		currentCoroutineContext().ensureActive()
 
 		for (resInf in resInfs) {
-			if (IGNORE.contains(resInf.activityInfo.packageName))
-				continue
-			// Hide DistroHopper's public HomeActivity launcher entry. A private
-			// Settings shortcut is added below so settings stay reachable from the dash
-			// without exposing a second icon to other launchers.
-			if (resInf.activityInfo.packageName == context.packageName)
+			// Skip the legacy package and our own package; our own public launcher
+			// entry is replaced by the internal Settings shortcut added below.
+			if (IGNORE.contains(resInf.activityInfo.packageName) ||
+					resInf.activityInfo.packageName == context.packageName)
 				continue
 
 			// One broken package (corrupt icon, vanished mid-query, ...) must not
@@ -69,9 +71,17 @@ object AppsLoader {
 			}
 		}
 
-		// The shortcut is part of DistroHopper's model only; it is not returned by
-		// PackageManager and therefore cannot show up in other launchers.
-		appManager.add(App.settingsShortcut(context, appManager), false, false)
+		// Add the Settings shortcut as an internal-only entry. It is never returned
+		// by PackageManager, so it cannot appear in other launchers.
+		val settingsIntent = Intent()
+				.setComponent(ComponentName(context.packageName, PreferencesActivity::class.java.name))
+				.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+		appManager.add(App.internalShortcut(
+				context, appManager,
+				context.packageName, PreferencesActivity::class.java.name,
+				context.getString(R.string.shortcut_label_distrohopper_settings),
+				settingsIntent, true),
+				false, false)
 
 		val tDoneRetrievingInstalledApps = System.currentTimeMillis()
 		Log.getInstance().v(this.javaClass.simpleName, "Retrieved " + size

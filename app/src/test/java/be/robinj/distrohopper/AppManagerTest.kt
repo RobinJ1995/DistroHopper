@@ -2,6 +2,7 @@ package be.robinj.distrohopper
 
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.PreferencesActivity
 import be.robinj.distrohopper.preferences.Preferences
@@ -25,10 +26,7 @@ class AppManagerTest {
         scenario.onActivity { block(it.appManager) }
     }
     private fun AppManager.unpinned() = firstOrNull { !isPinned(it) }
-    private fun AppManager.settingsShortcut() = requireNotNull(findAppByPackageAndActivityName(
-        ApplicationProvider.getApplicationContext<android.app.Application>().packageName,
-        PreferencesActivity::class.java.name,
-    ))
+    private fun AppManager.settingsShortcut() = ActivityTestSupport.settingsShortcut(this.context)
 
     @Test fun everyAppHasNonEmptyPackageName() = withManager { manager ->
         manager.forEach { assertTrue(it.packageName.isNotEmpty()) }
@@ -90,7 +88,8 @@ class AppManagerTest {
     }
 
     @Test fun fullSearchFindsInfixMatches() = withManager { manager ->
-        assertEquals(listOf("DistroHopper Settings", "Settings"), manager.search("ting").map(App::getLabel))
+        val settingsLabel = manager.context.getString(R.string.shortcut_label_distrohopper_settings)
+        assertEquals(listOf(settingsLabel, "Settings"), manager.search("ting").map(App::getLabel))
     }
 
     @Test fun distroHopperSettingsShortcutReplacesOwnLauncherApp() = withManager { manager ->
@@ -98,7 +97,9 @@ class AppManagerTest {
 
         assertNull(manager.findAppByPackageAndActivityName(packageName, HomeActivity::class.java.name))
         assertNotNull(manager.findAppByPackageAndActivityName(packageName, PreferencesActivity::class.java.name))
-        assertTrue(manager.installedApps.any { it.label == "DistroHopper Settings" })
+        assertTrue(manager.installedApps.any {
+            it.label == manager.context.getString(R.string.shortcut_label_distrohopper_settings)
+        })
     }
 
     @Test fun prefixOnlySearchRejectsInfixMatches() {

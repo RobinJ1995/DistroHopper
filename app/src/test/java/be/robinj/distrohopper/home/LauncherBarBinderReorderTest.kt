@@ -8,7 +8,6 @@ import be.robinj.distrohopper.App
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
-import be.robinj.distrohopper.preferences.PreferencesActivity
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -44,10 +43,7 @@ class LauncherBarBinderReorderTest {
         activity.findViewById(R.id.llLauncherPinnedApps)
 
     private fun settingsShortcut(activity: HomeActivity): App =
-        activity.appManager.findAppByPackageAndActivityName(
-            activity.packageName,
-            PreferencesActivity::class.java.name,
-        )
+        ActivityTestSupport.settingsShortcut(activity)
 
     private fun viewOrder(activity: HomeActivity): List<App> {
         val container = pinnedContainer(activity)

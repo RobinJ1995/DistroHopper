@@ -45,10 +45,7 @@ class AppTest {
 
     @Test fun settingsShortcutLaunchesPreferencesDirectly() {
         scenario.onActivity { activity ->
-            val app = requireNotNull(activity.appManager.findAppByPackageAndActivityName(
-                activity.packageName,
-                PreferencesActivity::class.java.name,
-            ))
+            val app = ActivityTestSupport.settingsShortcut(activity)
 
             app.launch()
 
@@ -62,10 +59,7 @@ class AppTest {
 
     @Test fun settingsShortcutLaunchesWhileCustomising() {
         scenario.onActivity { activity ->
-            val app = requireNotNull(activity.appManager.findAppByPackageAndActivityName(
-                activity.packageName,
-                PreferencesActivity::class.java.name,
-            ))
+            val app = ActivityTestSupport.settingsShortcut(activity)
             DependencyContainer.of(ApplicationProvider.getApplicationContext()).customiseMode.value = true
 
             app.launch()

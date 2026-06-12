@@ -184,7 +184,8 @@ class AppRepository(private val context: Context) {
 
 		for (appProcess in runningAppProcesses) {
 			if (appProcess.importance in importantImportances) {
-				running.addAll(this.findAppsByPackageName(appProcess.processName))
+				running.addAll(this.findAppsByPackageName(appProcess.processName)
+					.filter { !it.isInternalShortcut })
 			}
 		}
 
