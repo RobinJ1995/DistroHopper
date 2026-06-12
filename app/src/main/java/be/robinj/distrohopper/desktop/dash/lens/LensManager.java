@@ -51,7 +51,11 @@ public class LensManager
 		final SharedPreferences prefs = Preferences.getSharedPreferences(this.context, Preferences.PREFERENCES);
 		final SharedPreferences prefsLenses = this.getPrefsLenses();
 		this.displayDensity = this.getContext().getResources().getDisplayMetrics().density;
-		this.dashIconWidth = prefs.getInt(Preference.DASHICON_WIDTH.getName(), 80);
+		// Same fallback as every other reader: a stray 80 here made lens
+		// results ~50% larger than the dash grid until the preference was
+		// first saved //
+		this.dashIconWidth = prefs.getInt(Preference.DASHICON_WIDTH.getName(),
+			Preference.DASHICON_WIDTH.getDefault());
 
 		if (apps != null)
 			context = apps.getContext ();
