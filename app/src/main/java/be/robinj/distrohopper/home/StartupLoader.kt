@@ -50,12 +50,19 @@ class StartupLoader(
 	) {
 		this.job = this.activity.lifecycleScope.launch {
 			try {
-				// Wallpaper first //
-				withContext(this@StartupLoader.dispatchers.io) {
-					wpWallpaper.init()
+				// Wallpaper first // In its own try so a wallpaper failure cannot
+				// prevent the apps from loading (the AsyncTasks were independent) //
+				try {
+					withContext(this@StartupLoader.dispatchers.io) {
+						wpWallpaper.init()
+					}
+					wpWallpaper.set()
+					this@StartupLoader.activity.asyncInitWallpaperDone(wpWallpaper)
+				} catch (ex: CancellationException) {
+					throw ex
+				} catch (ex: Exception) {
+					ExceptionHandler(ex).show(this@StartupLoader.activity)
 				}
-				wpWallpaper.set()
-				this@StartupLoader.activity.asyncInitWallpaperDone(wpWallpaper)
 
 				// Then the apps //
 				val appManager = withContext(this@StartupLoader.dispatchers.io) {

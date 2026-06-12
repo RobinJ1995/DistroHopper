@@ -106,6 +106,12 @@ public class HomeActivity extends AppCompatActivity
 
 		try
 		{
+			// Reset first, before anything that can throw: the flag is app-scoped
+			// and a failed onCreate must not leave app launching disabled
+			// (App.launch() refuses to launch while it is set) //
+			final DependencyContainer container = DependencyContainer.of (this);
+			container.getCustomiseMode ().setValue (false);
+
 			final SharedPreferences prefs = this.getSharedPreferences ();
 
 			Permission.requestBasicPermissions(this);
@@ -144,7 +150,6 @@ public class HomeActivity extends AppCompatActivity
 			final WidgetsContainer vgWidgets = this.viewFinder.get(R.id.vgWidgets);
 
 			// Load up the theme and wire up the controllers that manage the views //
-			final DependencyContainer container = DependencyContainer.of (this);
 			this.theme = container.getThemeManager ().getCurrent ();
 			this.edgeController = new LauncherEdgeController (this, this.viewFinder, this.theme, container.getPrefs ());
 			this.dash = new DashController (this, this.viewFinder, this.theme, container.getPrefs ());
@@ -153,7 +158,6 @@ public class HomeActivity extends AppCompatActivity
 			this.viewModel = new ViewModelProvider (this, new HomeViewModel.Factory (container))
 					.get (HomeViewModel.class);
 			HomeStateBinder.bind (this, this.viewModel, this.dash, this.themeApplier);
-			container.getCustomiseMode ().setValue (false);
 
 			// Lay out edge-to-edge on every API level; SDK 35+ enforces it anyway. The status
 			// bar is compensated for by llStatusBar below. Tappable element insets keep the
@@ -232,6 +236,10 @@ public class HomeActivity extends AppCompatActivity
 			// Initialise the widget host // After applyTheme(), which determines the launcher edge //
 			this.widgetManager = AppWidgetManager.getInstance (this);
 			this.widgetHost = new WidgetHost (this, this.widgetManager, vgWidgets);
+
+			// Attached here rather than once apps are loaded: widgets are draggable
+			// (and droppable on the trash) as soon as they are restored below //
+			lalTrash.setOnDragListener (new TrashDragListener (this));
 
 			if (prefs.getBoolean (Preference.WIDGETS_ENABLED.getName(), true))
 			{
@@ -323,9 +331,9 @@ public class HomeActivity extends AppCompatActivity
 
 				//this.overridePendingTransition (R.anim.home_to_preferences_in, R.anim.home_to_preferences_out);
 			} else if (requestCode == RequestCode.WIDGET_BOUND) {
-				this.widgetHost.onBindResult(resultCode);
+				this.widgetHost.onBindResult(resultCode, data);
 			} else if (requestCode == RequestCode.WIDGET_CONFIGURED) {
-				this.widgetHost.onConfigureResult(resultCode);
+				this.widgetHost.onConfigureResult(resultCode, data);
 			}
 		}
 		catch (Exception ex)
@@ -556,11 +564,9 @@ public class HomeActivity extends AppCompatActivity
 
 			EditText etDashSearch = this.viewFinder.get(R.id.etDashSearch);
 			LinearLayout llLauncher = this.viewFinder.get(R.id.llLauncher);
-			be.robinj.distrohopper.desktop.launcher.AppLauncher lalTrash = this.viewFinder.get(llLauncher, R.id.lalTrash);
 
 			etDashSearch.addTextChangedListener (new SearchTextWatcher (installedApps, this.lenses));
 			llLauncher.setOnDragListener (new LauncherDragListener (this.apps));
-			lalTrash.setOnDragListener (new TrashDragListener (this.apps));
 
 			this.startLauncherService (false);
 

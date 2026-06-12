@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.home.LauncherBarBinder
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -39,6 +40,7 @@ class WidgetContainer internal constructor(
 	private var startWidth = 0
 	private var startHeight = 0
 	private var dragging = false
+	private var systemDragStarted = false
 
 	// Where the finger grabbed the widget, relative to its top-left corner;
 	// used by WidgetsContainer_DragListener to position the snapped preview //
@@ -109,10 +111,17 @@ class WidgetContainer internal constructor(
 				this.startWidth = this.width
 				this.startHeight = this.height
 				this.dragging = false
+				this.systemDragStarted = false
 
 				return true
 			}
 			MotionEvent.ACTION_MOVE -> {
+				// Stray moves can arrive between startDragAndDrop() and the framework
+				// taking over the touch stream; they must not restart the drag //
+				if (this.systemDragStarted) {
+					return true
+				}
+
 				val dx = (e.rawX - this.startRawX).toInt()
 				val dy = (e.rawY - this.startRawY).toInt()
 
@@ -124,6 +133,7 @@ class WidgetContainer internal constructor(
 					if (view.id == R.id.widgetOverlayCenter) {
 						// Moving is handled by the system drag-and-drop framework so the
 						// widget can also be dropped on the launcher's trash icon //
+						this.systemDragStarted = true
 						this.startMoveDrag(parent, e)
 
 						return true
@@ -249,7 +259,8 @@ class WidgetContainer internal constructor(
 		val clip = ClipData.newPlainText("widget", this.appWidgetId.toString())
 		this.startDragAndDrop(clip, DragShadowBuilder(this), this, 0)
 
-		(this.context as? HomeActivity)?.appManager?.startedDraggingPinnedApp()
+		// Not via appManager: widgets are draggable before app loading finishes //
+		(this.context as? HomeActivity)?.let { LauncherBarBinder.startedDragging(it) }
 	}
 
 	/**

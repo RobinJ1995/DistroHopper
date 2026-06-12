@@ -54,8 +54,14 @@ object AppsLoader {
 			if (IGNORE.contains(resInf.activityInfo.packageName))
 				continue
 
-			appManager.add(App(context, appManager, resInf, appLabelCache, appIconCache),
-				false, false)
+			// One broken package (corrupt icon, vanished mid-query, ...) must not
+			// abort the load: the launcher used to come up with a partial list //
+			try {
+				appManager.add(App(context, appManager, resInf, appLabelCache, appIconCache),
+					false, false)
+			} catch (ex: Exception) {
+				ExceptionHandler(ex).logAndTrack()
+			}
 		}
 
 		val tDoneRetrievingInstalledApps = System.currentTimeMillis()

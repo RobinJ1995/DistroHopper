@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import be.robinj.distrohopper.App
 import be.robinj.distrohopper.AppManager
 import be.robinj.distrohopper.DependencyContainer
+import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
@@ -89,37 +90,9 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		this.gvDashHomeApps.invalidateViews()
 	}
 
-	fun startedDraggingPinnedApp() {
-		val lalBfb = this.activity.viewFinder.get<AppLauncher>(this.llLauncher, R.id.lalBfb)
-		val lalPreferences = this.activity.viewFinder.get<AppLauncher>(this.llLauncher, R.id.lalPreferences)
-		val lalTrash = this.activity.viewFinder.get<AppLauncher>(this.llLauncher, R.id.lalTrash)
+	fun startedDraggingPinnedApp() = startedDragging(this.activity)
 
-		val theme = DependencyContainer.of(this.activity).themeManager.current
-		if (this.activity.resources.getBoolean(theme.launcher_bfb_hide_while_dragging)) {
-			lalBfb.visibility = View.GONE
-		}
-		lalPreferences.visibility = View.GONE
-		lalTrash.visibility = View.VISIBLE
-		this.activity.closeDash()
-
-		this.llLauncherPinnedApps.alpha = 0.9F
-	}
-
-	fun stoppedDraggingPinnedApp() {
-		val lalBfb = this.activity.viewFinder.get<AppLauncher>(this.llLauncher, R.id.lalBfb)
-		val lalPreferences = this.activity.viewFinder.get<AppLauncher>(this.llLauncher, R.id.lalPreferences)
-		val lalTrash = this.activity.viewFinder.get<AppLauncher>(this.llLauncher, R.id.lalTrash)
-
-		val theme = DependencyContainer.of(this.activity).themeManager.current
-		val lalPreferences_location = theme.lalPreferences_getLocation(
-			this.activity.resources, Preferences.getSharedPreferences(this.activity))
-		lalBfb.visibility = View.VISIBLE
-		lalPreferences.visibility =
-			if (lalPreferences_location == Location.NONE) View.GONE else View.VISIBLE
-		lalTrash.visibility = View.GONE
-
-		this.llLauncherPinnedApps.alpha = 1.0F
-	}
+	fun stoppedDraggingPinnedApp() = stoppedDragging(this.activity)
 
 	private fun pinnedAppLauncher(app: App): AppLauncher {
 		val appLauncher = AppLauncher(this.activity, app)
@@ -128,5 +101,51 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		appLauncher.setOnDragListener(AppLauncherDragListener(this.appManager))
 
 		return appLauncher
+	}
+
+	companion object {
+		/*
+		 * The drag decorations only touch views, not the app model, and widget
+		 * drags can start before app loading has finished — so these are usable
+		 * with just the activity.
+		 */
+
+		@JvmStatic
+		fun startedDragging(activity: HomeActivity) {
+			val viewFinder = activity.viewFinder
+			val llLauncher = viewFinder.get<LinearLayout>(R.id.llLauncher)
+			val lalBfb = viewFinder.get<AppLauncher>(llLauncher, R.id.lalBfb)
+			val lalPreferences = viewFinder.get<AppLauncher>(llLauncher, R.id.lalPreferences)
+			val lalTrash = viewFinder.get<AppLauncher>(llLauncher, R.id.lalTrash)
+
+			val theme = DependencyContainer.of(activity).themeManager.current
+			if (activity.resources.getBoolean(theme.launcher_bfb_hide_while_dragging)) {
+				lalBfb.visibility = View.GONE
+			}
+			lalPreferences.visibility = View.GONE
+			lalTrash.visibility = View.VISIBLE
+			activity.closeDash()
+
+			viewFinder.get<LinearLayout>(llLauncher, R.id.llLauncherPinnedApps).alpha = 0.9F
+		}
+
+		@JvmStatic
+		fun stoppedDragging(activity: HomeActivity) {
+			val viewFinder = activity.viewFinder
+			val llLauncher = viewFinder.get<LinearLayout>(R.id.llLauncher)
+			val lalBfb = viewFinder.get<AppLauncher>(llLauncher, R.id.lalBfb)
+			val lalPreferences = viewFinder.get<AppLauncher>(llLauncher, R.id.lalPreferences)
+			val lalTrash = viewFinder.get<AppLauncher>(llLauncher, R.id.lalTrash)
+
+			val theme = DependencyContainer.of(activity).themeManager.current
+			val lalPreferences_location = theme.lalPreferences_getLocation(
+				activity.resources, Preferences.getSharedPreferences(activity))
+			lalBfb.visibility = View.VISIBLE
+			lalPreferences.visibility =
+				if (lalPreferences_location == Location.NONE) View.GONE else View.VISIBLE
+			lalTrash.visibility = View.GONE
+
+			viewFinder.get<LinearLayout>(llLauncher, R.id.llLauncherPinnedApps).alpha = 1.0F
+		}
 	}
 }

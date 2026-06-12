@@ -54,6 +54,27 @@ class WidgetContainerTest {
 	private fun touch(container: WidgetContainer, edgeId: Int, action: Int, x: Float, y: Float): Boolean =
 		container.onTouch(container.findViewById(edgeId), motionEvent(action, x, y))
 
+	@Test fun strayMovesAfterTheSystemDragStartsDoNotRestartTheDrag() {
+		scenario.onActivity { activity ->
+			val container = widgetAt22(activity).container
+			container.editMode = true
+			val lalTrash = activity.findViewById<View>(R.id.lalTrash)
+
+			// Crossing the touch slop on the centre overlay hands off to the
+			// system drag-and-drop framework and shows the trash //
+			touch(container, R.id.widgetOverlayCenter, MotionEvent.ACTION_DOWN, 300F, 300F)
+			touch(container, R.id.widgetOverlayCenter, MotionEvent.ACTION_MOVE, 350F, 300F)
+			assertEquals(View.VISIBLE, lalTrash.visibility)
+
+			// A stray move event delivered before the framework takes over the
+			// touch stream must not start a second drag //
+			be.robinj.distrohopper.home.LauncherBarBinder.stoppedDragging(activity)
+			assertTrue(touch(container, R.id.widgetOverlayCenter,
+				MotionEvent.ACTION_MOVE, 360F, 300F))
+			assertEquals(View.GONE, lalTrash.visibility)
+		}
+	}
+
 	@Test fun editModeShowsTheOverlayAndDimsTheWidget() {
 		scenario.onActivity { activity ->
 			val container = widgetAt22(activity).container

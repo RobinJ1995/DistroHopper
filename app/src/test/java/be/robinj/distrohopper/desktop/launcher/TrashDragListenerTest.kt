@@ -41,7 +41,7 @@ class TrashDragListenerTest {
 	@Test fun enteringTheTrashTurnsItRedAndEntersDragMode() {
 		scenario.onActivity { activity ->
 			val lalTrash = activity.findViewById<AppLauncher>(R.id.lalTrash)
-			val listener = TrashDragListener(activity.appManager)
+			val listener = TrashDragListener(activity)
 
 			assertTrue(listener.onDrag(lalTrash,
 				DragEvents.obtain(DragEvent.ACTION_DRAG_ENTERED)))
@@ -55,7 +55,7 @@ class TrashDragListenerTest {
 		scenario.onActivity { activity ->
 			val lalTrash = activity.findViewById<AppLauncher>(R.id.lalTrash)
 			val originalColour = lalTrash.colour
-			val listener = TrashDragListener(activity.appManager)
+			val listener = TrashDragListener(activity)
 
 			listener.onDrag(lalTrash, DragEvents.obtain(DragEvent.ACTION_DRAG_ENTERED))
 			listener.onDrag(lalTrash, DragEvents.obtain(DragEvent.ACTION_DRAG_EXITED))
@@ -71,7 +71,7 @@ class TrashDragListenerTest {
 			manager.pin(app, false, false, true)
 			val lalTrash = activity.findViewById<AppLauncher>(R.id.lalTrash)
 			val originalColour = lalTrash.colour
-			val listener = TrashDragListener(activity.appManager)
+			val listener = TrashDragListener(activity)
 
 			listener.onDrag(lalTrash, DragEvents.obtain(DragEvent.ACTION_DRAG_ENTERED))
 			listener.onDrag(lalTrash, DragEvents.obtain(DragEvent.ACTION_DROP,
@@ -90,7 +90,7 @@ class TrashDragListenerTest {
 			val container = WidgetTestSupport.addWidget(activity, host, vgWidgets, 42, 0, 0, 2, 2)
 			host.persist()
 			assertEquals(1, WidgetPersistence(activity.applicationContext).load().size)
-			val listener = TrashDragListener(activity.appManager)
+			val listener = TrashDragListener(activity)
 
 			listener.onDrag(activity.findViewById<AppLauncher>(R.id.lalTrash),
 				DragEvents.obtain(DragEvent.ACTION_DROP, localState = container))
@@ -103,7 +103,7 @@ class TrashDragListenerTest {
 	@Test fun aMalformedDropShowsTheErrorDialogInsteadOfCrashing() {
 		scenario.onActivity { activity ->
 			val clip = ClipData.newPlainText("not-a-number", "app")
-			val listener = TrashDragListener(activity.appManager)
+			val listener = TrashDragListener(activity)
 
 			assertTrue(listener.onDrag(activity.findViewById<AppLauncher>(R.id.lalTrash),
 				DragEvents.obtain(DragEvent.ACTION_DROP,

@@ -7,19 +7,25 @@ import android.view.ViewGroup;
 
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.HomeActivity;
+import be.robinj.distrohopper.home.LauncherBarBinder;
 import be.robinj.distrohopper.widgets.WidgetContainer;
 
 /**
  * Created by robin on 03/09/14.
+ *
+ * Attached in onCreate so widgets (draggable before app loading finishes) can
+ * always be dropped on the trash; the appManager is resolved per event because
+ * it only exists once loading is done, and only app drags need it.
  */
 public class TrashDragListener implements ViewGroup.OnDragListener
 {
-	private AppManager appManager;
+	private final HomeActivity activity;
 	private int colour = -1;
 
-	public TrashDragListener (AppManager appManager)
+	public TrashDragListener (final HomeActivity activity)
 	{
-		this.appManager = appManager;
+		this.activity = activity;
 	}
 
 	@Override
@@ -34,7 +40,7 @@ public class TrashDragListener implements ViewGroup.OnDragListener
 			switch (event.getAction ())
 			{
 				case DragEvent.ACTION_DRAG_ENTERED:
-					this.appManager.startedDraggingPinnedApp();
+					LauncherBarBinder.startedDragging (this.activity);
 					lalTrash.setColour (Color.rgb (255, 40, 40));
 					break;
 				case DragEvent.ACTION_DROP: // Falls through //
@@ -45,10 +51,12 @@ public class TrashDragListener implements ViewGroup.OnDragListener
 					else
 					{
 						int index = Integer.parseInt (event.getClipData ().getDescription ().getLabel ().toString ());
-						this.appManager.unpin (index);
+						final AppManager appManager = this.activity.getAppManager ();
+						if (appManager != null)
+							appManager.unpin (index);
 					}
 
-					this.appManager.stoppedDraggingPinnedApp ();
+					LauncherBarBinder.stoppedDragging (this.activity);
 				case DragEvent.ACTION_DRAG_EXITED:
 					lalTrash.setColour (this.colour);
 					break;
@@ -57,7 +65,7 @@ public class TrashDragListener implements ViewGroup.OnDragListener
 		catch (Exception ex)
 		{
 			ExceptionHandler exh = new ExceptionHandler (ex);
-			exh.show (this.appManager.getContext ());
+			exh.show (this.activity);
 		}
 
 		return true;

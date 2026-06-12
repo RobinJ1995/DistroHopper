@@ -7,9 +7,6 @@ import android.content.pm.ResolveInfo
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import java.util.concurrent.CopyOnWriteArrayList
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * The model behind the launcher and the dash: the installed and pinned app
@@ -18,19 +15,11 @@ import kotlinx.coroutines.flow.asStateFlow
  * together for the existing callers.
  *
  * The live lists are intentionally exposed ([installedLive], [pinnedLive])
- * because the dash GridAdapter is backed by the installed list directly;
- * [installed]/[pinned] emit snapshots on every change for reactive
- * consumers.
+ * because the dash GridAdapter is backed by the installed list directly.
  */
 class AppRepository(private val context: Context) {
 	private val apps = CopyOnWriteArrayList<App>()
 	private val pinnedApps = CopyOnWriteArrayList<App>()
-
-	private val _installed = MutableStateFlow<List<App>>(emptyList())
-	val installed: StateFlow<List<App>> = this._installed.asStateFlow()
-
-	private val _pinned = MutableStateFlow<List<App>>(emptyList())
-	val pinned: StateFlow<List<App>> = this._pinned.asStateFlow()
 
 	val installedLive: List<App> get() = this.apps
 	val pinnedLive: List<App> get() = this.pinnedApps
@@ -42,22 +31,17 @@ class AppRepository(private val context: Context) {
 		}
 
 		this.apps.add(app)
-		this.installedChanged()
 
 		return true
 	}
 
 	/** Removes [app] from the installed list (not from the pinned list). */
 	fun remove(app: App): Boolean {
-		val modified = this.apps.remove(app)
-		this.installedChanged()
-
-		return modified
+		return this.apps.remove(app)
 	}
 
 	fun sort() {
 		this.apps.sortWith(AppComparatorAlphabetical())
-		this.installedChanged()
 	}
 
 	fun size(): Int = this.apps.size
@@ -137,23 +121,16 @@ class AppRepository(private val context: Context) {
 			return false
 		}
 
-		val added = this.pinnedApps.add(app)
-		this.pinnedChanged()
-
-		return added
+		return this.pinnedApps.add(app)
 	}
 
 	fun unpin(app: App): Boolean {
-		val modified = this.pinnedApps.remove(app)
-		this.pinnedChanged()
-
-		return modified
+		return this.pinnedApps.remove(app)
 	}
 
 	fun movePinnedApp(oldIndex: Int, newIndex: Int) {
 		val app = this.pinnedApps.removeAt(oldIndex)
 		this.pinnedApps.add(newIndex, app)
-		this.pinnedChanged()
 	}
 
 	fun savePinnedApps() {
@@ -189,13 +166,5 @@ class AppRepository(private val context: Context) {
 		}
 
 		return running
-	}
-
-	private fun installedChanged() {
-		this._installed.value = ArrayList(this.apps)
-	}
-
-	private fun pinnedChanged() {
-		this._pinned.value = ArrayList(this.pinnedApps)
 	}
 }

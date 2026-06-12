@@ -113,7 +113,9 @@ class WidgetHost(
 		}
 	}
 
-	fun onBindResult(resultCode: Int) {
+	fun onBindResult(resultCode: Int, data: Intent?) {
+		this.recoverPendingState(data)
+
 		if (resultCode == Activity.RESULT_OK) {
 			this.configurePendingWidget()
 		} else {
@@ -121,12 +123,38 @@ class WidgetHost(
 		}
 	}
 
-	fun onConfigureResult(resultCode: Int) {
+	fun onConfigureResult(resultCode: Int, data: Intent?) {
+		this.recoverPendingState(data)
+
 		if (resultCode == Activity.RESULT_OK) {
 			this.placePendingWidget()
 		} else {
 			this.cancelPendingWidget()
 		}
+	}
+
+	/**
+	 * The pending state only lives in memory, but the bind/configure activity can
+	 * outlive this process — recover the widget id from the result, as both the
+	 * system bind activity and configure activities return EXTRA_APPWIDGET_ID.
+	 */
+	private fun recoverPendingState(data: Intent?) {
+		if (this.pendingAppWidgetId != -1) {
+			return
+		}
+
+		val appWidgetId = data?.getIntExtra(
+			AppWidgetManager.EXTRA_APPWIDGET_ID, -1) ?: -1
+
+		if (appWidgetId == -1) {
+			return
+		}
+
+		this.pendingAppWidgetId = appWidgetId
+		this.pendingInfo = this.widgetManager.getAppWidgetInfo(appWidgetId)
+
+		Log.getInstance().w(this.javaClass.simpleName,
+			"Recovered pending widget from result intent: $appWidgetId")
 	}
 
 	private fun configurePendingWidget() {
@@ -148,7 +176,15 @@ class WidgetHost(
 		this.pendingAppWidgetId = -1
 		this.pendingInfo = null
 
-		if (appWidgetId == -1 || info == null) {
+		if (appWidgetId == -1) {
+			return
+		}
+
+		if (info == null) {
+			// Allocated but unusable (e.g. recovered after process death with the
+			// provider gone): don't leak the binding //
+			this.deleteAppWidgetId(appWidgetId)
+
 			return
 		}
 

@@ -45,7 +45,7 @@ class AppRepositoryTest {
 		this.repository.sort()
 
 		assertEquals(listOf("Alpha", "Bravo"), this.repository.installedLive.map { it.label })
-		assertEquals(listOf("Alpha", "Bravo"), this.repository.installed.value.map { it.label })
+		assertEquals(listOf("Alpha", "Bravo"), this.repository.installedLive.map { it.label })
 	}
 
 	@Test fun searchPrefersPrefixMatchesAndHonoursMaxResults() {
@@ -67,11 +67,11 @@ class AppRepositoryTest {
 		assertTrue(this.repository.pin(app))
 		assertFalse(this.repository.pin(app)) // already pinned
 		assertTrue(this.repository.isPinned(app))
-		assertEquals(listOf(app), this.repository.pinned.value)
+		assertEquals(listOf(app), this.repository.pinnedLive)
 
 		assertTrue(this.repository.unpin(app))
 		assertFalse(this.repository.isPinned(app))
-		assertTrue(this.repository.pinned.value.isEmpty())
+		assertTrue(this.repository.pinnedLive.isEmpty())
 	}
 
 	@Test fun savePinnedAppsPersistsInOrder() {

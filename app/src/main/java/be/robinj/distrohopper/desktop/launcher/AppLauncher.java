@@ -23,6 +23,7 @@ public class AppLauncher extends be.robinj.distrohopper.desktop.AppLauncher
 {
 	private int colour;
 	private boolean running;
+	private Theme theme;
 
 	public AppLauncher (Context context, AttributeSet attrs)
 	{
@@ -59,7 +60,11 @@ public class AppLauncher extends be.robinj.distrohopper.desktop.AppLauncher
 
 	protected void applyTheme ()
 	{
-		final Theme theme = DependencyContainer.of (this.getContext ()).getThemeManager ().getCurrent ();
+		// Resolved once per view: init() re-runs on every icon-width change for every
+		// icon, and the activity is recreated on theme change anyway //
+		if (this.theme == null)
+			this.theme = DependencyContainer.of (this.getContext ()).getThemeManager ().getCurrent ();
+		final Theme theme = this.theme;
 
 		ViewGroup llBackground = (ViewGroup) this.findViewById (R.id.llBackground);
 		llBackground.setBackgroundResource (theme.launcher_applauncher_background);

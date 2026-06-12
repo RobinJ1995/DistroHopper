@@ -3,6 +3,7 @@ package be.robinj.distrohopper.widgets
 import android.view.DragEvent
 import android.view.View
 import be.robinj.distrohopper.HomeActivity
+import be.robinj.distrohopper.home.LauncherBarBinder
 
 /**
  * Drives the move of a widget that is being dragged via the system drag-and-drop
@@ -40,7 +41,8 @@ internal class WidgetsContainer_DragListener(
 					vgWidgets.requestLayout()
 				}
 
-				this.parent.appManager?.stoppedDraggingPinnedApp()
+				// Not via appManager: widgets are draggable before app loading finishes //
+				LauncherBarBinder.stoppedDragging(this.parent)
 			}
 		}
 

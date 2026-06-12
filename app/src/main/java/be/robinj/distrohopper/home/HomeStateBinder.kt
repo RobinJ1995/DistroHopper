@@ -27,6 +27,17 @@ object HomeStateBinder {
 		dash: DashController,
 		themeApplier: ThemeApplier,
 	) {
+		/*
+		 * The preference flows are cold and re-emit the current value every time
+		 * repeatOnLifecycle resubscribes — i.e. on every return to the home
+		 * screen. Remember what was last applied (outside the repeat block, so it
+		 * survives restarts) and skip no-ops: the expensive collectors below
+		 * re-initialise every launcher icon or rebuild the running-apps row.
+		 */
+		var appliedDashIconWidth: Int? = null
+		var appliedLauncherIconWidth: Int? = null
+		var appliedShowRunningApps: Boolean? = null
+
 		activity.lifecycleScope.launch {
 			activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
 				this.launch {
@@ -46,23 +57,37 @@ object HomeStateBinder {
 
 				this.launch {
 					viewModel.dashIconWidth.collect { width ->
-						themeApplier.applyDashIconWidth(width)
+						if (width != appliedDashIconWidth) {
+							appliedDashIconWidth = width
+							themeApplier.applyDashIconWidth(width)
+						}
 					}
 				}
 
 				this.launch {
 					viewModel.launcherIconWidth.collect { width ->
-						applyLauncherIconWidth(activity, width)
+						if (width != appliedLauncherIconWidth) {
+							appliedLauncherIconWidth = width
+							applyLauncherIconWidth(activity, width)
+						}
 					}
 				}
 
 				this.launch {
+					// Only reacts to preference changes; the lifecycle refresh of the
+					// running-apps row stays with HomeActivity.onResume() //
 					viewModel.showRunningApps.collect { show ->
+						if (show == appliedShowRunningApps) {
+							return@collect
+						}
+
 						val apps = activity.appManager
 
 						if (show && apps != null) {
+							appliedShowRunningApps = true
 							apps.addRunningApps(dash.chameleonicBgColour)
 						} else if (! show) {
+							appliedShowRunningApps = false
 							activity.viewFinder
 								.get<LinearLayout>(R.id.llLauncherRunningApps).removeAllViews()
 						}

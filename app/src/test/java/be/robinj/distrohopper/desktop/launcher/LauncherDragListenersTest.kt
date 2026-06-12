@@ -19,14 +19,19 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.junit.Assert.assertNull
 import org.robolectric.annotation.LooperMode
+import org.robolectric.shadows.ShadowAlertDialog
 
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.LEGACY)
 class LauncherDragListenersTest {
 	private lateinit var scenario: ActivityScenario<HomeActivity>
 
-	@Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
+	@Before fun setUp() {
+		ShadowAlertDialog.reset()
+		scenario = ActivityTestSupport.launchHome()
+	}
 	@After fun tearDown() { scenario.close() }
 
 	@Test fun launcherIgnoresWidgetDragsSoTheyReachTheirOwnListeners() {
@@ -38,6 +43,33 @@ class LauncherDragListenersTest {
 
 			assertFalse(listener.onDrag(activity.findViewById(R.id.llLauncher),
 				DragEvents.obtain(DragEvent.ACTION_DRAG_ENTERED, localState = container)))
+		}
+	}
+
+	@Test fun pinnedAppIconsIgnoreWidgetDragsInsteadOfCrashing() {
+		scenario.onActivity { activity ->
+			val manager = activity.appManager
+			val alpha = manager.findAppsByPackageName("com.example.alpha").first()
+			manager.pin(alpha, true, false, true)
+			val alphaLauncher = activity
+				.findViewById<LinearLayout>(R.id.llLauncherPinnedApps)
+				.findViewWithTag<AppLauncher>(alpha)
+			val grid = WidgetTestSupport.standaloneGrid(activity)
+			val container = WidgetTestSupport.addWidget(
+				activity, WidgetTestSupport.host(activity, grid), grid, 42, 0, 0, 2, 2)
+			// The clip label is the non-numeric "widget", which used to reach
+			// Integer.parseInt() and pop the crash dialog //
+			val clip = ClipData.newPlainText("widget", "42")
+			val listener = AppLauncherDragListener(manager)
+
+			assertFalse(listener.onDrag(alphaLauncher,
+				DragEvents.obtain(DragEvent.ACTION_DROP,
+					clipDescription = clip.description, clipData = clip,
+					localState = container)))
+
+			assertEquals(listOf(alpha), manager.pinned)
+			assertNull("a widget drop on a pinned icon must not show an error dialog",
+				ShadowAlertDialog.getLatestAlertDialog())
 		}
 	}
 

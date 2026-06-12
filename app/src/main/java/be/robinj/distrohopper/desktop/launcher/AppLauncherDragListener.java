@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.widgets.WidgetContainer;
 
 /**
  * Created by robin on 03/09/14.
@@ -25,6 +26,11 @@ public class AppLauncherDragListener implements ViewGroup.OnDragListener
 	{
 		try
 		{
+			// Widget drags carry a non-numeric clip label and are handled by
+			// WidgetsContainer_DragListener and the trash's own listener //
+			if (event.getLocalState () instanceof WidgetContainer)
+				return false;
+
 			AppLauncher appLauncher = (AppLauncher) view;
 			App app = appLauncher.getApp ();
 
