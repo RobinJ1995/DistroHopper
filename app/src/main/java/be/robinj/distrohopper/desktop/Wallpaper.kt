@@ -2,7 +2,14 @@ package be.robinj.distrohopper.desktop
 
 import android.app.WallpaperManager
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapShader
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.Paint
+import android.graphics.PixelFormat
+import android.graphics.Shader
 import android.util.AttributeSet
 import android.view.Window
 import android.widget.ImageView
@@ -16,6 +23,16 @@ import be.robinj.distrohopper.dev.Log
  */
 class Wallpaper : ImageView {
     private val context: Context
+    private val frostedFallback by lazy {
+        FrostedFallbackDrawable(this.frostedFallbackColour())
+    }
+
+    internal var crossWindowBlurEnabled: (Window) -> Boolean = {
+        it.windowManager.isCrossWindowBlurEnabled
+    }
+    internal var setBackgroundBlurRadius: (Window, Int) -> Unit = { window, radius ->
+        window.setBackgroundBlurRadius(radius)
+    }
 
     var isLiveWallpaper: Boolean = false
         internal set
@@ -53,38 +70,59 @@ class Wallpaper : ImageView {
     /*
      * The system wallpaper lives in a separate window behind the (transparent) activity, so
      * blurring it is only possible with cross-window blur. That can be unavailable at runtime
-     * (battery saver, device config), in which case this view darkens it instead.
+     * (battery saver, device config), in which case this view uses the frosted fallback instead.
      */
     fun blur(window: Window, radiusPx: Int) {
-        if (window.windowManager.isCrossWindowBlurEnabled) {
-            window.setBackgroundBlurRadius(radiusPx)
-            this.setBackgroundColor(this.resources.getColor(R.color.transparent))
+        if (this.crossWindowBlurEnabled(window)) {
+            this.setBackgroundBlurRadius(window, radiusPx)
+            this.clearFallback()
         } else {
-            window.setBackgroundBlurRadius(0)
-            this.setBackgroundColor(this.resources.getColor(R.color.transparentblack60))
+            this.setBackgroundBlurRadius(window, 0)
+            this.applyFrostedFallback(1F)
         }
     }
 
     fun unblur(window: Window) {
-        window.setBackgroundBlurRadius(0)
-        this.setBackgroundColor(this.resources.getColor(R.color.transparent))
+        this.setBackgroundBlurRadius(window, 0)
+        this.clearFallback()
     }
 
     /**
      * Animated counterpart of [blur]/[unblur]: applies the given fraction of the full blur
      * radius, so a ValueAnimator can ramp the blur up or down. When cross-window blur is
-     * unavailable the fallback darkening is ramped instead, by scaling its alpha.
+     * unavailable the frosted fallback is ramped instead, by scaling its alpha.
      */
     fun applyBlurFraction(window: Window, fraction: Float, maxRadiusPx: Int) {
-        if (window.windowManager.isCrossWindowBlurEnabled) {
-            window.setBackgroundBlurRadius((fraction * maxRadiusPx).toInt())
-            this.setBackgroundColor(this.resources.getColor(R.color.transparent))
+        if (this.crossWindowBlurEnabled(window)) {
+            this.setBackgroundBlurRadius(window, (fraction * maxRadiusPx).toInt())
+            this.clearFallback()
         } else {
-            window.setBackgroundBlurRadius(0)
-            val darken = this.resources.getColor(R.color.transparentblack60)
-            this.setBackgroundColor(ColorUtils.setAlphaComponent(
-                darken, (Color.alpha(darken) * fraction).toInt()))
+            this.setBackgroundBlurRadius(window, 0)
+            this.applyFrostedFallback(fraction)
         }
+    }
+
+    private fun applyFrostedFallback(fraction: Float) {
+        if (this.background !== this.frostedFallback) {
+            this.background = this.frostedFallback
+        }
+        this.frostedFallback.fraction = fraction.coerceIn(0F, 1F)
+    }
+
+    private fun clearFallback() {
+        this.setBackgroundColor(this.resources.getColor(R.color.transparent))
+    }
+
+    private fun frostedFallbackColour(): Int {
+        val primary = try {
+            WallpaperManager.getInstance(this.context)
+                .getWallpaperColors(WallpaperManager.FLAG_SYSTEM)?.primaryColor?.toArgb()
+        } catch (ex: Exception) {
+            ExceptionHandler(ex).logAndTrack()
+            null
+        }
+
+        return fallbackTintFor(primary)
     }
 
     /*
@@ -115,5 +153,66 @@ class Wallpaper : ImageView {
     companion object {
         private val COLOUR_UBUNTU_ORANGE = Color.rgb(180, 60, 18)
         private val LOG: Log = Log.getInstance()
+
+        internal fun fallbackTintFor(primary: Int?): Int {
+            val wallpaperColour = primary ?: Color.rgb(32, 33, 36)
+            val darkened = ColorUtils.blendARGB(wallpaperColour, Color.BLACK, 0.68F)
+            return ColorUtils.setAlphaComponent(darkened, 178)
+        }
+    }
+
+    /**
+     * Cross-window blur is optional on Android. When an OEM disables it, a colour-adaptive
+     * translucent layer plus fine grain reduces wallpaper detail without needing its bitmap.
+     */
+    private class FrostedFallbackDrawable(private val tint: Int) : android.graphics.drawable.Drawable() {
+        private val tintPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = tint }
+        private val grainPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            shader = BitmapShader(createGrain(), Shader.TileMode.REPEAT, Shader.TileMode.REPEAT)
+        }
+
+        var fraction: Float = 0F
+            set(value) {
+                field = value
+                this.invalidateSelf()
+            }
+
+        override fun draw(canvas: Canvas) {
+            this.tintPaint.alpha = (Color.alpha(this.tint) * this.fraction).toInt()
+            canvas.drawRect(this.bounds, this.tintPaint)
+
+            this.grainPaint.alpha = (18 * this.fraction).toInt()
+            canvas.drawRect(this.bounds, this.grainPaint)
+        }
+
+        override fun setAlpha(alpha: Int) {
+            this.fraction = alpha / 255F
+        }
+
+        override fun setColorFilter(colorFilter: ColorFilter?) {
+            this.tintPaint.colorFilter = colorFilter
+            this.grainPaint.colorFilter = colorFilter
+        }
+
+        @Deprecated("Deprecated in Android")
+        override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+
+        companion object {
+            private fun createGrain(): Bitmap {
+                val size = 48
+                val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+                var state = 0x4d595df4
+
+                for (y in 0 until size) {
+                    for (x in 0 until size) {
+                        state = state * 1664525 + 1013904223
+                        val white = if ((state ushr 28) >= 8) 255 else 0
+                        bitmap.setPixel(x, y, Color.argb(255, white, white, white))
+                    }
+                }
+
+                return bitmap
+            }
+        }
     }
 }

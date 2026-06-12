@@ -1,6 +1,7 @@
 package be.robinj.distrohopper.preferences
 
 import androidx.preference.CheckBoxPreference
+import be.robinj.distrohopper.R
 import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -35,12 +36,25 @@ class CrashReportPreferenceTest {
 
     @After fun tearDown() { activity.finish() }
 
-    /** Real build: no ACRA credentials, so the toggle must not be shown at all. */
+    class UnconfiguredPreferencesFragment :
+        PreferencesActivity.PreferencesFragment() {
+        override fun isCrashReportingConfigured(): Boolean = false
+    }
+
+    /** Full screen initialisation removes the toggle when this build cannot send reports. */
     @Test fun toggleHiddenWhenAcraNotConfigured() {
+        fragment = UnconfiguredPreferencesFragment()
+        activity.supportFragmentManager.beginTransaction()
+            .replace(R.id.preferences_container, fragment)
+            .commitNow()
+
         assertNull(fragment.findPreference<AndroidxPreference>(key))
     }
 
     private fun reAddToggle(): CheckBoxPreference {
+        fragment.findPreference<AndroidxPreference>(key)?.let { existing ->
+            existing.parent?.removePreference(existing)
+        }
         val pref = CheckBoxPreference(fragment.requireContext())
         pref.key = key
         fragment.preferenceScreen.addPreference(pref)

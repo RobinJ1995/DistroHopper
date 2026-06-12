@@ -13,6 +13,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,16 +45,75 @@ class WallpaperTest {
 		}
 	}
 
-	@Test fun blurFallsBackToDarkeningWhenCrossWindowBlurIsUnavailable() {
+	@Test fun blurUsesFrostedFallbackWhenCrossWindowBlurIsUnavailable() {
 		scenario.onActivity { activity ->
-			// Robolectric's WindowManager reports cross-window blur as disabled.
 			val wallpaper = activity.findViewById<Wallpaper>(R.id.wpWallpaper)
+			var appliedRadius = -1
+			wallpaper.crossWindowBlurEnabled = { false }
+			wallpaper.setBackgroundBlurRadius = { _, radius -> appliedRadius = radius }
 
 			wallpaper.blur(activity.window, 64)
 
-			assertEquals(activity.resources.getColor(R.color.transparentblack60),
-				backgroundColour(wallpaper))
+			assertEquals(0, appliedRadius)
+			assertFalse(wallpaper.background is ColorDrawable)
 		}
+	}
+
+	@Test fun blurUsesCrossWindowBlurWithoutFrostedFallbackWhenAvailable() {
+		scenario.onActivity { activity ->
+			val wallpaper = activity.findViewById<Wallpaper>(R.id.wpWallpaper)
+			var appliedRadius = -1
+			wallpaper.crossWindowBlurEnabled = { true }
+			wallpaper.setBackgroundBlurRadius = { _, radius -> appliedRadius = radius }
+
+			wallpaper.blur(activity.window, 64)
+
+			assertEquals(64, appliedRadius)
+			assertTrue(wallpaper.background is ColorDrawable)
+			assertEquals(0, Color.alpha(backgroundColour(wallpaper)))
+		}
+	}
+
+	@Test fun switchingToCrossWindowBlurClearsAnExistingFrostedFallback() {
+		scenario.onActivity { activity ->
+			val wallpaper = activity.findViewById<Wallpaper>(R.id.wpWallpaper)
+			var blurSupported = false
+			val appliedRadii = mutableListOf<Int>()
+			wallpaper.crossWindowBlurEnabled = { blurSupported }
+			wallpaper.setBackgroundBlurRadius = { _, radius -> appliedRadii += radius }
+
+			wallpaper.blur(activity.window, 64)
+			assertFalse(wallpaper.background is ColorDrawable)
+
+			blurSupported = true
+			wallpaper.blur(activity.window, 64)
+
+			assertEquals(listOf(0, 64), appliedRadii)
+			assertTrue(wallpaper.background is ColorDrawable)
+			assertEquals(0, Color.alpha(backgroundColour(wallpaper)))
+		}
+	}
+
+	@Test fun switchingToFallbackClearsCrossWindowBlurBeforeAddingGrain() {
+		scenario.onActivity { activity ->
+			val wallpaper = activity.findViewById<Wallpaper>(R.id.wpWallpaper)
+			var blurSupported = true
+			val appliedRadii = mutableListOf<Int>()
+			wallpaper.crossWindowBlurEnabled = { blurSupported }
+			wallpaper.setBackgroundBlurRadius = { _, radius -> appliedRadii += radius }
+
+			wallpaper.blur(activity.window, 64)
+			blurSupported = false
+			wallpaper.blur(activity.window, 64)
+
+			assertEquals(listOf(64, 0), appliedRadii)
+			assertFalse(wallpaper.background is ColorDrawable)
+		}
+	}
+
+	@Test fun frostedFallbackTintAdaptsAndDarkensTheWallpaperColour() {
+		assertEquals(Color.argb(178, 32, 16, 8),
+			Wallpaper.fallbackTintFor(Color.rgb(100, 50, 25)))
 	}
 
 	@Test fun unblurRestoresTheTransparentBackground() {

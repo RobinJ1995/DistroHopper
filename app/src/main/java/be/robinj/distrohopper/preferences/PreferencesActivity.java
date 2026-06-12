@@ -231,7 +231,13 @@ public class PreferencesActivity extends AppCompatActivity
 
 		private void initCrashReportsPreference ()
 		{
-			this.applyCrashReportsPreference (BuildConfig.ACRA_CONFIGURED);
+			this.applyCrashReportsPreference (this.isCrashReportingConfigured ());
+		}
+
+		/** Allows tests to exercise both build-time configurations. */
+		protected boolean isCrashReportingConfigured ()
+		{
+			return BuildConfig.ACRA_CONFIGURED;
 		}
 
 		// Package-private so it can be driven with either flag value from tests. //

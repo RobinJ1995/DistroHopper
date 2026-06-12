@@ -124,8 +124,9 @@ etc/                                        — design assets (SVG/XCF sources, 
   listeners). The activity is transparent over the system wallpaper
   (`windowShowWallpaper`), which lives in a separate system-owned window:
   when the dash opens it is blurred via cross-window blur
-  (`Window#setBackgroundBlurRadius`, with a darken fallback in `Wallpaper`
-  when blur is disabled at runtime, e.g. battery saver), while widgets —
+  (`Window#setBackgroundBlurRadius`, with a colour-adaptive frosted tint and
+  fine-grain fallback in `Wallpaper` when blur is disabled or unsupported,
+  e.g. on some OEM builds or in battery saver), while widgets —
   which live in the activity's own window — get a `RenderEffect` blur.
   - **`desktop/launcher/`** — the Unity-style launcher bar (the dock of
     pinned/running app icons) and its click/drag listeners. Note there are
