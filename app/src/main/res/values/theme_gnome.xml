@@ -11,12 +11,13 @@
     <array name="theme_gnome_launcher_location_supported">
         <item>@integer/position_left</item>
         <item>@integer/position_right</item>
+        <item>@integer/position_bottom</item>
     </array>
     <array name="theme_gnome_launcher_margin">
-        <item>0dp</item>
-        <item>0dp</item>
-        <item>6dp</item>
-        <item>0dp</item>
+        <item>4dp</item>
+        <item>4dp</item>
+        <item>4dp</item>
+        <item>4dp</item>
     </array>
     <bool name="theme_gnome_launcher_expand">false</bool>
     <bool name="theme_gnome_launcher_background_dynamic">false</bool>
@@ -52,7 +53,7 @@
     <drawable name="theme_gnome_panel_background">@drawable/theme_gnome_res_panel_background</drawable>
     <bool name="theme_gnome_panel_background_dynamic_when_dash_opened">false</bool>
     <integer name="theme_gnome_panel_bfb_location">@integer/position_left</integer>
-    <string name="theme_gnome_panel_bfb_text">@string/theme_elementary_res_panel_bfb_text</string>
+    <string name="theme_gnome_panel_bfb_text">@string/theme_gnome_res_panel_bfb_text</string>
     <color name="theme_gnome_panel_bfb_text_colour">@android:color/white</color>
     <integer name="theme_gnome_panel_close_location">@integer/position_none</integer>
     <drawable name="theme_gnome_panel_close_image">@android:color/transparent</drawable>
