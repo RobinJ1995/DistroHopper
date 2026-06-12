@@ -25,7 +25,7 @@ class ThemeManagerTest {
 	@Test
 	fun registryCoversAllThemeSubclasses() {
 		assertEquals(
-			setOf("default", "gnome", "elementary", "cinnamon"),
+			setOf("default", "gnome", "elementary", "cinnamon", "plasma", "mate"),
 			ThemeRegistry.themes.keys)
 
 		for ((name, factory) in ThemeRegistry.themes) {
