@@ -9,6 +9,7 @@ import be.robinj.distrohopper.AppManager
 import be.robinj.distrohopper.ExceptionHandler
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.RequestCode
 import be.robinj.distrohopper.cache.ICache
 import be.robinj.distrohopper.dev.Log
 import be.robinj.distrohopper.preferences.Preference
@@ -73,14 +74,18 @@ object AppsLoader {
 
 		// Add the Settings shortcut as an internal-only entry. It is never returned
 		// by PackageManager, so it cannot appear in other launchers.
+		// No NEW_TASK flag (it would only bring the home task itself to the front),
+		// and launched for result so HomeActivity.onActivityResult() handles the
+		// Customise UI flow exactly like the launcher bar's preferences button.
 		val settingsIntent = Intent()
 				.setComponent(ComponentName(context.packageName, PreferencesActivity::class.java.name))
-				.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+		// Built with the activity, not the application context: launching for
+		// result needs the Activity, and AppManager already retains it anyway.
 		appManager.add(App.internalShortcut(
-				context, appManager,
+				parent, appManager,
 				context.packageName, PreferencesActivity::class.java.name,
 				context.getString(R.string.shortcut_label_distrohopper_settings),
-				settingsIntent, true),
+				settingsIntent, true, RequestCode.ACTIVITY_PREFERENCES),
 				false, false)
 
 		val tDoneRetrievingInstalledApps = System.currentTimeMillis()

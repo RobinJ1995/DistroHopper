@@ -1,5 +1,6 @@
 package be.robinj.distrohopper;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -37,6 +38,7 @@ public class App implements Parcelable
 	private boolean iconLoaded = false;
 	private boolean launchAllowedInCustomiseMode = false;
 	private boolean internalShortcut = false;
+	private int launchForResultRequestCode = -1;
 
 	private transient Context context;
 	private transient AppManager appManager;
@@ -68,7 +70,8 @@ public class App implements Parcelable
 	}
 
 	private App (Context context, AppManager appManager, String packageName, String activityName,
-				 String label, Intent launchIntent, boolean launchAllowedInCustomiseMode)
+				 String label, Intent launchIntent, boolean launchAllowedInCustomiseMode,
+				 int launchForResultRequestCode)
 	{
 		this.context = context;
 		this.appManager = appManager;
@@ -78,19 +81,24 @@ public class App implements Parcelable
 		this.launchIntent = launchIntent;
 		this.launchAllowedInCustomiseMode = launchAllowedInCustomiseMode;
 		this.internalShortcut = true;
+		this.launchForResultRequestCode = launchForResultRequestCode;
 		this.labelLoaded = label != null;
 	}
 
 	/**
 	 * Creates a DistroHopper-internal shortcut that lives only in the dash and
 	 * launches by explicit intent rather than a public launcher component.
+	 * launchForResultRequestCode >= 0 makes it launch through
+	 * Activity.startActivityForResult() so the host activity sees the result.
 	 */
 	public static App internalShortcut (Context context, AppManager appManager,
 			String packageName, String activityName, String label,
-			Intent launchIntent, boolean launchAllowedInCustomiseMode)
+			Intent launchIntent, boolean launchAllowedInCustomiseMode,
+			int launchForResultRequestCode)
 	{
 		return new App (context, appManager, packageName, activityName,
-				label, launchIntent, launchAllowedInCustomiseMode);
+				label, launchIntent, launchAllowedInCustomiseMode,
+				launchForResultRequestCode);
 	}
 
 	private App (Parcel parcel)
@@ -101,11 +109,13 @@ public class App implements Parcelable
 		this.packageName = parcel.readString ();
 		this.launchAllowedInCustomiseMode = parcel.readInt () != 0;
 		this.internalShortcut = parcel.readInt () != 0;
+		this.launchForResultRequestCode = parcel.readInt ();
 
 		if (this.internalShortcut) {
+			// No NEW_TASK flag: the target shares the home task's affinity, so
+			// NEW_TASK would only bring the already-visible home task to the front //
 			this.launchIntent = new Intent ()
-					.setComponent (new ComponentName (this.packageName, this.activityName))
-					.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+					.setComponent (new ComponentName (this.packageName, this.activityName));
 		}
 	}
 
@@ -121,6 +131,15 @@ public class App implements Parcelable
 			final Intent intent;
 			if (this.launchIntent != null) {
 				intent = new Intent (this.launchIntent);
+
+				if (this.launchForResultRequestCode >= 0 && this.context instanceof Activity) {
+					// E.g. the Settings shortcut: HomeActivity.onActivityResult() turns
+					// the Customise UI result into a relaunch with customise=true //
+					((Activity) this.context).startActivityForResult (
+							intent, this.launchForResultRequestCode);
+
+					return;
+				}
 			}
 			else {
 				final ComponentName compName = new ComponentName(this.packageName, this.activityName);
@@ -305,6 +324,7 @@ public class App implements Parcelable
 		dest.writeString (this.packageName);
 		dest.writeInt (this.launchAllowedInCustomiseMode ? 1 : 0);
 		dest.writeInt (this.internalShortcut ? 1 : 0);
+		dest.writeInt (this.launchForResultRequestCode);
 	}
 
 	public static final Parcelable.Creator<App> CREATOR = new Parcelable.Creator <App> ()
