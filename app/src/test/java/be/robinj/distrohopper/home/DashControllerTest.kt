@@ -18,8 +18,13 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.LooperMode
 
+/*
+ * Runs under the PAUSED looper: the default theme's dash animation (UNITY)
+ * must complete before close's end-state can be asserted, and animators never
+ * advance under LEGACY.
+ */
 @RunWith(RobolectricTestRunner::class)
-@LooperMode(LooperMode.Mode.LEGACY)
+@LooperMode(LooperMode.Mode.PAUSED)
 class DashControllerTest {
 	private lateinit var scenario: ActivityScenario<HomeActivity>
 
@@ -54,8 +59,10 @@ class DashControllerTest {
 			val etDashSearch = activity.findViewById<EditText>(R.id.etDashSearch)
 
 			dash.open()
+			ActivityTestSupport.drainTasks()
 			etDashSearch.setText("query")
 			dash.close()
+			ActivityTestSupport.drainTasks()
 
 			assertFalse(dash.isOpen)
 			assertEquals(View.GONE,

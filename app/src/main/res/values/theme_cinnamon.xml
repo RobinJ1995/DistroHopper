@@ -74,5 +74,5 @@
     <color name="theme_cinnamon_dash_search_text_colour">@android:color/white</color>
     <bool name="theme_cinnamon_dash_ribbon_show">false</bool>
     <dimen name="theme_cinnamon_dash_blur_radius">5dp</dimen>
-    <integer name="theme_cinnamon_dash_animation">@integer/dash_animation_none</integer>
+    <integer name="theme_cinnamon_dash_animation">@integer/dash_animation_cinnamon</integer>
 </resources>

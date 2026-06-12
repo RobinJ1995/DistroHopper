@@ -91,6 +91,11 @@ etc/                                        — design assets (SVG/XCF sources, 
     widget blur, panel state); owns `isOpen` and the chameleonic background
     colour. The customise-mode "close = relaunch" branch stays in
     HomeActivity because it manipulates the activity's intent.
+  - `DashAnimator` — the visual side of dash open/close on DashController's
+    behalf: the blur and panel opacity always ramp gradually, and the dash
+    itself animates per the theme's `dash_animation` preset (the
+    `DashAnimation` enum: genie-from-BFB for gnome, slide-from-launcher for
+    cinnamon, zoom-from-label for elementary, fade for unity/default).
   - `WallpaperColourApplier` — applies the wallpaper's average colour to
     launcher/dash for chameleonic themes.
   - `CustomiseModeUi` — the customise-mode seekbars/spinners inside the dash.
@@ -125,7 +130,8 @@ etc/                                        — design assets (SVG/XCF sources, 
   `SharedPreferences` in new code.
 - **`theme/`** — one class per supported desktop look (`Default`, `Gnome`,
   `Elementary`, `Cinnamon`), implementing the `Theme` interface; `Location`
-  describes where UI elements sit per theme. `ThemeRegistry` is the single
+  describes where UI elements sit per theme and `DashAnimation` names the
+  per-theme dash open/close animation preset. `ThemeRegistry` is the single
   list of available themes (also drives the theme picker's order);
   `ThemeManager` (on the `DependencyContainer`) resolves the active theme
   from preferences — use `DependencyContainer.of(context).themeManager.current`

@@ -1,61 +1,40 @@
 package be.robinj.distrohopper.home
 
-import android.app.Application
 import android.view.View
 import android.widget.EditText
 import android.widget.GridView
 import android.widget.LinearLayout
 import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
-import be.robinj.distrohopper.preferences.Preferences
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.LooperMode
-import org.robolectric.shadows.ShadowLooper
 
 /**
- * DashController end-states with the gnome theme, whose dash_animation is
- * GENIE: unlike the NONE themes covered by DashControllerTest, the visual
- * close work only happens once the animators have run.
+ * DashController end-states for the animated dash_animation presets. Runs
+ * under the PAUSED looper because animators never advance under LEGACY; the
+ * visual close work only happens once the animators have run.
  */
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class DashAnimatorTest {
 	private lateinit var scenario: ActivityScenario<HomeActivity>
 
-	@Before fun setUp() {
-		val application = ApplicationProvider.getApplicationContext<Application>()
-		listOf(Preferences.PREFERENCES, Preferences.PINNED_APPS, Preferences.LENSES).forEach {
-			application.getSharedPreferences(it, 0).edit().clear().commit()
-		}
-		application.getSharedPreferences(Preferences.PREFERENCES, 0).edit()
-			.putString(Preference.THEME.getName(), "gnome").commit()
-		DependencyContainer.of(application).customiseMode.value = false
-		ActivityTestSupport.installTestDispatchers()
-		ActivityTestSupport.seedPackageManager()
-		this.scenario = ActivityScenario.launch(HomeActivity::class.java)
-			.also { this.drain() }
-	}
-
 	@After fun tearDown() { this.scenario.close() }
 
-	/*
-	 * ActivityTestSupport.drainTasks() requires the LEGACY looper, but animators
-	 * only advance under the PAUSED looper; idling the main looper is enough here
-	 * because installTestDispatchers() already runs background work inline.
-	 */
-	private fun drain() = ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+	private fun launch(theme: String) {
+		this.scenario = ActivityTestSupport.launchHome(
+			configurePrefs = { it.putString(Preference.THEME.getName(), theme) })
+	}
 
 	private fun controller(activity: HomeActivity): DashController {
 		val container = DependencyContainer.of(activity)
@@ -64,7 +43,7 @@ class DashAnimatorTest {
 	}
 
 	/*
-	 * The genie start transforms are applied in a pre-draw listener; dispatching
+	 * Fresh-open start states are applied in a pre-draw listener; dispatching
 	 * pre-draw by hand makes the animation start deterministic under Robolectric.
 	 */
 	private fun startPendingAnimation(activity: HomeActivity) {
@@ -77,6 +56,7 @@ class DashAnimatorTest {
 
 		assertEquals(View.VISIBLE, llDash.visibility)
 		assertEquals(1F, llDash.alpha, 0.001F)
+		this.assertIdentityTransforms(llDash)
 		assertEquals(View.INVISIBLE,
 			activity.findViewById<View>(R.id.flWallpaperOverlay).visibility)
 		assertEquals(View.VISIBLE, overlay.visibility)
@@ -89,7 +69,8 @@ class DashAnimatorTest {
 		val overlay = activity.findViewById<View>(R.id.flWallpaperOverlayWhenDashOpened)
 
 		assertEquals(View.GONE, llDash.visibility)
-		assertEquals(1F, llDash.alpha, 0.001F) // Reset so the instant path stays correct //
+		assertEquals(1F, llDash.alpha, 0.001F) // Reset so the NONE path stays correct //
+		this.assertIdentityTransforms(llDash)
 		assertEquals(View.VISIBLE,
 			activity.findViewById<View>(R.id.flWallpaperOverlay).visibility)
 		assertEquals(View.INVISIBLE, overlay.visibility)
@@ -97,38 +78,55 @@ class DashAnimatorTest {
 		this.assertIconsAtRest(activity)
 	}
 
+	private fun assertIdentityTransforms(view: View) {
+		assertEquals(0F, view.translationX, 0.001F)
+		assertEquals(0F, view.translationY, 0.001F)
+		assertEquals(1F, view.scaleX, 0.001F)
+		assertEquals(1F, view.scaleY, 0.001F)
+	}
+
 	private fun assertIconsAtRest(activity: HomeActivity) {
 		val grid = activity.findViewById<GridView>(R.id.gvDashHomeApps)
 		for (i in 0 until grid.childCount) {
-			val child = grid.getChildAt(i)
-			assertEquals(0F, child.translationX, 0.001F)
-			assertEquals(0F, child.translationY, 0.001F)
-			assertEquals(1F, child.scaleX, 0.001F)
-			assertEquals(1F, child.scaleY, 0.001F)
+			this.assertIdentityTransforms(grid.getChildAt(i))
 		}
 	}
 
-	@Test fun openAnimatesToTheSettledOpenState() {
+	private fun assertOpensAndClosesSettled(theme: String) {
+		this.launch(theme)
 		this.scenario.onActivity { activity ->
 			val dash = this.controller(activity)
 
 			dash.open()
 			this.startPendingAnimation(activity)
-			this.drain()
-
+			ActivityTestSupport.drainTasks()
 			assertTrue(dash.isOpen)
 			this.assertSettledOpen(activity)
+
+			dash.close()
+			ActivityTestSupport.drainTasks()
+			assertFalse(dash.isOpen)
+			this.assertSettledClosed(activity)
 		}
 	}
 
-	@Test fun closeAnimatesToTheSettledClosedStateAndClearsTheSearchFieldImmediately() {
+	@Test fun gnomeOpensAndClosesSettled() = this.assertOpensAndClosesSettled("gnome")
+
+	@Test fun cinnamonOpensAndClosesSettled() = this.assertOpensAndClosesSettled("cinnamon")
+
+	@Test fun elementaryOpensAndClosesSettled() = this.assertOpensAndClosesSettled("elementary")
+
+	@Test fun unityOpensAndClosesSettled() = this.assertOpensAndClosesSettled("default")
+
+	@Test fun closeClearsTheSearchFieldImmediately() {
+		this.launch("gnome")
 		this.scenario.onActivity { activity ->
 			val dash = this.controller(activity)
 			val etDashSearch = activity.findViewById<EditText>(R.id.etDashSearch)
 
 			dash.open()
 			this.startPendingAnimation(activity)
-			this.drain()
+			ActivityTestSupport.drainTasks()
 			etDashSearch.setText("query")
 
 			dash.close()
@@ -136,19 +134,20 @@ class DashAnimatorTest {
 			assertFalse(dash.isOpen)
 			assertEquals("", etDashSearch.text.toString()) // Immediate, not animated //
 
-			this.drain()
+			ActivityTestSupport.drainTasks()
 			this.assertSettledClosed(activity)
 		}
 	}
 
 	@Test fun closingDuringTheOpenAnimationStillHidesTheDash() {
+		this.launch("gnome")
 		this.scenario.onActivity { activity ->
 			val dash = this.controller(activity)
 
 			dash.open()
 			this.startPendingAnimation(activity)
 			dash.close()
-			this.drain()
+			ActivityTestSupport.drainTasks()
 
 			assertFalse(dash.isOpen)
 			this.assertSettledClosed(activity)
@@ -156,15 +155,16 @@ class DashAnimatorTest {
 	}
 
 	@Test fun reopeningDuringTheCloseAnimationLeavesTheDashOpen() {
+		this.launch("gnome")
 		this.scenario.onActivity { activity ->
 			val dash = this.controller(activity)
 
 			dash.open()
 			this.startPendingAnimation(activity)
-			this.drain()
+			ActivityTestSupport.drainTasks()
 			dash.close()
 			dash.open()
-			this.drain()
+			ActivityTestSupport.drainTasks()
 
 			assertTrue(dash.isOpen)
 			this.assertSettledOpen(activity)

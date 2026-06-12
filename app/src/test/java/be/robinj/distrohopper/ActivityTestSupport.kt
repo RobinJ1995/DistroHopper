@@ -12,6 +12,8 @@ import be.robinj.distrohopper.preferences.Preferences
 import kotlinx.coroutines.Dispatchers
 import org.robolectric.Robolectric
 import org.robolectric.Shadows
+import org.robolectric.annotation.LooperMode
+import org.robolectric.config.ConfigurationRegistry
 import org.robolectric.shadows.ShadowLooper
 
 internal object ActivityTestSupport {
@@ -89,7 +91,11 @@ internal object ActivityTestSupport {
     }
 
     fun drainTasks() {
-        Robolectric.flushBackgroundThreadScheduler()
+        // The background scheduler only exists under the LEGACY looper; animator-driven
+        // tests run PAUSED (animations never advance in LEGACY mode).
+        if (ConfigurationRegistry.get(LooperMode.Mode::class.java) == LooperMode.Mode.LEGACY) {
+            Robolectric.flushBackgroundThreadScheduler()
+        }
         ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
     }
 }

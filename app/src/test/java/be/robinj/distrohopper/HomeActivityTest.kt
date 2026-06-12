@@ -20,8 +20,12 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.LooperMode
 import android.widget.GridView
 
+/*
+ * Runs under the PAUSED looper so that the dash close animation (the default
+ * theme's UNITY fade) can complete before its end-state is asserted.
+ */
 @RunWith(RobolectricTestRunner::class)
-@LooperMode(LooperMode.Mode.LEGACY)
+@LooperMode(LooperMode.Mode.PAUSED)
 class HomeActivityTest {
     private lateinit var scenario: ActivityScenario<HomeActivity>
 
@@ -52,12 +56,14 @@ class HomeActivityTest {
     @Test fun closingDashWithBackButton() {
         onView(withId(R.id.lalBfb)).perform(click())
         pressBack()
+        ActivityTestSupport.drainTasks() // Let the close animation finish //
         onView(withId(R.id.llDash)).check(matches(not(isDisplayed())))
     }
 
     @Test fun closingDashWithCloseButton() {
         onView(withId(R.id.lalBfb)).perform(click())
         onView(withId(R.id.ibPanelDashClose)).perform(click())
+        ActivityTestSupport.drainTasks() // Let the close animation finish //
         onView(withId(R.id.llDash)).check(matches(not(isDisplayed())))
     }
 

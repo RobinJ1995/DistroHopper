@@ -55,6 +55,12 @@ public class GridAdapter extends ArrayAdapter<App> {
 		final int height = width;
 		view.setLayoutParams(new LinearLayout.LayoutParams(width, height));
 
+		// A recycled view may keep transforms from an interrupted dash animation //
+		view.setTranslationX (0);
+		view.setTranslationY (0);
+		view.setScaleX (1);
+		view.setScaleY (1);
+
 		view.setTag (appLauncher);
 
 		return view;

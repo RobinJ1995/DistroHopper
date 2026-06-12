@@ -72,5 +72,5 @@
     <color name="theme_gnome_dash_search_text_colour">@android:color/white</color>
     <bool name="theme_gnome_dash_ribbon_show">false</bool>
     <dimen name="theme_gnome_dash_blur_radius">20dp</dimen>
-    <integer name="theme_gnome_dash_animation">@integer/dash_animation_genie</integer>
+    <integer name="theme_gnome_dash_animation">@integer/dash_animation_gnome</integer>
 </resources>

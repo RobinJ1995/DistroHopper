@@ -17,8 +17,13 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.LooperMode
 
+/*
+ * Runs under the PAUSED looper: DashAnimator starts the open animation from a
+ * pre-draw listener, which trips over the LEGACY scheduler's inline execution
+ * (nested dispatchOnPreDraw), and animators never advance under LEGACY anyway.
+ */
 @RunWith(RobolectricTestRunner::class)
-@LooperMode(LooperMode.Mode.LEGACY)
+@LooperMode(LooperMode.Mode.PAUSED)
 class DashSearchUiTest {
     private lateinit var scenario: ActivityScenario<HomeActivity>
 
@@ -55,18 +60,18 @@ class DashSearchUiTest {
     }
 
     @Test fun searchFieldClearsWhenDashIsClosedWithBackButton() {
-        openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("something")); pressBack(); openDash()
+        openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("something")); pressBack(); ActivityTestSupport.drainTasks(); openDash()
         onView(withId(R.id.etDashSearch)).check(matches(withText("")))
     }
 
     @Test fun searchFieldClearsWhenDashIsClosedWithCloseButton() {
         openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("query"))
-        onView(withId(R.id.ibPanelDashClose)).perform(click()); openDash()
+        onView(withId(R.id.ibPanelDashClose)).perform(click()); ActivityTestSupport.drainTasks(); openDash()
         onView(withId(R.id.etDashSearch)).check(matches(withText("")))
     }
 
     @Test fun appGridRestoredAfterDashClosedAndReopened() {
-        openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("filter")); pressBack(); openDash()
+        openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("filter")); pressBack(); ActivityTestSupport.drainTasks(); openDash()
         onView(withId(R.id.llDashHomeAppsContainer)).check(matches(isDisplayed()))
     }
 }

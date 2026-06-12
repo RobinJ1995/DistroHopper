@@ -12,18 +12,16 @@ import android.widget.LinearLayout
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.ViewFinder
 import be.robinj.distrohopper.desktop.Wallpaper
-import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.PreferencesRepository
 import be.robinj.distrohopper.theme.Theme
-import be.robinj.distrohopper.widgets.WidgetsContainer
 import java.util.function.Consumer
 
 /**
  * Opens and closes the dash: shows/hides the dash itself, blurs the system
  * wallpaper (cross-window) and the widgets (RenderEffect), and adjusts the
- * panel. The visual work (instant or animated, per the theme's dash_animation)
- * is delegated to DashAnimator. Extracted from HomeActivity; the
- * customise-mode relaunch on close stays there, as it manipulates the
+ * panel. The visual work (the gradual blur ramp plus the theme's
+ * dash_animation) is delegated to DashAnimator. Extracted from HomeActivity;
+ * the customise-mode relaunch on close stays there, as it manipulates the
  * activity's intent.
  */
 class DashController(
@@ -38,7 +36,7 @@ class DashController(
 	/** Average wallpaper colour; set once the wallpaper has been analysed. */
 	var chameleonicBgColour: Int = Color.argb(25, 0, 0, 0)
 
-	private val animator = DashAnimator(this.activity, this.viewFinder, this.theme)
+	private val animator = DashAnimator(this.activity, this.viewFinder, this.theme, this.prefs)
 
 	/** Cross-window blur can be toggled at runtime (e.g. battery saver). */
 	val crossWindowBlurListener: Consumer<Boolean> = Consumer {
@@ -57,7 +55,6 @@ class DashController(
 
 		this.animator.open(
 			this.activity.resources.getDimensionPixelSize(this.theme.dash_blur_radius))
-		llPanel.alpha = 1F
 
 		if (this.activity.resources.getInteger(this.theme.panel_close_location) != -1)
 			this.viewFinder.get<ImageButton>(llPanel, R.id.ibPanelDashClose).visibility = View.VISIBLE
@@ -82,8 +79,6 @@ class DashController(
 		this.animator.close(
 			this.activity.resources.getDimensionPixelSize(this.theme.dash_blur_radius)) {
 			this.viewFinder.get<LinearLayout>(R.id.llDash).visibility = View.GONE
-			this.viewFinder.get<Wallpaper>(R.id.wpWallpaper).unblur(this.activity.window)
-			this.viewFinder.get<WidgetsContainer>(R.id.vgWidgets).setRenderEffect(null)
 
 			this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlay).visibility = View.VISIBLE
 			this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened).visibility =
@@ -94,8 +89,6 @@ class DashController(
 
 		if (this.activity.resources.getInteger(this.theme.panel_close_location) != -1)
 			this.viewFinder.get<ImageButton>(llPanel, R.id.ibPanelDashClose).visibility = View.INVISIBLE
-
-		llPanel.alpha = this.prefs.getInt(Preference.PANEL_OPACITY, 100).toFloat() / 100F
 
 		if (this.activity.resources.getBoolean(this.theme.panel_background_dynamic_when_dash_opened)) {
 			llPanel.setBackgroundResource(this.theme.panel_background)

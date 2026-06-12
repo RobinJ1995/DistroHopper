@@ -29,10 +29,10 @@ class ThemeTest {
         DashAnimation.entries.forEach { assertEquals(it, DashAnimation.of(it.n)) }
     }
 
-    @Test fun onlyGnomeUsesTheGenieDashAnimation() {
+    @Test fun eachThemeUsesItsOwnDashAnimation() {
         assertEquals(
-            mapOf("default" to DashAnimation.NONE, "gnome" to DashAnimation.GENIE,
-                "elementary" to DashAnimation.NONE, "cinnamon" to DashAnimation.NONE),
+            mapOf("default" to DashAnimation.UNITY, "gnome" to DashAnimation.GNOME,
+                "elementary" to DashAnimation.ELEMENTARY, "cinnamon" to DashAnimation.CINNAMON),
             listOf(Default(), Gnome(), Elementary(), Cinnamon()).associate {
                 it.getName() to DashAnimation.of(context.resources.getInteger(it.dash_animation))
             })
