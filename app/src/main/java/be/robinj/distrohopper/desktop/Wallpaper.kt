@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.Window
 import android.widget.ImageView
+import androidx.core.graphics.ColorUtils
 import be.robinj.distrohopper.ExceptionHandler
 import be.robinj.distrohopper.Image
 import be.robinj.distrohopper.Permission
@@ -101,6 +102,23 @@ class Wallpaper : ImageView {
     fun unblur(window: Window) {
         window.setBackgroundBlurRadius(0)
         this.setBackgroundColor(this.resources.getColor(R.color.transparent))
+    }
+
+    /**
+     * Animated counterpart of [blur]/[unblur]: applies the given fraction of the full blur
+     * radius, so a ValueAnimator can ramp the blur up or down. When cross-window blur is
+     * unavailable the fallback darkening is ramped instead, by scaling its alpha.
+     */
+    fun applyBlurFraction(window: Window, fraction: Float, maxRadiusPx: Int) {
+        if (window.windowManager.isCrossWindowBlurEnabled) {
+            window.setBackgroundBlurRadius((fraction * maxRadiusPx).toInt())
+            this.setBackgroundColor(this.resources.getColor(R.color.transparent))
+        } else {
+            window.setBackgroundBlurRadius(0)
+            val darken = this.resources.getColor(R.color.transparentblack60)
+            this.setBackgroundColor(ColorUtils.setAlphaComponent(
+                darken, (Color.alpha(darken) * fraction).toInt()))
+        }
     }
 
     fun getAverageColour(alpha: Int): Int {

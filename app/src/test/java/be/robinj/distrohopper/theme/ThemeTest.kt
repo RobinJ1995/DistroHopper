@@ -25,6 +25,19 @@ class ThemeTest {
 
     @Test fun locationToStringUsesEnumName() = assertEquals("LEFT", Location.LEFT.toString())
 
+    @Test fun dashAnimationNumbersMapToEnumValues() {
+        DashAnimation.entries.forEach { assertEquals(it, DashAnimation.of(it.n)) }
+    }
+
+    @Test fun onlyGnomeUsesTheGenieDashAnimation() {
+        assertEquals(
+            mapOf("default" to DashAnimation.NONE, "gnome" to DashAnimation.GENIE,
+                "elementary" to DashAnimation.NONE, "cinnamon" to DashAnimation.NONE),
+            listOf(Default(), Gnome(), Elementary(), Cinnamon()).associate {
+                it.getName() to DashAnimation.of(context.resources.getInteger(it.dash_animation))
+            })
+    }
+
     @Test fun themesExposeStableLowercaseClassNames() {
         assertEquals(listOf("default", "gnome", "elementary", "cinnamon"),
             listOf(Default(), Gnome(), Elementary(), Cinnamon()).map { it.getName() })

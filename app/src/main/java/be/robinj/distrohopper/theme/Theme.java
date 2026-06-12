@@ -69,6 +69,7 @@ public abstract class Theme
 	public int dash_search_text_colour;
 	public int dash_ribbon_show;
 	public int dash_blur_radius;
+	public int dash_animation;
 	
 	public String getName ()
 	{
