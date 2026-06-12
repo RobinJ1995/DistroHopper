@@ -15,10 +15,10 @@
         <item>@integer/position_left</item>
     </array>
     <array name="theme_elementary_launcher_margin">
-        <item>16dp</item>
-        <item>0dp</item>
-        <item>16dp</item>
-        <item>0dp</item>
+        <item>8dp</item>
+        <item>8dp</item>
+        <item>8dp</item>
+        <item>8dp</item>
     </array>
     <bool name="theme_elementary_launcher_expand">false</bool>
     <bool name="theme_elementary_launcher_background_dynamic">false</bool>
@@ -41,7 +41,7 @@
     <integer name="theme_elementary_launcher_applauncher_backgroundcolour_opacity">204</integer>
     <drawable name="theme_elementary_launcher_applauncher_background">@drawable/blank_gradient</drawable>
     <drawable name="theme_elementary_launcher_applauncher_gradient">@android:color/transparent</drawable>
-    <drawable name="theme_elementary_launcher_applauncher_running">@android:color/transparent</drawable>
+    <drawable name="theme_elementary_launcher_applauncher_running">@drawable/theme_elementary_res_launcher_app_running</drawable>
     <bool name="theme_elementary_launcher_applauncher_running_backgroundcolour_dynamic">false</bool>
     <color name="theme_elementary_launcher_applauncher_running_backgroundcolour">@android:color/transparent</color>
 
@@ -53,9 +53,11 @@
     <dimen name="theme_elementary_panel_height">32dp</dimen>
     <drawable name="theme_elementary_panel_background">@android:color/transparent</drawable>
     <drawable name="theme_elementary_panel_background_when_dash_opened">@android:color/transparent</drawable>
-    <drawable name="theme_elementary_statusbar_background_when_dash_opened">@android:color/black</drawable>
+    <drawable name="theme_elementary_statusbar_background">@android:color/transparent</drawable>
+    <drawable name="theme_elementary_statusbar_background_when_dash_opened">@android:color/transparent</drawable>
     <bool name="theme_elementary_panel_background_dynamic_when_dash_opened">false</bool>
     <integer name="theme_elementary_panel_bfb_location">@integer/position_left</integer>
+    <drawable name="theme_elementary_panel_bfb_image">@drawable/theme_elementary_res_panel_bfb</drawable>
     <string name="theme_elementary_panel_bfb_text">@string/theme_elementary_res_panel_bfb_text</string>
     <color name="theme_elementary_panel_bfb_text_colour">@android:color/white</color>
     <integer name="theme_elementary_panel_close_location">@integer/position_none</integer>

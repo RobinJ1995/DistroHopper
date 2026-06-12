@@ -52,9 +52,11 @@
     <dimen name="theme_gnome_panel_height">28dp</dimen>
     <drawable name="theme_gnome_panel_background">@drawable/theme_gnome_res_panel_background</drawable>
     <drawable name="theme_gnome_panel_background_when_dash_opened">@android:color/transparent</drawable>
+    <drawable name="theme_gnome_statusbar_background">@android:color/black</drawable>
     <drawable name="theme_gnome_statusbar_background_when_dash_opened">@android:color/transparent</drawable>
     <bool name="theme_gnome_panel_background_dynamic_when_dash_opened">false</bool>
     <integer name="theme_gnome_panel_bfb_location">@integer/position_none</integer>
+    <drawable name="theme_gnome_panel_bfb_image">@android:color/transparent</drawable>
     <string name="theme_gnome_panel_bfb_text">@string/theme_gnome_res_panel_bfb_text</string>
     <color name="theme_gnome_panel_bfb_text_colour">@android:color/white</color>
     <integer name="theme_gnome_panel_close_location">@integer/position_none</integer>

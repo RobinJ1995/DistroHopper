@@ -52,6 +52,8 @@ class ThemeApplier(
 
 		// Apply theme
 		llPanel.setBackgroundResource(this.theme.panel_background)
+		this.viewFinder.get<LinearLayout>(R.id.llStatusBar)
+			.setBackgroundResource(this.theme.statusbar_background)
 		ibPanelCog.setImageResource(this.theme.panel_preferences_image)
 		ibPanelDashClose.setImageResource(this.theme.panel_close_image)
 		imgDashBackgroundGradient.setImageResource(this.theme.dash_background_gradient)
@@ -109,6 +111,13 @@ class ThemeApplier(
 
 		tvPanelBfb.setText(res.getString(this.theme.panel_bfb_text))
 		tvPanelBfb.setTextColor(res.getColor(this.theme.panel_bfb_text_colour))
+		/*
+		 * Colour resources have no intrinsic size, so themes without a BFB
+		 * image (transparent) get no icon rather than an empty gap.
+		 */
+		tvPanelBfb.setCompoundDrawablesWithIntrinsicBounds(this.theme.panel_bfb_image, 0, 0, 0)
+		tvPanelBfb.compoundDrawablePadding =
+			(6 * this.activity.resources.displayMetrics.density).toInt()
 
 		tvDashHomeTitle.setTextColor(res.getColor(this.theme.dash_applauncher_text_colour))
 		tvDashHomeTitle.setShadowLayer(5F, 2F, 2F, res.getColor(this.theme.dash_applauncher_text_shadow_colour))

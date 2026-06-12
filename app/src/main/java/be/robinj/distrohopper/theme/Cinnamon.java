@@ -47,9 +47,11 @@ public class Cinnamon extends Theme
 		this.panel_height = R.dimen.theme_cinnamon_panel_height;
 		this.panel_background = R.drawable.theme_cinnamon_panel_background;
 		this.panel_background_when_dash_opened = R.drawable.theme_cinnamon_panel_background_when_dash_opened;
+		this.statusbar_background = R.drawable.theme_cinnamon_statusbar_background;
 		this.statusbar_background_when_dash_opened = R.drawable.theme_cinnamon_statusbar_background_when_dash_opened;
 		this.panel_background_dynamic_when_dash_opened = R.bool.theme_cinnamon_panel_background_dynamic_when_dash_opened;
 		this.panel_bfb_location = R.integer.theme_cinnamon_panel_bfb_location;
+		this.panel_bfb_image = R.drawable.theme_cinnamon_panel_bfb_image;
 		this.panel_bfb_text = R.string.theme_cinnamon_panel_bfb_text;
 		this.panel_bfb_text_colour = R.color.theme_cinnamon_panel_bfb_text_colour;
 		this.panel_close_location = R.integer.theme_cinnamon_panel_close_location;
