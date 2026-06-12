@@ -11,6 +11,8 @@
 /captures
 .externalNativeBuild
 secret.properties
+key.properties
+*.jks
 app-release.apk
 /app/release/
 /app/build/
