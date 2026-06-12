@@ -2,7 +2,10 @@ package be.robinj.distrohopper.home
 
 import android.app.Activity
 import android.content.Context
+import android.animation.ValueAnimator
+import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.drawable.LayerDrawable
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -38,6 +41,49 @@ class DashController(
 
 	private val animator = DashAnimator(this.activity, this.viewFinder, this.theme, this.prefs)
 
+	/*
+	 * Fading the panel and status bar between their resting and dash-opened
+	 * backgrounds keeps them in step with the dash overlay's fade, instead of
+	 * flashing the bare wallpaper through. The dash-opened background sits at
+	 * full alpha underneath and only the resting one fades on top, so a pair
+	 * of identical backgrounds stays rock solid (a crossfade would dip towards
+	 * translucency halfway). Reused across open/close so a mid-flight reversal
+	 * resumes from the current fade position.
+	 */
+	private val panelFade by lazy {
+		BackgroundFade(this.activity.resources, this.theme.panel_background,
+			this.theme.panel_background_when_dash_opened)
+	}
+	private val statusBarFade by lazy {
+		BackgroundFade(this.activity.resources, android.R.color.black,
+			this.theme.statusbar_background_when_dash_opened)
+	}
+
+	private class BackgroundFade(res: Resources, restingRes: Int, dashOpenedRes: Int) {
+		/*
+		 * mutate(): drawables from the same resource share their constant
+		 * state, so without it the alpha fade would also affect the
+		 * dash-opened layer below whenever both resolve to the same colour.
+		 */
+		private val resting = res.getDrawable(restingRes).mutate()
+		val drawable = LayerDrawable(arrayOf(res.getDrawable(dashOpenedRes), this.resting))
+		private var fraction = 0F // 0 = resting, 1 = dash opened
+		private var animator: ValueAnimator? = null
+
+		fun animateTo(dashOpened: Boolean, durationMs: Long) {
+			this.animator?.cancel()
+			this.animator = ValueAnimator.ofFloat(this.fraction, if (dashOpened) 1F else 0F)
+				.also { animator ->
+					animator.duration = durationMs
+					animator.addUpdateListener {
+						this.fraction = it.animatedValue as Float
+						this.resting.alpha = ((1F - this.fraction) * 255F).toInt()
+					}
+					animator.start()
+				}
+		}
+	}
+
 	/** Cross-window blur can be toggled at runtime (e.g. battery saver). */
 	val crossWindowBlurListener: Consumer<Boolean> = Consumer {
 		if (this.isOpen) {
@@ -63,6 +109,12 @@ class DashController(
 			llPanel.setBackgroundColor(this.chameleonicBgColour)
 			this.viewFinder.get<LinearLayout>(R.id.llStatusBar)
 				.setBackgroundColor(this.chameleonicBgColour)
+		} else {
+			llPanel.background = this.panelFade.drawable
+			this.viewFinder.get<LinearLayout>(R.id.llStatusBar).background =
+				this.statusBarFade.drawable
+			this.panelFade.animateTo(dashOpened = true, DashAnimator.OPEN_DURATION_MS)
+			this.statusBarFade.animateTo(dashOpened = true, DashAnimator.OPEN_DURATION_MS)
 		}
 
 		this.isOpen = true
@@ -94,6 +146,9 @@ class DashController(
 			llPanel.setBackgroundResource(this.theme.panel_background)
 			this.viewFinder.get<LinearLayout>(R.id.llStatusBar).setBackgroundColor(
 				this.activity.resources.getColor(android.R.color.black))
+		} else {
+			this.panelFade.animateTo(dashOpened = false, DashAnimator.CLOSE_DURATION_MS)
+			this.statusBarFade.animateTo(dashOpened = false, DashAnimator.CLOSE_DURATION_MS)
 		}
 
 		val imm = this.activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?

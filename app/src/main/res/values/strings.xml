@@ -83,7 +83,7 @@
     <string name="contribute_bugs_go">Go to GitHub</string>
 
     <string name="theme_elementary_res_panel_bfb_text">Applications</string>
-    <string name="theme_gnome_res_panel_bfb_text" translatable="false">●</string>
+    <string name="theme_gnome_res_panel_bfb_text">Activities</string>
 
     <string name="toast_sending_crash_report">Sending crash report...</string>
 

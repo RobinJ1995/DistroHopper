@@ -428,8 +428,8 @@ class DashAnimator(
 		val scale: Float, val distance: Float)
 
 	companion object {
-		private const val OPEN_DURATION_MS = 280L
-		private const val CLOSE_DURATION_MS = 240L
+		internal const val OPEN_DURATION_MS = 280L
+		internal const val CLOSE_DURATION_MS = 240L
 		private const val OPEN_ICON_DURATION_MS = 240L
 		private const val CLOSE_ICON_DURATION_MS = 200L
 		private const val ICON_STAGGER_STEP_MS = 12L

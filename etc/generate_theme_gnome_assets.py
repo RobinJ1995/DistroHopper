@@ -26,9 +26,14 @@ ETC = "etc"
 DENSITIES = {"mdpi": 1.0, "hdpi": 1.5, "xhdpi": 2.0, "xxhdpi": 3.0, "xxxhdpi": 4.0}
 SS = 8  # supersampling factor for crisp antialiased shapes
 
-DOCK = (0x38, 0x38, 0x3B, 255)
+# The dock and pill are slightly translucent. True backdrop blur behind a
+# single view is not possible: the system wallpaper is a separate window whose
+# bitmap cannot be read (Android 13+), and Android only offers whole-window
+# background blur. The dash already applies that whole-window blur when open,
+# so the translucent pill does sit over a blurred backdrop.
+DOCK = (0x38, 0x38, 0x3B, 245)
 BACKDROP = (0x22, 0x22, 0x26, 255)
-PILL = (0x40, 0x40, 0x45, 255)
+PILL = (0x40, 0x40, 0x45, 217)
 HINT = (0xC0, 0xC0, 0xC2, 255)
 DOT = (0xFA, 0xFA, 0xFB, 255)
 BLACK = (0, 0, 0, 255)
@@ -92,12 +97,9 @@ def launcher_background(density, scale):
 		save(patch, dpi_path(f"theme_gnome_res_launcher_background_{edge}.9.png", density))
 
 
-def panel_background(density, scale):
-	size = max(int(round(8 * scale)), 4)
-	content = Image.new("RGBA", (size, size), BLACK)
-	mid = (size // 2 - 1, size // 2 + 1)
-	patch = nine_patch(content, mid, mid)
-	save(patch, dpi_path("theme_gnome_res_panel_background.9.png", density))
+# The panel background (black bar with corner "ears" below it) is NOT
+# generated: drawable/theme_gnome_res_panel_background.9.png is the original
+# hand-made asset, kept verbatim, as is its source etc/theme_gnome_panel_background.png.
 
 
 def magnifier(draw, cx, cy, size, colour):
@@ -113,20 +115,31 @@ def magnifier(draw, cx, cy, size, colour):
 
 def dash_search_background(density, scale):
 	# Fully rounded pill with the magnifier baked into the fixed left cap,
-	# mirroring the overview search entry.
-	w_dp, h_dp, r_dp = 72, 36, 18
+	# mirroring the overview search entry. The pill is inset by a transparent
+	# margin that provides spacing around the box, and the vertical stretch
+	# zones live in that transparent margin so neither the rounded caps nor
+	# the magnifier distort when the view is taller than the pill.
+	inset_dp, pill_h_dp, r_dp = 4, 40, 20
+	w_dp = 88
+	h_dp = pill_h_dp + 2 * inset_dp
 	w, h = int(round(w_dp * scale)), int(round(h_dp * scale))
 	img = Image.new("RGBA", (w * SS, h * SS), CLEAR)
 	draw = ImageDraw.Draw(img)
-	draw.rounded_rectangle((0, 0, w * SS - 1, h * SS - 1), radius=r_dp * scale * SS, fill=PILL)
-	magnifier(draw, 24 * scale * SS, (h_dp / 2) * scale * SS, 17 * scale * SS, HINT)
+	i = inset_dp * scale * SS
+	draw.rounded_rectangle((i, i, w * SS - 1 - i, h * SS - 1 - i),
+		radius=r_dp * scale * SS, fill=PILL)
+	magnifier(draw, (inset_dp + 20) * scale * SS, (h_dp / 2) * scale * SS,
+		16 * scale * SS, HINT)
 	content = img.resize((w, h), Image.LANCZOS)
-	sx = (int(round(44 * scale)), int(round(50 * scale)))  # between icon and right cap
-	sy = (int(round((h_dp / 2 - 1) * scale)), int(round((h_dp / 2 + 1) * scale)))
-	pad_x = (int(round(38 * scale)), w - int(round(14 * scale)))  # text right of icon
-	pad_y = (int(round(8 * scale)), h - int(round(8 * scale)))
-	save(nine_patch(content, sx, sy, pad_x, pad_y),
-		dpi_path("theme_gnome_res_dash_search_background.9.png", density))
+	sx = (int(round(48 * scale)), int(round(56 * scale)))  # between icon and right cap
+	sy = (0, int(round(3 * scale)))  # top transparent margin rows
+	pad_x = (int(round(42 * scale)), w - int(round(20 * scale)))  # text right of icon
+	pad_y = (int(round(14 * scale)), h - int(round(14 * scale)))
+	patch = nine_patch(content, sx, sy, pad_x, pad_y)
+	px = patch.load()
+	for y in range(h - int(round(3 * scale)), h):  # bottom transparent margin rows
+		px[0, y + 1] = BLACK
+	save(patch, dpi_path("theme_gnome_res_dash_search_background.9.png", density))
 
 
 def dot(size_dp, diameter_dp, scale):
@@ -144,8 +157,9 @@ def app_running(density, scale):
 
 
 def bfb(density, scale):
-	# "Show apps" button: 3x3 grid of round dots.
-	size_dp, pitch_dp, d_dp = 48, 15.5, 7.7
+	# "Show apps" button: 3x3 grid of round dots. The grid spans ~30dp of the
+	# 48dp canvas, matching the footprint of the previous hand-made asset.
+	size_dp, pitch_dp, d_dp = 48, 12, 6
 	s = int(round(size_dp * scale))
 	img = Image.new("RGBA", (s * SS, s * SS), CLEAR)
 	draw = ImageDraw.Draw(img)
@@ -161,7 +175,6 @@ def bfb(density, scale):
 def etc_sources():
 	"""Flat (non-9-patch) renders kept in etc/ alongside the other theme sources."""
 	save(rounded_rect((160, 160), 18, DOCK, 1.0), f"{ETC}/theme_gnome_launcher_background.png")
-	save(Image.new("RGBA", (160, 28), BLACK), f"{ETC}/theme_gnome_panel_background.png")
 	w, h = 320, 36
 	img = Image.new("RGBA", (w * SS, h * SS), CLEAR)
 	draw = ImageDraw.Draw(img)
@@ -174,7 +187,6 @@ def etc_sources():
 def main():
 	for density, scale in DENSITIES.items():
 		launcher_background(density, scale)
-		panel_background(density, scale)
 		dash_search_background(density, scale)
 		app_running(density, scale)
 		bfb(density, scale)

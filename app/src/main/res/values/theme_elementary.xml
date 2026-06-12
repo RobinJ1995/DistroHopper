@@ -52,6 +52,8 @@
     </array>
     <dimen name="theme_elementary_panel_height">32dp</dimen>
     <drawable name="theme_elementary_panel_background">@android:color/transparent</drawable>
+    <drawable name="theme_elementary_panel_background_when_dash_opened">@android:color/transparent</drawable>
+    <drawable name="theme_elementary_statusbar_background_when_dash_opened">@android:color/black</drawable>
     <bool name="theme_elementary_panel_background_dynamic_when_dash_opened">false</bool>
     <integer name="theme_elementary_panel_bfb_location">@integer/position_left</integer>
     <string name="theme_elementary_panel_bfb_text">@string/theme_elementary_res_panel_bfb_text</string>

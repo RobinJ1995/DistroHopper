@@ -52,6 +52,8 @@
     </array>
     <dimen name="theme_cinnamon_panel_height">0dp</dimen>
     <drawable name="theme_cinnamon_panel_background">@android:color/transparent</drawable>
+    <drawable name="theme_cinnamon_panel_background_when_dash_opened">@android:color/transparent</drawable>
+    <drawable name="theme_cinnamon_statusbar_background_when_dash_opened">@android:color/black</drawable>
     <bool name="theme_cinnamon_panel_background_dynamic_when_dash_opened">false</bool>
     <integer name="theme_cinnamon_panel_bfb_location">@integer/position_none</integer>
     <string name="theme_cinnamon_panel_bfb_text">@android:string/no</string>
