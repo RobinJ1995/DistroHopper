@@ -38,4 +38,14 @@ object OnboardingGate {
 	fun markCompleted(prefs: PreferencesRepository) {
 		prefs.edit { putBoolean(Preference.SETUP_COMPLETED.getName(), true) }
 	}
+
+	/** Dev tool: make the wizard show again on the next launch. */
+	@JvmStatic
+	fun reset(prefs: PreferencesRepository) {
+		prefs.edit {
+			remove(Preference.SETUP_COMPLETED.getName())
+			// Keeps the existing theme preference from re-grandfathering //
+			putBoolean(Preference.SETUP_STARTED.getName(), true)
+		}
+	}
 }

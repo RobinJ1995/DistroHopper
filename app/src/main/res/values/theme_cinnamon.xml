@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="theme_cinnamon_card_colour">#87CF3E</color>
+    <drawable name="theme_cinnamon_card_logo">@drawable/theme_cinnamon_res_launcher_bfb</drawable>
     <drawable name="theme_cinnamon_wallpaper_overlay">@android:color/transparent</drawable>
     <drawable name="theme_cinnamon_wallpaper_overlay_when_dash_opened">@android:color/transparent</drawable>
     <integer name="theme_cinnamon_dynamic_background_opacity">50</integer>

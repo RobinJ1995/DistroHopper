@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import be.robinj.distrohopper.AppManager;
+import be.robinj.distrohopper.Permission;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.preferences.Preference;
 import be.robinj.distrohopper.preferences.Preferences;
@@ -83,7 +84,15 @@ public class LensManager
 		}
 		else
 		{
-			enabledLenses.addAll (defaultLenses);
+			// Default lenses whose permissions haven't been granted (e.g. the
+			// wizard's storage prompt was declined) start out disabled; enabling
+			// them in the preferences re-requests the permissions //
+			for (String lensName : defaultLenses)
+			{
+				final Lens lens = this.lenses.get (lensName);
+				if (lens != null && Permission.missingPermissions (this.context, lens.requiredPermissions ()).length == 0)
+					enabledLenses.add (lensName);
+			}
 		}
 
 		for (String lensName : enabledLenses)

@@ -126,8 +126,6 @@ public class HomeActivity extends AppCompatActivity
 
 			final SharedPreferences prefs = this.getSharedPreferences ();
 
-			Permission.requestBasicPermissions(this);
-
 			// Only enable logging if dev mode is enabled // When not enabled nothing will be appended to the internal log variable //
 			if (prefs.getBoolean (Preference.DEV.getName(), false)) {
 				final Log log = Log.getInstance();
@@ -217,9 +215,6 @@ public class HomeActivity extends AppCompatActivity
 			// Setup layout transitions //
 			LayoutTransitionConfigurer.apply (this.viewFinder, res);
 
-			// Check if the dash should open immediately once apps have been loaded //
-			this.openDashWhenReady = prefs.getBoolean (Preference.DASH_OPEN_ON_READY.getName(), this.openDashWhenReady);
-
 			Intent intent = this.getIntent ();
 			if (intent != null)
 			{
@@ -253,37 +248,30 @@ public class HomeActivity extends AppCompatActivity
 			// (and droppable on the trash) as soon as they are restored below //
 			lalTrash.setOnDragListener (new TrashDragListener (this));
 
-			if (prefs.getBoolean (Preference.WIDGETS_ENABLED.getName(), true))
+			vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this.widgetHost));
+			llLauncherAndDashContainer.setOnDragListener (
+					new WidgetsContainer_DragListener (this, vgWidgets));
+			vgWidgets.setOnClickListener (new View.OnClickListener ()
 			{
-				vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this.widgetHost));
-				llLauncherAndDashContainer.setOnDragListener (
-						new WidgetsContainer_DragListener (this, vgWidgets));
-				vgWidgets.setOnClickListener (new View.OnClickListener ()
+				@Override
+				public void onClick (final View view)
 				{
-					@Override
-					public void onClick (final View view)
-					{
-						vgWidgets.exitEditMode ();
-					}
-				});
+					vgWidgets.exitEditMode ();
+				}
+			});
 
-				// Keep the widget area clear of the launcher, even when the launcher resizes //
-				llLauncher.addOnLayoutChangeListener (new View.OnLayoutChangeListener ()
-				{
-					@Override
-					public void onLayoutChange (final View view, final int left, final int top, final int right, final int bottom,
-							final int oldLeft, final int oldTop, final int oldRight, final int oldBottom)
-					{
-						HomeActivity.this.edgeController.updateWidgetAreaInsets (vgWidgets, view);
-					}
-				});
-
-				this.widgetHost.restoreWidgets ();
-			}
-			else
+			// Keep the widget area clear of the launcher, even when the launcher resizes //
+			llLauncher.addOnLayoutChangeListener (new View.OnLayoutChangeListener ()
 			{
-				vgWidgets.setVisibility (View.GONE);
-			}
+				@Override
+				public void onLayoutChange (final View view, final int left, final int top, final int right, final int bottom,
+						final int oldLeft, final int oldTop, final int oldRight, final int oldBottom)
+				{
+					HomeActivity.this.edgeController.updateWidgetAreaInsets (vgWidgets, view);
+				}
+			});
+
+			this.widgetHost.restoreWidgets ();
 
 			if (container.getCustomiseMode ().getValue ())
 			{

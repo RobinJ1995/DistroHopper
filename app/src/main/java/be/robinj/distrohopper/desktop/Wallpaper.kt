@@ -1,17 +1,13 @@
 package be.robinj.distrohopper.desktop
 
-import android.Manifest
 import android.app.WallpaperManager
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.Window
 import android.widget.ImageView
 import androidx.core.graphics.ColorUtils
 import be.robinj.distrohopper.ExceptionHandler
-import be.robinj.distrohopper.Image
-import be.robinj.distrohopper.Permission
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.dev.Log
 
@@ -20,7 +16,6 @@ import be.robinj.distrohopper.dev.Log
  */
 class Wallpaper : ImageView {
     private val context: Context
-    private var img: Drawable? = null
 
     var isLiveWallpaper: Boolean = false
         internal set
@@ -43,35 +38,6 @@ class Wallpaper : ImageView {
 
     fun init() {
         val wpman = WallpaperManager.getInstance(this.context)
-        val permissionExternalStorage =
-            Permission(this.context, Manifest.permission.READ_EXTERNAL_STORAGE)
-
-        if (permissionExternalStorage.check()) {
-            LOG.i(
-                "Wallpaper",
-                "READ_EXTERNAL_STORAGE permission granted. Trying to obtain wallpaper..."
-            )
-            try {
-                /*
-				 * This will never succeed on Android 13, as Google in their wisdom deprecated the
-				 * READ_EXTERNAL_STORAGE permission, but still requires it to get obtain the user
-				 * wallpaper.
-				 * Very useful for home screen replacements like these.
-				 */
-                this.img = wpman.getDrawable()
-            } catch (ex: Exception) // Only needed for the average colour; not worth crashing over //
-            {
-                this.img = null
-
-                ExceptionHandler(ex).logAndTrack()
-            }
-        } else {
-            LOG.i(
-                "Wallpaper",
-                "READ_EXTERNAL_STORAGE permission not granted or Android version >= 13."
-            )
-            this.img = null
-        }
 
         val info = wpman.wallpaperInfo
         this.isLiveWallpaper = (info != null
@@ -121,19 +87,16 @@ class Wallpaper : ImageView {
         }
     }
 
+    /*
+     * WallpaperColors needs no permission, unlike reading the wallpaper bitmap (which stopped
+     * being possible on Android 13 altogether). It can still be null, e.g. right after boot.
+     */
     fun getAverageColour(alpha: Int): Int {
         try {
-            if (this.img != null) {
-                LOG.v("Wallpaper", "Calculating dominant colour of wallpaper...")
-                val image = Image(this.img)
+            val primaryColour = WallpaperManager.getInstance(this.context)
+                .getWallpaperColors(WallpaperManager.FLAG_SYSTEM)?.primaryColor
 
-                return image.getAverageColour(alpha)
-            } else {
-                LOG.v("Wallpaper", "Trying to obtain primary wallpaper colour from Android...")
-                val wpman = WallpaperManager.getInstance(this.context)
-                val primaryColour =
-                    wpman.getWallpaperColors(WallpaperManager.FLAG_SYSTEM)!!.primaryColor
-
+            if (primaryColour != null) {
                 return Color.argb(
                     alpha.toFloat(),
                     primaryColour.red(),
@@ -145,10 +108,6 @@ class Wallpaper : ImageView {
             ExceptionHandler(ex).logAndTrack()
         }
 
-        /*
-		 * What with Google crippling the APIs faster than they can invent new methods of achieving
-		 * similar results, this will have to do.
-		 */
         LOG.v("Wallpaper", "Falling back to \"Ubuntu orange\" as dominant colour.")
         return COLOUR_UBUNTU_ORANGE
     }

@@ -1,8 +1,6 @@
 package be.robinj.distrohopper.onboarding
 
-import android.Manifest
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -11,6 +9,7 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.viewpager2.widget.ViewPager2
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
@@ -20,34 +19,26 @@ import be.robinj.distrohopper.Permission
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.theme.Theme
+import be.robinj.distrohopper.theme.ThemeCards
 import be.robinj.distrohopper.theme.ThemeRegistry
 import java.util.function.Consumer
 
 /**
  * First-run wizard: theme choice, permission prompts, and the option to set
  * DistroHopper as the default home screen. Shown by HomeActivity (gated by
- * [OnboardingGate]) before anything else is initialised; Done/Skip mark setup
- * complete and relaunch HomeActivity so it comes up in the chosen theme.
+ * [OnboardingGate]) before anything else is initialised; Finish marks setup
+ * complete and relaunches HomeActivity so it comes up in the chosen theme.
  */
 class OnboardingActivity : AppCompatActivity() {
 	private lateinit var container: DependencyContainer
 	private lateinit var pager: ViewPager2
 	private lateinit var indicator: OnboardingPageIndicator
-	private lateinit var btnSkip: Button
 	private lateinit var btnNext: Button
 	private lateinit var adapter: OnboardingPagerAdapter
-	private lateinit var themeCards: OnboardingThemeCards
+	private lateinit var themeCards: ThemeCards
 
-	/**
-	 * The runtime permissions the wizard asks for; extend as the app gains new
-	 * ones. READ_EXTERNAL_STORAGE (used by the wallpaper-colour code) stopped
-	 * being grantable on Android 13+, so it is omitted there.
-	 */
-	private val wizardPermissions =
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
-			arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-		else
-			emptyArray()
+	/** The runtime permissions the wizard asks for; extend as the app gains new ones. */
+	private val wizardPermissions = Permission.storagePermissions()
 
 	/** The permission page is dropped when there is nothing grantable to ask for. */
 	private val pages = OnboardingPage.entries.filter {
@@ -79,7 +70,10 @@ class OnboardingActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		this.setContentView(R.layout.activity_onboarding)
-		InsetsHelper.applySystemBarsPadding(this)
+		// The scrim (on the layout root) must extend behind the system bars, so
+		// only the content within it is padded clear of them //
+		WindowCompat.setDecorFitsSystemWindows(this.window, false)
+		InsetsHelper.applySystemBarsPadding(this.findViewById<View>(R.id.llOnboardingRoot))
 		this.windowManager.addCrossWindowBlurEnabledListener(this.crossWindowBlurListener)
 
 		this.container = DependencyContainer.of(this)
@@ -90,13 +84,12 @@ class OnboardingActivity : AppCompatActivity() {
 
 		this.pager = this.findViewById(R.id.vpOnboarding)
 		this.indicator = this.findViewById(R.id.opiOnboardingDots)
-		this.btnSkip = this.findViewById(R.id.btnOnboardingSkip)
 		this.btnNext = this.findViewById(R.id.btnOnboardingNext)
 
-		this.themeCards = OnboardingThemeCards(
+		this.themeCards = ThemeCards(
 			this.themes(),
 			{ this.container.themeManager.current.getName() },
-			this::applyTheme,
+			{ theme -> ThemeCards.applyTheme(this, theme) },
 		)
 
 		this.adapter = OnboardingPagerAdapter(this.pages, this::bindPage)
@@ -114,7 +107,6 @@ class OnboardingActivity : AppCompatActivity() {
 			}
 		})
 
-		this.btnSkip.setOnClickListener { this.finishSetup() }
 		this.btnNext.setOnClickListener {
 			if (this.pager.currentItem == this.pages.size - 1) {
 				this.finishSetup()
@@ -124,7 +116,7 @@ class OnboardingActivity : AppCompatActivity() {
 		}
 
 		// Back steps through the pages; on the first page it does nothing (the
-		// wizard is the task's only activity, and Skip is the explicit way out).
+		// wizard is the task's only activity, and Finish is the way out).
 		this.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
 			override fun handleOnBackPressed() {
 				if (this@OnboardingActivity.pager.currentItem > 0) {
@@ -188,9 +180,7 @@ class OnboardingActivity : AppCompatActivity() {
 	}
 
 	private fun missingPermissions(): Array<String> =
-		this.wizardPermissions
-			.filterNot { Permission(this, it).check() }
-			.toTypedArray()
+		Permission.missingPermissions(this, this.wizardPermissions)
 
 	private fun themes(): List<Theme> {
 		val dev = this.container.prefs.getBoolean(Preference.DEV, false)
@@ -198,17 +188,6 @@ class OnboardingActivity : AppCompatActivity() {
 		return ThemeRegistry.themes.values
 			.map { it() }
 			.filter { dev || !it.dev_only }
-	}
-
-	/** Same three preferences ThemePreferencesButtonClickListener writes. */
-	private fun applyTheme(theme: Theme) {
-		val res = this.resources
-
-		this.container.prefs.edit {
-			this.putString(Preference.THEME.getName(), theme.getName())
-			this.putInt(Preference.LAUNCHER_EDGE.getName(), res.getInteger(theme.launcher_location))
-			this.putInt(Preference.PANEL_EDGE.getName(), res.getInteger(theme.panel_location))
-		}
 	}
 
 	private fun finishSetup() {
@@ -221,6 +200,5 @@ class OnboardingActivity : AppCompatActivity() {
 		val last = position == this.pages.size - 1
 
 		this.btnNext.setText(if (last) R.string.onboarding_button_done else R.string.onboarding_button_next)
-		this.btnSkip.visibility = if (last) View.INVISIBLE else View.VISIBLE
 	}
 }

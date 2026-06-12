@@ -42,6 +42,17 @@ class OnboardingGateTest {
         assertTrue(prefs.getBoolean(Preference.SETUP_COMPLETED, false))
     }
 
+    @Test fun resetShowsTheWizardAgainDespiteAnExistingTheme() {
+        OnboardingGate.markStarted(prefs)
+        OnboardingGate.markCompleted(prefs)
+        application.getSharedPreferences(Preferences.PREFERENCES, 0).edit()
+            .putString(Preference.THEME.getName(), "gnome").commit()
+
+        OnboardingGate.reset(prefs)
+
+        assertTrue(OnboardingGate.shouldShow(prefs))
+    }
+
     @Test fun aThemeChosenInAnInterruptedWizardRunIsNotGrandfathered() {
         // As when the app is killed after the wizard's theme page but before Done/Skip //
         OnboardingGate.markStarted(prefs)

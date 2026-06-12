@@ -14,8 +14,15 @@ public abstract class Theme
 	public String description;
 	public boolean dev_only = false;
 
-	/** The distro's brand/accent colour (used by the first-run wizard's theme cards). */
+	/** The distro's brand/accent colour (used by the theme picker cards). */
 	public int card_colour;
+
+	/**
+	 * The distro's logo as shown on the theme picker cards; usually the BFB
+	 * image, but themes whose BFB is dark provide a light variant so it stays
+	 * visible on the cards' dark background.
+	 */
+	public int card_logo;
 
 	public int wallpaper_overlay;
 	public int wallpaper_overlay_when_dash_opened;

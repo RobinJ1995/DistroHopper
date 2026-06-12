@@ -1,9 +1,11 @@
 package be.robinj.distrohopper.desktop.dash.lens
 
+import android.app.Application
 import android.content.Context
 import android.widget.LinearLayout
 import android.widget.ListView
 import androidx.test.core.app.ApplicationProvider
+import be.robinj.distrohopper.Permission
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
@@ -12,6 +14,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows
 
 @RunWith(RobolectricTestRunner::class)
 class LensManagerTest {
@@ -21,6 +24,9 @@ class LensManagerTest {
         context = ApplicationProvider.getApplicationContext()
         Preferences.getSharedPreferences(context, Preferences.PREFERENCES).edit().clear().commit()
         Preferences.getSharedPreferences(context, Preferences.LENSES).edit().clear().commit()
+        // The historical defaults assume storage access; the permissionless
+        // default behaviour is covered by LensManagerDefaultsTest //
+        Shadows.shadowOf(context as Application).grantPermissions(*Permission.storagePermissions())
     }
 
     private fun manager() = LensManager(context, null, null, null, null)

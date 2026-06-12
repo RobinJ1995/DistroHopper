@@ -9,14 +9,14 @@
                 tools:context="be.robinj.distrohopper.preferences.LensPreferencesActivity">
 
     <com.mobeta.android.dslv.DragSortListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/lvList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:choiceMode="multipleChoice"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:scrollbars="none" />
+    <!-- The drag controller is configured in code: this DSLV build was
+         compiled with styleable indices that no longer match the R class a
+         modern build generates, so its dslv:* XML attributes are misread. -->
 </RelativeLayout>

@@ -58,6 +58,15 @@ public abstract class Lens
 		return -1;
 	}
 
+	/**
+	 * Runtime permissions this lens needs to deliver results. Lenses missing
+	 * any of these are disabled by default; enabling one re-requests them.
+	 */
+	public String[] requiredPermissions ()
+	{
+		return new String[0];
+	}
+
 	public void onClick (String url)
 	{
 		if (url.startsWith ("http://") || url.startsWith ("https://"))

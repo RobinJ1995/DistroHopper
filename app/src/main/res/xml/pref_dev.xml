@@ -8,12 +8,18 @@
 			android:targetPackage="be.robinj.distrohopper" />
 	</Preference>
 
-	<CheckBoxPreference
+	<SwitchPreferenceCompat
 		android:key="dev_log_toaster"
 		android:dependency="dev"
 		android:title="@string/option_dev_log_toaster"
 		android:summary="@string/hint_dev_log_toaster"
 		android:defaultValue="false" />
+
+	<Preference
+		android:key="dummy_rerun_onboarding"
+		android:dependency="dev"
+		android:title="@string/option_rerun_onboarding"
+		android:summary="@string/hint_rerun_onboarding" />
 
 	<!--<CheckBoxPreference
 		android:key="launcher_running_show"

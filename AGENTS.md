@@ -82,9 +82,10 @@ etc/                                        — design assets (SVG/XCF sources, 
     it with only a Context. The ViewModel also exposes preference flows
     that apply live without recreating the activity (panel opacity,
     launcher/dash icon widths, show-running-apps) — the customise-mode
-    seekbars only write the preference and the binder applies it. Theme,
-    launcher/panel edge, and widgets-enabled changes still recreate the
-    activity (wholesale view-tree surgery).
+    seekbars only write the preference and the binder applies it. Theme and
+    launcher/panel edge changes still recreate the
+    activity (wholesale view-tree surgery). Widgets are always enabled (the
+    old opt-out preference is gone).
   - `ThemeApplier` — applies the active theme's resources to the views.
   - `LauncherEdgeController` — repositions/reorients the launcher bar per
     edge, panel edge handling, and widget-area insets; owns the current
@@ -98,8 +99,10 @@ etc/                                        — design assets (SVG/XCF sources, 
     itself animates per the theme's `dash_animation` preset (the
     `DashAnimation` enum: genie-from-BFB for gnome, slide-from-launcher for
     cinnamon, zoom-from-label for elementary, fade for unity/default).
-  - `WallpaperColourApplier` — applies the wallpaper's average colour to
-    launcher/dash for chameleonic themes.
+  - `WallpaperColourApplier` — applies the wallpaper's primary colour to
+    launcher/dash for chameleonic themes (via the permissionless
+    `WallpaperManager.getWallpaperColors` API; the storage permission only
+    matters for the local-files lens).
   - `CustomiseModeUi` — the customise-mode seekbars/spinners inside the dash.
   - `LauncherBarBinder` — keeps the launcher bar's pinned/running icons and
     the dash grid in sync with `AppRepository` (via the `AppManager` facade).
@@ -122,27 +125,32 @@ etc/                                        — design assets (SVG/XCF sources, 
   - **`desktop/dash/lens/`** — search "lenses": pluggable search providers
     (`InstalledApps`, `LocalFiles`, `DuckDuckGo`, `GitHub`, Stack Exchange
     sites, `Reddit`, …) coordinated by `LensManager` with `AsyncSearch` and
-    result/collection adapters.
+    result/collection adapters. A lens can declare `requiredPermissions()`;
+    lenses missing any of them are left out of the default-enabled set, and
+    enabling one in the preferences re-requests them.
 - **`onboarding/`** — the first-run wizard. `OnboardingActivity` is a
   full-screen ViewPager2 pager (theme choice, runtime permission prompts,
-  set-as-default-home via `RoleManager.ROLE_HOME`) shown over the wallpaper.
-  `HomeActivity.onCreate` checks `OnboardingGate.shouldShow` before any
-  initialisation and redirects (finishing itself) on first run; Done/Skip
-  set the `SETUP_COMPLETED` preference and relaunch `HomeActivity` so the
-  chosen theme applies via the usual recreate path. Users with a `theme`
-  preference from before the wizard existed are marked completed silently —
-  the wizard writes `SETUP_STARTED` on launch so its own theme write (made
-  as soon as a card is tapped) doesn't trip that grandfathering when a run
-  is interrupted. The permission page is dropped on devices where the
-  wallpaper permission isn't grantable (Android 13+), so the page list is
-  per-device.
+  set-as-default-home via `RoleManager.ROLE_HOME`) shown over the wallpaper
+  (cross-window-blurred, like the dash). `HomeActivity.onCreate` checks
+  `OnboardingGate.shouldShow` before any initialisation and redirects
+  (finishing itself) on first run; Finish sets the `SETUP_COMPLETED`
+  preference and relaunches `HomeActivity` so the chosen theme applies via
+  the usual recreate path. Users with a `theme` preference from before the
+  wizard existed are marked completed silently — the wizard writes
+  `SETUP_STARTED` on launch so its own theme write (made as soon as a card
+  is tapped) doesn't trip that grandfathering when a run is interrupted.
+  The wizard's permission page is the app's only storage permission prompt
+  (`Permission.storagePermissions()` — READ_EXTERNAL_STORAGE up to Android
+  12, the READ_MEDIA_* set from 13); HomeActivity no longer requests
+  permissions at startup.
   Tests that launch `HomeActivity` with fresh prefs must seed
   `SETUP_COMPLETED` (done by `ActivityTestSupport.launchHome()`) or they
   will be redirected to the wizard.
 - **`preferences/`** — `PreferencesActivity` (settings UI built
   programmatically with `PreferenceScreen`/categories), plus dedicated
   activities for lens ordering (`LensPreferencesActivity`) and theme
-  selection (`ThemePreferencesActivity`). `PreferencesRepository` provides
+  selection (`ThemePreferencesActivity`, card UI shared with the wizard via
+  `theme/ThemeCards`). `PreferencesRepository` provides
   typed and observable (`valueFlow`, a Kotlin `Flow`) access to the main
   "prefs" file keyed by the `Preference` enum — prefer it over raw
   `SharedPreferences` in new code.

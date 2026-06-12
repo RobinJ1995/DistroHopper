@@ -5,14 +5,16 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import be.robinj.distrohopper.DependencyContainer;
 import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.theme.Theme;
+import be.robinj.distrohopper.theme.ThemeCards;
 import be.robinj.distrohopper.theme.ThemeRegistry;
 
 public class ThemePreferencesActivity extends AppCompatActivity
@@ -40,8 +42,19 @@ public class ThemePreferencesActivity extends AppCompatActivity
 			}
 		}
 
-		ListView lvThemeList = this.findViewById (R.id.lvThemeList);
-		lvThemeList.setAdapter (new ThemePreferencesListViewAdapter (this, themes));
+		final LinearLayout llThemeCards = this.findViewById (R.id.llThemeCards);
+		new ThemeCards (
+			themes,
+			() -> DependencyContainer.of (this).getThemeManager ().getCurrent ().getName (),
+			theme ->
+			{
+				// Stay on this screen: the card highlight is the feedback, and
+				// the home screen recreates itself in the new theme underneath //
+				ThemeCards.applyTheme (this, theme);
+
+				return kotlin.Unit.INSTANCE;
+			}
+		).bind (llThemeCards);
 	}
 
 	@Override

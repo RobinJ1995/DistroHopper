@@ -1,12 +1,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference
+    <SwitchPreferenceCompat
         android:key="crash_reporting_enabled"
         android:title="@string/option_crash_reports"
         android:summary="@string/hint_crash_reports"
         android:defaultValue="true" />
 
-    <CheckBoxPreference
+    <SwitchPreferenceCompat
         android:key="dev"
         android:title="@string/option_dev"
         android:summary="@string/hint_dev"

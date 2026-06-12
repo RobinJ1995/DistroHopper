@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- White-tinted variant of the elementary logo for the theme picker cards,
+     where the regular (dark) logo would be invisible on the dark background. -->
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+	android:src="@drawable/theme_elementary_res_launcher_bfb"
+	android:tint="@android:color/white" />

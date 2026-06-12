@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.MediaStore
+import be.robinj.distrohopper.Permission
 import be.robinj.distrohopper.R
 import org.json.JSONException
 import java.io.File
@@ -21,6 +22,8 @@ class LocalFiles(context: Context) : Lens(context) {
 	override fun getName() = "Local files"
 
 	override fun getDescription() = "Search results for files on your device"
+
+	override fun requiredPermissions(): Array<String> = Permission.storagePermissions()
 
 	@Throws(IOException::class, JSONException::class)
 	override fun search(str: String, maxResults: Int): List<LensSearchResult> {

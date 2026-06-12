@@ -9,9 +9,10 @@ public class Elementary extends Theme
 {
 	public Elementary ()
 	{
-		this.name = "elementary OS";
+		this.name = "Pantheon";
 		this.description = "elementary OS's Patheon desktop";
 		this.card_colour = R.color.theme_elementary_card_colour;
+		this.card_logo = R.drawable.theme_elementary_card_logo;
 
 		this.wallpaper_overlay = R.drawable.theme_elementary_wallpaper_overlay;
 		this.wallpaper_overlay_when_dash_opened = R.drawable.theme_elementary_wallpaper_overlay_when_dash_opened;

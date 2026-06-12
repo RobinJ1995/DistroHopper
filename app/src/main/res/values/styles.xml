@@ -22,6 +22,10 @@
         <item name="android:windowShowWallpaper">true</item>
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:backgroundDimAmount">0.8</item>
+        <!-- Blur the wallpaper showing through; the dim above doubles as the
+             fallback wherever cross-window blur is unavailable. -->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackgroundBlurRadius">@dimen/dialog_blur_radius</item>
     </style>
 
     <style name="AboutTheme" parent="DialogTheme">
@@ -38,6 +42,7 @@
     <style name="AppPreferenceThemeOverlay" parent="PreferenceThemeOverlay">
         <item name="preferenceStyle">@style/AppPreference</item>
         <item name="checkBoxPreferenceStyle">@style/AppCheckBoxPreference</item>
+        <item name="switchPreferenceCompatStyle">@style/AppSwitchPreference</item>
         <item name="dialogPreferenceStyle">@style/AppDialogPreference</item>
         <item name="preferenceCategoryStyle">@style/AppPreferenceCategory</item>
     </style>
@@ -47,6 +52,10 @@
     </style>
 
     <style name="AppCheckBoxPreference" parent="Preference.CheckBoxPreference.Material">
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="AppSwitchPreference" parent="Preference.SwitchPreferenceCompat.Material">
         <item name="iconSpaceReserved">false</item>
     </style>
 
@@ -75,9 +84,6 @@
         <item name="android:shadowRadius">5</item>
     </style>
 
-    <style name="honourable_mentions_name" parent="TextAppearance.AppCompat.Large">
-        <item name="android:textSize">18sp</item>
-    </style>
 
     <style name="developer_by" parent="TextAppearance.AppCompat.Large">
         <item name="android:textSize">17sp</item>

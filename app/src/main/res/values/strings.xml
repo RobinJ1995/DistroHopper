@@ -15,7 +15,6 @@
     <string name="notpinned">isn\'t pinned</string>
     <string name="alreadypinned">is already pinned</string>
     <string name="developed_by">Developed by Robin Jacobs</string>
-    <string name="honourable_mentions">Honourable mentions</string>
     <string name="button_back">Back</string>
     <string name="button_about">About</string>
     <string name="button_contribute">Contribute</string>
@@ -46,8 +45,6 @@
     <string name="hint_panel_edge">To which screen edge the Panel should be attached.</string>
     <string name="option_launcher_edge">Launcher location</string>
     <string name="hint_launcher_edge">To which screen edge the Launcher should be attached.</string>
-    <string name="option_widgets_enabled">Widgets</string>
-    <string name="hint_widgets_enabled">Show app widgets on the home screen.\nLong-press an empty area of the home screen to add a widget.</string>
     <string name="widget_picker_title">Add widget</string>
     <string name="widget_no_room">There is no room left on the home screen for this widget.</string>
     <string name="option_dev_log_toaster">Log toasts</string>
@@ -57,8 +54,6 @@
 
     <string name="option_wallpaper">Wallpaper</string>
     <string name="hint_wallpaper">Change wallpaper</string>
-    <string name="option_dash_ready_show">Open Dash by default</string>
-    <string name="hint_dash_ready_show">The Dash will automatically be opened.</string>
     <string name="option_lenses">Search sources</string>
     <string name="hint_lenses">Choose which source searches you want to use and in which order you want their results to appear in the Dash. When you do a search in the Dash, your query is sent to all enabled lenses and their results are shown.</string>
     <string name="option_theme">Theme</string>
@@ -71,14 +66,11 @@
     <string name="option_dev">Developer mode</string>
     <string name="hint_dev">Access debug logs and other technical information. Enabling this will negatively impact performance and stability.</string>
     <string name="option_dev_logs">Logs</string>
+    <string name="option_rerun_onboarding">Run setup wizard again</string>
+    <string name="hint_rerun_onboarding">The first-run setup wizard will be shown the next time DistroHopper starts.</string>
+    <string name="toast_rerun_onboarding">Setup wizard will run on next start</string>
     <string name="option_set_default_launcher">Set as home screen</string>
     <string name="hint_set_default_launcher">Make DistroHopper your default home screen, so that it appears whenever you press the home button.</string>
-    <string name="hm_timvdstaaij_why">* Testing (If he doesn\'t manage to wreck it then it\'s probably safe for consumption by the rest of the world.)\n
-        * Help with the dominant colour calculation function.</string>
-    <string name="hm_todddavies_why">* I used his ProgressWheel component, since the default (round) Android ProgressBar component can\'t actually indicate progress.\n
-        https://github.com/Todd-Davies/ProgressWheel/</string>
-    <string name="hm_translators_name">The Translation Team</string>
-    <string name="hm_translators_why">* A couple of people devoted time and effort to make this app available in their respective languages. I am grateful towards all of these people for their contributions to the project.</string>
     <string name="title_activity_contribute">How can I contribute?</string>
     <string name="contribute_intro">A lot of time and hard work went into the development of this application. If you\'d like to help out, there are several ways in which you can do so.</string>
     <string name="contribute_translate_title">Translate</string>
@@ -96,18 +88,17 @@
 
     <string name="title_activity_onboarding">Welcome</string>
     <string name="onboarding_welcome_title">Welcome to DistroHopper</string>
-    <string name="onboarding_welcome_body">Your Android home screen, with the look and feel of your favourite Linux desktop.\nSwipe to get set up.</string>
-    <string name="onboarding_theme_title">Pick your distro</string>
+    <string name="onboarding_welcome_body">Your Android home screen, with the look and feel of your favourite Linux desktop.</string>
+    <string name="onboarding_theme_title">Pick your desktop environment</string>
     <string name="onboarding_theme_body">Which Linux desktop do you want DistroHopper to look like? You can change this at any time in the preferences.</string>
-    <string name="onboarding_permission_title">Wallpaper access</string>
-    <string name="onboarding_permission_body">DistroHopper uses your wallpaper\'s colours to tint the launcher and dash so they blend in with your home screen. Allow storage access to enable this.</string>
-    <string name="onboarding_permission_granted">✓ Wallpaper access granted</string>
+    <string name="onboarding_permission_title">Storage access</string>
+    <string name="onboarding_permission_body">Lets DistroHopper include files on your device in search results. Optional.</string>
+    <string name="onboarding_permission_granted">✓ Storage access granted</string>
     <string name="onboarding_button_grant">Allow</string>
     <string name="onboarding_default_launcher_title">Make it home</string>
     <string name="onboarding_default_launcher_body">Set DistroHopper as your home screen, so that it appears whenever you press the home button.</string>
     <string name="onboarding_default_launcher_already">✓ DistroHopper is your home screen</string>
     <string name="onboarding_button_set_default">Set as home screen</string>
-    <string name="onboarding_button_skip">Skip</string>
     <string name="onboarding_button_next">Next</string>
-    <string name="onboarding_button_done">Get started</string>
+    <string name="onboarding_button_done">Finish</string>
 </resources>

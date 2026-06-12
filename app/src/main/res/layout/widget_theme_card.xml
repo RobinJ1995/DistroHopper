@@ -10,7 +10,7 @@
 	android:padding="16dp">
 
 	<ImageView
-		android:id="@+id/ivOnboardingThemeLogo"
+		android:id="@+id/ivThemeCardLogo"
 		android:layout_width="48dp"
 		android:layout_height="48dp"
 		android:importantForAccessibility="no" />
@@ -23,7 +23,7 @@
 		android:orientation="vertical">
 
 		<TextView
-			android:id="@+id/tvOnboardingThemeName"
+			android:id="@+id/tvThemeCardName"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textColor="@android:color/white"
@@ -31,7 +31,7 @@
 			android:textStyle="bold" />
 
 		<TextView
-			android:id="@+id/tvOnboardingThemeDescription"
+			android:id="@+id/tvThemeCardDescription"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="2dp"

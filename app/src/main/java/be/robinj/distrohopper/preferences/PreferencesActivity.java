@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.widget.Toast;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -24,12 +25,14 @@ import org.acra.ACRA;
 import be.robinj.distrohopper.AboutActivity;
 import be.robinj.distrohopper.BuildConfig;
 import be.robinj.distrohopper.ContributeActivity;
+import be.robinj.distrohopper.DependencyContainer;
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.HomeRole;
 import be.robinj.distrohopper.IconPackHelper;
 import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.cache.AppIconCache;
+import be.robinj.distrohopper.onboarding.OnboardingGate;
 
 /**
  * Presents the application settings as a single list.
@@ -144,6 +147,22 @@ public class PreferencesActivity extends AppCompatActivity
 					{
 						requireActivity ().setResult (4);
 						requireActivity ().finish ();
+
+						return true;
+					}
+				}
+			);
+
+			this.findPreference ("dummy_rerun_onboarding").setOnPreferenceClickListener (
+				new Preference.OnPreferenceClickListener ()
+				{
+					@Override
+					public boolean onPreferenceClick (Preference preference)
+					{
+						OnboardingGate.reset (
+							DependencyContainer.of (requireContext ()).getPrefs ());
+						Toast.makeText (requireContext (),
+							R.string.toast_rerun_onboarding, Toast.LENGTH_SHORT).show ();
 
 						return true;
 					}

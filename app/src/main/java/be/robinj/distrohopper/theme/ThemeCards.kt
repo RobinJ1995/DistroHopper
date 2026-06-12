@@ -1,20 +1,23 @@
-package be.robinj.distrohopper.onboarding
+package be.robinj.distrohopper.theme
 
+import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.R
-import be.robinj.distrohopper.theme.Theme
+import be.robinj.distrohopper.preferences.Preference
 
 /**
- * Populates the wizard's theme page with one selectable card per theme.
+ * Populates a container with one selectable card per theme; used by the
+ * first-run wizard's theme page and the theme preferences screen.
  * Selection is persisted immediately through [onSelected]; [selectedName]
  * supplies the persisted choice so rebinds restore the highlight.
  */
-class OnboardingThemeCards(
+class ThemeCards(
 	private val themes: List<Theme>,
 	private val selectedName: () -> String,
 	private val onSelected: (Theme) -> Unit,
@@ -24,11 +27,11 @@ class OnboardingThemeCards(
 		val inflater = LayoutInflater.from(container.context)
 
 		for (theme in this.themes) {
-			val card = inflater.inflate(R.layout.widget_onboarding_theme_card, container, false)
-			card.findViewById<ImageView>(R.id.ivOnboardingThemeLogo)
-				.setImageResource(theme.launcher_bfb_image)
-			card.findViewById<TextView>(R.id.tvOnboardingThemeName).text = theme.name
-			card.findViewById<TextView>(R.id.tvOnboardingThemeDescription).text = theme.description
+			val card = inflater.inflate(R.layout.widget_theme_card, container, false)
+			card.findViewById<ImageView>(R.id.ivThemeCardLogo)
+				.setImageResource(theme.card_logo)
+			card.findViewById<TextView>(R.id.tvThemeCardName).text = theme.name
+			card.findViewById<TextView>(R.id.tvThemeCardDescription).text = theme.description
 			card.tag = theme
 
 			this.applySelection(card, theme, theme.getName() == this.selectedName())
@@ -59,6 +62,20 @@ class OnboardingThemeCards(
 		} else {
 			background.setStroke(strokeWidth, context.getColor(R.color.transparent))
 			background.setColor(context.getColor(R.color.transparentblack60))
+		}
+	}
+
+	companion object {
+		/** Same three preferences the theme picker has always written. */
+		@JvmStatic
+		fun applyTheme(context: Context, theme: Theme) {
+			val res = context.resources
+
+			DependencyContainer.of(context).prefs.edit {
+				this.putString(Preference.THEME.getName(), theme.getName())
+				this.putInt(Preference.LAUNCHER_EDGE.getName(), res.getInteger(theme.launcher_location))
+				this.putInt(Preference.PANEL_EDGE.getName(), res.getInteger(theme.panel_location))
+			}
 		}
 	}
 }

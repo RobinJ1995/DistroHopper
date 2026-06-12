@@ -1,6 +1,5 @@
 package be.robinj.distrohopper.onboarding
 
-import android.Manifest
 import android.app.Application
 import android.widget.Button
 import android.widget.LinearLayout
@@ -8,6 +7,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.viewpager2.widget.ViewPager2
 import be.robinj.distrohopper.HomeActivity
+import be.robinj.distrohopper.Permission
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
@@ -21,7 +21,6 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows
-import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLooper
 
@@ -107,28 +106,8 @@ class OnboardingActivityTest {
         }
     }
 
-    @Test fun skipMarksSetupCompleteAndRelaunchesHome() {
-        launch().use { scenario ->
-            scenario.onActivity { activity ->
-                activity.findViewById<Button>(R.id.btnOnboardingSkip).performClick()
-
-                assertTrue(
-                    application.getSharedPreferences(Preferences.PREFERENCES, 0)
-                        .getBoolean(Preference.SETUP_COMPLETED.getName(), false)
-                )
-                assertEquals(
-                    HomeActivity::class.java.name,
-                    Shadows.shadowOf(activity).nextStartedActivity.component?.className,
-                )
-                assertTrue(activity.isFinishing)
-            }
-        }
-    }
-
-    // READ_EXTERNAL_STORAGE is only grantable below Android 13 //
-    @Config(sdk = [32])
     @Test fun permissionPageShowsGrantedStateWhenAlreadyGranted() {
-        Shadows.shadowOf(application).grantPermissions(Manifest.permission.READ_EXTERNAL_STORAGE)
+        Shadows.shadowOf(application).grantPermissions(*Permission.storagePermissions())
 
         launch().use { scenario ->
             scenario.onActivity { activity ->
@@ -145,18 +124,6 @@ class OnboardingActivityTest {
                     android.view.View.GONE,
                     activity.findViewById<android.view.View>(R.id.btnOnboardingGrantPermission).visibility,
                 )
-            }
-        }
-    }
-
-    // robolectric.properties pins tests to SDK 36, where the wallpaper
-    // permission cannot be granted: the page asking for it must not appear //
-    @Test fun permissionPageIsOmittedWhereThePermissionIsUngrantable() {
-        launch().use { scenario ->
-            scenario.onActivity { activity ->
-                val pager = activity.findViewById<ViewPager2>(R.id.vpOnboarding)
-
-                assertEquals(OnboardingPage.entries.size - 1, pager.adapter!!.itemCount)
             }
         }
     }

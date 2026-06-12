@@ -8,18 +8,6 @@
            android:targetClass="be.robinj.distrohopper.preferences.LensPreferencesActivity" />
    </Preference>
 
-    <CheckBoxPreference
-        android:key="dash_ready_show"
-        android:title="@string/option_dash_ready_show"
-        android:summary="@string/hint_dash_ready_show"
-        android:defaultValue="false" />
-
-    <CheckBoxPreference
-        android:key="widgets_enabled"
-        android:title="@string/option_widgets_enabled"
-        android:summary="@string/hint_widgets_enabled"
-        android:defaultValue="true" />
-
     <Preference
         android:key="dummy_set_default_launcher"
         android:title="@string/option_set_default_launcher"
