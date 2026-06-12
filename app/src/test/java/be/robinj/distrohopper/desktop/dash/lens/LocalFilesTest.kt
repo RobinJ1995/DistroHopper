@@ -30,7 +30,8 @@ class LocalFilesTest {
         lens = LocalFiles(application)
     }
 
-    private fun mediaCursor(vararg rows: Triple<Long, String, String?>): MatrixCursor {
+    // Distinct name: a same-named vararg overload would make mediaCursor() ambiguous //
+    private fun mediaCursorWithMime(vararg rows: Triple<Long, String, String?>): MatrixCursor {
         val cursor = MatrixCursor(arrayOf(
             MediaStore.Files.FileColumns._ID,
             MediaStore.Files.FileColumns.DISPLAY_NAME,
@@ -44,7 +45,7 @@ class LocalFilesTest {
     }
 
     private fun mediaCursor(vararg rows: Pair<Long, String>): MatrixCursor =
-        mediaCursor(*rows.map { (id, name) -> Triple(id, name, null) }.toTypedArray())
+        mediaCursorWithMime(*rows.map { (id, name) -> Triple(id, name, null) }.toTypedArray())
 
     // ── Existing tests ─────────────────────────────────────────────────────────
 
@@ -139,7 +140,7 @@ class LocalFilesTest {
     }
 
     @Test fun searchExcludesHiddenFiles() {
-        provider.cursorToReturn = mediaCursor(
+        provider.cursorToReturn = mediaCursorWithMime(
             Triple(1L, ".hidden", null),
             Triple(2L, "visible.txt", null),
         )
@@ -149,7 +150,7 @@ class LocalFilesTest {
     }
 
     @Test fun mimeTypeImageResultUsesImageIcon() {
-        provider.cursorToReturn = mediaCursor(Triple(1L, "photo.jpg", "image/jpeg"))
+        provider.cursorToReturn = mediaCursorWithMime(Triple(1L, "photo.jpg", "image/jpeg"))
         val results = lens.search("photo", 10)
         assertEquals(1, results.size)
         val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_image)
@@ -159,7 +160,7 @@ class LocalFilesTest {
     }
 
     @Test fun mimeTypeVideoResultUsesVideoIcon() {
-        provider.cursorToReturn = mediaCursor(Triple(1L, "movie.mp4", "video/mp4"))
+        provider.cursorToReturn = mediaCursorWithMime(Triple(1L, "movie.mp4", "video/mp4"))
         val results = lens.search("movie", 10)
         assertEquals(1, results.size)
         val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_video)
@@ -167,7 +168,7 @@ class LocalFilesTest {
     }
 
     @Test fun mimeTypeAudioResultUsesAudioIcon() {
-        provider.cursorToReturn = mediaCursor(Triple(1L, "song.mp3", "audio/mpeg"))
+        provider.cursorToReturn = mediaCursorWithMime(Triple(1L, "song.mp3", "audio/mpeg"))
         val results = lens.search("song", 10)
         assertEquals(1, results.size)
         val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_audio)
@@ -175,7 +176,7 @@ class LocalFilesTest {
     }
 
     @Test fun mimeTypePdfResultUsesDocumentIcon() {
-        provider.cursorToReturn = mediaCursor(Triple(1L, "report.pdf", "application/pdf"))
+        provider.cursorToReturn = mediaCursorWithMime(Triple(1L, "report.pdf", "application/pdf"))
         val results = lens.search("report", 10)
         assertEquals(1, results.size)
         val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_document)
@@ -183,7 +184,7 @@ class LocalFilesTest {
     }
 
     @Test fun mimeTypeTextResultUsesDocumentIcon() {
-        provider.cursorToReturn = mediaCursor(Triple(1L, "readme.txt", "text/plain"))
+        provider.cursorToReturn = mediaCursorWithMime(Triple(1L, "readme.txt", "text/plain"))
         val results = lens.search("readme", 10)
         assertEquals(1, results.size)
         val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_document)
@@ -191,7 +192,7 @@ class LocalFilesTest {
     }
 
     @Test fun nullMimeTypeResultUsesGenericIcon() {
-        provider.cursorToReturn = mediaCursor(Triple(1L, "unknown.bin", null))
+        provider.cursorToReturn = mediaCursorWithMime(Triple(1L, "unknown.bin", null))
         val results = lens.search("unknown", 10)
         assertEquals(1, results.size)
         val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_generic)
