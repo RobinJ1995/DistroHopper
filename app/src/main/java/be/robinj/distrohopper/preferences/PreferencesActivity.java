@@ -167,7 +167,7 @@ public class PreferencesActivity extends AppCompatActivity
 		void applyCrashReportsPreference (final boolean acraConfigured)
 		{
 			final Preference crashPref = this.findPreference (
-				be.robinj.distrohopper.preferences.Preference.CRASH_REPORTS_ENABLED.getName ());
+				be.robinj.distrohopper.preferences.Preference.CRASH_REPORTING_ENABLED.getName ());
 			if (crashPref == null) return;
 
 			if (! acraConfigured)

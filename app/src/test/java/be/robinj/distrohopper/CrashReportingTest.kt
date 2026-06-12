@@ -23,7 +23,7 @@ class CrashReportingTest {
     }
 
     private fun setReportsEnabled(enabled: Boolean) =
-        prefs.edit().putBoolean(Preference.CRASH_REPORTS_ENABLED.getName(), enabled).commit()
+        prefs.edit().putBoolean(Preference.CRASH_REPORTING_ENABLED.getName(), enabled).commit()
 
     @Test fun disabledWhenCredentialsAbsentEvenIfUserOptedIn() {
         setReportsEnabled(true)

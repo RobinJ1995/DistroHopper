@@ -17,7 +17,7 @@ import androidx.preference.Preference as AndroidxPreference
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.LEGACY)
 class CrashReportPreferenceTest {
-    private val key = Preference.CRASH_REPORTS_ENABLED.getName()
+    private val key = Preference.CRASH_REPORTING_ENABLED.getName()
 
     private lateinit var activity: PreferencesActivity
     private lateinit var fragment: PreferencesActivity.PreferencesFragment
