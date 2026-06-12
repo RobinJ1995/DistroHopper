@@ -665,6 +665,7 @@ public class HomeActivity extends AppCompatActivity
 
 			Intent intent = new Intent (this, PreferencesActivity.class);
 			this.startActivityForResult (intent, RequestCode.ACTIVITY_PREFERENCES);
+			this.overridePendingTransition (R.anim.home_to_app_in, R.anim.home_to_app_out);
 		}
 		catch (Exception ex)
 		{

@@ -18,7 +18,9 @@ public class AppLauncher extends be.robinj.distrohopper.desktop.launcher.AppLaun
 
 	public void launch ()
 	{
-		this.getApp ().launch (this);
+		// No source view: this launcher lives in a service overlay window, which is not
+		// a valid source for an ActivityOptions reveal animation //
+		this.getApp ().launch ();
 
 		this.parent.swipeLeft ();
 	}

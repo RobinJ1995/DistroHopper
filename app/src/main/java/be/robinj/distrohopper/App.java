@@ -1,5 +1,6 @@
 package be.robinj.distrohopper;
 
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.content.Context;
@@ -97,7 +98,13 @@ public class App implements Parcelable
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 			intent.setComponent(compName);
 
-			this.context.startActivity(intent, this.makeLaunchAnimation(sourceView));
+			final Bundle animation = this.makeLaunchAnimation(sourceView);
+			this.context.startActivity(intent, animation);
+			if (animation == null && this.context instanceof Activity) {
+				// Keep the pre-clip-reveal zoom transition for launches without a source view //
+				((Activity) this.context).overridePendingTransition(
+						R.anim.home_to_app_in, R.anim.home_to_app_out);
+			}
 		} catch (final Exception ex) {
 			final String errorMessage = format("Failed to launch %s/%s: %s.",
 					this.packageName, this.activityName, ex.getClass().getSimpleName());
@@ -109,21 +116,12 @@ public class App implements Parcelable
 	@Nullable
 	private Bundle makeLaunchAnimation (@Nullable final View sourceView)
 	{
-		if (sourceView == null) {
-			return null;
-		}
-
-		// Reveal from the icon glyph rather than the whole item view where possible //
-		View origin = sourceView.findViewById(R.id.imgIcon);
-		if (origin == null || origin.getWidth() == 0 || origin.getHeight() == 0) {
-			origin = sourceView;
-		}
-		if (origin.getWidth() == 0 || origin.getHeight() == 0) {
+		if (sourceView == null || sourceView.getWidth() == 0 || sourceView.getHeight() == 0) {
 			return null;
 		}
 
 		return ActivityOptions.makeClipRevealAnimation(
-				origin, 0, 0, origin.getWidth(), origin.getHeight()).toBundle();
+				sourceView, 0, 0, sourceView.getWidth(), sourceView.getHeight()).toBundle();
 	}
 
 	@Override

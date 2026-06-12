@@ -5,6 +5,7 @@ import android.widget.AdapterView;
 
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.HomeActivity;
+import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.desktop.AppLauncher;
 
 /**
@@ -25,7 +26,9 @@ public class AppLauncherClickListener implements AdapterView.OnItemClickListener
 		try
 		{
 			AppLauncher appLauncher = (AppLauncher) view.getTag ();
-			appLauncher.getApp ().launch (view);
+			// Reveal the launched app from the icon glyph rather than the whole grid cell //
+			View icon = view.findViewById (R.id.imgIcon);
+			appLauncher.getApp ().launch (icon != null ? icon : view);
 		}
 		catch (Exception ex)
 		{

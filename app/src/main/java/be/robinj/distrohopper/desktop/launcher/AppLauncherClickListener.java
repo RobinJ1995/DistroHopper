@@ -5,6 +5,7 @@ import android.view.View.OnClickListener;
 
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.HomeActivity;
+import be.robinj.distrohopper.R;
 
 /**
  * Created by robin on 8/21/14.
@@ -24,7 +25,9 @@ public class AppLauncherClickListener implements OnClickListener
 		try
 		{
 			AppLauncher appLauncher = (AppLauncher) view;
-			appLauncher.getApp ().launch (view);
+			// Reveal the launched app from the icon glyph rather than the whole item //
+			View icon = view.findViewById (R.id.imgIcon);
+			appLauncher.getApp ().launch (icon != null ? icon : view);
 		}
 		catch (Exception ex)
 		{
