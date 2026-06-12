@@ -157,7 +157,7 @@ open class GooglePlay(context: Context) : Lens(context) {
         s.isNotEmpty() &&
             !s.contains("://") &&
             !s.startsWith("/") &&
-            !TOKEN_LIKE.matcher(s).matches() &&
+            !BASE64_TOKEN.matcher(s).matches() &&
             !PACKAGE_LIKE.matcher(s).matches()
 
     override fun onClick(url: String) {
@@ -203,8 +203,10 @@ open class GooglePlay(context: Context) : Lens(context) {
         // Strings that look like dotted package names, used to reject them as titles.
         private val PACKAGE_LIKE: Pattern = Pattern.compile("^[a-z0-9]+(\\.[A-Za-z0-9_]+)+$")
 
-        // Opaque tokens like "CAE=", "USD", "CgYKBENBRT0=" that are not human titles.
-        private val TOKEN_LIKE: Pattern = Pattern.compile("^[A-Z0-9+/=_-]+$")
+        // Opaque base64 tokens such as "CAE=" or "CgYKBENBRT0=" that are not titles.
+        // Deliberately narrow (requires base64 "=" padding) so that legitimate
+        // short/all-caps titles such as "X", "AIDE" or "VLC" are kept.
+        private val BASE64_TOKEN: Pattern = Pattern.compile("^[A-Za-z0-9+/_-]+={1,2}$")
 
         /**
          * Extracts the `data:[...]` JSON array from every `AF_initDataCallback(...)`

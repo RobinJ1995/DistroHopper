@@ -61,6 +61,19 @@ class GooglePlayTest {
         )
     }
 
+    @Test fun preservesAllCapsTitles() {
+        // An all-caps / token-shaped title (e.g. "X", "AIDE") must survive rather
+        // than falling back to the package name.
+        val lens = FakeGooglePlay(application, page(
+            appNode("X", "com.twitter.android", "https://play-lh.googleusercontent.com/x"),
+            appNode("AIDE", "com.aide.ui", "https://play-lh.googleusercontent.com/aide"),
+        ))
+
+        val results = lens.search("x", 10)
+
+        assertEquals(listOf("X", "AIDE"), results.map { it.name })
+    }
+
     @Test fun downloadsEachAppsOwnIcon() {
         val lens = FakeGooglePlay(application, page(
             appNode("WhatsApp Messenger", "com.whatsapp", "https://play-lh.googleusercontent.com/whatsapp"),
