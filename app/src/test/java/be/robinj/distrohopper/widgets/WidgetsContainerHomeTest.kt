@@ -33,7 +33,10 @@ class WidgetsContainerHomeTest {
             application.getSharedPreferences(it, 0).edit().clear().commit()
         }
         application.getSharedPreferences(Preferences.PREFERENCES, 0)
-            .edit().putBoolean(Preference.WIDGETS_ENABLED.getName(), false).commit()
+            .edit()
+            .putBoolean(Preference.WIDGETS_ENABLED.getName(), false)
+            .putBoolean(Preference.SETUP_COMPLETED.getName(), true)
+            .commit()
         DependencyContainer.of(ApplicationProvider.getApplicationContext()).customiseMode.value = false
         ActivityTestSupport.installTestDispatchers()
         ActivityTestSupport.seedPackageManager()

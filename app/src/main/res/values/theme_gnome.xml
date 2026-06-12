@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="theme_gnome_brand_colour">#4A86CF</color>
     <drawable name="theme_gnome_wallpaper_overlay">@android:color/transparent</drawable>
     <drawable name="theme_gnome_wallpaper_overlay_when_dash_opened">@drawable/theme_gnome_res_wallpaper_overlay_when_dash_opened</drawable>
     <integer name="theme_gnome_dynamic_background_opacity">50</integer>

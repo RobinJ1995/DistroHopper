@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="theme_elementary_brand_colour">#64BAFF</color>
     <drawable name="theme_elementary_wallpaper_overlay">@android:color/transparent</drawable>
     <drawable name="theme_elementary_wallpaper_overlay_when_dash_opened">@android:color/transparent</drawable>
     <integer name="theme_elementary_dynamic_background_opacity">50</integer>

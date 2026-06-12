@@ -47,6 +47,8 @@ import be.robinj.distrohopper.home.StartupLoader;
 import be.robinj.distrohopper.home.ThemeApplier;
 import be.robinj.distrohopper.home.WallpaperColourApplier;
 import be.robinj.distrohopper.dev.LogToaster;
+import be.robinj.distrohopper.onboarding.OnboardingActivity;
+import be.robinj.distrohopper.onboarding.OnboardingGate;
 import be.robinj.distrohopper.preferences.Preference;
 import be.robinj.distrohopper.preferences.Preferences;
 import be.robinj.distrohopper.preferences.PreferencesActivity;
@@ -101,6 +103,16 @@ public class HomeActivity extends AppCompatActivity
 	protected void onCreate (Bundle savedInstanceState)
 	{
 		super.onCreate (savedInstanceState);
+
+		// First run: hand over to the setup wizard before initialising anything //
+		if (OnboardingGate.shouldShow (DependencyContainer.of (this).getPrefs ()))
+		{
+			this.startActivity (new Intent (this, OnboardingActivity.class));
+			this.finish ();
+
+			return;
+		}
+
 		setContentView (R.layout.activity_home);
 		this.viewFinder = new ViewFinder(this);
 

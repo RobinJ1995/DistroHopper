@@ -20,4 +20,7 @@
     <color name="transparentblack30">#B3000000</color>
     <color name="transparentblack20">#CC000000</color>
     <color name="transparentblack10">#E6000000</color>
+
+    <color name="onboarding_accent">#E95420</color>
+    <color name="onboarding_accent_pressed">#C7431B</color>
 </resources>

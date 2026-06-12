@@ -48,6 +48,12 @@
 			</intent-filter>
 		</activity>
 		<activity
+			android:name="be.robinj.distrohopper.onboarding.OnboardingActivity"
+			android:label="@string/title_activity_onboarding"
+			android:launchMode="singleTask"
+			android:theme="@style/OnboardingTheme"
+			android:exported="false" />
+		<activity
 			android:name="be.robinj.distrohopper.AboutActivity"
 			android:label="@string/title_activity_about"
 			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity"

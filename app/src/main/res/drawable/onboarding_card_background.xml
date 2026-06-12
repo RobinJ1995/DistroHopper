@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fill and stroke are swapped programmatically when a card is (de)selected. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+	<corners android:radius="16dp" />
+	<solid android:color="@color/transparentblack60" />
+	<stroke
+		android:width="2dp"
+		android:color="@color/transparent" />
+</shape>

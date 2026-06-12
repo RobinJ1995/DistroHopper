@@ -13,6 +13,10 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
+    <!-- Full-screen over the wallpaper, like the home screen itself. -->
+    <style name="OnboardingTheme" parent="AppTheme">
+    </style>
+
     <style name="DialogTheme" parent="Theme.AppCompat">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowShowWallpaper">true</item>

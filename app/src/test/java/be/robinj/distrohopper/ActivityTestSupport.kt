@@ -8,6 +8,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.ResolveInfo
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import kotlinx.coroutines.Dispatchers
 import org.robolectric.Robolectric
@@ -63,7 +64,9 @@ internal object ActivityTestSupport {
         listOf(Preferences.PREFERENCES, Preferences.PINNED_APPS, Preferences.LENSES).forEach {
             application.getSharedPreferences(it, 0).edit().clear().commit()
         }
+        // Fresh prefs would otherwise redirect HomeActivity to the first-run wizard //
         application.getSharedPreferences(Preferences.PREFERENCES, 0).edit()
+            .putBoolean(Preference.SETUP_COMPLETED.getName(), true)
             .also(configurePrefs).commit()
         DependencyContainer.of(ApplicationProvider.getApplicationContext()).customiseMode.value = false
         installTestDispatchers()

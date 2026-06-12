@@ -116,6 +116,17 @@ etc/                                        — design assets (SVG/XCF sources, 
     (`InstalledApps`, `LocalFiles`, `DuckDuckGo`, `GitHub`, Stack Exchange
     sites, `Reddit`, …) coordinated by `LensManager` with `AsyncSearch` and
     result/collection adapters.
+- **`onboarding/`** — the first-run wizard. `OnboardingActivity` is a
+  full-screen ViewPager2 pager (theme choice, runtime permission prompts,
+  set-as-default-home via `RoleManager.ROLE_HOME`) shown over the wallpaper.
+  `HomeActivity.onCreate` checks `OnboardingGate.shouldShow` before any
+  initialisation and redirects (finishing itself) on first run; Done/Skip
+  set the `SETUP_COMPLETED` preference and relaunch `HomeActivity` so the
+  chosen theme applies via the usual recreate path. Users with a `theme`
+  preference from before the wizard existed are marked completed silently.
+  Tests that launch `HomeActivity` with fresh prefs must seed
+  `SETUP_COMPLETED` (done by `ActivityTestSupport.launchHome()`) or they
+  will be redirected to the wizard.
 - **`preferences/`** — `PreferencesActivity` (settings UI built
   programmatically with `PreferenceScreen`/categories), plus dedicated
   activities for lens ordering (`LensPreferencesActivity`) and theme

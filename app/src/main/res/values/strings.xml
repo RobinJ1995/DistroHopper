@@ -91,4 +91,21 @@
     <string name="theme_elementary_res_panel_bfb_text">Applications</string>
 
     <string name="toast_sending_crash_report">Sending crash report...</string>
+
+    <string name="title_activity_onboarding">Welcome</string>
+    <string name="onboarding_welcome_title">Welcome to DistroHopper</string>
+    <string name="onboarding_welcome_body">Your Android home screen, with the look and feel of your favourite Linux desktop.\nSwipe to get set up.</string>
+    <string name="onboarding_theme_title">Pick your distro</string>
+    <string name="onboarding_theme_body">Which Linux desktop do you want DistroHopper to look like? You can change this at any time in the preferences.</string>
+    <string name="onboarding_permission_title">Wallpaper access</string>
+    <string name="onboarding_permission_body">DistroHopper uses your wallpaper\'s colours to tint the launcher and dash so they blend in with your home screen. Allow storage access to enable this.</string>
+    <string name="onboarding_permission_granted">✓ Wallpaper access granted</string>
+    <string name="onboarding_button_grant">Allow</string>
+    <string name="onboarding_default_launcher_title">Make it home</string>
+    <string name="onboarding_default_launcher_body">Set DistroHopper as your home screen, so that it appears whenever you press the home button.</string>
+    <string name="onboarding_default_launcher_already">✓ DistroHopper is your home screen</string>
+    <string name="onboarding_button_set_default">Set as home screen</string>
+    <string name="onboarding_button_skip">Skip</string>
+    <string name="onboarding_button_next">Next</string>
+    <string name="onboarding_button_done">Get started</string>
 </resources>
