@@ -46,10 +46,15 @@ public class PackageManagerBroadcastReceiver extends BroadcastReceiver
 					{
 						friendlyAction = "added";
 
-						for (ResolveInfo resInf : appManager.queryInstalledApps (packageName))
+						// DistroHopper's own package is represented by the internal Settings
+						// shortcut, not by its public HomeActivity launcher entry.
+						if (! packageName.equals (context.getPackageName ()))
 						{
-							final App app = new App(context, appManager, resInf);
-							appManager.add (app, true, true);
+							for (ResolveInfo resInf : appManager.queryInstalledApps (packageName))
+							{
+								final App app = new App(context, appManager, resInf);
+								appManager.add (app, true, true);
+							}
 						}
 					}
 					else if (action.equals (res.getString (R.string.intent_action_package_removed)))

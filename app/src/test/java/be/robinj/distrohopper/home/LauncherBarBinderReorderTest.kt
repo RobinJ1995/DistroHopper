@@ -8,6 +8,7 @@ import be.robinj.distrohopper.App
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
+import be.robinj.distrohopper.preferences.PreferencesActivity
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -41,6 +42,12 @@ class LauncherBarBinderReorderTest {
 
     private fun pinnedContainer(activity: HomeActivity): LinearLayout =
         activity.findViewById(R.id.llLauncherPinnedApps)
+
+    private fun settingsShortcut(activity: HomeActivity): App =
+        activity.appManager.findAppByPackageAndActivityName(
+            activity.packageName,
+            PreferencesActivity::class.java.name,
+        )
 
     private fun viewOrder(activity: HomeActivity): List<App> {
         val container = pinnedContainer(activity)
@@ -142,6 +149,23 @@ class LauncherBarBinderReorderTest {
             val placeholder = pinnedContainer(activity).findViewWithTag<AppLauncher>(zeta)
             assertEquals(View.INVISIBLE, placeholder.visibility)
             assertEquals(listOf(alpha, beta, gamma), activity.appManager.pinned)
+        }
+    }
+
+    @Test fun droppingSettingsShortcutFromDashPinsItAtThePreviewedSlot() {
+        scenario.onActivity { activity ->
+            val (alpha, beta, gamma) = pinThree(activity)
+            val settings = settingsShortcut(activity)
+
+            activity.appManager.startedDraggingDashApp(settings)
+            activity.appManager.draggedPinnedAppOver(beta)
+            activity.appManager.droppedPinnedApp()
+            activity.appManager.endedDraggingPinnedApp()
+
+            assertEquals(listOf(alpha, settings, beta, gamma), activity.appManager.pinned)
+            assertEquals(listOf(alpha, settings, beta, gamma), viewOrder(activity))
+            assertEquals(View.VISIBLE,
+                pinnedContainer(activity).findViewWithTag<AppLauncher>(settings).visibility)
         }
     }
 

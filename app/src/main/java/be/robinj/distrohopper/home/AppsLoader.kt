@@ -20,7 +20,7 @@ import kotlinx.coroutines.ensureActive
  * checkpoints the AsyncTasks had.
  */
 object AppsLoader {
-	private val IGNORE = arrayOf("be.robinj.distrohopper", "be.robinj.ubuntu") // Inception //
+	private val IGNORE = arrayOf("be.robinj.ubuntu") // Legacy package name //
 
 	suspend fun loadApps(
 		parent: HomeActivity,
@@ -53,6 +53,11 @@ object AppsLoader {
 		for (resInf in resInfs) {
 			if (IGNORE.contains(resInf.activityInfo.packageName))
 				continue
+			// Hide DistroHopper's public HomeActivity launcher entry. A private
+			// Settings shortcut is added below so settings stay reachable from the dash
+			// without exposing a second icon to other launchers.
+			if (resInf.activityInfo.packageName == context.packageName)
+				continue
 
 			// One broken package (corrupt icon, vanished mid-query, ...) must not
 			// abort the load: the launcher used to come up with a partial list //
@@ -63,6 +68,10 @@ object AppsLoader {
 				ExceptionHandler(ex).logAndTrack()
 			}
 		}
+
+		// The shortcut is part of DistroHopper's model only; it is not returned by
+		// PackageManager and therefore cannot show up in other launchers.
+		appManager.add(App.settingsShortcut(context, appManager), false, false)
 
 		val tDoneRetrievingInstalledApps = System.currentTimeMillis()
 		Log.getInstance().v(this.javaClass.simpleName, "Retrieved " + size
