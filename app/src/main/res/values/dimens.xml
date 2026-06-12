@@ -10,4 +10,6 @@
 
     <dimen name="dash_lenssearchresult_width">84dp</dimen>
     <dimen name="dash_lenssearchresult_height">96dp</dimen>
+
+    <dimen name="onboarding_blur_radius">20dp</dimen>
 </resources>

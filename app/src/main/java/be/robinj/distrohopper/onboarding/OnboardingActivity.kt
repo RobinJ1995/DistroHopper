@@ -21,6 +21,7 @@ import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.theme.Theme
 import be.robinj.distrohopper.theme.ThemeRegistry
+import java.util.function.Consumer
 
 /**
  * First-run wizard: theme choice, permission prompts, and the option to set
@@ -61,10 +62,25 @@ class OnboardingActivity : AppCompatActivity() {
 		ActivityResultContracts.StartActivityForResult()
 	) { this.adapter.rebind(OnboardingPage.DEFAULT_LAUNCHER) }
 
+	/**
+	 * Blurs the wallpaper behind the wizard, like the dash does: the wallpaper
+	 * lives in a separate system-owned window, so only cross-window blur can
+	 * reach it. Invoked with the current state on registration and again
+	 * whenever blur availability changes at runtime (e.g. battery saver);
+	 * when unavailable, the scrim's darkening alone keeps the text readable.
+	 */
+	private val crossWindowBlurListener = Consumer<Boolean> { enabled ->
+		this.window.setBackgroundBlurRadius(
+			if (enabled) this.resources.getDimensionPixelSize(R.dimen.onboarding_blur_radius)
+			else 0
+		)
+	}
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		this.setContentView(R.layout.activity_onboarding)
 		InsetsHelper.applySystemBarsPadding(this)
+		this.windowManager.addCrossWindowBlurEnabledListener(this.crossWindowBlurListener)
 
 		this.container = DependencyContainer.of(this)
 
@@ -118,6 +134,11 @@ class OnboardingActivity : AppCompatActivity() {
 		})
 
 		this.updateButtons(this.pager.currentItem)
+	}
+
+	override fun onDestroy() {
+		this.windowManager.removeCrossWindowBlurEnabledListener(this.crossWindowBlurListener)
+		super.onDestroy()
 	}
 
 	override fun onResume() {
