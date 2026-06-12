@@ -96,14 +96,13 @@ class GooglePlayTest {
         assertEquals(2, results.size)
     }
 
-    @Test fun fallsBackToPlaySearchWhenNothingParses() {
+    @Test fun returnsEmptyWhenNothingParses() {
         val lens = FakeGooglePlay(application, "<html>no embedded app data here</html>")
 
         val results = lens.search("obscure query", 10)
 
-        assertEquals(1, results.size)
-        assertEquals("market://search?q=obscure+query&c=apps", results[0].url)
-        // The fallback must not have triggered any per-result icon downloads.
+        // No results is no results: no fallback tile, no icon downloads.
+        assertTrue(results.isEmpty())
         assertTrue(lens.requestedIconUrls.isEmpty())
     }
 
