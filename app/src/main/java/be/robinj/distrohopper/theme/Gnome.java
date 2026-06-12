@@ -11,7 +11,7 @@ public class Gnome extends Theme
 	{
 		this.name = "Gnome";
 		this.description = "Gnome Shell";
-		this.brand_colour = R.color.theme_gnome_brand_colour;
+		this.card_colour = R.color.theme_gnome_card_colour;
 
 		this.wallpaper_overlay = R.drawable.theme_gnome_wallpaper_overlay;
 		this.wallpaper_overlay_when_dash_opened = R.drawable.theme_gnome_wallpaper_overlay_when_dash_opened;

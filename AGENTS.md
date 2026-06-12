@@ -52,7 +52,9 @@ etc/                                        — design assets (SVG/XCF sources, 
     in new model-level code.
   - `App`, `Application`, `AppComparatorAlphabetical` — app model classes.
   - `IconPackHelper`, `Image`, `Utils`, `ViewFinder`, `InsetsHelper`,
-    `Permission`, `RequestCode`, `ExceptionHandler` — support/utilities.
+    `Permission`, `RequestCode`, `ExceptionHandler`, `HomeRole` —
+    support/utilities. `HomeRole` wraps the HOME-role (default launcher)
+    checks/request intent used by the wizard and the preferences screen.
     `InsetsHelper` handles system bar / display cutout insets (e.g. keeping
     UI clear of the 3-button navigation bar).
   - `Observed`/`IObserver` — small homegrown observer pattern.

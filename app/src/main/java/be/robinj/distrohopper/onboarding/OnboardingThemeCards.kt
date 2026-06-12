@@ -54,7 +54,7 @@ class OnboardingThemeCards(
 		val strokeWidth = (2f * context.resources.displayMetrics.density).toInt()
 
 		if (selected) {
-			background.setStroke(strokeWidth, context.getColor(theme.brand_colour))
+			background.setStroke(strokeWidth, context.getColor(theme.card_colour))
 			background.setColor(context.getColor(R.color.transparent80))
 		} else {
 			background.setStroke(strokeWidth, context.getColor(R.color.transparent))

@@ -20,4 +20,10 @@
         android:summary="@string/hint_widgets_enabled"
         android:defaultValue="true" />
 
+    <Preference
+        android:key="dummy_set_default_launcher"
+        android:title="@string/option_set_default_launcher"
+        android:summary="@string/hint_set_default_launcher">
+    </Preference>
+
 </PreferenceScreen>

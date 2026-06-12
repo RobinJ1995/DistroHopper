@@ -11,7 +11,7 @@ public class Default extends Theme
 	{
 		this.name = "Ubuntu Unity";
 		this.description = "Ubuntu's Unity desktop";
-		this.brand_colour = R.color.theme_default_brand_colour;
+		this.card_colour = R.color.theme_default_card_colour;
 
 		this.wallpaper_overlay = R.drawable.theme_default_wallpaper_overlay;
 		this.wallpaper_overlay_when_dash_opened = R.drawable.theme_default_wallpaper_overlay_when_dash_opened;

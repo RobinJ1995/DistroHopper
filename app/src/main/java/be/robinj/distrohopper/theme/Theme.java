@@ -15,7 +15,7 @@ public abstract class Theme
 	public boolean dev_only = false;
 
 	/** The distro's brand/accent colour (used by the first-run wizard's theme cards). */
-	public int brand_colour;
+	public int card_colour;
 
 	public int wallpaper_overlay;
 	public int wallpaper_overlay_when_dash_opened;

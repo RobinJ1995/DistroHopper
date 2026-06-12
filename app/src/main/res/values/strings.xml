@@ -71,6 +71,8 @@
     <string name="option_dev">Developer mode</string>
     <string name="hint_dev">Access debug logs and other technical information. Enabling this will negatively impact performance and stability.</string>
     <string name="option_dev_logs">Logs</string>
+    <string name="option_set_default_launcher">Set as home screen</string>
+    <string name="hint_set_default_launcher">Make DistroHopper your default home screen, so that it appears whenever you press the home button.</string>
     <string name="hm_timvdstaaij_why">* Testing (If he doesn\'t manage to wreck it then it\'s probably safe for consumption by the rest of the world.)\n
         * Help with the dominant colour calculation function.</string>
     <string name="hm_todddavies_why">* I used his ProgressWheel component, since the default (round) Android ProgressBar component can\'t actually indicate progress.\n

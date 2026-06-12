@@ -1,10 +1,8 @@
 package be.robinj.distrohopper.onboarding
 
 import android.Manifest
-import android.app.role.RoleManager
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -15,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
+import be.robinj.distrohopper.HomeRole
 import be.robinj.distrohopper.InsetsHelper
 import be.robinj.distrohopper.Permission
 import be.robinj.distrohopper.R
@@ -136,11 +135,14 @@ class OnboardingActivity : AppCompatActivity() {
 	}
 
 	private fun bindDefaultLauncherPage(view: View) {
-		val isDefault = this.isDefaultLauncher()
+		val isDefault = HomeRole.isHeld(this)
 
 		view.findViewById<Button>(R.id.btnOnboardingSetDefault).apply {
 			this.visibility = if (isDefault) View.GONE else View.VISIBLE
-			this.setOnClickListener { this@OnboardingActivity.requestHomeRole() }
+			this.setOnClickListener {
+				this@OnboardingActivity.roleRequest
+					.launch(HomeRole.requestIntent(this@OnboardingActivity))
+			}
 		}
 		view.findViewById<TextView>(R.id.tvOnboardingAlreadyDefault)
 			.visibility = if (isDefault) View.VISIBLE else View.GONE
@@ -150,20 +152,6 @@ class OnboardingActivity : AppCompatActivity() {
 		this.wizardPermissions
 			.filterNot { Permission(this, it).check() }
 			.toTypedArray()
-
-	private fun isDefaultLauncher(): Boolean =
-		this.getSystemService(RoleManager::class.java)
-			?.isRoleHeld(RoleManager.ROLE_HOME) == true
-
-	private fun requestHomeRole() {
-		val roleManager = this.getSystemService(RoleManager::class.java)
-
-		if (roleManager != null && roleManager.isRoleAvailable(RoleManager.ROLE_HOME)) {
-			this.roleRequest.launch(roleManager.createRequestRoleIntent(RoleManager.ROLE_HOME))
-		} else {
-			this.startActivity(Intent(Settings.ACTION_HOME_SETTINGS))
-		}
-	}
 
 	private fun themes(): List<Theme> {
 		val dev = this.container.prefs.getBoolean(Preference.DEV, false)
