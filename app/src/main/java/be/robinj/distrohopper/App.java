@@ -32,8 +32,11 @@ public class App implements Parcelable
 	private String activityName;
 
 	private transient ResolveInfo resInf = null;
+	private transient Intent launchIntent = null;
 	private boolean labelLoaded = false;
 	private boolean iconLoaded = false;
+	private boolean launchAllowedInCustomiseMode = false;
+	private boolean internalShortcut = false;
 
 	private transient Context context;
 	private transient AppManager appManager;
@@ -64,28 +67,68 @@ public class App implements Parcelable
 		}
 	}
 
+	private App (Context context, AppManager appManager, String packageName, String activityName,
+				 String label, Intent launchIntent, boolean launchAllowedInCustomiseMode)
+	{
+		this.context = context;
+		this.appManager = appManager;
+		this.packageName = packageName;
+		this.activityName = activityName;
+		this.label = label;
+		this.launchIntent = launchIntent;
+		this.launchAllowedInCustomiseMode = launchAllowedInCustomiseMode;
+		this.internalShortcut = true;
+		this.labelLoaded = label != null;
+	}
+
+	/**
+	 * Creates a DistroHopper-internal shortcut that lives only in the dash and
+	 * launches by explicit intent rather than a public launcher component.
+	 */
+	public static App internalShortcut (Context context, AppManager appManager,
+			String packageName, String activityName, String label,
+			Intent launchIntent, boolean launchAllowedInCustomiseMode)
+	{
+		return new App (context, appManager, packageName, activityName,
+				label, launchIntent, launchAllowedInCustomiseMode);
+	}
+
 	private App (Parcel parcel)
 	{
 		this.activityName = parcel.readString ();
 		this.description = parcel.readString ();
 		this.label = parcel.readString ();
 		this.packageName = parcel.readString ();
+		this.launchAllowedInCustomiseMode = parcel.readInt () != 0;
+		this.internalShortcut = parcel.readInt () != 0;
+
+		if (this.internalShortcut) {
+			this.launchIntent = new Intent ()
+					.setComponent (new ComponentName (this.packageName, this.activityName))
+					.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+		}
 	}
 
 	public void launch ()
 	{
-		if (DependencyContainer.of (this.context).getCustomiseMode ().getValue ()) {
+		if ((! this.launchAllowedInCustomiseMode) && DependencyContainer.of (this.context).getCustomiseMode ().getValue ()) {
 			Toast.makeText(this.context, "App launching disabled while customising UI.", Toast.LENGTH_SHORT).show(); //TODO// getString () //
 
 			return;
 		}
 
 		try {
-			final ComponentName compName = new ComponentName(this.packageName, this.activityName);
-			final Intent intent = new Intent(Intent.ACTION_MAIN);
-			intent.addCategory(Intent.CATEGORY_LAUNCHER);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-			intent.setComponent(compName);
+			final Intent intent;
+			if (this.launchIntent != null) {
+				intent = new Intent (this.launchIntent);
+			}
+			else {
+				final ComponentName compName = new ComponentName(this.packageName, this.activityName);
+				intent = new Intent(Intent.ACTION_MAIN);
+				intent.addCategory(Intent.CATEGORY_LAUNCHER);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+				intent.setComponent(compName);
+			}
 
 			this.context.startActivity(intent);
 		} catch (final Exception ex) {
@@ -121,8 +164,13 @@ public class App implements Parcelable
 
 	public String getLabel(final boolean useCached) {
 		if (this.label == null || (!this.labelLoaded && !useCached)) {
-			this.label = this.resInf.activityInfo.loadLabel(this.getPackageManager()).toString();
-			this.labelLoaded = true;
+			if (this.resInf != null) {
+				this.label = this.resInf.activityInfo.loadLabel(this.getPackageManager()).toString();
+				this.labelLoaded = true;
+			} else {
+				Log.getInstance().w("App", format("getLabel called on internal shortcut %s/%s with no label set",
+						this.packageName, this.activityName));
+			}
 		}
 
 		return this.label;
@@ -159,7 +207,7 @@ public class App implements Parcelable
 				icon = this.appManager.getIconPack().getIconForApp(this);
 			}
 			if (icon == null) {
-				icon = this.appManager.getIconPack().getFallbackIcon(this.resInf.loadIcon(this.getPackageManager()));
+				icon = this.appManager.getIconPack().getFallbackIcon(this.loadFallbackIcon());
 			}
 
 			this.icon = icon;
@@ -167,6 +215,16 @@ public class App implements Parcelable
 		}
 
 		return this.icon;
+	}
+
+	private Drawable loadFallbackIcon ()
+	{
+		if (this.resInf != null) {
+			return this.resInf.loadIcon(this.getPackageManager());
+		}
+
+		// Internal shortcuts have no ResolveInfo; use the application icon.
+		return this.context.getApplicationInfo ().loadIcon (this.getPackageManager ());
 	}
 
 	public boolean setIcon(final AppIcon icon, final ICache<Drawable> appIconCache) {
@@ -184,6 +242,10 @@ public class App implements Parcelable
 
 	public boolean isIconLoaded() {
 		return this.iconLoaded;
+	}
+
+	public boolean isInternalShortcut() {
+		return internalShortcut;
 	}
 
 	public String getDescription ()
@@ -241,6 +303,8 @@ public class App implements Parcelable
 		dest.writeString (this.description);
 		dest.writeString (this.getLabel());
 		dest.writeString (this.packageName);
+		dest.writeInt (this.launchAllowedInCustomiseMode ? 1 : 0);
+		dest.writeInt (this.internalShortcut ? 1 : 0);
 	}
 
 	public static final Parcelable.Creator<App> CREATOR = new Parcelable.Creator <App> ()

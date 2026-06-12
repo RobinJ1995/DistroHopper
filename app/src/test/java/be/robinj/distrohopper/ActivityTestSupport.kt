@@ -41,6 +41,12 @@ internal object ActivityTestSupport {
         }
     }
 
+    fun settingsShortcut(activity: HomeActivity): App =
+        requireNotNull(activity.appManager.findAppByPackageAndActivityName(
+            activity.packageName,
+            "be.robinj.distrohopper.preferences.PreferencesActivity",
+        ))
+
     fun resolveInfo(packageName: String, activityName: String, label: String): ResolveInfo {
         val activityInfo = ActivityInfo().apply {
             this.packageName = packageName

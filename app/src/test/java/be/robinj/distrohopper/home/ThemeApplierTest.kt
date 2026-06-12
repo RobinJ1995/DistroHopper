@@ -52,16 +52,12 @@ class ThemeApplierTest {
 		}
 	}
 
-	@Test fun gnomeThemeShowsPanelBfbAndMovesLauncherBfbToTheBottom() {
+	@Test fun gnomeThemeHidesPanelBfbAndMovesLauncherBfbToTheBottom() {
 		launch("gnome").use { scenario ->
 			scenario.onActivity { activity ->
-				val theme = DependencyContainer.of(activity).themeManager.current
-				val tvPanelBfb = activity.findViewById<TextView>(R.id.tvPanelBfb)
-				assertEquals(View.VISIBLE, tvPanelBfb.visibility)
-				assertEquals(activity.resources.getString(theme.panel_bfb_text),
-					tvPanelBfb.text.toString())
-				assertEquals(activity.resources.getColor(theme.panel_bfb_text_colour),
-					tvPanelBfb.currentTextColor)
+				// The refined GNOME theme (c049c82) removed the panel BFB.
+				assertEquals(View.GONE,
+					activity.findViewById<TextView>(R.id.tvPanelBfb).visibility)
 
 				assertEquals(View.GONE,
 					activity.findViewById<LinearLayout>(R.id.llDashRibbon).visibility)

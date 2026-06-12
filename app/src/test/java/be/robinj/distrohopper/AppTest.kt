@@ -5,6 +5,7 @@ import android.os.Parcel
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.cache.TestStringCache
+import be.robinj.distrohopper.preferences.PreferencesActivity
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -39,6 +40,34 @@ class AppTest {
             while (shadow.nextStartedActivity != null) { }
             DependencyContainer.of(ApplicationProvider.getApplicationContext()).customiseMode.value = true; activity.appManager[0].launch()
             assertNull(shadow.nextStartedActivity)
+        }
+    }
+
+    @Test fun settingsShortcutLaunchesPreferencesDirectly() {
+        scenario.onActivity { activity ->
+            val app = ActivityTestSupport.settingsShortcut(activity)
+
+            app.launch()
+
+            val intent = Shadows.shadowOf(activity).nextStartedActivity
+            assertNull(intent.action)
+            assertTrue(intent.categories == null || intent.categories.isEmpty())
+            assertEquals(activity.packageName, intent.component?.packageName)
+            assertEquals(PreferencesActivity::class.java.name, intent.component?.className)
+        }
+    }
+
+    @Test fun settingsShortcutLaunchesWhileCustomising() {
+        scenario.onActivity { activity ->
+            val app = ActivityTestSupport.settingsShortcut(activity)
+            DependencyContainer.of(ApplicationProvider.getApplicationContext()).customiseMode.value = true
+
+            app.launch()
+
+            assertEquals(
+                PreferencesActivity::class.java.name,
+                Shadows.shadowOf(activity).nextStartedActivity.component?.className,
+            )
         }
     }
 

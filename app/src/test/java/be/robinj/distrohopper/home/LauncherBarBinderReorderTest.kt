@@ -42,6 +42,9 @@ class LauncherBarBinderReorderTest {
     private fun pinnedContainer(activity: HomeActivity): LinearLayout =
         activity.findViewById(R.id.llLauncherPinnedApps)
 
+    private fun settingsShortcut(activity: HomeActivity): App =
+        ActivityTestSupport.settingsShortcut(activity)
+
     private fun viewOrder(activity: HomeActivity): List<App> {
         val container = pinnedContainer(activity)
         return (0 until container.childCount).map { container.getChildAt(it).tag as App }
@@ -142,6 +145,23 @@ class LauncherBarBinderReorderTest {
             val placeholder = pinnedContainer(activity).findViewWithTag<AppLauncher>(zeta)
             assertEquals(View.INVISIBLE, placeholder.visibility)
             assertEquals(listOf(alpha, beta, gamma), activity.appManager.pinned)
+        }
+    }
+
+    @Test fun droppingSettingsShortcutFromDashPinsItAtThePreviewedSlot() {
+        scenario.onActivity { activity ->
+            val (alpha, beta, gamma) = pinThree(activity)
+            val settings = settingsShortcut(activity)
+
+            activity.appManager.startedDraggingDashApp(settings)
+            activity.appManager.draggedPinnedAppOver(beta)
+            activity.appManager.droppedPinnedApp()
+            activity.appManager.endedDraggingPinnedApp()
+
+            assertEquals(listOf(alpha, settings, beta, gamma), activity.appManager.pinned)
+            assertEquals(listOf(alpha, settings, beta, gamma), viewOrder(activity))
+            assertEquals(View.VISIBLE,
+                pinnedContainer(activity).findViewWithTag<AppLauncher>(settings).visibility)
         }
     }
 

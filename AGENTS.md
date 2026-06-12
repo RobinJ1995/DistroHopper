@@ -50,7 +50,7 @@ etc/                                        — design assets (SVG/XCF sources, 
     `home/LauncherBarBinder` (resolved lazily so AppManager can be
     constructed on a background thread). Prefer `AppRepository` directly
     in new model-level code.
-  - `App`, `Application`, `AppComparatorAlphabetical` — app model classes.
+  - `App`, `Application`, `AppComparatorAlphabetical` — app model classes. `App` usually wraps a PackageManager `ResolveInfo`, but can also represent DistroHopper-owned internal shortcuts that live only in the dash (currently the settings shortcut) and launch by explicit in-app intent rather than a public launcher component.
   - `IconPackHelper`, `Image`, `Utils`, `ViewFinder`, `InsetsHelper`,
     `Permission`, `RequestCode`, `ExceptionHandler`, `HomeRole` —
     support/utilities. `HomeRole` wraps the HOME-role (default launcher)

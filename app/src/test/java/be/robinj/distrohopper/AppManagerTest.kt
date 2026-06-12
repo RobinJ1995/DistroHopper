@@ -1,7 +1,10 @@
 package be.robinj.distrohopper
 
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
+import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
+import be.robinj.distrohopper.preferences.PreferencesActivity
 import be.robinj.distrohopper.preferences.Preferences
 import org.junit.After
 import org.junit.Assert.*
@@ -23,6 +26,7 @@ class AppManagerTest {
         scenario.onActivity { block(it.appManager) }
     }
     private fun AppManager.unpinned() = firstOrNull { !isPinned(it) }
+    private fun AppManager.settingsShortcut() = ActivityTestSupport.settingsShortcut(this.context)
 
     @Test fun everyAppHasNonEmptyPackageName() = withManager { manager ->
         manager.forEach { assertTrue(it.packageName.isNotEmpty()) }
@@ -79,8 +83,23 @@ class AppManagerTest {
 
     @Test fun searchWithMaxResultsLimitsOutput() = withManager { assertTrue(it.search("a", 2).size <= 2) }
 
+    @Test fun searchFindsSettingsShortcutByPrefix() = withManager { manager ->
+        assertEquals(listOf(manager.settingsShortcut()), manager.search("DistroHopper"))
+    }
+
     @Test fun fullSearchFindsInfixMatches() = withManager { manager ->
-        assertEquals(listOf("Settings"), manager.search("ting").map(App::getLabel))
+        val settingsLabel = manager.context.getString(R.string.shortcut_label_distrohopper_settings)
+        assertEquals(listOf(settingsLabel, "Settings"), manager.search("ting").map(App::getLabel))
+    }
+
+    @Test fun distroHopperSettingsShortcutReplacesOwnLauncherApp() = withManager { manager ->
+        val packageName = ApplicationProvider.getApplicationContext<android.app.Application>().packageName
+
+        assertNull(manager.findAppByPackageAndActivityName(packageName, HomeActivity::class.java.name))
+        assertNotNull(manager.findAppByPackageAndActivityName(packageName, PreferencesActivity::class.java.name))
+        assertTrue(manager.installedApps.any {
+            it.label == manager.context.getString(R.string.shortcut_label_distrohopper_settings)
+        })
     }
 
     @Test fun prefixOnlySearchRejectsInfixMatches() {
@@ -109,6 +128,21 @@ class AppManagerTest {
         assertEquals(listOf(second, first), it.pinned)
     }
 
+    @Test fun settingsShortcutCanBePinnedMovedAndPersisted() = withManager { manager ->
+        val alpha = manager.findAppsByPackageName("com.example.alpha").first()
+        val settings = manager.settingsShortcut()
+
+        manager.pin(alpha, false, false, false)
+        manager.pin(settings, false, false, false)
+        manager.movePinnedApp(1, 0)
+        manager.savePinnedApps()
+
+        assertEquals(listOf(settings, alpha), manager.pinned)
+        val pinnedPrefs = Preferences.getSharedPreferences(manager.context, Preferences.PINNED_APPS)
+        assertEquals(settings.packageAndActivityName, pinnedPrefs.getString("0", null))
+        assertEquals(alpha.packageAndActivityName, pinnedPrefs.getString("1", null))
+    }
+
     @Test fun findAppByPackageAndActivityNameReturnsCorrectApp() = withManager {
         val expected = it[0]; assertEquals(expected, it.findAppByPackageAndActivityName(expected.packageName, expected.activityName))
     }
@@ -123,6 +157,11 @@ class AppManagerTest {
 
     @Test fun installedAppsMapUsesCombinedIdentity() = withManager {
         assertEquals(it.size(), it.installedAppsMap.size); assertSame(it[0], it.installedAppsMap[it[0].packageAndActivityName])
+    }
+
+    @Test fun installedAppsMapIncludesSettingsShortcutIdentity() = withManager { manager ->
+        val settings = manager.settingsShortcut()
+        assertSame(settings, manager.installedAppsMap[settings.packageAndActivityName])
     }
 
     @Test fun packageQueryCanBeFiltered() = withManager {

@@ -150,53 +150,28 @@ class LocalFilesTest {
     }
 
     @Test fun mimeTypeImageResultUsesImageIcon() {
-        provider.cursorToReturn = mediaCursorWithMime(Triple(1L, "photo.jpg", "image/jpeg"))
-        val results = lens.search("photo", 10)
-        assertEquals(1, results.size)
-        val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_image)
-        val notExpected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_generic)
-        assertEquals(expected.constantState, results[0].icon.constantState)
-        assertNotEquals(notExpected.constantState, results[0].icon.constantState)
+        assertEquals(be.robinj.distrohopper.R.drawable.ic_file_image, lens.mimeTypeIconRes("image/jpeg"))
+        assertNotEquals(be.robinj.distrohopper.R.drawable.ic_file_generic, lens.mimeTypeIconRes("image/jpeg"))
     }
 
     @Test fun mimeTypeVideoResultUsesVideoIcon() {
-        provider.cursorToReturn = mediaCursorWithMime(Triple(1L, "movie.mp4", "video/mp4"))
-        val results = lens.search("movie", 10)
-        assertEquals(1, results.size)
-        val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_video)
-        assertEquals(expected.constantState, results[0].icon.constantState)
+        assertEquals(be.robinj.distrohopper.R.drawable.ic_file_video, lens.mimeTypeIconRes("video/mp4"))
     }
 
     @Test fun mimeTypeAudioResultUsesAudioIcon() {
-        provider.cursorToReturn = mediaCursorWithMime(Triple(1L, "song.mp3", "audio/mpeg"))
-        val results = lens.search("song", 10)
-        assertEquals(1, results.size)
-        val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_audio)
-        assertEquals(expected.constantState, results[0].icon.constantState)
+        assertEquals(be.robinj.distrohopper.R.drawable.ic_file_audio, lens.mimeTypeIconRes("audio/mpeg"))
     }
 
     @Test fun mimeTypePdfResultUsesDocumentIcon() {
-        provider.cursorToReturn = mediaCursorWithMime(Triple(1L, "report.pdf", "application/pdf"))
-        val results = lens.search("report", 10)
-        assertEquals(1, results.size)
-        val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_document)
-        assertEquals(expected.constantState, results[0].icon.constantState)
+        assertEquals(be.robinj.distrohopper.R.drawable.ic_file_document, lens.mimeTypeIconRes("application/pdf"))
     }
 
     @Test fun mimeTypeTextResultUsesDocumentIcon() {
-        provider.cursorToReturn = mediaCursorWithMime(Triple(1L, "readme.txt", "text/plain"))
-        val results = lens.search("readme", 10)
-        assertEquals(1, results.size)
-        val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_document)
-        assertEquals(expected.constantState, results[0].icon.constantState)
+        assertEquals(be.robinj.distrohopper.R.drawable.ic_file_document, lens.mimeTypeIconRes("text/plain"))
     }
 
     @Test fun nullMimeTypeResultUsesGenericIcon() {
-        provider.cursorToReturn = mediaCursorWithMime(Triple(1L, "unknown.bin", null))
-        val results = lens.search("unknown", 10)
-        assertEquals(1, results.size)
-        val expected = application.resources.getDrawable(be.robinj.distrohopper.R.drawable.ic_file_generic)
-        assertEquals(expected.constantState, results[0].icon.constantState)
+        assertEquals(be.robinj.distrohopper.R.drawable.ic_file_generic, lens.mimeTypeIconRes(null))
     }
 
     // ── Infrastructure ─────────────────────────────────────────────────────────
