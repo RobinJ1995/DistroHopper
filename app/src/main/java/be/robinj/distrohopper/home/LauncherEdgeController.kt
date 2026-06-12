@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.HorizontalScrollView
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.ScrollView
 import androidx.core.graphics.Insets
 import be.robinj.distrohopper.R
@@ -160,18 +161,80 @@ class LauncherEdgeController(
 		llLauncher_layoutParams.setMargins(launcherMarginsRotated[3], launcherMarginsRotated[0],
 			launcherMarginsRotated[1], launcherMarginsRotated[2])
 		llLauncher.layoutParams = llLauncher_layoutParams
+
+		/*
+		 * The dash must never draw over the launcher, even while a dash
+		 * animation scales it beyond its own bounds (the MATE genie). For the
+		 * bottom/right edges the child order already takes care of that, but
+		 * for top/left the dash is the later sibling; a minimal Z lift keeps
+		 * the launcher on top everywhere without casting a visible shadow.
+		 */
+		llLauncher.translationZ = 1F
 	}
 
 	fun applyPanelEdge(edge: Location) {
 		val llPanel = this.viewFinder.get<LinearLayout>(R.id.llPanel)
+		val llLauncherAndDashContainer =
+			this.viewFinder.get<LinearLayout>(R.id.llLauncherAndDashContainer)
+		val vgWidgets = this.viewFinder.get<View>(R.id.vgWidgets)
+		val panelParams = llPanel.layoutParams as RelativeLayout.LayoutParams
+		val containerParams =
+			llLauncherAndDashContainer.layoutParams as RelativeLayout.LayoutParams
+		val widgetsParams = vgWidgets.layoutParams as RelativeLayout.LayoutParams
 
-		when (edge) {
-			Location.TOP ->
+		when (this.effectivePanelEdge(edge)) {
+			Location.TOP -> {
+				panelParams.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+				panelParams.addRule(RelativeLayout.BELOW, R.id.llStatusBar)
+				containerParams.removeRule(RelativeLayout.ABOVE)
+				containerParams.addRule(RelativeLayout.BELOW, R.id.llPanel)
+				widgetsParams.removeRule(RelativeLayout.ABOVE)
+				widgetsParams.addRule(RelativeLayout.BELOW, R.id.llPanel)
+				widgetsParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+
 				llPanel.alpha = this.prefs.getInt(Preference.PANEL_OPACITY, 100).toFloat() / 100F
+			}
+			Location.BOTTOM -> {
+				panelParams.removeRule(RelativeLayout.BELOW)
+				panelParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+				containerParams.addRule(RelativeLayout.BELOW, R.id.llStatusBar)
+				containerParams.addRule(RelativeLayout.ABOVE, R.id.llPanel)
+				widgetsParams.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+				widgetsParams.removeRule(RelativeLayout.BELOW)
+				widgetsParams.addRule(RelativeLayout.BELOW, R.id.llStatusBar)
+				widgetsParams.addRule(RelativeLayout.ABOVE, R.id.llPanel)
+
+				llPanel.alpha = this.prefs.getInt(Preference.PANEL_OPACITY, 100).toFloat() / 100F
+			}
 			Location.NONE ->
 				llPanel.visibility = View.GONE
 			else -> {}
 		}
+
+		llPanel.layoutParams = panelParams
+		llLauncherAndDashContainer.layoutParams = containerParams
+		vgWidgets.layoutParams = widgetsParams
+	}
+
+	/*
+	 * Themes that support a bottom panel (MATE) place the panel on whichever
+	 * horizontal edge the launcher leaves free: at the bottom when the
+	 * launcher is docked to the top, at the top otherwise. The user's only
+	 * say is whether the panel is shown at all.
+	 */
+	private fun effectivePanelEdge(edge: Location): Location {
+		if (edge == Location.NONE) {
+			return edge
+		}
+
+		val res = this.activity.resources
+		if (! res.getIntArray(this.theme.panel_location_supported).contains(Location.BOTTOM.n)) {
+			return edge
+		}
+
+		val launcherEdge = Location.of(this.prefs.getInt(Preference.LAUNCHER_EDGE,
+			res.getInteger(this.theme.launcher_location)))
+		return if (launcherEdge == Location.TOP) Location.BOTTOM else Location.TOP
 	}
 
 	/**

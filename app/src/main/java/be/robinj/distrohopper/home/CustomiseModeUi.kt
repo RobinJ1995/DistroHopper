@@ -14,6 +14,7 @@ import be.robinj.distrohopper.R
 import be.robinj.distrohopper.ViewFinder
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
+import be.robinj.distrohopper.theme.Location
 import be.robinj.distrohopper.theme.Theme
 
 /**
@@ -95,7 +96,19 @@ class CustomiseModeUi(
 
 		// Panel Edge //
 		val spiCustomisePanelEdge = this.viewFinder.get<Spinner>(R.id.spiCustomisePanelEdge)
-		val supportedPanelEdges = res.getIntArray(this.theme.panel_location_supported)
+		/*
+		 * When the panel's edge is dictated by the launcher's, only the edge
+		 * the current launcher position allows is offered (plus None).
+		 */
+		val supportedPanelEdges = if (res.getIntArray(this.theme.panel_location_supported)
+				.contains(Location.BOTTOM.n)) {
+			intArrayOf(
+				this.complementaryPanelEdge(prefs.getInt(Preference.LAUNCHER_EDGE.getName(),
+					this.theme.launcher_location)),
+				Location.NONE.n)
+		} else {
+			res.getIntArray(this.theme.panel_location_supported)
+		}
 		if (supportedPanelEdges.size > 1) {
 			val currentPanelEdge = prefs.getInt(Preference.PANEL_EDGE.getName(), this.theme.panel_location)
 			this.initEdgeSpinner(spiCustomisePanelEdge, edgeNames, supportedPanelEdges,
@@ -103,6 +116,23 @@ class CustomiseModeUi(
 		} else {
 			this.viewFinder.get<View>(llDashCustomise, R.id.llCustomisePanelEdge).visibility = View.GONE
 		}
+	}
+
+	/*
+	 * For themes whose panel can sit on the bottom (MATE), the panel's edge
+	 * is dictated by the launcher's: the panel takes whichever horizontal
+	 * edge the launcher leaves free. The user only chooses whether the panel
+	 * is shown; an incompatible stored edge is corrected whenever either
+	 * spinner changes.
+	 */
+	private fun complementaryPanelEdge(launcherEdge: Int): Int {
+		val res = this.activity.resources
+		if (! res.getIntArray(this.theme.panel_location_supported)
+				.contains(Location.BOTTOM.n)) {
+			return res.getInteger(this.theme.panel_location)
+		}
+
+		return if (launcherEdge == Location.TOP.n) Location.BOTTOM.n else Location.TOP.n
 	}
 
 	private fun initEdgeSpinner(
@@ -123,12 +153,27 @@ class CustomiseModeUi(
 		ViewCompat.setBackgroundTintList(spinner, ColorStateList.valueOf(textColour))
 		spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 			override fun onItemSelected(adapterView: AdapterView<*>, view: View?, i: Int, l: Long) {
-				val edge = supportedEdges[i]
+				var edge = supportedEdges[i]
 
 				if (currentEdge != edge) {
-					val prefsEdit = Preferences.getSharedPreferences(
-						this@CustomiseModeUi.activity).edit()
+					val prefs = Preferences.getSharedPreferences(this@CustomiseModeUi.activity)
+					val prefsEdit = prefs.edit()
+					if (pref == Preference.PANEL_EDGE && edge != Location.NONE.n) {
+						edge = this@CustomiseModeUi.complementaryPanelEdge(
+							prefs.getInt(Preference.LAUNCHER_EDGE.getName(),
+								this@CustomiseModeUi.activity.resources.getInteger(
+									this@CustomiseModeUi.theme.launcher_location)))
+					}
 					prefsEdit.putInt(pref.getName(), edge)
+					if (pref == Preference.LAUNCHER_EDGE) {
+						val panelEdge = prefs.getInt(Preference.PANEL_EDGE.getName(),
+							this@CustomiseModeUi.activity.resources.getInteger(
+								this@CustomiseModeUi.theme.panel_location))
+						if (panelEdge != Location.NONE.n) {
+							prefsEdit.putInt(Preference.PANEL_EDGE.getName(),
+								this@CustomiseModeUi.complementaryPanelEdge(edge))
+						}
+					}
 					prefsEdit.commit()
 
 					this@CustomiseModeUi.relaunchInCustomiseMode.run()

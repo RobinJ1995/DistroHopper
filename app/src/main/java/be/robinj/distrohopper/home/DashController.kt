@@ -55,7 +55,7 @@ class DashController(
 			this.theme.panel_background_when_dash_opened)
 	}
 	private val statusBarFade by lazy {
-		BackgroundFade(this.activity.resources, android.R.color.black,
+		BackgroundFade(this.activity.resources, this.theme.statusbar_background,
 			this.theme.statusbar_background_when_dash_opened)
 	}
 
@@ -144,8 +144,8 @@ class DashController(
 
 		if (this.activity.resources.getBoolean(this.theme.panel_background_dynamic_when_dash_opened)) {
 			llPanel.setBackgroundResource(this.theme.panel_background)
-			this.viewFinder.get<LinearLayout>(R.id.llStatusBar).setBackgroundColor(
-				this.activity.resources.getColor(android.R.color.black))
+			this.viewFinder.get<LinearLayout>(R.id.llStatusBar)
+				.setBackgroundResource(this.theme.statusbar_background)
 		} else {
 			this.panelFade.animateTo(dashOpened = false, DashAnimator.CLOSE_DURATION_MS)
 			this.statusBarFade.animateTo(dashOpened = false, DashAnimator.CLOSE_DURATION_MS)

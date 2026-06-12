@@ -52,10 +52,11 @@ class ThemeApplier(
 
 		// Apply theme
 		llPanel.setBackgroundResource(this.theme.panel_background)
+		this.viewFinder.get<LinearLayout>(R.id.llStatusBar)
+			.setBackgroundResource(this.theme.statusbar_background)
 		ibPanelCog.setImageResource(this.theme.panel_preferences_image)
 		ibPanelDashClose.setImageResource(this.theme.panel_close_image)
 		imgDashBackgroundGradient.setImageResource(this.theme.dash_background_gradient)
-		lalBfb.setIcon(res.getDrawable(this.theme.launcher_bfb_image))
 		lalPreferences.setIcon(res.getDrawable(this.theme.launcher_preferences_image))
 		lalTrash.setIcon(res.getDrawable(this.theme.launcher_trash_image))
 
@@ -65,6 +66,10 @@ class ThemeApplier(
 		val expandLlLauncher = res.getBoolean(this.theme.launcher_expand)
 		val launcherEdge = Location.of(prefs.getInt(Preference.LAUNCHER_EDGE.getName(),
 			res.getInteger(this.theme.launcher_location)))
+		lalBfb.setIcon(res.getDrawable(when (launcherEdge) {
+			Location.LEFT, Location.RIGHT -> this.theme.launcher_bfb_image_vertical
+			else -> this.theme.launcher_bfb_image
+		}))
 		this.edgeController.applyLauncherEdge(launcherEdge, expandLlLauncher)
 		this.applyDashIconWidth(prefs.getInt(Preference.DASHICON_WIDTH.getName(),
 			Preference.DASHICON_WIDTH.getDefault()))
@@ -109,6 +114,13 @@ class ThemeApplier(
 
 		tvPanelBfb.setText(res.getString(this.theme.panel_bfb_text))
 		tvPanelBfb.setTextColor(res.getColor(this.theme.panel_bfb_text_colour))
+		/*
+		 * Colour resources have no intrinsic size, so themes without a BFB
+		 * image (transparent) get no icon rather than an empty gap.
+		 */
+		tvPanelBfb.setCompoundDrawablesWithIntrinsicBounds(this.theme.panel_bfb_image, 0, 0, 0)
+		tvPanelBfb.compoundDrawablePadding =
+			(6 * this.activity.resources.displayMetrics.density).toInt()
 
 		tvDashHomeTitle.setTextColor(res.getColor(this.theme.dash_applauncher_text_colour))
 		tvDashHomeTitle.setShadowLayer(5F, 2F, 2F, res.getColor(this.theme.dash_applauncher_text_shadow_colour))

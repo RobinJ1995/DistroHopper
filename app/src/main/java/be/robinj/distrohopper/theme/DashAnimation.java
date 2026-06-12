@@ -11,7 +11,8 @@ public enum DashAnimation
 	GNOME(1), // Dim fades in, icons genie out of the BFB //
 	CINNAMON(2), // Dash slides in from the launcher's edge of the screen //
 	ELEMENTARY(3), // Dash fades and zooms in from the Applications label //
-	UNITY(4); // Dash and panel changes fade //
+	UNITY(4), // Dash and panel changes fade //
+	MATE(5); // The whole dash genies out of the BFB //
 
 	public final int n;
 
