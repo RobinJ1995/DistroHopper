@@ -125,7 +125,12 @@ etc/                                        — design assets (SVG/XCF sources, 
   initialisation and redirects (finishing itself) on first run; Done/Skip
   set the `SETUP_COMPLETED` preference and relaunch `HomeActivity` so the
   chosen theme applies via the usual recreate path. Users with a `theme`
-  preference from before the wizard existed are marked completed silently.
+  preference from before the wizard existed are marked completed silently —
+  the wizard writes `SETUP_STARTED` on launch so its own theme write (made
+  as soon as a card is tapped) doesn't trip that grandfathering when a run
+  is interrupted. The permission page is dropped on devices where the
+  wallpaper permission isn't grantable (Android 13+), so the page list is
+  per-device.
   Tests that launch `HomeActivity` with fresh prefs must seed
   `SETUP_COMPLETED` (done by `ActivityTestSupport.launchHome()`) or they
   will be redirected to the wizard.

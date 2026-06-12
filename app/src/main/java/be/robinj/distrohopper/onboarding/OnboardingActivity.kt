@@ -2,6 +2,7 @@ package be.robinj.distrohopper.onboarding
 
 import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -36,8 +37,21 @@ class OnboardingActivity : AppCompatActivity() {
 	private lateinit var adapter: OnboardingPagerAdapter
 	private lateinit var themeCards: OnboardingThemeCards
 
-	/** The runtime permissions the wizard asks for; extend as the app gains new ones. */
-	private val wizardPermissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+	/**
+	 * The runtime permissions the wizard asks for; extend as the app gains new
+	 * ones. READ_EXTERNAL_STORAGE (used by the wallpaper-colour code) stopped
+	 * being grantable on Android 13+, so it is omitted there.
+	 */
+	private val wizardPermissions =
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
+			arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+		else
+			emptyArray()
+
+	/** The permission page is dropped when there is nothing grantable to ask for. */
+	private val pages = OnboardingPage.entries.filter {
+		it != OnboardingPage.PERMISSION || this.wizardPermissions.isNotEmpty()
+	}
 
 	private val permissionRequest = this.registerForActivityResult(
 		ActivityResultContracts.RequestMultiplePermissions()
@@ -54,6 +68,10 @@ class OnboardingActivity : AppCompatActivity() {
 
 		this.container = DependencyContainer.of(this)
 
+		// Before any other preference write, so that the gate can tell this
+		// wizard run's writes apart from a pre-wizard install's //
+		OnboardingGate.markStarted(this.container.prefs)
+
 		this.pager = this.findViewById(R.id.vpOnboarding)
 		this.indicator = this.findViewById(R.id.opiOnboardingDots)
 		this.btnSkip = this.findViewById(R.id.btnOnboardingSkip)
@@ -65,11 +83,11 @@ class OnboardingActivity : AppCompatActivity() {
 			this::applyTheme,
 		)
 
-		this.adapter = OnboardingPagerAdapter(this::bindPage)
+		this.adapter = OnboardingPagerAdapter(this.pages, this::bindPage)
 		this.pager.adapter = this.adapter
 		this.pager.setPageTransformer(OnboardingPageTransformer())
 
-		this.indicator.count = OnboardingPage.entries.size
+		this.indicator.count = this.pages.size
 		this.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
 			override fun onPageScrolled(position: Int, offset: Float, offsetPixels: Int) {
 				this@OnboardingActivity.indicator.setPosition(position, offset)
@@ -82,7 +100,7 @@ class OnboardingActivity : AppCompatActivity() {
 
 		this.btnSkip.setOnClickListener { this.finishSetup() }
 		this.btnNext.setOnClickListener {
-			if (this.pager.currentItem == OnboardingPage.entries.size - 1) {
+			if (this.pager.currentItem == this.pages.size - 1) {
 				this.finishSetup()
 			} else {
 				this.pager.currentItem += 1
@@ -179,7 +197,7 @@ class OnboardingActivity : AppCompatActivity() {
 	}
 
 	private fun updateButtons(position: Int) {
-		val last = position == OnboardingPage.entries.size - 1
+		val last = position == this.pages.size - 1
 
 		this.btnNext.setText(if (last) R.string.onboarding_button_done else R.string.onboarding_button_next)
 		this.btnSkip.visibility = if (last) View.INVISIBLE else View.VISIBLE

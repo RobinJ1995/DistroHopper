@@ -21,6 +21,7 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows
+import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLooper
 
@@ -87,7 +88,7 @@ class OnboardingActivityTest {
             scenario.onActivity { activity ->
                 val pager = activity.findViewById<ViewPager2>(R.id.vpOnboarding)
                 val next = activity.findViewById<Button>(R.id.btnOnboardingNext)
-                pager.setCurrentItem(OnboardingPage.entries.size - 1, false)
+                pager.setCurrentItem(pager.adapter!!.itemCount - 1, false)
                 ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
 
                 assertEquals(activity.getString(R.string.onboarding_button_done), next.text)
@@ -124,12 +125,15 @@ class OnboardingActivityTest {
         }
     }
 
+    // READ_EXTERNAL_STORAGE is only grantable below Android 13 //
+    @Config(sdk = [32])
     @Test fun permissionPageShowsGrantedStateWhenAlreadyGranted() {
         Shadows.shadowOf(application).grantPermissions(Manifest.permission.READ_EXTERNAL_STORAGE)
 
         launch().use { scenario ->
             scenario.onActivity { activity ->
                 val pager = activity.findViewById<ViewPager2>(R.id.vpOnboarding)
+                assertEquals(OnboardingPage.entries.size, pager.adapter!!.itemCount)
                 pager.setCurrentItem(OnboardingPage.PERMISSION.ordinal, false)
                 ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
 
@@ -142,6 +146,27 @@ class OnboardingActivityTest {
                     activity.findViewById<android.view.View>(R.id.btnOnboardingGrantPermission).visibility,
                 )
             }
+        }
+    }
+
+    // robolectric.properties pins tests to SDK 36, where the wallpaper
+    // permission cannot be granted: the page asking for it must not appear //
+    @Test fun permissionPageIsOmittedWhereThePermissionIsUngrantable() {
+        launch().use { scenario ->
+            scenario.onActivity { activity ->
+                val pager = activity.findViewById<ViewPager2>(R.id.vpOnboarding)
+
+                assertEquals(OnboardingPage.entries.size - 1, pager.adapter!!.itemCount)
+            }
+        }
+    }
+
+    @Test fun launchingTheWizardRecordsThatItStarted() {
+        launch().use {
+            assertTrue(
+                application.getSharedPreferences(Preferences.PREFERENCES, 0)
+                    .getBoolean(Preference.SETUP_STARTED.getName(), false)
+            )
         }
     }
 }
