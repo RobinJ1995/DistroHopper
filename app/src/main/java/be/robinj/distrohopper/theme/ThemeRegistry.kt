@@ -13,6 +13,7 @@ object ThemeRegistry {
 		"gnome" to ::Gnome,
 		"elementary" to ::Elementary,
 		"cinnamon" to ::Cinnamon,
+		"plasma" to ::Plasma,
 	)
 
 	/** Falls back to the default theme for unknown or null names. */

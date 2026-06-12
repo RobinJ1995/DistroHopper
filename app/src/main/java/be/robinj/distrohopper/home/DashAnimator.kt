@@ -12,6 +12,8 @@ import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.PathInterpolator
 import android.widget.FrameLayout
 import android.widget.GridView
@@ -139,7 +141,8 @@ class DashAnimator(
 		val gvDashHomeApps = this.viewFinder.get<GridView>(R.id.gvDashHomeApps)
 
 		val animators = mutableListOf<Animator>()
-		this.buildBlurAnimator(opening, blurRadiusPx, duration)?.let { animators += it }
+		val blurAnimator = this.buildBlurAnimator(opening, blurRadiusPx, duration)
+			?.also { animators += it }
 
 		if (mode != DashAnimation.NONE) {
 			if (opening && freshOpen) {
@@ -163,6 +166,15 @@ class DashAnimator(
 			return
 		}
 		animators.forEach { it.interpolator = interpolator }
+		/*
+		 * The blur reads as binary above a fairly small radius, so an eased-out
+		 * ramp looks like an instant jump (especially with large blur radii):
+		 * nearly the whole perceptible sharp-to-blurred range sits in the first
+		 * few percent of the radius ramp. Easing the radius in (and out in
+		 * reverse) keeps it in the perceptible range for most of the duration.
+		 */
+		blurAnimator?.interpolator =
+			if (opening) BLUR_OPEN_INTERPOLATOR else BLUR_CLOSE_INTERPOLATOR
 
 		this.running = AnimatorSet().also { set ->
 			set.playTogether(animators)
@@ -439,5 +451,7 @@ class DashAnimator(
 		private const val ZOOM_START_SCALE = 0.2F
 		private val OPEN_INTERPOLATOR: TimeInterpolator = PathInterpolator(0.4F, 0F, 0.2F, 1F)
 		private val CLOSE_INTERPOLATOR: TimeInterpolator = PathInterpolator(0.4F, 0F, 1F, 1F)
+		private val BLUR_OPEN_INTERPOLATOR: TimeInterpolator = AccelerateInterpolator(2.5F)
+		private val BLUR_CLOSE_INTERPOLATOR: TimeInterpolator = DecelerateInterpolator(2.5F)
 	}
 }
