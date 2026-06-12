@@ -37,8 +37,9 @@ class LocalFilesTest {
             MediaStore.Files.FileColumns.DATA,
             MediaStore.Files.FileColumns.MIME_TYPE,
         ))
+        // DATA is only read when DISPLAY_NAME is null (filename fallback); pass null otherwise.
         rows.forEach { (id, name, mime) ->
-            cursor.addRow(arrayOf<Any?>(id, name, "/storage/emulated/0/$name", mime))
+            cursor.addRow(arrayOf<Any?>(id, name, null, mime))
         }
         return cursor
     }
