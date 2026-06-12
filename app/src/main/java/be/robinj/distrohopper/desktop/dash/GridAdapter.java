@@ -26,16 +26,12 @@ import be.robinj.distrohopper.preferences.Preferences;
  */
 public class GridAdapter extends ArrayAdapter<App> {
 	private final int iconWidth;
-	// Resolved once: getView() runs per cell per scroll frame, and the activity is
-	// recreated on theme change anyway //
-	private final Theme theme;
 
 	public GridAdapter(final Context context, final List<App> apps, final float displayDensity,
 					   final int dashIconWidth) {
 		super (context, R.layout.widget_dash_applauncher, apps);
 
 		this.iconWidth = Math.round((80 + dashIconWidth) * displayDensity);
-		this.theme = DependencyContainer.of (context).getThemeManager ().getCurrent ();
 	}
 
 	@Override
@@ -50,8 +46,9 @@ public class GridAdapter extends ArrayAdapter<App> {
 		ImageView imgIcon = (ImageView) view.findViewById (R.id.imgIcon);
 
 		tvLabel.setText (appLauncher.getLabel ());
-		tvLabel.setTextColor (view.getResources ().getColor (this.theme.dash_applauncher_text_colour));
-		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (this.theme.dash_applauncher_text_shadow_colour));
+		final Theme theme = DependencyContainer.of (view.getContext ()).getThemeManager ().getCurrent ();
+		tvLabel.setTextColor (view.getResources ().getColor (theme.dash_applauncher_text_colour));
+		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (theme.dash_applauncher_text_shadow_colour));
 		imgIcon.setImageDrawable (appLauncher.getIcon ().getDrawable ());
 
 		final int width = this.iconWidth;
