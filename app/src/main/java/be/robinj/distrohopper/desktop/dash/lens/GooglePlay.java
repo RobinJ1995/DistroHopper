@@ -52,7 +52,7 @@ public class GooglePlay extends Lens
 
 	public String getName ()
 	{
-		return "Google Play";
+		return "Google Play Store";
 	}
 
 	public String getDescription ()
