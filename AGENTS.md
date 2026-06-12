@@ -136,8 +136,8 @@ etc/                                        — design assets (SVG/XCF sources, 
   - **`desktop/dash/`** — the full-screen dash (app grid + search), with
     `GridAdapter` and `SearchTextWatcher`.
   - **`desktop/dash/lens/`** — search "lenses": pluggable search providers
-    (`InstalledApps`, `LocalFiles`, `DuckDuckGo`, `GitHub`, Stack Exchange
-    sites, `Reddit`, …) coordinated by `LensManager` with `AsyncSearch` and
+    (`InstalledApps`, `LocalFiles`, `DuckDuckGo`, `GitHub`, …) coordinated
+    by `LensManager` with `AsyncSearch` and
     result/collection adapters. A lens can declare `requiredPermissions()`;
     lenses missing any of them are left out of the default-enabled set, and
     enabling one in the preferences re-requests them.

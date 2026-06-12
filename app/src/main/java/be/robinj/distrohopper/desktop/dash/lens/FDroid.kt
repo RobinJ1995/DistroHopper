@@ -30,7 +30,7 @@ open class FDroid(context: Context) : AppStoreLens(context) {
 
     override fun getName(): String = "F-Droid"
 
-    override fun getDescription(): String = "F-Droid free and open source app search results"
+    override fun getDescription(): String = "F-Droid open source app search results"
 
     @Throws(IOException::class, JSONException::class)
     override fun search(str: String, maxResults: Int): List<LensSearchResult> {

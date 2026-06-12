@@ -33,7 +33,7 @@ class LensManagerTest {
 
     @Test fun exposesAllBuiltInLenses() {
         assertEquals(
-            setOf("AskUbuntu", "DuckDuckGo", "FDroid", "GitHub", "GooglePlayStore", "InstalledApps", "LocalFiles", "Reddit", "ServerFault", "StackOverflow", "SuperUser"),
+            setOf("DuckDuckGo", "FDroid", "GitHub", "GooglePlayStore", "InstalledApps", "LocalFiles"),
             manager().availableLenses.keys,
         )
     }
