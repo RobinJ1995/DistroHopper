@@ -87,6 +87,12 @@ class DashController(
 
 		fun animateTo(dashOpened: Boolean, durationMs: Long) {
 			this.animator?.cancel()
+			if (durationMs == 0L) {
+				this.fraction = if (dashOpened) 1F else 0F
+				this.resting.alpha = ((1F - this.fraction) * 255F).toInt()
+				this.animator = null
+				return
+			}
 			this.animator = ValueAnimator.ofFloat(this.fraction, if (dashOpened) 1F else 0F)
 				.also { animator ->
 					animator.duration = durationMs
@@ -125,11 +131,12 @@ class DashController(
 			this.viewFinder.get<LinearLayout>(R.id.llStatusBar)
 				.setBackgroundColor(this.chameleonicBgColour)
 		} else {
+			val duration = if (this.animator.animationsEnabled) DashAnimator.OPEN_DURATION_MS else 0L
 			llPanel.background = this.panelFade.drawable
 			this.viewFinder.get<LinearLayout>(R.id.llStatusBar).background =
 				this.statusBarFade.drawable
-			this.panelFade.animateTo(dashOpened = true, DashAnimator.OPEN_DURATION_MS)
-			this.statusBarFade.animateTo(dashOpened = true, DashAnimator.OPEN_DURATION_MS)
+			this.panelFade.animateTo(dashOpened = true, duration)
+			this.statusBarFade.animateTo(dashOpened = true, duration)
 		}
 
 		this.isOpen = true
@@ -163,8 +170,9 @@ class DashController(
 				.setBackgroundResource(this.theme.statusbar_background_resolved(
 					this.activity.resources, Preferences.getSharedPreferences(this.activity)))
 		} else {
-			this.panelFade.animateTo(dashOpened = false, DashAnimator.CLOSE_DURATION_MS)
-			this.statusBarFade.animateTo(dashOpened = false, DashAnimator.CLOSE_DURATION_MS)
+			val duration = if (this.animator.animationsEnabled) DashAnimator.CLOSE_DURATION_MS else 0L
+			this.panelFade.animateTo(dashOpened = false, duration)
+			this.statusBarFade.animateTo(dashOpened = false, duration)
 		}
 
 		val imm = this.activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?

@@ -1,5 +1,8 @@
 package be.robinj.distrohopper.home
 
+import android.content.Context
+import android.graphics.drawable.LayerDrawable
+import android.os.PowerManager
 import android.view.View
 import android.widget.EditText
 import android.widget.GridView
@@ -18,6 +21,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.LooperMode
+import org.robolectric.shadow.api.Shadow
+import org.robolectric.shadows.ShadowPowerManager
 
 /**
  * DashController end-states for the animated dash_animation presets. Runs
@@ -117,6 +122,32 @@ class DashAnimatorTest {
 	@Test fun elementaryOpensAndClosesSettled() = this.assertOpensAndClosesSettled("elementary")
 
 	@Test fun unityOpensAndClosesSettled() = this.assertOpensAndClosesSettled("default")
+
+	@Test fun powerSaverDisablesOpenAndCloseAnimations() {
+		this.launch("gnome")
+		this.scenario.onActivity { activity ->
+			val powerManager = activity.getSystemService(Context.POWER_SERVICE) as PowerManager
+			Shadow.extract<ShadowPowerManager>(powerManager).setIsPowerSaveMode(true)
+			val dash = this.controller(activity)
+			val panelBackground = activity.resources.getDrawable(
+				DependencyContainer.of(activity).themeManager.current.panel_background)
+
+			dash.open()
+
+			assertTrue(dash.isOpen)
+			this.assertSettledOpen(activity)
+			assertEquals(0, (activity.findViewById<LinearLayout>(R.id.llPanel).background
+				as LayerDrawable).getDrawable(1).alpha)
+
+			dash.close()
+
+			assertFalse(dash.isOpen)
+			this.assertSettledClosed(activity)
+			assertEquals(panelBackground.alpha,
+				(activity.findViewById<LinearLayout>(R.id.llPanel).background
+					as LayerDrawable).getDrawable(1).alpha)
+		}
+	}
 
 	@Test fun closeClearsTheSearchFieldImmediately() {
 		this.launch("gnome")

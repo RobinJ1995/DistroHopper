@@ -10,6 +10,7 @@ import android.animation.ValueAnimator
 import android.app.Activity
 import android.graphics.RenderEffect
 import android.graphics.Shader
+import android.os.PowerManager
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
@@ -33,7 +34,7 @@ import kotlin.math.min
 
 /**
  * Applies the visual side of opening/closing the dash on behalf of
- * DashController. The wallpaper/widget blur and the panel opacity always
+ * DashController. The wallpaper/widget blur and the panel opacity normally
  * change gradually; how the dash itself appears is the theme's choice
  * (dash_animation):
  *  - NONE: the dash snaps in and out instantly.
@@ -44,7 +45,8 @@ import kotlin.math.min
  *  - UNITY: the dash fades in.
  *  - MATE: the whole dash fades and zooms out of the BFB.
  *  - COSMIC: the dash fades in with a slight zoom.
- * Everything is reversed on close.
+ * Everything is reversed on close. Battery saver bypasses all transitions
+ * and applies the final state immediately.
  */
 class DashAnimator(
 	private val activity: Activity,
@@ -59,9 +61,18 @@ class DashAnimator(
 	private val animation: DashAnimation
 		get() = DashAnimation.of(this.activity.resources.getInteger(this.theme.dash_animation))
 
+	internal val animationsEnabled: Boolean
+		get() = !this.activity.getSystemService(PowerManager::class.java).isPowerSaveMode
+
 	fun open(blurRadiusPx: Int) {
 		val reversal = this.cancelRunning()
 		val llDash = this.viewFinder.get<LinearLayout>(R.id.llDash)
+
+		if (!this.animationsEnabled) {
+			this.withLayoutTransitionsSuppressed { this.openInstantly() }
+			this.applyBlurRadius(blurRadiusPx.toFloat(), blurRadiusPx)
+			return
+		}
 
 		if (this.animation == DashAnimation.NONE) {
 			this.openInstantly()
@@ -95,11 +106,21 @@ class DashAnimator(
 	/**
 	 * Reverses the open effects. [teardown] (hide the dash, restore the
 	 * overlays) runs synchronously for NONE, at animation end otherwise — or
-	 * not at all if a re-open cancels the close mid-flight. The blur always
-	 * ramps down gradually, NONE included.
+	 * not at all if a re-open cancels the close mid-flight. The blur normally
+	 * ramps down gradually, NONE included; battery saver settles it immediately.
 	 */
 	fun close(blurRadiusPx: Int, teardown: () -> Unit) {
 		this.cancelRunning()
+
+		if (!this.animationsEnabled) {
+			this.withLayoutTransitionsSuppressed { teardown() }
+			this.viewFinder.get<LinearLayout>(R.id.llPanel).alpha = this.panelRestingAlpha()
+			this.resetDashTransforms(this.viewFinder.get(R.id.llDash))
+			this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened).alpha = 1F
+			this.resetIconTransforms(this.viewFinder.get(R.id.gvDashHomeApps))
+			this.finishBlur()
+			return
+		}
 
 		if (this.animation == DashAnimation.NONE) {
 			teardown()
@@ -112,12 +133,17 @@ class DashAnimator(
 	}
 
 	private fun openInstantly() {
-		this.viewFinder.get<LinearLayout>(R.id.llDash).visibility = View.VISIBLE
+		val llDash = this.viewFinder.get<LinearLayout>(R.id.llDash)
+		val overlay = this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened)
+
+		llDash.visibility = View.VISIBLE
 		this.viewFinder.get<LinearLayout>(R.id.llPanel).alpha = 1F
 
 		this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlay).visibility = View.INVISIBLE
-		this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened).visibility =
-			View.VISIBLE
+		overlay.visibility = View.VISIBLE
+		overlay.alpha = 1F
+		this.resetDashTransforms(llDash)
+		this.resetIconTransforms(this.viewFinder.get(R.id.gvDashHomeApps))
 	}
 
 	/** @return whether an animation was in flight (i.e. the new call reverses it). */
@@ -227,17 +253,25 @@ class DashAnimator(
 			animator.duration = duration
 			animator.addUpdateListener {
 				val radius = it.animatedValue as Float
-
-				this.currentBlurRadius = radius
-				wallpaper.applyBlurFraction(this.activity.window, radius / blurRadiusPx,
-					blurRadiusPx)
-				widgets.setRenderEffect(if (radius >= 0.5F) { // createBlurEffect() rejects 0 //
-					RenderEffect.createBlurEffect(radius, radius, Shader.TileMode.CLAMP)
-				} else {
-					null
-				})
+				this.applyBlurRadius(radius, blurRadiusPx, wallpaper, widgets)
 			}
 		}
+	}
+
+	private fun applyBlurRadius(radius: Float, blurRadiusPx: Int,
+			wallpaper: Wallpaper = this.viewFinder.get(R.id.wpWallpaper),
+			widgets: WidgetsContainer = this.viewFinder.get(R.id.vgWidgets)) {
+		if (blurRadiusPx <= 0) {
+			return
+		}
+
+		this.currentBlurRadius = radius
+		wallpaper.applyBlurFraction(this.activity.window, radius / blurRadiusPx, blurRadiusPx)
+		widgets.setRenderEffect(if (radius >= 0.5F) { // createBlurEffect() rejects 0 //
+			RenderEffect.createBlurEffect(radius, radius, Shader.TileMode.CLAMP)
+		} else {
+			null
+		})
 	}
 
 	private fun buildGnomeAnimators(opening: Boolean, freshOpen: Boolean, llDash: View,

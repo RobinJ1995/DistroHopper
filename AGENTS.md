@@ -95,10 +95,11 @@ etc/                                        — design assets (SVG/XCF sources, 
     colour. The customise-mode "close = relaunch" branch stays in
     HomeActivity because it manipulates the activity's intent.
   - `DashAnimator` — the visual side of dash open/close on DashController's
-    behalf: the blur and panel opacity always ramp gradually, and the dash
-    itself animates per the theme's `dash_animation` preset (the
+    behalf: the blur and panel opacity normally ramp gradually, and the dash
+    itself animates per the theme's `dash_animation` preset. All transitions
+    settle immediately while the device is in battery-saver mode. The
     `DashAnimation` enum: genie-from-BFB for gnome, slide-from-launcher for
-    cinnamon, zoom-from-label for elementary, fade for unity/default).
+    cinnamon, zoom-from-label for elementary, fade for unity/default.
   - `WallpaperColourApplier` — applies the wallpaper's primary colour to
     launcher/dash for chameleonic themes (via the permissionless
     `WallpaperManager.getWallpaperColors` API; the storage permission only
