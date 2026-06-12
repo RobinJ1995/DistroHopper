@@ -27,8 +27,11 @@ object LayoutTransitionConfigurer {
 		lvDashHomeLensResults_transition.setStartDelay(LayoutTransition.APPEARING, 0)
 		viewFinder.get<ListView>(R.id.lvDashHomeLensResults).layoutTransition = lvDashHomeLensResults_transition
 
+		// Zero delays and a short duration so that, while reordering icons by
+		// drag, the siblings slide over immediately as the empty slot moves //
 		val llLauncherPinnedApps_transition = LayoutTransition()
-		llLauncherPinnedApps_transition.setStartDelay(LayoutTransition.APPEARING, 0)
+		llLauncherPinnedApps_transition.setDuration(180L)
+		this.zeroStartDelays(llLauncherPinnedApps_transition)
 		viewFinder.get<LinearLayout>(R.id.llLauncherPinnedApps).layoutTransition = llLauncherPinnedApps_transition
 
 		val llLauncherRunningApps_transition = LayoutTransition()

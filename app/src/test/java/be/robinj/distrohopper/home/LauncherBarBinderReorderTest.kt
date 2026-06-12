@@ -1,0 +1,132 @@
+package be.robinj.distrohopper.home
+
+import android.view.View
+import android.widget.LinearLayout
+import androidx.test.core.app.ActivityScenario
+import be.robinj.distrohopper.ActivityTestSupport
+import be.robinj.distrohopper.App
+import be.robinj.distrohopper.HomeActivity
+import be.robinj.distrohopper.R
+import be.robinj.distrohopper.desktop.launcher.AppLauncher
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.LooperMode
+
+/**
+ * The drag-to-reorder preview on the launcher bar: while a pinned icon is
+ * dragged, its view stays behind as an invisible placeholder (the empty
+ * slot), which shifts to whichever icon the drag hovers over; dropping
+ * commits the previewed order, cancelling restores the original one.
+ */
+@RunWith(RobolectricTestRunner::class)
+@LooperMode(LooperMode.Mode.LEGACY)
+class LauncherBarBinderReorderTest {
+    private lateinit var scenario: ActivityScenario<HomeActivity>
+
+    @Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
+    @After fun tearDown() { scenario.close() }
+
+    private fun pinThree(activity: HomeActivity): List<App> =
+        listOf("com.example.alpha", "com.example.beta", "com.example.gamma").map { packageName ->
+            val app = activity.appManager.findAppsByPackageName(packageName).first()
+            activity.appManager.pin(app, false, false, true)
+            app
+        }
+
+    private fun pinnedContainer(activity: HomeActivity): LinearLayout =
+        activity.findViewById(R.id.llLauncherPinnedApps)
+
+    private fun viewOrder(activity: HomeActivity): List<App> {
+        val container = pinnedContainer(activity)
+        return (0 until container.childCount).map { container.getChildAt(it).tag as App }
+    }
+
+    @Test fun startingADragLeavesAnInvisiblePlaceholderInTheIconsSlot() {
+        scenario.onActivity { activity ->
+            val (alpha, _, _) = pinThree(activity)
+
+            activity.appManager.startedDraggingPinnedApp(alpha)
+
+            val placeholder = pinnedContainer(activity).findViewWithTag<AppLauncher>(alpha)
+            assertNotNull(placeholder)
+            assertEquals(View.INVISIBLE, placeholder.visibility)
+            assertEquals(0, pinnedContainer(activity).indexOfChild(placeholder))
+        }
+    }
+
+    @Test fun hoveringOverAnotherIconShiftsThePlaceholderWithoutTouchingTheModel() {
+        scenario.onActivity { activity ->
+            val (alpha, beta, gamma) = pinThree(activity)
+
+            activity.appManager.startedDraggingPinnedApp(alpha)
+            activity.appManager.draggedPinnedAppOver(gamma)
+
+            assertEquals(listOf(beta, gamma, alpha), viewOrder(activity))
+            assertEquals(listOf(alpha, beta, gamma), activity.appManager.pinned)
+        }
+    }
+
+    @Test fun droppingCommitsThePreviewedOrder() {
+        scenario.onActivity { activity ->
+            val (alpha, beta, gamma) = pinThree(activity)
+
+            activity.appManager.startedDraggingPinnedApp(alpha)
+            activity.appManager.draggedPinnedAppOver(gamma)
+            activity.appManager.droppedPinnedApp()
+            activity.appManager.endedDraggingPinnedApp()
+
+            assertEquals(listOf(beta, gamma, alpha), activity.appManager.pinned)
+            assertEquals(listOf(beta, gamma, alpha), viewOrder(activity))
+            val dragged = pinnedContainer(activity).findViewWithTag<AppLauncher>(alpha)
+            assertEquals(View.VISIBLE, dragged.visibility)
+        }
+    }
+
+    @Test fun hoveringBackAndForthPreviewsTheLatestPosition() {
+        scenario.onActivity { activity ->
+            val (alpha, beta, gamma) = pinThree(activity)
+
+            activity.appManager.startedDraggingPinnedApp(beta)
+            activity.appManager.draggedPinnedAppOver(gamma) // slot previews [alpha, gamma, _] //
+            activity.appManager.draggedPinnedAppOver(alpha) // and now [_, alpha, gamma] //
+            activity.appManager.droppedPinnedApp()
+            activity.appManager.endedDraggingPinnedApp()
+
+            assertEquals(listOf(beta, alpha, gamma), activity.appManager.pinned)
+            assertEquals(listOf(beta, alpha, gamma), viewOrder(activity))
+        }
+    }
+
+    @Test fun endingWithoutADropRestoresTheOriginalOrder() {
+        scenario.onActivity { activity ->
+            val (alpha, beta, gamma) = pinThree(activity)
+
+            activity.appManager.startedDraggingPinnedApp(alpha)
+            activity.appManager.draggedPinnedAppOver(gamma)
+            activity.appManager.endedDraggingPinnedApp()
+
+            assertEquals(listOf(alpha, beta, gamma), activity.appManager.pinned)
+            assertEquals(listOf(alpha, beta, gamma), viewOrder(activity))
+        }
+    }
+
+    @Test fun droppingBackOnTheOriginalSlotLeavesTheOrderUnchanged() {
+        scenario.onActivity { activity ->
+            val (alpha, beta, gamma) = pinThree(activity)
+
+            activity.appManager.startedDraggingPinnedApp(beta)
+            activity.appManager.draggedPinnedAppOver(gamma)
+            activity.appManager.draggedPinnedAppOver(gamma) // back to where it started //
+            activity.appManager.droppedPinnedApp()
+            activity.appManager.endedDraggingPinnedApp()
+
+            assertEquals(listOf(alpha, beta, gamma), activity.appManager.pinned)
+            assertEquals(listOf(alpha, beta, gamma), viewOrder(activity))
+        }
+    }
+}

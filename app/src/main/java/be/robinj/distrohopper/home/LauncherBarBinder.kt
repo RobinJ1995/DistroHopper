@@ -27,6 +27,12 @@ import be.robinj.distrohopper.theme.Location
 class LauncherBarBinder(private val appManager: AppManager) {
 	private val activity = this.appManager.parent
 
+	/** While a pinned icon is dragged, its own view stays in the bar as an
+	 *  invisible placeholder: the empty slot previewing where it would drop. */
+	private var draggedPinnedApp: AppLauncher? = null
+	private var draggedPinnedAppOldIndex = -1
+	private var draggedPinnedAppDropped = false
+
 	private val llLauncher: LinearLayout by lazy {
 		this.activity.viewFinder.get(R.id.llLauncher)
 	}
@@ -91,6 +97,60 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	}
 
 	fun startedDraggingPinnedApp() = startedDragging(this.activity)
+
+	fun startedDraggingPinnedApp(app: App) {
+		val appLauncher = this.llLauncherPinnedApps.findViewWithTag<AppLauncher>(app)
+		if (appLauncher != null) {
+			this.draggedPinnedApp = appLauncher
+			this.draggedPinnedAppOldIndex = this.llLauncherPinnedApps.indexOfChild(appLauncher)
+			this.draggedPinnedAppDropped = false
+			appLauncher.visibility = View.INVISIBLE
+		}
+
+		this.startedDraggingPinnedApp()
+	}
+
+	/**
+	 * The drag is hovering over another pinned icon: shift the placeholder
+	 * into that icon's slot, so that the icons in between slide over
+	 * (animated by the container's LayoutTransition) and the empty slot
+	 * shows exactly where the dragged icon would land.
+	 */
+	fun draggedPinnedAppOver(target: App) {
+		val dragged = this.draggedPinnedApp ?: return
+		val targetView = this.llLauncherPinnedApps.findViewWithTag<AppLauncher>(target)
+		if (targetView == null || targetView == dragged)
+			return
+
+		val targetIndex = this.llLauncherPinnedApps.indexOfChild(targetView)
+		if (targetIndex < 0)
+			return
+
+		this.llLauncherPinnedApps.removeView(dragged)
+		this.llLauncherPinnedApps.addView(dragged, targetIndex)
+	}
+
+	/** Commits the order previewed by the placeholder's position. */
+	fun droppedPinnedApp() {
+		val dragged = this.draggedPinnedApp ?: return
+		this.draggedPinnedAppDropped = true
+
+		val newIndex = this.llLauncherPinnedApps.indexOfChild(dragged)
+		if (newIndex >= 0 && newIndex != this.draggedPinnedAppOldIndex) {
+			this.appManager.movePinnedApp(this.draggedPinnedAppOldIndex, newIndex)
+			this.appManager.savePinnedApps()
+		}
+	}
+
+	fun endedDraggingPinnedApp() {
+		val dragged = this.draggedPinnedApp ?: return
+		this.draggedPinnedApp = null
+		this.draggedPinnedAppOldIndex = -1
+
+		dragged.visibility = View.VISIBLE
+		if (!this.draggedPinnedAppDropped)
+			this.refreshPinnedView() // Cancelled, or unpinned via the trash: snap back to the model's order //
+	}
 
 	fun stoppedDraggingPinnedApp() = stoppedDragging(this.activity)
 
