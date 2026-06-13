@@ -89,6 +89,19 @@ class AppRepositoryTest {
 		assertNull(prefs.getString("2", null))
 	}
 
+	@Test fun isUsageBasedSortOrderTracksThePreference() {
+		val prefs = Preferences.getSharedPreferences(this.context)
+
+		prefs.edit().putString("app_sort_order", "alphabetical").commit()
+		assertFalse(this.repository.isUsageBasedSortOrder())
+
+		prefs.edit().putString("app_sort_order", "recent").commit()
+		assertTrue(this.repository.isUsageBasedSortOrder())
+
+		prefs.edit().putString("app_sort_order", "most_used").commit()
+		assertTrue(this.repository.isUsageBasedSortOrder())
+	}
+
 	@Test fun findersLocateAppsByIdentity() {
 		val alpha = this.app("com.example.a", "AlphaActivity", "Alpha")
 		this.repository.add(alpha, false)

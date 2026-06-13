@@ -15,6 +15,13 @@ enum class AppSortOrder(val value: String) {
 	MOST_RECENTLY_USED("recent"),
 	MOST_USED("most_used");
 
+	/**
+	 * Whether this order ranks by usage data, so its result changes as apps are
+	 * launched and the dash must be re-sorted on the way back in. Alphabetical is
+	 * stable between loads and never needs the refresh.
+	 */
+	val usesUsageData: Boolean get() = this != ALPHABETICAL
+
 	companion object {
 		/** Maps a stored value to an order, defaulting to [ALPHABETICAL]. */
 		@JvmStatic

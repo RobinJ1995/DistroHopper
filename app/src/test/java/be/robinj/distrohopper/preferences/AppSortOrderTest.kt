@@ -32,4 +32,10 @@ class AppSortOrderTest {
 
 		assertEquals(AppSortOrder.MOST_USED, AppSortOrder.current(prefs))
 	}
+
+	@Test fun onlyUsageBasedOrdersUseUsageData() {
+		assertEquals(false, AppSortOrder.ALPHABETICAL.usesUsageData)
+		assertEquals(true, AppSortOrder.MOST_RECENTLY_USED.usesUsageData)
+		assertEquals(true, AppSortOrder.MOST_USED.usesUsageData)
+	}
 }

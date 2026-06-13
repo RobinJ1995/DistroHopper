@@ -817,6 +817,11 @@ public class HomeActivity extends AppCompatActivity
 
 	public void openDash ()
 	{
+		// Pick up launches since the dash was last built, so the usage-based sort
+		// orders ("most recently used"/"most used") aren't stale on open //
+		if (this.apps != null)
+			this.apps.refreshDashSortOrder ();
+
 		this.viewModel.openDash ();
 		this.dash.open ();
 	}

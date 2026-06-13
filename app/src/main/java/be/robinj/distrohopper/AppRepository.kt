@@ -81,6 +81,13 @@ class AppRepository(private val context: Context) {
 		this.installedChanged()
 	}
 
+	/**
+	 * Whether the active sort order ranks by usage data (so it goes stale as apps
+	 * are launched and the dash should be re-sorted when it next opens).
+	 */
+	fun isUsageBasedSortOrder(): Boolean =
+		AppSortOrder.current(Preferences.getSharedPreferences(this.context)).usesUsageData
+
 	fun size(): Int = this.apps.size
 
 	operator fun get(index: Int): App = this.apps[index]
