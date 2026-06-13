@@ -212,11 +212,14 @@ class DashController(
 		val llPanel = this.viewFinder.get<LinearLayout>(R.id.llPanel)
 
 		if (this.prefs.getBoolean(Preference.DASH_SEARCH_FOCUS_ON_OPEN, false)) {
+			val llDashContent = this.viewFinder.get<LinearLayout>(R.id.llDashContent)
 			val etDashSearch = this.viewFinder.get<EditText>(R.id.etDashSearch)
 			// Defer until the dash view is laid out/visible so the focus and
-			// keyboard request take effect.
+			// keyboard request take effect. Skip in customise mode, where
+			// llDashContent (which holds the search field) is hidden — otherwise
+			// the keyboard would pop up over the customise controls.
 			etDashSearch.post {
-				if (etDashSearch.requestFocus()) {
+				if (llDashContent.visibility == View.VISIBLE && etDashSearch.requestFocus()) {
 					val imm = this.activity.getSystemService(Context.INPUT_METHOD_SERVICE)
 						as InputMethodManager?
 					imm?.showSoftInput(etDashSearch, InputMethodManager.SHOW_IMPLICIT)
