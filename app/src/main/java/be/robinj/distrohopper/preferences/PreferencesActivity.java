@@ -285,12 +285,6 @@ public class PreferencesActivity extends AppCompatActivity
 
 		private void clearDevPreferences ()
 		{
-			final SharedPreferences prefs = Preferences.getSharedPreferences (this.requireContext ());
-			prefs.edit ()
-				.remove (be.robinj.distrohopper.preferences.Preference.DEV_LOG_TOASTER.getName ())
-				.remove (be.robinj.distrohopper.preferences.Preference.DEV_WIDGET_RESIZE_ANY.getName ())
-				.apply ();
-
 			final SwitchPreferenceCompat logToaster = this.findPreference (
 				be.robinj.distrohopper.preferences.Preference.DEV_LOG_TOASTER.getName ());
 			if (logToaster != null)
@@ -300,6 +294,15 @@ public class PreferencesActivity extends AppCompatActivity
 				be.robinj.distrohopper.preferences.Preference.DEV_WIDGET_RESIZE_ANY.getName ());
 			if (widgetResize != null)
 				widgetResize.setChecked (false);
+
+			// setChecked(false) keeps the visible switches in sync but persists
+			// false; remove afterwards so disabling developer mode truly clears
+			// developer-only state rather than saving disabled values. //
+			Preferences.getSharedPreferences (this.requireContext ())
+				.edit ()
+				.remove (be.robinj.distrohopper.preferences.Preference.DEV_LOG_TOASTER.getName ())
+				.remove (be.robinj.distrohopper.preferences.Preference.DEV_WIDGET_RESIZE_ANY.getName ())
+				.apply ();
 		}
 
 		private void clearAppCaches ()
