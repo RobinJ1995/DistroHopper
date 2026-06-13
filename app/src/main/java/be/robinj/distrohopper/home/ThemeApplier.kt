@@ -42,7 +42,6 @@ class ThemeApplier(
 		val llDash = this.viewFinder.get<LinearLayout>(R.id.llDash)
 		val llDashCustomise = this.viewFinder.get<LinearLayout>(llDash, R.id.llDashCustomise)
 		val imgDashBackgroundGradient = this.viewFinder.get<ImageView>(llDash, R.id.imgDashBackgroundGradient)
-		val tvDashHomeTitle = this.viewFinder.get<TextView>(llDash, R.id.tvDashHomeTitle)
 		val etDashSearch = this.viewFinder.get<EditText>(llDash, R.id.etDashSearch)
 		val llDashRibbon = this.viewFinder.get<LinearLayout>(llDash, R.id.llDashRibbon)
 		val llPanel = this.viewFinder.get<LinearLayout>(R.id.llPanel)
@@ -122,8 +121,7 @@ class ThemeApplier(
 		tvPanelBfb.compoundDrawablePadding =
 			(6 * this.activity.resources.displayMetrics.density).toInt()
 
-		tvDashHomeTitle.setTextColor(res.getColor(this.theme.dash_applauncher_text_colour))
-		tvDashHomeTitle.setShadowLayer(5F, 2F, 2F, res.getColor(this.theme.dash_applauncher_text_shadow_colour))
+		// The dash title now lives in each pager page (styled by ProfilePagerAdapter).
 
 		etDashSearch.setBackgroundResource(this.theme.dash_search_background)
 		etDashSearch.setTextColor(res.getColor(this.theme.dash_search_text_colour))

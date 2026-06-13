@@ -3,12 +3,16 @@ package be.robinj.distrohopper.desktop.dash
 import android.animation.LayoutTransition
 import android.os.UserHandle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.GridView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import be.robinj.distrohopper.AppManager
+import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
+import be.robinj.distrohopper.Profiles
 import be.robinj.distrohopper.R
 
 /**
@@ -32,26 +36,43 @@ class ProfilePagerAdapter(
 			this.displayDensity, this.dashIconWidth)
 	}
 
-	class PageViewHolder(val grid: GridView) : RecyclerView.ViewHolder(grid)
+	class PageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+		val title: TextView = view.findViewById(R.id.tvDashHomeTitle)
+		val grid: GridView = view.findViewById(R.id.gvDashHomeApps)
+	}
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PageViewHolder {
-		val grid = LayoutInflater.from(parent.context)
-			.inflate(R.layout.widget_dash_profile_page, parent, false) as GridView
+		val view = LayoutInflater.from(parent.context)
+			.inflate(R.layout.widget_dash_profile_page, parent, false)
+		val holder = PageViewHolder(view)
 
 		// The icon appear/disappear transition that LayoutTransitionConfigurer
 		// used to set on the standalone grid; set per page here since the pages
 		// don't exist when that configurer runs.
-		grid.layoutTransition = LayoutTransition().apply {
+		holder.grid.layoutTransition = LayoutTransition().apply {
 			setDuration(180L)
 			setStartDelay(LayoutTransition.APPEARING, 0)
 		}
 
-		return PageViewHolder(grid)
+		return holder
 	}
 
 	override fun getItemCount(): Int = this.profiles.size
 
 	override fun onBindViewHolder(holder: PageViewHolder, position: Int) {
+		// Each page's title swipes with it: the profile name, or "Applications"
+		// when there is only the personal profile (so the dash looks unchanged).
+		holder.title.text = if (this.profiles.size == 1) {
+			this.activity.getString(R.string.dash_lens_apps_title)
+		} else {
+			Profiles.label(this.activity, this.profiles[position])
+		}
+		val theme = DependencyContainer.of(this.activity).themeManager.current
+		val res = this.activity.resources
+		holder.title.setTextColor(res.getColor(theme.dash_applauncher_text_colour))
+		holder.title.setShadowLayer(5F, 2F, 2F,
+			res.getColor(theme.dash_applauncher_text_shadow_colour))
+
 		holder.grid.adapter = this.gridAdapters[position]
 		holder.grid.setColumnWidth(columnWidthPx(this.displayDensity, this.dashIconWidth))
 		holder.grid.onItemClickListener = AppLauncherClickListener(this.activity)
@@ -80,11 +101,11 @@ class ProfilePagerAdapter(
 	}
 
 	private fun forEachAttachedGrid(viewPager: ViewPager2, action: (GridView) -> Unit) {
-		// ViewPager2 hosts its pages in a RecyclerView at child index 0; each
-		// page's itemView is the GridView itself (see onCreateViewHolder).
+		// ViewPager2 hosts its pages in a RecyclerView at child index 0; the grid
+		// is the gvDashHomeApps inside each page (see widget_dash_profile_page).
 		val recycler = viewPager.getChildAt(0) as? RecyclerView ?: return
 		for (i in 0 until recycler.childCount) {
-			(recycler.getChildAt(i) as? GridView)?.let(action)
+			recycler.getChildAt(i).findViewById<GridView>(R.id.gvDashHomeApps)?.let(action)
 		}
 	}
 
@@ -102,7 +123,7 @@ class ProfilePagerAdapter(
 			for (i in 0 until recycler.childCount) {
 				val child = recycler.getChildAt(i)
 				if (recycler.getChildLayoutPosition(child) == viewPager.currentItem) {
-					return child as? GridView
+					return child.findViewById(R.id.gvDashHomeApps)
 				}
 			}
 

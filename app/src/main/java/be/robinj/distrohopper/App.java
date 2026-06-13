@@ -293,8 +293,7 @@ public class App implements Parcelable
 
 			if (this.user != null && icon != null) {
 				// Work-profile badge on whichever icon won (icon pack or fallback) //
-				icon = new AppIcon (this.getPackageManager ()
-						.getUserBadgedIcon (icon.getDrawable (), this.user));
+				icon = new AppIcon (Profiles.badgedIcon (this.context, icon.getDrawable (), this.user));
 			}
 
 			this.icon = icon;
