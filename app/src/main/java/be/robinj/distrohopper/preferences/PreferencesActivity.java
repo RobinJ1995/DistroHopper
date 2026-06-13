@@ -298,10 +298,7 @@ public class PreferencesActivity extends AppCompatActivity
 				if (toggle instanceof SwitchPreferenceCompat)
 					((SwitchPreferenceCompat) toggle).setChecked (false);
 
-				// Explicitly write false rather than removing the key: if a child
-				// preference ever defaults to true, remove() would leave the feature
-				// active after the parent preference is turned off. //
-				editor.putBoolean (child.getName (), false);
+				editor.remove (child.getName ());
 			}
 
 			editor.apply ();
