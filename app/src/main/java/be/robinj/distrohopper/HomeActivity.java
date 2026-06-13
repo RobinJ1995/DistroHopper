@@ -515,6 +515,11 @@ public class HomeActivity extends AppCompatActivity
 
 			if (openDash)
 				this.openDash ();
+			else if (this.apps != null && this.dash.isOpen ())
+				// Launching from an already-open dash leaves it open, so openDash()
+				// won't run on the way back; refresh the usage-based order here too so
+				// the just-launched app moves (no-op for the alphabetical order) //
+				this.apps.refreshDashSortOrder ();
 
 			this.showLauncherService (false);
 

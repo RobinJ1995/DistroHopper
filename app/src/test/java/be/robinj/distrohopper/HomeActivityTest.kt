@@ -1,5 +1,6 @@
 package be.robinj.distrohopper
 
+import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
@@ -9,8 +10,12 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import be.robinj.distrohopper.preferences.Preference
+import be.robinj.distrohopper.preferences.Preferences
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -77,6 +82,38 @@ class HomeActivityTest {
             assertNotNull(grid)
             assertNotNull(grid!!.adapter)
             assertTrue(grid.adapter.count > 0)
+        }
+    }
+
+    @Test fun resumingWithDashOpenRefreshesUsageBasedOrder() {
+        onView(withId(R.id.lalBfb)).perform(click()) // open the dash //
+        ActivityTestSupport.drainTasks()
+
+        lateinit var mostUsedKey: String
+        scenario.onActivity { activity ->
+            val manager = activity.appManager
+            Preferences.getSharedPreferences(activity, Preferences.APP_USAGE)
+                .edit().clear().commit()
+            // Make the last app in the current (alphabetical) order the most used //
+            val last = manager.installedApps.last()
+            mostUsedKey = last.profileScopedKey
+            AppUsageStats(activity).apply {
+                recordLaunch(last.profileScopedKey)
+                recordLaunch(last.profileScopedKey)
+            }
+            Preferences.getSharedPreferences(activity).edit()
+                .putString(Preference.APP_SORT_ORDER.getName(), "most_used").commit()
+            // Still stale: nothing has re-sorted the open dash yet //
+            assertNotEquals(mostUsedKey, manager.installedApps.first().profileScopedKey)
+        }
+
+        // Returning to the launcher with the dash still open (no openDash extra) //
+        scenario.moveToState(Lifecycle.State.STARTED)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+        ActivityTestSupport.drainTasks()
+
+        scenario.onActivity { activity ->
+            assertEquals(mostUsedKey, activity.appManager.installedApps.first().profileScopedKey)
         }
     }
 

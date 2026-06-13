@@ -120,7 +120,6 @@ public class PreferencesActivity extends AppCompatActivity
 			this.addCategory (R.string.pref_header_dev, R.xml.pref_dev);
 
 			this.initIconPackList ();
-			this.initAppSortOrderPreference ();
 			this.initCrashReportsPreference ();
 			this.initLauncherPinModePreference ();
 			this.initDevPreference ();
@@ -258,19 +257,6 @@ public class PreferencesActivity extends AppCompatActivity
 			header.setTitle (titleRes);
 			this.getPreferenceScreen ().addPreference (header);
 			this.addPreferencesFromResource (prefsRes);
-		}
-
-		private void initAppSortOrderPreference ()
-		{
-			final ListPreference pref = this.findPreference (
-				be.robinj.distrohopper.preferences.Preference.APP_SORT_ORDER.getName ());
-			if (pref == null)
-				return;
-
-			// Show the selected order (Alphabetic / Most recently used / ...) as the
-			// summary rather than the static hint, like the icon-pack preference. The
-			// new order takes effect when the home screen reloads on leaving settings.
-			pref.setSummaryProvider (ListPreference.SimpleSummaryProvider.getInstance ());
 		}
 
 		private void initDevPreference ()
