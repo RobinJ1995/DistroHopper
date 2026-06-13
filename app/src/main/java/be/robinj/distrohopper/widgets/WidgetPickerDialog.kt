@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import java.text.Collator
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.desktop.FrostedGlass
 
 /**
  * Lists the installed app widget providers, grouped by application.
@@ -49,6 +50,9 @@ class WidgetPickerDialog(
 				this.widgetHost.onProviderChosen(info)
 			}
 		}
+
+		// Keep the surface legible where cross-window blur isn't available (e.g. Samsung). //
+		dialog.setOnShowListener { dialog.window?.let(FrostedGlass::applyDialogFallback) }
 
 		dialog.show()
 	}

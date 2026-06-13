@@ -8,6 +8,7 @@ import android.text.Html;
 import org.acra.ACRA;
 
 import be.robinj.distrohopper.dev.Log;
+import be.robinj.distrohopper.desktop.FrostedGlass;
 
 /**
  * Created by robin on 8/22/14.
@@ -67,7 +68,10 @@ public class ExceptionHandler {
 			dlg.setCancelable (true);
 			dlg.setNeutralButton (android.R.string.ok, null);
 
-			dlg.show ();
+			final AlertDialog dialog = dlg.create ();
+			// Keep the surface legible where cross-window blur isn't available (e.g. Samsung). //
+			dialog.setOnShowListener (d -> FrostedGlass.INSTANCE.applyDialogFallback (dialog.getWindow ()));
+			dialog.show ();
 		}
 		catch (Exception ex2)
 		{

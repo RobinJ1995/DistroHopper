@@ -2,14 +2,7 @@ package be.robinj.distrohopper.desktop
 
 import android.app.WallpaperManager
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapShader
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.ColorFilter
-import android.graphics.Paint
-import android.graphics.PixelFormat
-import android.graphics.Shader
 import android.util.AttributeSet
 import android.view.Window
 import android.widget.ImageView
@@ -158,61 +151,6 @@ class Wallpaper : ImageView {
             val wallpaperColour = primary ?: Color.rgb(32, 33, 36)
             val darkened = ColorUtils.blendARGB(wallpaperColour, Color.BLACK, 0.68F)
             return ColorUtils.setAlphaComponent(darkened, 178)
-        }
-    }
-
-    /**
-     * Cross-window blur is optional on Android. When an OEM disables it, a colour-adaptive
-     * translucent layer plus fine grain reduces wallpaper detail without needing its bitmap.
-     */
-    private class FrostedFallbackDrawable(private val tint: Int) : android.graphics.drawable.Drawable() {
-        private val tintPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = tint }
-        private val grainPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            shader = BitmapShader(createGrain(), Shader.TileMode.REPEAT, Shader.TileMode.REPEAT)
-        }
-
-        var fraction: Float = 0F
-            set(value) {
-                field = value
-                this.invalidateSelf()
-            }
-
-        override fun draw(canvas: Canvas) {
-            this.tintPaint.alpha = (Color.alpha(this.tint) * this.fraction).toInt()
-            canvas.drawRect(this.bounds, this.tintPaint)
-
-            this.grainPaint.alpha = (18 * this.fraction).toInt()
-            canvas.drawRect(this.bounds, this.grainPaint)
-        }
-
-        override fun setAlpha(alpha: Int) {
-            this.fraction = alpha / 255F
-        }
-
-        override fun setColorFilter(colorFilter: ColorFilter?) {
-            this.tintPaint.colorFilter = colorFilter
-            this.grainPaint.colorFilter = colorFilter
-        }
-
-        @Deprecated("Deprecated in Android")
-        override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
-
-        companion object {
-            private fun createGrain(): Bitmap {
-                val size = 48
-                val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-                var state = 0x4d595df4
-
-                for (y in 0 until size) {
-                    for (x in 0 until size) {
-                        state = state * 1664525 + 1013904223
-                        val white = if ((state ushr 28) >= 8) 255 else 0
-                        bitmap.setPixel(x, y, Color.argb(255, white, white, white))
-                    }
-                }
-
-                return bitmap
-            }
         }
     }
 }

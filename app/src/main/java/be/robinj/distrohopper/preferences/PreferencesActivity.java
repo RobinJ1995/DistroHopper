@@ -1,5 +1,6 @@
 package be.robinj.distrohopper.preferences;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -13,12 +14,15 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
+import androidx.fragment.app.DialogFragment;
 import androidx.preference.ListPreference;
+import androidx.preference.ListPreferenceDialogFragmentCompat;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
 
+import be.robinj.distrohopper.desktop.FrostedGlass;
 import be.robinj.distrohopper.home.PinnedAppsMigration;
 
 import java.util.ArrayList;
@@ -300,6 +304,32 @@ public class PreferencesActivity extends AppCompatActivity
 			}
 		}
 
+		// The icon-pack and app-sort-order pickers are framework-created ListPreference
+		// dialogs, so they can't take an OnShowListener at a builder. Route them through a
+		// subclass that applies the frosted fallback once shown, keeping them legible where
+		// cross-window blur is unavailable (e.g. Samsung). //
+		private static final String DIALOG_FRAGMENT_TAG =
+			"androidx.preference.PreferenceFragment.DIALOG";
+
+		@Override
+		public void onDisplayPreferenceDialog (final Preference preference)
+		{
+			if (this.getParentFragmentManager ().findFragmentByTag (DIALOG_FRAGMENT_TAG) != null)
+				return;
+
+			if (preference instanceof ListPreference)
+			{
+				final DialogFragment fragment =
+					FrostedListPreferenceDialogFragment.newInstance (preference.getKey ());
+				fragment.setTargetFragment (this, 0);
+				fragment.show (this.getParentFragmentManager (), DIALOG_FRAGMENT_TAG);
+			}
+			else
+			{
+				super.onDisplayPreferenceDialog (preference);
+			}
+		}
+
 		private PreferenceCategory addCategory (final int titleRes, final int prefsRes)
 		{
 			final PreferenceCategory header = new PreferenceCategory (this.requireContext ());
@@ -543,6 +573,35 @@ public class PreferencesActivity extends AppCompatActivity
 			{
 				new ExceptionHandler (ex).logAndTrack ();
 			}
+		}
+	}
+
+	/**
+	 * A {@link ListPreferenceDialogFragmentCompat} that paints the frosted fallback over its
+	 * surface once shown, so the picker stays legible where cross-window blur is unavailable.
+	 * Public + static so the framework can recreate it across configuration changes.
+	 */
+	public static class FrostedListPreferenceDialogFragment extends ListPreferenceDialogFragmentCompat
+	{
+		static FrostedListPreferenceDialogFragment newInstance (final String key)
+		{
+			final FrostedListPreferenceDialogFragment fragment =
+				new FrostedListPreferenceDialogFragment ();
+			final Bundle args = new Bundle (1);
+			args.putString (ARG_KEY, key);
+			fragment.setArguments (args);
+
+			return fragment;
+		}
+
+		@Override
+		public void onStart ()
+		{
+			super.onStart ();
+
+			final Dialog dialog = this.getDialog ();
+			if (dialog != null && dialog.getWindow () != null)
+				FrostedGlass.INSTANCE.applyDialogFallback (dialog.getWindow ());
 		}
 	}
 }
