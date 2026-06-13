@@ -35,7 +35,8 @@ class PreferencesDefaultPinnedAppsOptionTest {
 					.findFragmentById(R.id.preferences_container)
 					as PreferencesActivity.PreferencesFragment
 
-				fragment.findPreference<androidx.preference.Preference>("dummy_pin_default_apps")!!
+				fragment.findPreference<androidx.preference.Preference>(
+					Preference.DEV_PIN_DEFAULT_APPS.getName())!!
 					.performClick()
 			}
 		}

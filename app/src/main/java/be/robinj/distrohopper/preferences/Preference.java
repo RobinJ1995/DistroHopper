@@ -21,9 +21,12 @@ public enum Preference {
 	DEFAULT_PINS_PENDING("default_pins_pending"),
 	DEFAULT_PINS_AUTO_INELIGIBLE("default_pins_auto_ineligible"),
 	DEV("dev"),
+	DEV_LOGS("dummy_dev_logs"),
 	DEV_LOG_TOASTER("dev_log_toaster"),
 	DEV_CLEAR_CACHE("dummy_clear_cache"),
-	DEV_WIDGET_RESIZE_ANY("dev_widget_resize_any", false);
+	DEV_WIDGET_RESIZE_ANY("dev_widget_resize_any", false),
+	DEV_RERUN_ONBOARDING("dummy_rerun_onboarding"),
+	DEV_PIN_DEFAULT_APPS("dummy_pin_default_apps");
 
 	private final String name;
 	private final Object defaultValue;
