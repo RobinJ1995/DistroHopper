@@ -1,5 +1,6 @@
 package be.robinj.distrohopper.desktop.dash
 
+import android.view.ViewGroup
 import android.widget.GridView
 import android.widget.TextView
 import androidx.test.core.app.ActivityScenario
@@ -28,8 +29,7 @@ class GridAdapterTest {
 	// through the dash grid: that grid now lives on a lazily-laid-out pager
 	// page, and the adapter's behaviour is independent of where it is bound.
 	private fun gridAdapter(activity: HomeActivity): GridAdapter =
-		GridAdapter(activity, activity.appManager.installedApps,
-			activity.resources.displayMetrics.density, 24)
+		GridAdapter(activity, activity.appManager.installedApps)
 
 	@Test fun getViewBindsTheAppLabelIconAndTag() {
 		scenario.onActivity { activity ->
@@ -45,18 +45,18 @@ class GridAdapterTest {
 		}
 	}
 
-	@Test fun getViewSizesTheCellSquareByDensityAndIconWidthPreference() {
+	@Test fun getViewSizesTheCellFromTheDashGrid() {
 		scenario.onActivity { activity ->
+			// A bare parent has no laid-out column width, so the cell height
+			// falls back to DashGrid's screen-derived cell size; the width
+			// fills the column (MATCH_PARENT) for square, stretched cells.
 			val parent = GridView(activity)
 			val adapter = this.gridAdapter(activity)
 
 			val view = adapter.getView(0, null, parent)
 
-			// 80 base + the DASHICON_WIDTH default of 24, density-scaled
-			val expected = Math.round(
-				(80 + 24) * activity.resources.displayMetrics.density)
-			assertEquals(expected, view.layoutParams.width)
-			assertEquals(view.layoutParams.width, view.layoutParams.height)
+			assertEquals(DashGrid.cellSizePx(activity), view.layoutParams.height)
+			assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, view.layoutParams.width)
 		}
 	}
 

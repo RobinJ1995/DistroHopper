@@ -2,6 +2,8 @@ package be.robinj.distrohopper.widgets;
 
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
+import android.os.Bundle;
+import android.util.SizeF;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -88,13 +90,15 @@ public class WidgetHostView extends AppWidgetHostView
 		if (w <= 0 || h <= 0)
 			return;
 
-		// Keep the provider informed of the widget's actual size; the activity handles
-		// orientation changes itself, so this never happens through an activity recreate //
+		// Tell the provider its actual size so it re-renders for the new bounds
+		// (this fires after every committed resize, since the commit relayouts).
+		// The activity handles orientation changes itself, so this never goes
+		// through an activity recreate. Use the API 31 SizeF list overload,
+		// which lets the provider pick the best RemoteViews for the size //
 		final float density = this.getResources ().getDisplayMetrics ().density;
-		final int wDp = (int) (w / density);
-		final int hDp = (int) (h / density);
+		final SizeF size = new SizeF (w / density, h / density);
 
-		this.updateAppWidgetSize (null, wDp, hDp, wDp, hDp);
+		this.updateAppWidgetSize (Bundle.EMPTY, java.util.Collections.singletonList (size));
 	}
 
 	@Override

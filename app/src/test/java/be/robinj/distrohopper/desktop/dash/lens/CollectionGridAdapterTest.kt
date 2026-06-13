@@ -11,6 +11,7 @@ import androidx.test.core.app.ActivityScenario
 import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.desktop.dash.DashGrid
 import java.net.UnknownHostException
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -38,8 +39,7 @@ class CollectionGridAdapterTest {
 	}
 
 	private fun getView(activity: HomeActivity, collection: LensSearchResultCollection): View {
-		val adapter = CollectionGridAdapter(activity, listOf(collection),
-			activity.resources.displayMetrics.density, 24)
+		val adapter = CollectionGridAdapter(activity, listOf(collection))
 		return adapter.getView(0,
 			null, activity.findViewById(R.id.lvDashHomeLensResults))
 	}
@@ -58,6 +58,27 @@ class CollectionGridAdapterTest {
 			val gvResults = view.findViewById<GridView>(R.id.gvResults)
 			assertEquals(1, gvResults.adapter.count)
 			assertNotNull(gvResults.onItemClickListener)
+		}
+	}
+
+	@Test fun lensResultsUseTheSameColumnCountAsTheDashAppsGrid() {
+		scenario.onActivity { activity ->
+			val lens = StubLens(activity)
+			val result = LensSearchResult(activity, "A result",
+				"https://example.com", ColorDrawable(Color.RED))
+
+			val view = getView(activity, LensSearchResultCollection(lens, listOf(result)))
+			val gvResults = view.findViewById<GridView>(R.id.gvResults)
+
+			// GridView.getNumColumns() only reflects the requested count once laid
+			// out, so measure/layout the collection view first //
+			view.measure(
+				View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY),
+				View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.AT_MOST))
+			view.layout(0, 0, view.measuredWidth, view.measuredHeight)
+
+			// Both the apps grid and the lens grids are sized via DashGridSizer //
+			assertEquals(DashGrid.dashColumns(activity), gvResults.numColumns)
 		}
 	}
 

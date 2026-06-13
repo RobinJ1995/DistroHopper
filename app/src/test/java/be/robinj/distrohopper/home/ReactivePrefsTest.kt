@@ -7,6 +7,7 @@ import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.desktop.dash.DashGrid
 import be.robinj.distrohopper.preferences.Preference
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -58,24 +59,21 @@ class ReactivePrefsTest {
 		}
 	}
 
-	@Test fun dashIconWidthAppliesToTheDashGridColumns() {
+	@Test fun dashGridColumnsAppliesToTheDashGrid() {
 		this.scenario.onActivity { activity ->
 			DependencyContainer.of(activity).prefs.edit {
-				putInt(Preference.DASHICON_WIDTH.getName(), 60)
+				putInt(Preference.DASH_GRID_COLUMNS.getName(), 5)
 			}
 		}
 		ActivityTestSupport.drainTasks()
 
 		this.scenario.onActivity { activity ->
 			// The dash grid lives on a lazily-laid-out pager page; the pref change
-			// updated the pager adapter's width, so the page picks it up on layout.
+			// re-applied the column count, and the page picks it up on layout.
 			ActivityTestSupport.layoutDashApps(activity)
-			val density = activity.resources.displayMetrics.density
-			val expected = Math.round((80 + 60) * density)
 
-			assertEquals(expected,
-				activity.findViewById<android.widget.GridView>(R.id.gvDashHomeApps)
-					.requestedColumnWidth)
+			assertEquals(DashGrid.dashColumns(activity),
+				activity.findViewById<android.widget.GridView>(R.id.gvDashHomeApps).numColumns)
 		}
 	}
 }

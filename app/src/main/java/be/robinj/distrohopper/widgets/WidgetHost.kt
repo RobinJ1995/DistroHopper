@@ -7,7 +7,9 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.widget.Toast
+import androidx.core.view.doOnLayout
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.RequestCode
@@ -51,6 +53,69 @@ class WidgetHost(
 		}
 
 		this.vgWidgets.pagesChanged()
+
+		// Saved spans may predate the provider's current resize limits, or have
+		// been persisted at 1x1 by the old "grid not measured yet" bug; re-clamp
+		// each widget to a valid size once its page has been measured //
+		this.reclampRestoredWidgets()
+	}
+
+	/** Re-clamps every restored widget to its provider's limits, once measured. */
+	private fun reclampRestoredWidgets() {
+		for (page in 0 until this.vgWidgets.childCount) {
+			val container = this.vgWidgets.pageAt(page)
+			this.whenMeasured(container) { this.reclampPage(container) }
+		}
+	}
+
+	private fun reclampPage(container: WidgetsContainer) {
+		val cellW = container.cellWidth
+		val cellH = container.cellHeight
+
+		if (cellW <= 0 || cellH <= 0) {
+			return
+		}
+
+		val kept = ArrayList<WidgetLayout>()
+		var changed = false
+
+		for (i in 0 until container.childCount) {
+			val child = container.getChildAt(i) as? WidgetContainer ?: continue
+			val info = this.widgetManager.getAppWidgetInfo(child.appWidgetId) ?: continue
+			val lp = child.layoutParams as WidgetsContainer.LayoutParams
+
+			val colSpan = WidgetGrid.clampSpan(lp.colSpan,
+				minResizeWidthPx(info), info.maxResizeWidth, cellW, WidgetGrid.COLS)
+			val rowSpan = WidgetGrid.clampSpan(lp.rowSpan,
+				minResizeHeightPx(info), info.maxResizeHeight, cellH, WidgetGrid.ROWS)
+
+			if (colSpan != lp.colSpan || rowSpan != lp.rowSpan) {
+				// Keep the saved position if the re-clamped size still fits there,
+				// otherwise find the first free rectangle for the new size //
+				val atCurrent = WidgetLayout(child.appWidgetId, lp.col, lp.row, colSpan, rowSpan)
+				val placed = if (WidgetGrid.fits(kept, atCurrent)) {
+					atCurrent
+				} else {
+					WidgetGrid.findFreeRect(kept, colSpan, rowSpan)
+						?.also { it.appWidgetId = child.appWidgetId }
+				}
+
+				if (placed != null) {
+					lp.col = placed.col
+					lp.row = placed.row
+					lp.colSpan = placed.colSpan
+					lp.rowSpan = placed.rowSpan
+					changed = true
+				}
+			}
+
+			kept.add(WidgetLayout(child.appWidgetId, lp.col, lp.row, lp.colSpan, lp.rowSpan))
+		}
+
+		if (changed) {
+			container.requestLayout()
+			this.persist()
+		}
 	}
 
 	private fun addWidget(appWidgetId: Int, layout: WidgetLayout, persist: Boolean) {
@@ -231,24 +296,76 @@ class WidgetHost(
 		// New widgets land on whichever desktop the user is looking at //
 		val page = this.vgWidgets.currentPage
 		val pageContainer = this.vgWidgets.pageAt(page)
-		val colSpan = WidgetGrid.spanForSize(info.minWidth, pageContainer.cellWidth, WidgetGrid.COLS)
-		val rowSpan = WidgetGrid.spanForSize(info.minHeight, pageContainer.cellHeight, WidgetGrid.ROWS)
 
-		val layout = WidgetGrid.findFreeRect(pageContainer.collectLayouts(null), colSpan, rowSpan)
+		// Size from the provider's resize/target hints against the measured cell
+		// size; defer until the page is laid out so a not-yet-measured grid can
+		// never squash the widget to 1x1 //
+		this.whenMeasured(pageContainer) {
+			val spans = this.initialSpans(info, pageContainer)
 
-		if (layout == null) {
-			this.deleteAppWidgetId(appWidgetId)
+			if (spans == null) {
+				// Still unmeasured after a layout pass: give up cleanly //
+				this.deleteAppWidgetId(appWidgetId)
 
-			Toast.makeText(this.parent, R.string.widget_no_room, Toast.LENGTH_LONG).show()
+				return@whenMeasured
+			}
 
-			return
+			val layout = WidgetGrid.findFreeRect(
+				pageContainer.collectLayouts(null), spans.first, spans.second)
+
+			if (layout == null) {
+				this.deleteAppWidgetId(appWidgetId)
+
+				Toast.makeText(this.parent, R.string.widget_no_room, Toast.LENGTH_LONG).show()
+
+				return@whenMeasured
+			}
+
+			layout.appWidgetId = appWidgetId
+			layout.page = page
+
+			this.addWidget(appWidgetId, layout, true)
 		}
-
-		layout.appWidgetId = appWidgetId
-		layout.page = page
-
-		this.addWidget(appWidgetId, layout, true)
 	}
+
+	/** Runs [action] once [page] has a non-zero cell size (immediately if already laid out). */
+	private inline fun whenMeasured(page: WidgetsContainer, crossinline action: () -> Unit) {
+		if (page.cellWidth > 0 && page.cellHeight > 0) {
+			action()
+		} else {
+			page.doOnLayout {
+				if (page.cellWidth > 0 && page.cellHeight > 0) {
+					action()
+				}
+			}
+		}
+	}
+
+	/** Initial (colSpan, rowSpan) for [info] on a measured [page], or null if not measured. */
+	private fun initialSpans(info: AppWidgetProviderInfo, page: WidgetsContainer): Pair<Int, Int>? {
+		val colSpan = WidgetGrid.initialSpan(targetCols(info),
+			minResizeWidthPx(info), info.maxResizeWidth, page.cellWidth, WidgetGrid.COLS)
+		val rowSpan = WidgetGrid.initialSpan(targetRows(info),
+			minResizeHeightPx(info), info.maxResizeHeight, page.cellHeight, WidgetGrid.ROWS)
+
+		return if (colSpan <= 0 || rowSpan <= 0) null else colSpan to rowSpan
+	}
+
+	/** The provider's smallest resizable width in px (minResizeWidth, else minWidth). */
+	private fun minResizeWidthPx(info: AppWidgetProviderInfo): Int =
+		if (info.minResizeWidth > 0) info.minResizeWidth else info.minWidth
+
+	/** The provider's smallest resizable height in px (minResizeHeight, else minHeight). */
+	private fun minResizeHeightPx(info: AppWidgetProviderInfo): Int =
+		if (info.minResizeHeight > 0) info.minResizeHeight else info.minHeight
+
+	/** The provider's preferred cell width (API 33 targetCellWidth), or 0. */
+	private fun targetCols(info: AppWidgetProviderInfo): Int =
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) info.targetCellWidth else 0
+
+	/** The provider's preferred cell height (API 33 targetCellHeight), or 0. */
+	private fun targetRows(info: AppWidgetProviderInfo): Int =
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) info.targetCellHeight else 0
 
 	private fun cancelPendingWidget() {
 		if (this.pendingAppWidgetId != -1) {

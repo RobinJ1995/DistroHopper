@@ -61,8 +61,6 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	}
 
 	private var dashBound = false
-	private var dashDisplayDensity = 0F
-	private var dashIconWidth = 0
 	/** The profiles the dash was last bound for (null = the personal profile). */
 	private var boundProfiles: List<UserHandle?> = emptyList()
 	/** The current profile tab; preserved across rebinds (app install/remove). */
@@ -220,9 +218,7 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	 * looks and behaves like the plain grid. A theme-specific tab indicator is
 	 * shown only when more than one profile exists.
 	 */
-	fun bindDashApps(displayDensity: Float, dashIconWidth: Int) {
-		this.dashDisplayDensity = displayDensity
-		this.dashIconWidth = dashIconWidth
+	fun bindDashApps() {
 		this.dashBound = true
 
 		this.rebindDashApps()
@@ -235,8 +231,7 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		val selected = this.currentProfileIndex.coerceIn(0, profiles.size - 1)
 		this.currentProfileIndex = selected
 
-		val adapter = ProfilePagerAdapter(this.activity, this.appManager, profiles,
-			this.dashDisplayDensity, this.dashIconWidth)
+		val adapter = ProfilePagerAdapter(this.activity, this.appManager, profiles)
 		this.pagerAdapter = adapter
 		this.vpDashProfiles.adapter = adapter
 		this.vpDashProfiles.setCurrentItem(selected, false)
@@ -305,10 +300,9 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		this.pagerAdapter?.invalidatePages(this.vpDashProfiles)
 	}
 
-	/** Applies the dash icon-width preference to the pager pages. */
-	fun applyDashIconWidth(dashIconWidth: Int) {
-		this.dashIconWidth = dashIconWidth
-		this.pagerAdapter?.applyIconWidth(this.vpDashProfiles, dashIconWidth)
+	/** Re-applies the dash grid's column count to the pager pages (pref/rotation change). */
+	fun applyDashColumns() {
+		this.pagerAdapter?.applyColumns(this.vpDashProfiles)
 	}
 
 	/** The dash opened or closed; indicators that only show while open react. */

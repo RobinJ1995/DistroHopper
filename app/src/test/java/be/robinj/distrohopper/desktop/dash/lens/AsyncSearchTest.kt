@@ -86,7 +86,7 @@ class AsyncSearchTest {
         lensManager: LensManager,
         progressWheel: ProgressWheel,
         listView: ListView,
-    ) : AsyncSearch(lensManager, progressWheel, listView, 1f, 80) {
+    ) : AsyncSearch(lensManager, progressWheel, listView) {
         fun startSearchUi() = onPreExecute()
         fun finishSearchUi() = onPostExecute(emptyList())
         fun cancelSearchUi() = onCancelled()

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.LauncherApps;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
@@ -327,8 +328,7 @@ public class HomeActivity extends AppCompatActivity
 			// Start loading: wallpaper, apps, then label/icon caches //
 			this.startupLoader = new StartupLoader (this, container.getDispatchers ());
 			this.startupLoader.start (wpWallpaper, lalSpinner, lalBfb,
-					this.appLabelCache, this.appIconCache, density,
-					prefs.getInt (Preference.DASHICON_WIDTH.getName(), Preference.DASHICON_WIDTH.getDefault()));
+					this.appLabelCache, this.appIconCache);
 		}
 		catch (Exception ex)
 		{
@@ -548,6 +548,19 @@ public class HomeActivity extends AppCompatActivity
 			ExceptionHandler exh = new ExceptionHandler (ex);
 			exh.show (this);
 		}
+	}
+
+	@Override
+	public void onConfigurationChanged (Configuration newConfig)
+	{
+		super.onConfigurationChanged (newConfig);
+
+		// The activity is not recreated on rotation (configChanges in the
+		// manifest); re-apply the dash grid's column count for the new
+		// orientation. Widgets reflow on their own via the cell-based
+		// WidgetsContainer layout. //
+		if (this.apps != null)
+			this.apps.applyDashColumns ();
 	}
 
 	@Override

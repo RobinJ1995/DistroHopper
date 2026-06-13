@@ -23,29 +23,36 @@ class WidgetGridTest {
         assertEquals(0, WidgetGrid.snapToCell(123, 0, 7))
     }
 
-    @Test fun spanForSizeRoundsUp() {
-        assertEquals(1, WidgetGrid.spanForSize(1, 100, 8))
-        assertEquals(1, WidgetGrid.spanForSize(100, 100, 8))
-        assertEquals(2, WidgetGrid.spanForSize(101, 100, 8))
-        assertEquals(3, WidgetGrid.spanForSize(250, 100, 8))
+    @Test fun initialSpanPrefersTargetCells() {
+        // Provider's preferred cell count is used directly when within limits //
+        assertEquals(3, WidgetGrid.initialSpan(3, 0, 0, 100, 8))
     }
 
-    @Test fun spanForSizeClampsToBounds() {
-        assertEquals(8, WidgetGrid.spanForSize(5000, 100, 8))
-        assertEquals(1, WidgetGrid.spanForSize(0, 100, 8))
-        assertEquals(1, WidgetGrid.spanForSize(100, 0, 8))
+    @Test fun initialSpanFallsBackToMinResize() {
+        // No target -> nearest span to the minimum resize size (260/100 -> 3) //
+        assertEquals(3, WidgetGrid.initialSpan(0, 260, 0, 100, 8))
+    }
+
+    @Test fun initialSpanDefaultsToOneWithoutHints() {
+        assertEquals(1, WidgetGrid.initialSpan(0, 0, 0, 100, 8))
+    }
+
+    @Test fun initialSpanDefersWhenCellSizeUnknown() {
+        // 0 signals "grid not measured yet" so the caller can defer rather than
+        // squashing the widget to 1x1 //
+        assertEquals(0, WidgetGrid.initialSpan(3, 200, 0, 0, 8))
     }
 
     @Test fun clampSpanEnforcesMinimumSize() {
-        // 250px minimum on 100px cells -> at least 3 cells //
+        // 250px minimum on 100px cells -> nearest is 3 cells //
         assertEquals(3, WidgetGrid.clampSpan(1, 250, 0, 100, 8))
         assertEquals(4, WidgetGrid.clampSpan(4, 250, 0, 100, 8))
     }
 
     @Test fun clampSpanEnforcesMaximumSize() {
-        // 250px maximum on 100px cells -> at most 2 cells //
-        assertEquals(2, WidgetGrid.clampSpan(5, 0, 250, 100, 8))
-        assertEquals(1, WidgetGrid.clampSpan(1, 0, 250, 100, 8))
+        // 240px maximum on 100px cells -> nearest is 2 cells //
+        assertEquals(2, WidgetGrid.clampSpan(5, 0, 240, 100, 8))
+        assertEquals(1, WidgetGrid.clampSpan(1, 0, 240, 100, 8))
     }
 
     @Test fun clampSpanTreatsZeroAsUnspecified() {
@@ -56,6 +63,17 @@ class WidgetGridTest {
     @Test fun clampSpanKeepsMaxAboveMinWhenLimitsConflict() {
         // Max below min -> min wins //
         assertEquals(3, WidgetGrid.clampSpan(1, 250, 150, 100, 8))
+    }
+
+    @Test fun clampSpanKeepsAResizeRangeForTightLimits() {
+        // min=150, max=260 on 100px cells: nearest rounding keeps a real range
+        // [2, 3] instead of collapsing to a single span (the old ceil/floor bug
+        // made such widgets unresizable) //
+        val min = WidgetGrid.clampSpan(1, 150, 260, 100, 8)
+        val max = WidgetGrid.clampSpan(8, 150, 260, 100, 8)
+        assertEquals(2, min)
+        assertEquals(3, max)
+        assertTrue(max > min)
     }
 
     @Test fun clampSpanClampsToGrid() {
