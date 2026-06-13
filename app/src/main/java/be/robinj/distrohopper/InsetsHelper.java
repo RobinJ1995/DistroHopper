@@ -2,7 +2,10 @@ package be.robinj.distrohopper;
 
 import android.app.Activity;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -39,16 +42,40 @@ public final class InsetsHelper
 		// Lay out edge-to-edge on every API level so the additive padding above is
 		// never combined with decor-fitted insets.
 		WindowCompat.setDecorFitsSystemWindows (activity.getWindow (), false);
-
-		// Match the status bar colour to the action bar so the translucent window
-		// background doesn't bleed through above the header bar.
-		if (activity instanceof AppCompatActivity)
-		{
-			final TypedValue colorPrimary = new TypedValue ();
-			if (activity.getTheme ().resolveAttribute (androidx.appcompat.R.attr.colorPrimary, colorPrimary, true))
-				activity.getWindow ().setStatusBarColor (colorPrimary.data);
-		}
-
 		applySystemBarsPadding (activity.findViewById (android.R.id.content));
+
+		// Window#setStatusBarColor is a no-op under the enforced edge-to-edge of recent
+		// Android versions, so paint our own scrim behind the status bar to stop the
+		// translucent window background from bleeding through above the action bar.
+		if (activity instanceof AppCompatActivity)
+			addStatusBarScrim (activity);
+	}
+
+	/** Fills the status bar inset region with the action bar's colour, matching the header bar. */
+	private static void addStatusBarScrim (final Activity activity)
+	{
+		final TypedValue colorPrimary = new TypedValue ();
+		if (! activity.getTheme ().resolveAttribute (androidx.appcompat.R.attr.colorPrimary, colorPrimary, true))
+			return;
+
+		final ViewGroup decor = (ViewGroup) activity.getWindow ().getDecorView ();
+		final View scrim = new View (activity);
+		scrim.setBackgroundColor (colorPrimary.data);
+
+		// Index 0 so the scrim sees the insets (and draws) beneath the action bar overlay.
+		// Its listener must return the insets unchanged, or the content below won't be padded.
+		final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams (
+			FrameLayout.LayoutParams.MATCH_PARENT, 0, Gravity.TOP);
+		decor.addView (scrim, 0, lp);
+
+		ViewCompat.setOnApplyWindowInsetsListener (scrim, (v, windowInsets) ->
+		{
+			final Insets insets = windowInsets.getInsets (
+				WindowInsetsCompat.Type.statusBars () | WindowInsetsCompat.Type.displayCutout ());
+			lp.height = insets.top;
+			v.setLayoutParams (lp);
+
+			return windowInsets;
+		});
 	}
 }
