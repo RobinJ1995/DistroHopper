@@ -186,11 +186,8 @@ public class PreferencesActivity extends AppCompatActivity
 				});
 			}
 
-			final Preference rerunOnboarding = this.findPreference (
-				be.robinj.distrohopper.preferences.Preference.DEV_RERUN_ONBOARDING.getName ());
-			if (rerunOnboarding != null)
-			{
-				rerunOnboarding.setOnPreferenceClickListener (new Preference.OnPreferenceClickListener ()
+			this.findPreference ("dummy_rerun_onboarding").setOnPreferenceClickListener (
+				new Preference.OnPreferenceClickListener ()
 				{
 					@Override
 					public boolean onPreferenceClick (Preference preference)
@@ -202,14 +199,11 @@ public class PreferencesActivity extends AppCompatActivity
 
 						return true;
 					}
-				});
-			}
+				}
+			);
 
-			final Preference pinDefaultApps = this.findPreference (
-				be.robinj.distrohopper.preferences.Preference.DEV_PIN_DEFAULT_APPS.getName ());
-			if (pinDefaultApps != null)
-			{
-				pinDefaultApps.setOnPreferenceClickListener (new Preference.OnPreferenceClickListener ()
+			this.findPreference ("dummy_pin_default_apps").setOnPreferenceClickListener (
+				new Preference.OnPreferenceClickListener ()
 				{
 					@Override
 					public boolean onPreferenceClick (Preference preference)
@@ -221,8 +215,8 @@ public class PreferencesActivity extends AppCompatActivity
 
 						return true;
 					}
-				});
-			}
+				}
+			);
 
 			this.findPreference ("dummy_set_default_launcher").setOnPreferenceClickListener (
 				new Preference.OnPreferenceClickListener ()
