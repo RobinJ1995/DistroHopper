@@ -90,6 +90,21 @@
 
 		<service android:name="be.robinj.distrohopper.desktop.launcher.service.LauncherService" />
 
+		<!-- Experimental: opens the notification tray on a home-screen swipe-down.
+		     Opt-in via the developer setting + the user enabling it in system
+		     accessibility settings. -->
+		<service
+			android:name="be.robinj.distrohopper.accessibility.NotificationAccessibilityService"
+			android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+			android:exported="false">
+			<intent-filter>
+				<action android:name="android.accessibilityservice.AccessibilityService" />
+			</intent-filter>
+			<meta-data
+				android:name="android.accessibilityservice"
+				android:resource="@xml/notification_accessibility_service" />
+		</service>
+
 		<receiver
 			android:name="be.robinj.distrohopper.broadcast.AppUpgradeReceiver"
 			android:exported="false">

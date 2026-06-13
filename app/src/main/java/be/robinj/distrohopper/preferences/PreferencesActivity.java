@@ -147,6 +147,7 @@ public class PreferencesActivity extends AppCompatActivity
 			this.initCrashReportsPreference ();
 			this.initLauncherPinModePreference ();
 			this.initDevPreference ();
+			this.initNotificationGesturePreference ();
 
 			this.findPreference ("dummy_wallpaper").setOnPreferenceClickListener (
 				new Preference.OnPreferenceClickListener ()
@@ -336,6 +337,40 @@ public class PreferencesActivity extends AppCompatActivity
 			pref.setOnPreferenceChangeListener ((preference, newValue) ->
 			{
 				this.applyDeveloperModeVisibility (Boolean.TRUE.equals (newValue));
+
+				return true;
+			});
+		}
+
+		// Experimental swipe-down-for-notifications gesture. It needs the
+		// accessibility service the user has to grant by hand, so switching it on
+		// drops them straight onto the system accessibility settings. No guided
+		// flow — this is a developer-only experiment for now. //
+		private void initNotificationGesturePreference ()
+		{
+			final SwitchPreferenceCompat pref = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.GESTURE_NOTIFICATION_TRAY.getName ());
+			if (pref == null)
+				return;
+
+			pref.setOnPreferenceChangeListener ((preference, newValue) ->
+			{
+				if (Boolean.TRUE.equals (newValue))
+				{
+					try
+					{
+						// Toast kept inline (not in strings.xml) while experimental. //
+						Toast.makeText (this.requireContext (),
+							"Enable DistroHopper in the list to use the notification gesture",
+							Toast.LENGTH_LONG).show ();
+						this.startActivity (
+							new Intent (android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS));
+					}
+					catch (Exception ex)
+					{
+						new ExceptionHandler (ex).show (this.requireActivity ());
+					}
+				}
 
 				return true;
 			});

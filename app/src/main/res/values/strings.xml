@@ -83,6 +83,9 @@
     <string name="hint_full_restart">Kill and relaunch the app to fully re-initialise it.</string>
     <string name="option_widget_resize_any">Allow unsupported widget dimensions</string>
     <string name="hint_widget_resize_any">Allow widgets to be resized beyond their supported size constraints.</string>
+    <string name="option_gesture_notification_tray">Swipe down for notifications</string>
+    <string name="hint_gesture_notification_tray">Experimental: swipe down on the home screen to open the notification tray. Requires DistroHopper\'s accessibility service to be enabled.</string>
+    <string name="accessibility_service_notification_tray_description">Lets DistroHopper open the notification tray when you swipe down on the home screen. Only used to perform that one action; no screen content is read.</string>
     <string name="option_rerun_onboarding">Run setup wizard again</string>
     <string name="hint_rerun_onboarding">The first-run setup wizard will be shown the next time DistroHopper starts.</string>
     <string name="toast_rerun_onboarding">Setup wizard will run on next start</string>

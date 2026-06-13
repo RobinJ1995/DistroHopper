@@ -24,7 +24,8 @@ public enum Preference {
 	DEFAULT_PINS_AUTO_INELIGIBLE("default_pins_auto_ineligible"),
 	DEV("dev"),
 	DEV_LOG_TOASTER("dev_log_toaster", null, DEV),
-	DEV_WIDGET_RESIZE_ANY("dev_widget_resize_any", false, DEV);
+	DEV_WIDGET_RESIZE_ANY("dev_widget_resize_any", false, DEV),
+	GESTURE_NOTIFICATION_TRAY("gesture_notification_tray", false, DEV);
 
 	private final String name;
 	private final Object defaultValue;
