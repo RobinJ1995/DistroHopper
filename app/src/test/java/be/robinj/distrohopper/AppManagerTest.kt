@@ -168,4 +168,39 @@ class AppManagerTest {
     @Test fun packageQueryCanBeFiltered() = withManager {
         assertEquals(1, it.queryInstalledApps("com.example.alpha").size)
     }
+
+    @Test fun refreshDashSortOrderReordersForUsageBasedOrder() {
+        scenario.onActivity { activity ->
+            val manager = activity.appManager
+            Preferences.getSharedPreferences(activity, Preferences.APP_USAGE).edit().clear().commit()
+            // Make the last app in the current (alphabetical) order the most used //
+            val last = manager.installedApps.last()
+            AppUsageStats(activity).apply {
+                recordLaunch(last.profileScopedKey)
+                recordLaunch(last.profileScopedKey)
+            }
+            Preferences.getSharedPreferences(activity).edit()
+                .putString(Preference.APP_SORT_ORDER.getName(), "most_used").commit()
+
+            manager.refreshDashSortOrder()
+
+            assertEquals(last, manager.installedApps.first())
+        }
+    }
+
+    @Test fun refreshDashSortOrderIsANoOpForAlphabeticalOrder() {
+        scenario.onActivity { activity ->
+            val manager = activity.appManager
+            Preferences.getSharedPreferences(activity, Preferences.APP_USAGE).edit().clear().commit()
+            AppUsageStats(activity).recordLaunch(manager.installedApps.last().profileScopedKey)
+            Preferences.getSharedPreferences(activity).edit()
+                .putString(Preference.APP_SORT_ORDER.getName(), "alphabetical").commit()
+            val before = manager.installedApps.toList()
+
+            manager.refreshDashSortOrder()
+
+            assertEquals(before, manager.installedApps)
+            assertEquals(manager.installedApps.sortedBy { it.label.lowercase() }, manager.installedApps)
+        }
+    }
 }

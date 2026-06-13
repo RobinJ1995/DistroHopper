@@ -5,6 +5,7 @@ import android.os.Parcel
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.cache.TestStringCache
+import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.preferences.PreferencesActivity
 import org.junit.After
 import org.junit.Assert.*
@@ -68,6 +69,46 @@ class AppTest {
                 PreferencesActivity::class.java.name,
                 Shadows.shadowOf(activity).nextStartedActivity.component?.className,
             )
+        }
+    }
+
+    private fun clearUsage(activity: HomeActivity) =
+        Preferences.getSharedPreferences(activity, Preferences.APP_USAGE).edit().clear().commit()
+
+    @Test fun launchRecordsUsageForTheSortOrders() {
+        scenario.onActivity { activity ->
+            clearUsage(activity)
+            val app = activity.appManager[0]
+            val stats = AppUsageStats(activity)
+            assertEquals(0, stats.getLaunchCount(app.profileScopedKey))
+
+            app.launch()
+
+            assertEquals(1, stats.getLaunchCount(app.profileScopedKey))
+            assertTrue(stats.getLastUsed(app.profileScopedKey) > 0L)
+        }
+    }
+
+    @Test fun launchDoesNotRecordUsageForTheSettingsShortcut() {
+        scenario.onActivity { activity ->
+            clearUsage(activity)
+            val settings = ActivityTestSupport.settingsShortcut(activity)
+
+            settings.launch()
+
+            assertEquals(0, AppUsageStats(activity).getLaunchCount(settings.profileScopedKey))
+        }
+    }
+
+    @Test fun launchBlockedWhileCustomisingDoesNotRecordUsage() {
+        scenario.onActivity { activity ->
+            clearUsage(activity)
+            DependencyContainer.of(ApplicationProvider.getApplicationContext()).customiseMode.value = true
+            val app = activity.appManager[0]
+
+            app.launch()
+
+            assertEquals(0, AppUsageStats(activity).getLaunchCount(app.profileScopedKey))
         }
     }
 
