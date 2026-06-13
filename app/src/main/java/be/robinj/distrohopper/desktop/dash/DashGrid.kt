@@ -25,8 +25,13 @@ import kotlin.math.roundToInt
 object DashGrid {
 	/** Target cell size (dp) used to pick the adaptive default column count. */
 	private const val TARGET_CELL_DP = 96
-	/** Cells never get larger than this (sets the minimum column count). */
-	private const val MAX_CELL_DP = 140
+	/**
+	 * Cells never get larger than this (sets the minimum column count). 150dp
+	 * keeps a 3-wide grid available on phones up to ~450dp wide (the largest
+	 * "fewest columns / biggest icons" option), rather than forcing 4 columns
+	 * minimum on larger phones.
+	 */
+	private const val MAX_CELL_DP = 150
 	/** Cells never get smaller than this (sets the maximum column count). */
 	private const val MIN_CELL_DP = 64
 

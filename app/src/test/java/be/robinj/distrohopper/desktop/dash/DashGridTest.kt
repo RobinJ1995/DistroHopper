@@ -24,8 +24,16 @@ class DashGridTest {
 		assertEquals(5, DashGrid.maxColumns(320))
 		assertEquals(3, DashGrid.minColumns(411))
 		assertEquals(6, DashGrid.maxColumns(411))
-		assertEquals(10, DashGrid.minColumns(1280))
+		assertEquals(9, DashGrid.minColumns(1280))
 		assertEquals(20, DashGrid.maxColumns(1280))
+	}
+
+	@Test fun largePhonesStillOfferAThreeWideGrid() {
+		// A ~427dp phone (Pixel-class) keeps 3 as its lowest option (bigger
+		// icons), not 4: cells may grow up to 150dp.
+		assertEquals(3, DashGrid.minColumns(427))
+		assertEquals(6, DashGrid.maxColumns(427))
+		assertEquals(4, DashGrid.defaultColumns(427))
 	}
 
 	@Test fun defaultAlwaysWithinRange() {
