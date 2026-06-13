@@ -268,40 +268,40 @@ public class PreferencesActivity extends AppCompatActivity
 
 			if (! pref.isChecked ())
 			{
-				this.clearDevPreferences ();
+				this.clearChildPreferences (be.robinj.distrohopper.preferences.Preference.DEV);
 			}
 
 			pref.setOnPreferenceChangeListener ((preference, newValue) ->
 			{
 				if (Boolean.FALSE.equals (newValue))
 				{
-					this.clearDevPreferences ();
+					this.clearChildPreferences (be.robinj.distrohopper.preferences.Preference.DEV);
 				}
 
 				return true;
 			});
 		}
 
-		private void clearDevPreferences ()
+		private void clearChildPreferences (final be.robinj.distrohopper.preferences.Preference parent)
 		{
 			final SharedPreferences.Editor editor = Preferences
 				.getSharedPreferences (this.requireContext ())
 				.edit ();
 
-			for (final be.robinj.distrohopper.preferences.Preference devPref
+			for (final be.robinj.distrohopper.preferences.Preference child
 				: be.robinj.distrohopper.preferences.Preference.values ())
 			{
-				if (! devPref.isDevChild ())
+				if (child.getParent () != parent)
 					continue;
 
-				final Preference toggle = this.findPreference (devPref.getName ());
+				final Preference toggle = this.findPreference (child.getName ());
 				if (toggle instanceof SwitchPreferenceCompat)
 					((SwitchPreferenceCompat) toggle).setChecked (false);
 
-				// Explicitly write false rather than removing the key: if a future
-				// devChild preference defaults to true, remove() would leave the
-				// feature active after developer mode is turned off. //
-				editor.putBoolean (devPref.getName (), false);
+				// Explicitly write false rather than removing the key: if a child
+				// preference ever defaults to true, remove() would leave the feature
+				// active after the parent preference is turned off. //
+				editor.putBoolean (child.getName (), false);
 			}
 
 			editor.apply ();

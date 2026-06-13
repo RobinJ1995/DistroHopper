@@ -56,10 +56,8 @@ class DevPreferenceTest {
 
 		val prefs = Preferences.getSharedPreferences(this.application)
 		assertFalse(prefs.getBoolean(Preference.DEV.getName(), true))
-		assertFalse(prefs.getBoolean(Preference.DEV_LOG_TOASTER.getName(), false))
-		assertFalse(prefs.getBoolean(Preference.DEV_WIDGET_RESIZE_ANY.getName(), false))
-		assertFalse(prefs.contains(Preference.DEV_LOG_TOASTER.getName()))
-		assertFalse(prefs.contains(Preference.DEV_WIDGET_RESIZE_ANY.getName()))
+		assertFalse(prefs.getBoolean(Preference.DEV_LOG_TOASTER.getName(), true))
+		assertFalse(prefs.getBoolean(Preference.DEV_WIDGET_RESIZE_ANY.getName(), true))
 	}
 
 	@Test fun openingPreferencesWithDeveloperModeOffClearsStaleDeveloperToggles() {
@@ -83,10 +81,8 @@ class DevPreferenceTest {
 		}
 
 		val prefs = Preferences.getSharedPreferences(this.application)
-		assertFalse(prefs.getBoolean(Preference.DEV_LOG_TOASTER.getName(), false))
-		assertFalse(prefs.getBoolean(Preference.DEV_WIDGET_RESIZE_ANY.getName(), false))
-		assertFalse(prefs.contains(Preference.DEV_LOG_TOASTER.getName()))
-		assertFalse(prefs.contains(Preference.DEV_WIDGET_RESIZE_ANY.getName()))
+		assertFalse(prefs.getBoolean(Preference.DEV_LOG_TOASTER.getName(), true))
+		assertFalse(prefs.getBoolean(Preference.DEV_WIDGET_RESIZE_ANY.getName(), true))
 	}
 
 	@Test fun clickingClearCacheClearsLabelIconAndExpirationCaches() {
