@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.preferences.Preference
+import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.home.LauncherBarBinder
 import kotlin.math.abs
 import kotlin.math.max
@@ -50,6 +52,10 @@ class WidgetContainer internal constructor(
 	private val info: AppWidgetProviderInfo?
 		get() = this.widget.appWidgetInfo
 
+	private val allowUnsupportedResize: Boolean
+		get() = Preferences.getSharedPreferences(this.context)
+			.getBoolean(Preference.DEV_WIDGET_RESIZE_ANY.getName(), false)
+
 	var editMode = false
 		set(value) {
 			if (value) {
@@ -61,9 +67,10 @@ class WidgetContainer internal constructor(
 			field = value
 
 			val info = this.info
-			val canResizeH = info == null ||
+			val allowUnsupportedResize = this.allowUnsupportedResize
+			val canResizeH = allowUnsupportedResize || info == null ||
 				info.resizeMode and AppWidgetProviderInfo.RESIZE_HORIZONTAL != 0
-			val canResizeV = info == null ||
+			val canResizeV = allowUnsupportedResize || info == null ||
 				info.resizeMode and AppWidgetProviderInfo.RESIZE_VERTICAL != 0
 
 			this.container.alpha = if (value) 0.8F else 1.0F
@@ -149,18 +156,17 @@ class WidgetContainer internal constructor(
 
 				val cellW = parent.cellWidth
 				val cellH = parent.cellHeight
-				val info = this.info
 
 				// The drag itself is limited to whole cells within the sizes the widget
 				// supports, so the preview can never exceed what a release would commit //
 				val minColSpan = WidgetGrid.clampSpan(
-					1, info?.minResizeWidth ?: 0, this.maxResizeWidthPx(), cellW, WidgetGrid.COLS)
+					1, this.minResizeWidthPx(), this.maxResizeWidthPx(), cellW, WidgetGrid.COLS)
 				val maxColSpan = WidgetGrid.clampSpan(
-					WidgetGrid.COLS, info?.minResizeWidth ?: 0, this.maxResizeWidthPx(), cellW, WidgetGrid.COLS)
+					WidgetGrid.COLS, this.minResizeWidthPx(), this.maxResizeWidthPx(), cellW, WidgetGrid.COLS)
 				val minRowSpan = WidgetGrid.clampSpan(
-					1, info?.minResizeHeight ?: 0, this.maxResizeHeightPx(), cellH, WidgetGrid.ROWS)
+					1, this.minResizeHeightPx(), this.maxResizeHeightPx(), cellH, WidgetGrid.ROWS)
 				val maxRowSpan = WidgetGrid.clampSpan(
-					WidgetGrid.ROWS, info?.minResizeHeight ?: 0, this.maxResizeHeightPx(), cellH, WidgetGrid.ROWS)
+					WidgetGrid.ROWS, this.minResizeHeightPx(), this.maxResizeHeightPx(), cellH, WidgetGrid.ROWS)
 
 				val gridLeft = parent.paddingLeft
 				val gridTop = parent.paddingTop
@@ -240,11 +246,15 @@ class WidgetContainer internal constructor(
 		return false
 	}
 
+	private fun minResizeWidthPx(): Int = if (this.allowUnsupportedResize) 0 else this.info?.minResizeWidth ?: 0
+
+	private fun minResizeHeightPx(): Int = if (this.allowUnsupportedResize) 0 else this.info?.minResizeHeight ?: 0
+
 	/** The provider's maximum resize width in px, or 0 when unspecified. */
-	private fun maxResizeWidthPx(): Int = this.info?.maxResizeWidth ?: 0
+	private fun maxResizeWidthPx(): Int = if (this.allowUnsupportedResize) 0 else this.info?.maxResizeWidth ?: 0
 
 	/** The provider's maximum resize height in px, or 0 when unspecified. */
-	private fun maxResizeHeightPx(): Int = this.info?.maxResizeHeight ?: 0
+	private fun maxResizeHeightPx(): Int = if (this.allowUnsupportedResize) 0 else this.info?.maxResizeHeight ?: 0
 
 	private fun startMoveDrag(parent: WidgetsContainer, e: MotionEvent) {
 		val location = IntArray(2)
@@ -275,12 +285,11 @@ class WidgetContainer internal constructor(
 		val colEnd = WidgetGrid.snapToCell(lp.previewLeftPx + lp.previewWidthPx - parent.paddingLeft, cellWidth, WidgetGrid.COLS)
 		val rowEnd = WidgetGrid.snapToCell(lp.previewTopPx + lp.previewHeightPx - parent.paddingTop, cellHeight, WidgetGrid.ROWS)
 
-		val info = this.info
 		val colSpan = WidgetGrid.clampSpan(
-			max(1, colEnd - col), info?.minResizeWidth ?: 0, this.maxResizeWidthPx(),
+			max(1, colEnd - col), this.minResizeWidthPx(), this.maxResizeWidthPx(),
 			cellWidth, WidgetGrid.COLS)
 		val rowSpan = WidgetGrid.clampSpan(
-			max(1, rowEnd - row), info?.minResizeHeight ?: 0, this.maxResizeHeightPx(),
+			max(1, rowEnd - row), this.minResizeHeightPx(), this.maxResizeHeightPx(),
 			cellHeight, WidgetGrid.ROWS)
 
 		val candidate = WidgetLayout(this.appWidgetId, col, row, colSpan, rowSpan)

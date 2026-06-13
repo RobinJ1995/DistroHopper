@@ -16,6 +16,19 @@
 		android:defaultValue="false" />
 
 	<Preference
+		android:key="dummy_clear_cache"
+		android:dependency="dev"
+		android:title="@string/option_clear_cache"
+		android:summary="@string/hint_clear_cache" />
+
+	<SwitchPreferenceCompat
+		android:key="dev_widget_resize_any"
+		android:dependency="dev"
+		android:title="@string/option_widget_resize_any"
+		android:summary="@string/hint_widget_resize_any"
+		android:defaultValue="false" />
+
+	<Preference
 		android:key="dummy_rerun_onboarding"
 		android:dependency="dev"
 		android:title="@string/option_rerun_onboarding"

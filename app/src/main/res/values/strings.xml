@@ -74,6 +74,11 @@
     <string name="option_dev">Developer mode</string>
     <string name="hint_dev">Access debug logs and other technical information. Enabling this will negatively impact performance and stability.</string>
     <string name="option_dev_logs">Logs</string>
+    <string name="option_clear_cache">Clear cache</string>
+    <string name="hint_clear_cache">Remove cached app labels and icons. They will be rebuilt the next time apps load.</string>
+    <string name="toast_cache_cleared">Cache cleared</string>
+    <string name="option_widget_resize_any">Allow unsupported widget sizes</string>
+    <string name="hint_widget_resize_any">Show every resize handle and ignore provider size limits while resizing widgets.</string>
     <string name="option_rerun_onboarding">Run setup wizard again</string>
     <string name="hint_rerun_onboarding">The first-run setup wizard will be shown the next time DistroHopper starts.</string>
     <string name="toast_rerun_onboarding">Setup wizard will run on next start</string>

@@ -35,6 +35,7 @@ import be.robinj.distrohopper.IconPackHelper;
 import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.cache.AppIconCache;
+import be.robinj.distrohopper.cache.AppLabelCache;
 import be.robinj.distrohopper.home.DefaultPinnedApps;
 import be.robinj.distrohopper.onboarding.OnboardingGate;
 
@@ -152,6 +153,29 @@ public class PreferencesActivity extends AppCompatActivity
 					{
 						requireActivity ().setResult (4);
 						requireActivity ().finish ();
+
+						return true;
+					}
+				}
+			);
+
+			this.findPreference ("dummy_clear_cache").setOnPreferenceClickListener (
+				new Preference.OnPreferenceClickListener ()
+				{
+					@Override
+					public boolean onPreferenceClick (Preference preference)
+					{
+						try
+						{
+							new AppIconCache (requireContext ().getApplicationContext ()).clear ();
+							new AppLabelCache (requireContext ().getApplicationContext ()).clear ();
+							Toast.makeText (requireContext (),
+								R.string.toast_cache_cleared, Toast.LENGTH_SHORT).show ();
+						}
+						catch (Exception ex)
+						{
+							new ExceptionHandler (ex).show (requireActivity ());
+						}
 
 						return true;
 					}

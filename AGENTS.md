@@ -282,10 +282,13 @@ etc/                                        — design assets (SVG/XCF sources, 
   programmatically with `PreferenceScreen`/categories), plus dedicated
   activities for lens ordering (`LensPreferencesActivity`) and theme
   selection (`ThemePreferencesActivity`, card UI shared with the wizard via
-  `theme/ThemeCards`). `PreferencesRepository` provides
-  typed and observable (`valueFlow`, a Kotlin `Flow`) access to the main
-  "prefs" file keyed by the `Preference` enum — prefer it over raw
-  `SharedPreferences` in new code.
+  `theme/ThemeCards`). Developer-only options live in `pref_dev.xml` and are
+  gated by the `dev` preference; they include one-shot maintenance actions
+  (clear the app label/icon caches, rerun onboarding, queue default pins) and
+  debug toggles such as log toasts and unrestricted widget resizing.
+  `PreferencesRepository` provides typed and observable (`valueFlow`, a
+  Kotlin `Flow`) access to the main "prefs" file keyed by the `Preference`
+  enum — prefer it over raw `SharedPreferences` in new code.
 - **`theme/`** — one class per supported desktop look (`Default`, `Gnome`,
   `Elementary`, `Cinnamon`, `Plasma`, `Mate`, `Cosmic`, `Budgie`), each
   extending the abstract `Theme` (which lists every themeable field and maps
@@ -337,8 +340,9 @@ etc/                                        — design assets (SVG/XCF sources, 
   shown; drops and moves stay within it. Long-pressing a widget puts its
   `WidgetContainer` into
   edit mode: edge handles resize by touch (clamped to the provider's
-  `min`/`maxResize*` limits and `resizeMode`, with a snap-indicator line
-  drawn by `WidgetsContainer`), while dragging the body uses the system
+  `min`/`maxResize*` limits and `resizeMode`, unless the developer-only
+  unrestricted widget resizing preference is enabled, with a snap-indicator
+  line drawn by `WidgetsContainer`), while dragging the body uses the system
   drag-and-drop framework (`WidgetsContainer_DragListener`) and shares the
   launcher's drag-to-trash mechanism. The free-moving system drag shadow is
   accompanied by a snapped landing indicator drawn on `WidgetsContainer`;
