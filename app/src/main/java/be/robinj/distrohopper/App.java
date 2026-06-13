@@ -170,17 +170,6 @@ public class App implements Parcelable
 			return;
 		}
 
-		// Track real app launches for the usage-based dash sort orders. Internal
-		// shortcuts (e.g. the Settings entry) are excluded: they aren't installed
-		// apps and shouldn't compete in the "most used" ranking.
-		if (! this.internalShortcut) {
-			try {
-				new AppUsageStats (this.context).recordLaunch (this.getProfileScopedKey ());
-			} catch (final Exception ex) {
-				Log.getInstance ().w ("App", "Failed to record app usage: " + ex.getMessage ());
-			}
-		}
-
 		try {
 			final Intent intent;
 			if (this.launchIntent != null) {
@@ -191,6 +180,8 @@ public class App implements Parcelable
 					// the Customise UI result into a relaunch with customise=true //
 					((Activity) this.context).startActivityForResult (
 							intent, this.launchForResultRequestCode);
+
+					this.recordLaunch ();
 
 					return;
 				}
@@ -204,6 +195,8 @@ public class App implements Parcelable
 						new ComponentName (this.packageName, this.activityName),
 						this.user, null, null);
 
+				this.recordLaunch ();
+
 				return;
 			}
 			else {
@@ -215,11 +208,31 @@ public class App implements Parcelable
 			}
 
 			this.context.startActivity(intent);
+
+			this.recordLaunch ();
 		} catch (final Exception ex) {
 			final String errorMessage = format("Failed to launch %s/%s: %s.",
 					this.packageName, this.activityName, ex.getClass().getSimpleName());
 			Log.getInstance().e("App", errorMessage);
 			Toast.makeText(this.context, errorMessage, Toast.LENGTH_SHORT).show(); //TODO// getString () //
+		}
+	}
+
+	// Track real app launches for the usage-based dash sort orders, recorded only
+	// after the start call is accepted so a failed launch (e.g. a stale package
+	// entry, a disabled activity, or a locked work profile) can't push a
+	// never-opened app to the top. Internal shortcuts (e.g. the Settings entry)
+	// are excluded: they aren't installed apps and shouldn't compete in the
+	// "most used" ranking.
+	private void recordLaunch ()
+	{
+		if (this.internalShortcut)
+			return;
+
+		try {
+			new AppUsageStats (this.context).recordLaunch (this.getProfileScopedKey ());
+		} catch (final Exception ex) {
+			Log.getInstance ().w ("App", "Failed to record app usage: " + ex.getMessage ());
 		}
 	}
 
