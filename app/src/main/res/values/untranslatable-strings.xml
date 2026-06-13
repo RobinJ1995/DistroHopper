@@ -2,4 +2,12 @@
 <resources>
     <string name="app_name">DistroHopper</string>
 
+    <!-- Must mirror the AppSortOrder enum values, in the same order as
+         app_sort_order_entries. Not translatable: persisted preference keys. -->
+    <string-array name="app_sort_order_values" translatable="false">
+        <item>alphabetical</item>
+        <item>recent</item>
+        <item>most_used</item>
+    </string-array>
+
 </resources>

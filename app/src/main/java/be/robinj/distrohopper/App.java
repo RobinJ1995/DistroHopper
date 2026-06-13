@@ -170,6 +170,17 @@ public class App implements Parcelable
 			return;
 		}
 
+		// Track real app launches for the usage-based dash sort orders. Internal
+		// shortcuts (e.g. the Settings entry) are excluded: they aren't installed
+		// apps and shouldn't compete in the "most used" ranking.
+		if (! this.internalShortcut) {
+			try {
+				new AppUsageStats (this.context).recordLaunch (this.getProfileScopedKey ());
+			} catch (final Exception ex) {
+				Log.getInstance ().w ("App", "Failed to record app usage: " + ex.getMessage ());
+			}
+		}
+
 		try {
 			final Intent intent;
 			if (this.launchIntent != null) {

@@ -7,6 +7,7 @@ import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.content.pm.ResolveInfo
 import android.os.UserHandle
+import be.robinj.distrohopper.preferences.AppSortOrder
 import be.robinj.distrohopper.preferences.LauncherPinMode
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
@@ -75,7 +76,8 @@ class AppRepository(private val context: Context) {
 	}
 
 	fun sort() {
-		this.apps.sortWith(AppComparatorAlphabetical())
+		val order = AppSortOrder.current(Preferences.getSharedPreferences(this.context))
+		this.apps.sortWith(AppComparators.forOrder(order, AppUsageStats(this.context)))
 		this.installedChanged()
 	}
 
