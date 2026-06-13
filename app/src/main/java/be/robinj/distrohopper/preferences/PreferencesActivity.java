@@ -161,8 +161,7 @@ public class PreferencesActivity extends AppCompatActivity
 				}
 			);
 
-			final Preference clearCache = this.findPreference (
-				be.robinj.distrohopper.preferences.Preference.DEV_CLEAR_CACHE.getName ());
+			final Preference clearCache = this.findPreference ("dummy_clear_cache");
 			if (clearCache != null)
 			{
 				clearCache.setOnPreferenceClickListener (new Preference.OnPreferenceClickListener ()

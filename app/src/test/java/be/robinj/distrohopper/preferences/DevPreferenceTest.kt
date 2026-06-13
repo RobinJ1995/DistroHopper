@@ -102,8 +102,7 @@ class DevPreferenceTest {
 					.findFragmentById(R.id.preferences_container)
 					as PreferencesActivity.PreferencesFragment
 
-				fragment.findPreference<androidx.preference.Preference>(
-					Preference.DEV_CLEAR_CACHE.getName())!!
+				fragment.findPreference<androidx.preference.Preference>("dummy_clear_cache")!!
 					.performClick()
 			}
 		}
