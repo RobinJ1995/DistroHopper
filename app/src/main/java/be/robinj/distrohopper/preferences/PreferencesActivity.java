@@ -35,6 +35,7 @@ import be.robinj.distrohopper.IconPackHelper;
 import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.cache.AppIconCache;
+import be.robinj.distrohopper.cache.AppLabelCache;
 import be.robinj.distrohopper.home.DefaultPinnedApps;
 import be.robinj.distrohopper.onboarding.OnboardingGate;
 
@@ -121,6 +122,7 @@ public class PreferencesActivity extends AppCompatActivity
 			this.initIconPackList ();
 			this.initCrashReportsPreference ();
 			this.initLauncherPinModePreference ();
+			this.initDevPreference ();
 
 			this.findPreference ("dummy_wallpaper").setOnPreferenceClickListener (
 				new Preference.OnPreferenceClickListener ()
@@ -157,6 +159,30 @@ public class PreferencesActivity extends AppCompatActivity
 					}
 				}
 			);
+
+			final Preference clearCache = this.findPreference ("dummy_clear_cache");
+			if (clearCache != null)
+			{
+				clearCache.setOnPreferenceClickListener (new Preference.OnPreferenceClickListener ()
+				{
+					@Override
+					public boolean onPreferenceClick (Preference preference)
+					{
+						try
+						{
+							clearAppCaches ();
+							Toast.makeText (requireContext (),
+								R.string.toast_cache_cleared, Toast.LENGTH_SHORT).show ();
+						}
+						catch (Exception ex)
+						{
+							new ExceptionHandler (ex).show (requireActivity ());
+						}
+
+						return true;
+					}
+				});
+			}
 
 			this.findPreference ("dummy_rerun_onboarding").setOnPreferenceClickListener (
 				new Preference.OnPreferenceClickListener ()
@@ -231,6 +257,57 @@ public class PreferencesActivity extends AppCompatActivity
 			header.setTitle (titleRes);
 			this.getPreferenceScreen ().addPreference (header);
 			this.addPreferencesFromResource (prefsRes);
+		}
+
+		private void initDevPreference ()
+		{
+			final SwitchPreferenceCompat pref = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.DEV.getName ());
+			if (pref == null)
+				return;
+
+			if (! pref.isChecked ())
+			{
+				this.clearChildPreferences (be.robinj.distrohopper.preferences.Preference.DEV);
+			}
+
+			pref.setOnPreferenceChangeListener ((preference, newValue) ->
+			{
+				if (Boolean.FALSE.equals (newValue))
+				{
+					this.clearChildPreferences (be.robinj.distrohopper.preferences.Preference.DEV);
+				}
+
+				return true;
+			});
+		}
+
+		private void clearChildPreferences (final be.robinj.distrohopper.preferences.Preference parent)
+		{
+			final SharedPreferences.Editor editor = Preferences
+				.getSharedPreferences (this.requireContext ())
+				.edit ();
+
+			for (final be.robinj.distrohopper.preferences.Preference child
+				: be.robinj.distrohopper.preferences.Preference.values ())
+			{
+				if (child.getParent () != parent)
+					continue;
+
+				final Preference toggle = this.findPreference (child.getName ());
+				if (toggle instanceof SwitchPreferenceCompat)
+					((SwitchPreferenceCompat) toggle).setChecked (false);
+
+				editor.remove (child.getName ());
+			}
+
+			editor.apply ();
+		}
+
+		private void clearAppCaches ()
+		{
+			new AppLabelCache (this.requireContext ().getApplicationContext ()).clear ();
+			AppIconCache.clearAll (this.requireContext ().getApplicationContext ());
 		}
 
 		private void initLauncherPinModePreference ()
