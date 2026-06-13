@@ -160,7 +160,9 @@ public class PreferencesActivity extends AppCompatActivity
 				}
 			);
 
-			this.findPreference ("dummy_clear_cache").setOnPreferenceClickListener (
+			this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.DEV_CLEAR_CACHE.getName ())
+				.setOnPreferenceClickListener (
 				new Preference.OnPreferenceClickListener ()
 				{
 					@Override

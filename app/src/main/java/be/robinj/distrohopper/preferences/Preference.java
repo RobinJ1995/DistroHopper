@@ -22,6 +22,7 @@ public enum Preference {
 	DEFAULT_PINS_AUTO_INELIGIBLE("default_pins_auto_ineligible"),
 	DEV("dev"),
 	DEV_LOG_TOASTER("dev_log_toaster"),
+	DEV_CLEAR_CACHE("dummy_clear_cache"),
 	DEV_WIDGET_RESIZE_ANY("dev_widget_resize_any", false);
 
 	private final String name;
