@@ -88,6 +88,18 @@ public class AppManager implements Iterable<App>
 		this.getBinder ().bindDashApps (displayDensity, dashIconWidth);
 	}
 
+	/** Applies the dash icon-width preference to the dash grid and pager pages. */
+	public void applyDashIconWidth (int dashIconWidth)
+	{
+		this.getBinder ().applyDashIconWidth (dashIconWidth);
+	}
+
+	/** Notifies the dash that it opened or closed (for the workspace indicator). */
+	public void setDashOpen (boolean open)
+	{
+		this.getBinder ().setDashOpen (open);
+	}
+
 	public void addRunningApps (int colour)
 	{
 		this.getBinder ().addRunningApps (colour);

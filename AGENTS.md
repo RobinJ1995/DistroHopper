@@ -62,12 +62,25 @@ etc/                                        — design assets (SVG/XCF sources, 
     `App.getWorkspaceScopedKey()` — identical to the old
     package+activity key for personal apps, with the profile serial
     appended otherwise (so old pinned-app prefs keep matching). When more
-    than one workspace exists, the dash shows one labelled app-list
-    section per workspace (`LauncherBarBinder.bindDashApps`, layout
-    `widget_dash_workspace.xml`, full-height grids in a ScrollView via
-    `desktop/dash/ExpandedGridView`) instead of the single grid, and the
-    InstalledApps lens splits its results into one section per workspace
-    (`Lens.searchCollections`).
+    than one workspace exists, the dash replaces its single app grid with a
+    swipeable per-workspace pager (`desktop/dash/WorkspacePagerAdapter` in a
+    `ViewPager2`, one `GridView` page per profile) plus a theme-specific tab
+    indicator; with a single workspace it stays the plain grid. All of this
+    is driven by `LauncherBarBinder.bindDashApps`/`rebindDashApps` (which
+    flips between the two layouts as the work profile appears/disappears).
+    The InstalledApps lens likewise splits its results into one section per
+    workspace (`Lens.searchCollections`) while staying one lens.
+    The tab indicator is chosen per theme via the `workspace_indicator`
+    integer (`theme/WorkspaceIndicatorStyle`, like `dash_animation`):
+    `UNITY_RIBBON` (Unity/Default) puts per-profile glyphs in the always-
+    visible dash ribbon (`desktop/dash/workspace/UnityRibbonIndicator`),
+    `GNOME_PANEL` (Gnome) draws a workspace pill at the panel's top-left,
+    shown only while the dash is open (`GnomeWorkspacePillIndicator` +
+    the custom-drawn `WorkspacePillView`); other themes are `NONE` for now.
+    Indicators implement `desktop/dash/workspace/WorkspaceIndicator` and are
+    driven by the pager's page-scroll callback so the highlight/pill animates
+    with the swipe; the dash-open signal reaches them via
+    `AppManager.setDashOpen` (wired from `HomeStateBinder`'s `dashOpen` flow).
   - `IconPackHelper`, `Image`, `Utils`, `ViewFinder`, `InsetsHelper`,
     `Permission`, `RequestCode`, `ExceptionHandler`, `HomeRole` —
     support/utilities. `HomeRole` wraps the HOME-role (default launcher)

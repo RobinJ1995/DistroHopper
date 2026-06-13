@@ -79,5 +79,6 @@ public class Cosmic extends Theme
 		this.dash_ribbon_show = R.bool.theme_cosmic_dash_ribbon_show;
 		this.dash_blur_radius = R.dimen.theme_cosmic_dash_blur_radius;
 		this.dash_animation = R.integer.theme_cosmic_dash_animation;
+		this.workspace_indicator = R.integer.theme_cosmic_workspace_indicator;
 	}
 }

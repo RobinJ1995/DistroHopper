@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Values for WorkspaceIndicatorStyle, referenced by each theme's
+     theme_*_workspace_indicator integer. -->
+<resources>
+    <integer name="workspace_indicator_none">0</integer>
+    <integer name="workspace_indicator_unity_ribbon">1</integer>
+    <integer name="workspace_indicator_gnome_panel">2</integer>
+</resources>

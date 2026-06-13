@@ -86,4 +86,5 @@
     <bool name="theme_plasma_dash_ribbon_show">false</bool>
     <dimen name="theme_plasma_dash_blur_radius">48dp</dimen>
     <integer name="theme_plasma_dash_animation">@integer/dash_animation_cinnamon</integer>
+    <integer name="theme_plasma_workspace_indicator">@integer/workspace_indicator_none</integer>
 </resources>

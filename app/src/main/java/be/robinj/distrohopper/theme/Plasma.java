@@ -79,5 +79,6 @@ public class Plasma extends Theme
 		this.dash_ribbon_show = R.bool.theme_plasma_dash_ribbon_show;
 		this.dash_blur_radius = R.dimen.theme_plasma_dash_blur_radius;
 		this.dash_animation = R.integer.theme_plasma_dash_animation;
+		this.workspace_indicator = R.integer.theme_plasma_workspace_indicator;
 	}
 }

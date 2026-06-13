@@ -89,6 +89,8 @@ public abstract class Theme
 	public int dash_ribbon_show;
 	public int dash_blur_radius;
 	public int dash_animation;
+	/** Integer mapping to WorkspaceIndicatorStyle; see workspace_indicator.xml. */
+	public int workspace_indicator;
 	
 	public String getName ()
 	{

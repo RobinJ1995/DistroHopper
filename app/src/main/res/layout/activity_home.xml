@@ -67,6 +67,16 @@
 			android:background="@drawable/panel_background"
 			android:orientation="horizontal">
 
+			<!-- GNOME-style workspace pill; populated and shown only while the
+			     dash is open with more than one workspace -->
+			<FrameLayout
+				android:id="@+id/llPanelWorkspaceIndicator"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:paddingLeft="8dp"
+				android:paddingRight="8dp"
+				android:visibility="gone" />
+
 			<TextView
 				android:id="@+id/tvPanelBfb"
 				android:layout_width="wrap_content"
@@ -309,6 +319,7 @@
 								</LinearLayout>-->
 
 								<LinearLayout
+									android:id="@+id/llDashHomeAppsGridWrapper"
 									android:layout_width="match_parent"
 									android:layout_height="wrap_content"
 									android:layout_gravity="center"
@@ -325,23 +336,15 @@
 										android:numColumns="auto_fit" />
 								</LinearLayout>
 
-								<!-- One labelled app-grid section per workspace
-								     (personal/work profile); replaces gvDashHomeApps
-								     when more than one workspace exists -->
-								<ScrollView
-									android:id="@+id/svDashHomeWorkspaces"
+								<!-- Swipeable per-workspace app grids (personal/work
+								     profile); replaces gvDashHomeApps when more than one
+								     workspace exists -->
+								<androidx.viewpager2.widget.ViewPager2
+									android:id="@+id/vpDashWorkspaces"
 									android:layout_width="match_parent"
 									android:layout_height="0dp"
 									android:layout_weight="1"
-									android:scrollbars="none"
-									android:visibility="gone">
-
-									<LinearLayout
-										android:id="@+id/llDashHomeWorkspaces"
-										android:layout_width="match_parent"
-										android:layout_height="wrap_content"
-										android:orientation="vertical" />
-								</ScrollView>
+									android:visibility="gone" />
 							</LinearLayout>
 
 							<LinearLayout
@@ -413,6 +416,17 @@
 						android:background="@color/transparent"
 						android:padding="5dp"
 						android:src="@drawable/dash_ribbon_apps"
+						android:visibility="gone" />
+
+					<!-- Unity-style per-profile tab icons; populated and shown only
+					     when more than one workspace exists -->
+					<LinearLayout
+						android:id="@+id/llDashRibbonWorkspaces"
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:layout_weight="0"
+						android:gravity="center"
+						android:orientation="horizontal"
 						android:visibility="gone" />
 
 					<LinearLayout

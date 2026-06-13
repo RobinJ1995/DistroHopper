@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- One page of the dash workspace pager: a single profile's app grid,
+     identical to the standard dash grid. -->
+<GridView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gvWorkspacePage"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:choiceMode="singleChoice"
+    android:columnWidth="@dimen/dash_applauncher_width"
+    android:gravity="center"
+    android:numColumns="auto_fit"
+    android:scrollbars="none" />

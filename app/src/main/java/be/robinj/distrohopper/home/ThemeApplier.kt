@@ -167,17 +167,9 @@ class ThemeApplier(
 	 */
 	fun applyDashIconWidth(width: Int) {
 		val density = this.activity.resources.displayMetrics.density
-		val columnWidth = Math.round((80 // 80 is the minimum
+
+		this.viewFinder.get<GridView>(R.id.gvDashHomeApps).setColumnWidth(Math.round((80 // 80 is the minimum
 			+ width)
-			* density) // Adjust for the screen's pixel density
-
-		this.viewFinder.get<GridView>(R.id.gvDashHomeApps).setColumnWidth(columnWidth)
-
-		// The per-workspace grids shown instead when a work profile exists //
-		val llDashHomeWorkspaces = this.viewFinder.get<LinearLayout>(R.id.llDashHomeWorkspaces)
-		for (i in 0 until llDashHomeWorkspaces.childCount) {
-			llDashHomeWorkspaces.getChildAt(i)
-				.findViewById<GridView>(R.id.gvWorkspaceApps)?.setColumnWidth(columnWidth)
-		}
+			* density)) // Adjust for the screen's pixel density
 	}
 }

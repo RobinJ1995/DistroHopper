@@ -79,5 +79,6 @@ public class Elementary extends Theme
 		this.dash_ribbon_show = R.bool.theme_elementary_dash_ribbon_show;
 		this.dash_blur_radius = R.dimen.theme_elementary_dash_blur_radius;
 		this.dash_animation = R.integer.theme_elementary_dash_animation;
+		this.workspace_indicator = R.integer.theme_elementary_workspace_indicator;
 	}
 }

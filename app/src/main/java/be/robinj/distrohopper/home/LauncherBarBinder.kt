@@ -1,21 +1,22 @@
 package be.robinj.distrohopper.home
 
 import android.os.UserHandle
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.GridView
 import android.widget.LinearLayout
-import android.widget.ScrollView
-import android.widget.TextView
+import androidx.viewpager2.widget.ViewPager2
 import be.robinj.distrohopper.App
 import be.robinj.distrohopper.AppManager
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
-import be.robinj.distrohopper.Workspaces
 import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.desktop.dash.GridAdapter
+import be.robinj.distrohopper.desktop.dash.WorkspacePagerAdapter
+import be.robinj.distrohopper.desktop.dash.workspace.GnomeWorkspacePillIndicator
+import be.robinj.distrohopper.desktop.dash.workspace.UnityRibbonIndicator
+import be.robinj.distrohopper.desktop.dash.workspace.WorkspaceIndicator
 import be.robinj.distrohopper.desktop.dash.AppLauncherClickListener as DashAppLauncherClickListener
 import be.robinj.distrohopper.desktop.dash.AppLauncherLongClickListener as DashAppLauncherLongClickListener
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
@@ -24,6 +25,7 @@ import be.robinj.distrohopper.desktop.launcher.AppLauncherDragListener
 import be.robinj.distrohopper.desktop.launcher.AppLauncherLongClickListener
 import be.robinj.distrohopper.desktop.launcher.RunningAppLauncher
 import be.robinj.distrohopper.theme.Location
+import be.robinj.distrohopper.theme.WorkspaceIndicatorStyle
 
 /**
  * The view half of app management: keeps the launcher bar's pinned and
@@ -53,11 +55,11 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	private val gvDashHomeApps: GridView by lazy {
 		this.activity.viewFinder.get(R.id.gvDashHomeApps)
 	}
-	private val svDashHomeWorkspaces: ScrollView by lazy {
-		this.activity.viewFinder.get(R.id.svDashHomeWorkspaces)
+	private val llDashHomeAppsGridWrapper: LinearLayout by lazy {
+		this.activity.viewFinder.get(R.id.llDashHomeAppsGridWrapper)
 	}
-	private val llDashHomeWorkspaces: LinearLayout by lazy {
-		this.activity.viewFinder.get(R.id.llDashHomeWorkspaces)
+	private val vpDashWorkspaces: ViewPager2 by lazy {
+		this.activity.viewFinder.get(R.id.vpDashWorkspaces)
 	}
 
 	private var dashBound = false
@@ -65,8 +67,12 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	private var dashIconWidth = 0
 	/** The workspaces the dash was last bound for (null = the personal profile). */
 	private var boundWorkspaces: List<UserHandle?> = emptyList()
-	/** Per-workspace section adapters; empty in single-workspace mode. */
-	private val workspaceAdapters = LinkedHashMap<UserHandle?, GridAdapter>()
+	/** The current workspace tab; preserved across rebinds (app install/remove). */
+	private var currentWorkspaceIndex = 0
+	private var pagerAdapter: WorkspacePagerAdapter? = null
+	private var indicator: WorkspaceIndicator? = null
+	private var pageCallbackRegistered = false
+	private var dashOpen = false
 
 	fun addPinnedAppView(app: App) {
 		this.llLauncherPinnedApps.addView(this.pinnedAppLauncher(app))
@@ -111,9 +117,10 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	}
 
 	/**
-	 * Binds the dash app grid(s): the single live-list-backed grid when only
-	 * the personal workspace exists, or one labelled section per workspace
-	 * (personal, work profile) stacked in the scrollable workspace container.
+	 * Binds the dash app grid: the single live-list-backed grid when only the
+	 * personal workspace exists (the standard dash), or a swipeable per-
+	 * workspace pager with a theme-specific tab indicator when a work profile
+	 * is present too.
 	 */
 	fun bindDashApps(displayDensity: Float, dashIconWidth: Int) {
 		this.dashDisplayDensity = displayDensity
@@ -126,84 +133,119 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	private fun rebindDashApps() {
 		val workspaces = this.appManager.repository.workspaces()
 		this.boundWorkspaces = workspaces
-		this.workspaceAdapters.clear()
-		this.llDashHomeWorkspaces.removeAllViews()
 
 		if (workspaces.size <= 1) {
-			this.svDashHomeWorkspaces.visibility = View.GONE
-			this.gvDashHomeApps.visibility = View.VISIBLE
+			// Standard dash: the single grid backed by the live installed list //
+			this.indicator?.clear()
+			this.indicator = null
+			this.vpDashWorkspaces.adapter = null
+			this.pagerAdapter = null
+			this.vpDashWorkspaces.visibility = View.GONE
+			this.llDashHomeAppsGridWrapper.visibility = View.VISIBLE
 
 			if (this.gvDashHomeApps.adapter == null) {
-				// Backed by the live installed list, as before //
 				this.gvDashHomeApps.adapter = GridAdapter(this.activity.applicationContext,
 					this.appManager.installedApps, this.dashDisplayDensity, this.dashIconWidth)
 				this.gvDashHomeApps.onItemClickListener =
 					DashAppLauncherClickListener(this.activity)
 				this.gvDashHomeApps.onItemLongClickListener =
 					DashAppLauncherLongClickListener(this.activity)
+			} else {
+				// Reverting from tabs (last work-profile app removed): the live-
+				// list-backed adapter needs a refresh to drop the gone apps //
+				(this.gvDashHomeApps.adapter as? ArrayAdapter<*>)?.notifyDataSetChanged()
 			}
 
 			return
 		}
 
-		this.gvDashHomeApps.visibility = View.GONE
-		this.svDashHomeWorkspaces.visibility = View.VISIBLE
+		// Multiple workspaces: swipeable tabs, one app grid per profile //
+		this.llDashHomeAppsGridWrapper.visibility = View.GONE
+		this.vpDashWorkspaces.visibility = View.VISIBLE
 
+		val selected = this.currentWorkspaceIndex.coerceIn(0, workspaces.size - 1)
+		this.currentWorkspaceIndex = selected
+
+		val adapter = WorkspacePagerAdapter(this.activity, this.appManager, workspaces,
+			this.dashDisplayDensity, this.dashIconWidth)
+		this.pagerAdapter = adapter
+		this.vpDashWorkspaces.adapter = adapter
+		this.vpDashWorkspaces.setCurrentItem(selected, false)
+		this.registerPageCallback()
+
+		this.indicator?.clear()
+		this.indicator = this.createIndicator()?.also {
+			it.bind(workspaces, selected)
+			it.onDashOpenChanged(this.dashOpen)
+		}
+	}
+
+	private fun registerPageCallback() {
+		if (this.pageCallbackRegistered) {
+			return
+		}
+		this.pageCallbackRegistered = true
+
+		this.vpDashWorkspaces.registerOnPageChangeCallback(
+			object : ViewPager2.OnPageChangeCallback() {
+				override fun onPageScrolled(
+					position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+					this@LauncherBarBinder.indicator?.onPageScrolled(position, positionOffset)
+				}
+
+				override fun onPageSelected(position: Int) {
+					this@LauncherBarBinder.currentWorkspaceIndex = position
+					this@LauncherBarBinder.indicator?.onPageSelected(position)
+				}
+			})
+	}
+
+	private fun createIndicator(): WorkspaceIndicator? {
 		val theme = DependencyContainer.of(this.activity).themeManager.current
-		val res = this.activity.resources
-		for (workspace in workspaces) {
-			val section = LayoutInflater.from(this.activity)
-				.inflate(R.layout.widget_dash_workspace, this.llDashHomeWorkspaces, false)
+		val select: (Int) -> Unit = { this.vpDashWorkspaces.setCurrentItem(it, true) }
 
-			val tvLabel = section.findViewById<TextView>(R.id.tvWorkspaceLabel)
-			tvLabel.text = Workspaces.label(this.activity, workspace)
-			tvLabel.setTextColor(res.getColor(theme.dash_applauncher_text_colour))
-			tvLabel.setShadowLayer(5F, 2F, 2F,
-				res.getColor(theme.dash_applauncher_text_shadow_colour))
-
-			// Sections refresh from the repository on change (notifyDashAdapterChanged),
-			// so each gets its own copied list rather than the shared live list //
-			val adapter = GridAdapter(this.activity.applicationContext,
-				ArrayList(this.appManager.repository.appsForWorkspace(workspace)),
-				this.dashDisplayDensity, this.dashIconWidth)
-
-			val grid = section.findViewById<GridView>(R.id.gvWorkspaceApps)
-			grid.setColumnWidth(Math.round((80 + this.dashIconWidth) * this.dashDisplayDensity))
-			grid.adapter = adapter
-			grid.onItemClickListener = DashAppLauncherClickListener(this.activity)
-			grid.onItemLongClickListener = DashAppLauncherLongClickListener(this.activity)
-
-			this.workspaceAdapters[workspace] = adapter
-			this.llDashHomeWorkspaces.addView(section)
+		return when (WorkspaceIndicatorStyle.of(
+				this.activity.resources.getInteger(theme.workspace_indicator))) {
+			WorkspaceIndicatorStyle.UNITY_RIBBON -> UnityRibbonIndicator(this.activity,
+				this.activity.viewFinder.get(R.id.llDashRibbonWorkspaces), select)
+			WorkspaceIndicatorStyle.GNOME_PANEL -> GnomeWorkspacePillIndicator(this.activity,
+				this.activity.viewFinder.get(R.id.llPanelWorkspaceIndicator), select)
+			WorkspaceIndicatorStyle.NONE -> null
 		}
 	}
 
 	fun notifyDashAdapterChanged() {
 		if (this.dashBound && this.appManager.repository.workspaces() != this.boundWorkspaces) {
 			// A workspace appeared or vanished (e.g. the first work-profile app
-			// was installed): rebuild the dash sections wholesale //
+			// was installed, or the last removed): switch between the single grid
+			// and the tabbed pager wholesale //
 			this.rebindDashApps()
 
 			return
 		}
 
 		(this.gvDashHomeApps.adapter as? ArrayAdapter<*>)?.notifyDataSetChanged()
-
-		for ((workspace, adapter) in this.workspaceAdapters) {
-			adapter.setNotifyOnChange(false)
-			adapter.clear()
-			adapter.addAll(this.appManager.repository.appsForWorkspace(workspace))
-			adapter.notifyDataSetChanged()
-		}
+		this.pagerAdapter?.refresh()
 	}
 
 	fun invalidateDashViews() {
 		this.gvDashHomeApps.invalidateViews()
+		this.pagerAdapter?.invalidatePages(this.vpDashWorkspaces)
+	}
 
-		for (i in 0 until this.llDashHomeWorkspaces.childCount) {
-			this.llDashHomeWorkspaces.getChildAt(i)
-				.findViewById<GridView>(R.id.gvWorkspaceApps)?.invalidateViews()
-		}
+	/** Applies the dash icon-width preference to the single grid and pager pages. */
+	fun applyDashIconWidth(dashIconWidth: Int) {
+		this.dashIconWidth = dashIconWidth
+
+		val columnWidth = WorkspacePagerAdapter.columnWidthPx(this.dashDisplayDensity, dashIconWidth)
+		this.gvDashHomeApps.setColumnWidth(columnWidth)
+		this.pagerAdapter?.applyIconWidth(this.vpDashWorkspaces, dashIconWidth)
+	}
+
+	/** The dash opened or closed; indicators that only show while open react. */
+	fun setDashOpen(open: Boolean) {
+		this.dashOpen = open
+		this.indicator?.onDashOpenChanged(open)
 	}
 
 	fun startedDraggingPinnedApp() = startedDragging(this.activity)
