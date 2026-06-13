@@ -34,9 +34,10 @@
         <item name="alertDialogTheme">@style/ModernDialogTheme</item>
     </style>
 
-    <!-- Shared modern styling for the app's pop-up dialogs: a rounded surface,
-         the Ubuntu-orange brand accent, and modern typography. -->
-    <style name="ModernDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <!-- Shared modern styling for the app's pop-up dialogs: a dark, frosted
+         (translucent + blurred) surface, the system primary accent, and modern
+         typography. -->
+    <style name="ModernDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
         <item name="colorAccent">@color/dialog_accent</item>
         <!-- android:-prefixed so framework dialogs (e.g. the crash reporter) match too. -->
         <item name="android:colorAccent">@color/dialog_accent</item>
@@ -44,13 +45,23 @@
         <item name="android:windowBackground">@drawable/dialog_window_background</item>
         <item name="android:textColorPrimary">@color/dialog_on_surface</item>
         <item name="android:textColorSecondary">@color/dialog_on_surface_variant</item>
+        <!-- Translucent so the blur shows through the surface (frosted glass). -->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- Carry our own blur + dim so the backdrop stays consistently dark.
+             Host activities like Preferences dim the wallpaper via cross-window
+             blur, which the system drops once this dialog takes focus; without
+             this the raw wallpaper would show through, brightly. -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+        <item name="android:windowBlurBehindEnabled">true</item>
+        <item name="android:windowBlurBehindRadius">@dimen/dialog_blur_radius</item>
         <item name="android:windowTitleStyle">@style/ModernDialogTitle</item>
         <item name="buttonBarPositiveButtonStyle">@style/ModernDialogButton</item>
         <item name="buttonBarNegativeButtonStyle">@style/ModernDialogButton</item>
         <item name="buttonBarNeutralButtonStyle">@style/ModernDialogButton</item>
     </style>
 
-    <style name="ModernDialogTitle" parent="DialogWindowTitle.AppCompat">
+    <style name="ModernDialogTitle" parent="TextAppearance.AppCompat.Title">
         <item name="android:textColor">@color/dialog_on_surface</item>
         <item name="android:textSize">22sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>

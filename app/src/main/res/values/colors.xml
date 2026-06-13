@@ -24,11 +24,15 @@
     <color name="onboarding_accent">#E95420</color>
     <color name="onboarding_accent_pressed">#C7431B</color>
 
-    <!-- Modern dialog palette (widget picker, icon pack picker, lens errors, …). -->
-    <color name="dialog_surface">#FFFFFFFF</color>
-    <color name="dialog_on_surface">#DE000000</color>
-    <color name="dialog_on_surface_variant">#8A000000</color>
-    <color name="dialog_accent">#E95420</color>
-    <color name="dialog_preview_background">#0F000000</color>
-    <color name="dialog_ripple">#1FE95420</color>
+    <!-- Modern dialog palette (widget picker, icon pack picker, lens errors, …).
+         A dark, slightly translucent surface: the window blur behind it gives a
+         frosted-glass look instead of a blinding solid panel. -->
+    <color name="dialog_surface">#CC1C1C1E</color>
+    <color name="dialog_on_surface">#FFFFFFFF</color>
+    <color name="dialog_on_surface_variant">#B3FFFFFF</color>
+    <!-- The device's system primary colour (Material You, API 31+); the lighter
+         200 tone reads well on the dark surface. -->
+    <color name="dialog_accent">@android:color/system_accent1_200</color>
+    <color name="dialog_preview_background">#1AFFFFFF</color>
+    <color name="dialog_ripple">#26FFFFFF</color>
 </resources>
