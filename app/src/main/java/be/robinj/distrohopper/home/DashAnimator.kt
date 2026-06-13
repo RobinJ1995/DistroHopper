@@ -29,7 +29,9 @@ import be.robinj.distrohopper.theme.DashAnimation
 import be.robinj.distrohopper.theme.Location
 import be.robinj.distrohopper.theme.Theme
 import be.robinj.distrohopper.widgets.WidgetsContainer
+import kotlin.math.abs
 import kotlin.math.hypot
+import kotlin.math.max
 import kotlin.math.min
 
 /**
@@ -47,6 +49,12 @@ import kotlin.math.min
  *  - COSMIC: the dash fades in with a slight zoom.
  * Everything is reversed on close. Battery saver bypasses all transitions
  * and applies the final state immediately.
+ *
+ * Swipe gestures get their own, finger-tracked transition instead of the
+ * theme's preset: swipeBegin()/swipeUpdate() slide the dash vertically
+ * (offscreen towards the bottom at openness 0, at rest at 1) while the blur,
+ * panel opacity and dim overlay track the same fraction; swipeSettle()
+ * animates the remainder when the finger lifts.
  */
 class DashAnimator(
 	private val activity: Activity,
@@ -57,6 +65,7 @@ class DashAnimator(
 	private var running: AnimatorSet? = null
 	private var pendingOpen: OneShotPreDrawListener? = null
 	private var currentBlurRadius = 0F
+	private var swipe: SwipeSession? = null
 
 	private val animation: DashAnimation
 		get() = DashAnimation.of(this.activity.resources.getInteger(this.theme.dash_animation))
@@ -132,6 +141,134 @@ class DashAnimator(
 		this.start(opening = false, freshOpen = false, blurRadiusPx, teardown)
 	}
 
+	internal val swipeInProgress: Boolean
+		get() = this.swipe != null
+
+	/** The slide distance a swipe tracks over, for finger-to-fraction mapping. */
+	internal val swipeDistancePx: Float
+		get() = this.swipe?.distance ?: this.slideDistancePx()
+
+	/** Current openness of the in-flight swipe (0 = closed, 1 = open). */
+	internal val swipeOpenness: Float
+		get() = this.swipe?.openness ?: 0F
+
+	/**
+	 * Begins a finger-tracked transition. When opening, the dash is made
+	 * visible offscreen first; a swipe taking over a still-settling previous
+	 * swipe resumes from its current openness. Returns false in battery
+	 * saver, where there is nothing to track — the caller falls back to the
+	 * instant open()/close().
+	 */
+	fun swipeBegin(opening: Boolean, blurRadiusPx: Int): Boolean {
+		if (!this.animationsEnabled) {
+			return false
+		}
+
+		val resumeOpenness = this.swipe?.openness
+		this.cancelRunning()
+
+		val llDash = this.viewFinder.get<LinearLayout>(R.id.llDash)
+
+		if (resumeOpenness == null) {
+			if (opening) {
+				this.withLayoutTransitionsSuppressed {
+					llDash.visibility = View.VISIBLE
+					this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlay).visibility =
+						View.INVISIBLE
+					this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened)
+						.visibility = View.VISIBLE
+				}
+			}
+			// A cancelled theme animation must not leave its transforms behind //
+			this.resetDashTransforms(llDash)
+			this.resetIconTransforms(this.viewFinder.get(R.id.gvDashHomeApps))
+		}
+
+		this.swipe = SwipeSession(blurRadiusPx, this.slideDistancePx())
+		this.swipeUpdate(resumeOpenness ?: if (opening) 0F else 1F)
+
+		return true
+	}
+
+	fun swipeUpdate(openness: Float) {
+		val swipe = this.swipe ?: return
+
+		swipe.openness = openness.coerceIn(0F, 1F)
+		this.applySwipe(swipe)
+	}
+
+	/**
+	 * Animates the in-flight swipe the rest of the way to fully [open] or
+	 * fully closed. [teardown] (hide the dash, restore the overlays) runs
+	 * once a settle towards closed completes, mirroring close().
+	 */
+	fun swipeSettle(open: Boolean, teardown: (() -> Unit)? = null) {
+		val swipe = this.swipe ?: return
+		val target = if (open) 1F else 0F
+		val base = if (open) OPEN_DURATION_MS else CLOSE_DURATION_MS
+
+		swipe.settle = ValueAnimator.ofFloat(swipe.openness, target).also { animator ->
+			animator.duration = (base * abs(target - swipe.openness)).toLong()
+			animator.interpolator = if (open) OPEN_INTERPOLATOR else CLOSE_INTERPOLATOR
+			animator.addUpdateListener {
+				swipe.openness = it.animatedValue as Float
+				this.applySwipe(swipe)
+			}
+			animator.addListener(object : AnimatorListenerAdapter() {
+				private var cancelled = false
+
+				override fun onAnimationCancel(animation: Animator) {
+					this.cancelled = true
+				}
+
+				override fun onAnimationEnd(animation: Animator) {
+					if (this@DashAnimator.swipe === swipe) {
+						this@DashAnimator.swipe = null
+					}
+					if (this.cancelled) { // The taking-over call owns the views now //
+						return
+					}
+
+					if (open) {
+						resetDashTransforms(viewFinder.get(R.id.llDash))
+					} else {
+						withLayoutTransitionsSuppressed { teardown?.invoke() }
+						resetDashTransforms(viewFinder.get(R.id.llDash))
+						viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened)
+							.alpha = 1F
+						viewFinder.get<LinearLayout>(R.id.llPanel).alpha = panelRestingAlpha()
+						finishBlur()
+					}
+				}
+			})
+			animator.start()
+		}
+	}
+
+	private fun applySwipe(swipe: SwipeSession) {
+		val resting = this.panelRestingAlpha()
+
+		this.viewFinder.get<LinearLayout>(R.id.llDash).translationY =
+			(1F - swipe.openness) * swipe.distance
+		this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened).alpha =
+			swipe.openness
+		this.viewFinder.get<LinearLayout>(R.id.llPanel).alpha =
+			resting + (1F - resting) * swipe.openness
+		if (swipe.blurRadiusPx > 0) {
+			this.applyBlurRadius(
+				BLUR_OPEN_INTERPOLATOR.getInterpolation(swipe.openness) * swipe.blurRadiusPx,
+				swipe.blurRadiusPx)
+		}
+	}
+
+	/*
+	 * The dash slides over the launcher-and-dash container's full height; the
+	 * dash's own height can't be used as it is still zero on a fresh open
+	 * (the dash only gets laid out once made visible).
+	 */
+	private fun slideDistancePx(): Float =
+		max(1, this.viewFinder.get<View>(R.id.llLauncherAndDashContainer).height).toFloat()
+
 	private fun openInstantly() {
 		val llDash = this.viewFinder.get<LinearLayout>(R.id.llDash)
 		val overlay = this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened)
@@ -151,9 +288,18 @@ class DashAnimator(
 		this.pendingOpen?.removeListener()
 		this.pendingOpen = null
 
-		val wasRunning = this.running != null
+		val wasRunning = this.running != null || this.swipe != null
 		this.running?.cancel()
 		this.running = null
+		this.swipe?.let {
+			it.settle?.cancel()
+			/*
+			 * The slide offset is not part of any theme preset, so a regular
+			 * open/close taking over mid-swipe must not inherit it.
+			 */
+			this.viewFinder.get<LinearLayout>(R.id.llDash).translationY = 0F
+		}
+		this.swipe = null
 
 		return wasRunning
 	}
@@ -603,6 +749,11 @@ class DashAnimator(
 
 	private class Genie(val child: View, val translationX: Float, val translationY: Float,
 		val scale: Float, val distance: Float)
+
+	private class SwipeSession(val blurRadiusPx: Int, val distance: Float) {
+		var openness = 0F
+		var settle: ValueAnimator? = null
+	}
 
 	companion object {
 		internal const val OPEN_DURATION_MS = 280L

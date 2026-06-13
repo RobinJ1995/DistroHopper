@@ -212,7 +212,7 @@
 			</LinearLayout>
 
 			<!-- Dash -->
-			<LinearLayout
+			<be.robinj.distrohopper.desktop.dash.SwipeToCloseLayout
 				android:id="@+id/llDash"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
@@ -405,7 +405,7 @@
 					</LinearLayout>
 
 				</LinearLayout>
-			</LinearLayout>
+			</be.robinj.distrohopper.desktop.dash.SwipeToCloseLayout>
 
 		</LinearLayout>
 

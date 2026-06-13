@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -39,6 +40,7 @@ import be.robinj.distrohopper.cache.ICache;
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.home.CustomiseModeUi;
 import be.robinj.distrohopper.home.DashController;
+import be.robinj.distrohopper.home.HomeGestureController;
 import be.robinj.distrohopper.home.HomeStateBinder;
 import be.robinj.distrohopper.home.HomeViewModel;
 import be.robinj.distrohopper.home.LauncherEdgeController;
@@ -58,6 +60,7 @@ import be.robinj.distrohopper.theme.Theme;
 import be.robinj.distrohopper.thirdparty.ProgressWheel;
 import be.robinj.distrohopper.desktop.Wallpaper;
 import be.robinj.distrohopper.desktop.dash.SearchTextWatcher;
+import be.robinj.distrohopper.desktop.dash.SwipeToCloseLayout;
 import be.robinj.distrohopper.desktop.dash.lens.LensManager;
 import be.robinj.distrohopper.desktop.launcher.AppLauncher;
 import be.robinj.distrohopper.desktop.launcher.LauncherDragListener;
@@ -89,6 +92,7 @@ public class HomeActivity extends AppCompatActivity
 	private HomeViewModel viewModel;
 	private LauncherEdgeController edgeController;
 	private DashController dash;
+	private HomeGestureController gestures;
 	private ThemeApplier themeApplier;
 	private WallpaperColourApplier wallpaperColourApplier;
 
@@ -168,6 +172,9 @@ public class HomeActivity extends AppCompatActivity
 			this.viewModel = new ViewModelProvider (this, new HomeViewModel.Factory (container))
 					.get (HomeViewModel.class);
 			HomeStateBinder.bind (this, this.viewModel, this.dash, this.themeApplier);
+			this.gestures = new HomeGestureController (this, this.viewFinder, this.dash,
+					this.viewModel, () -> container.getCustomiseMode ().getValue ());
+			((SwipeToCloseLayout) this.llDash).setDelegate (this.gestures);
 
 			// Lay out edge-to-edge on every API level; SDK 35+ enforces it anyway. The status
 			// bar is compensated for by llStatusBar below. Tappable element insets keep the
@@ -364,6 +371,28 @@ public class HomeActivity extends AppCompatActivity
 	                                       @NonNull final String[] permissions,
 	                                       @NonNull final int[] grantResults) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+	}
+
+	/**
+	 * Touches that no view claimed — i.e. on empty desktop space — end up
+	 * here; HomeGestureController turns them into the swipe-down-for-
+	 * notifications and swipe-up-for-dash gestures.
+	 */
+	@Override
+	public boolean onTouchEvent (final MotionEvent event)
+	{
+		try
+		{
+			if (this.gestures != null && this.gestures.onHomeTouchEvent (event))
+				return true;
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
+		}
+
+		return super.onTouchEvent (event);
 	}
 
 	@Override

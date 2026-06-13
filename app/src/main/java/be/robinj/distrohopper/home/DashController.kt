@@ -24,7 +24,10 @@ import java.util.function.Consumer
  * Opens and closes the dash: shows/hides the dash itself, blurs the system
  * wallpaper (cross-window) and the widgets (RenderEffect), and adjusts the
  * panel. The visual work (the gradual blur ramp plus the theme's
- * dash_animation) is delegated to DashAnimator. Extracted from HomeActivity;
+ * dash_animation) is delegated to DashAnimator. The swipe*() family is the
+ * finger-tracked variant driven by HomeGestureController: begin/update follow
+ * the finger, and end either commits (applying the same chrome and isOpen
+ * change as open()/close()) or settles back. Extracted from HomeActivity;
  * the customise-mode relaunch on close stays there, as it manipulates the
  * activity's intent.
  */
@@ -118,10 +121,94 @@ class DashController(
 			return
 		}
 
-		val llPanel = this.viewFinder.get<LinearLayout>(R.id.llPanel)
+		this.animator.open(this.blurRadiusPx())
+		this.applyOpenedChrome()
 
-		this.animator.open(
-			this.activity.resources.getDimensionPixelSize(this.theme.dash_blur_radius))
+		this.isOpen = true
+	}
+
+	fun close() {
+		if (! this.isOpen) {
+			return
+		}
+
+		this.animator.close(this.blurRadiusPx()) { this.teardownDashViews() }
+		this.applyClosedChrome()
+
+		this.isOpen = false
+	}
+
+	/**
+	 * Begins a finger-tracked open; the visual side lives in DashAnimator.
+	 * Returns false when there is nothing to track (already open, or battery
+	 * saver) — the caller falls back to the instant open().
+	 */
+	fun swipeOpenBegin(): Boolean {
+		if (this.isOpen) {
+			return false
+		}
+
+		return this.animator.swipeBegin(opening = true, this.blurRadiusPx())
+	}
+
+	/** Like swipeOpenBegin(), but for swiping an open dash closed. */
+	fun swipeCloseBegin(): Boolean {
+		if (! this.isOpen) {
+			return false
+		}
+
+		return this.animator.swipeBegin(opening = false, this.blurRadiusPx())
+	}
+
+	fun swipeUpdate(openness: Float) = this.animator.swipeUpdate(openness)
+
+	/** The slide distance a swipe tracks over, for finger-to-fraction mapping. */
+	val swipeDistancePx: Float
+		get() = this.animator.swipeDistancePx
+
+	/** Current openness of the in-flight swipe (0 = closed, 1 = open). */
+	val swipeOpenness: Float
+		get() = this.animator.swipeOpenness
+
+	/**
+	 * Ends a finger-tracked open: [commit] settles the dash fully open and
+	 * applies the opened chrome, otherwise it settles back closed.
+	 */
+	fun swipeOpenEnd(commit: Boolean) {
+		if (this.isOpen || ! this.animator.swipeInProgress) {
+			return
+		}
+
+		if (commit) {
+			this.animator.swipeSettle(open = true)
+			this.applyOpenedChrome()
+			this.isOpen = true
+		} else {
+			this.animator.swipeSettle(open = false) { this.teardownDashViews() }
+		}
+	}
+
+	/** Ends a finger-tracked close, mirroring swipeOpenEnd(). */
+	fun swipeCloseEnd(commit: Boolean) {
+		if (! this.isOpen || ! this.animator.swipeInProgress) {
+			return
+		}
+
+		if (commit) {
+			this.animator.swipeSettle(open = false) { this.teardownDashViews() }
+			this.applyClosedChrome()
+			this.isOpen = false
+		} else {
+			this.animator.swipeSettle(open = true)
+		}
+	}
+
+	private fun blurRadiusPx(): Int =
+		this.activity.resources.getDimensionPixelSize(this.theme.dash_blur_radius)
+
+	/** The non-dash side of opening: the panel's close button and backgrounds. */
+	private fun applyOpenedChrome() {
+		val llPanel = this.viewFinder.get<LinearLayout>(R.id.llPanel)
 
 		if (this.activity.resources.getInteger(this.theme.panel_close_location) != -1)
 			this.viewFinder.get<ImageButton>(llPanel, R.id.ibPanelDashClose).visibility = View.VISIBLE
@@ -138,26 +225,22 @@ class DashController(
 			this.panelFade.animateTo(dashOpened = true, duration)
 			this.statusBarFade.animateTo(dashOpened = true, duration)
 		}
-
-		this.isOpen = true
 	}
 
-	fun close() {
-		if (! this.isOpen) {
-			return
-		}
+	/** Hides the dash and restores the overlays once a close has settled. */
+	private fun teardownDashViews() {
+		this.viewFinder.get<LinearLayout>(R.id.llDash).visibility = View.GONE
 
+		this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlay).visibility = View.VISIBLE
+		this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened).visibility =
+			View.INVISIBLE
+	}
+
+	/** The non-dash side of closing: search field, close button, backgrounds, IME. */
+	private fun applyClosedChrome() {
 		val llPanel = this.viewFinder.get<LinearLayout>(R.id.llPanel)
 		val etDashSearch = this.viewFinder.get<EditText>(R.id.etDashSearch)
 
-		this.animator.close(
-			this.activity.resources.getDimensionPixelSize(this.theme.dash_blur_radius)) {
-			this.viewFinder.get<LinearLayout>(R.id.llDash).visibility = View.GONE
-
-			this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlay).visibility = View.VISIBLE
-			this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened).visibility =
-				View.INVISIBLE
-		}
 		etDashSearch.setText("")
 		etDashSearch.clearFocus()
 
@@ -178,7 +261,5 @@ class DashController(
 		val imm = this.activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
 		imm?.hideSoftInputFromWindow(
 			this.activity.window.decorView.rootView.windowToken, 0)
-
-		this.isOpen = false
 	}
 }

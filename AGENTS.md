@@ -92,7 +92,9 @@ etc/                                        — design assets (SVG/XCF sources, 
     `launcherEdge` and navigation insets.
   - `DashController` — opens/closes the dash (visibility, wallpaper and
     widget blur, panel state); owns `isOpen` and the chameleonic background
-    colour. The customise-mode "close = relaunch" branch stays in
+    colour. Besides the instant `open()`/`close()` it exposes the
+    finger-tracked `swipe*()` variants used by the home-screen gestures.
+    The customise-mode "close = relaunch" branch stays in
     HomeActivity because it manipulates the activity's intent.
   - `DashAnimator` — the visual side of dash open/close on DashController's
     behalf: the blur and panel opacity normally ramp gradually, and the dash
@@ -100,6 +102,19 @@ etc/                                        — design assets (SVG/XCF sources, 
     settle immediately while the device is in battery-saver mode. The
     `DashAnimation` enum: genie-from-BFB for gnome, slide-from-launcher for
     cinnamon, zoom-from-label for elementary, fade for unity/default.
+    Swipe gestures bypass the theme preset: the dash slides vertically
+    tracking an openness fraction (blur/panel/overlay follow the same
+    fraction) and settles open or closed when the finger lifts.
+  - `HomeGestureController` — the home screen's swipe gestures. HomeActivity
+    feeds it the touches no view claimed (`onTouchEvent`), i.e. empty desktop
+    space (the panel and launcher are excluded by hit-testing): swiping down
+    pulls down the system notification shade (`NotificationShade`, a
+    reflection call — there is no public API), swiping up pulls in the dash
+    tracking the finger. It is also `SwipeToCloseLayout`'s delegate for
+    swiping the open dash closed. In battery saver there is nothing to
+    track, so the dash opens/closes instantly at the trigger distance;
+    swipe-to-close is disabled in customise mode (closing there relaunches
+    the activity).
   - `WallpaperColourApplier` — applies the wallpaper's primary colour to
     launcher/dash for chameleonic themes (via the permissionless
     `WallpaperManager.getWallpaperColors` API; the storage permission only
@@ -136,7 +151,11 @@ etc/                                        — design assets (SVG/XCF sources, 
   - **`desktop/launcher/service/`** — `LauncherService`: a foreground-service
     variant of the launcher bar that floats over other apps.
   - **`desktop/dash/`** — the full-screen dash (app grid + search), with
-    `GridAdapter` and `SearchTextWatcher`.
+    `GridAdapter` and `SearchTextWatcher`. `SwipeToCloseLayout` is the dash's
+    container view (`llDash`): it recognises a downward swipe — only once
+    neither the app grid nor the lens results can scroll up any further —
+    and hands it to its delegate (`home/HomeGestureController`) to track a
+    swipe-to-close.
   - **`desktop/dash/lens/`** — search "lenses": pluggable search providers
     (`InstalledApps`, `LocalFiles`, `DuckDuckGo`, `GitHub`, …) coordinated
     by `LensManager` with `AsyncSearch` and
