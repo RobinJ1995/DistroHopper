@@ -89,14 +89,14 @@ class AppTest {
         }
     }
 
-    @Test fun launchDoesNotRecordUsageForTheSettingsShortcut() {
+    @Test fun launchRecordsUsageForTheSettingsShortcut() {
         scenario.onActivity { activity ->
             clearUsage(activity)
             val settings = ActivityTestSupport.settingsShortcut(activity)
 
             settings.launch()
 
-            assertEquals(0, AppUsageStats(activity).getLaunchCount(settings.profileScopedKey))
+            assertEquals(1, AppUsageStats(activity).getLaunchCount(settings.profileScopedKey))
         }
     }
 
