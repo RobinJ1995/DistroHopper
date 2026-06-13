@@ -1,8 +1,10 @@
 package be.robinj.distrohopper;
 
 import android.app.Activity;
+import android.util.TypedValue;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -37,6 +39,16 @@ public final class InsetsHelper
 		// Lay out edge-to-edge on every API level so the additive padding above is
 		// never combined with decor-fitted insets.
 		WindowCompat.setDecorFitsSystemWindows (activity.getWindow (), false);
+
+		// Match the status bar colour to the action bar so the translucent window
+		// background doesn't bleed through above the header bar.
+		if (activity instanceof AppCompatActivity)
+		{
+			final TypedValue colorPrimary = new TypedValue ();
+			if (activity.getTheme ().resolveAttribute (androidx.appcompat.R.attr.colorPrimary, colorPrimary, true))
+				activity.getWindow ().setStatusBarColor (colorPrimary.data);
+		}
+
 		applySystemBarsPadding (activity.findViewById (android.R.id.content));
 	}
 }
