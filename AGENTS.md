@@ -10,9 +10,10 @@
 ## What this project is
 
 DistroHopper is an Android home screen (launcher) replacement that mimics
-various Linux desktops: Ubuntu Unity, elementary OS Pantheon, GNOME, and
-Cinnamon. It started as a high-school project around 2011; code quality and style
-vary considerably across the codebase — older Java alongside newer Kotlin.
+various Linux desktops: Ubuntu Unity, elementary OS Pantheon, GNOME, Cinnamon,
+KDE Plasma, MATE, Pop!_OS COSMIC, and Solus Budgie. It started as a high-school
+project around 2011; code quality and style vary considerably across the
+codebase — older Java alongside newer Kotlin.
 
 ## Build & test
 
@@ -238,14 +239,31 @@ etc/                                        — design assets (SVG/XCF sources, 
   "prefs" file keyed by the `Preference` enum — prefer it over raw
   `SharedPreferences` in new code.
 - **`theme/`** — one class per supported desktop look (`Default`, `Gnome`,
-  `Elementary`, `Cinnamon`), implementing the `Theme` interface; `Location`
+  `Elementary`, `Cinnamon`, `Plasma`, `Mate`, `Cosmic`, `Budgie`), each
+  extending the abstract `Theme` (which lists every themeable field and maps
+  them to `R.*` ids in the subclass constructor); `Location`
   describes where UI elements sit per theme and `DashAnimation` names the
   per-theme dash open/close animation preset. `ThemeRegistry` is the single
   list of available themes (also drives the theme picker's order);
   `ThemeManager` (on the `DependencyContainer`) resolves the active theme
   from preferences — use `DependencyContainer.of(context).themeManager.current`
   rather than holding `Theme` references in statics. Switching themes still
-  recreates `HomeActivity`.
+  recreates `HomeActivity`. Each theme also ships a self-contained asset
+  generator at `etc/generate_theme_<name>_assets.py` (kept separate per theme
+  on purpose — do not factor into a shared lib) that renders its per-density
+  drawables and 9-patches from values measured off the baseline screenshots in
+  `etc/theme baselines/`.
+  Two `Theme` capabilities are opt-in (a `0`/`false` sentinel leaves the
+  behaviour off, so only the theme that needs it sets them — no churn for the
+  rest): `dash_background_edge` is an optional 5-element drawable array indexed
+  by `Location.n` that lets a directional dash pick its background per launcher
+  edge (Budgie's "ear" must point at the BFB whichever edge the launcher
+  sits on; `WallpaperColourApplier` selects it, falling back to the scalar
+  `dash_background`); `statusbar_follows_launcher_edge` makes a panel-less
+  theme (Budgie) drive the status bar off the launcher edge instead of the
+  panel — opaque (`statusbar_background`) when the launcher is at the top,
+  transparent (`statusbar_background_when_panel_not_top`) otherwise, resolved
+  in `Theme.statusbar_background_resolved`.
 - **`widgets/`** — home-screen widget hosting (mostly Kotlin): `WidgetHost`
   (AppWidgetHost), `WidgetPersistence`, `WidgetPickerDialog`.
   `WidgetsPager` (`R.id.vgWidgets`) is a horizontal pager of widget
