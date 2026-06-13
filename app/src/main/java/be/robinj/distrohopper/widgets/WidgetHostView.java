@@ -98,7 +98,9 @@ public class WidgetHostView extends AppWidgetHostView
 		final float density = this.getResources ().getDisplayMetrics ().density;
 		final SizeF size = new SizeF (w / density, h / density);
 
-		this.updateAppWidgetSize (Bundle.EMPTY, java.util.Collections.singletonList (size));
+		// A fresh Bundle, not Bundle.EMPTY: updateAppWidgetSize writes the sizes
+		// into the bundle it is given, and Bundle.EMPTY is immutable //
+		this.updateAppWidgetSize (new Bundle (), java.util.Collections.singletonList (size));
 	}
 
 	@Override

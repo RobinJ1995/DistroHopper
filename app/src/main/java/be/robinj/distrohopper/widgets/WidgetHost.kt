@@ -89,24 +89,33 @@ class WidgetHost(
 			val rowSpan = WidgetGrid.clampSpan(lp.rowSpan,
 				minResizeHeightPx(info), info.maxResizeHeight, cellH, WidgetGrid.ROWS)
 
-			if (colSpan != lp.colSpan || rowSpan != lp.rowSpan) {
-				// Keep the saved position if the re-clamped size still fits there,
-				// otherwise find the first free rectangle for the new size //
-				val atCurrent = WidgetLayout(child.appWidgetId, lp.col, lp.row, colSpan, rowSpan)
-				val placed = if (WidgetGrid.fits(kept, atCurrent)) {
-					atCurrent
-				} else {
-					WidgetGrid.findFreeRect(kept, colSpan, rowSpan)
-						?.also { it.appWidgetId = child.appWidgetId }
-				}
+			// Always validate against the widgets already placed this pass, not
+			// just when the span changed: growing one widget can collide with a
+			// neighbour whose own span is unchanged. Keep the saved position when
+			// it still fits, otherwise re-pack into the first free rectangle //
+			val atCurrent = WidgetLayout(child.appWidgetId, lp.col, lp.row, colSpan, rowSpan)
+			val placed = if (WidgetGrid.fits(kept, atCurrent)) {
+				atCurrent
+			} else {
+				WidgetGrid.findFreeRect(kept, colSpan, rowSpan)
+					?.also { it.appWidgetId = child.appWidgetId }
+			}
 
-				if (placed != null) {
-					lp.col = placed.col
-					lp.row = placed.row
-					lp.colSpan = placed.colSpan
-					lp.rowSpan = placed.rowSpan
-					changed = true
-				}
+			if (placed == null) {
+				// No room for the re-clamped size; leave the widget untouched but
+				// still record it so the others avoid its cells //
+				kept.add(WidgetLayout(child.appWidgetId, lp.col, lp.row, lp.colSpan, lp.rowSpan))
+
+				continue
+			}
+
+			if (placed.col != lp.col || placed.row != lp.row ||
+				placed.colSpan != lp.colSpan || placed.rowSpan != lp.rowSpan) {
+				lp.col = placed.col
+				lp.row = placed.row
+				lp.colSpan = placed.colSpan
+				lp.rowSpan = placed.rowSpan
+				changed = true
 			}
 
 			kept.add(WidgetLayout(child.appWidgetId, lp.col, lp.row, lp.colSpan, lp.rowSpan))

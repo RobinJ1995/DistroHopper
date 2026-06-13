@@ -94,12 +94,17 @@ object DashGrid {
 	/** The column count to apply to every dash grid in the current orientation. */
 	@JvmStatic
 	fun dashColumns(context: Context): Int {
-		val dm = context.resources.displayMetrics
-		val shortPx = min(dm.widthPixels, dm.heightPixels)
-		val longPx = max(dm.widthPixels, dm.heightPixels)
-		val portrait = dm.heightPixels >= dm.widthPixels
+		// Orientation/aspect come from the Configuration (screenWidthDp/HeightDp),
+		// not raw display metrics: the lens grids use the application context
+		// while the apps grid uses the activity, and the Configuration is shared
+		// across both, so every dash grid agrees on the count (also in
+		// multi-window, where the display size would mislead).
+		val config = context.resources.configuration
+		val shortDp = min(config.screenWidthDp, config.screenHeightDp)
+		val longDp = max(config.screenWidthDp, config.screenHeightDp)
+		val portrait = config.screenHeightDp >= config.screenWidthDp
 
-		return dashColumns(shortPx, longPx, portrait, columns(context))
+		return dashColumns(shortDp, longDp, portrait, columns(context))
 	}
 
 	/** Square cell-size fallback for the current screen + preference (pre-layout). */
