@@ -294,14 +294,14 @@ public class PreferencesActivity extends AppCompatActivity
 				if (! devPref.isDevChild ())
 					continue;
 
-				final SwitchPreferenceCompat toggle = this.findPreference (devPref.getName ());
-				if (toggle != null)
-					toggle.setChecked (false);
+				final Preference toggle = this.findPreference (devPref.getName ());
+				if (toggle instanceof SwitchPreferenceCompat)
+					((SwitchPreferenceCompat) toggle).setChecked (false);
 
-				// setChecked(false) keeps the visible switch in sync but persists
-				// false; remove afterwards so disabling developer mode truly clears
-				// developer-only state rather than saving disabled values. //
-				editor.remove (devPref.getName ());
+				// Explicitly write false rather than removing the key: if a future
+				// devChild preference defaults to true, remove() would leave the
+				// feature active after developer mode is turned off. //
+				editor.putBoolean (devPref.getName (), false);
 			}
 
 			editor.apply ();
