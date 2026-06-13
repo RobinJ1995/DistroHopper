@@ -1,16 +1,21 @@
 package be.robinj.distrohopper.home
 
+import android.content.res.Configuration
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.GridView
 import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
 import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.desktop.dash.DashGrid
 import be.robinj.distrohopper.desktop.dash.GridAdapter
 import be.robinj.distrohopper.desktop.dash.ProfilePagerAdapter
 import be.robinj.distrohopper.desktop.dash.profile.ProfilePillView
 import be.robinj.distrohopper.preferences.Preference
+import kotlin.math.max
+import kotlin.math.min
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -138,6 +143,70 @@ class DashProfilesTest {
 				assertEquals(View.GONE, container.visibility)
 			}
 		}
+	}
+
+	@Test fun aProfilePageReattachedAfterRotationPicksUpTheNewColumnCount() {
+		// Regression: rotating the device and then swiping to another profile
+		// showed massively over- or under-sized icons. A page sitting in the
+		// recycler cache re-attaches without re-binding when swiped to, and the
+		// rotation handler only resized the grids attached at that moment — so an
+		// off-screen page kept the previous orientation's column count. The count
+		// is now applied on attach, not just on bind.
+		val workUser = ActivityTestSupport.addWorkProfile()
+		ActivityTestSupport.addWorkProfileApp(
+			workUser, "com.example.work", "WorkChatActivity", "WorkChat")
+
+		ActivityTestSupport.launchHome().use { scenario ->
+			scenario.onActivity { activity ->
+				val pager = pager(activity)
+				val adapter = pager.adapter as ProfilePagerAdapter
+
+				// Bind and attach the work-profile page (index 1) in portrait.
+				setLandscape(activity, false)
+				val holder = adapter.onCreateViewHolder(pager, 0)
+				adapter.onBindViewHolder(holder, 1)
+				adapter.onViewAttachedToWindow(holder)
+				measure(holder.grid)
+
+				val portraitColumns = DashGrid.dashColumns(activity)
+				assertEquals(portraitColumns, holder.grid.numColumns)
+
+				// Rotate to landscape, then re-attach the SAME page without
+				// re-binding — exactly what ViewPager2 does when swiping to a page
+				// still held in the recycler cache.
+				setLandscape(activity, true)
+				val landscapeColumns = DashGrid.dashColumns(activity)
+				assertTrue("landscape should show more columns than portrait",
+					landscapeColumns > portraitColumns)
+
+				adapter.onViewAttachedToWindow(holder)
+				measure(holder.grid)
+
+				assertEquals(landscapeColumns, holder.grid.numColumns)
+			}
+		}
+	}
+
+	/** Flips the activity's configuration between portrait and landscape. */
+	private fun setLandscape(activity: HomeActivity, landscape: Boolean) {
+		val config = Configuration(activity.resources.configuration)
+		val wide = max(config.screenWidthDp, config.screenHeightDp)
+		val narrow = min(config.screenWidthDp, config.screenHeightDp)
+		config.orientation =
+			if (landscape) Configuration.ORIENTATION_LANDSCAPE else Configuration.ORIENTATION_PORTRAIT
+		config.screenWidthDp = if (landscape) wide else narrow
+		config.screenHeightDp = if (landscape) narrow else wide
+
+		@Suppress("DEPRECATION")
+		activity.resources.updateConfiguration(config, activity.resources.displayMetrics)
+	}
+
+	/** Lays the grid out so GridView.getNumColumns() reflects the requested count. */
+	private fun measure(grid: GridView) {
+		grid.measure(
+			View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY),
+			View.MeasureSpec.makeMeasureSpec(1600, View.MeasureSpec.EXACTLY))
+		grid.layout(0, 0, grid.measuredWidth, grid.measuredHeight)
 	}
 
 	@Test fun pillViewMorphsTheActiveSlotAsThePagerScrolls() {

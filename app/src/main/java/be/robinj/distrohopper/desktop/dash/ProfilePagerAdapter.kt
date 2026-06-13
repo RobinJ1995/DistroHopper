@@ -71,9 +71,20 @@ class ProfilePagerAdapter(
 			res.getColor(theme.dash_applauncher_text_shadow_colour))
 
 		holder.grid.adapter = this.gridAdapters[position]
-		DashGridSizer.apply(holder.grid)
 		holder.grid.onItemClickListener = AppLauncherClickListener(this.activity)
 		holder.grid.onItemLongClickListener = AppLauncherLongClickListener(this.activity)
+	}
+
+	override fun onViewAttachedToWindow(holder: PageViewHolder) {
+		super.onViewAttachedToWindow(holder)
+
+		// Apply the column count as the page comes on screen, not just at bind:
+		// a page can re-attach from the recycler cache without re-binding (e.g.
+		// swiped to after a rotation), and onConfigurationChanged only reaches
+		// the grids attached at that moment — so an off-screen page would keep
+		// the old orientation's count and render with hugely over/undersized
+		// icons until rebound.
+		DashGridSizer.apply(holder.grid)
 	}
 
 	/** Refreshes every page's apps from the repository, preserving page scroll. */
