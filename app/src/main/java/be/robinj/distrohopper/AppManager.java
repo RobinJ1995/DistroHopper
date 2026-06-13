@@ -83,15 +83,21 @@ public class AppManager implements Iterable<App>
 	}
 
 	/** Binds the dash app grid(s); see LauncherBarBinder.bindDashApps(). */
-	public void bindDashApps (float displayDensity, int dashIconWidth)
+	public void bindDashApps ()
 	{
-		this.getBinder ().bindDashApps (displayDensity, dashIconWidth);
+		this.getBinder ().bindDashApps ();
 	}
 
-	/** Applies the dash icon-width preference to the dash grid and pager pages. */
-	public void applyDashIconWidth (int dashIconWidth)
+	/** Re-applies the dash grid's column count to the dash grid and pager pages. */
+	public void applyDashColumns ()
 	{
-		this.getBinder ().applyDashIconWidth (dashIconWidth);
+		this.getBinder ().applyDashColumns ();
+	}
+
+	/** The apps grid's last laid-out viewport (width, height) in px, or null. */
+	public kotlin.Pair<Integer, Integer> dashGridViewport ()
+	{
+		return this.getBinder ().dashGridViewport ();
 	}
 
 	/** Notifies the dash that it opened or closed (for the profile indicator). */

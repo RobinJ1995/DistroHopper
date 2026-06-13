@@ -93,6 +93,20 @@ etc/                                        — design assets (SVG/XCF sources, 
     it isn't laid out yet). The per-page `LayoutTransition` is set in the adapter
     (it can't be in `LayoutTransitionConfigurer`, which runs before any page
     exists). Tests force the lazy layout via `ActivityTestSupport.layoutDashApps`.
+    Grid sizing is owned by `desktop/dash/DashGrid` (the dash counterpart to
+    `widgets/WidgetGrid`): the user picks a column count across the short screen
+    edge (`DASH_GRID_COLUMNS`, adaptive default from `smallestScreenWidthDp`),
+    and `DashGrid.dashColumns` derives the count for the current orientation
+    from the screen — not from any one grid's width — so every profile page and
+    every lens results grid get the same count and it stays stable as the dash
+    area changes (theme, rotation, a future launcher auto-hide). Landscape shows
+    proportionally more columns, capped at 2× the short-edge count.
+    `DashGridSizer` applies it (`setNumColumns`) to each grid; cells stretch to
+    fill. Rotation re-applies via `HomeActivity.onConfigurationChanged` (the
+    activity isn't recreated on rotation). The customise-mode "N × M" hint reads
+    the apps grid's last laid-out viewport (`LauncherBarBinder.dashGridViewport`,
+    captured while the grid is visible, since it is GONE while customising) so
+    the row count reflects the real theme/orientation, not the full screen.
     The tab indicator is chosen per theme via the `profile_indicator`
     integer (`theme/ProfileIndicatorStyle`, like `dash_animation`):
     `UNITY_RIBBON` (Unity/Default) puts per-profile glyphs in the always-
@@ -355,13 +369,22 @@ etc/                                        — design assets (SVG/XCF sources, 
   The per-page grid maths stay inside `WidgetsContainer` (page insets are
   applied as padding per page, not on the pager), which lays widgets out on
   an invisible 8×8 grid (`WidgetGrid` holds the pure grid maths — snapping,
-  span clamping, overlap checks). New widgets land on the desktop currently
-  shown; drops and moves stay within it. Long-pressing a widget puts its
-  `WidgetContainer` into
+  span clamping, overlap checks, and the initial span for new/restored
+  widgets). Widget sizing reads the provider's hints — `targetCellWidth/Height`
+  (API 33), else `minResizeWidth/Height`, else `minWidth/Height` — and clamps
+  to `maxResize*`; `clampSpan` uses nearest rounding for both bounds so the
+  coarse grid keeps a real resize range instead of collapsing to one span.
+  Placement and restore defer until the page has been measured (cell size > 0)
+  so a widget can never land at 1×1, and `WidgetHost.restoreWidgets` re-clamps
+  saved spans to the current provider limits once measured. New widgets land on
+  the desktop currently shown; drops and moves stay within it. Long-pressing a
+  widget puts its `WidgetContainer` into
   edit mode: edge handles resize by touch (clamped to the provider's
   `min`/`maxResize*` limits and `resizeMode`, unless the developer-only
-  unrestricted widget resizing preference is enabled, with a snap-indicator
-  line drawn by `WidgetsContainer`), while dragging the body uses the system
+  unrestricted widget resizing preference `DEV_WIDGET_RESIZE_ANY` is enabled,
+  with a snap-indicator line drawn by `WidgetsContainer`; committed resizes
+  inform the provider via `updateAppWidgetSize`), while dragging the body uses
+  the system
   drag-and-drop framework (`WidgetsContainer_DragListener`) and shares the
   launcher's drag-to-trash mechanism. The free-moving system drag shadow is
   accompanied by a snapped landing indicator drawn on `WidgetsContainer`;

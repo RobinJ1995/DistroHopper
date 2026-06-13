@@ -48,13 +48,13 @@ object HomeStateBinder {
 				}
 
 				this.launch {
-					viewModel.dashIconWidth.collect { width ->
+					viewModel.dashGridColumns.collect {
 						// Once apps load, the binder owns the dash grid and the
 						// per-profile pager pages; before that, the ThemeApplier
-						// sizes the (only) grid.
+						// sizes the (only) grid. DashGrid recomputes the count.
 						val apps = activity.appManager
-						if (apps != null) apps.applyDashIconWidth(width)
-						else themeApplier.applyDashIconWidth(width)
+						if (apps != null) apps.applyDashColumns()
+						else themeApplier.applyDashColumns()
 					}
 				}
 

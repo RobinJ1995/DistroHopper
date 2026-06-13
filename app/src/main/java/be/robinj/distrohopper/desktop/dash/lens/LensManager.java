@@ -38,9 +38,6 @@ public class LensManager
 	private ListView lvDashHomeLensResults;
 	private ProgressWheel pwDashSearchProgress;
 
-	private final float displayDensity;
-	private final int dashIconWidth;
-
 	public LensManager (Context context, LinearLayout llDashHomeAppsContainer, LinearLayout llDashHomeLensesContainer, ProgressWheel pwDashSearchProgress, AppManager apps)
 	{
 		this.context = context;
@@ -53,12 +50,6 @@ public class LensManager
 
 		final SharedPreferences prefs = Preferences.getSharedPreferences(this.context, Preferences.PREFERENCES);
 		final SharedPreferences prefsLenses = this.getPrefsLenses();
-		this.displayDensity = this.getContext().getResources().getDisplayMetrics().density;
-		// Same fallback as every other reader: a stray 80 here made lens
-		// results ~50% larger than the dash grid until the preference was
-		// first saved //
-		this.dashIconWidth = prefs.getInt(Preference.DASHICON_WIDTH.getName(),
-			Preference.DASHICON_WIDTH.getDefault());
 
 		if (apps != null)
 			context = apps.getContext ();
@@ -236,8 +227,7 @@ public class LensManager
 			// Fresh adapter + backing list per query; the loader appends collections
 			// to this.results and notifies the adapter as lenses complete //
 			this.results.clear ();
-			this.adapter = new CollectionGridAdapter (this.getContext (), this.results,
-					this.displayDensity, this.dashIconWidth);
+			this.adapter = new CollectionGridAdapter (this.getContext (), this.results);
 			this.lvDashHomeLensResults.setAdapter (this.adapter);
 
 			if (this.searchLoader != null)

@@ -10,12 +10,16 @@ import android.widget.SeekBar
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.view.ViewCompat
+import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.ViewFinder
+import be.robinj.distrohopper.desktop.dash.DashGrid
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.theme.Location
 import be.robinj.distrohopper.theme.Theme
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * The customise mode UI inside the dash: seekbars for the launcher/dash icon
@@ -29,6 +33,8 @@ class CustomiseModeUi(
 	private val theme: Theme,
 	private val relaunchInCustomiseMode: Runnable,
 ) {
+	private var dashGridHint: TextView? = null
+
 	fun show() {
 		val res = this.activity.resources
 		val prefs = Preferences.getSharedPreferences(this.activity)
@@ -62,11 +68,18 @@ class CustomiseModeUi(
 				}
 			})
 
-		// Dash Icon Size //
-		val sbCustomiseDashIconSize = this.viewFinder.get<SeekBar>(R.id.sbCustomiseDashIconSize)
-		sbCustomiseDashIconSize.progress = prefs.getInt(Preference.DASHICON_WIDTH.getName(),
-			Preference.DASHICON_WIDTH.getDefault())
-		sbCustomiseDashIconSize.setOnSeekBarChangeListener(
+		// Dash Grid Size // The user picks how many icons span the short screen
+		// edge; icon size and the visible rows derive from that (see DashGrid).
+		// Writing the preference is enough: HomeStateBinder re-applies it live //
+		val range = DashGrid.columnsRange(this.activity)
+		val dashGridHint = this.viewFinder.get<TextView>(R.id.tvCustomiseDashGridHint)
+		this.dashGridHint = dashGridHint
+		val sbCustomiseDashColumns = this.viewFinder.get<SeekBar>(R.id.sbCustomiseDashColumns)
+		sbCustomiseDashColumns.min = range.first
+		sbCustomiseDashColumns.max = range.last
+		sbCustomiseDashColumns.progress = DashGrid.columns(this.activity)
+		this.updateDashGridHint(dashGridHint)
+		sbCustomiseDashColumns.setOnSeekBarChangeListener(
 			object : SeekBar.OnSeekBarChangeListener {
 				override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
 					this.update(i)
@@ -79,8 +92,9 @@ class CustomiseModeUi(
 				}
 
 				private fun update(value: Int) {
-					prefsEdit.putInt(Preference.DASHICON_WIDTH.getName(), value)
+					prefsEdit.putInt(Preference.DASH_GRID_COLUMNS.getName(), value)
 					prefsEdit.commit()
+					this@CustomiseModeUi.updateDashGridHint(dashGridHint)
 				}
 			})
 
@@ -116,6 +130,37 @@ class CustomiseModeUi(
 		} else {
 			this.viewFinder.get<View>(llDashCustomise, R.id.llCustomisePanelEdge).visibility = View.GONE
 		}
+	}
+
+	/** Re-renders the grid-size hint; called on rotation while customising. */
+	fun refreshDashGridHint() {
+		this.dashGridHint?.let { this.updateDashGridHint(it) }
+	}
+
+	/**
+	 * Updates the "columns × rows" hint. Columns are exact (orientation-aware,
+	 * via [DashGrid]); rows are how many fit the apps grid's real last-measured
+	 * viewport — which reflects the current theme and orientation, since the
+	 * grid itself is GONE while customising. Falls back to a screen estimate
+	 * before the grid has ever been laid out. See [DashGrid].
+	 */
+	private fun updateDashGridHint(hint: TextView) {
+		val cols = DashGrid.dashColumns(this.activity)
+		val viewport = (this.activity as? HomeActivity)?.appManager?.dashGridViewport()
+
+		val rows = if (viewport != null) {
+			// Square cells fill the width, so cell size = viewportWidth / cols //
+			val cell = (viewport.first / cols).coerceAtLeast(1)
+			DashGrid.visibleRows(viewport.second, cell)
+		} else {
+			val dm = this.activity.resources.displayMetrics
+			val gridHeightPx =
+				if (dm.heightPixels >= dm.widthPixels) max(dm.widthPixels, dm.heightPixels)
+				else min(dm.widthPixels, dm.heightPixels)
+			DashGrid.visibleRows(gridHeightPx, DashGrid.cellSizePx(this.activity))
+		}.coerceAtLeast(1)
+
+		hint.text = this.activity.getString(R.string.dash_grid_hint, cols, rows)
 	}
 
 	/*

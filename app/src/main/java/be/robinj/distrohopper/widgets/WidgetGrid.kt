@@ -1,6 +1,5 @@
 package be.robinj.distrohopper.widgets
 
-import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 /**
@@ -24,20 +23,42 @@ object WidgetGrid {
 	}
 
 	/**
-	 * Number of cells needed to fit a pixel size, clamped to [1, max].
+	 * The initial span for a freshly placed or restored widget, in cells, or
+	 * **0 when the cell size is not known yet** (the grid hasn't been measured)
+	 * so the caller can defer rather than collapse the widget to 1x1.
+	 *
+	 * [targetCells] is the provider's preferred cell count (API 33
+	 * targetCellWidth/Height, 0 if unset); [minPx]/[maxPx] are its resize
+	 * limits in px (prefer minResizeWidth/Height over minWidth/Height). The
+	 * result is clamped into the provider's range via [clampSpan].
 	 */
 	@JvmStatic
-	fun spanForSize(sizePx: Int, cellSizePx: Int, max: Int): Int {
+	fun initialSpan(targetCells: Int, minPx: Int, maxPx: Int, cellSizePx: Int, gridMax: Int): Int {
 		if (cellSizePx <= 0) {
-			return 1
+			return 0
 		}
 
-		return ceil(sizePx.toDouble() / cellSizePx.toDouble()).toInt().coerceIn(1, max)
+		val base = if (targetCells > 0) {
+			targetCells
+		} else if (minPx > 0) {
+			(minPx.toDouble() / cellSizePx).roundToInt()
+		} else {
+			1
+		}
+
+		return clampSpan(base.coerceIn(1, gridMax), minPx, maxPx, cellSizePx, gridMax)
 	}
 
 	/**
 	 * Clamp a span (in cells) to the provider's pixel size limits.
 	 * A [minPx] or [maxPx] of 0 or less means "unspecified".
+	 *
+	 * Both bounds use nearest rounding (not ceil-min / floor-max): the coarse
+	 * 8-cell grid rarely lines up with a provider's exact dp limits, and the
+	 * old asymmetric rounding collapsed the range to a single span — making
+	 * widgets unresizable even when their resizeMode allowed it. Nearest
+	 * rounding keeps a genuine [min, max] range, accepting a sub-cell overshoot
+	 * at the boundary.
 	 */
 	@JvmStatic
 	fun clampSpan(span: Int, minPx: Int, maxPx: Int, cellSizePx: Int, gridMax: Int): Int {
@@ -46,12 +67,12 @@ object WidgetGrid {
 		}
 
 		val minSpan = if (minPx > 0) {
-			ceil(minPx.toDouble() / cellSizePx.toDouble()).toInt().coerceIn(1, gridMax)
+			(minPx.toDouble() / cellSizePx).roundToInt().coerceIn(1, gridMax)
 		} else {
 			1
 		}
 		val maxSpan = if (maxPx > 0) {
-			(maxPx / cellSizePx).coerceIn(minSpan, gridMax)
+			(maxPx.toDouble() / cellSizePx).roundToInt().coerceIn(minSpan, gridMax)
 		} else {
 			gridMax
 		}

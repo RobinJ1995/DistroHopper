@@ -55,7 +55,7 @@ class SearchLoaderTest {
 
     private fun start(activity: HomeActivity, lenses: List<Lens>): Fixture {
         val results = mutableListOf<LensSearchResultCollection>()
-        val adapter = CollectionGridAdapter(activity, results, 1f, 80)
+        val adapter = CollectionGridAdapter(activity, results)
         val wheel = ProgressWheel(activity, Robolectric.buildAttributeSet().build())
         wheel.visibility = View.GONE
         val loader = SearchLoader(activity, testDispatchers)

@@ -26,14 +26,11 @@ class ProfilePagerAdapter(
 	private val activity: HomeActivity,
 	private val appManager: AppManager,
 	private val profiles: List<UserHandle?>,
-	private val displayDensity: Float,
-	private var dashIconWidth: Int,
 ) : RecyclerView.Adapter<ProfilePagerAdapter.PageViewHolder>() {
 
 	private val gridAdapters: List<GridAdapter> = this.profiles.map { profile ->
 		GridAdapter(this.activity.applicationContext,
-			ArrayList(this.appManager.repository.appsForProfile(profile)),
-			this.displayDensity, this.dashIconWidth)
+			ArrayList(this.appManager.repository.appsForProfile(profile)))
 	}
 
 	class PageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -74,7 +71,7 @@ class ProfilePagerAdapter(
 			res.getColor(theme.dash_applauncher_text_shadow_colour))
 
 		holder.grid.adapter = this.gridAdapters[position]
-		holder.grid.setColumnWidth(columnWidthPx(this.displayDensity, this.dashIconWidth))
+		DashGridSizer.apply(holder.grid)
 		holder.grid.onItemClickListener = AppLauncherClickListener(this.activity)
 		holder.grid.onItemLongClickListener = AppLauncherLongClickListener(this.activity)
 	}
@@ -90,10 +87,9 @@ class ProfilePagerAdapter(
 		}
 	}
 
-	fun applyIconWidth(viewPager: ViewPager2, dashIconWidth: Int) {
-		this.dashIconWidth = dashIconWidth
-		val width = columnWidthPx(this.displayDensity, dashIconWidth)
-		this.forEachAttachedGrid(viewPager) { it.setColumnWidth(width) }
+	/** Re-applies the unified column count to every attached page (live pref/rotation change). */
+	fun applyColumns(viewPager: ViewPager2) {
+		this.forEachAttachedGrid(viewPager) { DashGridSizer.apply(it) }
 	}
 
 	fun invalidatePages(viewPager: ViewPager2) {
@@ -110,9 +106,6 @@ class ProfilePagerAdapter(
 	}
 
 	companion object {
-		fun columnWidthPx(density: Float, dashIconWidth: Int): Int =
-			Math.round((80 + dashIconWidth) * density) // 80 is the minimum //
-
 		/**
 		 * The GridView of the pager's current page, or null if no page is laid
 		 * out yet. Only the current page is attached while the pager is idle, so
