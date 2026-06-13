@@ -11,6 +11,7 @@ public enum Preference {
 	LAUNCHERICON_WIDTH("launchericon_width"),
 	LAUNCHERSERVICE_ENABLED("launcherservice_enabled"),
 	DASH_SEARCH_FULL("dashsearch_full"),
+	DASH_SEARCH_FOCUS_ON_OPEN("dashsearch_focus_on_open", false),
 	DASH_SEARCH_LENSES_MAX_RESULTS("dashsearch_lenses_maxresults"),
 	DASH_GRID_COLUMNS("dash_grid_columns"),
 	CRASH_REPORTING_ENABLED("crash_reporting_enabled"),
@@ -21,14 +22,21 @@ public enum Preference {
 	DEFAULT_PINS_PENDING("default_pins_pending"),
 	DEFAULT_PINS_AUTO_INELIGIBLE("default_pins_auto_ineligible"),
 	DEV("dev"),
-	DEV_LOG_TOASTER("dev_log_toaster");
+	DEV_LOG_TOASTER("dev_log_toaster", null, DEV),
+	DEV_WIDGET_RESIZE_ANY("dev_widget_resize_any", false, DEV);
 
 	private final String name;
 	private final Object defaultValue;
+	private final Preference parent;
 
-	Preference(final String name, final Object defaultValue) {
+	Preference(final String name, final Object defaultValue, final Preference parent) {
 		this.name = name;
 		this.defaultValue = defaultValue;
+		this.parent = parent;
+	}
+
+	Preference(final String name, final Object defaultValue) {
+		this(name, defaultValue, null);
 	}
 
 	Preference(final String name) {
@@ -41,6 +49,10 @@ public enum Preference {
 
 	public <T> T getDefault() {
 		return (T) this.defaultValue;
+	}
+
+	public Preference getParent() {
+		return this.parent;
 	}
 
 	@Override

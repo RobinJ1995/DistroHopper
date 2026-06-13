@@ -51,6 +51,7 @@ import be.robinj.distrohopper.home.HomeStateBinder;
 import be.robinj.distrohopper.home.HomeViewModel;
 import be.robinj.distrohopper.home.LauncherEdgeController;
 import be.robinj.distrohopper.home.LayoutTransitionConfigurer;
+import be.robinj.distrohopper.home.SearchLoader;
 import be.robinj.distrohopper.home.StartupLoader;
 import be.robinj.distrohopper.home.ThemeApplier;
 import be.robinj.distrohopper.home.WallpaperColourApplier;
@@ -663,6 +664,8 @@ public class HomeActivity extends AppCompatActivity
 
 			this.apps = installedApps;
 			this.lenses = new LensManager (this.getApplicationContext (), llDashHomeAppsContainer, llDashHomeLensesContainer, pwDashSearchProgress, installedApps);
+			// Runs searches on the activity's lifecycleScope + dispatchers, like StartupLoader //
+			this.lenses.setSearchLoader (new SearchLoader (this, DependencyContainer.of (this).getDispatchers ()));
 
 			// Desktops is the authority for how many desktops exist (widgets + pins);
 			// wire it now that the app model is loaded and re-derive the desktop row //

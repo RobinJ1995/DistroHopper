@@ -8,6 +8,8 @@ import androidx.test.core.app.ActivityScenario
 import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.preferences.Preference
+import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.widgets.WidgetTestSupport.CELL
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -25,7 +27,15 @@ class WidgetContainerTest {
 	private lateinit var scenario: ActivityScenario<HomeActivity>
 
 	@Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
-	@After fun tearDown() { scenario.close() }
+	@After fun tearDown() {
+		scenario.onActivity { activity ->
+			Preferences.getSharedPreferences(activity)
+				.edit()
+				.remove(Preference.DEV_WIDGET_RESIZE_ANY.getName())
+				.commit()
+		}
+		scenario.close()
+	}
 
 	private class Fixture(
 		val grid: WidgetsContainer,
@@ -104,6 +114,41 @@ class WidgetContainerTest {
 			assertEquals(View.VISIBLE, container.findViewById<View>(R.id.llEdgeRight).visibility)
 			assertEquals(View.GONE, container.findViewById<View>(R.id.llEdgeTop).visibility)
 			assertEquals(View.GONE, container.findViewById<View>(R.id.llEdgeBottom).visibility)
+		}
+	}
+
+	@Test fun developerResizeOverrideShowsAllResizeEdges() {
+		scenario.onActivity { activity ->
+			Preferences.getSharedPreferences(activity)
+				.edit()
+				.putBoolean(Preference.DEV_WIDGET_RESIZE_ANY.getName(), true)
+				.commit()
+			val container = widgetAt22(activity,
+				WidgetTestSupport.providerInfo(AppWidgetProviderInfo.RESIZE_HORIZONTAL)).container
+
+			container.editMode = true
+
+			assertEquals(View.VISIBLE, container.findViewById<View>(R.id.llEdgeLeft).visibility)
+			assertEquals(View.VISIBLE, container.findViewById<View>(R.id.llEdgeRight).visibility)
+			assertEquals(View.VISIBLE, container.findViewById<View>(R.id.llEdgeTop).visibility)
+			assertEquals(View.VISIBLE, container.findViewById<View>(R.id.llEdgeBottom).visibility)
+		}
+	}
+
+	@Test fun developerResizeOverrideIgnoresProviderSizeLimits() {
+		scenario.onActivity { activity ->
+			Preferences.getSharedPreferences(activity)
+				.edit()
+				.putBoolean(Preference.DEV_WIDGET_RESIZE_ANY.getName(), true)
+				.commit()
+			val container = widgetAt22(activity,
+				WidgetTestSupport.providerInfo(maxResizeWidth = 2 * CELL)).container
+
+			touch(container, R.id.llEdgeRight, MotionEvent.ACTION_DOWN, 400F, 300F)
+			touch(container, R.id.llEdgeRight, MotionEvent.ACTION_MOVE, 400F + CELL, 300F)
+			touch(container, R.id.llEdgeRight, MotionEvent.ACTION_UP, 400F + CELL, 300F)
+
+			assertEquals(3, lp(container).colSpan)
 		}
 	}
 

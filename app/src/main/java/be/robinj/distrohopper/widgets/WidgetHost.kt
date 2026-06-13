@@ -14,6 +14,8 @@ import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.RequestCode
 import be.robinj.distrohopper.dev.Log
+import be.robinj.distrohopper.preferences.Preference
+import be.robinj.distrohopper.preferences.Preferences
 
 /**
  * Created by robin on 8/25/14.
@@ -76,6 +78,11 @@ class WidgetHost(
 			return
 		}
 
+		// When the user has opted into unrestricted widget sizing, don't clamp
+		// to the provider's limits on restore — that would undo a size they set
+		// on purpose; only the grid bounds and overlaps are still enforced //
+		val unrestricted = this.allowUnsupportedResize()
+
 		val kept = ArrayList<WidgetLayout>()
 		var changed = false
 
@@ -85,9 +92,11 @@ class WidgetHost(
 			val lp = child.layoutParams as WidgetsContainer.LayoutParams
 
 			val colSpan = WidgetGrid.clampSpan(lp.colSpan,
-				minResizeWidthPx(info), info.maxResizeWidth, cellW, WidgetGrid.COLS)
+				if (unrestricted) 0 else minResizeWidthPx(info),
+				if (unrestricted) 0 else info.maxResizeWidth, cellW, WidgetGrid.COLS)
 			val rowSpan = WidgetGrid.clampSpan(lp.rowSpan,
-				minResizeHeightPx(info), info.maxResizeHeight, cellH, WidgetGrid.ROWS)
+				if (unrestricted) 0 else minResizeHeightPx(info),
+				if (unrestricted) 0 else info.maxResizeHeight, cellH, WidgetGrid.ROWS)
 
 			// Always validate against the widgets already placed this pass, not
 			// just when the span changed: growing one widget can collide with a
@@ -375,6 +384,11 @@ class WidgetHost(
 	/** The provider's preferred cell height (API 33 targetCellHeight), or 0. */
 	private fun targetRows(info: AppWidgetProviderInfo): Int =
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) info.targetCellHeight else 0
+
+	/** Whether the user has enabled unrestricted (beyond provider limits) widget sizing. */
+	private fun allowUnsupportedResize(): Boolean =
+		Preferences.getSharedPreferences(this.parent)
+			.getBoolean(Preference.DEV_WIDGET_RESIZE_ANY.getName(), false)
 
 	private fun cancelPendingWidget() {
 		if (this.pendingAppWidgetId != -1) {

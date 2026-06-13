@@ -9,4 +9,8 @@ public class AppIconCache extends DrawableCache {
 	public AppIconCache(Context context) {
 		super(context, NAME);
 	}
+
+	public static void clearAll(Context context) {
+		new ExpiringCache<>(context, new AppIconCache(context), EXPIRATION).clear();
+	}
 }

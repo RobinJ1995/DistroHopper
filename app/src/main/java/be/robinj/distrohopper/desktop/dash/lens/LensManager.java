@@ -14,6 +14,7 @@ import java.util.List;
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.Permission;
 import be.robinj.distrohopper.R;
+import be.robinj.distrohopper.home.SearchLoader;
 import be.robinj.distrohopper.preferences.Preference;
 import be.robinj.distrohopper.preferences.Preferences;
 import be.robinj.distrohopper.thirdparty.ProgressWheel;
@@ -26,7 +27,9 @@ public class LensManager
 	private Context context;
 	private LinkedHashMap<String, Lens> lenses = new LinkedHashMap<> ();
 	private List<Lens> enabled;
-	private AsyncSearch asyncSearch;
+	private SearchLoader searchLoader;
+	private final List<LensSearchResultCollection> results = new ArrayList<> ();
+	private CollectionGridAdapter adapter;
 
 	private int maxResultsPerLens = 10;
 
@@ -203,16 +206,33 @@ public class LensManager
 		}
 	}
 
+	/**
+	 * Injected by HomeActivity once the activity exists (it owns the
+	 * lifecycleScope and dispatchers the loader runs on).
+	 */
+	public void setSearchLoader (SearchLoader searchLoader)
+	{
+		this.searchLoader = searchLoader;
+	}
+
 	public void startSearch (String pattern)
 	{
-		if (this.asyncSearch != null)
-			this.asyncSearch.cancel (true);
+		if (this.searchLoader != null)
+			this.searchLoader.cancel ();
 
 		if (! pattern.equals (""))
 		{
-			this.asyncSearch = new AsyncSearch(this, this.pwDashSearchProgress,
-					this.lvDashHomeLensResults);
-			this.asyncSearch.execute (pattern);
+			this.showLensesContainer ();
+
+			// Fresh adapter + backing list per query; the loader appends collections
+			// to this.results and notifies the adapter as lenses complete //
+			this.results.clear ();
+			this.adapter = new CollectionGridAdapter (this.getContext (), this.results);
+			this.lvDashHomeLensResults.setAdapter (this.adapter);
+
+			if (this.searchLoader != null)
+				this.searchLoader.start (pattern, this.enabled, this.maxResultsPerLens,
+						this.adapter, this.results, this.pwDashSearchProgress);
 		}
 		else
 		{

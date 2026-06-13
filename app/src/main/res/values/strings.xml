@@ -18,8 +18,8 @@
     <string name="title_activity_lens_preferences">Search sources</string>
     <string name="title_activity_theme_preferences">Themes</string>
     <string name="title_activity_dev_logs">Logs</string>
-    <string name="pinned">has been pinned to the launcher</string>
-    <string name="unpinned">has been unpinned from the launcher</string>
+    <string name="pinned">has been pinned to the Launcher</string>
+    <string name="unpinned">has been unpinned from the Launcher</string>
     <string name="notpinned">isn\'t pinned</string>
     <string name="alreadypinned">is already pinned</string>
     <string name="developed_by">Developed by Robin Jacobs</string>
@@ -56,6 +56,8 @@
     <string name="hint_launcher_edge">To which screen edge the Launcher should be attached.</string>
     <string name="widget_picker_title">Add widget</string>
     <string name="widget_no_room">There is no room left on the home screen for this widget.</string>
+    <string name="option_dashsearch_focus_on_open">Start search when Dash opened</string>
+    <string name="hint_dashsearch_focus_on_open">Focus the search box and show the keyboard when the dash is opened.</string>
     <string name="option_dev_log_toaster">Log toasts</string>
     <string name="hint_dev_log_toaster">Show log items in toast messages.</string>
     <string name="option_customise">Customise</string>
@@ -75,6 +77,10 @@
     <string name="option_dev">Developer mode</string>
     <string name="hint_dev">Access debug logs and other technical information. Enabling this will negatively impact performance and stability.</string>
     <string name="option_dev_logs">Logs</string>
+    <string name="option_clear_cache">Clear cache</string>
+    <string name="toast_cache_cleared">Cache cleared</string>
+    <string name="option_widget_resize_any">Allow unsupported widget dimensions</string>
+    <string name="hint_widget_resize_any">Allow widgets to be resized beyond their supported size constraints.</string>
     <string name="option_rerun_onboarding">Run setup wizard again</string>
     <string name="hint_rerun_onboarding">The first-run setup wizard will be shown the next time DistroHopper starts.</string>
     <string name="toast_rerun_onboarding">Setup wizard will run on next start</string>
@@ -84,7 +90,7 @@
     <string name="option_set_default_launcher">Set as home screen</string>
     <string name="hint_set_default_launcher">Make DistroHopper your default home screen, so that it appears whenever you press the home button.</string>
     <string name="option_pin_per_desktop">Per-desktop pinned apps</string>
-    <string name="hint_pin_per_desktop">Give each desktop its own pinned apps in the launcher, instead of sharing the same ones across every desktop.</string>
+    <string name="hint_pin_per_desktop">Give each desktop its own pinned apps in the Launcher, instead of sharing the same ones across every desktop.</string>
     <string name="title_activity_contribute">How can I contribute?</string>
     <string name="contribute_intro">A lot of time and hard work went into the development of this application. If you\'d like to help out, there are several ways in which you can do so.</string>
     <string name="contribute_translate_title">Translate</string>

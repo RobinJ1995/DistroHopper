@@ -32,10 +32,14 @@ internal object WidgetTestSupport {
 		resizeMode: Int = AppWidgetProviderInfo.RESIZE_BOTH,
 		minResizeWidth: Int = 0,
 		minResizeHeight: Int = 0,
+		maxResizeWidth: Int = 0,
+		maxResizeHeight: Int = 0,
 	): AppWidgetProviderInfo = AppWidgetProviderInfo().apply {
 		this.resizeMode = resizeMode
 		this.minResizeWidth = minResizeWidth
 		this.minResizeHeight = minResizeHeight
+		this.maxResizeWidth = maxResizeWidth
+		this.maxResizeHeight = maxResizeHeight
 	}
 
 	/**
