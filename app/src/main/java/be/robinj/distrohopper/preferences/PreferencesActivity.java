@@ -583,7 +583,7 @@ public class PreferencesActivity extends AppCompatActivity
 	 */
 	public static class FrostedListPreferenceDialogFragment extends ListPreferenceDialogFragmentCompat
 	{
-		static FrostedListPreferenceDialogFragment newInstance (final String key)
+		public static FrostedListPreferenceDialogFragment newInstance (final String key)
 		{
 			final FrostedListPreferenceDialogFragment fragment =
 				new FrostedListPreferenceDialogFragment ();
