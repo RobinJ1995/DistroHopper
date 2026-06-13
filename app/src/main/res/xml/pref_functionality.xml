@@ -6,6 +6,12 @@
         android:title="@string/option_pin_per_desktop"
         android:summary="@string/hint_pin_per_desktop" />
 
+    <SwitchPreferenceCompat
+        android:key="dashsearch_focus_on_open"
+        android:title="@string/option_dashsearch_focus_on_open"
+        android:summary="@string/hint_dashsearch_focus_on_open"
+        android:defaultValue="false" />
+
     <Preference
        android:title="@string/option_lenses"
        android:summary="@string/hint_lenses">

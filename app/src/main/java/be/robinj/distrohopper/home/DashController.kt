@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.ViewFinder
 import be.robinj.distrohopper.desktop.Wallpaper
+import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.preferences.PreferencesRepository
 import be.robinj.distrohopper.theme.Theme
@@ -206,9 +207,22 @@ class DashController(
 	private fun blurRadiusPx(): Int =
 		this.activity.resources.getDimensionPixelSize(this.theme.dash_blur_radius)
 
-	/** The non-dash side of opening: the panel's close button and backgrounds. */
+	/** The non-dash side of opening: the panel's close button, backgrounds and search focus. */
 	private fun applyOpenedChrome() {
 		val llPanel = this.viewFinder.get<LinearLayout>(R.id.llPanel)
+
+		if (this.prefs.getBoolean(Preference.DASH_SEARCH_FOCUS_ON_OPEN, false)) {
+			val etDashSearch = this.viewFinder.get<EditText>(R.id.etDashSearch)
+			// Defer until the dash view is laid out/visible so the focus and
+			// keyboard request take effect.
+			etDashSearch.post {
+				if (etDashSearch.requestFocus()) {
+					val imm = this.activity.getSystemService(Context.INPUT_METHOD_SERVICE)
+						as InputMethodManager?
+					imm?.showSoftInput(etDashSearch, InputMethodManager.SHOW_IMPLICIT)
+				}
+			}
+		}
 
 		if (this.activity.resources.getInteger(this.theme.panel_close_location) != -1)
 			this.viewFinder.get<ImageButton>(llPanel, R.id.ibPanelDashClose).visibility = View.VISIBLE
