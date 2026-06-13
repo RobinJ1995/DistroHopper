@@ -32,6 +32,9 @@ object HomeStateBinder {
 				this.launch {
 					viewModel.dashOpen.collect { open ->
 						if (open) dash.open() else dash.close()
+						// Back must close the dash (and not flash the home) whenever
+						// it's open, regardless of how it was opened.
+						activity.updateBackCallback()
 						// Gates the dash profile indicator (the GNOME pill only
 						// shows while the dash is open); no-op until apps load.
 						activity.appManager?.setDashOpen(open)

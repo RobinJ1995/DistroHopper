@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -89,6 +90,8 @@ public class HomeActivity extends AppCompatActivity
 	private ViewFinder viewFinder;
 
 	LinearLayout llDash;
+
+	private OnBackPressedCallback backCallback;
 
 	private StartupLoader startupLoader;
 	private CustomiseModeUi customiseModeUi;
@@ -184,6 +187,43 @@ public class HomeActivity extends AppCompatActivity
 			this.gestures = new HomeGestureController (this, this.viewFinder, this.dash,
 					this.viewModel, () -> container.getCustomiseMode ().getValue ());
 			((SwipeToCloseLayout) this.llDash).setDelegate (this.gestures);
+
+			// Handle Back through the dispatcher rather than the deprecated
+			// onBackPressed(). With predictive back (targetSdk 36) an enabled
+			// callback tells the system the launcher consumes Back, so it does not
+			// play its own cross-activity "back to home" animation — which on the
+			// default launcher just flashed the (already-visible) home and snapped
+			// the dash shut without its close animation. The callback is enabled
+			// whenever there's something to dismiss or we are the default launcher
+			// (where Back must be a no-op); running as an ordinary app it stays
+			// disabled so Back can still exit. updateBackCallback() keeps it in sync. //
+			this.backCallback = new OnBackPressedCallback (false)
+			{
+				@Override
+				public void handleOnBackPressed ()
+				{
+					try
+					{
+						final WidgetsPager vgWidgets = HomeActivity.this.viewFinder.get (R.id.vgWidgets);
+
+						if (vgWidgets.hasEditModeChild ())
+							vgWidgets.exitEditMode ();
+						else if (HomeActivity.this.dash.isOpen ())
+							HomeActivity.this.closeDash ();
+						// Default launcher, nothing open: swallow Back so the home screen
+						// stays put instead of the system replaying the home intent. //
+					}
+					catch (Exception ex)
+					{
+						ExceptionHandler exh = new ExceptionHandler (ex);
+						exh.show (HomeActivity.this);
+					}
+
+					HomeActivity.this.updateBackCallback ();
+				}
+			};
+			this.getOnBackPressedDispatcher ().addCallback (this, this.backCallback);
+			this.updateBackCallback ();
 
 			// Lay out edge-to-edge on every API level; SDK 35+ enforces it anyway. The status
 			// bar is compensated for by llStatusBar below. Tappable element insets keep the
@@ -407,9 +447,14 @@ public class HomeActivity extends AppCompatActivity
 		}
 
 		// Pressing home (or the home navigation gesture) while the launcher is
-		// already running lands here; it always returns to the first desktop //
+		// already running lands here; close the dash if it's open and return to
+		// the first desktop //
 		if (Intent.ACTION_MAIN.equals(intent.getAction())
 				&& intent.hasCategory(Intent.CATEGORY_HOME)) {
+			if (this.dash != null && this.dash.isOpen()) {
+				this.closeDash();
+			}
+
 			this.returnToFirstDesktop();
 		}
 	}
@@ -449,25 +494,24 @@ public class HomeActivity extends AppCompatActivity
 		return super.onTouchEvent (event);
 	}
 
-	@Override
-	public void onBackPressed ()
+	/**
+	 * Keeps the Back callback enabled exactly when the launcher needs to
+	 * intercept Back: while a widget is in edit mode, while the dash is open, or
+	 * whenever we are the default launcher (Back must never exit the home
+	 * screen). When DistroHopper runs as an ordinary app with nothing open the
+	 * callback is disabled, letting the system handle Back to leave the app.
+	 * Driven from onResume() and the dash-open state (see HomeStateBinder).
+	 */
+	public void updateBackCallback ()
 	{
-		try
-		{
-			final WidgetsPager vgWidgets = this.viewFinder.get(R.id.vgWidgets);
+		if (this.backCallback == null)
+			return;
 
-			if (vgWidgets.hasEditModeChild ())
-				vgWidgets.exitEditMode ();
-			else if (this.llDash.getVisibility () == View.VISIBLE)
-				this.closeDash ();
-			else if (! this.isDefaultLauncher ())
-				super.onBackPressed ();
-		}
-		catch (Exception ex)
-		{
-			ExceptionHandler exh = new ExceptionHandler (ex);
-			exh.show (this);
-		}
+		final boolean editMode = this.viewFinder != null
+				&& this.viewFinder.<WidgetsPager>get (R.id.vgWidgets).hasEditModeChild ();
+		final boolean dashOpen = this.dash != null && this.dash.isOpen ();
+
+		this.backCallback.setEnabled (editMode || dashOpen || this.isDefaultLauncher ());
 	}
 
 	@Override
@@ -516,6 +560,9 @@ public class HomeActivity extends AppCompatActivity
 		try
 		{
 			this.overridePendingTransition (R.anim.app_to_home_out, R.anim.app_to_home_in);
+
+			// The default-launcher status may have changed while we were away //
+			this.updateBackCallback ();
 
 			Intent intent = this.getIntent ();
 			boolean openDash = intent.getBooleanExtra ("openDash", false);
