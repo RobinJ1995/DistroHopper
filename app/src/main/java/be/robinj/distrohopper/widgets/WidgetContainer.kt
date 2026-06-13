@@ -157,8 +157,9 @@ class WidgetContainer internal constructor(
 				val cellW = parent.cellWidth
 				val cellH = parent.cellHeight
 
-				// The drag itself is limited to whole cells within the sizes the widget
-				// supports, so the preview can never exceed what a release would commit //
+				// The drag itself is limited to whole cells within the active size
+				// policy (provider limits normally, grid-only limits for the developer
+				// override), so the preview can never exceed what a release would commit //
 				val minColSpan = WidgetGrid.clampSpan(
 					1, this.minResizeWidthPx(), this.maxResizeWidthPx(), cellW, WidgetGrid.COLS)
 				val maxColSpan = WidgetGrid.clampSpan(

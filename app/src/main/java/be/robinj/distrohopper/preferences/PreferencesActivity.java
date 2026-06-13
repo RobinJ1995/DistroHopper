@@ -36,6 +36,7 @@ import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.cache.AppIconCache;
 import be.robinj.distrohopper.cache.AppLabelCache;
+import be.robinj.distrohopper.cache.ExpiringCache;
 import be.robinj.distrohopper.home.DefaultPinnedApps;
 import be.robinj.distrohopper.onboarding.OnboardingGate;
 
@@ -167,8 +168,7 @@ public class PreferencesActivity extends AppCompatActivity
 					{
 						try
 						{
-							new AppIconCache (requireContext ().getApplicationContext ()).clear ();
-							new AppLabelCache (requireContext ().getApplicationContext ()).clear ();
+							clearAppCaches ();
 							Toast.makeText (requireContext (),
 								R.string.toast_cache_cleared, Toast.LENGTH_SHORT).show ();
 						}
@@ -255,6 +255,16 @@ public class PreferencesActivity extends AppCompatActivity
 			header.setTitle (titleRes);
 			this.getPreferenceScreen ().addPreference (header);
 			this.addPreferencesFromResource (prefsRes);
+		}
+
+		private void clearAppCaches ()
+		{
+			new AppLabelCache (this.requireContext ().getApplicationContext ()).clear ();
+			new ExpiringCache<> (
+				this.requireContext ().getApplicationContext (),
+				new AppIconCache (this.requireContext ().getApplicationContext ()),
+				AppIconCache.EXPIRATION)
+				.clear ();
 		}
 
 		private void initLauncherPinModePreference ()
