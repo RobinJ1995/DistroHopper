@@ -68,8 +68,8 @@ import be.robinj.distrohopper.desktop.launcher.TrashDragListener;
 import be.robinj.distrohopper.desktop.launcher.service.LauncherService;
 import be.robinj.distrohopper.widgets.WidgetHost;
 import be.robinj.distrohopper.widgets.WidgetHost_LongClickListener;
-import be.robinj.distrohopper.widgets.WidgetsContainer;
 import be.robinj.distrohopper.widgets.WidgetsContainer_DragListener;
+import be.robinj.distrohopper.widgets.WidgetsPager;
 
 
 public class HomeActivity extends AppCompatActivity
@@ -161,7 +161,7 @@ public class HomeActivity extends AppCompatActivity
 			final Wallpaper wpWallpaper = this.viewFinder.get(R.id.wpWallpaper);
 			final LinearLayout llPanel = this.viewFinder.get(R.id.llPanel);
 			final ImageButton ibPanelDashClose = this.viewFinder.get(llPanel, R.id.ibPanelDashClose);
-			final WidgetsContainer vgWidgets = this.viewFinder.get(R.id.vgWidgets);
+			final WidgetsPager vgWidgets = this.viewFinder.get(R.id.vgWidgets);
 
 			// Load up the theme and wire up the controllers that manage the views //
 			this.theme = container.getThemeManager ().getCurrent ();
@@ -266,6 +266,19 @@ public class HomeActivity extends AppCompatActivity
 					vgWidgets.exitEditMode ();
 				}
 			});
+			// The widget pager is clickable (see above), so touches on empty desktop
+			// space are consumed here and never bubble up to Activity#onTouchEvent;
+			// feed them to the swipe gestures from the pager itself. Returning false
+			// until a swipe is recognised keeps taps and long-presses working //
+			vgWidgets.setOnTouchListener ((view, event) ->
+			{
+				final boolean handled = this.gestures != null && this.gestures.onHomeTouchEvent (event);
+
+				if (handled)
+					view.cancelLongPress (); // A recognised swipe is not a long-press //
+
+				return handled;
+			});
 
 			// Keep the widget area clear of the launcher, even when the launcher resizes //
 			llLauncher.addOnLayoutChangeListener (new View.OnLayoutChangeListener ()
@@ -364,6 +377,19 @@ public class HomeActivity extends AppCompatActivity
 				!= DependencyContainer.of(this).getCustomiseMode().getValue()) {
 			this.recreate();
 		}
+
+		// Pressing home (or the home navigation gesture) while the launcher is
+		// already running lands here; it always returns to the first desktop //
+		if (Intent.ACTION_MAIN.equals(intent.getAction())
+				&& intent.hasCategory(Intent.CATEGORY_HOME)) {
+			this.returnToFirstDesktop();
+		}
+	}
+
+	public void returnToFirstDesktop ()
+	{
+		if (this.viewFinder != null)
+			this.viewFinder.<WidgetsPager>get(R.id.vgWidgets).setCurrentPage(0, true);
 	}
 
 	@Override
@@ -400,7 +426,7 @@ public class HomeActivity extends AppCompatActivity
 	{
 		try
 		{
-			final WidgetsContainer vgWidgets = this.viewFinder.get(R.id.vgWidgets);
+			final WidgetsPager vgWidgets = this.viewFinder.get(R.id.vgWidgets);
 
 			if (vgWidgets.hasEditModeChild ())
 				vgWidgets.exitEditMode ();

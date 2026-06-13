@@ -17,8 +17,8 @@ public class WidgetHost_LongClickListener implements View.OnLongClickListener
 	@Override
 	public boolean onLongClick (View view)
 	{
-		if (view instanceof WidgetsContainer && ((WidgetsContainer) view).hasEditModeChild ())
-			((WidgetsContainer) view).exitEditMode ();
+		if (view instanceof WidgetsPager && ((WidgetsPager) view).hasEditModeChild ())
+			((WidgetsPager) view).exitEditMode ();
 		else
 			this.widgetHost.showPicker ();
 

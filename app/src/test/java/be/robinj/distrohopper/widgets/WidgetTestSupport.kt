@@ -12,18 +12,21 @@ internal object WidgetTestSupport {
 	const val CELL = GRID_SIZE / WidgetGrid.COLS
 
 	/**
-	 * A standalone widget grid, detached from the activity's view tree so the
-	 * framework cannot re-layout it to the (small) test window size behind the
-	 * test's back.
+	 * A standalone widget grid (the first page of a fresh pager), detached
+	 * from the activity's view tree so the framework cannot re-layout it to
+	 * the (small) test window size behind the test's back.
 	 */
 	fun standaloneGrid(activity: HomeActivity): WidgetsContainer =
-		WidgetsContainer(activity, null)
+		WidgetsPager(activity, null).pageAt(0)
+
+	fun pagerOf(grid: WidgetsContainer): WidgetsPager = grid.parent as WidgetsPager
 
 	fun host(
 		activity: HomeActivity,
-		grid: WidgetsContainer = activity.findViewById(R.id.vgWidgets),
+		grid: WidgetsContainer =
+			activity.findViewById<WidgetsPager>(R.id.vgWidgets).pageAt(0),
 	): WidgetHost =
-		WidgetHost(activity, AppWidgetManager.getInstance(activity), grid)
+		WidgetHost(activity, AppWidgetManager.getInstance(activity), pagerOf(grid))
 
 	fun providerInfo(
 		resizeMode: Int = AppWidgetProviderInfo.RESIZE_BOTH,

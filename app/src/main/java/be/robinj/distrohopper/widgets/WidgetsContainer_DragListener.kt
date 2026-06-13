@@ -8,11 +8,17 @@ import be.robinj.distrohopper.home.LauncherBarBinder
 /**
  * Handles widget drops over the topmost desktop layer while the system drag shadow
  * follows the finger. The underlying widget grid draws the snapped landing target.
+ * All coordinates target the pager's current desktop: the pages cannot change
+ * mid-drag (the drag owns the touch stream), so that is also the desktop the
+ * dragged widget came from.
  */
 internal class WidgetsContainer_DragListener(
 	private val parent: HomeActivity,
-	private val vgWidgets: WidgetsContainer,
+	private val pager: WidgetsPager,
 ) : View.OnDragListener {
+	private val vgWidgets: WidgetsContainer
+		get() = this.pager.currentPageContainer
+
 	override fun onDrag(view: View, event: DragEvent): Boolean {
 		val container = event.localState as? WidgetContainer ?: return false
 

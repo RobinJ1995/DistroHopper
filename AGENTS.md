@@ -105,16 +105,23 @@ etc/                                        — design assets (SVG/XCF sources, 
     Swipe gestures bypass the theme preset: the dash slides vertically
     tracking an openness fraction (blur/panel/overlay follow the same
     fraction) and settles open or closed when the finger lifts.
-  - `HomeGestureController` — the home screen's swipe gestures. HomeActivity
-    feeds it the touches no view claimed (`onTouchEvent`), i.e. empty desktop
-    space (the panel and launcher are excluded by hit-testing): swiping down
-    pulls down the system notification shade (`NotificationShade`, a
-    reflection call — there is no public API), swiping up pulls in the dash
-    tracking the finger. It is also `SwipeToCloseLayout`'s delegate for
-    swiping the open dash closed. In battery saver there is nothing to
-    track, so the dash opens/closes instantly at the trigger distance;
-    swipe-to-close is disabled in customise mode (closing there relaunches
-    the activity).
+  - `HomeGestureController` — the home screen's swipe gestures on empty
+    desktop space: swiping down pulls down the system notification shade
+    (`NotificationShade`, a reflection call — there is no public API),
+    swiping up pulls in the dash tracking the finger, and swiping sideways
+    pans between the widget desktops (`widgets/WidgetsPager`). It is also
+    `SwipeToCloseLayout`'s delegate for swiping the open dash closed.
+    Touch routing gotcha: the widget pager is clickable (tap = exit widget
+    edit mode), so empty-desktop touches are consumed by it and never reach
+    `Activity#onTouchEvent` — HomeActivity therefore feeds the pager's
+    touches in via an `OnTouchListener` (which returns false until a swipe
+    is recognised, keeping taps/long-presses working), with
+    `Activity#onTouchEvent` as the fallback for genuinely unclaimed touches.
+    Hit-testing uses raw coordinates since the two streams' local spaces
+    differ; the panel and launcher are excluded. In battery saver there is
+    nothing to track, so the dash opens/closes instantly at the trigger
+    distance; swipe-to-close is disabled in customise mode (closing there
+    relaunches the activity).
   - `WallpaperColourApplier` — applies the wallpaper's primary colour to
     launcher/dash for chameleonic themes (via the permissionless
     `WallpaperManager.getWallpaperColors` API; the storage permission only
@@ -206,9 +213,20 @@ etc/                                        — design assets (SVG/XCF sources, 
   recreates `HomeActivity`.
 - **`widgets/`** — home-screen widget hosting (mostly Kotlin): `WidgetHost`
   (AppWidgetHost), `WidgetPersistence`, `WidgetPickerDialog`.
-  `WidgetsContainer` lays widgets out on an invisible 8×8 grid
-  (`WidgetGrid` holds the pure grid maths — snapping, span clamping,
-  overlap checks). Long-pressing a widget puts its `WidgetContainer` into
+  `WidgetsPager` (`R.id.vgWidgets`) is a horizontal pager of widget
+  desktops: each page is a full-size `WidgetsContainer`, there is always
+  exactly one empty desktop after the last occupied one (capped at 16;
+  swiping right past the end lands on the fresh one), `WidgetLayout.page`
+  persists which desktop a widget lives on, and pressing home
+  (`HomeActivity.onNewIntent` with the HOME intent) animates back to the
+  first desktop. Sideways swipes over a widget are intercepted by the pager
+  itself; swipes on empty space arrive via `home/HomeGestureController`.
+  The per-page grid maths stay inside `WidgetsContainer` (page insets are
+  applied as padding per page, not on the pager), which lays widgets out on
+  an invisible 8×8 grid (`WidgetGrid` holds the pure grid maths — snapping,
+  span clamping, overlap checks). New widgets land on the desktop currently
+  shown; drops and moves stay within it. Long-pressing a widget puts its
+  `WidgetContainer` into
   edit mode: edge handles resize by touch (clamped to the provider's
   `min`/`maxResize*` limits and `resizeMode`, with a snap-indicator line
   drawn by `WidgetsContainer`), while dragging the body uses the system

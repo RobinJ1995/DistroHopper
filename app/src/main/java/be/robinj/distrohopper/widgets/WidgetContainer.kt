@@ -53,8 +53,9 @@ class WidgetContainer internal constructor(
 	var editMode = false
 		set(value) {
 			if (value) {
-				// Only one widget in edit mode at a time //
-				(this.parent as? WidgetsContainer)?.exitEditMode()
+				// Only one widget in edit mode at a time, across all desktops //
+				(this.parent?.parent as? WidgetsPager)?.exitEditMode()
+					?: (this.parent as? WidgetsContainer)?.exitEditMode()
 			}
 
 			field = value

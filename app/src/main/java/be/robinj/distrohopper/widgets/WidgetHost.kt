@@ -19,7 +19,7 @@ import be.robinj.distrohopper.dev.Log
 class WidgetHost(
 	private val parent: HomeActivity,
 	private val widgetManager: AppWidgetManager,
-	private val vgWidgets: WidgetsContainer,
+	private val vgWidgets: WidgetsPager,
 ) : AppWidgetHost(parent.applicationContext, HOST_ID) {
 	private val persistence = WidgetPersistence(parent.applicationContext)
 
@@ -49,6 +49,8 @@ class WidgetHost(
 		if (pruned) {
 			this.persist()
 		}
+
+		this.vgWidgets.pagesChanged()
 	}
 
 	private fun addWidget(appWidgetId: Int, layout: WidgetLayout, persist: Boolean) {
@@ -69,7 +71,8 @@ class WidgetHost(
 		val hostView = this.createView(this.parent.applicationContext, appWidgetId, info) as WidgetHostView
 		val container = WidgetContainer(this.parent, this, hostView)
 
-		this.vgWidgets.addView(container, WidgetsContainer.LayoutParams(layout))
+		val page = layout.page.coerceIn(0, WidgetsPager.MAX_PAGES - 1)
+		this.vgWidgets.pageAt(page).addView(container, WidgetsContainer.LayoutParams(layout))
 
 		hostView.setOnLongClickListener(WidgetHostView_LongClickListener(container))
 
@@ -77,13 +80,15 @@ class WidgetHost(
 
 		if (persist) {
 			this.persist()
+			this.vgWidgets.pagesChanged()
 		}
 	}
 
 	fun removeWidget(container: WidgetContainer) {
 		this.deleteAppWidgetId(container.appWidgetId)
-		this.vgWidgets.removeView(container)
+		(container.parent as? WidgetsContainer)?.removeView(container)
 		this.persist()
+		this.vgWidgets.pagesChanged()
 	}
 
 	fun persist() {
@@ -188,10 +193,13 @@ class WidgetHost(
 			return
 		}
 
-		val colSpan = WidgetGrid.spanForSize(info.minWidth, this.vgWidgets.cellWidth, WidgetGrid.COLS)
-		val rowSpan = WidgetGrid.spanForSize(info.minHeight, this.vgWidgets.cellHeight, WidgetGrid.ROWS)
+		// New widgets land on whichever desktop the user is looking at //
+		val page = this.vgWidgets.currentPage
+		val pageContainer = this.vgWidgets.pageAt(page)
+		val colSpan = WidgetGrid.spanForSize(info.minWidth, pageContainer.cellWidth, WidgetGrid.COLS)
+		val rowSpan = WidgetGrid.spanForSize(info.minHeight, pageContainer.cellHeight, WidgetGrid.ROWS)
 
-		val layout = WidgetGrid.findFreeRect(this.vgWidgets.collectLayouts(null), colSpan, rowSpan)
+		val layout = WidgetGrid.findFreeRect(pageContainer.collectLayouts(null), colSpan, rowSpan)
 
 		if (layout == null) {
 			this.deleteAppWidgetId(appWidgetId)
@@ -202,6 +210,7 @@ class WidgetHost(
 		}
 
 		layout.appWidgetId = appWidgetId
+		layout.page = page
 
 		this.addWidget(appWidgetId, layout, true)
 	}

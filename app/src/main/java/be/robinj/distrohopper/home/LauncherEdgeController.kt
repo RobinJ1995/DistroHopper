@@ -17,7 +17,7 @@ import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.PreferencesRepository
 import be.robinj.distrohopper.theme.Location
 import be.robinj.distrohopper.theme.Theme
-import be.robinj.distrohopper.widgets.WidgetsContainer
+import be.robinj.distrohopper.widgets.WidgetsPager
 
 /**
  * Owns the position of the launcher bar and the panel: moves and reorients
@@ -243,20 +243,20 @@ class LauncherEdgeController(
 	 * itself. The navigation insets are added separately because they pad the launcher's parent
 	 * container, so they are not included in the launcher's own dimensions.
 	 */
-	fun updateWidgetAreaInsets(vgWidgets: WidgetsContainer, llLauncher: View) {
+	fun updateWidgetAreaInsets(vgWidgets: WidgetsPager, llLauncher: View) {
 		val nav = this.navigationInsets
 
 		when (this.launcherEdge) {
 			Location.LEFT ->
-				vgWidgets.setPadding(llLauncher.width + nav.left, 0, nav.right, nav.bottom)
+				vgWidgets.setPageInsets(llLauncher.width + nav.left, 0, nav.right, nav.bottom)
 			Location.RIGHT ->
-				vgWidgets.setPadding(nav.left, 0, llLauncher.width + nav.right, nav.bottom)
+				vgWidgets.setPageInsets(nav.left, 0, llLauncher.width + nav.right, nav.bottom)
 			Location.TOP ->
-				vgWidgets.setPadding(nav.left, llLauncher.height, nav.right, nav.bottom)
+				vgWidgets.setPageInsets(nav.left, llLauncher.height, nav.right, nav.bottom)
 			Location.BOTTOM ->
-				vgWidgets.setPadding(nav.left, 0, nav.right, llLauncher.height + nav.bottom)
+				vgWidgets.setPageInsets(nav.left, 0, nav.right, llLauncher.height + nav.bottom)
 			else ->
-				vgWidgets.setPadding(nav.left, 0, nav.right, nav.bottom)
+				vgWidgets.setPageInsets(nav.left, 0, nav.right, nav.bottom)
 		}
 	}
 }

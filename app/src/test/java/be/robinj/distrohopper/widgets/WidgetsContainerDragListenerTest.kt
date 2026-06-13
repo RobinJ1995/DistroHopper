@@ -41,10 +41,11 @@ class WidgetsContainerDragListenerTest {
 		val host = WidgetTestSupport.host(activity, grid)
 		val container = WidgetTestSupport.addWidget(activity, host, grid, 42, 2, 2, 2, 2)
 
-		root.addView(grid, FrameLayout.LayoutParams(GRID_SIZE, GRID_SIZE).apply {
-			leftMargin = CELL
-			topMargin = 2 * CELL
-		})
+		root.addView(WidgetTestSupport.pagerOf(grid),
+			FrameLayout.LayoutParams(GRID_SIZE, GRID_SIZE).apply {
+				leftMargin = CELL
+				topMargin = 2 * CELL
+			})
 		root.addView(receiver, FrameLayout.LayoutParams(10 * CELL, 11 * CELL))
 		root.measure(
 			View.MeasureSpec.makeMeasureSpec(10 * CELL, View.MeasureSpec.EXACTLY),
@@ -55,7 +56,8 @@ class WidgetsContainerDragListenerTest {
 		container.dragGrabOffsetX = CELL / 2
 		container.dragGrabOffsetY = CELL / 2
 
-		return Fixture(receiver, grid, container, WidgetsContainer_DragListener(activity, grid))
+		return Fixture(receiver, grid, container,
+			WidgetsContainer_DragListener(activity, WidgetTestSupport.pagerOf(grid)))
 	}
 
 	// The root FrameLayout is detached from the activity window so

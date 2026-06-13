@@ -10,7 +10,7 @@ import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.theme.Location
-import be.robinj.distrohopper.widgets.WidgetsContainer
+import be.robinj.distrohopper.widgets.WidgetsPager
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -69,21 +69,22 @@ class LauncherEdgeControllerTest {
 	@Test fun widgetAreaInsetsFollowTheLauncherEdgeAndNavigationInsets() {
 		this.scenario.onActivity { activity ->
 			val controller = this.controller(activity)
-			val vgWidgets = activity.findViewById<WidgetsContainer>(R.id.vgWidgets)
+			val vgWidgets = activity.findViewById<WidgetsPager>(R.id.vgWidgets)
+			val page = vgWidgets.pageAt(0) // The insets land on the pages //
 			val llLauncher = activity.findViewById<View>(R.id.llLauncher)
 
 			controller.navigationInsets = Insets.of(10, 0, 20, 30)
 
 			controller.applyLauncherEdge(Location.LEFT, true)
 			controller.updateWidgetAreaInsets(vgWidgets, llLauncher)
-			assertEquals(llLauncher.width + 10, vgWidgets.paddingLeft)
-			assertEquals(20, vgWidgets.paddingRight)
-			assertEquals(30, vgWidgets.paddingBottom)
+			assertEquals(llLauncher.width + 10, page.paddingLeft)
+			assertEquals(20, page.paddingRight)
+			assertEquals(30, page.paddingBottom)
 
 			controller.applyLauncherEdge(Location.BOTTOM, true)
 			controller.updateWidgetAreaInsets(vgWidgets, llLauncher)
-			assertEquals(10, vgWidgets.paddingLeft)
-			assertEquals(llLauncher.height + 30, vgWidgets.paddingBottom)
+			assertEquals(10, page.paddingLeft)
+			assertEquals(llLauncher.height + 30, page.paddingBottom)
 		}
 	}
 }

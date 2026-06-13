@@ -11,6 +11,8 @@ import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.widgets.WidgetTestSupport
+import be.robinj.distrohopper.widgets.WidgetsPager
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -97,13 +99,48 @@ class HomeGestureControllerTest {
 		assertEquals(0, h.shadeExpansions)
 	}
 
-	@Test fun horizontalSwipesAreIgnored() = this.onHarness { h ->
+	@Test fun horizontalSwipesNeverTriggerTheShadeOrTheDash() = this.onHarness { h ->
 		h.touch(MotionEvent.ACTION_DOWN, h.emptyX, h.emptyY, 0)
 		h.touch(MotionEvent.ACTION_MOVE, h.emptyX - 150F, h.emptyY - 10F, 50)
 		h.touch(MotionEvent.ACTION_UP, h.emptyX - 150F, h.emptyY - 10F, 100)
 
 		assertEquals(0, h.shadeExpansions)
 		assertFalse(h.dash.isOpen)
+	}
+
+	@Test fun aHorizontalSwipeOnASingleEmptyDesktopGoesNowhere() = this.onHarness { h ->
+		val pager = h.activity.findViewById<WidgetsPager>(R.id.vgWidgets)
+
+		h.touch(MotionEvent.ACTION_DOWN, h.emptyX, h.emptyY, 0)
+		h.touch(MotionEvent.ACTION_MOVE, h.emptyX - 150F, h.emptyY - 10F, 200)
+		h.touch(MotionEvent.ACTION_UP, h.emptyX - 150F, h.emptyY - 10F, 600)
+		ActivityTestSupport.drainTasks()
+
+		assertEquals(0, pager.currentPage)
+		assertEquals(0, pager.scrollX)
+	}
+
+	@Test fun aHorizontalSwipePansToTheTrailingEmptyDesktop() = this.onHarness { h ->
+		val pager = h.activity.findViewById<WidgetsPager>(R.id.vgWidgets)
+		val host = WidgetTestSupport.host(h.activity)
+		WidgetTestSupport.addWidget(h.activity, host, pager.pageAt(0), 42, 0, 0, 2, 2)
+		pager.pagesChanged()
+		ActivityTestSupport.drainTasks()
+		val width = pager.width.toFloat()
+
+		h.touch(MotionEvent.ACTION_DOWN, h.emptyX, h.emptyY, 0)
+		h.touch(MotionEvent.ACTION_MOVE, h.emptyX - h.slop * 3F, h.emptyY, 200)
+		// Mid-pan: the desktops track the finger //
+		h.touch(MotionEvent.ACTION_MOVE, h.emptyX - h.slop * 3F - width * 0.6F, h.emptyY, 400)
+		assertTrue(pager.scrollX > 0 && pager.scrollX < pager.width)
+
+		h.touch(MotionEvent.ACTION_UP, h.emptyX - h.slop * 3F - width * 0.6F, h.emptyY, 800)
+		ActivityTestSupport.drainTasks()
+
+		assertEquals(1, pager.currentPage)
+		assertEquals(pager.width, pager.scrollX)
+		// ... but no further: only one empty desktop may trail the occupied one //
+		assertEquals(2, pager.pageCount)
 	}
 
 	@Test fun swipingUpTracksTheDashAndCommitsPastTheThreshold() = this.onHarness { h ->
@@ -242,6 +279,54 @@ class HomeGestureControllerTest {
 			ActivityTestSupport.drainTasks()
 
 			assertEquals(View.VISIBLE, llDash.visibility)
+		}
+	}
+
+	/*
+	 * End-to-end through real touch dispatch: the widget pager is clickable
+	 * (tap = exit edit mode), so touches on empty desktop space are consumed
+	 * by it rather than bubbling up to Activity#onTouchEvent — its
+	 * OnTouchListener must feed them into the gestures.
+	 */
+	@Test fun swipingUpThroughRealTouchDispatchOpensTheDash() {
+		this.scenario.onActivity { activity ->
+			val llDash = activity.findViewById<LinearLayout>(R.id.llDash)
+			val decor = activity.window.decorView
+			val container = activity.findViewById<View>(R.id.rlContainer)
+			val x = container.width - 5F
+			val y = container.height - 50F
+			val distance = container.height * 0.6F
+
+			listOf(
+				MotionEvent.obtain(0, 0, MotionEvent.ACTION_DOWN, x, y, 0),
+				MotionEvent.obtain(0, 100, MotionEvent.ACTION_MOVE, x, y - distance / 2F, 0),
+				MotionEvent.obtain(0, 200, MotionEvent.ACTION_MOVE, x, y - distance, 0),
+				MotionEvent.obtain(0, 250, MotionEvent.ACTION_UP, x, y - distance, 0),
+			).forEach {
+				decor.dispatchTouchEvent(it)
+				it.recycle()
+			}
+			ActivityTestSupport.drainTasks()
+
+			assertEquals(View.VISIBLE, llDash.visibility)
+		}
+	}
+
+	/* Pressing home delivers the HOME intent to onNewIntent, which calls this. */
+	@Test fun returningToTheFirstDesktopAnimatesBackToPageOne() {
+		this.scenario.onActivity { activity ->
+			val pager = activity.findViewById<WidgetsPager>(R.id.vgWidgets)
+			val host = WidgetTestSupport.host(activity)
+			WidgetTestSupport.addWidget(activity, host, pager.pageAt(0), 42, 0, 0, 2, 2)
+			pager.pagesChanged()
+			ActivityTestSupport.drainTasks()
+			pager.setCurrentPage(1, animate = false)
+
+			activity.returnToFirstDesktop()
+			ActivityTestSupport.drainTasks()
+
+			assertEquals(0, pager.currentPage)
+			assertEquals(0, pager.scrollX)
 		}
 	}
 }

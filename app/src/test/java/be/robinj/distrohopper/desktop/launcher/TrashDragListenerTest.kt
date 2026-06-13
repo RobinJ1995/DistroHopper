@@ -11,7 +11,7 @@ import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.widgets.WidgetPersistence
 import be.robinj.distrohopper.widgets.WidgetTestSupport
-import be.robinj.distrohopper.widgets.WidgetsContainer
+import be.robinj.distrohopper.widgets.WidgetsPager
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -85,9 +85,9 @@ class TrashDragListenerTest {
 
 	@Test fun droppingAWidgetRemovesItFromTheGridAndFromPersistence() {
 		scenario.onActivity { activity ->
-			val vgWidgets = activity.findViewById<WidgetsContainer>(R.id.vgWidgets)
+			val grid = activity.findViewById<WidgetsPager>(R.id.vgWidgets).pageAt(0)
 			val host = WidgetTestSupport.host(activity)
-			val container = WidgetTestSupport.addWidget(activity, host, vgWidgets, 42, 0, 0, 2, 2)
+			val container = WidgetTestSupport.addWidget(activity, host, grid, 42, 0, 0, 2, 2)
 			host.persist()
 			assertEquals(1, WidgetPersistence(activity.applicationContext).load().size)
 			val listener = TrashDragListener(activity)
@@ -95,7 +95,7 @@ class TrashDragListenerTest {
 			listener.onDrag(activity.findViewById<AppLauncher>(R.id.lalTrash),
 				DragEvents.obtain(DragEvent.ACTION_DROP, localState = container))
 
-			assertEquals(0, vgWidgets.childCount)
+			assertEquals(0, grid.childCount)
 			assertEquals(0, WidgetPersistence(activity.applicationContext).load().size)
 		}
 	}

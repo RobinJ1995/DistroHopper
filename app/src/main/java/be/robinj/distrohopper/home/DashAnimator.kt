@@ -28,7 +28,7 @@ import be.robinj.distrohopper.preferences.PreferencesRepository
 import be.robinj.distrohopper.theme.DashAnimation
 import be.robinj.distrohopper.theme.Location
 import be.robinj.distrohopper.theme.Theme
-import be.robinj.distrohopper.widgets.WidgetsContainer
+import be.robinj.distrohopper.widgets.WidgetsPager
 import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.max
@@ -392,7 +392,7 @@ class DashAnimator(
 		}
 
 		val wallpaper = this.viewFinder.get<Wallpaper>(R.id.wpWallpaper)
-		val widgets = this.viewFinder.get<WidgetsContainer>(R.id.vgWidgets)
+		val widgets = this.viewFinder.get<WidgetsPager>(R.id.vgWidgets)
 		val target = if (opening) blurRadiusPx.toFloat() else 0F
 
 		return ValueAnimator.ofFloat(this.currentBlurRadius, target).also { animator ->
@@ -406,7 +406,7 @@ class DashAnimator(
 
 	private fun applyBlurRadius(radius: Float, blurRadiusPx: Int,
 			wallpaper: Wallpaper = this.viewFinder.get(R.id.wpWallpaper),
-			widgets: WidgetsContainer = this.viewFinder.get(R.id.vgWidgets)) {
+			widgets: WidgetsPager = this.viewFinder.get(R.id.vgWidgets)) {
 		if (blurRadiusPx <= 0) {
 			return
 		}
@@ -722,7 +722,7 @@ class DashAnimator(
 
 	private fun finishBlur() {
 		this.viewFinder.get<Wallpaper>(R.id.wpWallpaper).unblur(this.activity.window)
-		this.viewFinder.get<WidgetsContainer>(R.id.vgWidgets).setRenderEffect(null)
+		this.viewFinder.get<WidgetsPager>(R.id.vgWidgets).setRenderEffect(null)
 		this.currentBlurRadius = 0F
 	}
 
