@@ -218,17 +218,12 @@ public class App implements Parcelable
 		}
 	}
 
-	// Track real app launches for the usage-based dash sort orders, recorded only
+	// Track app launches for the usage-based dash sort orders, recorded only
 	// after the start call is accepted so a failed launch (e.g. a stale package
 	// entry, a disabled activity, or a locked work profile) can't push a
-	// never-opened app to the top. Internal shortcuts (e.g. the Settings entry)
-	// are excluded: they aren't installed apps and shouldn't compete in the
-	// "most used" ranking.
+	// never-opened app to the top.
 	private void recordLaunch ()
 	{
-		if (this.internalShortcut)
-			return;
-
 		try {
 			new AppUsageStats (this.context).recordLaunch (this.getProfileScopedKey ());
 		} catch (final Exception ex) {
