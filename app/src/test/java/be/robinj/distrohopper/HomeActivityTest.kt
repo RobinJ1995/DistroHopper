@@ -30,7 +30,11 @@ class HomeActivityTest {
     private lateinit var scenario: ActivityScenario<HomeActivity>
 
     @Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
-    @After fun tearDown() { scenario.close() }
+    @After fun tearDown() {
+        DependencyContainer.of(
+            androidx.test.core.app.ApplicationProvider.getApplicationContext()).customiseMode.value = false
+        scenario.close()
+    }
 
     @Test fun activityLaunchesSuccessfully() {
         onView(withId(R.id.llLauncherAndDashContainer)).check(matches(isDisplayed()))
@@ -95,5 +99,19 @@ class HomeActivityTest {
 
     @Test fun appManagerIsInitialisedAfterLoad() {
         scenario.onActivity { assertNotNull(it.appManager) }
+    }
+
+    /*
+     * Entering customise mode must land with the customise controls showing
+     * inside an open dash (customise mode lives inside the dash, swapping
+     * llDashContent out for llDashCustomise). Guards against regressing to the
+     * plain home screen with the dash closed.
+     */
+    @Test fun launchingInCustomiseModeShowsCustomiseUiInOpenDash() {
+        scenario.close()
+        scenario = ActivityTestSupport.launchHome(customise = true)
+        onView(withId(R.id.llDash)).check(matches(isDisplayed()))
+        onView(withId(R.id.llDashCustomise)).check(matches(isDisplayed()))
+        onView(withId(R.id.llDashContent)).check(matches(not(isDisplayed())))
     }
 }

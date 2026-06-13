@@ -238,6 +238,8 @@ public class HomeActivity extends AppCompatActivity
 						intent.getBooleanExtra ("customise", container.getCustomiseMode ().getValue ()));
 				this.openDashWhenReady = intent.getBooleanExtra ("openDash", this.openDashWhenReady)
 						|| container.getCustomiseMode ().getValue ();
+				if (!this.openDashWhenReady)
+					this.viewModel.closeDash (); // reconcile preserved dashOpen after recreate //
 			}
 
 			// Take control of system status bar background //
@@ -322,8 +324,8 @@ public class HomeActivity extends AppCompatActivity
 				{
 					final Intent relaunchIntent = this.getIntent ();
 					relaunchIntent.putExtra ("customise", true);
-					this.finish ();
-					this.startActivity (relaunchIntent); // Reload activity //
+					this.setIntent (relaunchIntent);
+					this.recreate (); // Deterministic, ViewModel-preserving relaunch //
 				});
 				this.customiseModeUi.show ();
 			}
@@ -370,8 +372,8 @@ public class HomeActivity extends AppCompatActivity
 					intent.putExtra("customise", true);
 				}
 
-				this.finish();
-				this.startActivity(intent); // Reload activity //
+				this.setIntent(intent); // onCreate() re-reads getIntent() for the customise flag //
+				this.recreate();        // Deterministic, ViewModel-preserving relaunch //
 
 				//this.overridePendingTransition (R.anim.home_to_preferences_in, R.anim.home_to_preferences_out);
 			} else if (requestCode == RequestCode.WIDGET_BOUND) {
@@ -826,9 +828,10 @@ public class HomeActivity extends AppCompatActivity
 		{
 			Intent intent = this.getIntent ();
 			intent.putExtra ("customise", false);
+			intent.removeExtra ("openDash"); // leaving the dash: don't re-open on rebuild //
 
-			this.finish ();
-			this.startActivity (intent);
+			this.setIntent (intent);
+			this.recreate ();
 
 			return;
 		}
