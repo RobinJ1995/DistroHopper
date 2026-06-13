@@ -15,6 +15,7 @@ public enum Preference {
 	DASH_SEARCH_LENSES_MAX_RESULTS("dashsearch_lenses_maxresults"),
 	DASHICON_WIDTH("dashicon_width", 24),
 	APP_SORT_ORDER("app_sort_order", "alphabetical"),
+	DASH_GRID_COLUMNS("dash_grid_columns"),
 	CRASH_REPORTING_ENABLED("crash_reporting_enabled"),
 	THEME("theme"),
 	ICON_PACK("icon_pack"),

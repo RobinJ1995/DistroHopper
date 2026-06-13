@@ -61,8 +61,6 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	}
 
 	private var dashBound = false
-	private var dashDisplayDensity = 0F
-	private var dashIconWidth = 0
 	/** The profiles the dash was last bound for (null = the personal profile). */
 	private var boundProfiles: List<UserHandle?> = emptyList()
 	/** The current profile tab; preserved across rebinds (app install/remove). */
@@ -71,6 +69,9 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	private var indicator: ProfileIndicator? = null
 	private var pageCallbackRegistered = false
 	private var dashOpen = false
+	/** Last laid-out size of the apps grid viewport; 0 until first measured. */
+	private var dashGridViewportWidthPx = 0
+	private var dashGridViewportHeightPx = 0
 
 	fun addPinnedAppView(app: App) {
 		this.llLauncherPinnedApps.addView(this.pinnedAppLauncher(app))
@@ -220,9 +221,7 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	 * looks and behaves like the plain grid. A theme-specific tab indicator is
 	 * shown only when more than one profile exists.
 	 */
-	fun bindDashApps(displayDensity: Float, dashIconWidth: Int) {
-		this.dashDisplayDensity = displayDensity
-		this.dashIconWidth = dashIconWidth
+	fun bindDashApps() {
 		this.dashBound = true
 
 		this.rebindDashApps()
@@ -235,8 +234,7 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		val selected = this.currentProfileIndex.coerceIn(0, profiles.size - 1)
 		this.currentProfileIndex = selected
 
-		val adapter = ProfilePagerAdapter(this.activity, this.appManager, profiles,
-			this.dashDisplayDensity, this.dashIconWidth)
+		val adapter = ProfilePagerAdapter(this.activity, this.appManager, profiles)
 		this.pagerAdapter = adapter
 		this.vpDashProfiles.adapter = adapter
 		this.vpDashProfiles.setCurrentItem(selected, false)
@@ -259,6 +257,18 @@ class LauncherBarBinder(private val appManager: AppManager) {
 			return
 		}
 		this.pageCallbackRegistered = true
+
+		// Remember the apps grid's real viewport whenever it is laid out, so the
+		// customise-mode grid-size hint can show the true rows for the current
+		// theme and orientation (the apps grid is GONE while customising) //
+		this.vpDashProfiles.addOnLayoutChangeListener { _, l, t, r, b, _, _, _, _ ->
+			val w = r - l
+			val h = b - t
+			if (w > 0 && h > 0) {
+				this.dashGridViewportWidthPx = w
+				this.dashGridViewportHeightPx = h
+			}
+		}
 
 		this.vpDashProfiles.registerOnPageChangeCallback(
 			object : ViewPager2.OnPageChangeCallback() {
@@ -305,11 +315,22 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		this.pagerAdapter?.invalidatePages(this.vpDashProfiles)
 	}
 
-	/** Applies the dash icon-width preference to the pager pages. */
-	fun applyDashIconWidth(dashIconWidth: Int) {
-		this.dashIconWidth = dashIconWidth
-		this.pagerAdapter?.applyIconWidth(this.vpDashProfiles, dashIconWidth)
+	/** Re-applies the dash grid's column count to the pager pages (pref/rotation change). */
+	fun applyDashColumns() {
+		this.pagerAdapter?.applyColumns(this.vpDashProfiles)
 	}
+
+	/**
+	 * The apps grid's last laid-out viewport (width, height) in px, or null if
+	 * it has not been measured yet. Used by the customise-mode hint to show the
+	 * real row count for the current theme and orientation.
+	 */
+	fun dashGridViewport(): Pair<Int, Int>? =
+		if (this.dashGridViewportWidthPx > 0 && this.dashGridViewportHeightPx > 0) {
+			this.dashGridViewportWidthPx to this.dashGridViewportHeightPx
+		} else {
+			null
+		}
 
 	/** The dash opened or closed; indicators that only show while open react. */
 	fun setDashOpen(open: Boolean) {

@@ -40,8 +40,6 @@ class StartupLoader(
 		lalBfb: AppLauncher,
 		appLabelCache: ICache<String>,
 		appIconCache: ICache<Drawable>,
-		displayDensity: Float,
-		dashIconWidth: Int,
 	) {
 		this.job = this.activity.lifecycleScope.launch {
 			try {
@@ -77,7 +75,7 @@ class StartupLoader(
 				appManager.refreshPinnedView()
 
 				// Single grid, or one labelled section per profile (work profile) //
-				appManager.bindDashApps(displayDensity, dashIconWidth)
+				appManager.bindDashApps()
 
 				this@StartupLoader.activity.asyncLoadInstalledAppsDone(appManager)
 

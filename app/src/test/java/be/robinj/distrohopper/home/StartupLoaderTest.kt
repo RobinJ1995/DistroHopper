@@ -75,9 +75,7 @@ class StartupLoaderTest {
 			activity.findViewById<SpinnerAppLauncher>(R.id.lalSpinner),
 			activity.findViewById<AppLauncher>(R.id.lalBfb),
 			labelCache,
-			iconCache,
-			activity.resources.displayMetrics.density,
-			24)
+			iconCache)
 	}
 
 	@Test fun startupLeavesTheHomeScreenFullyLoaded() {

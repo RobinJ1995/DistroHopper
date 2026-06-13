@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.robinj.distrohopper.DependencyContainer;
+import be.robinj.distrohopper.desktop.dash.DashGridSizer;
 import be.robinj.distrohopper.theme.Theme;
 import be.robinj.distrohopper.R;
 
@@ -23,15 +24,8 @@ import be.robinj.distrohopper.R;
  * Created by robin on 8/21/14.
  */
 public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollection>  {
-	private final float displayDensity;
-	private final int dashIconWidth;
-
-	public CollectionGridAdapter(final Context context, final List<LensSearchResultCollection> coll,
-								 final float displayDensity, final int dashIconWidth) {
+	public CollectionGridAdapter(final Context context, final List<LensSearchResultCollection> coll) {
 		super (context, R.layout.widget_dash_lens_result_collection, coll);
-
-		this.displayDensity = displayDensity;
-		this.dashIconWidth = dashIconWidth;
 	}
 
 	@Override
@@ -45,9 +39,6 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 
 		TextView tvLabel = (TextView) view.findViewById (R.id.tvLabel);
 		GridView gvResults = (GridView) view.findViewById (R.id.gvResults);
-		gvResults.setColumnWidth(Math.round((80 // 80 is the minimum
-				+ this.dashIconWidth)
-				* this.displayDensity)); // Adjust for the screen's pixel density
 
 		tvLabel.setText (coll.getName ());
 		final Theme theme = DependencyContainer.of (view.getContext ()).getThemeManager ().getCurrent ();
@@ -79,7 +70,9 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 
 		if (show)
 		{
-			gvResults.setAdapter (new GridAdapter (this.getContext (), results, this.displayDensity, this.dashIconWidth));
+			gvResults.setAdapter (new GridAdapter (this.getContext (), results));
+			// Same unified column count as the dash apps grid (see DashGrid) //
+			DashGridSizer.apply (gvResults);
 
 			if (ex != null)
 			{

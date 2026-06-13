@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.LauncherApps;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
@@ -90,6 +91,7 @@ public class HomeActivity extends AppCompatActivity
 	LinearLayout llDash;
 
 	private StartupLoader startupLoader;
+	private CustomiseModeUi customiseModeUi;
 
 	private boolean openDashWhenReady = false;
 
@@ -316,20 +318,20 @@ public class HomeActivity extends AppCompatActivity
 
 			if (container.getCustomiseMode ().getValue ())
 			{
-				new CustomiseModeUi (this, this.viewFinder, this.theme, () ->
+				this.customiseModeUi = new CustomiseModeUi (this, this.viewFinder, this.theme, () ->
 				{
 					final Intent relaunchIntent = this.getIntent ();
 					relaunchIntent.putExtra ("customise", true);
 					this.finish ();
 					this.startActivity (relaunchIntent); // Reload activity //
-				}).show ();
+				});
+				this.customiseModeUi.show ();
 			}
 
 			// Start loading: wallpaper, apps, then label/icon caches //
 			this.startupLoader = new StartupLoader (this, container.getDispatchers ());
 			this.startupLoader.start (wpWallpaper, lalSpinner, lalBfb,
-					this.appLabelCache, this.appIconCache, density,
-					prefs.getInt (Preference.DASHICON_WIDTH.getName(), Preference.DASHICON_WIDTH.getDefault()));
+					this.appLabelCache, this.appIconCache);
 		}
 		catch (Exception ex)
 		{
@@ -554,6 +556,23 @@ public class HomeActivity extends AppCompatActivity
 			ExceptionHandler exh = new ExceptionHandler (ex);
 			exh.show (this);
 		}
+	}
+
+	@Override
+	public void onConfigurationChanged (Configuration newConfig)
+	{
+		super.onConfigurationChanged (newConfig);
+
+		// The activity is not recreated on rotation (configChanges in the
+		// manifest); re-apply the dash grid's column count for the new
+		// orientation. Widgets reflow on their own via the cell-based
+		// WidgetsContainer layout. //
+		if (this.apps != null)
+			this.apps.applyDashColumns ();
+
+		// Keep the customise-mode grid-size hint in step with the new orientation //
+		if (this.customiseModeUi != null)
+			this.customiseModeUi.refreshDashGridHint ();
 	}
 
 	@Override

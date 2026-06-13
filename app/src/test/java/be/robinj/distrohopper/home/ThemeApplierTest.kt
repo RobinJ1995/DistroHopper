@@ -9,6 +9,7 @@ import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.desktop.dash.DashGrid
 import be.robinj.distrohopper.preferences.Preference
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -24,10 +25,6 @@ class ThemeApplierTest {
 		ActivityTestSupport.launchHome(configurePrefs = {
 			it.putString(Preference.THEME.getName(), theme)
 		})
-
-	private fun requestedColumnWidth(gv: GridView): Int =
-		GridView::class.java.getDeclaredField("mRequestedColumnWidth")
-			.apply { isAccessible = true }.getInt(gv)
 
 	@Test fun defaultThemeShowsRibbonAndHidesPanelBfb() {
 		launch("default").use { scenario ->
@@ -108,7 +105,7 @@ class ThemeApplierTest {
 		}
 	}
 
-	@Test fun applyDashIconWidthScalesTheGridColumnWidthByDensity() {
+	@Test fun applyDashColumnsSetsTheGridColumnCount() {
 		launch("default").use { scenario ->
 			scenario.onActivity { activity ->
 				val container = DependencyContainer.of(activity)
@@ -118,24 +115,22 @@ class ThemeApplierTest {
 						container.themeManager.current, container.prefs))
 
 				ActivityTestSupport.layoutDashApps(activity)
-				applier.applyDashIconWidth(40)
+				applier.applyDashColumns()
 
-				val density = activity.resources.displayMetrics.density
-				assertEquals(Math.round((80 + 40) * density),
-					requestedColumnWidth(activity.findViewById(R.id.gvDashHomeApps)))
+				assertEquals(DashGrid.dashColumns(activity),
+					activity.findViewById<GridView>(R.id.gvDashHomeApps).numColumns)
 			}
 		}
 	}
 
-	@Test fun dashIconWidthPreferenceIsAppliedOnLaunch() {
+	@Test fun dashGridColumnsPreferenceIsAppliedOnLaunch() {
 		ActivityTestSupport.launchHome(configurePrefs = {
-			it.putInt(Preference.DASHICON_WIDTH.getName(), 64)
+			it.putInt(Preference.DASH_GRID_COLUMNS.getName(), 5)
 		}).use { scenario ->
 			scenario.onActivity { activity ->
 				ActivityTestSupport.layoutDashApps(activity)
-				val density = activity.resources.displayMetrics.density
-				assertEquals(Math.round((80 + 64) * density),
-					requestedColumnWidth(activity.findViewById(R.id.gvDashHomeApps)))
+				assertEquals(DashGrid.dashColumns(activity),
+					activity.findViewById<GridView>(R.id.gvDashHomeApps).numColumns)
 			}
 		}
 	}

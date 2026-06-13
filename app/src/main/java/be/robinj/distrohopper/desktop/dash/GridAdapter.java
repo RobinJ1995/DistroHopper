@@ -1,14 +1,13 @@
 package be.robinj.distrohopper.desktop.dash;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -17,21 +16,13 @@ import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.DependencyContainer;
 import be.robinj.distrohopper.theme.Theme;
 import be.robinj.distrohopper.R;
-import be.robinj.distrohopper.dev.Log;
-import be.robinj.distrohopper.preferences.Preference;
-import be.robinj.distrohopper.preferences.Preferences;
 
 /**
  * Created by robin on 8/21/14.
  */
 public class GridAdapter extends ArrayAdapter<App> {
-	private final int iconWidth;
-
-	public GridAdapter(final Context context, final List<App> apps, final float displayDensity,
-					   final int dashIconWidth) {
+	public GridAdapter(final Context context, final List<App> apps) {
 		super (context, R.layout.widget_dash_applauncher, apps);
-
-		this.iconWidth = Math.round((80 + dashIconWidth) * displayDensity);
 	}
 
 	@Override
@@ -51,9 +42,13 @@ public class GridAdapter extends ArrayAdapter<App> {
 		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (theme.dash_applauncher_text_shadow_colour));
 		imgIcon.setImageDrawable (appLauncher.getIcon ().getDrawable ());
 
-		final int width = this.iconWidth;
-		final int height = width;
-		view.setLayoutParams(new LinearLayout.LayoutParams(width, height));
+		// Square cells that stretch to fill their column: the GridView's column
+		// width is set by DashGridSizer for the unified column count. Fall back
+		// to the screen-derived cell size before the grid has been laid out //
+		int size = (parent instanceof GridView) ? ((GridView) parent).getColumnWidth() : 0;
+		if (size <= 0)
+			size = DashGrid.cellSizePx(parent.getContext());
+		view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, size));
 
 		// A recycled view may keep transforms from an interrupted dash animation //
 		view.setTranslationX (0);

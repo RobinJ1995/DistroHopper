@@ -4,29 +4,25 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
 
 import be.robinj.distrohopper.DependencyContainer;
+import be.robinj.distrohopper.desktop.dash.DashGrid;
 import be.robinj.distrohopper.theme.Theme;
 import be.robinj.distrohopper.R;
-import be.robinj.distrohopper.preferences.Preference;
 
 /**
  * Created by robin on 8/21/14.
  */
 public class GridAdapter extends ArrayAdapter<LensSearchResult> {
-	private final int iconWidth;
-
-	public GridAdapter(final Context context, final List<LensSearchResult> results,
-					   final float displayDensity, final int dashIconWidth) {
+	public GridAdapter(final Context context, final List<LensSearchResult> results) {
 		super (context, R.layout.widget_dash_lens_result, results);
-
-		this.iconWidth = Math.round((80 + dashIconWidth) * displayDensity);
 	}
 
 	@Override
@@ -46,9 +42,12 @@ public class GridAdapter extends ArrayAdapter<LensSearchResult> {
 		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (theme.dash_applauncher_text_shadow_colour));
 		imgIcon.setImageDrawable (result.getIcon ());
 
-		final int width = this.iconWidth;
-		final int height = width;
-		view.setLayoutParams(new LinearLayout.LayoutParams(width, height));
+		// Square cells that stretch to fill their column (see DashGrid); the
+		// column width is set by DashGridSizer for the unified column count //
+		int size = (parent instanceof GridView) ? ((GridView) parent).getColumnWidth() : 0;
+		if (size <= 0)
+			size = DashGrid.cellSizePx(parent.getContext());
+		view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, size));
 
 		view.setTag (result);
 

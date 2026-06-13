@@ -15,11 +15,6 @@
 		android:summary="@string/hint_dev_log_toaster"
 		android:defaultValue="false" />
 
-	<Preference
-		android:key="dummy_clear_cache"
-		android:dependency="dev"
-		android:title="@string/option_clear_cache" />
-
 	<SwitchPreferenceCompat
 		android:key="dev_widget_resize_any"
 		android:dependency="dev"
@@ -38,6 +33,17 @@
 		android:dependency="dev"
 		android:title="@string/option_pin_default_apps"
 		android:summary="@string/hint_pin_default_apps" />
+
+	<Preference
+		android:key="dummy_clear_cache"
+		android:dependency="dev"
+		android:title="@string/option_clear_cache" />
+
+	<Preference
+		android:key="dummy_full_restart"
+		android:dependency="dev"
+		android:title="@string/option_full_restart"
+		android:summary="@string/hint_full_restart" />
 
 	<!--<CheckBoxPreference
 		android:key="launcher_running_show"

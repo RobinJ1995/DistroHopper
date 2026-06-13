@@ -12,6 +12,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.ViewFinder
+import be.robinj.distrohopper.desktop.dash.DashGridSizer
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
@@ -70,8 +71,7 @@ class ThemeApplier(
 			else -> this.theme.launcher_bfb_image
 		}))
 		this.edgeController.applyLauncherEdge(launcherEdge, expandLlLauncher)
-		this.applyDashIconWidth(prefs.getInt(Preference.DASHICON_WIDTH.getName(),
-			Preference.DASHICON_WIDTH.getDefault()))
+		this.applyDashColumns()
 
 		when (this.theme.lalPreferences_getLocation(res, prefs)!!) {
 			Location.NONE ->
@@ -160,19 +160,14 @@ class ThemeApplier(
 	}
 
 	/**
-	 * Set the width of icons in the Dash.
-	 * @param width The value of the [Preference.DASHICON_WIDTH] user preference.
+	 * Apply the dash grid's column count (see [DashGrid]) to the dash apps grid.
+	 *
+	 * The grid lives on the current pager page, which only exists once the dash
+	 * has been laid out; null-safe so a theme apply before that still works.
+	 * Once apps load the binder owns the pager and applies it per page; this is
+	 * the pre-load path on the single laid-out grid.
 	 */
-	fun applyDashIconWidth(width: Int) {
-		val density = this.activity.resources.displayMetrics.density
-		val columnWidth = Math.round((80 // 80 is the minimum
-			+ width)
-			* density) // Adjust for the screen's pixel density
-
-		// The dash apps grid lives on the current pager page, which only exists
-		// once the dash has been laid out; null-safe so a theme apply before
-		// that (and the live width path via AppManager.applyDashIconWidth) both
-		// work. Future pages pick the width up from the pager adapter.
-		this.activity.findViewById<GridView>(R.id.gvDashHomeApps)?.setColumnWidth(columnWidth)
+	fun applyDashColumns() {
+		this.activity.findViewById<GridView>(R.id.gvDashHomeApps)?.let { DashGridSizer.apply(it) }
 	}
 }

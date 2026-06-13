@@ -28,9 +28,12 @@ class HomeViewModel(
 		.valueFlow(Preference.LAUNCHERICON_WIDTH) {
 			it.getInt(Preference.LAUNCHERICON_WIDTH.getName(), 36)
 		}
-	val dashIconWidth: Flow<Int> = container.prefs
-		.valueFlow(Preference.DASHICON_WIDTH) {
-			it.getInt(Preference.DASHICON_WIDTH.getName(), Preference.DASHICON_WIDTH.getDefault())
+	// Emits whenever the dash grid column preference changes; the actual count
+	// is recomputed from the screen by DashGrid at apply time, so the emitted
+	// value (-1 when unset) is only a change trigger.
+	val dashGridColumns: Flow<Int> = container.prefs
+		.valueFlow(Preference.DASH_GRID_COLUMNS) {
+			it.getInt(Preference.DASH_GRID_COLUMNS.getName(), -1)
 		}
 	val panelOpacity: Flow<Int> = container.prefs
 		.valueFlow(Preference.PANEL_OPACITY) {

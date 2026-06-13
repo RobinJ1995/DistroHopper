@@ -2,10 +2,13 @@ package be.robinj.distrohopper
 
 import android.app.Activity
 import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -95,5 +98,60 @@ class InsetsHelperTest {
 
         assertEquals(pl + 5, content.paddingLeft)
         assertEquals(pt + 15, content.paddingTop)
+    }
+
+    private fun appCompatActivity(): AppCompatActivity {
+        val controller = Robolectric.buildActivity(AppCompatActivity::class.java)
+        controller.get().setTheme(R.style.PreferencesTheme)
+        return controller.setup().get()
+    }
+
+    private fun decor(activity: Activity): ViewGroup =
+        activity.window.decorView as ViewGroup
+
+    @Test
+    fun appCompatActivityGetsAStatusBarScrimSizedToTheTopInset() {
+        val activity = appCompatActivity()
+        InsetsHelper.applySystemBarsPadding(activity)
+
+        // The scrim is added as the first decor child so it draws behind the action bar.
+        val scrim = decor(activity).getChildAt(0)
+        ViewCompat.dispatchApplyWindowInsets(scrim, insets(Insets.of(0, 40, 0, 0)))
+
+        assertEquals(40, scrim.layoutParams.height)
+    }
+
+    @Test
+    fun statusBarScrimHeightIncludesTheDisplayCutout() {
+        val activity = appCompatActivity()
+        InsetsHelper.applySystemBarsPadding(activity)
+
+        val scrim = decor(activity).getChildAt(0)
+        ViewCompat.dispatchApplyWindowInsets(
+            scrim, insets(Insets.of(0, 30, 0, 0), Insets.of(0, 50, 0, 0)))
+
+        assertEquals(50, scrim.layoutParams.height)
+    }
+
+    @Test
+    fun statusBarScrimDoesNotConsumeInsets() {
+        // Consuming would stop the content view below the action bar from being padded.
+        val activity = appCompatActivity()
+        InsetsHelper.applySystemBarsPadding(activity)
+
+        val scrim = decor(activity).getChildAt(0)
+        val result = ViewCompat.dispatchApplyWindowInsets(scrim, insets(Insets.of(0, 40, 0, 0)))
+
+        assertFalse(result!!.isConsumed)
+    }
+
+    @Test
+    fun plainActivityGetsNoStatusBarScrim() {
+        val activity = Robolectric.buildActivity(Activity::class.java).setup().get()
+        val before = decor(activity).childCount
+
+        InsetsHelper.applySystemBarsPadding(activity)
+
+        assertEquals(before, decor(activity).childCount)
     }
 }
