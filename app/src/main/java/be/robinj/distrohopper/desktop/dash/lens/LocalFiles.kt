@@ -23,6 +23,10 @@ class LocalFiles(context: Context) : Lens(context) {
 
 	override fun getDescription() = "Search results for files on your device"
 
+	// MediaStore ContentResolver query — local, but disk-backed and can be slow
+	// on large media stores, so it is debounced like the network lenses //
+	override fun getType() = LensType.IO
+
 	override fun requiredPermissions(): Array<String> = Permission.storagePermissions()
 
 	@Throws(IOException::class, JSONException::class)

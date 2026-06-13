@@ -244,8 +244,9 @@ etc/                                        — design assets (SVG/XCF sources, 
     swipe-to-close.
   - **`desktop/dash/lens/`** — search "lenses": pluggable search providers
     (`InstalledApps`, `LocalFiles`, `DuckDuckGo`, `GitHub`, …) coordinated
-    by `LensManager` with `AsyncSearch` and
-    result/collection adapters. A lens can declare `requiredPermissions()`;
+    by `LensManager` and run by `home/SearchLoader` (a coroutine runner on the
+    activity's lifecycleScope, like `StartupLoader`; it replaced the old
+    `AsyncSearch` AsyncTask). A lens can declare `requiredPermissions()`;
     lenses missing any of them are left out of the default-enabled set, and
     enabling one in the preferences re-requests them. A lens returns its
     results as one or more named `LensSearchResultCollection`s (sections)
@@ -253,6 +254,17 @@ etc/                                        — design assets (SVG/XCF sources, 
     collection; `InstalledApps` overrides it to return one per profile
     when a work profile exists, while remaining a single lens in the
     preferences.
+    Lenses are still searched strictly one after another (parallel fan-out is
+    too expensive), but `Lens.getType()` (`LensType` `LOCAL`|`IO`|`NETWORK`,
+    default `NETWORK`) drives scheduling: `LOCAL` lenses (`InstalledApps`) run
+    on every keystroke so installed apps appear instantly, while `IO`
+    (`LocalFiles`) and `NETWORK` lenses run only after a short debounce so
+    bursts of typing don't hit them. A lens that downloads a per-result asset
+    can implement `ProgressiveLens` (`suspend searchInto`) to push each result
+    through a `LensResultEmitter` the moment it is fully ready (icon and all) —
+    `DuckDuckGo` does this so its results stream in one at a time rather than
+    after the slowest icon download; non-progressive lenses just emit their
+    whole collection when done.
 - **`onboarding/`** — the first-run wizard. `OnboardingActivity` is a
   full-screen ViewPager2 pager (theme choice, runtime permission prompts,
   set-as-default-home via `RoleManager.ROLE_HOME`) shown over the wallpaper
@@ -351,8 +363,8 @@ etc/                                        — design assets (SVG/XCF sources, 
   `DispatcherProvider`; `home/AppsLoader` holds the blocking halves. Tests
   swap the IO dispatcher for `Dispatchers.Unconfined` via
   `ActivityTestSupport.installTestDispatchers()` so `drainTasks()` is
-  deterministic. (`desktop/dash/lens/AsyncSearch` is the one remaining
-  `AsyncTask`.)
+  deterministic. `home/SearchLoader` runs dash searches the same way (see the
+  lens section above); no `AsyncTask`s remain.
 - **`broadcast/`** — `PackageManagerBroadcastReceiver`: reacts to app
   install/uninstall to keep `AppManager` current. Package broadcasts only
   cover the personal profile, so `WorkProfileAppsCallback` (a

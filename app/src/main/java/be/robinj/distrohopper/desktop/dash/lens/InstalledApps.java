@@ -48,6 +48,13 @@ public class InstalledApps extends Lens
 		return "Search installed apps";
 	}
 
+	@Override
+	public LensType getType ()
+	{
+		// In-memory scan over the loaded app list — effectively instant //
+		return LensType.LOCAL;
+	}
+
 	public List<LensSearchResult> search (final String str, final int maxResults) throws IOException, JSONException
 	{
 		return this.toResults (this.apps.search (str, maxResults));

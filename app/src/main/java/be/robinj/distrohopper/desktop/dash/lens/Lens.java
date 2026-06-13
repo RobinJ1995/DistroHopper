@@ -63,6 +63,16 @@ public abstract class Lens
 
 	public abstract String getDescription ();
 
+	/**
+	 * How expensive this lens is to search, which drives scheduling in
+	 * SearchLoader (LOCAL lenses run on every keystroke; IO and NETWORK lenses
+	 * are debounced). Defaults to NETWORK; cheap lenses override.
+	 */
+	public LensType getType ()
+	{
+		return LensType.NETWORK;
+	}
+
 	public Drawable getIcon ()
 	{
 		return this.icon;
