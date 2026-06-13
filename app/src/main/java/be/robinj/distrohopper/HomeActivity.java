@@ -322,8 +322,9 @@ public class HomeActivity extends AppCompatActivity
 				{
 					final Intent relaunchIntent = this.getIntent ();
 					relaunchIntent.putExtra ("customise", true);
-					this.finish ();
-					this.startActivity (relaunchIntent); // Reload activity //
+					this.viewModel.closeDash (); // reset preserved dash state; re-opens via openDashWhenReady //
+					this.setIntent (relaunchIntent);
+					this.recreate (); // Deterministic, ViewModel-preserving relaunch //
 				});
 				this.customiseModeUi.show ();
 			}
@@ -370,8 +371,12 @@ public class HomeActivity extends AppCompatActivity
 					intent.putExtra("customise", true);
 				}
 
-				this.finish();
-				this.startActivity(intent); // Reload activity //
+				// Reset the preserved dash state before recreate(): the rebuild keeps the
+				// ViewModel, so without this HomeStateBinder would re-open a previously
+				// open dash. The customise case re-opens via openDashWhenReady once apps load //
+				this.viewModel.closeDash ();
+				this.setIntent(intent); // onCreate() re-reads getIntent() for the customise flag //
+				this.recreate();        // Deterministic, ViewModel-preserving relaunch //
 
 				//this.overridePendingTransition (R.anim.home_to_preferences_in, R.anim.home_to_preferences_out);
 			} else if (requestCode == RequestCode.WIDGET_BOUND) {
@@ -831,9 +836,11 @@ public class HomeActivity extends AppCompatActivity
 		{
 			Intent intent = this.getIntent ();
 			intent.putExtra ("customise", false);
+			intent.removeExtra ("openDash"); // leaving the dash: don't re-open on rebuild //
 
-			this.finish ();
-			this.startActivity (intent);
+			this.viewModel.closeDash (); // clear preserved dash state before the recreate() //
+			this.setIntent (intent);
+			this.recreate ();
 
 			return;
 		}
