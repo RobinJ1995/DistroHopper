@@ -49,7 +49,7 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 				+ this.dashIconWidth)
 				* this.displayDensity)); // Adjust for the screen's pixel density
 
-		tvLabel.setText (coll.getLens ().getName ());
+		tvLabel.setText (coll.getName ());
 		final Theme theme = DependencyContainer.of (view.getContext ()).getThemeManager ().getCurrent ();
 		tvLabel.setTextColor (view.getResources ().getColor (theme.dash_applauncher_text_colour));
 		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (theme.dash_applauncher_text_shadow_colour));

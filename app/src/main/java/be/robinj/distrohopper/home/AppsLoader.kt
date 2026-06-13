@@ -72,6 +72,21 @@ object AppsLoader {
 			}
 		}
 
+		// Apps in other profiles (e.g. the work profile), via LauncherApps. In
+		// its own try as well: a broken profile must not abort the load either //
+		try {
+			for (launcherActivityInfo in appManager.repository.queryOtherProfileApps()) {
+				try {
+					appManager.add(App(context, appManager, launcherActivityInfo,
+						appLabelCache, appIconCache), false, false)
+				} catch (ex: Exception) {
+					ExceptionHandler(ex).logAndTrack()
+				}
+			}
+		} catch (ex: Exception) {
+			ExceptionHandler(ex).logAndTrack()
+		}
+
 		// Add the Settings shortcut as an internal-only entry. It is never returned
 		// by PackageManager, so it cannot appear in other launchers.
 		// No NEW_TASK flag (it would only bring the home task itself to the front),
@@ -111,9 +126,9 @@ object AppsLoader {
 
 			var i = 0
 			while (true) {
-				val packageAndActivityName = prefsPinned.getString((i++).toString(), null)
+				val pinnedKey = prefsPinned.getString((i++).toString(), null)
 					?: break
-				val pinnedApp = appMap[packageAndActivityName] ?: continue
+				val pinnedApp = appMap[pinnedKey] ?: continue
 
 				appManager.pin(pinnedApp, false, false, false)
 			}
@@ -153,8 +168,8 @@ object AppsLoader {
 		for (app in appManager.installedApps) {
 			if (! app.isLabelLoaded) {
 				n += if (app.setLabel(app.getLabel(false), appLabelCache)) 1 else 0
-			} else if (! appLabelCache.containsKey(app.packageAndActivityName)) {
-				appLabelCache[app.packageAndActivityName] = app.label
+			} else if (! appLabelCache.containsKey(app.workspaceScopedKey)) {
+				appLabelCache[app.workspaceScopedKey] = app.label
 				n += 1
 			}
 		}
@@ -185,8 +200,8 @@ object AppsLoader {
 		val populateIconCache = mutableMapOf<String, Drawable>()
 
 		for (app in appManager.installedApps) {
-			if (! appIconCache.containsKey(app.packageAndActivityName)) {
-				populateIconCache[app.packageAndActivityName] = app.icon.drawable
+			if (! appIconCache.containsKey(app.workspaceScopedKey)) {
+				populateIconCache[app.workspaceScopedKey] = app.icon.drawable
 				n += 1
 			}
 		}

@@ -2,16 +2,12 @@ package be.robinj.distrohopper.home
 
 import android.graphics.drawable.Drawable
 import android.view.View
-import android.widget.GridView
 import androidx.lifecycle.lifecycleScope
 import be.robinj.distrohopper.DispatcherProvider
 import be.robinj.distrohopper.ExceptionHandler
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.cache.ICache
 import be.robinj.distrohopper.desktop.Wallpaper
-import be.robinj.distrohopper.desktop.dash.AppLauncherClickListener
-import be.robinj.distrohopper.desktop.dash.AppLauncherLongClickListener
-import be.robinj.distrohopper.desktop.dash.GridAdapter
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
 import be.robinj.distrohopper.desktop.launcher.SpinnerAppLauncher
 import kotlinx.coroutines.CancellationException
@@ -42,7 +38,6 @@ class StartupLoader(
 		wpWallpaper: Wallpaper,
 		lalSpinner: SpinnerAppLauncher,
 		lalBfb: AppLauncher,
-		gvDashHomeApps: GridView,
 		appLabelCache: ICache<String>,
 		appIconCache: ICache<Drawable>,
 		displayDensity: Float,
@@ -81,13 +76,8 @@ class StartupLoader(
 
 				appManager.refreshPinnedView()
 
-				gvDashHomeApps.adapter = GridAdapter(
-					this@StartupLoader.activity.applicationContext,
-					appManager.installedApps, displayDensity, dashIconWidth)
-				gvDashHomeApps.onItemClickListener =
-					AppLauncherClickListener(this@StartupLoader.activity)
-				gvDashHomeApps.onItemLongClickListener =
-					AppLauncherLongClickListener(this@StartupLoader.activity)
+				// Single grid, or one labelled section per workspace (work profile) //
+				appManager.bindDashApps(displayDensity, dashIconWidth)
 
 				this@StartupLoader.activity.asyncLoadInstalledAppsDone(appManager)
 

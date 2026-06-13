@@ -1,6 +1,7 @@
 package be.robinj.distrohopper.desktop.dash.lens;
 
 import android.content.Context;
+import android.os.UserHandle;
 import android.view.View;
 
 import org.json.JSONException;
@@ -13,6 +14,7 @@ import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.R;
+import be.robinj.distrohopper.Workspaces;
 import be.robinj.distrohopper.desktop.dash.AppLauncherLongClickListener;
 
 /**
@@ -48,7 +50,40 @@ public class InstalledApps extends Lens
 
 	public List<LensSearchResult> search (final String str, final int maxResults) throws IOException, JSONException
 	{
-		List<App> appResults = this.apps.search (str, maxResults);
+		return this.toResults (this.apps.search (str, maxResults));
+	}
+
+	/**
+	 * One collection per workspace, so work-profile apps get their own
+	 * section — effectively a separate lens per workspace, while remaining a
+	 * single lens in the preferences.
+	 */
+	@Override
+	public List<LensSearchResultCollection> searchCollections (final String str, final int maxResults) throws IOException, JSONException
+	{
+		final List<UserHandle> workspaces = this.apps.getWorkspaces ();
+		final List<LensSearchResultCollection> collections = new ArrayList<> ();
+
+		for (final UserHandle workspace : workspaces)
+		{
+			final List<App> appResults = this.apps.searchWorkspace (str, maxResults, workspace);
+
+			if (appResults.isEmpty ())
+				continue;
+
+			final String name = workspaces.size () > 1
+					? this.context.getString (R.string.lens_workspace_section,
+							this.getName (), Workspaces.label (this.context, workspace))
+					: this.getName ();
+
+			collections.add (new LensSearchResultCollection (this, name, this.toResults (appResults)));
+		}
+
+		return collections;
+	}
+
+	private List<LensSearchResult> toResults (final List<App> appResults)
+	{
 		List<LensSearchResult> results = new ArrayList<LensSearchResult> ();
 
 		for (App app : appResults)

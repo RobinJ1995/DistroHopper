@@ -1,15 +1,23 @@
 package be.robinj.distrohopper.home
 
+import android.os.UserHandle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.GridView
 import android.widget.LinearLayout
+import android.widget.ScrollView
+import android.widget.TextView
 import be.robinj.distrohopper.App
 import be.robinj.distrohopper.AppManager
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.Workspaces
 import be.robinj.distrohopper.preferences.Preferences
+import be.robinj.distrohopper.desktop.dash.GridAdapter
+import be.robinj.distrohopper.desktop.dash.AppLauncherClickListener as DashAppLauncherClickListener
+import be.robinj.distrohopper.desktop.dash.AppLauncherLongClickListener as DashAppLauncherLongClickListener
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
 import be.robinj.distrohopper.desktop.launcher.AppLauncherClickListener
 import be.robinj.distrohopper.desktop.launcher.AppLauncherDragListener
@@ -45,6 +53,20 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	private val gvDashHomeApps: GridView by lazy {
 		this.activity.viewFinder.get(R.id.gvDashHomeApps)
 	}
+	private val svDashHomeWorkspaces: ScrollView by lazy {
+		this.activity.viewFinder.get(R.id.svDashHomeWorkspaces)
+	}
+	private val llDashHomeWorkspaces: LinearLayout by lazy {
+		this.activity.viewFinder.get(R.id.llDashHomeWorkspaces)
+	}
+
+	private var dashBound = false
+	private var dashDisplayDensity = 0F
+	private var dashIconWidth = 0
+	/** The workspaces the dash was last bound for (null = the personal profile). */
+	private var boundWorkspaces: List<UserHandle?> = emptyList()
+	/** Per-workspace section adapters; empty in single-workspace mode. */
+	private val workspaceAdapters = LinkedHashMap<UserHandle?, GridAdapter>()
 
 	fun addPinnedAppView(app: App) {
 		this.llLauncherPinnedApps.addView(this.pinnedAppLauncher(app))
@@ -88,12 +110,100 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		}
 	}
 
+	/**
+	 * Binds the dash app grid(s): the single live-list-backed grid when only
+	 * the personal workspace exists, or one labelled section per workspace
+	 * (personal, work profile) stacked in the scrollable workspace container.
+	 */
+	fun bindDashApps(displayDensity: Float, dashIconWidth: Int) {
+		this.dashDisplayDensity = displayDensity
+		this.dashIconWidth = dashIconWidth
+		this.dashBound = true
+
+		this.rebindDashApps()
+	}
+
+	private fun rebindDashApps() {
+		val workspaces = this.appManager.repository.workspaces()
+		this.boundWorkspaces = workspaces
+		this.workspaceAdapters.clear()
+		this.llDashHomeWorkspaces.removeAllViews()
+
+		if (workspaces.size <= 1) {
+			this.svDashHomeWorkspaces.visibility = View.GONE
+			this.gvDashHomeApps.visibility = View.VISIBLE
+
+			if (this.gvDashHomeApps.adapter == null) {
+				// Backed by the live installed list, as before //
+				this.gvDashHomeApps.adapter = GridAdapter(this.activity.applicationContext,
+					this.appManager.installedApps, this.dashDisplayDensity, this.dashIconWidth)
+				this.gvDashHomeApps.onItemClickListener =
+					DashAppLauncherClickListener(this.activity)
+				this.gvDashHomeApps.onItemLongClickListener =
+					DashAppLauncherLongClickListener(this.activity)
+			}
+
+			return
+		}
+
+		this.gvDashHomeApps.visibility = View.GONE
+		this.svDashHomeWorkspaces.visibility = View.VISIBLE
+
+		val theme = DependencyContainer.of(this.activity).themeManager.current
+		val res = this.activity.resources
+		for (workspace in workspaces) {
+			val section = LayoutInflater.from(this.activity)
+				.inflate(R.layout.widget_dash_workspace, this.llDashHomeWorkspaces, false)
+
+			val tvLabel = section.findViewById<TextView>(R.id.tvWorkspaceLabel)
+			tvLabel.text = Workspaces.label(this.activity, workspace)
+			tvLabel.setTextColor(res.getColor(theme.dash_applauncher_text_colour))
+			tvLabel.setShadowLayer(5F, 2F, 2F,
+				res.getColor(theme.dash_applauncher_text_shadow_colour))
+
+			// Sections refresh from the repository on change (notifyDashAdapterChanged),
+			// so each gets its own copied list rather than the shared live list //
+			val adapter = GridAdapter(this.activity.applicationContext,
+				ArrayList(this.appManager.repository.appsForWorkspace(workspace)),
+				this.dashDisplayDensity, this.dashIconWidth)
+
+			val grid = section.findViewById<GridView>(R.id.gvWorkspaceApps)
+			grid.setColumnWidth(Math.round((80 + this.dashIconWidth) * this.dashDisplayDensity))
+			grid.adapter = adapter
+			grid.onItemClickListener = DashAppLauncherClickListener(this.activity)
+			grid.onItemLongClickListener = DashAppLauncherLongClickListener(this.activity)
+
+			this.workspaceAdapters[workspace] = adapter
+			this.llDashHomeWorkspaces.addView(section)
+		}
+	}
+
 	fun notifyDashAdapterChanged() {
+		if (this.dashBound && this.appManager.repository.workspaces() != this.boundWorkspaces) {
+			// A workspace appeared or vanished (e.g. the first work-profile app
+			// was installed): rebuild the dash sections wholesale //
+			this.rebindDashApps()
+
+			return
+		}
+
 		(this.gvDashHomeApps.adapter as? ArrayAdapter<*>)?.notifyDataSetChanged()
+
+		for ((workspace, adapter) in this.workspaceAdapters) {
+			adapter.setNotifyOnChange(false)
+			adapter.clear()
+			adapter.addAll(this.appManager.repository.appsForWorkspace(workspace))
+			adapter.notifyDataSetChanged()
+		}
 	}
 
 	fun invalidateDashViews() {
 		this.gvDashHomeApps.invalidateViews()
+
+		for (i in 0 until this.llDashHomeWorkspaces.childCount) {
+			this.llDashHomeWorkspaces.getChildAt(i)
+				.findViewById<GridView>(R.id.gvWorkspaceApps)?.invalidateViews()
+		}
 	}
 
 	fun startedDraggingPinnedApp() = startedDragging(this.activity)

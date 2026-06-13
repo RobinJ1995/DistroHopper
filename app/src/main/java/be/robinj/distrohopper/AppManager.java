@@ -1,7 +1,9 @@
 package be.robinj.distrohopper;
 
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.UserHandle;
 import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -73,6 +75,17 @@ public class AppManager implements Iterable<App>
 	public void add (ResolveInfo resInf, boolean checkDuplicate, boolean sortAndNotifyAdapter)
 	{
 		this.add (new App(this.getContext (), this, resInf), checkDuplicate, sortAndNotifyAdapter);
+	}
+
+	public void add (LauncherActivityInfo launcherActivityInfo, boolean checkDuplicate, boolean sortAndNotifyAdapter)
+	{
+		this.add (new App(this.getContext (), this, launcherActivityInfo), checkDuplicate, sortAndNotifyAdapter);
+	}
+
+	/** Binds the dash app grid(s); see LauncherBarBinder.bindDashApps(). */
+	public void bindDashApps (float displayDensity, int dashIconWidth)
+	{
+		this.getBinder ().bindDashApps (displayDensity, dashIconWidth);
 	}
 
 	public void addRunningApps (int colour)
@@ -233,6 +246,18 @@ public class AppManager implements Iterable<App>
 	public List<App> search (String pattern, final int maxResults)
 	{
 		return this.repository.search (pattern, maxResults);
+	}
+
+	/** Like search(), but restricted to one workspace (null = the personal profile). */
+	public List<App> searchWorkspace (String pattern, final int maxResults, final UserHandle workspace)
+	{
+		return this.repository.searchWorkspace (pattern, maxResults, workspace);
+	}
+
+	/** The profiles the installed apps belong to; null = the personal profile. */
+	public List<UserHandle> getWorkspaces ()
+	{
+		return this.repository.workspaces ();
 	}
 
 	public int size ()

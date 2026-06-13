@@ -74,7 +74,6 @@ class StartupLoaderTest {
 			activity.findViewById<Wallpaper>(R.id.wpWallpaper),
 			activity.findViewById<SpinnerAppLauncher>(R.id.lalSpinner),
 			activity.findViewById<AppLauncher>(R.id.lalBfb),
-			activity.findViewById<GridView>(R.id.gvDashHomeApps),
 			labelCache,
 			iconCache,
 			activity.resources.displayMetrics.density,

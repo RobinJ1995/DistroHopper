@@ -3,7 +3,10 @@ package be.robinj.distrohopper
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.LauncherActivityInfo
+import android.content.pm.LauncherApps
 import android.content.pm.ResolveInfo
+import android.os.UserHandle
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import java.util.concurrent.CopyOnWriteArrayList
@@ -73,7 +76,7 @@ class AppRepository(private val context: Context) {
 		this.apps.filter { packageName == it.packageName }
 
 	fun installedAppsMap(): Map<String, App> =
-		this.apps.associateBy { it.packageAndActivityName }
+		this.apps.associateBy { it.workspaceScopedKey }
 
 	fun queryInstalledApps(packageName: String?): List<ResolveInfo> {
 		val mainIntent = Intent(Intent.ACTION_MAIN)
@@ -86,15 +89,51 @@ class AppRepository(private val context: Context) {
 	}
 
 	/**
+	 * Launcher entries of every profile other than the personal one (e.g. the
+	 * work profile). Package broadcasts only cover the personal profile, so
+	 * these come from LauncherApps instead of PackageManager.
+	 */
+	fun queryOtherProfileApps(): List<LauncherActivityInfo> {
+		val launcherApps = this.context.getSystemService(LauncherApps::class.java)
+			?: return emptyList()
+
+		return Workspaces.otherProfiles(this.context)
+			.flatMap { launcherApps.getActivityList(null, it) }
+	}
+
+	/**
+	 * The distinct profiles ("workspaces") the installed apps belong to:
+	 * always the personal profile (null) first, other profiles in the order
+	 * their apps were loaded.
+	 */
+	fun workspaces(): List<UserHandle?> {
+		val users = LinkedHashSet<UserHandle?>()
+		users.add(null)
+		this.apps.mapTo(users) { it.user }
+
+		return users.toList()
+	}
+
+	fun appsForWorkspace(user: UserHandle?): List<App> =
+		this.apps.filter { user == it.user }
+
+	/**
 	 * Search apps based on the provided pattern: label-prefix matches first,
 	 * then infix matches when the full-search preference is enabled.
 	 *
 	 * @param maxResults Maximum number of results to return.
 	 *   NOTE: This is ignored when the pattern is empty.
 	 */
-	fun search(pattern: String, maxResults: Int): List<App> {
+	fun search(pattern: String, maxResults: Int): List<App> =
+		this.search(pattern, maxResults) { true }
+
+	/** Like [search], but restricted to one workspace (null = the personal profile). */
+	fun searchWorkspace(pattern: String, maxResults: Int, workspace: UserHandle?): List<App> =
+		this.search(pattern, maxResults) { workspace == it.user }
+
+	private fun search(pattern: String, maxResults: Int, filter: (App) -> Boolean): List<App> {
 		if (pattern.isEmpty()) {
-			return ArrayList(this.apps)
+			return this.apps.filter(filter)
 		}
 
 		val results = ArrayList<App>()
@@ -103,7 +142,7 @@ class AppRepository(private val context: Context) {
 		val lowered = pattern.lowercase()
 
 		for (app in this.apps) {
-			if (app.label.lowercase().startsWith(lowered)) {
+			if (filter(app) && app.label.lowercase().startsWith(lowered)) {
 				results.add(app)
 
 				if (results.size >= maxResults) {
@@ -114,7 +153,8 @@ class AppRepository(private val context: Context) {
 
 		if (fullSearch) {
 			for (app in this.apps) {
-				if ((! results.contains(app)) && app.label.lowercase().contains(lowered)) {
+				if (filter(app) && (! results.contains(app))
+						&& app.label.lowercase().contains(lowered)) {
 					results.add(app)
 
 					if (results.size >= maxResults) {
@@ -162,8 +202,10 @@ class AppRepository(private val context: Context) {
 
 		editor.clear()
 
+		// The key equals "package\nactivity" for personal-profile apps (the
+		// pre-work-profile format), with the profile serial appended otherwise //
 		for ((i, app) in this.pinnedApps.withIndex()) {
-			editor.putString(i.toString(), app.packageName + "\n" + app.activityName)
+			editor.putString(i.toString(), app.workspaceScopedKey)
 		}
 
 		editor.apply()

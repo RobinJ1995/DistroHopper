@@ -324,6 +324,24 @@
 										android:gravity="center"
 										android:numColumns="auto_fit" />
 								</LinearLayout>
+
+								<!-- One labelled app-grid section per workspace
+								     (personal/work profile); replaces gvDashHomeApps
+								     when more than one workspace exists -->
+								<ScrollView
+									android:id="@+id/svDashHomeWorkspaces"
+									android:layout_width="match_parent"
+									android:layout_height="0dp"
+									android:layout_weight="1"
+									android:scrollbars="none"
+									android:visibility="gone">
+
+									<LinearLayout
+										android:id="@+id/llDashHomeWorkspaces"
+										android:layout_width="match_parent"
+										android:layout_height="wrap_content"
+										android:orientation="vertical" />
+								</ScrollView>
 							</LinearLayout>
 
 							<LinearLayout

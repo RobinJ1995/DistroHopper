@@ -50,7 +50,24 @@ etc/                                        — design assets (SVG/XCF sources, 
     `home/LauncherBarBinder` (resolved lazily so AppManager can be
     constructed on a background thread). Prefer `AppRepository` directly
     in new model-level code.
-  - `App`, `Application`, `AppComparatorAlphabetical` — app model classes. `App` usually wraps a PackageManager `ResolveInfo`, but can also represent DistroHopper-owned internal shortcuts that live only in the dash (currently the settings shortcut) and launch by explicit in-app intent rather than a public launcher component. Internal shortcut intents must not set `FLAG_ACTIVITY_NEW_TASK` (the target shares the home task's affinity, so it would only bring the home task to the front); the settings shortcut launches via `startActivityForResult` so `HomeActivity.onActivityResult` can handle the Customise UI result.
+  - `App`, `Application`, `AppComparatorAlphabetical` — app model classes. `App` usually wraps a PackageManager `ResolveInfo`, but can also wrap a `LauncherActivityInfo` for apps in another profile (see Workspaces below), or represent DistroHopper-owned internal shortcuts that live only in the dash (currently the settings shortcut) and launch by explicit in-app intent rather than a public launcher component. Internal shortcut intents must not set `FLAG_ACTIVITY_NEW_TASK` (the target shares the home task's affinity, so it would only bring the home task to the front); the settings shortcut launches via `startActivityForResult` so `HomeActivity.onActivityResult` can handle the Customise UI result.
+  - **Workspaces (work profile support)**: `Workspaces` wraps the profile
+    helpers (LauncherApps profile listing, labels, persistence serials).
+    Throughout the model a null `UserHandle` means the personal profile;
+    `App.getUser()` is set only for apps in other profiles (work profile),
+    which load via `AppRepository.queryOtherProfileApps()`
+    (LauncherApps), launch via `LauncherApps.startMainActivity`, get the
+    profile badge on their icon, and participate in `App.equals` (the same
+    package can exist in both profiles). Persistence/cache keys use
+    `App.getWorkspaceScopedKey()` — identical to the old
+    package+activity key for personal apps, with the profile serial
+    appended otherwise (so old pinned-app prefs keep matching). When more
+    than one workspace exists, the dash shows one labelled app-list
+    section per workspace (`LauncherBarBinder.bindDashApps`, layout
+    `widget_dash_workspace.xml`, full-height grids in a ScrollView via
+    `desktop/dash/ExpandedGridView`) instead of the single grid, and the
+    InstalledApps lens splits its results into one section per workspace
+    (`Lens.searchCollections`).
   - `IconPackHelper`, `Image`, `Utils`, `ViewFinder`, `InsetsHelper`,
     `Permission`, `RequestCode`, `ExceptionHandler`, `HomeRole` —
     support/utilities. `HomeRole` wraps the HOME-role (default launcher)
@@ -142,7 +159,12 @@ etc/                                        — design assets (SVG/XCF sources, 
     by `LensManager` with `AsyncSearch` and
     result/collection adapters. A lens can declare `requiredPermissions()`;
     lenses missing any of them are left out of the default-enabled set, and
-    enabling one in the preferences re-requests them.
+    enabling one in the preferences re-requests them. A lens returns its
+    results as one or more named `LensSearchResultCollection`s (sections)
+    via `searchCollections()` — the default wraps `search()` in a single
+    collection; `InstalledApps` overrides it to return one per workspace
+    when a work profile exists, while remaining a single lens in the
+    preferences.
 - **`onboarding/`** — the first-run wizard. `OnboardingActivity` is a
   full-screen ViewPager2 pager (theme choice, runtime permission prompts,
   set-as-default-home via `RoleManager.ROLE_HOME`) shown over the wallpaper
@@ -208,7 +230,10 @@ etc/                                        — design assets (SVG/XCF sources, 
   deterministic. (`desktop/dash/lens/AsyncSearch` is the one remaining
   `AsyncTask`.)
 - **`broadcast/`** — `PackageManagerBroadcastReceiver`: reacts to app
-  install/uninstall to keep `AppManager` current.
+  install/uninstall to keep `AppManager` current. Package broadcasts only
+  cover the personal profile, so `WorkProfileAppsCallback` (a
+  `LauncherApps.Callback` registered alongside the receiver) does the same
+  for other profiles.
 - **`cache/`** — `AppIconCache`.
 - **`dev/`** — in-app debug logging (`Log`, `LogToaster`,
   `DevLogsActivity`).

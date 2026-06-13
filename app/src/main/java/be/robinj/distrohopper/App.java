@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.Process;
+import android.os.UserHandle;
 import android.widget.Toast;
 
 import java.util.Objects;
@@ -33,7 +37,12 @@ public class App implements Parcelable
 	private String activityName;
 
 	private transient ResolveInfo resInf = null;
+	private transient LauncherActivityInfo launcherActivityInfo = null;
 	private transient Intent launchIntent = null;
+	/** null = the personal profile; set = the (work) profile this app lives in. */
+	private UserHandle user = null;
+	/** The profile's stable serial number; -1 for the personal profile. */
+	private long userSerial = -1;
 	private boolean labelLoaded = false;
 	private boolean iconLoaded = false;
 	private boolean launchAllowedInCustomiseMode = false;
@@ -58,12 +67,44 @@ public class App implements Parcelable
 	{
 		this(context, appManager, resInf);
 
-		final String packageAndActivityName = this.getPackageAndActivityName();
-		final String label = appLabelCache.get(packageAndActivityName);
+		this.loadFromCaches(appLabelCache, iconCache);
+	}
+
+	/**
+	 * An app in another profile (e.g. the work profile), as returned by
+	 * LauncherApps. Apps in the personal profile keep the ResolveInfo path.
+	 */
+	public App (Context context, AppManager appManager, LauncherActivityInfo launcherActivityInfo)
+	{
+		this.context = context;
+		this.appManager = appManager;
+		this.launcherActivityInfo = launcherActivityInfo;
+
+		this.packageName = launcherActivityInfo.getComponentName ().getPackageName ();
+		this.activityName = launcherActivityInfo.getComponentName ().getClassName ();
+
+		if (! Process.myUserHandle ().equals (launcherActivityInfo.getUser ())) {
+			this.user = launcherActivityInfo.getUser ();
+			this.userSerial = Workspaces.serialOf (context, this.user);
+		}
+	}
+
+	public App(final Context context, final AppManager appManager,
+			   final LauncherActivityInfo launcherActivityInfo,
+			   final ICache<String> appLabelCache, final ICache<Drawable> iconCache)
+	{
+		this(context, appManager, launcherActivityInfo);
+
+		this.loadFromCaches(appLabelCache, iconCache);
+	}
+
+	private void loadFromCaches(final ICache<String> appLabelCache, final ICache<Drawable> iconCache) {
+		final String key = this.getWorkspaceScopedKey();
+		final String label = appLabelCache.get(key);
 		if (label != null) {
 			this.label = label;
 		}
-		final Drawable icon = iconCache.get(packageAndActivityName);
+		final Drawable icon = iconCache.get(key);
 		if (icon != null) {
 			this.icon = new AppIcon(icon);
 		}
@@ -110,6 +151,8 @@ public class App implements Parcelable
 		this.launchAllowedInCustomiseMode = parcel.readInt () != 0;
 		this.internalShortcut = parcel.readInt () != 0;
 		this.launchForResultRequestCode = parcel.readInt ();
+		this.user = parcel.readParcelable (UserHandle.class.getClassLoader ());
+		this.userSerial = parcel.readLong ();
 
 		if (this.internalShortcut) {
 			// No NEW_TASK flag: the target shares the home task's affinity, so
@@ -141,6 +184,17 @@ public class App implements Parcelable
 					return;
 				}
 			}
+			else if (this.user != null) {
+				// Apps in another profile cannot be started with a regular intent;
+				// LauncherApps starts them in their own profile //
+				final LauncherApps launcherApps =
+						(LauncherApps) this.context.getSystemService (Context.LAUNCHER_APPS_SERVICE);
+				launcherApps.startMainActivity (
+						new ComponentName (this.packageName, this.activityName),
+						this.user, null, null);
+
+				return;
+			}
 			else {
 				final ComponentName compName = new ComponentName(this.packageName, this.activityName);
 				intent = new Intent(Intent.ACTION_MAIN);
@@ -168,12 +222,14 @@ public class App implements Parcelable
 
 		App app = (App) obj;
 
-		return (this.getPackageName ().equals (app.getPackageName ()) && this.getActivityName ().equals (app.getActivityName ()));
+		return (this.getPackageName ().equals (app.getPackageName ())
+				&& this.getActivityName ().equals (app.getActivityName ())
+				&& Objects.equals (this.user, app.user));
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.packageName, this.activityName);
+		return Objects.hash(this.packageName, this.activityName, this.user);
 	}
 
 	//# Getters & Setters #//
@@ -185,6 +241,12 @@ public class App implements Parcelable
 		if (this.label == null || (!this.labelLoaded && !useCached)) {
 			if (this.resInf != null) {
 				this.label = this.resInf.activityInfo.loadLabel(this.getPackageManager()).toString();
+				this.labelLoaded = true;
+			} else if (this.launcherActivityInfo != null) {
+				// loadLabel rather than LauncherActivityInfo.getLabel(): the same
+				// label source the ResolveInfo path uses for personal-profile apps //
+				this.label = this.launcherActivityInfo.getActivityInfo()
+						.loadLabel(this.getPackageManager()).toString();
 				this.labelLoaded = true;
 			} else {
 				Log.getInstance().w("App", format("getLabel called on internal shortcut %s/%s with no label set",
@@ -205,8 +267,8 @@ public class App implements Parcelable
 		this.label = label;
 		this.labelLoaded = true;
 
-		if (!Objects.equals(old, label) || !appLabelCache.containsKey(this.getPackageAndActivityName())) {
-			appLabelCache.put(this.getPackageAndActivityName(), label);
+		if (!Objects.equals(old, label) || !appLabelCache.containsKey(this.getWorkspaceScopedKey())) {
+			appLabelCache.put(this.getWorkspaceScopedKey(), label);
 
 			return true;
 		}
@@ -229,6 +291,12 @@ public class App implements Parcelable
 				icon = this.appManager.getIconPack().getFallbackIcon(this.loadFallbackIcon());
 			}
 
+			if (this.user != null && icon != null) {
+				// Work-profile badge on whichever icon won (icon pack or fallback) //
+				icon = new AppIcon (this.getPackageManager ()
+						.getUserBadgedIcon (icon.getDrawable (), this.user));
+			}
+
 			this.icon = icon;
 			this.iconLoaded = true;
 		}
@@ -242,6 +310,11 @@ public class App implements Parcelable
 			return this.resInf.loadIcon(this.getPackageManager());
 		}
 
+		if (this.launcherActivityInfo != null) {
+			// Unbadged: getIcon() applies the profile badge after icon-pack resolution //
+			return this.launcherActivityInfo.getIcon (0);
+		}
+
 		// Internal shortcuts have no ResolveInfo; use the application icon.
 		return this.context.getApplicationInfo ().loadIcon (this.getPackageManager ());
 	}
@@ -250,8 +323,8 @@ public class App implements Parcelable
 		this.icon = icon;
 		this.iconLoaded = true;
 
-		if (! appIconCache.containsKey(this.getPackageAndActivityName())) { // There's no proper way to check equality without comparing all pixels
-			appIconCache.put(this.getPackageAndActivityName(), icon.getDrawable());
+		if (! appIconCache.containsKey(this.getWorkspaceScopedKey())) { // There's no proper way to check equality without comparing all pixels
+			appIconCache.put(this.getWorkspaceScopedKey(), icon.getDrawable());
 
 			return true;
 		}
@@ -294,6 +367,29 @@ public class App implements Parcelable
 				.toString();
 	}
 
+	/**
+	 * The profile this app lives in; null for the personal profile. The same
+	 * package can be installed in several profiles, so anything that
+	 * identifies an app across profiles must combine this with the
+	 * package/activity name (see {@link #getWorkspaceScopedKey()}).
+	 */
+	public UserHandle getUser ()
+	{
+		return this.user;
+	}
+
+	/**
+	 * Identity key including the profile: equal to
+	 * {@link #getPackageAndActivityName()} for personal-profile apps (so
+	 * existing persisted keys and caches keep matching), with the profile's
+	 * serial number appended for apps in other profiles.
+	 */
+	public String getWorkspaceScopedKey() {
+		final String key = this.getPackageAndActivityName();
+
+		return this.user == null ? key : key + "\n" + this.userSerial;
+	}
+
 	public AppManager getAppManager ()
 	{
 		return appManager;
@@ -325,6 +421,8 @@ public class App implements Parcelable
 		dest.writeInt (this.launchAllowedInCustomiseMode ? 1 : 0);
 		dest.writeInt (this.internalShortcut ? 1 : 0);
 		dest.writeInt (this.launchForResultRequestCode);
+		dest.writeParcelable (this.user, flags);
+		dest.writeLong (this.userSerial);
 	}
 
 	public static final Parcelable.Creator<App> CREATOR = new Parcelable.Creator <App> ()

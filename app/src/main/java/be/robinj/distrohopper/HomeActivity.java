@@ -7,8 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.LauncherApps;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.core.graphics.Insets;
@@ -32,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.robinj.distrohopper.broadcast.PackageManagerBroadcastReceiver;
+import be.robinj.distrohopper.broadcast.WorkProfileAppsCallback;
 import be.robinj.distrohopper.cache.AppIconCache;
 import be.robinj.distrohopper.cache.AppLabelCache;
 import be.robinj.distrohopper.cache.ExpiringCache;
@@ -93,6 +97,7 @@ public class HomeActivity extends AppCompatActivity
 	private WallpaperColourApplier wallpaperColourApplier;
 
 	private PackageManagerBroadcastReceiver broadcastPackageManager;
+	private WorkProfileAppsCallback workProfileAppsCallback;
 
 	private LogToaster logToaster;
 
@@ -153,7 +158,6 @@ public class HomeActivity extends AppCompatActivity
 			final be.robinj.distrohopper.desktop.launcher.AppLauncher lalPreferences = this.viewFinder.get(llLauncher, R.id.lalPreferences);
 			final be.robinj.distrohopper.desktop.launcher.AppLauncher lalTrash = this.viewFinder.get(llLauncher, R.id.lalTrash);
 			this.llDash = this.viewFinder.get(llLauncherAndDashContainer, R.id.llDash);
-			final GridView gvDashHomeApps = this.viewFinder.get(this.llDash, R.id.gvDashHomeApps);
 			final Wallpaper wpWallpaper = this.viewFinder.get(R.id.wpWallpaper);
 			final LinearLayout llPanel = this.viewFinder.get(R.id.llPanel);
 			final ImageButton ibPanelDashClose = this.viewFinder.get(llPanel, R.id.ibPanelDashClose);
@@ -286,7 +290,7 @@ public class HomeActivity extends AppCompatActivity
 
 			// Start loading: wallpaper, apps, then label/icon caches //
 			this.startupLoader = new StartupLoader (this, container.getDispatchers ());
-			this.startupLoader.start (wpWallpaper, lalSpinner, lalBfb, gvDashHomeApps,
+			this.startupLoader.start (wpWallpaper, lalSpinner, lalBfb,
 					this.appLabelCache, this.appIconCache, density,
 					prefs.getInt (Preference.DASHICON_WIDTH.getName(), Preference.DASHICON_WIDTH.getDefault()));
 		}
@@ -487,6 +491,13 @@ public class HomeActivity extends AppCompatActivity
 			this.broadcastPackageManager = null;
 		}
 
+		if (this.workProfileAppsCallback != null)
+		{
+			((LauncherApps) this.getSystemService (Context.LAUNCHER_APPS_SERVICE))
+					.unregisterCallback (this.workProfileAppsCallback);
+			this.workProfileAppsCallback = null;
+		}
+
 		super.onDestroy ();
 	}
 
@@ -601,6 +612,13 @@ public class HomeActivity extends AppCompatActivity
 			ifPackageManager.addDataScheme ("package");
 
 			this.registerReceiver (this.broadcastPackageManager, ifPackageManager);
+
+			// Package broadcasts only cover the personal profile; work-profile
+			// installs/removals arrive through LauncherApps callbacks instead //
+			this.workProfileAppsCallback = new WorkProfileAppsCallback (this);
+			((LauncherApps) this.getSystemService (Context.LAUNCHER_APPS_SERVICE))
+					.registerCallback (this.workProfileAppsCallback,
+							new Handler (Looper.getMainLooper ()));
 		}
 		catch (Exception ex)
 		{
