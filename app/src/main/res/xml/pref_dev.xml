@@ -18,8 +18,7 @@
 	<Preference
 		android:key="dummy_clear_cache"
 		android:dependency="dev"
-		android:title="@string/option_clear_cache"
-		android:summary="@string/hint_clear_cache" />
+		android:title="@string/option_clear_cache" />
 
 	<SwitchPreferenceCompat
 		android:key="dev_widget_resize_any"
