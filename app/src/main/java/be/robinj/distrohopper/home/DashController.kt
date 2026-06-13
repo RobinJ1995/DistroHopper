@@ -17,6 +17,7 @@ import be.robinj.distrohopper.ViewFinder
 import be.robinj.distrohopper.desktop.Wallpaper
 import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.preferences.PreferencesRepository
+import be.robinj.distrohopper.theme.Gnome
 import be.robinj.distrohopper.theme.Theme
 import java.util.function.Consumer
 
@@ -37,6 +38,10 @@ class DashController(
 	private val theme: Theme,
 	private val prefs: PreferencesRepository,
 ) {
+	private companion object {
+		private const val GNOME_LAUNCHER_BACKGROUND_DASH_OPEN_ALPHA = 210
+	}
+
 	var isOpen: Boolean = false
 		private set
 
@@ -225,6 +230,8 @@ class DashController(
 			this.panelFade.animateTo(dashOpened = true, duration)
 			this.statusBarFade.animateTo(dashOpened = true, duration)
 		}
+
+		this.applyLauncherBackgroundDashOpenedAlpha()
 	}
 
 	/** Hides the dash and restores the overlays once a close has settled. */
@@ -258,8 +265,32 @@ class DashController(
 			this.statusBarFade.animateTo(dashOpened = false, duration)
 		}
 
+		this.restoreLauncherBackgroundAlpha()
+
 		val imm = this.activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
 		imm?.hideSoftInputFromWindow(
 			this.activity.window.decorView.rootView.windowToken, 0)
+	}
+
+	private fun applyLauncherBackgroundDashOpenedAlpha() {
+		if (this.theme !is Gnome) {
+			return
+		}
+
+		this.viewFinder.get<LinearLayout>(R.id.llLauncher)
+			.background
+			?.mutate()
+			?.alpha = GNOME_LAUNCHER_BACKGROUND_DASH_OPEN_ALPHA
+	}
+
+	private fun restoreLauncherBackgroundAlpha() {
+		if (this.theme !is Gnome) {
+			return
+		}
+
+		this.viewFinder.get<LinearLayout>(R.id.llLauncher)
+			.background
+			?.mutate()
+			?.alpha = 255
 	}
 }
