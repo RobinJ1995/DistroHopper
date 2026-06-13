@@ -46,7 +46,7 @@ class FDroidTest {
             app("Meshenger", "d.d.meshenger", "https://icons.example/meshenger.png"),
         ))
 
-        val results = lens.search("messenger", 10)
+        val results = lens.collect("messenger", 10).results
 
         assertEquals(listOf("Wire • Secure Messenger", "Meshenger"), results.map { it.name })
         assertEquals(
@@ -63,7 +63,7 @@ class FDroidTest {
             app("Wire", "com.wire", "https://icons.example/wire.png"),
         ))
 
-        lens.search("wire", 10)
+        lens.collect("wire", 10).results
 
         assertEquals(listOf("https://icons.example/wire.png"), lens.requestedIconUrls)
     }
@@ -75,7 +75,7 @@ class FDroidTest {
             app("Three", "com.example.three", "https://icons.example/3.png"),
         ))
 
-        assertEquals(2, lens.search("app", 2).size)
+        assertEquals(2, lens.collect("app", 2).results.size)
     }
 
     @Test fun hidesInstalledApps() {
@@ -87,13 +87,13 @@ class FDroidTest {
             app("Meshenger", "d.d.meshenger", "https://icons.example/meshenger.png"),
         ))
 
-        assertEquals(listOf("Meshenger"), lens.search("messenger", 10).map { it.name })
+        assertEquals(listOf("Meshenger"), lens.collect("messenger", 10).results.map { it.name })
     }
 
     @Test fun returnsEmptyWhenNothingMatches() {
         val lens = FakeFDroid(application, """{"apps":[]}""")
 
-        assertTrue(lens.search("zzzznope", 10).isEmpty())
+        assertTrue(lens.collect("zzzznope", 10).results.isEmpty())
     }
 
     @Test fun clickTargetsTheFDroidClient() {

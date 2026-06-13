@@ -34,8 +34,8 @@ open class GooglePlayStore(context: Context) : AppStoreLens(context) {
     override fun getDescription(): String = "Google Play Store app search results"
 
     @Throws(IOException::class, JSONException::class)
-    override fun search(str: String, maxResults: Int): List<LensSearchResult> {
-        val html = fetchSearchHtml(api.replace("{:QUERY:}", URLEncoder.encode(str, "UTF-8")))
+    override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {
+        val html = fetchSearchHtml(api.replace("{:QUERY:}", URLEncoder.encode(query, "UTF-8")))
 
         // packageName -> app, in first-seen order.
         val apps = LinkedHashMap<String, AppResult>()
@@ -52,23 +52,21 @@ open class GooglePlayStore(context: Context) : AppStoreLens(context) {
             }
         }
 
-        val results = ArrayList<LensSearchResult>()
+        var emitted = 0
 
         for (app in apps.values) {
             if (isInstalled(app.packageName)) {
                 continue
             }
 
-            results.add(
+            emitter.emit(
                 LensSearchResult(context, app.title, "market://details?id=${app.packageName}", iconFor(app.iconUrl))
             )
 
-            if (results.size >= maxResults) {
+            if (++emitted >= maxResults) {
                 break
             }
         }
-
-        return results
     }
 
     /**
@@ -177,10 +175,10 @@ open class GooglePlayStore(context: Context) : AppStoreLens(context) {
                     "market://details?id=",
                     "https://play.google.com/store/apps/details?id=",
                 )
-                super.onClick(web)
+                openInBrowser(web)
             }
         } else {
-            super.onClick(url)
+            openInBrowser(url)
         }
     }
 

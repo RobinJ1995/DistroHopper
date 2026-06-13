@@ -3,6 +3,7 @@ package be.robinj.distrohopper.desktop.dash.lens
 import android.app.Application
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -21,12 +22,12 @@ class LensTest {
     }
 
     @Test fun searchWithoutLimitUsesDefaultTwenty() {
-        lens.search("query")
+        runBlocking { lens.search("query", RecordingEmitter()) }
         assertEquals(20, lens.lastMaxResults)
     }
 
     @Test fun explicitSearchLimitIsForwarded() {
-        lens.search("query", 3)
+        runBlocking { lens.search("query", 3, RecordingEmitter()) }
         assertEquals(3, lens.lastMaxResults)
     }
 
@@ -57,15 +58,17 @@ class LensTest {
         lens.onLongClick("https://example.com", null, null); assertNotNull(Shadows.shadowOf(application).nextStartedActivity)
     }
 
-    @Test fun defaultMinimumSdkIsMinusOne() = assertEquals(-1, lens.minSDKVersion)
+    @Test fun defaultMinimumSdkIsMinusOne() = assertEquals(-1, lens.getMinSDKVersion())
 
     private class RecordingLens(context: android.content.Context) : Lens(context) {
         var lastMaxResults = -1
-        override fun search(str: String, maxResults: Int): List<LensSearchResult> {
+        override val type = LensType.NETWORK
+        override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {
             lastMaxResults = maxResults
-            return emptyList()
         }
         override fun getName() = "Recording"
         override fun getDescription() = "Test lens"
+        // A bare web lens: clicking a result opens it in the browser //
+        override fun onClick(url: String) = openInBrowser(url)
     }
 }

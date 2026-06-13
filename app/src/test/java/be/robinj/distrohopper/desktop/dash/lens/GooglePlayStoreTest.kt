@@ -52,7 +52,7 @@ class GooglePlayStoreTest {
             appNode("Telegram", "org.telegram.messenger", "https://play-lh.googleusercontent.com/telegram"),
         ))
 
-        val results = lens.search("messenger", 10)
+        val results = lens.collect("messenger", 10).results
 
         assertEquals(listOf("WhatsApp Messenger", "Telegram"), results.map { it.name })
         assertEquals(
@@ -69,7 +69,7 @@ class GooglePlayStoreTest {
             appNode("AIDE", "com.aide.ui", "https://play-lh.googleusercontent.com/aide"),
         ))
 
-        val results = lens.search("x", 10)
+        val results = lens.collect("x", 10).results
 
         assertEquals(listOf("X", "AIDE"), results.map { it.name })
     }
@@ -79,7 +79,7 @@ class GooglePlayStoreTest {
             appNode("WhatsApp Messenger", "com.whatsapp", "https://play-lh.googleusercontent.com/whatsapp"),
         ))
 
-        lens.search("whatsapp", 10)
+        lens.collect("whatsapp", 10).results
 
         // The real app icon URL is used (with a small size hint), not the lens icon.
         assertEquals(1, lens.requestedIconUrls.size)
@@ -92,7 +92,7 @@ class GooglePlayStoreTest {
             appNode("WhatsApp Messenger", "com.whatsapp", "https://play-lh.googleusercontent.com/whatsapp2"),
         ))
 
-        val results = lens.search("whatsapp", 10)
+        val results = lens.collect("whatsapp", 10).results
 
         assertEquals(1, results.size)
     }
@@ -104,7 +104,7 @@ class GooglePlayStoreTest {
             appNode("App Three", "com.example.three", "https://play-lh.googleusercontent.com/three"),
         ))
 
-        val results = lens.search("app", 2)
+        val results = lens.collect("app", 2).results
 
         assertEquals(2, results.size)
     }
@@ -118,13 +118,13 @@ class GooglePlayStoreTest {
             appNode("Telegram", "org.telegram.messenger", "https://play-lh.googleusercontent.com/telegram"),
         ))
 
-        assertEquals(listOf("Telegram"), lens.search("messenger", 10).map { it.name })
+        assertEquals(listOf("Telegram"), lens.collect("messenger", 10).results.map { it.name })
     }
 
     @Test fun returnsEmptyWhenNothingParses() {
         val lens = FakeGooglePlayStore(application, "<html>no embedded app data here</html>")
 
-        val results = lens.search("obscure query", 10)
+        val results = lens.collect("obscure query", 10).results
 
         // No results is no results: no fallback tile, no icon downloads.
         assertTrue(results.isEmpty())

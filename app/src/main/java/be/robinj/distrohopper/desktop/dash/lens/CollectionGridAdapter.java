@@ -54,11 +54,11 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 		tvLabel.setTextColor (view.getResources ().getColor (theme.dash_applauncher_text_colour));
 		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (theme.dash_applauncher_text_shadow_colour));
 
+		final Exception ex = coll.getResults () == null ? coll.getException () : null;
 		List<LensSearchResult> results = coll.getResults ();
 		if (results == null)
 		{
 			results = new ArrayList<LensSearchResult> ();
-			Exception ex = coll.getException ();
 
 			if (ex != null)
 			{
@@ -71,7 +71,7 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 						show = false;
 				}
 
-				LensSearchResult error = new LensSearchResult (this.getContext (), ex.getClass ().getSimpleName (), "error://" + ex.getMessage (), this.getContext ().getResources ().getDrawable (R.drawable.dash_search_lens_error));
+				LensSearchResult error = new LensSearchResult (this.getContext (), ex.getClass ().getSimpleName (), "", this.getContext ().getResources ().getDrawable (R.drawable.dash_search_lens_error));
 
 				results.add (error);
 			}
@@ -80,8 +80,18 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 		if (show)
 		{
 			gvResults.setAdapter (new GridAdapter (this.getContext (), results, this.displayDensity, this.dashIconWidth));
-			gvResults.setOnItemClickListener (new LensSearchResultClickListener (coll.getLens ()));
-			gvResults.setOnItemLongClickListener (new LensSearchResultLongClickListener (coll.getLens ()));
+
+			if (ex != null)
+			{
+				// The synthetic error tile shows the failure dialog when tapped //
+				final Lens lens = coll.getLens ();
+				gvResults.setOnItemClickListener ((parent2, view2, position2, id2) -> lens.showError (ex.getMessage ()));
+			}
+			else
+			{
+				gvResults.setOnItemClickListener (new LensSearchResultClickListener (coll.getLens ()));
+				gvResults.setOnItemLongClickListener (new LensSearchResultLongClickListener (coll.getLens ()));
+			}
 
 			view.setVisibility (View.VISIBLE);
 		}

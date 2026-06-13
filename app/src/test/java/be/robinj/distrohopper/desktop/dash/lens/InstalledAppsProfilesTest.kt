@@ -16,7 +16,7 @@ import org.robolectric.annotation.LooperMode
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.LEGACY)
 class InstalledAppsProfilesTest {
-	@Test fun resultsAreSplitIntoOneCollectionPerProfile() {
+	@Test fun resultsAreSplitIntoOneSectionPerProfile() {
 		val workUser = ActivityTestSupport.addWorkProfile()
 		ActivityTestSupport.addWorkProfileApp(
 			workUser, "com.example.work", "AlphaWorkActivity", "Alpha Work")
@@ -25,22 +25,21 @@ class InstalledAppsProfilesTest {
 			scenario.onActivity { activity ->
 				val lens = InstalledApps(activity, activity.appManager)
 
-				val collections = lens.searchCollections("alpha", 10)
+				val sections = lens.collect("alpha", 10).sections
 
-				assertEquals(2, collections.size)
-				assertEquals("Installed apps (Personal)", collections[0].name)
-				assertEquals("Installed apps (Work)", collections[1].name)
-				assertEquals(listOf("Alpha"), collections[0].results.map { it.name })
-				assertEquals(listOf("Alpha Work"), collections[1].results.map { it.name })
+				assertEquals(listOf("Installed apps (Personal)", "Installed apps (Work)"),
+					sections.keys.toList())
+				assertEquals(listOf("Alpha"), sections["Installed apps (Personal)"]!!.map { it.name })
+				assertEquals(listOf("Alpha Work"), sections["Installed apps (Work)"]!!.map { it.name })
 
 				// Tapping a result launches the right profile's app //
-				val workResult = collections[1].results.single()
+				val workResult = sections["Installed apps (Work)"]!!.single()
 				assertEquals(workUser, (workResult.obj as App).user)
 			}
 		}
 	}
 
-	@Test fun profilesWithoutMatchesGetNoCollection() {
+	@Test fun profilesWithoutMatchesGetNoSection() {
 		val workUser = ActivityTestSupport.addWorkProfile()
 		ActivityTestSupport.addWorkProfileApp(
 			workUser, "com.example.work", "WorkChatActivity", "WorkChat")
@@ -49,24 +48,22 @@ class InstalledAppsProfilesTest {
 			scenario.onActivity { activity ->
 				val lens = InstalledApps(activity, activity.appManager)
 
-				val collections = lens.searchCollections("alpha", 10)
+				val sections = lens.collect("alpha", 10).sections
 
-				assertEquals(1, collections.size)
-				assertEquals("Installed apps (Personal)", collections[0].name)
+				assertEquals(listOf("Installed apps (Personal)"), sections.keys.toList())
 			}
 		}
 	}
 
-	@Test fun aSingleProfileKeepsTheSingleUnsuffixedCollection() {
+	@Test fun aSingleProfileKeepsTheSingleUnsuffixedSection() {
 		ActivityTestSupport.launchHome().use { scenario ->
 			scenario.onActivity { activity ->
 				val lens = InstalledApps(activity, activity.appManager)
 
-				val collections = lens.searchCollections("alpha", 10)
+				val sections = lens.collect("alpha", 10).sections
 
-				assertEquals(1, collections.size)
-				assertEquals("Installed apps", collections[0].name)
-				assertTrue(collections[0].results.isNotEmpty())
+				assertEquals(listOf("Installed apps"), sections.keys.toList())
+				assertTrue(sections["Installed apps"]!!.isNotEmpty())
 			}
 		}
 	}
