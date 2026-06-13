@@ -32,7 +32,8 @@ class CollectionGridAdapterTest {
 	@After fun tearDown() { scenario.close() }
 
 	private class StubLens(context: Context) : Lens(context) {
-		override fun search(str: String, maxResults: Int): List<LensSearchResult> = emptyList()
+		override val type = LensType.NETWORK
+		override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {}
 		override fun getName() = "Stub lens"
 		override fun getDescription() = "Test lens"
 	}
@@ -72,7 +73,10 @@ class CollectionGridAdapterTest {
 			val gvResults = view.findViewById<GridView>(R.id.gvResults)
 			assertEquals(1, gvResults.adapter.count)
 			val error = gvResults.adapter.getItem(0) as LensSearchResult
-			assertTrue(error.url.startsWith("error://"))
+			// The synthetic error tile is titled by the exception class //
+			assertEquals("RuntimeException", error.name)
+			// Tapping it shows the failure dialog rather than navigating //
+			assertNotNull(gvResults.onItemClickListener)
 		}
 	}
 

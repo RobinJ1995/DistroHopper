@@ -51,7 +51,7 @@ class LocalFilesTest {
 
     @Test fun searchReturnsResultsFromMediaStore() {
         provider.cursorToReturn = mediaCursor(1L to "notes.txt", 2L to "notes2.txt")
-        val results = lens.search("notes", 10)
+        val results = lens.collect("notes", 10).results
         assertEquals(2, results.size)
         assertEquals("notes.txt", results[0].name)
         assertEquals("notes2.txt", results[1].name)
@@ -59,27 +59,27 @@ class LocalFilesTest {
 
     @Test fun searchReturnsEmptyListWhenQueryFails() {
         provider.cursorToReturn = null
-        val results = lens.search("anything", 10)
+        val results = lens.collect("anything", 10).results
         assertTrue(results.isEmpty())
     }
 
     @Test fun searchClosesCursor() {
         val cursor = mediaCursor(1L to "notes.txt")
         provider.cursorToReturn = cursor
-        lens.search("notes", 10)
+        lens.collect("notes", 10).results
         assertTrue(cursor.isClosed)
     }
 
     @Test fun searchClosesCursorWhenNoResults() {
         val cursor = mediaCursor()
         provider.cursorToReturn = cursor
-        lens.search("nothing", 10)
+        lens.collect("nothing", 10).results
         assertTrue(cursor.isClosed)
     }
 
     @Test fun searchUsesSelectionArgsInsteadOfStringConcatenation() {
         provider.cursorToReturn = mediaCursor()
-        lens.search("o'brien", 10)
+        lens.collect("o'brien", 10).results
         assertNotNull(provider.lastSelection)
         assertTrue(provider.lastSelection!!.contains("?"))
         assertFalse(provider.lastSelection!!.contains("o'brien"))
@@ -89,13 +89,13 @@ class LocalFilesTest {
 
     @Test fun searchRespectsMaxResults() {
         provider.cursorToReturn = mediaCursor(1L to "a.txt", 2L to "b.txt", 3L to "c.txt", 4L to "d.txt")
-        val results = lens.search("txt", 2)
+        val results = lens.collect("txt", 2).results
         assertEquals(2, results.size)
     }
 
     @Test fun resultUrlIsAContentUriForTheMediaStoreEntry() {
         provider.cursorToReturn = mediaCursor(42L to "notes.txt")
-        val results = lens.search("notes", 10)
+        val results = lens.collect("notes", 10).results
         val uri = Uri.parse(results[0].url)
         assertEquals("content", uri.scheme)
         assertEquals("42", uri.lastPathSegment)
@@ -125,7 +125,7 @@ class LocalFilesTest {
 
     @Test fun searchPassesSortOrderDateModifiedDesc() {
         provider.cursorToReturn = mediaCursor()
-        lens.search("txt", 10)
+        lens.collect("txt", 10).results
         assertNotNull(provider.lastSortOrder)
         assertTrue(provider.lastSortOrder!!.contains(MediaStore.Files.FileColumns.DATE_MODIFIED))
         assertTrue(provider.lastSortOrder!!.uppercase().contains("DESC"))
@@ -133,7 +133,7 @@ class LocalFilesTest {
 
     @Test fun searchUsesDisplayNameColumnNotTitle() {
         provider.cursorToReturn = mediaCursor()
-        lens.search("notes", 10)
+        lens.collect("notes", 10).results
         assertNotNull(provider.lastSelection)
         assertTrue(provider.lastSelection!!.contains(MediaStore.Files.FileColumns.DISPLAY_NAME))
         assertFalse(provider.lastSelection!!.contains(MediaStore.Files.FileColumns.TITLE))
@@ -144,7 +144,7 @@ class LocalFilesTest {
             Triple(1L, ".hidden", null),
             Triple(2L, "visible.txt", null),
         )
-        val results = lens.search("", 10)
+        val results = lens.collect("", 10).results
         assertEquals(1, results.size)
         assertEquals("visible.txt", results[0].name)
     }

@@ -245,15 +245,33 @@ etc/                                        — design assets (SVG/XCF sources, 
     swipe-to-close.
   - **`desktop/dash/lens/`** — search "lenses": pluggable search providers
     (`InstalledApps`, `LocalFiles`, `DuckDuckGo`, `GitHub`, …) coordinated
-    by `LensManager` with `AsyncSearch` and
-    result/collection adapters. A lens can declare `requiredPermissions()`;
-    lenses missing any of them are left out of the default-enabled set, and
-    enabling one in the preferences re-requests them. A lens returns its
-    results as one or more named `LensSearchResultCollection`s (sections)
-    via `searchCollections()` — the default wraps `search()` in a single
-    collection; `InstalledApps` overrides it to return one per profile
-    when a work profile exists, while remaining a single lens in the
-    preferences.
+    by `LensManager` and run by `home/SearchLoader` (a coroutine runner on the
+    activity's lifecycleScope, like `StartupLoader`; it replaced the old
+    `AsyncSearch` AsyncTask). `Lens` is a Kotlin abstract class. A lens can
+    declare `requiredPermissions()`; lenses missing any of them are left out of
+    the default-enabled set, and enabling one in the preferences re-requests
+    them.
+    Every lens streams its results progressively: `suspend search(query,
+    maxResults, emitter)` pushes each `LensSearchResult` through a
+    `LensResultEmitter` the moment it is fully ready (icon and all — no
+    placeholders), so e.g. `DuckDuckGo` emits each result as its icon finishes
+    rather than after the slowest one. Results group into named sections
+    (`LensSearchResultCollection`); the emitter's `emit(result)` uses the
+    lens-named default section, while `emit(sectionName, result)` groups into
+    several — `InstalledApps` emits one section per profile (personal/work)
+    while remaining a single lens in the preferences.
+    Lenses are still searched strictly one after another (parallel fan-out is
+    too expensive), but `Lens.type` (`LensType` `LOCAL`|`IO`|`NETWORK`, an
+    abstract property each lens declares) drives scheduling: `LOCAL` lenses
+    (`InstalledApps`) run on every keystroke so installed apps appear instantly,
+    while `IO` (`LocalFiles`) and `NETWORK` lenses run only after a short
+    debounce so bursts of typing don't hit them.
+    Click handling lives within each lens: `Lens.onClick` does nothing by
+    default and lenses override it to launch an app (`InstalledApps`), open a
+    file (`LocalFiles`), a store page (`FDroid`/`GooglePlayStore`), or a web link
+    (`DuckDuckGo`/`GitHub`, via the `openInBrowser` helper). A failed search is
+    rendered by `CollectionGridAdapter` as a synthetic error tile that shows the
+    failure dialog (`Lens.showError`) when tapped.
 - **`onboarding/`** — the first-run wizard. `OnboardingActivity` is a
   full-screen ViewPager2 pager (theme choice, runtime permission prompts,
   set-as-default-home via `RoleManager.ROLE_HOME`) shown over the wallpaper
@@ -283,10 +301,14 @@ etc/                                        — design assets (SVG/XCF sources, 
   programmatically with `PreferenceScreen`/categories), plus dedicated
   activities for lens ordering (`LensPreferencesActivity`) and theme
   selection (`ThemePreferencesActivity`, card UI shared with the wizard via
-  `theme/ThemeCards`). `PreferencesRepository` provides
-  typed and observable (`valueFlow`, a Kotlin `Flow`) access to the main
-  "prefs" file keyed by the `Preference` enum — prefer it over raw
-  `SharedPreferences` in new code.
+  `theme/ThemeCards`). Developer-only options live in `pref_dev.xml` and are
+  gated by the `dev` preference; they include one-shot maintenance actions
+  (clear the app label/icon caches, rerun onboarding, queue default pins) and
+  debug toggles such as log toasts and unrestricted widget resizing; toggles
+  under this section are cleared when developer mode is switched off.
+  `PreferencesRepository` provides typed and observable (`valueFlow`, a
+  Kotlin `Flow`) access to the main "prefs" file keyed by the `Preference`
+  enum — prefer it over raw `SharedPreferences` in new code.
 - **`theme/`** — one class per supported desktop look (`Default`, `Gnome`,
   `Elementary`, `Cinnamon`, `Plasma`, `Mate`, `Cosmic`, `Budgie`), each
   extending the abstract `Theme` (which lists every themeable field and maps
@@ -338,8 +360,9 @@ etc/                                        — design assets (SVG/XCF sources, 
   shown; drops and moves stay within it. Long-pressing a widget puts its
   `WidgetContainer` into
   edit mode: edge handles resize by touch (clamped to the provider's
-  `min`/`maxResize*` limits and `resizeMode`, with a snap-indicator line
-  drawn by `WidgetsContainer`), while dragging the body uses the system
+  `min`/`maxResize*` limits and `resizeMode`, unless the developer-only
+  unrestricted widget resizing preference is enabled, with a snap-indicator
+  line drawn by `WidgetsContainer`), while dragging the body uses the system
   drag-and-drop framework (`WidgetsContainer_DragListener`) and shares the
   launcher's drag-to-trash mechanism. The free-moving system drag shadow is
   accompanied by a snapped landing indicator drawn on `WidgetsContainer`;
@@ -352,8 +375,8 @@ etc/                                        — design assets (SVG/XCF sources, 
   `DispatcherProvider`; `home/AppsLoader` holds the blocking halves. Tests
   swap the IO dispatcher for `Dispatchers.Unconfined` via
   `ActivityTestSupport.installTestDispatchers()` so `drainTasks()` is
-  deterministic. (`desktop/dash/lens/AsyncSearch` is the one remaining
-  `AsyncTask`.)
+  deterministic. `home/SearchLoader` runs dash searches the same way (see the
+  lens section above); no `AsyncTask`s remain.
 - **`broadcast/`** — `PackageManagerBroadcastReceiver`: reacts to app
   install/uninstall to keep `AppManager` current. Package broadcasts only
   cover the personal profile, so `WorkProfileAppsCallback` (a
