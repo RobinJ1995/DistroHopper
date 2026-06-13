@@ -9,7 +9,6 @@ import be.robinj.distrohopper.R
 import be.robinj.distrohopper.cache.AppIconCache
 import be.robinj.distrohopper.cache.AppLabelCache
 import be.robinj.distrohopper.cache.ExpiringCache
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -111,7 +110,13 @@ class DevPreferenceTest {
 			}
 		}
 
-		assertEquals(0, labelCache.size)
-		assertEquals(0, iconCache.size)
+		val freshLabelCache = AppLabelCache(this.application)
+		val freshIconCache = ExpiringCache(
+			this.application,
+			AppIconCache(this.application),
+			AppIconCache.EXPIRATION,
+		)
+		assertFalse(freshLabelCache.containsKey("label-key"))
+		assertFalse(freshIconCache.containsKey("icon-key"))
 	}
 }

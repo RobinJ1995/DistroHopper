@@ -21,15 +21,21 @@ public enum Preference {
 	DEFAULT_PINS_PENDING("default_pins_pending"),
 	DEFAULT_PINS_AUTO_INELIGIBLE("default_pins_auto_ineligible"),
 	DEV("dev"),
-	DEV_LOG_TOASTER("dev_log_toaster"),
-	DEV_WIDGET_RESIZE_ANY("dev_widget_resize_any", false);
+	DEV_LOG_TOASTER("dev_log_toaster", null, true),
+	DEV_WIDGET_RESIZE_ANY("dev_widget_resize_any", false, true);
 
 	private final String name;
 	private final Object defaultValue;
+	private final boolean devChild;
 
-	Preference(final String name, final Object defaultValue) {
+	Preference(final String name, final Object defaultValue, final boolean devChild) {
 		this.name = name;
 		this.defaultValue = defaultValue;
+		this.devChild = devChild;
+	}
+
+	Preference(final String name, final Object defaultValue) {
+		this(name, defaultValue, false);
 	}
 
 	Preference(final String name) {
@@ -42,6 +48,10 @@ public enum Preference {
 
 	public <T> T getDefault() {
 		return (T) this.defaultValue;
+	}
+
+	public boolean isDevChild() {
+		return this.devChild;
 	}
 
 	@Override

@@ -36,7 +36,6 @@ import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.cache.AppIconCache;
 import be.robinj.distrohopper.cache.AppLabelCache;
-import be.robinj.distrohopper.cache.ExpiringCache;
 import be.robinj.distrohopper.home.DefaultPinnedApps;
 import be.robinj.distrohopper.onboarding.OnboardingGate;
 
@@ -285,34 +284,33 @@ public class PreferencesActivity extends AppCompatActivity
 
 		private void clearDevPreferences ()
 		{
-			final SwitchPreferenceCompat logToaster = this.findPreference (
-				be.robinj.distrohopper.preferences.Preference.DEV_LOG_TOASTER.getName ());
-			if (logToaster != null)
-				logToaster.setChecked (false);
+			final SharedPreferences.Editor editor = Preferences
+				.getSharedPreferences (this.requireContext ())
+				.edit ();
 
-			final SwitchPreferenceCompat widgetResize = this.findPreference (
-				be.robinj.distrohopper.preferences.Preference.DEV_WIDGET_RESIZE_ANY.getName ());
-			if (widgetResize != null)
-				widgetResize.setChecked (false);
+			for (final be.robinj.distrohopper.preferences.Preference devPref
+				: be.robinj.distrohopper.preferences.Preference.values ())
+			{
+				if (! devPref.isDevChild ())
+					continue;
 
-			// setChecked(false) keeps the visible switches in sync but persists
-			// false; remove afterwards so disabling developer mode truly clears
-			// developer-only state rather than saving disabled values. //
-			Preferences.getSharedPreferences (this.requireContext ())
-				.edit ()
-				.remove (be.robinj.distrohopper.preferences.Preference.DEV_LOG_TOASTER.getName ())
-				.remove (be.robinj.distrohopper.preferences.Preference.DEV_WIDGET_RESIZE_ANY.getName ())
-				.apply ();
+				final SwitchPreferenceCompat toggle = this.findPreference (devPref.getName ());
+				if (toggle != null)
+					toggle.setChecked (false);
+
+				// setChecked(false) keeps the visible switch in sync but persists
+				// false; remove afterwards so disabling developer mode truly clears
+				// developer-only state rather than saving disabled values. //
+				editor.remove (devPref.getName ());
+			}
+
+			editor.apply ();
 		}
 
 		private void clearAppCaches ()
 		{
 			new AppLabelCache (this.requireContext ().getApplicationContext ()).clear ();
-			new ExpiringCache<> (
-				this.requireContext ().getApplicationContext (),
-				new AppIconCache (this.requireContext ().getApplicationContext ()),
-				AppIconCache.EXPIRATION)
-				.clear ();
+			AppIconCache.clearAll (this.requireContext ().getApplicationContext ());
 		}
 
 		private void initLauncherPinModePreference ()
