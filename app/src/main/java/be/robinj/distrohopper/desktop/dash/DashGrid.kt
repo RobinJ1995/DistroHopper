@@ -46,7 +46,9 @@ object DashGrid {
 	/**
 	 * The number of columns to show for the current orientation. [n] is the
 	 * user's chosen cells across the short edge: portrait shows exactly [n],
-	 * landscape proportionally more so the square cells stay the same size.
+	 * landscape proportionally more so the square cells stay the same size —
+	 * capped at twice [n] so very wide screens don't shrink icons indefinitely
+	 * (the long edge never shows more than 2× the short edge's icons).
 	 */
 	@JvmStatic
 	fun dashColumns(shortEdgePx: Int, longEdgePx: Int, portrait: Boolean, n: Int): Int {
@@ -55,7 +57,7 @@ object DashGrid {
 			return cols
 		}
 
-		return max(cols, (n.toDouble() * longEdgePx / shortEdgePx).roundToInt())
+		return (n.toDouble() * longEdgePx / shortEdgePx).roundToInt().coerceIn(cols, 2 * cols)
 	}
 
 	/** Square cell size for [n] cells across [shortEdgePx]; a pre-layout fallback. */

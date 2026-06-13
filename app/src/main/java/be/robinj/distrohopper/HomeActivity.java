@@ -90,6 +90,7 @@ public class HomeActivity extends AppCompatActivity
 	LinearLayout llDash;
 
 	private StartupLoader startupLoader;
+	private CustomiseModeUi customiseModeUi;
 
 	private boolean openDashWhenReady = false;
 
@@ -316,13 +317,14 @@ public class HomeActivity extends AppCompatActivity
 
 			if (container.getCustomiseMode ().getValue ())
 			{
-				new CustomiseModeUi (this, this.viewFinder, this.theme, () ->
+				this.customiseModeUi = new CustomiseModeUi (this, this.viewFinder, this.theme, () ->
 				{
 					final Intent relaunchIntent = this.getIntent ();
 					relaunchIntent.putExtra ("customise", true);
 					this.finish ();
 					this.startActivity (relaunchIntent); // Reload activity //
-				}).show ();
+				});
+				this.customiseModeUi.show ();
 			}
 
 			// Start loading: wallpaper, apps, then label/icon caches //
@@ -561,6 +563,10 @@ public class HomeActivity extends AppCompatActivity
 		// WidgetsContainer layout. //
 		if (this.apps != null)
 			this.apps.applyDashColumns ();
+
+		// Keep the customise-mode grid-size hint in step with the new orientation //
+		if (this.customiseModeUi != null)
+			this.customiseModeUi.refreshDashGridHint ();
 	}
 
 	@Override

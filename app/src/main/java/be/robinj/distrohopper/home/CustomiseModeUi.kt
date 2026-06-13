@@ -10,6 +10,7 @@ import android.widget.SeekBar
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.view.ViewCompat
+import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.ViewFinder
 import be.robinj.distrohopper.desktop.dash.DashGrid
@@ -32,6 +33,8 @@ class CustomiseModeUi(
 	private val theme: Theme,
 	private val relaunchInCustomiseMode: Runnable,
 ) {
+	private var dashGridHint: TextView? = null
+
 	fun show() {
 		val res = this.activity.resources
 		val prefs = Preferences.getSharedPreferences(this.activity)
@@ -70,6 +73,7 @@ class CustomiseModeUi(
 		// Writing the preference is enough: HomeStateBinder re-applies it live //
 		val range = DashGrid.columnsRange(this.activity)
 		val dashGridHint = this.viewFinder.get<TextView>(R.id.tvCustomiseDashGridHint)
+		this.dashGridHint = dashGridHint
 		val sbCustomiseDashColumns = this.viewFinder.get<SeekBar>(R.id.sbCustomiseDashColumns)
 		sbCustomiseDashColumns.min = range.first
 		sbCustomiseDashColumns.max = range.last
@@ -128,20 +132,33 @@ class CustomiseModeUi(
 		}
 	}
 
+	/** Re-renders the grid-size hint; called on rotation while customising. */
+	fun refreshDashGridHint() {
+		this.dashGridHint?.let { this.updateDashGridHint(it) }
+	}
+
 	/**
-	 * Updates the "columns × rows" hint from the current preference, estimated
-	 * for the current orientation from the screen (the actual dash grid is
-	 * hidden while customising). See [DashGrid].
+	 * Updates the "columns × rows" hint. Columns are exact (orientation-aware,
+	 * via [DashGrid]); rows are how many fit the apps grid's real last-measured
+	 * viewport — which reflects the current theme and orientation, since the
+	 * grid itself is GONE while customising. Falls back to a screen estimate
+	 * before the grid has ever been laid out. See [DashGrid].
 	 */
 	private fun updateDashGridHint(hint: TextView) {
-		val dm = this.activity.resources.displayMetrics
-		val shortPx = min(dm.widthPixels, dm.heightPixels)
-		val longPx = max(dm.widthPixels, dm.heightPixels)
-		val portrait = dm.heightPixels >= dm.widthPixels
-
-		val cell = DashGrid.cellSizePx(this.activity)
 		val cols = DashGrid.dashColumns(this.activity)
-		val rows = DashGrid.visibleRows(if (portrait) longPx else shortPx, cell)
+		val viewport = (this.activity as? HomeActivity)?.appManager?.dashGridViewport()
+
+		val rows = if (viewport != null) {
+			// Square cells fill the width, so cell size = viewportWidth / cols //
+			val cell = (viewport.first / cols).coerceAtLeast(1)
+			DashGrid.visibleRows(viewport.second, cell)
+		} else {
+			val dm = this.activity.resources.displayMetrics
+			val gridHeightPx =
+				if (dm.heightPixels >= dm.widthPixels) max(dm.widthPixels, dm.heightPixels)
+				else min(dm.widthPixels, dm.heightPixels)
+			DashGrid.visibleRows(gridHeightPx, DashGrid.cellSizePx(this.activity))
+		}.coerceAtLeast(1)
 
 		hint.text = this.activity.getString(R.string.dash_grid_hint, cols, rows)
 	}

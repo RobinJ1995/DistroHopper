@@ -48,6 +48,12 @@ class DashGridTest {
 		assertTrue(DashGrid.dashColumns(1080, 2160, false, 4) > 4)
 	}
 
+	@Test fun landscapeColumnsAreCappedAtTwiceTheShortEdge() {
+		// 3:1 ultra-wide would be 12 columns for N=4, but the long edge never
+		// shows more than 2x the short edge's icons //
+		assertEquals(8, DashGrid.dashColumns(1000, 3000, false, 4))
+	}
+
 	@Test fun cellSizeIsTheShortEdgeDividedByColumns() {
 		assertEquals(270, DashGrid.cellSizePx(1080, 4))
 		assertEquals(0, DashGrid.cellSizePx(1080, 0))

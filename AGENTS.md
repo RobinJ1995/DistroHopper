@@ -99,10 +99,14 @@ etc/                                        — design assets (SVG/XCF sources, 
     and `DashGrid.dashColumns` derives the count for the current orientation
     from the screen — not from any one grid's width — so every profile page and
     every lens results grid get the same count and it stays stable as the dash
-    area changes (theme, rotation, a future launcher auto-hide). `DashGridSizer`
-    applies it (`setNumColumns`) to each grid; cells stretch to fill. Rotation
-    re-applies via `HomeActivity.onConfigurationChanged` (the activity isn't
-    recreated on rotation).
+    area changes (theme, rotation, a future launcher auto-hide). Landscape shows
+    proportionally more columns, capped at 2× the short-edge count.
+    `DashGridSizer` applies it (`setNumColumns`) to each grid; cells stretch to
+    fill. Rotation re-applies via `HomeActivity.onConfigurationChanged` (the
+    activity isn't recreated on rotation). The customise-mode "N × M" hint reads
+    the apps grid's last laid-out viewport (`LauncherBarBinder.dashGridViewport`,
+    captured while the grid is visible, since it is GONE while customising) so
+    the row count reflects the real theme/orientation, not the full screen.
     The tab indicator is chosen per theme via the `profile_indicator`
     integer (`theme/ProfileIndicatorStyle`, like `dash_animation`):
     `UNITY_RIBBON` (Unity/Default) puts per-profile glyphs in the always-

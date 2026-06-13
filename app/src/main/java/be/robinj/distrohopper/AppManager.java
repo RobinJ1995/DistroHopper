@@ -94,6 +94,12 @@ public class AppManager implements Iterable<App>
 		this.getBinder ().applyDashColumns ();
 	}
 
+	/** The apps grid's last laid-out viewport (width, height) in px, or null. */
+	public kotlin.Pair<Integer, Integer> dashGridViewport ()
+	{
+		return this.getBinder ().dashGridViewport ();
+	}
+
 	/** Notifies the dash that it opened or closed (for the profile indicator). */
 	public void setDashOpen (boolean open)
 	{

@@ -69,6 +69,9 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	private var indicator: ProfileIndicator? = null
 	private var pageCallbackRegistered = false
 	private var dashOpen = false
+	/** Last laid-out size of the apps grid viewport; 0 until first measured. */
+	private var dashGridViewportWidthPx = 0
+	private var dashGridViewportHeightPx = 0
 
 	fun addPinnedAppView(app: App) {
 		this.llLauncherPinnedApps.addView(this.pinnedAppLauncher(app))
@@ -255,6 +258,18 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		}
 		this.pageCallbackRegistered = true
 
+		// Remember the apps grid's real viewport whenever it is laid out, so the
+		// customise-mode grid-size hint can show the true rows for the current
+		// theme and orientation (the apps grid is GONE while customising) //
+		this.vpDashProfiles.addOnLayoutChangeListener { _, l, t, r, b, _, _, _, _ ->
+			val w = r - l
+			val h = b - t
+			if (w > 0 && h > 0) {
+				this.dashGridViewportWidthPx = w
+				this.dashGridViewportHeightPx = h
+			}
+		}
+
 		this.vpDashProfiles.registerOnPageChangeCallback(
 			object : ViewPager2.OnPageChangeCallback() {
 				override fun onPageScrolled(
@@ -304,6 +319,18 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	fun applyDashColumns() {
 		this.pagerAdapter?.applyColumns(this.vpDashProfiles)
 	}
+
+	/**
+	 * The apps grid's last laid-out viewport (width, height) in px, or null if
+	 * it has not been measured yet. Used by the customise-mode hint to show the
+	 * real row count for the current theme and orientation.
+	 */
+	fun dashGridViewport(): Pair<Int, Int>? =
+		if (this.dashGridViewportWidthPx > 0 && this.dashGridViewportHeightPx > 0) {
+			this.dashGridViewportWidthPx to this.dashGridViewportHeightPx
+		} else {
+			null
+		}
 
 	/** The dash opened or closed; indicators that only show while open react. */
 	fun setDashOpen(open: Boolean) {
