@@ -13,7 +13,8 @@ public enum DashAnimation
 	ELEMENTARY(3), // Dash fades and zooms in from the Applications label //
 	UNITY(4), // Dash and panel changes fade //
 	MATE(5), // The whole dash genies out of the BFB //
-	COSMIC(6); // The dash fades in with a slight zoom //
+	COSMIC(6), // The dash fades in with a slight zoom //
+	BUDGIE(7); // The dash genies out of the BFB while fading the whole way //
 
 	public final int n;
 

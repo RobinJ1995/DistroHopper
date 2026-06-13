@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="theme_budgie_card_colour">#5294E2</color>
+    <color name="theme_budgie_card_colour">#6bcb82</color>
     <drawable name="theme_budgie_card_logo">@drawable/theme_budgie_res_card_logo</drawable>
     <drawable name="theme_budgie_wallpaper_overlay">@android:color/transparent</drawable>
     <drawable name="theme_budgie_wallpaper_overlay_when_dash_opened">@android:color/transparent</drawable>
@@ -24,7 +24,7 @@
         <item>0dp</item>
         <item>0dp</item>
     </array>
-    <bool name="theme_budgie_launcher_expand">false</bool>
+    <bool name="theme_budgie_launcher_expand">true</bool>
     <bool name="theme_budgie_launcher_background_dynamic">false</bool>
     <array name="theme_budgie_launcher_background">
         <item>@android:color/transparent</item>
@@ -98,5 +98,5 @@
     <color name="theme_budgie_dash_search_text_colour">#D3DAE3</color>
     <bool name="theme_budgie_dash_ribbon_show">false</bool>
     <dimen name="theme_budgie_dash_blur_radius">5dp</dimen>
-    <integer name="theme_budgie_dash_animation">@integer/dash_animation_mate</integer>
+    <integer name="theme_budgie_dash_animation">@integer/dash_animation_budgie</integer>
 </resources>

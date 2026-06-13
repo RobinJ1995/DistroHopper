@@ -8,4 +8,5 @@
     <integer name="dash_animation_unity">4</integer>
     <integer name="dash_animation_mate">5</integer>
     <integer name="dash_animation_cosmic">6</integer>
+    <integer name="dash_animation_budgie">7</integer>
 </resources>

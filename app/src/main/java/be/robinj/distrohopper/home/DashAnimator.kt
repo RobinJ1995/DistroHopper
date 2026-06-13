@@ -361,6 +361,8 @@ class DashAnimator(
 					duration)
 				DashAnimation.COSMIC -> this.buildCosmicAnimators(opening, freshOpen, llDash,
 					duration)
+				DashAnimation.BUDGIE -> this.buildBudgieAnimators(opening, freshOpen, llDash,
+					duration)
 				else -> this.buildUnityAnimators(opening, freshOpen, llDash, duration)
 			}
 		}
@@ -536,6 +538,50 @@ class DashAnimator(
 			slurp.startDelay = overlap
 			alpha.startDelay = genieDuration - genieDuration / 4
 		}
+
+		return listOf(scaleX, scaleY, alpha)
+	}
+
+	/*
+	 * Budgie: the same genie-out-of-the-BFB as MATE, but the fade runs the
+	 * whole length of the gesture (moving together with the genie) rather than
+	 * MATE's brief fade at one end, so the card visibly fades as it grows from
+	 * / shrinks into the button.
+	 */
+	private fun buildBudgieAnimators(opening: Boolean, freshOpen: Boolean, llDash: View,
+			duration: Long): List<Animator> {
+		val genieDuration = duration * GENIE_DURATION_SCALE / 100L
+		val phase = genieDuration * BUDGIE_PHASE_PERCENT / 100L
+		val lag = genieDuration * BUDGIE_WIDTH_DELAY_PERCENT / 100L
+
+		val geo = this.mateGeometry(llDash)
+		val endScaleX = geo.endScaleX
+		val endScaleY = geo.endScaleY
+		val verticalLauncher = geo.verticalLauncher
+
+		if (freshOpen) {
+			llDash.alpha = 0F
+			llDash.scaleX = endScaleX
+			llDash.scaleY = endScaleY
+		}
+
+		val scaleX = ObjectAnimator.ofFloat(llDash, View.SCALE_X,
+			if (opening) 1F else endScaleX).setDuration(phase)
+		val scaleY = ObjectAnimator.ofFloat(llDash, View.SCALE_Y,
+			if (opening) 1F else endScaleY).setDuration(phase)
+		val squeeze = if (verticalLauncher) scaleY else scaleX  // along the launcher edge //
+		val slurp = if (verticalLauncher) scaleX else scaleY    // out of the button //
+
+		if (opening) { // Pulled out: slurp leads, the width follows soon after //
+			slurp.startDelay = 0L
+			squeeze.startDelay = lag
+		} else { // Slurped in: width collapses first, then pulled into the button //
+			squeeze.startDelay = 0L
+			slurp.startDelay = lag
+		}
+
+		// The fade spans the whole genie, unlike MATE's quarter-length one.
+		val alpha = alphaAnimator(llDash, if (opening) 1F else 0F, genieDuration)
 
 		return listOf(scaleX, scaleY, alpha)
 	}
@@ -823,6 +869,26 @@ class DashAnimator(
 					llDash.scaleY = scale
 				}
 			}
+			DashAnimation.BUDGIE -> {
+				// Same genie-out-of-the-BFB as MATE, but the width opens earlier
+				// and the fade runs the whole gesture (matching buildBudgieAnimators).
+				val geo = this.mateGeometry(llDash)
+				val phaseFraction = BUDGIE_PHASE_PERCENT / 100F
+				val widthDelay = BUDGIE_WIDTH_DELAY_PERCENT / 100F;
+
+				{ openness ->
+					val slurpO = (openness / phaseFraction).coerceIn(0F, 1F)
+					val widthO = ((openness - widthDelay) / phaseFraction).coerceIn(0F, 1F)
+					llDash.alpha = openness
+					if (geo.verticalLauncher) {
+						llDash.scaleX = lerp(geo.endScaleX, 1F, slurpO)
+						llDash.scaleY = lerp(geo.endScaleY, 1F, widthO)
+					} else {
+						llDash.scaleX = lerp(geo.endScaleX, 1F, widthO)
+						llDash.scaleY = lerp(geo.endScaleY, 1F, slurpO)
+					}
+				}
+			}
 			else -> this.fadeApplier(llDash) // UNITY / NONE //
 		}
 	}
@@ -922,6 +988,10 @@ class DashAnimator(
 		private const val GENIE_DURATION_SCALE = 160L // percent of the base duration //
 		private const val GENIE_PHASE_PERCENT = 62L // each phase's share, so they overlap //
 		private const val GENIE_ALPHA_FRACTION = 0.25F // alpha fades over the first quarter //
+		// Budgie's genie widens earlier than MATE's (the width phase starts soon
+		// after the slurp) and fades over the whole gesture rather than a quarter.
+		private const val BUDGIE_PHASE_PERCENT = 85L
+		private const val BUDGIE_WIDTH_DELAY_PERCENT = 15L
 		private const val NO_BFB_START_SCALE = 0.6F
 		private const val ZOOM_START_SCALE = 0.2F
 		private const val COSMIC_START_SCALE = 0.9F
