@@ -106,6 +106,48 @@ class WidgetContainer internal constructor(
 		this.widgetHost.removeWidget(this)
 	}
 
+	override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+		super.onSizeChanged(w, h, oldw, oldh)
+		this.updateEdgeTouchTargets(w, h)
+	}
+
+	/**
+	 * Widen each resize handle's *touch* target (not its visible pill, which is a
+	 * centred child) so the edges are easier to grab. Capped at a third of the
+	 * relevant dimension so the two opposing edges never meet — a central
+	 * move-zone (the overlay) always survives, even on a one-cell widget.
+	 */
+	private fun updateEdgeTouchTargets(w: Int, h: Int) {
+		if (w <= 0 || h <= 0) {
+			return
+		}
+
+		val maxTarget = (EDGE_TOUCH_TARGET_DP * this.resources.displayMetrics.density).toInt()
+		val horizontalThickness = min(maxTarget, h / 3)
+		val verticalThickness = min(maxTarget, w / 3)
+
+		this.edgeTop.updateLayoutHeight(horizontalThickness)
+		this.edgeBottom.updateLayoutHeight(horizontalThickness)
+		this.edgeLeft.updateLayoutWidth(verticalThickness)
+		this.edgeRight.updateLayoutWidth(verticalThickness)
+	}
+
+	private fun View.updateLayoutHeight(height: Int) {
+		val lp = this.layoutParams
+		if (lp.height != height) {
+			lp.height = height
+			this.layoutParams = lp
+		}
+	}
+
+	private fun View.updateLayoutWidth(width: Int) {
+		val lp = this.layoutParams
+		if (lp.width != width) {
+			lp.width = width
+			this.layoutParams = lp
+		}
+	}
+
 	override fun onTouch(view: View, e: MotionEvent): Boolean {
 		val parent = this.parent as? WidgetsContainer ?: return false
 		val lp = this.layoutParams as WidgetsContainer.LayoutParams
@@ -341,5 +383,10 @@ class WidgetContainer internal constructor(
 
 		this.widgetHost.persist()
 		parent.requestLayout()
+	}
+
+	companion object {
+		/** Largest resize-handle touch target (the thin dimension), in dp. */
+		private const val EDGE_TOUCH_TARGET_DP = 48F
 	}
 }

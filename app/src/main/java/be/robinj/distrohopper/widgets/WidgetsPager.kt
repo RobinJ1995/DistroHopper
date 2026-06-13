@@ -70,6 +70,14 @@ class WidgetsPager @JvmOverloads constructor(
 	/** Fired once a desktop is settled on (the launcher rebuilds to it). */
 	var onPageSettled: PageSettledListener? = null
 
+	/**
+	 * Feeds a touch stream to the home-screen swipe gestures (HomeActivity wires
+	 * it to HomeGestureController). Used to hand off swipe-ups that start on a
+	 * widget so the dash opens just as it does on empty desktop space — see
+	 * [onInterceptTouchEvent]. Sideways pans are still handled here directly.
+	 */
+	var swipeGestureForwarder: ((MotionEvent) -> Boolean)? = null
+
 	private var insetLeft = 0
 	private var insetTop = 0
 	private var insetRight = 0
@@ -86,6 +94,7 @@ class WidgetsPager @JvmOverloads constructor(
 	private var panning = false
 	private var panStartScrollX = 0
 	private var velocityTracker: VelocityTracker? = null
+	private var downEvent: MotionEvent? = null
 
 	/*
 	 * A row of dots overlaid on the desktops while they are being swiped
@@ -233,6 +242,7 @@ class WidgetsPager @JvmOverloads constructor(
 				this.clearGesture()
 				this.downX = ev.x
 				this.downY = ev.y
+				this.downEvent = MotionEvent.obtain(ev)
 				this.velocityTracker = VelocityTracker.obtain().also { it.addMovement(ev) }
 			}
 			MotionEvent.ACTION_MOVE -> {
@@ -240,11 +250,25 @@ class WidgetsPager @JvmOverloads constructor(
 
 				val dx = ev.x - this.downX
 				val dy = ev.y - this.downY
-				if (!this.hasEditModeChild()
-						&& abs(dx) > this.touchSlop && abs(dx) > abs(dy) * 2F) {
+				if (this.hasEditModeChild()) {
+					// A widget is being resized/moved: leave its handles the touches //
+					return false
+				}
+
+				if (abs(dx) > this.touchSlop && abs(dx) > abs(dy) * 2F) {
 					this.panning = true
 					this.panOriginX = ev.x
 					this.panBegin()
+
+					return true
+				}
+
+				// Swipe up that started on a widget: hand the stream to the home
+				// gestures (priming them with the original DOWN they never saw, since
+				// the widget consumed it) so the dash opens just like on empty space //
+				if (abs(dy) > this.touchSlop && abs(dy) > abs(dx) * 2F && dy < 0F) {
+					this.downEvent?.let { this.swipeGestureForwarder?.invoke(it) }
+					this.recycleDownEvent()
 
 					return true
 				}
@@ -287,6 +311,12 @@ class WidgetsPager @JvmOverloads constructor(
 		this.panning = false
 		this.velocityTracker?.recycle()
 		this.velocityTracker = null
+		this.recycleDownEvent()
+	}
+
+	private fun recycleDownEvent() {
+		this.downEvent?.recycle()
+		this.downEvent = null
 	}
 
 	//# Aggregates over the pages #//
