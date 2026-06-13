@@ -285,7 +285,8 @@ etc/                                        — design assets (SVG/XCF sources, 
   `theme/ThemeCards`). Developer-only options live in `pref_dev.xml` and are
   gated by the `dev` preference; they include one-shot maintenance actions
   (clear the app label/icon caches, rerun onboarding, queue default pins) and
-  debug toggles such as log toasts and unrestricted widget resizing.
+  debug toggles such as log toasts and unrestricted widget resizing; toggles
+  under this section are cleared when developer mode is switched off.
   `PreferencesRepository` provides typed and observable (`valueFlow`, a
   Kotlin `Flow`) access to the main "prefs" file keyed by the `Preference`
   enum — prefer it over raw `SharedPreferences` in new code.

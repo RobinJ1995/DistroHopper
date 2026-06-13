@@ -123,6 +123,7 @@ public class PreferencesActivity extends AppCompatActivity
 			this.initIconPackList ();
 			this.initCrashReportsPreference ();
 			this.initLauncherPinModePreference ();
+			this.initDevPreference ();
 
 			this.findPreference ("dummy_wallpaper").setOnPreferenceClickListener (
 				new Preference.OnPreferenceClickListener ()
@@ -257,6 +258,43 @@ public class PreferencesActivity extends AppCompatActivity
 			header.setTitle (titleRes);
 			this.getPreferenceScreen ().addPreference (header);
 			this.addPreferencesFromResource (prefsRes);
+		}
+
+		private void initDevPreference ()
+		{
+			final SwitchPreferenceCompat pref = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.DEV.getName ());
+			if (pref == null)
+				return;
+
+			pref.setOnPreferenceChangeListener ((preference, newValue) ->
+			{
+				if (Boolean.FALSE.equals (newValue))
+				{
+					this.clearDevPreferences ();
+				}
+
+				return true;
+			});
+		}
+
+		private void clearDevPreferences ()
+		{
+			final SharedPreferences prefs = Preferences.getSharedPreferences (this.requireContext ());
+			prefs.edit ()
+				.remove (be.robinj.distrohopper.preferences.Preference.DEV_LOG_TOASTER.getName ())
+				.remove (be.robinj.distrohopper.preferences.Preference.DEV_WIDGET_RESIZE_ANY.getName ())
+				.apply ();
+
+			final SwitchPreferenceCompat logToaster = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.DEV_LOG_TOASTER.getName ());
+			if (logToaster != null)
+				logToaster.setChecked (false);
+
+			final SwitchPreferenceCompat widgetResize = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.DEV_WIDGET_RESIZE_ANY.getName ());
+			if (widgetResize != null)
+				widgetResize.setChecked (false);
 		}
 
 		private void clearAppCaches ()
