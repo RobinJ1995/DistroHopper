@@ -2,8 +2,12 @@ package be.robinj.distrohopper.widgets
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.os.PowerManager
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.View
@@ -29,6 +33,10 @@ import kotlin.math.roundToInt
  * intercepted here once they lock to the horizontal axis, and feed the same
  * pan. Interception stays out of the way while a widget is in edit mode, so
  * its resize handles keep receiving horizontal drags.
+ *
+ * A row of dots (drawn in [dispatchDraw]) appears briefly while the desktops
+ * are swiped between, showing which one is in view; it snaps in on a swipe
+ * and fades out shortly after settling.
  */
 class WidgetsPager @JvmOverloads constructor(
 	context: Context,
@@ -54,9 +62,27 @@ class WidgetsPager @JvmOverloads constructor(
 	private var panStartScrollX = 0
 	private var velocityTracker: VelocityTracker? = null
 
+	/*
+	 * A row of dots overlaid on the desktops while they are being swiped
+	 * between, showing which desktop is in view. It snaps in on a swipe and
+	 * fades out shortly after settling; the active dot tracks the scroll
+	 * position so it slides between dots as the pages do.
+	 */
+	private val indicatorPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+	private val indicatorDotRadius = this.dp(INDICATOR_DOT_RADIUS_DP)
+	private val indicatorSpacing = this.dp(INDICATOR_SPACING_DP)
+	private val indicatorBottomMargin = this.dp(INDICATOR_BOTTOM_MARGIN_DP)
+	private var indicatorAlpha = 0F
+	private var indicatorFade: ValueAnimator? = null
+	private val hidePageIndicator = Runnable { this.fadePageIndicatorOut() }
+
 	init {
 		this.pageAt(0)
 	}
+
+	private fun dp(value: Float): Float =
+		TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value,
+			this.context.resources.displayMetrics)
 
 	/** One past the last desktop holding a widget, so a single empty one trails. */
 	val pageCount: Int
@@ -103,6 +129,8 @@ class WidgetsPager @JvmOverloads constructor(
 		this.currentPage = target
 		val targetX = target * this.width
 
+		this.showPageIndicator(autoHide = true) // Settling on a page: flash then fade //
+
 		if (!animate || this.width <= 0 || !this.animationsEnabled) {
 			this.scrollTo(targetX, 0)
 
@@ -123,6 +151,7 @@ class WidgetsPager @JvmOverloads constructor(
 		this.settle?.cancel()
 		this.settle = null
 		this.panStartScrollX = this.scrollX
+		this.showPageIndicator(autoHide = false) // Stays up for the duration of the drag //
 	}
 
 	/** [dxPx] is the distance panned towards higher pages (finger moving left). */
@@ -137,13 +166,16 @@ class WidgetsPager @JvmOverloads constructor(
 		val width = max(1, this.width)
 		val fraction = this.scrollX.toFloat() / width
 
+		/*
+		 * floor(fraction) is the page to the left of the current scroll
+		 * position. A fast fling settles on the neighbour in the fling's
+		 * direction (forward = finger left = negative velocity = the page to
+		 * the right; back = finger right = positive velocity = the page to the
+		 * left); a slow drag just snaps to whichever page is nearest.
+		 */
+		val base = fraction.toInt() // fraction is never negative (scrollX is clamped >= 0) //
 		val target = if (abs(velocityX) > this.flingVelocityPx) {
-			// A leftward fling (negative velocity) moves to the next page //
-			if (velocityX < 0F) {
-				fraction.toInt() + 1
-			} else {
-				(fraction + FLING_BACK_LEEWAY).toInt()
-			}
+			if (velocityX < 0F) base + 1 else base
 		} else {
 			fraction.roundToInt()
 		}
@@ -288,6 +320,101 @@ class WidgetsPager @JvmOverloads constructor(
 		}
 	}
 
+	//# Page indicator #//
+
+	/** Snaps the indicator into view (when there is more than one desktop). */
+	private fun showPageIndicator(autoHide: Boolean) {
+		this.removeCallbacks(this.hidePageIndicator)
+		this.indicatorFade?.cancel()
+		this.indicatorFade = null
+
+		if (this.pageCount <= 1) { // Nothing to indicate //
+			this.indicatorAlpha = 0F
+			this.invalidate()
+
+			return
+		}
+
+		this.indicatorAlpha = 1F
+		this.invalidate()
+
+		if (autoHide) {
+			this.postDelayed(this.hidePageIndicator, INDICATOR_HIDE_DELAY_MS)
+		}
+	}
+
+	private fun fadePageIndicatorOut() {
+		this.indicatorFade?.cancel()
+
+		if (!this.animationsEnabled || this.width == 0) {
+			this.indicatorAlpha = 0F
+			this.invalidate()
+
+			return
+		}
+
+		this.indicatorFade = ValueAnimator.ofFloat(this.indicatorAlpha, 0F).also { animator ->
+			animator.duration = INDICATOR_FADE_MS
+			animator.addUpdateListener {
+				this.indicatorAlpha = it.animatedValue as Float
+				this.invalidate()
+			}
+			animator.start()
+		}
+	}
+
+	/** Whether the page indicator is currently visible (drives drawing; exposed for tests). */
+	internal val isPageIndicatorShowing: Boolean
+		get() = this.indicatorAlpha > 0F
+
+	/*
+	 * Content-space x that places the dot row at the centre of the viewport
+	 * (the launcher-free part of the width). Drawing happens in scrolled
+	 * content space, so it carries scrollX — keeping the row viewport-fixed as
+	 * the desktops scroll. Exposed for tests.
+	 */
+	internal fun indicatorContentCentreX(): Float =
+		this.scrollX + (this.insetLeft + (this.width - this.insetRight)) / 2F
+
+	override fun dispatchDraw(canvas: Canvas) {
+		super.dispatchDraw(canvas)
+
+		val count = this.pageCount
+		if (this.indicatorAlpha <= 0F || count <= 1) {
+			return
+		}
+
+		/*
+		 * dispatchDraw paints in the pager's scrolled content space (x = 0 is
+		 * the left edge of the first desktop), so the row's screen position is
+		 * offset by scrollX to keep it fixed in the viewport while the desktops
+		 * scroll underneath. Centred within the part of the width left clear of
+		 * the launcher, and lifted above the navigation bar.
+		 */
+		val span = (count - 1) * this.indicatorSpacing
+		val centreX = this.indicatorContentCentreX()
+		val firstX = centreX - span / 2F
+		val cy = this.height - this.insetBottom - this.indicatorBottomMargin
+
+		for (i in 0 until count) {
+			this.indicatorPaint.color = Color.argb(
+				(INDICATOR_INACTIVE_ALPHA * this.indicatorAlpha).toInt(), 255, 255, 255)
+			canvas.drawCircle(firstX + i * this.indicatorSpacing, cy,
+				this.indicatorDotRadius, this.indicatorPaint)
+		}
+
+		// The active dot tracks the scroll position, sliding between dots //
+		val position = this.scrollX.toFloat() / max(1, this.width)
+		val from = position.toInt().coerceIn(0, count - 1)
+		val to = (from + 1).coerceAtMost(count - 1)
+		val activeX = (firstX + from * this.indicatorSpacing) +
+			(to - from) * this.indicatorSpacing * (position - from)
+
+		this.indicatorPaint.color = Color.argb(
+			(255 * this.indicatorAlpha).toInt(), 255, 255, 255)
+		canvas.drawCircle(activeX, cy, this.indicatorDotRadius, this.indicatorPaint)
+	}
+
 	private fun highestOccupiedPage(): Int {
 		for (i in this.childCount - 1 downTo 0) {
 			val page = this.getChildAt(i) as WidgetsContainer
@@ -308,11 +435,12 @@ class WidgetsPager @JvmOverloads constructor(
 		private const val SETTLE_DURATION_MS = 250L
 		/** Above this speed the fling direction decides which page to settle on. */
 		private const val FLING_VELOCITY_DP_S = 500F
-		/*
-		 * A rightward fling settles on the page being scrolled back towards;
-		 * the leeway keeps a fling thrown just past a page boundary from
-		 * skipping an extra page back.
-		 */
-		private const val FLING_BACK_LEEWAY = 0.999F
+
+		private const val INDICATOR_DOT_RADIUS_DP = 3.5F
+		private const val INDICATOR_SPACING_DP = 14F
+		private const val INDICATOR_BOTTOM_MARGIN_DP = 24F
+		private const val INDICATOR_INACTIVE_ALPHA = 90 // out of 255 //
+		private const val INDICATOR_FADE_MS = 250L
+		private const val INDICATOR_HIDE_DELAY_MS = 900L
 	}
 }

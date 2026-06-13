@@ -45,7 +45,6 @@ class HomeGestureControllerTest {
 		val dash: DashController
 		val viewModel: HomeViewModel
 		val gestures: HomeGestureController
-		var shadeExpansions = 0
 
 		init {
 			val container = DependencyContainer.of(this.activity)
@@ -53,7 +52,7 @@ class HomeGestureControllerTest {
 				container.themeManager.current, container.prefs)
 			this.viewModel = HomeViewModel(container)
 			this.gestures = HomeGestureController(this.activity, this.activity.viewFinder,
-				this.dash, this.viewModel, { false }, { this.shadeExpansions++ })
+				this.dash, this.viewModel, { false })
 		}
 
 		val slop = ViewConfiguration.get(this.activity).scaledTouchSlop.toFloat()
@@ -76,16 +75,18 @@ class HomeGestureControllerTest {
 		this.scenario.onActivity { block(Harness(it)) }
 	}
 
-	@Test fun swipingDownOnEmptySpaceExpandsTheNotificationShade() = this.onHarness { h ->
+	@Test fun swipingDownOnEmptySpaceDoesNothing() = this.onHarness { h ->
+		// The notification-shade gesture was dropped; a downward swipe is inert //
 		h.touch(MotionEvent.ACTION_DOWN, h.emptyX, h.emptyY - 200F, 0)
-		h.touch(MotionEvent.ACTION_MOVE, h.emptyX, h.emptyY - 100F, 50)
-		h.touch(MotionEvent.ACTION_UP, h.emptyX, h.emptyY - 100F, 100)
+		val consumedMove = h.touch(MotionEvent.ACTION_MOVE, h.emptyX, h.emptyY - 100F, 50)
+		val consumedUp = h.touch(MotionEvent.ACTION_UP, h.emptyX, h.emptyY - 100F, 100)
 
-		assertEquals(1, h.shadeExpansions)
+		assertFalse(consumedMove)
+		assertFalse(consumedUp)
 		assertFalse(h.dash.isOpen)
 	}
 
-	@Test fun swipingDownOnThePanelIsIgnored() = this.onHarness { h ->
+	@Test fun swipingUpOnThePanelIsIgnored() = this.onHarness { h ->
 		val llPanel = h.activity.findViewById<View>(R.id.llPanel)
 		val location = IntArray(2)
 		llPanel.getLocationInWindow(location)
@@ -93,18 +94,17 @@ class HomeGestureControllerTest {
 		val y = location[1] + llPanel.height / 2F
 
 		assertFalse(h.touch(MotionEvent.ACTION_DOWN, x, y, 0))
-		h.touch(MotionEvent.ACTION_MOVE, x, y + 100F, 50)
-		h.touch(MotionEvent.ACTION_UP, x, y + 100F, 100)
+		h.touch(MotionEvent.ACTION_MOVE, x, y - 100F, 50)
+		h.touch(MotionEvent.ACTION_UP, x, y - 100F, 100)
 
-		assertEquals(0, h.shadeExpansions)
+		assertFalse(h.dash.isOpen)
 	}
 
-	@Test fun horizontalSwipesNeverTriggerTheShadeOrTheDash() = this.onHarness { h ->
+	@Test fun horizontalSwipesDoNotOpenTheDash() = this.onHarness { h ->
 		h.touch(MotionEvent.ACTION_DOWN, h.emptyX, h.emptyY, 0)
 		h.touch(MotionEvent.ACTION_MOVE, h.emptyX - 150F, h.emptyY - 10F, 50)
 		h.touch(MotionEvent.ACTION_UP, h.emptyX - 150F, h.emptyY - 10F, 100)
 
-		assertEquals(0, h.shadeExpansions)
 		assertFalse(h.dash.isOpen)
 	}
 
@@ -154,8 +154,9 @@ class HomeGestureControllerTest {
 
 		val distance = h.dash.swipeDistancePx
 		h.touch(MotionEvent.ACTION_MOVE, h.emptyX, h.emptyY - h.slop * 3F - distance * 0.3F, 250)
-		// Mid-flight: the dash is part-way in, tracking the finger //
-		assertTrue(llDash.translationY > 0F && llDash.translationY < distance)
+		// Mid-flight: the dash is part-way in, tracking the finger. The exact
+		// transform is the theme's business; openness is the theme-agnostic measure //
+		assertTrue(h.dash.swipeOpenness > 0F && h.dash.swipeOpenness < 1F)
 
 		h.touch(MotionEvent.ACTION_MOVE, h.emptyX, h.emptyY - h.slop * 3F - distance * 0.6F, 450)
 		h.touch(MotionEvent.ACTION_UP, h.emptyX, h.emptyY - h.slop * 3F - distance * 0.6F, 500)
@@ -204,7 +205,6 @@ class HomeGestureControllerTest {
 		h.touch(MotionEvent.ACTION_MOVE, h.emptyX, h.emptyY + 100F, 50)
 		h.touch(MotionEvent.ACTION_UP, h.emptyX, h.emptyY + 100F, 100)
 
-		assertEquals(0, h.shadeExpansions)
 		assertTrue(h.dash.isOpen)
 	}
 
@@ -219,7 +219,7 @@ class HomeGestureControllerTest {
 		val distance = h.dash.swipeDistancePx
 		h.gestures.dashSwipeMoved(distance * 0.6F)
 		// Mid-flight: the dash is part-way out, tracking the finger //
-		assertTrue(llDash.translationY > 0F && llDash.translationY < distance)
+		assertTrue(h.dash.swipeOpenness > 0F && h.dash.swipeOpenness < 1F)
 		h.gestures.dashSwipeEnded(distance * 0.6F, 0F)
 		ActivityTestSupport.drainTasks()
 

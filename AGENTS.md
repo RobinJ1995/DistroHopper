@@ -106,11 +106,13 @@ etc/                                        — design assets (SVG/XCF sources, 
     tracking an openness fraction (blur/panel/overlay follow the same
     fraction) and settles open or closed when the finger lifts.
   - `HomeGestureController` — the home screen's swipe gestures on empty
-    desktop space: swiping down pulls down the system notification shade
-    (`NotificationShade`, a reflection call — there is no public API),
-    swiping up pulls in the dash tracking the finger, and swiping sideways
-    pans between the widget desktops (`widgets/WidgetsPager`). It is also
-    `SwipeToCloseLayout`'s delegate for swiping the open dash closed.
+    desktop space: swiping up pulls in the dash tracking the finger (with
+    the theme's own open animation scrubbed by the swipe — see
+    `DashAnimator`), and swiping sideways pans between the widget desktops
+    (`widgets/WidgetsPager`). It is also `SwipeToCloseLayout`'s delegate for
+    swiping the open dash closed. (Swiping down once pulled down the system
+    notification shade, but the only API for that is blocklisted to
+    non-system apps on modern Android, so it was dropped.)
     Touch routing gotcha: the widget pager is clickable (tap = exit widget
     edit mode), so empty-desktop touches are consumed by it and never reach
     `Activity#onTouchEvent` — HomeActivity therefore feeds the pager's
@@ -220,7 +222,10 @@ etc/                                        — design assets (SVG/XCF sources, 
   persists which desktop a widget lives on, and pressing home
   (`HomeActivity.onNewIntent` with the HOME intent) animates back to the
   first desktop. Sideways swipes over a widget are intercepted by the pager
-  itself; swipes on empty space arrive via `home/HomeGestureController`.
+  itself; swipes on empty space arrive via `home/HomeGestureController`. A
+  dot-row page indicator (drawn in `WidgetsPager.dispatchDraw`, in the
+  pager's own un-scrolled space so it stays viewport-fixed) flashes in while
+  swiping and fades out after settling.
   The per-page grid maths stay inside `WidgetsContainer` (page insets are
   applied as padding per page, not on the pager), which lays widgets out on
   an invisible 8×8 grid (`WidgetGrid` holds the pure grid maths — snapping,

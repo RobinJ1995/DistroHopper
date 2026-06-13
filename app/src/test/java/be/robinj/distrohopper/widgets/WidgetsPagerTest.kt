@@ -1,17 +1,23 @@
 package be.robinj.distrohopper.widgets
 
+import android.content.Context
+import android.os.PowerManager
 import android.view.View
 import androidx.test.core.app.ActivityScenario
 import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.HomeActivity
+import be.robinj.distrohopper.R
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.LooperMode
+import org.robolectric.shadow.api.Shadow
+import org.robolectric.shadows.ShadowPowerManager
 
 /**
  * The widget desktop row: there is always exactly one empty desktop after the
@@ -208,6 +214,67 @@ class WidgetsPagerTest {
 			down.recycle()
 			move.recycle()
 		}
+	}
+
+	@Test fun thePageIndicatorFlashesWhileSwipingAndFadesAfterSettling() =
+		this.onActivity { activity ->
+			// The real (attached) pager, so its delayed hide reaches the looper //
+			val pager = activity.findViewById<WidgetsPager>(R.id.vgWidgets)
+			val host = WidgetTestSupport.host(activity, pager.pageAt(0))
+			WidgetTestSupport.addWidget(activity, host, pager.pageAt(0), 42, 0, 0, 2, 2)
+			pager.pagesChanged()
+			// Battery saver makes the fade-out snap, so the end state is deterministic //
+			val powerManager = activity.getSystemService(Context.POWER_SERVICE) as PowerManager
+			Shadow.extract<ShadowPowerManager>(powerManager).setIsPowerSaveMode(true)
+
+			pager.panBegin()
+			assertTrue(pager.isPageIndicatorShowing) // Up for the duration of the drag //
+
+			pager.panBy(100F)
+			pager.panSettle(0F)
+			ActivityTestSupport.drainTasks() // Runs the delayed hide //
+
+			assertFalse(pager.isPageIndicatorShowing)
+		}
+
+	@Test fun thePageIndicatorStaysHiddenWithASingleDesktop() = this.onActivity { activity ->
+		val pager = WidgetTestSupport.pagerOf(WidgetTestSupport.standaloneGrid(activity))
+		this.layoutPager(pager)
+
+		pager.panBegin()
+
+		assertFalse(pager.isPageIndicatorShowing)
+	}
+
+	@Test fun thePageIndicatorRowStaysFixedInTheViewportAsPagesScroll() =
+		this.onActivity { activity ->
+			val pager = WidgetTestSupport.pagerOf(WidgetTestSupport.standaloneGrid(activity))
+			this.layoutPager(pager)
+
+			val onFirstDesktop = pager.indicatorContentCentreX()
+			pager.scrollTo(WidgetTestSupport.GRID_SIZE, 0) // Scroll one full page over //
+			val onSecondDesktop = pager.indicatorContentCentreX()
+
+			// It carries scrollX, so the row lands at the same on-screen spot //
+			assertEquals(WidgetTestSupport.GRID_SIZE.toFloat(),
+				onSecondDesktop - onFirstDesktop, 0.5F)
+		}
+
+	@Test fun aBackwardFlingReturnsOneDesktop() = this.onActivity { activity ->
+		val grid = WidgetTestSupport.standaloneGrid(activity)
+		val pager = WidgetTestSupport.pagerOf(grid)
+		val host = WidgetTestSupport.host(activity, grid)
+		WidgetTestSupport.addWidget(activity, host, grid, 42, 0, 0, 2, 2)
+		pager.pagesChanged()
+		this.layoutPager(pager)
+		pager.setCurrentPage(1, animate = false) // Start on the second desktop //
+
+		pager.panBegin()
+		pager.panBy(-WidgetTestSupport.GRID_SIZE * 0.1F) // Nudge back toward the first //
+		pager.panSettle(10_000F) // Hard rightward (positive) fling = backward //
+		ActivityTestSupport.drainTasks()
+
+		assertEquals(0, pager.currentPage)
 	}
 
 	private fun motionEvent(action: Int, x: Float, y: Float, timeMs: Long) =

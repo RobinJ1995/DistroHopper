@@ -50,11 +50,15 @@ import kotlin.math.min
  * Everything is reversed on close. Battery saver bypasses all transitions
  * and applies the final state immediately.
  *
- * Swipe gestures get their own, finger-tracked transition instead of the
- * theme's preset: swipeBegin()/swipeUpdate() slide the dash vertically
- * (offscreen towards the bottom at openness 0, at rest at 1) while the blur,
- * panel opacity and dim overlay track the same fraction; swipeSettle()
- * animates the remainder when the finger lifts.
+ * Swipe gestures run the same theme presets, but finger-tracked rather than
+ * clock-driven: swipeBegin() captures the theme's open-animation geometry and
+ * swipeUpdate() applies its transform at the swipe's openness (0 = closed,
+ * 1 = open) — the per-theme transforms the time-based builders above produce,
+ * expressed as a function of progress (buildSwipeApplier) — while the blur,
+ * panel opacity and dim overlay track the same fraction; swipeSettle() eases
+ * the remainder when the finger lifts. The geometry helpers (collectGenies,
+ * cinnamonOffscreen, applyElementaryPivot, mateGeometry) are shared by both
+ * the builders and the appliers.
  */
 class DashAnimator(
 	private val activity: Activity,
@@ -153,11 +157,13 @@ class DashAnimator(
 		get() = this.swipe?.openness ?: 0F
 
 	/**
-	 * Begins a finger-tracked transition. When opening, the dash is made
-	 * visible offscreen first; a swipe taking over a still-settling previous
-	 * swipe resumes from its current openness. Returns false in battery
-	 * saver, where there is nothing to track — the caller falls back to the
-	 * instant open()/close().
+	 * Begins a finger-tracked transition that scrubs the theme's own open
+	 * animation by the swipe's progress. When opening from fully closed the
+	 * dash is made visible first and its geometry captured on the next layout
+	 * pass (so a stray frame or two may show a plain fade before the theme
+	 * transform takes over); a close, or a swipe taking over a still-settling
+	 * one, captures immediately. Returns false in battery saver, where there
+	 * is nothing to track — the caller falls back to the instant open()/close().
 	 */
 	fun swipeBegin(opening: Boolean, blurRadiusPx: Int): Boolean {
 		if (!this.animationsEnabled) {
@@ -168,23 +174,32 @@ class DashAnimator(
 		this.cancelRunning()
 
 		val llDash = this.viewFinder.get<LinearLayout>(R.id.llDash)
+		val session = SwipeSession(blurRadiusPx, this.slideDistancePx())
 
-		if (resumeOpenness == null) {
-			if (opening) {
-				this.withLayoutTransitionsSuppressed {
-					llDash.visibility = View.VISIBLE
-					this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlay).visibility =
-						View.INVISIBLE
-					this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened)
-						.visibility = View.VISIBLE
-				}
+		if (resumeOpenness == null && opening) {
+			// Fresh open from fully closed: make the dash visible, then capture
+			// the theme geometry once it has been laid out //
+			this.withLayoutTransitionsSuppressed {
+				llDash.visibility = View.VISIBLE
+				this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlay).visibility =
+					View.INVISIBLE
+				this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened)
+					.visibility = View.VISIBLE
 			}
-			// A cancelled theme animation must not leave its transforms behind //
 			this.resetDashTransforms(llDash)
 			this.resetIconTransforms(this.viewFinder.get(R.id.gvDashHomeApps))
+			session.pendingCapture = OneShotPreDrawListener.add(llDash) {
+				session.pendingCapture = null
+				session.applier = this.buildSwipeApplier()
+				this.applySwipe(session) // Apply the theme transform now it is captured //
+			}
+		} else {
+			// The dash is already open and laid out (a close, or a swipe taking
+			// over a settling one): capture the geometry synchronously //
+			session.applier = this.buildSwipeApplier()
 		}
 
-		this.swipe = SwipeSession(blurRadiusPx, this.slideDistancePx())
+		this.swipe = session
 		this.swipeUpdate(resumeOpenness ?: if (opening) 0F else 1F)
 
 		return true
@@ -231,9 +246,11 @@ class DashAnimator(
 
 					if (open) {
 						resetDashTransforms(viewFinder.get(R.id.llDash))
+						resetIconTransforms(viewFinder.get(R.id.gvDashHomeApps))
 					} else {
 						withLayoutTransitionsSuppressed { teardown?.invoke() }
 						resetDashTransforms(viewFinder.get(R.id.llDash))
+						resetIconTransforms(viewFinder.get(R.id.gvDashHomeApps))
 						viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened)
 							.alpha = 1F
 						viewFinder.get<LinearLayout>(R.id.llPanel).alpha = panelRestingAlpha()
@@ -248,8 +265,6 @@ class DashAnimator(
 	private fun applySwipe(swipe: SwipeSession) {
 		val resting = this.panelRestingAlpha()
 
-		this.viewFinder.get<LinearLayout>(R.id.llDash).translationY =
-			(1F - swipe.openness) * swipe.distance
 		this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened).alpha =
 			swipe.openness
 		this.viewFinder.get<LinearLayout>(R.id.llPanel).alpha =
@@ -258,6 +273,13 @@ class DashAnimator(
 			this.applyBlurRadius(
 				BLUR_OPEN_INTERPOLATOR.getInterpolation(swipe.openness) * swipe.blurRadiusPx,
 				swipe.blurRadiusPx)
+		}
+
+		val applier = swipe.applier
+		if (applier != null) {
+			applier(swipe.openness)
+		} else { // Geometry not captured yet (first frame of a fresh open): plain fade //
+			this.viewFinder.get<LinearLayout>(R.id.llDash).alpha = swipe.openness
 		}
 	}
 
@@ -293,11 +315,14 @@ class DashAnimator(
 		this.running = null
 		this.swipe?.let {
 			it.settle?.cancel()
+			it.pendingCapture?.removeListener()
 			/*
-			 * The slide offset is not part of any theme preset, so a regular
-			 * open/close taking over mid-swipe must not inherit it.
+			 * The theme transforms the swipe applied are not the resting state a
+			 * taking-over open/close animation expects; clear them (the dash and
+			 * the recycled icon views) so it starts from a clean slate.
 			 */
-			this.viewFinder.get<LinearLayout>(R.id.llDash).translationY = 0F
+			this.resetDashTransforms(this.viewFinder.get(R.id.llDash))
+			this.resetIconTransforms(this.viewFinder.get(R.id.gvDashHomeApps))
 		}
 		this.swipe = null
 
@@ -433,13 +458,7 @@ class DashAnimator(
 
 	private fun buildCinnamonAnimators(opening: Boolean, freshOpen: Boolean, llDash: View,
 			duration: Long): List<Animator> {
-		val (offscreenX, offscreenY) = when (this.launcherEdge()) {
-			Location.LEFT -> -llDash.width.toFloat() to 0F
-			Location.RIGHT -> llDash.width.toFloat() to 0F
-			Location.TOP -> 0F to -llDash.height.toFloat()
-			Location.BOTTOM -> 0F to llDash.height.toFloat()
-			Location.NONE -> 0F to 0F
-		}
+		val (offscreenX, offscreenY) = this.cinnamonOffscreen(llDash)
 		if (offscreenX == 0F && offscreenY == 0F) { // No launcher edge to slide in from //
 			return this.buildUnityAnimators(opening, freshOpen, llDash, duration)
 		}
@@ -457,22 +476,7 @@ class DashAnimator(
 
 	private fun buildElementaryAnimators(opening: Boolean, freshOpen: Boolean, llDash: View,
 			duration: Long): List<Animator> {
-		val label = this.viewFinder.get<View>(R.id.tvPanelBfb)
-
-		if (label.isShown && label.width > 0) { // Zoom from the Applications label's centre //
-			val labelLocation = IntArray(2)
-			val dashLocation = IntArray(2)
-			label.getLocationOnScreen(labelLocation)
-			llDash.getLocationOnScreen(dashLocation)
-
-			llDash.pivotX = labelLocation[0] + label.width / 2F -
-				(dashLocation[0] - llDash.translationX)
-			llDash.pivotY = labelLocation[1] + label.height / 2F -
-				(dashLocation[1] - llDash.translationY)
-		} else { // The label sits in the top-left corner by default //
-			llDash.pivotX = 0F
-			llDash.pivotY = 0F
-		}
+		this.applyElementaryPivot(llDash)
 
 		if (freshOpen) {
 			llDash.alpha = 0F
@@ -500,72 +504,14 @@ class DashAnimator(
 	 */
 	private fun buildMateAnimators(opening: Boolean, freshOpen: Boolean, llDash: View,
 			duration: Long): List<Animator> {
-		val bfb = this.viewFinder.get<View>(R.id.lalBfb)
-
 		val genieDuration = duration * GENIE_DURATION_SCALE / 100L
 		val phase = genieDuration * GENIE_PHASE_PERCENT / 100L
 		val overlap = genieDuration - phase
 
-		/*
-		 * The collapsed dash matches the BFB's own bounds exactly, so the
-		 * dash looks like it expands out of (and gets slurped back into) the
-		 * button itself. Scaling by s about pivot P maps the dash's edge to
-		 * P * (1 - s), so P = target_edge / (1 - s) puts the collapsed
-		 * dash's edge on the BFB's edge (and, with s = bfb / dash, its far
-		 * edge on the BFB's far edge). The squeeze happens along the
-		 * launcher's axis first: a horizontal launcher squeezes the dash to
-		 * the button's width and then pulls it down/up into the button; a
-		 * vertical launcher squeezes to the button's height and then pulls
-		 * it sideways.
-		 */
-		val endScaleX: Float
-		val endScaleY: Float
-		if (bfb.isShown && bfb.width > 0 && llDash.width > 0 && llDash.height > 0) {
-			val bfbLocation = IntArray(2)
-			val dashLocation = IntArray(2)
-			bfb.getLocationOnScreen(bfbLocation)
-			llDash.getLocationOnScreen(dashLocation)
-			val dashScreenX = dashLocation[0] - llDash.translationX
-			val dashScreenY = dashLocation[1] - llDash.translationY
-
-			/*
-			 * The launcher's own padding leaves the BFB a few dp short of the
-			 * screen edge; the collapsed dash hugs the edge instead of
-			 * showing that sliver of a gap.
-			 */
-			val hug = EDGE_HUG_DP * this.activity.resources.displayMetrics.density
-			var targetLeft = bfbLocation[0].toFloat()
-			var targetWidth = bfb.width.toFloat()
-			if (targetLeft < hug) {
-				targetWidth += targetLeft
-				targetLeft = 0F
-			}
-			var targetTop = bfbLocation[1].toFloat()
-			var targetHeight = bfb.height.toFloat()
-			if (targetTop < hug) {
-				targetHeight += targetTop
-				targetTop = 0F
-			}
-			val screenWidth = this.activity.resources.displayMetrics.widthPixels
-			val screenHeight = this.activity.resources.displayMetrics.heightPixels
-			if (screenWidth - (targetLeft + targetWidth) < hug) {
-				targetWidth = screenWidth - targetLeft
-			}
-			if (screenHeight - (targetTop + targetHeight) < hug) {
-				targetHeight = screenHeight - targetTop
-			}
-
-			endScaleX = targetWidth / llDash.width
-			endScaleY = targetHeight / llDash.height
-			llDash.pivotX = (targetLeft - dashScreenX) / (1F - endScaleX)
-			llDash.pivotY = (targetTop - dashScreenY) / (1F - endScaleY)
-		} else { // No BFB to slurp into; collapse towards the dash's centre //
-			endScaleX = GENIE_END_SCALE_FALLBACK
-			endScaleY = GENIE_END_SCALE_FALLBACK
-			llDash.resetPivot()
-		}
-		val verticalLauncher =
-			this.launcherEdge() == Location.LEFT || this.launcherEdge() == Location.RIGHT
+		val geo = this.mateGeometry(llDash)
+		val endScaleX = geo.endScaleX
+		val endScaleY = geo.endScaleY
+		val verticalLauncher = geo.verticalLauncher
 
 		if (freshOpen) {
 			llDash.alpha = 0F
@@ -626,43 +572,12 @@ class DashAnimator(
 
 	private fun buildIconAnimators(opening: Boolean, freshOpen: Boolean, grid: GridView,
 			duration: Long): List<Animator> {
-		val children = (0 until grid.childCount).map(grid::getChildAt)
-		if (children.isEmpty()) {
+		val genies = this.collectGenies(grid, opening)
+		if (genies.isEmpty()) {
 			return emptyList()
 		}
 
-		val bfb = this.viewFinder.get<View>(R.id.lalBfb)
-		val bfbShown = bfb.isShown && bfb.width > 0
-		val bfbLocation = IntArray(2)
-		if (bfbShown) {
-			bfb.getLocationOnScreen(bfbLocation)
-		}
-		val bfbCentreX = bfbLocation[0] + bfb.width / 2F
-		val bfbCentreY = bfbLocation[1] + bfb.height / 2F
-
-		val genies = children.map { child ->
-			val location = IntArray(2)
-			child.getLocationOnScreen(location)
-			/*
-			 * getLocationOnScreen() includes any in-flight translation; undo it to
-			 * get the child's resting (laid-out) centre.
-			 */
-			val centreX = location[0] - child.translationX + child.width / 2F
-			val centreY = location[1] - child.translationY + child.height / 2F
-
-			if (bfbShown) {
-				Genie(child, bfbCentreX - centreX, bfbCentreY - centreY, GENIE_START_SCALE,
-					hypot(bfbCentreX - centreX, bfbCentreY - centreY))
-			} else { // No BFB to expand from; zoom each icon in place instead //
-				Genie(child, 0F, 0F, NO_BFB_START_SCALE, hypot(centreX, centreY))
-			}
-		}.sortedBy { if (opening) it.distance else -it.distance }
-
-		val staggerStep = if (genies.size > 1) {
-			min(ICON_STAGGER_STEP_MS, ICON_STAGGER_MAX_MS / (genies.size - 1))
-		} else {
-			0L
-		}
+		val staggerStep = iconStaggerStep(genies.size)
 
 		return genies.mapIndexed { i, genie ->
 			if (freshOpen) {
@@ -685,6 +600,239 @@ class DashAnimator(
 			}
 		}
 	}
+
+	//# Theme geometry, shared by the time-based builders above and the #//
+	//# finger-tracked appliers below.                                  #//
+
+	/* The icons' genie targets (offset towards the BFB and start scale), nearest first. */
+	private fun collectGenies(grid: GridView, opening: Boolean): List<Genie> {
+		val children = (0 until grid.childCount).map(grid::getChildAt)
+		if (children.isEmpty()) {
+			return emptyList()
+		}
+
+		val bfb = this.viewFinder.get<View>(R.id.lalBfb)
+		val bfbShown = bfb.isShown && bfb.width > 0
+		val bfbLocation = IntArray(2)
+		if (bfbShown) {
+			bfb.getLocationOnScreen(bfbLocation)
+		}
+		val bfbCentreX = bfbLocation[0] + bfb.width / 2F
+		val bfbCentreY = bfbLocation[1] + bfb.height / 2F
+
+		return children.map { child ->
+			val location = IntArray(2)
+			child.getLocationOnScreen(location)
+			/*
+			 * getLocationOnScreen() includes any in-flight translation; undo it to
+			 * get the child's resting (laid-out) centre.
+			 */
+			val centreX = location[0] - child.translationX + child.width / 2F
+			val centreY = location[1] - child.translationY + child.height / 2F
+
+			if (bfbShown) {
+				Genie(child, bfbCentreX - centreX, bfbCentreY - centreY, GENIE_START_SCALE,
+					hypot(bfbCentreX - centreX, bfbCentreY - centreY))
+			} else { // No BFB to expand from; zoom each icon in place instead //
+				Genie(child, 0F, 0F, NO_BFB_START_SCALE, hypot(centreX, centreY))
+			}
+		}.sortedBy { if (opening) it.distance else -it.distance }
+	}
+
+	private fun iconStaggerStep(count: Int): Long =
+		if (count > 1) min(ICON_STAGGER_STEP_MS, ICON_STAGGER_MAX_MS / (count - 1)) else 0L
+
+	/* The off-screen offset the dash slides in from, per launcher edge (0,0 = none). */
+	private fun cinnamonOffscreen(llDash: View): Pair<Float, Float> =
+		when (this.launcherEdge()) {
+			Location.LEFT -> -llDash.width.toFloat() to 0F
+			Location.RIGHT -> llDash.width.toFloat() to 0F
+			Location.TOP -> 0F to -llDash.height.toFloat()
+			Location.BOTTOM -> 0F to llDash.height.toFloat()
+			Location.NONE -> 0F to 0F
+		}
+
+	/* Pivots the dash at the Applications label's centre, or its top-left by default. */
+	private fun applyElementaryPivot(llDash: View) {
+		val label = this.viewFinder.get<View>(R.id.tvPanelBfb)
+
+		if (label.isShown && label.width > 0) {
+			val labelLocation = IntArray(2)
+			val dashLocation = IntArray(2)
+			label.getLocationOnScreen(labelLocation)
+			llDash.getLocationOnScreen(dashLocation)
+
+			llDash.pivotX = labelLocation[0] + label.width / 2F -
+				(dashLocation[0] - llDash.translationX)
+			llDash.pivotY = labelLocation[1] + label.height / 2F -
+				(dashLocation[1] - llDash.translationY)
+		} else {
+			llDash.pivotX = 0F
+			llDash.pivotY = 0F
+		}
+	}
+
+	/*
+	 * The collapsed dash matches the BFB's own bounds exactly, so the dash
+	 * looks like it expands out of (and gets slurped back into) the button
+	 * itself. Scaling by s about pivot P maps the dash's edge to P * (1 - s),
+	 * so P = target_edge / (1 - s) puts the collapsed dash's edge on the BFB's
+	 * edge (and, with s = bfb / dash, its far edge on the BFB's far edge). Sets
+	 * the dash's pivot as a side effect and returns the end scales plus which
+	 * axis the squeeze runs along. The squeeze happens along the launcher's
+	 * axis first: a horizontal launcher squeezes to the button's width then
+	 * pulls down/up into it; a vertical launcher squeezes to its height then
+	 * pulls sideways.
+	 */
+	private fun mateGeometry(llDash: View): MateGeometry {
+		val bfb = this.viewFinder.get<View>(R.id.lalBfb)
+		val endScaleX: Float
+		val endScaleY: Float
+
+		if (bfb.isShown && bfb.width > 0 && llDash.width > 0 && llDash.height > 0) {
+			val bfbLocation = IntArray(2)
+			val dashLocation = IntArray(2)
+			bfb.getLocationOnScreen(bfbLocation)
+			llDash.getLocationOnScreen(dashLocation)
+			val dashScreenX = dashLocation[0] - llDash.translationX
+			val dashScreenY = dashLocation[1] - llDash.translationY
+
+			/*
+			 * The launcher's own padding leaves the BFB a few dp short of the
+			 * screen edge; the collapsed dash hugs the edge instead of showing
+			 * that sliver of a gap.
+			 */
+			val hug = EDGE_HUG_DP * this.activity.resources.displayMetrics.density
+			var targetLeft = bfbLocation[0].toFloat()
+			var targetWidth = bfb.width.toFloat()
+			if (targetLeft < hug) {
+				targetWidth += targetLeft
+				targetLeft = 0F
+			}
+			var targetTop = bfbLocation[1].toFloat()
+			var targetHeight = bfb.height.toFloat()
+			if (targetTop < hug) {
+				targetHeight += targetTop
+				targetTop = 0F
+			}
+			val screenWidth = this.activity.resources.displayMetrics.widthPixels
+			val screenHeight = this.activity.resources.displayMetrics.heightPixels
+			if (screenWidth - (targetLeft + targetWidth) < hug) {
+				targetWidth = screenWidth - targetLeft
+			}
+			if (screenHeight - (targetTop + targetHeight) < hug) {
+				targetHeight = screenHeight - targetTop
+			}
+
+			endScaleX = targetWidth / llDash.width
+			endScaleY = targetHeight / llDash.height
+			llDash.pivotX = (targetLeft - dashScreenX) / (1F - endScaleX)
+			llDash.pivotY = (targetTop - dashScreenY) / (1F - endScaleY)
+		} else { // No BFB to slurp into; collapse towards the dash's centre //
+			endScaleX = GENIE_END_SCALE_FALLBACK
+			endScaleY = GENIE_END_SCALE_FALLBACK
+			llDash.resetPivot()
+		}
+
+		val verticalLauncher =
+			this.launcherEdge() == Location.LEFT || this.launcherEdge() == Location.RIGHT
+
+		return MateGeometry(endScaleX, endScaleY, verticalLauncher)
+	}
+
+	/**
+	 * Captures the active theme's open-animation geometry once and returns a
+	 * function applying the dash's transform for a given openness (0 = closed,
+	 * 1 = open) — the theme's own open animation, driven by the swipe's
+	 * progress instead of a clock. Must be called once the dash is laid out
+	 * (the geometry reads child positions). Each applier fully defines the
+	 * transforms it owns across the whole range, so it overrides the pre-capture
+	 * fade in [applySwipe].
+	 */
+	private fun buildSwipeApplier(): (Float) -> Unit {
+		val llDash = this.viewFinder.get<LinearLayout>(R.id.llDash)
+
+		return when (this.animation) {
+			DashAnimation.GNOME -> {
+				val grid = this.viewFinder.get<GridView>(R.id.gvDashHomeApps)
+				val genies = this.collectGenies(grid, opening = true)
+				val staggerStep = this.iconStaggerStep(genies.size)
+				val span = (OPEN_ICON_DURATION_MS + (genies.size - 1).coerceAtLeast(0) * staggerStep)
+					.toFloat();
+
+				{ openness ->
+					llDash.alpha = openness
+					val time = openness * span
+					genies.forEachIndexed { i, genie ->
+						val localO = ((time - i * staggerStep) / OPEN_ICON_DURATION_MS)
+							.coerceIn(0F, 1F)
+						genie.child.translationX = genie.translationX * (1F - localO)
+						genie.child.translationY = genie.translationY * (1F - localO)
+						genie.child.scaleX = lerp(genie.scale, 1F, localO)
+						genie.child.scaleY = lerp(genie.scale, 1F, localO)
+					}
+				}
+			}
+			DashAnimation.CINNAMON -> {
+				val (offscreenX, offscreenY) = this.cinnamonOffscreen(llDash)
+				if (offscreenX == 0F && offscreenY == 0F) {
+					this.fadeApplier(llDash) // No launcher edge to slide in from //
+				} else {
+					{ openness ->
+						llDash.alpha = 1F
+						llDash.translationX = offscreenX * (1F - openness)
+						llDash.translationY = offscreenY * (1F - openness)
+					}
+				}
+			}
+			DashAnimation.ELEMENTARY -> {
+				this.applyElementaryPivot(llDash);
+
+				{ openness ->
+					llDash.alpha = openness
+					val scale = lerp(ZOOM_START_SCALE, 1F, openness)
+					llDash.scaleX = scale
+					llDash.scaleY = scale
+				}
+			}
+			DashAnimation.MATE -> {
+				val geo = this.mateGeometry(llDash)
+				val phaseFraction = GENIE_PHASE_PERCENT / 100F
+				val overlapFraction = 1F - phaseFraction;
+
+				{ openness ->
+					val slurpO = (openness / phaseFraction).coerceIn(0F, 1F)
+					val squeezeO = ((openness - overlapFraction) / phaseFraction).coerceIn(0F, 1F)
+					llDash.alpha = (openness / GENIE_ALPHA_FRACTION).coerceIn(0F, 1F)
+					if (geo.verticalLauncher) {
+						llDash.scaleX = lerp(geo.endScaleX, 1F, slurpO)
+						llDash.scaleY = lerp(geo.endScaleY, 1F, squeezeO)
+					} else {
+						llDash.scaleX = lerp(geo.endScaleX, 1F, squeezeO)
+						llDash.scaleY = lerp(geo.endScaleY, 1F, slurpO)
+					}
+				}
+			}
+			DashAnimation.COSMIC -> {
+				llDash.resetPivot();
+
+				{ openness ->
+					llDash.alpha = openness
+					val scale = lerp(COSMIC_START_SCALE, 1F, openness)
+					llDash.scaleX = scale
+					llDash.scaleY = scale
+				}
+			}
+			else -> this.fadeApplier(llDash) // UNITY / NONE //
+		}
+	}
+
+	private fun fadeApplier(llDash: View): (Float) -> Unit = { openness ->
+		llDash.alpha = openness
+	}
+
+	private fun lerp(from: Float, to: Float, fraction: Float): Float =
+		from + (to - from) * fraction
 
 	/*
 	 * Single-value animators animate from the property's current value, which
@@ -750,9 +898,15 @@ class DashAnimator(
 	private class Genie(val child: View, val translationX: Float, val translationY: Float,
 		val scale: Float, val distance: Float)
 
+	private class MateGeometry(val endScaleX: Float, val endScaleY: Float,
+		val verticalLauncher: Boolean)
+
 	private class SwipeSession(val blurRadiusPx: Int, val distance: Float) {
 		var openness = 0F
 		var settle: ValueAnimator? = null
+		/* The theme transform for a given openness; null until the dash is laid out. */
+		var applier: ((Float) -> Unit)? = null
+		var pendingCapture: OneShotPreDrawListener? = null
 	}
 
 	companion object {
@@ -767,6 +921,7 @@ class DashAnimator(
 		private const val EDGE_HUG_DP = 16F
 		private const val GENIE_DURATION_SCALE = 160L // percent of the base duration //
 		private const val GENIE_PHASE_PERCENT = 62L // each phase's share, so they overlap //
+		private const val GENIE_ALPHA_FRACTION = 0.25F // alpha fades over the first quarter //
 		private const val NO_BFB_START_SCALE = 0.6F
 		private const val ZOOM_START_SCALE = 0.2F
 		private const val COSMIC_START_SCALE = 0.9F

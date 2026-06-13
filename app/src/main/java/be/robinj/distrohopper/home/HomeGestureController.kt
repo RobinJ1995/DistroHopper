@@ -15,12 +15,14 @@ import kotlin.math.abs
  * The home screen's swipe gestures. On empty desktop space (the widget
  * pager's OnTouchListener feeds in its touches, and HomeActivity those no
  * view claimed; the panel and launcher are excluded by hit-testing):
- *  - swiping down pulls down the system notification shade;
- *  - swiping up slides the dash in, tracking the finger — DashController and
- *    DashAnimator do the visual work — committing or cancelling when it
- *    lifts;
+ *  - swiping up slides the dash in, tracking the finger with the theme's
+ *    own open animation — DashController and DashAnimator do the visual
+ *    work — committing or cancelling when it lifts;
  *  - swiping sideways pans between the widget desktops (WidgetsPager does
  *    the same for swipes that start on a widget).
+ * (Swiping down used to pull down the system notification shade, but the
+ * only API for that is blocklisted to non-system apps on modern Android, so
+ * the gesture was dropped.)
  * As SwipeToCloseLayout's delegate it likewise tracks the open dash being
  * swiped back closed (the layout only starts that swipe once the dash's
  * content is scrolled to the top). In battery saver there is nothing to
@@ -28,13 +30,12 @@ import kotlin.math.abs
  * Swipe-to-close stays out of customise mode: closing there relaunches the
  * activity, which is not something to trigger from a drag.
  */
-class HomeGestureController @JvmOverloads constructor(
+class HomeGestureController(
 	private val activity: Activity,
 	private val viewFinder: ViewFinder,
 	private val dash: DashController,
 	private val viewModel: HomeViewModel,
 	private val customiseMode: () -> Boolean,
-	private val expandNotificationShade: () -> Unit = { NotificationShade.expand(activity) },
 ) : SwipeToCloseLayout.Delegate {
 	private enum class State { IDLE, PENDING, TRACKING_OPEN, TRACKING_PAGES, INSTANT_OPEN, DONE }
 
@@ -156,10 +157,11 @@ class HomeGestureController @JvmOverloads constructor(
 			return // Not (yet) locked to either axis //
 		}
 
-		if (dy > 0F) { // Downwards: pull down the notification shade //
-			this.expandNotificationShade()
-			this.state = State.DONE
-		} else if (this.dash.swipeOpenBegin()) { // Upwards: pull in the dash //
+		if (dy >= 0F) {
+			return // Downwards no longer does anything (notification shade dropped) //
+		}
+
+		if (this.dash.swipeOpenBegin()) { // Upwards: pull in the dash //
 			this.state = State.TRACKING_OPEN
 			this.startOpenness = this.dash.swipeOpenness
 			this.downY = ev.y // Track from where the swipe was recognised //
