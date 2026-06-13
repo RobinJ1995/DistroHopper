@@ -15,6 +15,9 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SwitchPreferenceCompat;
+
+import be.robinj.distrohopper.home.PinnedAppsMigration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,6 +120,7 @@ public class PreferencesActivity extends AppCompatActivity
 
 			this.initIconPackList ();
 			this.initCrashReportsPreference ();
+			this.initLauncherPinModePreference ();
 
 			this.findPreference ("dummy_wallpaper").setOnPreferenceClickListener (
 				new Preference.OnPreferenceClickListener ()
@@ -227,6 +231,31 @@ public class PreferencesActivity extends AppCompatActivity
 			header.setTitle (titleRes);
 			this.getPreferenceScreen ().addPreference (header);
 			this.addPreferencesFromResource (prefsRes);
+		}
+
+		private void initLauncherPinModePreference ()
+		{
+			final SwitchPreferenceCompat pref = this.findPreference ("dummy_launcher_pin_per_desktop");
+			if (pref == null)
+				return;
+
+			final SharedPreferences prefs = Preferences.getSharedPreferences (this.requireContext ());
+			pref.setChecked (LauncherPinMode.current (prefs) == LauncherPinMode.DESKTOP);
+			pref.setOnPreferenceChangeListener ((preference, newValue) ->
+			{
+				// Rewrite the stored pins for the new mode; returning to the home
+				// screen relaunches it, which loads them in the new mode //
+				final LauncherPinMode mode = ((Boolean) newValue)
+						? LauncherPinMode.DESKTOP : LauncherPinMode.GLOBAL;
+				PinnedAppsMigration.migrate (this.requireContext (), mode);
+				prefs.edit ()
+					.putString (
+						be.robinj.distrohopper.preferences.Preference.LAUNCHER_APP_PIN_MODE.getName (),
+						mode.getValue ())
+					.apply ();
+
+				return true;
+			});
 		}
 
 		private void initCrashReportsPreference ()

@@ -75,6 +75,8 @@
     <string name="toast_pin_default_apps">Default apps will be pinned on next start</string>
     <string name="option_set_default_launcher">Set as home screen</string>
     <string name="hint_set_default_launcher">Make DistroHopper your default home screen, so that it appears whenever you press the home button.</string>
+    <string name="option_pin_per_desktop">Per-desktop pinned apps</string>
+    <string name="hint_pin_per_desktop">Give each desktop its own pinned apps in the launcher, instead of sharing the same ones across every desktop.</string>
     <string name="title_activity_contribute">How can I contribute?</string>
     <string name="contribute_intro">A lot of time and hard work went into the development of this application. If you\'d like to help out, there are several ways in which you can do so.</string>
     <string name="contribute_translate_title">Translate</string>

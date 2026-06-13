@@ -139,8 +139,9 @@ class AppManagerTest {
 
         assertEquals(listOf(settings, alpha), manager.pinned)
         val pinnedPrefs = Preferences.getSharedPreferences(manager.context, Preferences.PINNED_APPS)
-        assertEquals(settings.packageAndActivityName, pinnedPrefs.getString("0", null))
-        assertEquals(alpha.packageAndActivityName, pinnedPrefs.getString("1", null))
+        val desktops = PinnedAppsStorage.read(pinnedPrefs)
+        assertEquals(
+            listOf(settings.packageAndActivityName, alpha.packageAndActivityName), desktops[0])
     }
 
     @Test fun findAppByPackageAndActivityNameReturnsCorrectApp() = withManager {

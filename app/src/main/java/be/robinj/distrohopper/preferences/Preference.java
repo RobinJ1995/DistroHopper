@@ -7,6 +7,7 @@ public enum Preference {
 	PANEL_OPACITY("panel_opacity"),
 	LAUNCHER_EDGE("launcher_edge_v2"),
 	LAUNCHER_SHOW_RUNNING_APPS("launcher_running_show"),
+	LAUNCHER_APP_PIN_MODE("launcher_app_pin_mode", "desktop"),
 	LAUNCHERICON_WIDTH("launchericon_width"),
 	LAUNCHERSERVICE_ENABLED("launcherservice_enabled"),
 	DASH_SEARCH_FULL("dashsearch_full"),

@@ -50,6 +50,19 @@ etc/                                        — design assets (SVG/XCF sources, 
     `home/LauncherBarBinder` (resolved lazily so AppManager can be
     constructed on a background thread). Prefer `AppRepository` directly
     in new model-level code.
+    Pinned apps are **per widget desktop**: `AppRepository` holds a list per
+    desktop and a `perDesktop` flag from `preferences/LauncherPinMode`
+    (`LAUNCHER_APP_PIN_MODE` = `global`|`desktop`, default `desktop`; unknown
+    → global). In global mode every desktop maps onto desktop 0, so it is
+    exactly the old single shared list. The no-desktop ops (`pin`/`unpin`/…)
+    act on `currentDesktop` (set as the pager settles); desktop-explicit
+    overloads (`pinnedOn`, `pin(app,desktop)`, `removePinnedDesktop`, …) drive
+    per-desktop logic and deletion. `PinnedAppsStorage` is the shared on-disk
+    format (`"<page>/<index>"` per-desktop, bare `"<index>"` legacy → desktop
+    0); `home/PinnedAppsMigration` rewrites it when the mode is toggled in
+    settings (which then relaunches home). Same app may be pinned on several
+    desktops; unpin/uninstall and the trash act on the current desktop (or all
+    desktops for uninstall).
   - `App`, `Application`, `AppComparatorAlphabetical` — app model classes. `App` usually wraps a PackageManager `ResolveInfo`, but can also represent DistroHopper-owned internal shortcuts that live only in the dash (currently the settings shortcut) and launch by explicit in-app intent rather than a public launcher component. Internal shortcut intents must not set `FLAG_ACTIVITY_NEW_TASK` (the target shares the home task's affinity, so it would only bring the home task to the front); the settings shortcut launches via `startActivityForResult` so `HomeActivity.onActivityResult` can handle the Customise UI result.
   - `IconPackHelper`, `Image`, `Utils`, `ViewFinder`, `InsetsHelper`,
     `Permission`, `RequestCode`, `ExceptionHandler`, `HomeRole` —
@@ -144,6 +157,26 @@ etc/                                        — design assets (SVG/XCF sources, 
     Gotcha: views must not be mutated (not even visibility) while
     ACTION_DRAG_ENDED is being dispatched — post such work instead, or the
     framework throws a ConcurrentModificationException.
+    It also renders the **current desktop's** pins and morphs between desktops
+    as they are swiped: `WidgetsPager.onPageScroll` drives `onPageScroll` (a
+    finger-tracked morph using the pure `home/LauncherMorph` slot maths —
+    shared apps slide slot→slot, unique apps fade+scale in/out) and
+    `onPageSettled` drives `showDesktop` (rebuild to the settled desktop's plain
+    bar + `setCurrentDesktop`). The pinned bar itself is
+    `desktop/launcher/PinnedAppsBar` (a `LinearLayout` subclass): in morph mode
+    it lays its icons out at fractional slots and measures to a fractional
+    length, so the launcher resizes smoothly and the same child views are
+    reused (no rebuild → no LayoutTransition "appear" flash; the binder also
+    suppresses that transition around any bar rebuild). The morph is skipped in
+    global mode (identical bars on every desktop — the bar is never even rebuilt
+    on a swipe) and battery saver (swap on settle).
+  - `Desktops` — the single authority over the home screen's desktops (which
+    span both widgets and per-desktop pins). It derives how many desktops
+    exist (`highestOccupiedDesktop` = max of `WidgetHost.highestWidgetDesktop`
+    and `AppManager.highestPinnedDesktop`; `WidgetsPager.occupiedDesktopSupplier`
+    is pointed at it) and owns the structural ops that must touch both at once
+    — `deleteDesktop` removes a desktop's widgets and pins and reindexes the
+    rest (no delete UI yet; future insert/reorder belong here too).
   - `LayoutTransitionConfigurer` — the appear/disappear animations.
 - **`desktop/`** — the desktop surface itself (`Wallpaper`, `AppIcon`, drag
   listeners). The activity is transparent over the system wallpaper
@@ -221,7 +254,12 @@ etc/                                        — design assets (SVG/XCF sources, 
   swiping right past the end lands on the fresh one), `WidgetLayout.page`
   persists which desktop a widget lives on, and pressing home
   (`HomeActivity.onNewIntent` with the HOME intent) animates back to the
-  first desktop. Sideways swipes over a widget are intercepted by the pager
+  first desktop. "Occupied" counts widgets **and** per-desktop pins: the
+  pager's `occupiedDesktopSupplier` (pointed at `home/Desktops`, which
+  combines the pager's own `highestWidgetPage` with the pinned desktops) so
+  pins keep a desktop alive too, and emits `onPageScroll`
+  / `onPageSettled` so the launcher bar can morph/rebuild (see
+  `LauncherBarBinder`). Sideways swipes over a widget are intercepted by the pager
   itself; swipes on empty space arrive via `home/HomeGestureController`. A
   dot-row page indicator (drawn in `WidgetsPager.dispatchDraw`, in the
   pager's own un-scrolled space so it stays viewport-fixed) flashes in while

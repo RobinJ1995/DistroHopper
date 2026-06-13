@@ -109,8 +109,9 @@ class LauncherDragListenersTest {
 
 			assertEquals(listOf(beta, alpha), manager.pinned)
 			val persisted = activity.getSharedPreferences(Preferences.PINNED_APPS, 0)
-			assertEquals(beta.packageAndActivityName, persisted.getString("0", null))
-			assertEquals(alpha.packageAndActivityName, persisted.getString("1", null))
+			val desktops = be.robinj.distrohopper.PinnedAppsStorage.read(persisted)
+			assertEquals(
+				listOf(beta.packageAndActivityName, alpha.packageAndActivityName), desktops[0])
 			// The drop also leaves drag mode
 			assertEquals(View.GONE, activity.findViewById<View>(R.id.lalTrash).visibility)
 		}

@@ -91,6 +91,41 @@ class WidgetHost(
 		this.vgWidgets.pagesChanged()
 	}
 
+	/**
+	 * Removes every widget on [page] and shifts the widgets on higher desktops
+	 * down by one, for desktop deletion (the per-page index is the pager child
+	 * index, so moving a widget's view into the lower page re-pages it on
+	 * persist). Coordinated with the pinned apps by [be.robinj.distrohopper.home.Desktops].
+	 */
+	fun removeWidgetPage(page: Int) {
+		if (page in 0 until this.vgWidgets.childCount) {
+			val container = this.vgWidgets.pageAt(page)
+			for (widget in this.widgetsOf(container)) {
+				this.deleteAppWidgetId(widget.appWidgetId)
+				container.removeView(widget)
+			}
+
+			for (higher in (page + 1) until this.vgWidgets.childCount) {
+				val from = this.vgWidgets.pageAt(higher)
+				val to = this.vgWidgets.pageAt(higher - 1)
+				for (widget in this.widgetsOf(from)) {
+					val layoutParams = widget.layoutParams
+					from.removeView(widget)
+					to.addView(widget, layoutParams)
+				}
+			}
+		}
+
+		this.persist()
+		this.vgWidgets.pagesChanged()
+	}
+
+	private fun widgetsOf(container: WidgetsContainer): List<WidgetContainer> =
+		(0 until container.childCount).mapNotNull { container.getChildAt(it) as? WidgetContainer }
+
+	/** Highest desktop holding a widget (or -1), for the `home/Desktops` coordinator. */
+	fun highestWidgetDesktop(): Int = this.vgWidgets.highestWidgetPage()
+
 	fun persist() {
 		this.persistence.save(this.vgWidgets.collectLayouts(null))
 	}

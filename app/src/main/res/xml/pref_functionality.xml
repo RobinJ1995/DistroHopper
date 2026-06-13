@@ -1,5 +1,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <SwitchPreferenceCompat
+        android:key="dummy_launcher_pin_per_desktop"
+        android:persistent="false"
+        android:title="@string/option_pin_per_desktop"
+        android:summary="@string/hint_pin_per_desktop" />
+
     <Preference
        android:title="@string/option_lenses"
        android:summary="@string/hint_lenses">

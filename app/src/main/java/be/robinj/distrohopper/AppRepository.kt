@@ -4,6 +4,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ResolveInfo
+import be.robinj.distrohopper.preferences.LauncherPinMode
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import java.util.concurrent.CopyOnWriteArrayList
@@ -24,7 +25,22 @@ import kotlinx.coroutines.flow.asStateFlow
  */
 class AppRepository(private val context: Context) {
 	private val apps = CopyOnWriteArrayList<App>()
-	private val pinnedApps = CopyOnWriteArrayList<App>()
+
+	/*
+	 * Pinned apps per desktop: index = desktop. In global mode (perDesktop ==
+	 * false) only desktop 0 is ever used and every desktop maps onto it, so the
+	 * behaviour is identical to a single shared list. The no-desktop pin/unpin
+	 * operations act on [currentDesktop], the desktop the launcher is showing.
+	 */
+	private val pinnedByPage = CopyOnWriteArrayList<CopyOnWriteArrayList<App>>()
+
+	/** Whether pins are kept per desktop; false collapses everything onto desktop 0. */
+	var perDesktop: Boolean = false
+		private set
+
+	/** The desktop the launcher is currently showing (target of the no-desktop ops). */
+	var currentDesktop: Int = 0
+		private set
 
 	private val _installed = MutableStateFlow<List<App>>(emptyList())
 	val installed: StateFlow<List<App>> = this._installed.asStateFlow()
@@ -33,7 +49,7 @@ class AppRepository(private val context: Context) {
 	val pinned: StateFlow<List<App>> = this._pinned.asStateFlow()
 
 	val installedLive: List<App> get() = this.apps
-	val pinnedLive: List<App> get() = this.pinnedApps
+	val pinnedLive: List<App> get() = this.pageList(this.currentDesktop)
 
 	/** @return whether the app was added (false if [checkDuplicate] found it). */
 	fun add(app: App, checkDuplicate: Boolean): Boolean {
@@ -127,46 +143,169 @@ class AppRepository(private val context: Context) {
 		return results
 	}
 
-	fun isPinned(app: App): Boolean = this.pinnedApps.contains(app)
+	//# Pinned apps — desktop-aware operations #//
 
-	fun indexOfPinned(app: App): Int = this.pinnedApps.indexOf(app)
+	private fun pageIndex(desktop: Int): Int =
+		if (this.perDesktop) desktop.coerceAtLeast(0) else 0
 
-	/** @return whether the app was newly pinned. */
-	fun pin(app: App): Boolean {
-		if (this.isPinned(app)) {
+	/** The list for [desktop], creating it (and any before it) as needed. */
+	private fun pageList(desktop: Int): CopyOnWriteArrayList<App> {
+		val idx = this.pageIndex(desktop)
+		while (this.pinnedByPage.size <= idx) {
+			this.pinnedByPage.add(CopyOnWriteArrayList())
+		}
+
+		return this.pinnedByPage[idx]
+	}
+
+	private fun pageListOrEmpty(desktop: Int): List<App> =
+		this.pinnedByPage.getOrNull(this.pageIndex(desktop)) ?: emptyList()
+
+	fun pinnedOn(desktop: Int): List<App> = this.pageListOrEmpty(desktop)
+
+	fun isPinnedOn(app: App, desktop: Int): Boolean = this.pageListOrEmpty(desktop).contains(app)
+
+	fun indexOfPinnedOn(app: App, desktop: Int): Int = this.pageListOrEmpty(desktop).indexOf(app)
+
+	/** @return whether the app was newly pinned on [desktop]. */
+	fun pin(app: App, desktop: Int): Boolean {
+		if (this.isPinnedOn(app, desktop)) {
 			return false
 		}
 
-		val added = this.pinnedApps.add(app)
+		val added = this.pageList(desktop).add(app)
 		this.pinnedChanged()
 
 		return added
 	}
 
-	fun unpin(app: App): Boolean {
-		val modified = this.pinnedApps.remove(app)
+	fun unpin(app: App, desktop: Int): Boolean {
+		val modified = this.pinnedByPage.getOrNull(this.pageIndex(desktop))?.remove(app) ?: false
 		this.pinnedChanged()
 
 		return modified
 	}
 
-	fun movePinnedApp(oldIndex: Int, newIndex: Int) {
-		val app = this.pinnedApps.removeAt(oldIndex)
-		this.pinnedApps.add(newIndex, app)
+	fun movePinnedApp(desktop: Int, oldIndex: Int, newIndex: Int) {
+		val list = this.pageList(desktop)
+		val app = list.removeAt(oldIndex)
+		list.add(newIndex, app)
 		this.pinnedChanged()
 	}
 
-	fun savePinnedApps() {
-		val editor = Preferences
-			.getSharedPreferences(this.context, Preferences.PINNED_APPS).edit()
+	/** Removes [app] from every desktop (e.g. when it is uninstalled). */
+	fun unpinFromAllDesktops(app: App): Boolean {
+		var modified = false
+		for (page in this.pinnedByPage) {
+			if (page.remove(app)) {
+				modified = true
+			}
+		}
+		this.pinnedChanged()
 
-		editor.clear()
+		return modified
+	}
 
-		for ((i, app) in this.pinnedApps.withIndex()) {
-			editor.putString(i.toString(), app.packageName + "\n" + app.activityName)
+	/**
+	 * Highest desktop index holding a pinned app, or -1 when none — so pins never
+	 * inflate the desktop count in global mode (where they aren't desktop-bound).
+	 */
+	fun highestPinnedDesktop(): Int {
+		if (! this.perDesktop) {
+			return -1
 		}
 
-		editor.apply()
+		for (i in this.pinnedByPage.indices.reversed()) {
+			if (this.pinnedByPage[i].isNotEmpty()) {
+				return i
+			}
+		}
+
+		return -1
+	}
+
+	/**
+	 * Removes a whole desktop's pins and shifts higher desktops down, for desktop
+	 * deletion. A no-op in global mode (the shared pins are not tied to a desktop).
+	 */
+	fun removePinnedDesktop(desktop: Int) {
+		if (! this.perDesktop) {
+			return
+		}
+
+		if (desktop in this.pinnedByPage.indices) {
+			this.pinnedByPage.removeAt(desktop)
+			this.pinnedChanged()
+		}
+	}
+
+	fun setCurrentDesktop(desktop: Int) {
+		val idx = this.pageIndex(desktop)
+		if (idx == this.currentDesktop) {
+			return
+		}
+
+		this.currentDesktop = idx
+		this.pinnedChanged() // The launcher's active desktop (and so its pins) changed //
+	}
+
+	//# Pinned apps — current-desktop convenience (used by the existing callers) #//
+
+	fun isPinned(app: App): Boolean = this.isPinnedOn(app, this.currentDesktop)
+
+	fun indexOfPinned(app: App): Int = this.indexOfPinnedOn(app, this.currentDesktop)
+
+	/** @return whether the app was newly pinned on the current desktop. */
+	fun pin(app: App): Boolean = this.pin(app, this.currentDesktop)
+
+	fun unpin(app: App): Boolean = this.unpin(app, this.currentDesktop)
+
+	fun movePinnedApp(oldIndex: Int, newIndex: Int) =
+		this.movePinnedApp(this.currentDesktop, oldIndex, newIndex)
+
+	/** Reads the pin mode and loads the persisted per-desktop pins. */
+	fun loadPinnedApps() {
+		this.perDesktop = LauncherPinMode.current(Preferences.getSharedPreferences(this.context)) ==
+			LauncherPinMode.DESKTOP
+		val stored = PinnedAppsStorage.read(
+			Preferences.getSharedPreferences(this.context, Preferences.PINNED_APPS))
+		val appMap = this.installedAppsMap()
+
+		this.pinnedByPage.clear()
+		if (this.perDesktop) {
+			for (page in stored) {
+				this.pinnedByPage.add(this.resolve(page, appMap))
+			}
+		} else {
+			// Collapse any stored pages onto desktop 0, de-duplicated //
+			this.pinnedByPage.add(this.resolve(stored.flatten(), appMap))
+		}
+
+		this.pinnedChanged()
+	}
+
+	private fun resolve(keys: List<String>, appMap: Map<String, App>): CopyOnWriteArrayList<App> {
+		val list = CopyOnWriteArrayList<App>()
+		for (key in keys) {
+			val app = appMap[key] ?: continue
+			if (! list.contains(app)) {
+				list.add(app)
+			}
+		}
+
+		return list
+	}
+
+	fun savePinnedApps() {
+		val prefs = Preferences.getSharedPreferences(this.context, Preferences.PINNED_APPS)
+
+		if (this.perDesktop) {
+			PinnedAppsStorage.writePerDesktop(prefs,
+				this.pinnedByPage.map { page -> page.map { it.packageAndActivityName } })
+		} else {
+			PinnedAppsStorage.writeGlobal(prefs,
+				this.pageListOrEmpty(0).map { it.packageAndActivityName })
+		}
 	}
 
 	fun getRunningApps(): List<App> {
@@ -197,6 +336,6 @@ class AppRepository(private val context: Context) {
 	}
 
 	private fun pinnedChanged() {
-		this._pinned.value = ArrayList(this.pinnedApps)
+		this._pinned.value = ArrayList(this.pageListOrEmpty(this.currentDesktop))
 	}
 }

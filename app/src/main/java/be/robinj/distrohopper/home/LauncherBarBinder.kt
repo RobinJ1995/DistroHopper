@@ -1,5 +1,6 @@
 package be.robinj.distrohopper.home
 
+import android.os.PowerManager
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.GridView
@@ -9,11 +10,13 @@ import be.robinj.distrohopper.AppManager
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
 import be.robinj.distrohopper.desktop.launcher.AppLauncherClickListener
 import be.robinj.distrohopper.desktop.launcher.AppLauncherDragListener
 import be.robinj.distrohopper.desktop.launcher.AppLauncherLongClickListener
+import be.robinj.distrohopper.desktop.launcher.PinnedAppsBar
 import be.robinj.distrohopper.desktop.launcher.RunningAppLauncher
 import be.robinj.distrohopper.theme.Location
 
@@ -33,10 +36,16 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	private var draggedPinnedAppOldIndex = -1
 	private var draggedPinnedAppDropped = false
 
+	/** The desktops the in-flight launcher morph is between (-1 = not morphing). */
+	private var morphFrom = -1
+	private var morphTo = -1
+	private var morphStride = 0F
+	private var morphVertical = true
+
 	private val llLauncher: LinearLayout by lazy {
 		this.activity.viewFinder.get(R.id.llLauncher)
 	}
-	private val llLauncherPinnedApps: LinearLayout by lazy {
+	private val llLauncherPinnedApps: PinnedAppsBar by lazy {
 		this.activity.viewFinder.get(this.llLauncher, R.id.llLauncherPinnedApps)
 	}
 	private val llLauncherRunningApps: LinearLayout by lazy {
@@ -51,16 +60,116 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	}
 
 	fun refreshPinnedView() {
-		this.llLauncherPinnedApps.removeAllViews()
-
-		for (app in this.appManager.pinned) {
-			this.llLauncherPinnedApps.addView(this.pinnedAppLauncher(app))
+		// A plain rebuild ends any in-flight morph. LayoutTransition is suppressed
+		// so the whole bar doesn't fade its icons in one by one (the "flash") //
+		this.morphFrom = -1
+		this.morphTo = -1
+		this.llLauncherPinnedApps.clearMorph()
+		this.withPinnedLayoutTransitionSuppressed {
+			this.llLauncherPinnedApps.removeAllViews()
+			for (app in this.appManager.pinned) {
+				this.llLauncherPinnedApps.addView(this.pinnedAppLauncher(app))
+			}
 		}
 	}
 
 	fun removePinnedAppView(app: App) {
 		val appLauncher = this.llLauncherPinnedApps.findViewWithTag<AppLauncher>(app)
 		this.llLauncherPinnedApps.removeView(appLauncher)
+	}
+
+	//# Per-desktop launcher morph (driven by WidgetsPager's scroll) #//
+
+	/** Settles the launcher on [page]: rebuild its plain bar, ending any morph. */
+	fun showDesktop(page: Int) {
+		if (! this.appManager.isPerDesktopPins) {
+			return // Global pins: the bar is identical on every desktop, never rebuild //
+		}
+
+		val previous = this.appManager.currentDesktop
+		this.appManager.setCurrentDesktop(page)
+		// Only rebuild if a morph was in flight or the desktop actually changed //
+		if (this.morphFrom != -1 || previous != this.appManager.currentDesktop) {
+			this.refreshPinnedView()
+		}
+	}
+
+	/**
+	 * Tracks a swipe between desktops [fromPage] and [toPage] at [fraction]: the
+	 * pinned icons slide/fade between the two desktops' layouts, the bar resizing
+	 * with them. A no-op in global mode (the bar is identical on every desktop)
+	 * and in battery saver (the bar just swaps when the swipe settles).
+	 */
+	fun onPageScroll(fromPage: Int, toPage: Int, fraction: Float) {
+		if (! this.appManager.isPerDesktopPins || fraction <= 0F || ! this.animationsEnabled()) {
+			return
+		}
+
+		if (fromPage != this.morphFrom || toPage != this.morphTo) {
+			this.buildMorph(fromPage, toPage)
+		}
+		this.applyMorph(fraction)
+	}
+
+	private fun buildMorph(fromPage: Int, toPage: Int) {
+		this.morphVertical = this.llLauncherPinnedApps.orientation == LinearLayout.VERTICAL
+		this.morphStride = this.captureStride() // Read from the current (from) bar first //
+		this.morphFrom = fromPage
+		this.morphTo = toPage
+
+		// Build the union once, without the LayoutTransition fading each icon in //
+		val union = LauncherMorph.union(
+			this.appManager.pinnedOn(fromPage), this.appManager.pinnedOn(toPage))
+		this.withPinnedLayoutTransitionSuppressed {
+			this.llLauncherPinnedApps.removeAllViews()
+			for (app in union) {
+				this.llLauncherPinnedApps.addView(this.pinnedAppLauncher(app))
+			}
+		}
+	}
+
+	private fun applyMorph(fraction: Float) {
+		val from = this.appManager.pinnedOn(this.morphFrom)
+		val to = this.appManager.pinnedOn(this.morphTo)
+		// The bar's length interpolates between the two desktops' icon counts, so
+		// an auto-sizing launcher resizes smoothly with the morph //
+		val length = from.size + (to.size - from.size) * fraction
+
+		this.llLauncherPinnedApps.setMorph(
+			LauncherMorph.slots(from, to, fraction), this.morphStride, length)
+	}
+
+	/** The per-slot advance along the bar's axis: a laid-out icon's size, else computed. */
+	private fun captureStride(): Float {
+		val bar = this.llLauncherPinnedApps
+		if (bar.childCount > 0) {
+			val child = bar.getChildAt(0)
+			val size = if (this.morphVertical) child.height else child.width
+			if (size > 0) {
+				return size.toFloat()
+			}
+		}
+
+		val density = this.activity.resources.displayMetrics.density
+		val iconWidth = Preferences.getSharedPreferences(this.activity)
+			.getInt(Preference.LAUNCHERICON_WIDTH.getName(), 36)
+		val width = (48 + iconWidth) * density
+		return if (this.morphVertical) width - 4F * density else width
+	}
+
+	private fun animationsEnabled(): Boolean =
+		this.activity.getSystemService(PowerManager::class.java)?.isPowerSaveMode != true
+
+	/* Mutating the bar's children fires its LayoutTransition (appear animations); suppress it. */
+	private fun withPinnedLayoutTransitionSuppressed(block: () -> Unit) {
+		val bar = this.llLauncherPinnedApps
+		val saved = bar.layoutTransition
+		bar.layoutTransition = null
+		try {
+			block()
+		} finally {
+			bar.layoutTransition = saved
+		}
 	}
 
 	fun addRunningApps(colour: Int) {

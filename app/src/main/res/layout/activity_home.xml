@@ -162,13 +162,13 @@
 						android:layout_height="wrap_content"
 						android:orientation="vertical">
 
-						<LinearLayout
+						<be.robinj.distrohopper.desktop.launcher.PinnedAppsBar
 							android:id="@+id/llLauncherPinnedApps"
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
 							android:layout_gravity="top"
 							android:orientation="vertical">
-						</LinearLayout>
+						</be.robinj.distrohopper.desktop.launcher.PinnedAppsBar>
 
 						<LinearLayout
 							android:id="@+id/llLauncherRunningApps"

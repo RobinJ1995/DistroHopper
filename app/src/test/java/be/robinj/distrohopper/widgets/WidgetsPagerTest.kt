@@ -68,6 +68,15 @@ class WidgetsPagerTest {
 			assertEquals(3, pager.pageCount)
 		}
 
+	@Test fun theOccupiedDesktopSupplierDrivesThePageCount() = this.onActivity { activity ->
+		val pager = WidgetTestSupport.pagerOf(WidgetTestSupport.standaloneGrid(activity))
+		pager.occupiedDesktopSupplier = { 2 } // e.g. pins reach desktop 2, no widgets //
+		pager.pagesChanged()
+
+		// Desktops 0..2 occupied + one trailing empty //
+		assertEquals(4, pager.pageCount)
+	}
+
 	@Test fun theDesktopCountIsCapped() = this.onActivity { activity ->
 		val grid = WidgetTestSupport.standaloneGrid(activity)
 		val pager = WidgetTestSupport.pagerOf(grid)

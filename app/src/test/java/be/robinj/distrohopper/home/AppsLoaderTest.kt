@@ -6,6 +6,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.HomeActivity
+import be.robinj.distrohopper.PinnedAppsStorage
 import be.robinj.distrohopper.cache.ICache
 import be.robinj.distrohopper.cache.TestDrawableCache
 import be.robinj.distrohopper.preferences.Preference
@@ -103,10 +104,10 @@ class AppsLoaderTest {
 		}
 
 		val pinned = Preferences.getSharedPreferences(this.application, Preferences.PINNED_APPS)
-		assertEquals("com.example.beta\nBetaActivity", pinned.getString("0", null))
-		assertEquals("org.mozilla.firefox\nFirefoxActivity", pinned.getString("1", null))
-		assertEquals("com.google.android.gm\nGmailActivity", pinned.getString("2", null))
-		assertEquals("com.android.camera2\nCameraActivity", pinned.getString("3", null))
+		assertEquals(
+			listOf("com.example.beta\nBetaActivity", "org.mozilla.firefox\nFirefoxActivity",
+				"com.google.android.gm\nGmailActivity", "com.android.camera2\nCameraActivity"),
+			PinnedAppsStorage.read(pinned)[0])
 		assertFalse(Preferences.getSharedPreferences(this.application)
 			.getBoolean(Preference.DEFAULT_PINS_PENDING.getName(), false))
 	}

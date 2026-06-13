@@ -35,7 +35,6 @@ object AppsLoader {
 		onProgress: (step: Int, steps: Int) -> Unit,
 	): AppManager {
 		val appManager = AppManager(parent)
-		val prefsPinned = Preferences.getSharedPreferences(context, Preferences.PINNED_APPS)
 
 		// Load selected icon pack before any icons are requested
 		try {
@@ -105,19 +104,8 @@ object AppsLoader {
 		onProgress(2, 3)
 		currentCoroutineContext().ensureActive()
 
-		val nPinned = prefsPinned.all.size
-		if (nPinned > 0) {
-			val appMap = appManager.installedAppsMap
-
-			var i = 0
-			while (true) {
-				val packageAndActivityName = prefsPinned.getString((i++).toString(), null)
-					?: break
-				val pinnedApp = appMap[packageAndActivityName] ?: continue
-
-				appManager.pin(pinnedApp, false, false, false)
-			}
-		}
+		// Reads the pin mode and the persisted per-desktop pins //
+		appManager.loadPinnedApps()
 
 		val prefs = Preferences.getSharedPreferences(context)
 		if (prefs.getBoolean(Preference.DEFAULT_PINS_PENDING.getName(), false)) {

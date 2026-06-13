@@ -1,5 +1,7 @@
 package be.robinj.distrohopper.widgets
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
@@ -42,8 +44,31 @@ class WidgetsPager @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
 ) : ViewGroup(context, attrs) {
+	fun interface PageScrollListener {
+		fun onScroll(fromPage: Int, toPage: Int, fraction: Float)
+	}
+
+	fun interface PageSettledListener {
+		fun onSettled(page: Int)
+	}
+
 	var currentPage = 0
 		private set
+
+	/**
+	 * Highest occupied desktop index across widgets *and* pins (or -1) — what the
+	 * desktop count is derived from. Defaults to the pager's own widgets;
+	 * HomeActivity points it at `home/Desktops`, the single authority that
+	 * combines widgets with pinned apps, so the pager stays decoupled from the
+	 * app model.
+	 */
+	var occupiedDesktopSupplier: () -> Int = { this.highestWidgetPage() }
+
+	/** Continuous scroll between desktops (during pan and settle), for the launcher morph. */
+	var onPageScroll: PageScrollListener? = null
+
+	/** Fired once a desktop is settled on (the launcher rebuilds to it). */
+	var onPageSettled: PageSettledListener? = null
 
 	private var insetLeft = 0
 	private var insetTop = 0
@@ -84,9 +109,9 @@ class WidgetsPager @JvmOverloads constructor(
 		TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value,
 			this.context.resources.displayMetrics)
 
-	/** One past the last desktop holding a widget, so a single empty one trails. */
+	/** One past the last occupied desktop, so a single empty one trails. */
 	val pageCount: Int
-		get() = (this.highestOccupiedPage() + 2).coerceIn(1, MAX_PAGES)
+		get() = (this.occupiedDesktopSupplier() + 2).coerceIn(1, MAX_PAGES)
 
 	val currentPageContainer: WidgetsContainer
 		get() = this.pageAt(this.currentPage)
@@ -133,6 +158,7 @@ class WidgetsPager @JvmOverloads constructor(
 
 		if (!animate || this.width <= 0 || !this.animationsEnabled) {
 			this.scrollTo(targetX, 0)
+			this.onPageSettled?.onSettled(target)
 
 			return
 		}
@@ -141,6 +167,22 @@ class WidgetsPager @JvmOverloads constructor(
 			animator.duration = SETTLE_DURATION_MS
 			animator.interpolator = DecelerateInterpolator()
 			animator.addUpdateListener { this.scrollTo(it.animatedValue as Int, 0) }
+			animator.addListener(object : AnimatorListenerAdapter() {
+				private var cancelled = false
+
+				override fun onAnimationCancel(animation: Animator) {
+					this.cancelled = true
+				}
+
+				override fun onAnimationEnd(animation: Animator) {
+					if (this@WidgetsPager.settle === animator) {
+						this@WidgetsPager.settle = null
+					}
+					if (! this.cancelled) {
+						this@WidgetsPager.onPageSettled?.onSettled(target)
+					}
+				}
+			})
 			animator.start()
 		}
 	}
@@ -320,6 +362,19 @@ class WidgetsPager @JvmOverloads constructor(
 		}
 	}
 
+	override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
+		super.onScrollChanged(l, t, oldl, oldt)
+
+		val callback = this.onPageScroll ?: return
+		val width = max(1, this.width)
+		val position = l.toFloat() / width
+		val count = this.pageCount
+		val from = position.toInt().coerceIn(0, count - 1)
+		val to = (from + 1).coerceAtMost(count - 1)
+
+		callback.onScroll(from, to, (position - from).coerceIn(0F, 1F))
+	}
+
 	//# Page indicator #//
 
 	/** Snaps the indicator into view (when there is more than one desktop). */
@@ -415,7 +470,8 @@ class WidgetsPager @JvmOverloads constructor(
 		canvas.drawCircle(activeX, cy, this.indicatorDotRadius, this.indicatorPaint)
 	}
 
-	private fun highestOccupiedPage(): Int {
+	/** Highest desktop index holding a widget (or -1); pins are folded in by the supplier. */
+	fun highestWidgetPage(): Int {
 		for (i in this.childCount - 1 downTo 0) {
 			val page = this.getChildAt(i) as WidgetsContainer
 

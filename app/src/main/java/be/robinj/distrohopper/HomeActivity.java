@@ -40,6 +40,7 @@ import be.robinj.distrohopper.cache.ICache;
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.home.CustomiseModeUi;
 import be.robinj.distrohopper.home.DashController;
+import be.robinj.distrohopper.home.Desktops;
 import be.robinj.distrohopper.home.HomeGestureController;
 import be.robinj.distrohopper.home.HomeStateBinder;
 import be.robinj.distrohopper.home.HomeViewModel;
@@ -93,6 +94,7 @@ public class HomeActivity extends AppCompatActivity
 	private LauncherEdgeController edgeController;
 	private DashController dash;
 	private HomeGestureController gestures;
+	private Desktops desktops;
 	private ThemeApplier themeApplier;
 	private WallpaperColourApplier wallpaperColourApplier;
 
@@ -278,6 +280,20 @@ public class HomeActivity extends AppCompatActivity
 					view.cancelLongPress (); // A recognised swipe is not a long-press //
 
 				return handled;
+			});
+
+			// Per-desktop pins: the launcher morphs/rebuilds as the desktops are
+			// swiped between. The desktop count follows widgets + pins via the
+			// Desktops coordinator, wired once the app model has loaded //
+			vgWidgets.setOnPageScroll ((fromPage, toPage, fraction) ->
+			{
+				if (this.apps != null)
+					this.apps.onLauncherPageScroll (fromPage, toPage, fraction);
+			});
+			vgWidgets.setOnPageSettled (page ->
+			{
+				if (this.apps != null)
+					this.apps.onLauncherPageSettled (page);
 			});
 
 			// Keep the widget area clear of the launcher, even when the launcher resizes //
@@ -618,6 +634,13 @@ public class HomeActivity extends AppCompatActivity
 			this.apps = installedApps;
 			this.lenses = new LensManager (this.getApplicationContext (), llDashHomeAppsContainer, llDashHomeLensesContainer, pwDashSearchProgress, installedApps);
 
+			// Desktops is the authority for how many desktops exist (widgets + pins);
+			// wire it now that the app model is loaded and re-derive the desktop row //
+			this.desktops = new Desktops (this.widgetHost, this.apps);
+			final WidgetsPager vgWidgets = this.viewFinder.get (R.id.vgWidgets);
+			vgWidgets.setOccupiedDesktopSupplier (() -> this.desktops.highestOccupiedDesktop ());
+			vgWidgets.pagesChanged ();
+
 			EditText etDashSearch = this.viewFinder.get(R.id.etDashSearch);
 			LinearLayout llLauncher = this.viewFinder.get(R.id.llLauncher);
 
@@ -680,6 +703,10 @@ public class HomeActivity extends AppCompatActivity
 	public void pinnedAppsChanged ()
 	{
 		this.startLauncherService (false);
+
+		// Pins can keep a desktop alive (and pinning on the trailing empty one
+		// spawns a new desktop), so re-derive the desktop row //
+		this.viewFinder.<WidgetsPager>get (R.id.vgWidgets).pagesChanged ();
 
 		SharedPreferences prefs = this.getSharedPreferences ();
 

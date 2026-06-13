@@ -205,11 +205,67 @@ public class AppManager implements Iterable<App>
 	public boolean remove (App app)
 	{
 		boolean modified = this.repository.remove (app);
-		this.unpin (app, false);
+
+		// Uninstalled: drop it from every desktop, not just the current one //
+		this.repository.unpinFromAllDesktops (app);
+		this.getBinder ().removePinnedAppView (app);
+		this.savePinnedApps ();
 
 		this.getBinder ().notifyDashAdapterChanged ();
 
 		return modified;
+	}
+
+	//# Per-desktop pinned apps #//
+
+	public void setCurrentDesktop (int desktop)
+	{
+		this.repository.setCurrentDesktop (desktop);
+	}
+
+	public int getCurrentDesktop ()
+	{
+		return this.repository.getCurrentDesktop ();
+	}
+
+	public boolean isPerDesktopPins ()
+	{
+		return this.repository.getPerDesktop ();
+	}
+
+	public List<App> pinnedOn (int desktop)
+	{
+		return this.repository.pinnedOn (desktop);
+	}
+
+	public boolean isPinnedOn (App app, int desktop)
+	{
+		return this.repository.isPinnedOn (app, desktop);
+	}
+
+	public int highestPinnedDesktop ()
+	{
+		return this.repository.highestPinnedDesktop ();
+	}
+
+	public void removePinnedDesktop (int desktop)
+	{
+		this.repository.removePinnedDesktop (desktop);
+	}
+
+	public void loadPinnedApps ()
+	{
+		this.repository.loadPinnedApps ();
+	}
+
+	public void onLauncherPageScroll (int fromPage, int toPage, float fraction)
+	{
+		this.getBinder ().onPageScroll (fromPage, toPage, fraction);
+	}
+
+	public void onLauncherPageSettled (int page)
+	{
+		this.getBinder ().showDesktop (page);
 	}
 
 	public void savePinnedApps ()
