@@ -61,11 +61,11 @@ public class ExceptionHandler {
 	{
 		try
 		{
-			AlertDialog.Builder dlg = new AlertDialog.Builder (context);
+			AlertDialog.Builder dlg = new AlertDialog.Builder (context, R.style.ModernDialogTheme);
 			dlg.setTitle ("(╯°□°）╯︵ ┻━┻");
 			dlg.setMessage (message);
 			dlg.setCancelable (true);
-			dlg.setNeutralButton ("OK", null);
+			dlg.setNeutralButton (android.R.string.ok, null);
 
 			dlg.show ();
 		}

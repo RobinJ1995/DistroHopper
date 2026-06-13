@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- A single selectable widget row in the widget picker. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
-    android:paddingLeft="24dp"
-    android:paddingRight="8dp">
+    android:background="@drawable/dialog_list_item_background"
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:paddingLeft="12dp"
+    android:paddingRight="16dp">
 
     <ImageView
         android:id="@+id/imgPreview"
-        android:layout_width="96dp"
-        android:layout_height="64dp"
-        android:layout_marginRight="8dp"
+        android:layout_width="104dp"
+        android:layout_height="72dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/dialog_preview_background"
+        android:padding="6dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter" />
 
@@ -21,5 +27,7 @@
         android:id="@+id/tvName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        android:textColor="@color/dialog_on_surface"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif" />
 </LinearLayout>

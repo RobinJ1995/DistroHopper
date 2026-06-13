@@ -1,6 +1,5 @@
 package be.robinj.distrohopper.desktop.dash.lens
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -8,6 +7,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
+import androidx.appcompat.app.AlertDialog
+import be.robinj.distrohopper.R
 import java.io.BufferedInputStream
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
@@ -95,12 +96,10 @@ abstract class Lens(protected val context: Context) {
     fun showError(message: String?) = this.showDialog(message ?: "", true)
 
     protected fun showDialog(message: String, error: Boolean = false) {
-        val dlg = AlertDialog.Builder(
-            this.context,
-            if (error) AlertDialog.THEME_HOLO_DARK else AlertDialog.THEME_HOLO_LIGHT)
+        val dlg = AlertDialog.Builder(this.context, R.style.ModernDialogTheme)
         dlg.setMessage(message)
         dlg.setCancelable(true)
-        dlg.setNeutralButton("OK", null)
+        dlg.setNeutralButton(android.R.string.ok, null)
         dlg.show()
     }
 
