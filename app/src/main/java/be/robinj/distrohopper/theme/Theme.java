@@ -14,6 +14,14 @@ public abstract class Theme
 	public String description;
 	public boolean dev_only = false;
 
+	/*
+	 * Panel-less themes (Budgie) have no panel to drive the status bar, so the
+	 * status bar instead follows the launcher edge: opaque (statusbar_background)
+	 * when the launcher is at the top, transparent otherwise. Off by default so
+	 * panelled themes keep the panel-based resolution below.
+	 */
+	public boolean statusbar_follows_launcher_edge = false;
+
 	/** The distro's brand/accent colour (used by the theme picker cards). */
 	public int card_colour;
 
@@ -78,6 +86,14 @@ public abstract class Theme
 	public int dash_background_gradient;
 	public int dash_background_dynamic;
 	public int dash_background;
+	/*
+	 * Optional per-launcher-edge dash backgrounds, as a 5-element drawable
+	 * array indexed by Location.n ([none, top, right, bottom, left]); used by
+	 * themes whose dash carries a directional element such as Budgie's ear,
+	 * which must point at the BFB on whichever edge the launcher sits. 0 (the
+	 * default) means the single dash_background is used for every edge.
+	 */
+	public int dash_background_edge;
 	public int dash_applauncher_text_colour;
 	public int dash_applauncher_text_shadow_colour;
 	public int dash_customise_text_colour;
@@ -117,6 +133,13 @@ public abstract class Theme
 						res.getInteger (this.launcher_location));
 				panelEdge = launcherEdge == Location.TOP.n ? Location.BOTTOM.n : Location.TOP.n;
 			}
+		}
+		else if (this.statusbar_follows_launcher_edge)
+		{
+			final int launcherEdge = prefs.getInt (Preference.LAUNCHER_EDGE.getName (),
+					res.getInteger (this.launcher_location));
+			return launcherEdge == Location.TOP.n
+					? this.statusbar_background : this.statusbar_background_when_panel_not_top;
 		}
 
 		if (panelEdge != Location.TOP.n)

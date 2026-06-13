@@ -2,6 +2,7 @@ package be.robinj.distrohopper.theme
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import org.junit.Assert.*
@@ -55,5 +56,32 @@ class ThemeTest {
         prefs.edit().putInt(Preference.PANEL_EDGE.getName(), Location.NONE.n).commit()
         assertEquals(Location.of(context.resources.getInteger(theme.launcher_preferences_location_when_panel_hidden)),
             theme.lalPreferences_getLocation(context.resources, prefs))
+    }
+
+    @Test fun panelLessThemeStatusBarFollowsLauncherEdge() {
+        val theme = Budgie(); val prefs = Preferences.getSharedPreferences(context)
+        // No panel: the status bar is opaque only when the launcher is at the top.
+        prefs.edit().putInt(Preference.LAUNCHER_EDGE.getName(), Location.TOP.n).commit()
+        assertEquals(theme.statusbar_background,
+            theme.statusbar_background_resolved(context.resources, prefs))
+
+        prefs.edit().putInt(Preference.LAUNCHER_EDGE.getName(), Location.BOTTOM.n).commit()
+        assertEquals(theme.statusbar_background_when_panel_not_top,
+            theme.statusbar_background_resolved(context.resources, prefs))
+    }
+
+    @Test fun budgieDashEarFollowsTheLauncherEdge() {
+        // The per-edge dash array is indexed by Location.n, so each launcher
+        // edge picks the variant whose ear faces it (NONE falls back to bottom).
+        val arr = context.resources.obtainTypedArray(Budgie().dash_background_edge)
+        try {
+            assertEquals(R.drawable.theme_budgie_res_dash_background_bottom, arr.getResourceId(Location.NONE.n, 0))
+            assertEquals(R.drawable.theme_budgie_res_dash_background_top, arr.getResourceId(Location.TOP.n, 0))
+            assertEquals(R.drawable.theme_budgie_res_dash_background_right, arr.getResourceId(Location.RIGHT.n, 0))
+            assertEquals(R.drawable.theme_budgie_res_dash_background_bottom, arr.getResourceId(Location.BOTTOM.n, 0))
+            assertEquals(R.drawable.theme_budgie_res_dash_background_left, arr.getResourceId(Location.LEFT.n, 0))
+        } finally {
+            arr.recycle()
+        }
     }
 }

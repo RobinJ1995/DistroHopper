@@ -54,10 +54,19 @@ class WallpaperColourApplier(
 			llLauncher.setBackgroundResource(launcherBackgroundResources.getResourceId(
 				this.edgeController.launcherEdge.n, R.color.transparent))
 
-		if (res.getBoolean(this.theme.dash_background_dynamic))
+		if (res.getBoolean(this.theme.dash_background_dynamic)) {
 			llDash.setBackgroundColor(bgColour)
-		else
+		} else if (this.theme.dash_background_edge != 0) {
+			// A directional dash (Budgie's ear) picks its background by the
+			// launcher edge, falling back to the single dash_background.
+			val perEdge = res.obtainTypedArray(this.theme.dash_background_edge)
+			val edgeRes = perEdge.getResourceId(
+				this.edgeController.launcherEdge.n, this.theme.dash_background)
+			perEdge.recycle()
+			llDash.setBackgroundResource(edgeRes)
+		} else {
 			llDash.setBackgroundResource(this.theme.dash_background)
+		}
 
 		return bgColour
 	}
