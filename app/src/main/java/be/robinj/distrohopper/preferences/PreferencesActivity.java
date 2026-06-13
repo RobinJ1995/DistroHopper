@@ -104,6 +104,8 @@ public class PreferencesActivity extends AppCompatActivity
 
 	public static class PreferencesFragment extends PreferenceFragmentCompat
 	{
+		private PreferenceCategory devCategory;
+
 		@Override
 		public void onCreatePreferences (Bundle savedInstanceState, String rootKey)
 		{
@@ -117,7 +119,7 @@ public class PreferencesActivity extends AppCompatActivity
 			this.addCategory (R.string.pref_header_appearance, R.xml.pref_appearance);
 			this.addCategory (R.string.pref_header_functionality, R.xml.pref_functionality);
 			this.addCategory (R.string.pref_header_advanced, R.xml.pref_advanced);
-			this.addCategory (R.string.pref_header_dev, R.xml.pref_dev);
+			this.devCategory = this.addCategory (R.string.pref_header_dev, R.xml.pref_dev);
 
 			this.initIconPackList ();
 			this.initCrashReportsPreference ();
@@ -251,12 +253,28 @@ public class PreferencesActivity extends AppCompatActivity
 			}
 		}
 
-		private void addCategory (final int titleRes, final int prefsRes)
+		private PreferenceCategory addCategory (final int titleRes, final int prefsRes)
 		{
 			final PreferenceCategory header = new PreferenceCategory (this.requireContext ());
 			header.setTitle (titleRes);
-			this.getPreferenceScreen ().addPreference (header);
+			final androidx.preference.PreferenceScreen screen = this.getPreferenceScreen ();
+			screen.addPreference (header);
+
+			// addPreferencesFromResource appends the inflated preferences to the root
+			// screen; move them under the category header so the whole section can be
+			// shown or hidden as a single unit. //
+			final int firstNew = screen.getPreferenceCount ();
 			this.addPreferencesFromResource (prefsRes);
+			final List<Preference> inflated = new ArrayList<> ();
+			for (int i = firstNew; i < screen.getPreferenceCount (); i++)
+				inflated.add (screen.getPreference (i));
+			for (final Preference child : inflated)
+			{
+				screen.removePreference (child);
+				header.addPreference (child);
+			}
+
+			return header;
 		}
 
 		private void initDevPreference ()
@@ -266,20 +284,25 @@ public class PreferencesActivity extends AppCompatActivity
 			if (pref == null)
 				return;
 
-			if (! pref.isChecked ())
-			{
-				this.clearChildPreferences (be.robinj.distrohopper.preferences.Preference.DEV);
-			}
+			this.applyDeveloperModeVisibility (pref.isChecked ());
 
 			pref.setOnPreferenceChangeListener ((preference, newValue) ->
 			{
-				if (Boolean.FALSE.equals (newValue))
-				{
-					this.clearChildPreferences (be.robinj.distrohopper.preferences.Preference.DEV);
-				}
+				this.applyDeveloperModeVisibility (Boolean.TRUE.equals (newValue));
 
 				return true;
 			});
+		}
+
+		// Only surface the developer options section while developer mode is on;
+		// turning it off also clears any toggles that were left enabled. //
+		private void applyDeveloperModeVisibility (final boolean enabled)
+		{
+			if (this.devCategory != null)
+				this.devCategory.setVisible (enabled);
+
+			if (! enabled)
+				this.clearChildPreferences (be.robinj.distrohopper.preferences.Preference.DEV);
 		}
 
 		private void clearChildPreferences (final be.robinj.distrohopper.preferences.Preference parent)
