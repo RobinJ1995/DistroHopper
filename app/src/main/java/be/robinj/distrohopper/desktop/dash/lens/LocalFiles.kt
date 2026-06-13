@@ -25,14 +25,12 @@ class LocalFiles(context: Context) : Lens(context) {
 
 	// MediaStore ContentResolver query — local, but disk-backed and can be slow
 	// on large media stores, so it is debounced like the network lenses //
-	override fun getType() = LensType.IO
+	override val type = LensType.IO
 
 	override fun requiredPermissions(): Array<String> = Permission.storagePermissions()
 
 	@Throws(IOException::class, JSONException::class)
-	override fun search(str: String, maxResults: Int): List<LensSearchResult> {
-		val results = mutableListOf<LensSearchResult>()
-
+	override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {
 		val projection = arrayOf(
 			MediaStore.Files.FileColumns._ID,
 			MediaStore.Files.FileColumns.DISPLAY_NAME,
@@ -41,12 +39,13 @@ class LocalFiles(context: Context) : Lens(context) {
 		)
 		val selection = "${MediaStore.Files.FileColumns.DISPLAY_NAME} LIKE ?" +
 			" AND ${MediaStore.Files.FileColumns.DISPLAY_NAME} NOT LIKE '.%'"
-		val selectionArgs = arrayOf("%$str%")
+		val selectionArgs = arrayOf("%$query%")
 		val sortOrder = "${MediaStore.Files.FileColumns.DATE_MODIFIED} DESC"
 		val contentUri = MediaStore.Files.getContentUri("external")
 
+		var emitted = 0
 		context.contentResolver.query(contentUri, projection, selection, selectionArgs, sortOrder)?.use { cursor ->
-			while (cursor.moveToNext() && results.size < maxResults) {
+			while (cursor.moveToNext() && emitted < maxResults) {
 				val id = cursor.getLong(0)
 				val name = cursor.getString(1)
 					?: cursor.getString(2)?.let { File(it).name }
@@ -56,11 +55,10 @@ class LocalFiles(context: Context) : Lens(context) {
 
 				val icon = iconForMime(cursor.getString(3))
 				val fileUri = ContentUris.withAppendedId(contentUri, id)
-				results += LensSearchResult(context, name, fileUri.toString(), icon)
+				emitter.emit(LensSearchResult(context, name, fileUri.toString(), icon))
+				emitted++
 			}
 		}
-
-		return results
 	}
 
 	internal fun mimeTypeIconRes(mime: String?): Int = when {

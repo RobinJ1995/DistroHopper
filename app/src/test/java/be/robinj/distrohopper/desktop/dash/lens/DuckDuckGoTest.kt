@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import androidx.test.core.app.ApplicationProvider
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -31,7 +30,7 @@ class DuckDuckGoTest {
         application = ApplicationProvider.getApplicationContext()
     }
 
-    @Test fun searchIntoEmitsEachResultWithItsDownloadedIcon() = runBlocking {
+    @Test fun searchEmitsEachResultWithItsDownloadedIcon() {
         val json = """
             {"RelatedTopics":[
               {"Text":"Result A","FirstURL":"https://a.example","Icon":{"URL":"/a.png"}},
@@ -40,10 +39,7 @@ class DuckDuckGoTest {
         """.trimIndent()
         val lens = FakeDuckDuckGo(application, json)
 
-        val emitted = mutableListOf<LensSearchResult>()
-        lens.searchInto("query", 10, object : LensResultEmitter {
-            override suspend fun emit(result: LensSearchResult) { emitted.add(result) }
-        })
+        val emitted = lens.collect("query", 10).results
 
         assertEquals(listOf("Result A", "Result B"), emitted.map { it.name })
         // Each emitted result already carries its own downloaded icon (the 4x4
@@ -55,7 +51,7 @@ class DuckDuckGoTest {
         }
     }
 
-    @Test fun searchIntoStopsAtMaxResults() = runBlocking {
+    @Test fun searchStopsAtMaxResults() {
         val json = """
             {"RelatedTopics":[
               {"Text":"A","FirstURL":"https://a","Icon":{"URL":"/a.png"}},
@@ -65,12 +61,7 @@ class DuckDuckGoTest {
         """.trimIndent()
         val lens = FakeDuckDuckGo(application, json)
 
-        val emitted = mutableListOf<LensSearchResult>()
-        lens.searchInto("query", 2, object : LensResultEmitter {
-            override suspend fun emit(result: LensSearchResult) { emitted.add(result) }
-        })
-
-        assertEquals(2, emitted.size)
+        assertEquals(2, lens.collect("query", 2).results.size)
     }
 
     /** Serves the canned API JSON for the api.duckduckgo.com call and a 4x4 PNG for icon URLs. */

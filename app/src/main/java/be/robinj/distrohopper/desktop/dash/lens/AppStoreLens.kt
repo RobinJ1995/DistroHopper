@@ -8,6 +8,8 @@ import android.content.pm.PackageManager
  * F-Droid, …).
  */
 abstract class AppStoreLens(context: Context) : Lens(context) {
+    override val type = LensType.NETWORK
+
     /** Whether an app with the given package name is installed on this device. */
     protected fun isInstalled(packageName: String): Boolean =
         try {

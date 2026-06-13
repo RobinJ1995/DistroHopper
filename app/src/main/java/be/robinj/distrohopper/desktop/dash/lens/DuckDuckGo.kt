@@ -13,26 +13,25 @@ import java.net.URLEncoder
 /**
  * Created by robin on 4/11/14.
  */
-open class DuckDuckGo(context: Context) : Lens(context), ProgressiveLens {
+open class DuckDuckGo(context: Context) : Lens(context) {
     init {
-        icon = context.resources.getDrawable(R.drawable.dash_search_lens_duckduckgo)
+        this.icon = context.resources.getDrawable(R.drawable.dash_search_lens_duckduckgo)
     }
+
+    override val type = LensType.NETWORK
 
     override fun getName() = "DuckDuckGo"
 
     override fun getDescription() = "DuckDuckGo search results"
 
-    override fun search(str: String, maxResults: Int): List<LensSearchResult> =
-        topics(str, maxResults).map { toResult(it) }
-
     /**
-     * Each result carries its own downloaded icon, so emitting per-result lets
-     * a result appear as soon as its icon finishes rather than waiting for the
-     * slowest one. Downloads stay sequential (one lens, one thread) — the win
-     * is incremental display, not parallelism.
+     * Each result carries its own downloaded icon, so emitting per-result lets a
+     * result appear as soon as its icon finishes rather than waiting for the
+     * slowest one. Downloads stay sequential (one lens, one thread) — the win is
+     * incremental display, not parallelism.
      */
-    override suspend fun searchInto(str: String, maxResults: Int, emitter: LensResultEmitter) {
-        for (topic in topics(str, maxResults)) {
+    override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {
+        for (topic in topics(query, maxResults)) {
             val result = toResult(topic) // resultIcon() blocks on the icon download here //
             currentCoroutineContext().ensureActive()
             emitter.emit(result)
@@ -77,7 +76,7 @@ open class DuckDuckGo(context: Context) : Lens(context), ProgressiveLens {
         var url = topic.optJSONObject("Icon")?.optString("URL", "") ?: ""
 
         if (url.isEmpty()) {
-            return icon
+            return icon!!
         }
         if (url.startsWith("/")) { // The API returns paths relative to duckduckgo.com //
             url = "https://duckduckgo.com$url"
@@ -86,9 +85,11 @@ open class DuckDuckGo(context: Context) : Lens(context), ProgressiveLens {
         return try {
             downloadImage(url)
         } catch (ex: IOException) {
-            icon
+            icon!!
         }
     }
+
+    override fun onClick(url: String) = this.openInBrowser(url)
 
     companion object {
         private const val API = "https://api.duckduckgo.com/?q={:QUERY:}&format=json"

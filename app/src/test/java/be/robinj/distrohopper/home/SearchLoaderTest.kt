@@ -13,7 +13,6 @@ import be.robinj.distrohopper.desktop.dash.lens.LensResultEmitter
 import be.robinj.distrohopper.desktop.dash.lens.LensSearchResult
 import be.robinj.distrohopper.desktop.dash.lens.LensSearchResultCollection
 import be.robinj.distrohopper.desktop.dash.lens.LensType
-import be.robinj.distrohopper.desktop.dash.lens.ProgressiveLens
 import be.robinj.distrohopper.thirdparty.ProgressWheel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitCancellation
@@ -144,33 +143,35 @@ class SearchLoaderTest {
             View.VISIBLE, fixture.wheel.visibility)
     }
 
-    /** Instant, in-memory LOCAL lens returning a single result. */
+    /** Instant, in-memory LOCAL lens emitting a single result. */
     private class LocalLens(context: Context) : Lens(context) {
         override fun getName() = "Local"
         override fun getDescription() = "local"
-        override fun getType() = LensType.LOCAL
-        override fun search(str: String, maxResults: Int) =
-            listOf(LensSearchResult(context, "app", "app://x", ColorDrawable(0)))
+        override val type = LensType.LOCAL
+        override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {
+            emitter.emit(LensSearchResult(context, "app", "app://x", ColorDrawable(0)))
+        }
     }
 
-    /** Non-progressive NETWORK lens (default type) that records when it was searched. */
+    /** NETWORK lens that records when it was searched. */
     private class FlagNetworkLens(context: Context) : Lens(context) {
         var searched = false
         override fun getName() = "Flag"
         override fun getDescription() = "flag"
-        override fun search(str: String, maxResults: Int): List<LensSearchResult> {
+        override val type = LensType.NETWORK
+        override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {
             searched = true
-            return listOf(LensSearchResult(context, "n", "http://n", ColorDrawable(0)))
+            emitter.emit(LensSearchResult(context, "n", "http://n", ColorDrawable(0)))
         }
     }
 
-    /** NETWORK ProgressiveLens that starts then hangs, keeping the search running. */
-    private class SuspendingNetworkLens(context: Context) : Lens(context), ProgressiveLens {
+    /** NETWORK lens that starts then hangs, keeping the search running. */
+    private class SuspendingNetworkLens(context: Context) : Lens(context) {
         @Volatile var started = false
         override fun getName() = "Net"
         override fun getDescription() = "net"
-        override fun search(str: String, maxResults: Int): List<LensSearchResult> = emptyList()
-        override suspend fun searchInto(str: String, maxResults: Int, emitter: LensResultEmitter) {
+        override val type = LensType.NETWORK
+        override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {
             started = true
             awaitCancellation()
         }

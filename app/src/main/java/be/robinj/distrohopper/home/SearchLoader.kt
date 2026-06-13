@@ -10,9 +10,9 @@ import be.robinj.distrohopper.desktop.dash.lens.LensResultEmitter
 import be.robinj.distrohopper.desktop.dash.lens.LensSearchResult
 import be.robinj.distrohopper.desktop.dash.lens.LensSearchResultCollection
 import be.robinj.distrohopper.desktop.dash.lens.LensType
-import be.robinj.distrohopper.desktop.dash.lens.ProgressiveLens
 import be.robinj.distrohopper.thirdparty.ProgressWheel
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
@@ -39,8 +39,9 @@ import kotlinx.coroutines.withContext
  *     on every keystroke;
  *   - IO and NETWORK lenses run only after a short debounce, coalescing bursts
  *     of typing;
- *   - a ProgressiveLens (DuckDuckGo) streams its results one at a time as each
- *     finishes, instead of after the slowest one.
+ *   - every lens streams its results one at a time through a [LensResultEmitter]
+ *     as each finishes (e.g. DuckDuckGo emits each result as its icon
+ *     downloads), instead of after the slowest one.
  */
 class SearchLoader(
     private val activity: HomeActivity,
@@ -51,7 +52,7 @@ class SearchLoader(
     /**
      * Starts a fresh search, cancelling any in-flight one. [results] is the
      * list backing [adapter] (owned by LensManager); it must already be cleared.
-     * Collections are appended in processing order: LOCAL lenses first, then the
+     * Sections are appended in processing order: LOCAL lenses first, then the
      * debounced IO/NETWORK lenses, each group in enabled order.
      */
     fun start(
@@ -114,7 +115,7 @@ class SearchLoader(
         this.job = null
     }
 
-    /** Searches one lens and appends its results, swallowing failures into an error section. */
+    /** Searches one lens, streaming its results, and turns a failure into an error section. */
     private suspend fun runLens(
         lens: Lens,
         pattern: String,
@@ -123,48 +124,25 @@ class SearchLoader(
         results: MutableList<LensSearchResultCollection>,
     ) {
         try {
-            if (lens is ProgressiveLens) {
-                val emitter = CollectionEmitter(lens, adapter, results, maxResults)
-                withContext(this.dispatchers.io) {
-                    lens.searchInto(pattern, maxResults, emitter)
-                }
-            } else {
-                val collections = withContext(this.dispatchers.io) {
-                    lens.searchCollections(pattern, maxResults)
-                }
-                for (collection in collections) {
-                    currentCoroutineContext().ensureActive()
-                    appendCollection(collection, maxResults, adapter, results)
-                }
+            val emitter = CollectionEmitter(lens, adapter, results, maxResults)
+            withContext(this.dispatchers.io) {
+                lens.search(pattern, maxResults, emitter)
             }
         } catch (ex: CancellationException) {
             throw ex
         } catch (ex: Exception) {
             currentCoroutineContext().ensureActive()
-            appendCollection(LensSearchResultCollection(lens, ex), maxResults, adapter, results)
+            appendErrorSection(LensSearchResultCollection(lens, ex), adapter, results)
         }
     }
 
-    /** Appends a whole collection (non-progressive lenses, errors). Runs on the main thread. */
-    private fun appendCollection(
+    /** Appends an error section (null results, rendered as a synthetic error tile). On the main thread. */
+    private fun appendErrorSection(
         collection: LensSearchResultCollection,
-        maxResults: Int,
         adapter: CollectionGridAdapter,
         results: MutableList<LensSearchResultCollection>,
     ) {
-        if (collection.exception != null) {
-            results.add(collection) // error sections have null results but still render //
-        } else {
-            val items = collection.results
-            if (items == null || items.isEmpty()) {
-                return
-            }
-            results.add(
-                if (items.size > maxResults)
-                    LensSearchResultCollection(collection.lens, collection.name, items.subList(0, maxResults))
-                else collection
-            )
-        }
+        results.add(collection)
         adapter.notifyDataSetChanged()
     }
 
@@ -172,10 +150,10 @@ class SearchLoader(
         if (total == 0) 0 else Math.round(completed.toFloat() / total.toFloat() * 360f)
 
     /**
-     * Receives a ProgressiveLens's results one at a time, materialising the
-     * lens's section on the first emit and appending to its live result list
-     * thereafter. Every mutation is marshalled to the main thread and honours
-     * cancellation, so a stale search stops touching the adapter.
+     * Receives a lens's results one at a time, materialising each section on its
+     * first result and appending to that section's live list thereafter. Every
+     * mutation is marshalled to the main thread (inline when already there) and
+     * honours cancellation, so a stale search stops touching the adapter.
      */
     private inner class CollectionEmitter(
         private val lens: Lens,
@@ -183,24 +161,36 @@ class SearchLoader(
         private val results: MutableList<LensSearchResultCollection>,
         private val maxResults: Int,
     ) : LensResultEmitter {
-        private val items = mutableListOf<LensSearchResult>()
-        private var emitted = false
+        // Keyed by section name; null is the lens's default (lens-named) section.
+        private val sections = LinkedHashMap<String?, MutableList<LensSearchResult>>()
 
-        override suspend fun emit(result: LensSearchResult) {
-            withContext(this@SearchLoader.dispatchers.main) {
+        override suspend fun emit(result: LensSearchResult) = emitInto(null, result)
+
+        override suspend fun emit(sectionName: String, result: LensSearchResult) =
+            emitInto(sectionName, result)
+
+        private suspend fun emitInto(sectionName: String?, result: LensSearchResult) {
+            // .immediate so that a LOCAL lens running inline on the main thread
+            // applies its results without waiting for the next looper turn //
+            withContext(Dispatchers.Main.immediate) {
                 currentCoroutineContext().ensureActive()
 
-                if (this@CollectionEmitter.items.size >= this@CollectionEmitter.maxResults) {
+                val items = this@CollectionEmitter.sections.getOrPut(sectionName) {
+                    mutableListOf<LensSearchResult>().also { fresh ->
+                        // The section shares this live list, so later adds show too //
+                        this@CollectionEmitter.results.add(
+                            if (sectionName == null)
+                                LensSearchResultCollection(this@CollectionEmitter.lens, fresh)
+                            else
+                                LensSearchResultCollection(this@CollectionEmitter.lens, sectionName, fresh))
+                    }
+                }
+
+                if (items.size >= this@CollectionEmitter.maxResults) {
                     return@withContext
                 }
 
-                this@CollectionEmitter.items.add(result)
-                if (!this@CollectionEmitter.emitted) {
-                    this@CollectionEmitter.emitted = true
-                    // The collection shares the live items list, so later adds show too //
-                    this@CollectionEmitter.results.add(
-                        LensSearchResultCollection(this@CollectionEmitter.lens, this@CollectionEmitter.items))
-                }
+                items.add(result)
                 this@CollectionEmitter.adapter.notifyDataSetChanged()
             }
         }

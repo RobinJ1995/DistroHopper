@@ -33,11 +33,11 @@ open class FDroid(context: Context) : AppStoreLens(context) {
     override fun getDescription(): String = "F-Droid open source app search results"
 
     @Throws(IOException::class, JSONException::class)
-    override fun search(str: String, maxResults: Int): List<LensSearchResult> {
-        val apiResults = fetchSearch(api.replace("{:QUERY:}", URLEncoder.encode(str, "UTF-8")))
+    override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {
+        val apiResults = fetchSearch(api.replace("{:QUERY:}", URLEncoder.encode(query, "UTF-8")))
 
         val apps = JSONObject(apiResults).getJSONArray("apps")
-        val results = ArrayList<LensSearchResult>()
+        var emitted = 0
 
         for (i in 0 until apps.length()) {
             val app = apps.getJSONObject(i)
@@ -59,16 +59,14 @@ open class FDroid(context: Context) : AppStoreLens(context) {
 
             // Normalise to the language-neutral package page so the F-Droid
             // client's deep link recognises it.
-            results.add(
+            emitter.emit(
                 LensSearchResult(context, app.getString("name"), "https://f-droid.org/packages/${pkg.group(1)}/", resultIcon)
             )
 
-            if (results.size >= maxResults) {
+            if (++emitted >= maxResults) {
                 break
             }
         }
-
-        return results
     }
 
     /**
@@ -98,7 +96,7 @@ open class FDroid(context: Context) : AppStoreLens(context) {
         try {
             context.startActivity(intent)
         } catch (ex: ActivityNotFoundException) {
-            super.onClick(url)
+            openInBrowser(url) // Fall back to the browser if F-Droid isn't installed.
         }
     }
 
