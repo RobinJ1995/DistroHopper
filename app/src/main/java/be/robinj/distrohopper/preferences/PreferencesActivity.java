@@ -26,6 +26,7 @@ import java.util.Map;
 import org.acra.ACRA;
 
 import be.robinj.distrohopper.AboutActivity;
+import be.robinj.distrohopper.AppRestart;
 import be.robinj.distrohopper.BuildConfig;
 import be.robinj.distrohopper.ContributeActivity;
 import be.robinj.distrohopper.DependencyContainer;
@@ -225,6 +226,26 @@ public class PreferencesActivity extends AppCompatActivity
 						try
 						{
 							startActivity (HomeRole.requestIntent (requireContext ()));
+						}
+						catch (Exception ex)
+						{
+							new ExceptionHandler (ex).show (requireActivity ());
+						}
+
+						return true;
+					}
+				}
+			);
+
+			this.findPreference ("dummy_full_restart").setOnPreferenceClickListener (
+				new Preference.OnPreferenceClickListener ()
+				{
+					@Override
+					public boolean onPreferenceClick (Preference preference)
+					{
+						try
+						{
+							AppRestart.restart (requireContext ());
 						}
 						catch (Exception ex)
 						{

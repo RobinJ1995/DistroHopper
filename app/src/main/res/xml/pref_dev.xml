@@ -39,6 +39,12 @@
 		android:dependency="dev"
 		android:title="@string/option_clear_cache" />
 
+	<Preference
+		android:key="dummy_full_restart"
+		android:dependency="dev"
+		android:title="@string/option_full_restart"
+		android:summary="@string/hint_full_restart" />
+
 	<!--<CheckBoxPreference
 		android:key="launcher_running_show"
 		android:dependency="dev"
