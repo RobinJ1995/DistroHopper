@@ -67,10 +67,10 @@
 			android:background="@drawable/panel_background"
 			android:orientation="horizontal">
 
-			<!-- GNOME-style workspace pill; populated and shown only while the
-			     dash is open with more than one workspace -->
+			<!-- GNOME-style profile pill; populated and shown only while the
+			     dash is open with more than one profile -->
 			<FrameLayout
-				android:id="@+id/llPanelWorkspaceIndicator"
+				android:id="@+id/llPanelProfileIndicator"
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
 				android:paddingLeft="8dp"
@@ -318,33 +318,16 @@
 								    android:id="@+id/llDashHomeApps">
 								</LinearLayout>-->
 
-								<LinearLayout
-									android:id="@+id/llDashHomeAppsGridWrapper"
-									android:layout_width="match_parent"
-									android:layout_height="wrap_content"
-									android:layout_gravity="center"
-									android:focusableInTouchMode="false"
-									android:orientation="vertical">
-
-									<GridView
-										android:id="@+id/gvDashHomeApps"
-										android:layout_width="match_parent"
-										android:layout_height="match_parent"
-										android:choiceMode="singleChoice"
-										android:columnWidth="@dimen/dash_applauncher_width"
-										android:gravity="center"
-										android:numColumns="auto_fit" />
-								</LinearLayout>
-
-								<!-- Swipeable per-workspace app grids (personal/work
-								     profile); replaces gvDashHomeApps when more than one
-								     workspace exists -->
+								<!-- The dash app grid: always a ViewPager2 with one
+								     swipeable page per profile (a single page in the
+								     usual single-profile case). Each page's grid carries
+								     the gvDashHomeApps id so the genie animation and icon-
+								     width theming resolve the current page. -->
 								<androidx.viewpager2.widget.ViewPager2
-									android:id="@+id/vpDashWorkspaces"
+									android:id="@+id/vpDashProfiles"
 									android:layout_width="match_parent"
 									android:layout_height="0dp"
-									android:layout_weight="1"
-									android:visibility="gone" />
+									android:layout_weight="1" />
 							</LinearLayout>
 
 							<LinearLayout
@@ -419,9 +402,9 @@
 						android:visibility="gone" />
 
 					<!-- Unity-style per-profile tab icons; populated and shown only
-					     when more than one workspace exists -->
+					     when more than one profile exists -->
 					<LinearLayout
-						android:id="@+id/llDashRibbonWorkspaces"
+						android:id="@+id/llDashRibbonProfiles"
 						android:layout_width="wrap_content"
 						android:layout_height="match_parent"
 						android:layout_weight="0"

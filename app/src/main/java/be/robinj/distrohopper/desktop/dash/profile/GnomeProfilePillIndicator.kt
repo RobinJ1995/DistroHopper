@@ -1,4 +1,4 @@
-package be.robinj.distrohopper.desktop.dash.workspace
+package be.robinj.distrohopper.desktop.dash.profile
 
 import android.content.Context
 import android.os.UserHandle
@@ -7,18 +7,18 @@ import android.view.View
 import android.widget.FrameLayout
 
 /**
- * GNOME-style workspace indicator: a [WorkspacePillView] at the panel's
- * top-left, shown only while the dash is open (and more than one workspace
+ * GNOME-style profile indicator: a [ProfilePillView] at the panel's
+ * top-left, shown only while the dash is open (and more than one profile
  * exists). The pill reflects and animates the current dash page; tapping a
  * slot switches to that profile.
  */
-class GnomeWorkspacePillIndicator(
+class GnomeProfilePillIndicator(
 	context: Context,
 	private val container: FrameLayout,
 	private val onSelect: (Int) -> Unit,
-) : WorkspaceIndicator {
-	private val pill = WorkspacePillView(context)
-	private var hasMultipleWorkspaces = false
+) : ProfileIndicator {
+	private val pill = ProfilePillView(context)
+	private var hasMultipleProfiles = false
 	private var dashOpen = false
 
 	init {
@@ -30,9 +30,9 @@ class GnomeWorkspacePillIndicator(
 		this.pill.onSlotClick = { this.onSelect(it) }
 	}
 
-	override fun bind(workspaces: List<UserHandle?>, selected: Int) {
-		this.hasMultipleWorkspaces = workspaces.size > 1
-		this.pill.count = workspaces.size
+	override fun bind(profiles: List<UserHandle?>, selected: Int) {
+		this.hasMultipleProfiles = profiles.size > 1
+		this.pill.count = profiles.size
 		this.pill.position = selected.toFloat()
 		this.updateVisibility()
 	}
@@ -52,11 +52,11 @@ class GnomeWorkspacePillIndicator(
 
 	private fun updateVisibility() {
 		this.container.visibility =
-			if (this.hasMultipleWorkspaces && this.dashOpen) View.VISIBLE else View.GONE
+			if (this.hasMultipleProfiles && this.dashOpen) View.VISIBLE else View.GONE
 	}
 
 	override fun clear() {
-		this.hasMultipleWorkspaces = false
+		this.hasMultipleProfiles = false
 		this.updateVisibility()
 	}
 }

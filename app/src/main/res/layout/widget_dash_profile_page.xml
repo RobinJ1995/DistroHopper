@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- One page of the dash workspace pager: a single profile's app grid,
-     identical to the standard dash grid. -->
+<!-- One page of the dash profile pager: a single profile's app grid,
+     identical to the standard dash grid. Carries the gvDashHomeApps id so the
+     genie animation, layout transition and icon-width theming resolve the
+     current page (only the current page is attached when the pager is idle). -->
 <GridView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/gvWorkspacePage"
+    android:id="@+id/gvDashHomeApps"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:choiceMode="singleChoice"

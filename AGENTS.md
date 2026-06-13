@@ -50,8 +50,8 @@ etc/                                        — design assets (SVG/XCF sources, 
     `home/LauncherBarBinder` (resolved lazily so AppManager can be
     constructed on a background thread). Prefer `AppRepository` directly
     in new model-level code.
-  - `App`, `Application`, `AppComparatorAlphabetical` — app model classes. `App` usually wraps a PackageManager `ResolveInfo`, but can also wrap a `LauncherActivityInfo` for apps in another profile (see Workspaces below), or represent DistroHopper-owned internal shortcuts that live only in the dash (currently the settings shortcut) and launch by explicit in-app intent rather than a public launcher component. Internal shortcut intents must not set `FLAG_ACTIVITY_NEW_TASK` (the target shares the home task's affinity, so it would only bring the home task to the front); the settings shortcut launches via `startActivityForResult` so `HomeActivity.onActivityResult` can handle the Customise UI result.
-  - **Workspaces (work profile support)**: `Workspaces` wraps the profile
+  - `App`, `Application`, `AppComparatorAlphabetical` — app model classes. `App` usually wraps a PackageManager `ResolveInfo`, but can also wrap a `LauncherActivityInfo` for apps in another profile (see Profiles below), or represent DistroHopper-owned internal shortcuts that live only in the dash (currently the settings shortcut) and launch by explicit in-app intent rather than a public launcher component. Internal shortcut intents must not set `FLAG_ACTIVITY_NEW_TASK` (the target shares the home task's affinity, so it would only bring the home task to the front); the settings shortcut launches via `startActivityForResult` so `HomeActivity.onActivityResult` can handle the Customise UI result.
+  - **Profiles (work profile support)**: `Profiles` wraps the profile
     helpers (LauncherApps profile listing, labels, persistence serials).
     Throughout the model a null `UserHandle` means the personal profile;
     `App.getUser()` is set only for apps in other profiles (work profile),
@@ -59,25 +59,37 @@ etc/                                        — design assets (SVG/XCF sources, 
     (LauncherApps), launch via `LauncherApps.startMainActivity`, get the
     profile badge on their icon, and participate in `App.equals` (the same
     package can exist in both profiles). Persistence/cache keys use
-    `App.getWorkspaceScopedKey()` — identical to the old
+    `App.getProfileScopedKey()` — identical to the old
     package+activity key for personal apps, with the profile serial
-    appended otherwise (so old pinned-app prefs keep matching). When more
-    than one workspace exists, the dash replaces its single app grid with a
-    swipeable per-workspace pager (`desktop/dash/WorkspacePagerAdapter` in a
-    `ViewPager2`, one `GridView` page per profile) plus a theme-specific tab
-    indicator; with a single workspace it stays the plain grid. All of this
-    is driven by `LauncherBarBinder.bindDashApps`/`rebindDashApps` (which
-    flips between the two layouts as the work profile appears/disappears).
-    The InstalledApps lens likewise splits its results into one section per
-    workspace (`Lens.searchCollections`) while staying one lens.
-    The tab indicator is chosen per theme via the `workspace_indicator`
-    integer (`theme/WorkspaceIndicatorStyle`, like `dash_animation`):
+    appended otherwise (so old pinned-app prefs keep matching). The
+    InstalledApps lens splits its results into one section per profile
+    (`Lens.searchCollections`) while staying one lens.
+    **Dash apps are always a `ViewPager2`** (`desktop/dash/ProfilePagerAdapter`,
+    one `GridView` page per profile — a single page in the usual single-
+    profile case, so it looks/behaves like the plain grid). This is the one
+    consistent layout (no grid-vs-pager swap); `LauncherBarBinder.bindDashApps`/
+    `rebindDashApps` rebuild it, and a tab indicator appears once there is
+    more than one profile. Note the pager's pages are laid out lazily and the
+    dash sits in a `GONE` container when closed, so the current page's grid
+    only exists while the dash is open; it carries the `gvDashHomeApps` id and,
+    because only the current page is attached when the pager is idle,
+    `findViewById(R.id.gvDashHomeApps)` resolves to it — that's how `DashAnimator`
+    (the genie) and `ThemeApplier` reach the live grid (both null-safe for when
+    it isn't laid out yet). The per-page `LayoutTransition` is set in the adapter
+    (it can't be in `LayoutTransitionConfigurer`, which runs before any page
+    exists). Tests force the lazy layout via `ActivityTestSupport.layoutDashApps`.
+    The tab indicator is chosen per theme via the `profile_indicator`
+    integer (`theme/ProfileIndicatorStyle`, like `dash_animation`):
     `UNITY_RIBBON` (Unity/Default) puts per-profile glyphs in the always-
-    visible dash ribbon (`desktop/dash/workspace/UnityRibbonIndicator`),
-    `GNOME_PANEL` (Gnome) draws a workspace pill at the panel's top-left,
-    shown only while the dash is open (`GnomeWorkspacePillIndicator` +
-    the custom-drawn `WorkspacePillView`); other themes are `NONE` for now.
-    Indicators implement `desktop/dash/workspace/WorkspaceIndicator` and are
+    visible dash ribbon (`desktop/dash/profile/UnityRibbonIndicator`),
+    `GNOME_PANEL` (Gnome) draws a profile pill at the panel's top-left,
+    shown only while the dash is open (`GnomeProfilePillIndicator` +
+    the custom-drawn `ProfilePillView`); other themes are `NONE` for now.
+    Glyph indicators badge the generic `ic_profile` glyph with the system
+    profile badge via `getUserBadgedIcon` (correct for work/private/clone
+    profiles); the personal profile uses the theme's
+    `profile_indicator_personal_glyph` (the house glyph for Unity).
+    Indicators implement `desktop/dash/profile/ProfileIndicator` and are
     driven by the pager's page-scroll callback so the highlight/pill animates
     with the swipe; the dash-open signal reaches them via
     `AppManager.setDashOpen` (wired from `HomeStateBinder`'s `dashOpen` flow).
@@ -175,7 +187,7 @@ etc/                                        — design assets (SVG/XCF sources, 
     enabling one in the preferences re-requests them. A lens returns its
     results as one or more named `LensSearchResultCollection`s (sections)
     via `searchCollections()` — the default wraps `search()` in a single
-    collection; `InstalledApps` overrides it to return one per workspace
+    collection; `InstalledApps` overrides it to return one per profile
     when a work profile exists, while remaining a single lens in the
     preferences.
 - **`onboarding/`** — the first-run wizard. `OnboardingActivity` is a

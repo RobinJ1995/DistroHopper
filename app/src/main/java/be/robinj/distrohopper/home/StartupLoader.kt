@@ -76,7 +76,7 @@ class StartupLoader(
 
 				appManager.refreshPinnedView()
 
-				// Single grid, or one labelled section per workspace (work profile) //
+				// Single grid, or one labelled section per profile (work profile) //
 				appManager.bindDashApps(displayDensity, dashIconWidth)
 
 				this@StartupLoader.activity.asyncLoadInstalledAppsDone(appManager)

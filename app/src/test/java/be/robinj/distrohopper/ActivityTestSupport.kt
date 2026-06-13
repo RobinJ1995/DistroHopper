@@ -11,8 +11,11 @@ import android.content.pm.LauncherApps
 import android.content.pm.ResolveInfo
 import android.os.UserHandle
 import android.os.UserManager
+import android.view.View
+import android.widget.GridView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.viewpager2.widget.ViewPager2
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import kotlinx.coroutines.Dispatchers
@@ -169,6 +172,24 @@ internal object ActivityTestSupport {
                 override val default = Dispatchers.Unconfined
             }
     }
+
+    /**
+     * Forces the dash apps ViewPager2 to measure and lay out so its current
+     * page (the GridView carrying the gvDashHomeApps id) exists. ViewPager2
+     * pages are created lazily on layout, which Robolectric does not do on its
+     * own, so tests that need the dash grid call this first.
+     */
+    fun layoutDashApps(activity: HomeActivity) {
+        val vp = activity.findViewById<ViewPager2>(R.id.vpDashProfiles) ?: return
+        vp.measure(
+            View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.makeMeasureSpec(1600, View.MeasureSpec.EXACTLY))
+        vp.layout(0, 0, 1080, 1600)
+    }
+
+    /** The dash apps grid of the pager's current page (after [layoutDashApps]). */
+    fun dashGrid(activity: HomeActivity): GridView? =
+        activity.findViewById(R.id.gvDashHomeApps)
 
     fun drainTasks() {
         // The background scheduler only exists under the LEGACY looper; animator-driven

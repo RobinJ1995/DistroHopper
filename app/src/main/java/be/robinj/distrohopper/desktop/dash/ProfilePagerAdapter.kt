@@ -1,5 +1,6 @@
 package be.robinj.distrohopper.desktop.dash
 
+import android.animation.LayoutTransition
 import android.os.UserHandle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -11,23 +12,23 @@ import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 
 /**
- * Backs the dash workspace ViewPager2: one page per workspace, each a GridView
- * identical to the standard dash grid but scoped to that workspace's apps.
- * One GridAdapter is kept per workspace so app changes refresh in place
+ * Backs the dash profile ViewPager2: one page per profile, each a GridView
+ * identical to the standard dash grid but scoped to that profile's apps.
+ * One GridAdapter is kept per profile so app changes refresh in place
  * (preserving each page's scroll) and column-width changes apply live to the
  * pages currently attached.
  */
-class WorkspacePagerAdapter(
+class ProfilePagerAdapter(
 	private val activity: HomeActivity,
 	private val appManager: AppManager,
-	private val workspaces: List<UserHandle?>,
+	private val profiles: List<UserHandle?>,
 	private val displayDensity: Float,
 	private var dashIconWidth: Int,
-) : RecyclerView.Adapter<WorkspacePagerAdapter.PageViewHolder>() {
+) : RecyclerView.Adapter<ProfilePagerAdapter.PageViewHolder>() {
 
-	private val gridAdapters: List<GridAdapter> = this.workspaces.map { workspace ->
+	private val gridAdapters: List<GridAdapter> = this.profiles.map { profile ->
 		GridAdapter(this.activity.applicationContext,
-			ArrayList(this.appManager.repository.appsForWorkspace(workspace)),
+			ArrayList(this.appManager.repository.appsForProfile(profile)),
 			this.displayDensity, this.dashIconWidth)
 	}
 
@@ -35,12 +36,20 @@ class WorkspacePagerAdapter(
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PageViewHolder {
 		val grid = LayoutInflater.from(parent.context)
-			.inflate(R.layout.widget_dash_workspace_page, parent, false) as GridView
+			.inflate(R.layout.widget_dash_profile_page, parent, false) as GridView
+
+		// The icon appear/disappear transition that LayoutTransitionConfigurer
+		// used to set on the standalone grid; set per page here since the pages
+		// don't exist when that configurer runs.
+		grid.layoutTransition = LayoutTransition().apply {
+			setDuration(180L)
+			setStartDelay(LayoutTransition.APPEARING, 0)
+		}
 
 		return PageViewHolder(grid)
 	}
 
-	override fun getItemCount(): Int = this.workspaces.size
+	override fun getItemCount(): Int = this.profiles.size
 
 	override fun onBindViewHolder(holder: PageViewHolder, position: Int) {
 		holder.grid.adapter = this.gridAdapters[position]
@@ -51,11 +60,11 @@ class WorkspacePagerAdapter(
 
 	/** Refreshes every page's apps from the repository, preserving page scroll. */
 	fun refresh() {
-		for ((i, workspace) in this.workspaces.withIndex()) {
+		for ((i, profile) in this.profiles.withIndex()) {
 			val adapter = this.gridAdapters[i]
 			adapter.setNotifyOnChange(false)
 			adapter.clear()
-			adapter.addAll(this.appManager.repository.appsForWorkspace(workspace))
+			adapter.addAll(this.appManager.repository.appsForProfile(profile))
 			adapter.notifyDataSetChanged()
 		}
 	}
@@ -82,5 +91,22 @@ class WorkspacePagerAdapter(
 	companion object {
 		fun columnWidthPx(density: Float, dashIconWidth: Int): Int =
 			Math.round((80 + dashIconWidth) * density) // 80 is the minimum //
+
+		/**
+		 * The GridView of the pager's current page, or null if no page is laid
+		 * out yet. Only the current page is attached while the pager is idle, so
+		 * this is also what `findViewById(R.id.gvDashHomeApps)` resolves to.
+		 */
+		fun currentGrid(viewPager: ViewPager2): GridView? {
+			val recycler = viewPager.getChildAt(0) as? RecyclerView ?: return null
+			for (i in 0 until recycler.childCount) {
+				val child = recycler.getChildAt(i)
+				if (recycler.getChildLayoutPosition(child) == viewPager.currentItem) {
+					return child as? GridView
+				}
+			}
+
+			return null
+		}
 	}
 }

@@ -96,7 +96,7 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 
 				Lens lens = lenses.get (i);
 				// A lens may return several collections (sections), e.g. the
-				// InstalledApps lens returns one per workspace //
+				// InstalledApps lens returns one per profile //
 				List<LensSearchResultCollection> collections = new ArrayList<> ();
 
 				try

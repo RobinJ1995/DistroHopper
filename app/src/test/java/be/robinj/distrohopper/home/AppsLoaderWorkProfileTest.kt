@@ -45,7 +45,7 @@ class AppsLoaderWorkProfileTest {
 				TestDrawableCache(activity, cacheName)) { _, _ -> }
 		}
 
-	@Test fun workProfileAppsAreLoadedIntoTheirOwnWorkspace() {
+	@Test fun workProfileAppsAreLoadedIntoTheirOwnProfile() {
 		val workUser = ActivityTestSupport.addWorkProfile()
 		ActivityTestSupport.addWorkProfileApp(
 			workUser, "com.example.work", "WorkChatActivity", "WorkChat")
@@ -56,11 +56,11 @@ class AppsLoaderWorkProfileTest {
 			val workApp = appManager.installedApps.single { it.user != null }
 			assertEquals("WorkChat", workApp.label)
 			assertEquals(workUser, workApp.user)
-			assertEquals(listOf(null, workUser), appManager.workspaces)
+			assertEquals(listOf(null, workUser), appManager.profiles)
 
 			// The personal list keeps the work app out, and vice versa //
-			assertTrue(appManager.repository.appsForWorkspace(null).none { it.user != null })
-			assertEquals(listOf(workApp), appManager.repository.appsForWorkspace(workUser))
+			assertTrue(appManager.repository.appsForProfile(null).none { it.user != null })
+			assertEquals(listOf(workApp), appManager.repository.appsForProfile(workUser))
 		}
 	}
 

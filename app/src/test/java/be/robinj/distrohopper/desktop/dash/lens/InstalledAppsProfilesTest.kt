@@ -11,12 +11,12 @@ import org.robolectric.annotation.LooperMode
 
 /**
  * The InstalledApps lens with a work profile: still a single lens, but its
- * results split into one collection (dash section) per workspace.
+ * results split into one collection (dash section) per profile.
  */
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.LEGACY)
-class InstalledAppsWorkspacesTest {
-	@Test fun resultsAreSplitIntoOneCollectionPerWorkspace() {
+class InstalledAppsProfilesTest {
+	@Test fun resultsAreSplitIntoOneCollectionPerProfile() {
 		val workUser = ActivityTestSupport.addWorkProfile()
 		ActivityTestSupport.addWorkProfileApp(
 			workUser, "com.example.work", "AlphaWorkActivity", "Alpha Work")
@@ -40,7 +40,7 @@ class InstalledAppsWorkspacesTest {
 		}
 	}
 
-	@Test fun workspacesWithoutMatchesGetNoCollection() {
+	@Test fun profilesWithoutMatchesGetNoCollection() {
 		val workUser = ActivityTestSupport.addWorkProfile()
 		ActivityTestSupport.addWorkProfileApp(
 			workUser, "com.example.work", "WorkChatActivity", "WorkChat")
@@ -57,7 +57,7 @@ class InstalledAppsWorkspacesTest {
 		}
 	}
 
-	@Test fun aSingleWorkspaceKeepsTheSingleUnsuffixedCollection() {
+	@Test fun aSingleProfileKeepsTheSingleUnsuffixedCollection() {
 		ActivityTestSupport.launchHome().use { scenario ->
 			scenario.onActivity { activity ->
 				val lens = InstalledApps(activity, activity.appManager)

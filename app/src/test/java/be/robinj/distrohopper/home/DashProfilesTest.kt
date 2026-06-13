@@ -2,14 +2,14 @@ package be.robinj.distrohopper.home
 
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.GridView
 import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
 import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
-import be.robinj.distrohopper.desktop.dash.WorkspacePagerAdapter
-import be.robinj.distrohopper.desktop.dash.workspace.WorkspacePillView
+import be.robinj.distrohopper.desktop.dash.GridAdapter
+import be.robinj.distrohopper.desktop.dash.ProfilePagerAdapter
+import be.robinj.distrohopper.desktop.dash.profile.ProfilePillView
 import be.robinj.distrohopper.preferences.Preference
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -20,51 +20,57 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.LooperMode
 
 /**
- * The dash with a work profile: the single grid is replaced by a swipeable
- * per-workspace pager, with a theme-specific tab indicator (Unity ribbon
- * glyphs / GNOME panel pill).
+ * The dash apps area is always a ViewPager2 — one swipeable page per profile,
+ * a single page in the usual single-profile case — with a theme-specific tab
+ * indicator (Unity ribbon glyphs / GNOME panel pill) once a second profile
+ * exists.
  */
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.LEGACY)
-class DashWorkspacesTest {
-	private fun vp(activity: HomeActivity) =
-		activity.findViewById<ViewPager2>(R.id.vpDashWorkspaces)
+class DashProfilesTest {
+	private fun pager(activity: HomeActivity) =
+		activity.findViewById<ViewPager2>(R.id.vpDashProfiles)
 
-	private fun gridWrapper(activity: HomeActivity) =
-		activity.findViewById<LinearLayout>(R.id.llDashHomeAppsGridWrapper)
+	private fun pageCount(activity: HomeActivity) =
+		(pager(activity).adapter as ProfilePagerAdapter).itemCount
 
-	@Test fun workProfileShowsSwipeablePagerInsteadOfTheSingleGrid() {
+	@Test fun singleProfileIsASingleNonIndicatedPagerPage() {
+		ActivityTestSupport.launchHome().use { scenario ->
+			scenario.onActivity { activity ->
+				assertEquals(View.VISIBLE, pager(activity).visibility)
+				assertEquals(1, pageCount(activity))
+
+				ActivityTestSupport.layoutDashApps(activity)
+				val grid = ActivityTestSupport.dashGrid(activity)
+				assertNotNull(grid)
+				assertTrue(grid!!.adapter is GridAdapter)
+				assertEquals(activity.appManager.size(), grid.adapter.count)
+
+				val ribbon = activity.findViewById<LinearLayout>(R.id.llDashRibbonProfiles)
+				assertEquals(View.GONE, ribbon.visibility)
+				assertEquals(0, ribbon.childCount)
+			}
+		}
+	}
+
+	@Test fun workProfileAddsASecondSwipeablePage() {
 		val workUser = ActivityTestSupport.addWorkProfile()
 		ActivityTestSupport.addWorkProfileApp(
 			workUser, "com.example.work", "WorkChatActivity", "WorkChat")
 
 		ActivityTestSupport.launchHome().use { scenario ->
 			scenario.onActivity { activity ->
-				assertEquals(View.GONE, gridWrapper(activity).visibility)
-				assertEquals(View.VISIBLE, vp(activity).visibility)
-
-				val adapter = vp(activity).adapter as WorkspacePagerAdapter
-				assertEquals(2, adapter.itemCount)
-				assertEquals(0, vp(activity).currentItem)
+				assertEquals(View.VISIBLE, pager(activity).visibility)
+				assertEquals(2, pageCount(activity))
+				assertEquals(0, pager(activity).currentItem)
 			}
 		}
 	}
 
-	@Test fun singleWorkspaceKeepsTheSingleGrid() {
+	@Test fun firstWorkProfileAppInstallAddsASecondTab() {
 		ActivityTestSupport.launchHome().use { scenario ->
 			scenario.onActivity { activity ->
-				assertEquals(View.VISIBLE, gridWrapper(activity).visibility)
-				assertNotNull(activity.findViewById<GridView>(R.id.gvDashHomeApps).adapter)
-				assertEquals(View.GONE, vp(activity).visibility)
-				assertEquals(null, vp(activity).adapter)
-			}
-		}
-	}
-
-	@Test fun firstWorkProfileAppInstallSwitchesToTabs() {
-		ActivityTestSupport.launchHome().use { scenario ->
-			scenario.onActivity { activity ->
-				assertEquals(View.VISIBLE, gridWrapper(activity).visibility)
+				assertEquals(1, pageCount(activity))
 
 				// As delivered by WorkProfileAppsCallback.onPackageAdded //
 				val workUser = ActivityTestSupport.addWorkProfile()
@@ -72,25 +78,26 @@ class DashWorkspacesTest {
 					"com.example.work", "WorkChatActivity", "WorkChat", workUser),
 					true, true)
 
-				assertEquals(View.GONE, gridWrapper(activity).visibility)
-				assertEquals(View.VISIBLE, vp(activity).visibility)
-				assertEquals(2, (vp(activity).adapter as WorkspacePagerAdapter).itemCount)
+				assertEquals(2, pageCount(activity))
 			}
 		}
 	}
 
-	@Test fun removingTheLastWorkProfileAppRestoresTheSingleGrid() {
+	@Test fun removingTheLastWorkProfileAppReturnsToOneTab() {
 		val workUser = ActivityTestSupport.addWorkProfile()
 		ActivityTestSupport.addWorkProfileApp(
 			workUser, "com.example.work", "WorkChatActivity", "WorkChat")
 
 		ActivityTestSupport.launchHome().use { scenario ->
 			scenario.onActivity { activity ->
+				assertEquals(2, pageCount(activity))
+
 				val workApp = activity.appManager.installedApps.single { it.user != null }
 				activity.appManager.remove(workApp)
 
-				assertEquals(View.VISIBLE, gridWrapper(activity).visibility)
-				assertEquals(View.GONE, vp(activity).visibility)
+				assertEquals(1, pageCount(activity))
+				val ribbon = activity.findViewById<LinearLayout>(R.id.llDashRibbonProfiles)
+				assertEquals(View.GONE, ribbon.visibility)
 			}
 		}
 	}
@@ -103,7 +110,7 @@ class DashWorkspacesTest {
 		// Default theme is Unity-style //
 		ActivityTestSupport.launchHome().use { scenario ->
 			scenario.onActivity { activity ->
-				val ribbon = activity.findViewById<LinearLayout>(R.id.llDashRibbonWorkspaces)
+				val ribbon = activity.findViewById<LinearLayout>(R.id.llDashRibbonProfiles)
 				assertEquals(View.VISIBLE, ribbon.visibility)
 				assertEquals(2, ribbon.childCount)
 			}
@@ -119,8 +126,8 @@ class DashWorkspacesTest {
 			it.putString(Preference.THEME.getName(), "gnome")
 		}).use { scenario ->
 			scenario.onActivity { activity ->
-				val container = activity.findViewById<FrameLayout>(R.id.llPanelWorkspaceIndicator)
-				val pill = container.getChildAt(0) as WorkspacePillView
+				val container = activity.findViewById<FrameLayout>(R.id.llPanelProfileIndicator)
+				val pill = container.getChildAt(0) as ProfilePillView
 				assertEquals(2, pill.count)
 
 				// Hidden on the desktop, shown once the dash opens, hidden again on close //
@@ -133,25 +140,14 @@ class DashWorkspacesTest {
 		}
 	}
 
-	@Test fun unityRibbonHasNoTabsWithASingleWorkspace() {
-		ActivityTestSupport.launchHome().use { scenario ->
-			scenario.onActivity { activity ->
-				val ribbon = activity.findViewById<LinearLayout>(R.id.llDashRibbonWorkspaces)
-				assertEquals(View.GONE, ribbon.visibility)
-				assertEquals(0, ribbon.childCount)
-			}
-		}
-	}
-
 	@Test fun pillViewMorphsTheActiveSlotAsThePagerScrolls() {
 		// The pager drives onPageScrolled; the pill's fractional position is what
 		// produces the smooth capsule-to-dot morph. Asserted on the view directly
-		// since Robolectric does not lay out / fling the pager.
-		val pill = WorkspacePillView(
-			org.robolectric.RuntimeEnvironment.getApplication())
+		// since Robolectric does not fling the pager.
+		val pill = ProfilePillView(org.robolectric.RuntimeEnvironment.getApplication())
 		pill.count = 2
 		pill.position = 0F
-		assertTrue(pill.count == 2)
+		assertEquals(2, pill.count)
 
 		pill.position = 0.5F
 		assertEquals(0.5F, pill.position)

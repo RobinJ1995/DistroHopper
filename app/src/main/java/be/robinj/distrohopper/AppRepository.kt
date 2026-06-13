@@ -76,7 +76,7 @@ class AppRepository(private val context: Context) {
 		this.apps.filter { packageName == it.packageName }
 
 	fun installedAppsMap(): Map<String, App> =
-		this.apps.associateBy { it.workspaceScopedKey }
+		this.apps.associateBy { it.profileScopedKey }
 
 	fun queryInstalledApps(packageName: String?): List<ResolveInfo> {
 		val mainIntent = Intent(Intent.ACTION_MAIN)
@@ -97,16 +97,16 @@ class AppRepository(private val context: Context) {
 		val launcherApps = this.context.getSystemService(LauncherApps::class.java)
 			?: return emptyList()
 
-		return Workspaces.otherProfiles(this.context)
+		return Profiles.otherProfiles(this.context)
 			.flatMap { launcherApps.getActivityList(null, it) }
 	}
 
 	/**
-	 * The distinct profiles ("workspaces") the installed apps belong to:
+	 * The distinct profiles ("profiles") the installed apps belong to:
 	 * always the personal profile (null) first, other profiles in the order
 	 * their apps were loaded.
 	 */
-	fun workspaces(): List<UserHandle?> {
+	fun profiles(): List<UserHandle?> {
 		val users = LinkedHashSet<UserHandle?>()
 		users.add(null)
 		this.apps.mapTo(users) { it.user }
@@ -114,7 +114,7 @@ class AppRepository(private val context: Context) {
 		return users.toList()
 	}
 
-	fun appsForWorkspace(user: UserHandle?): List<App> =
+	fun appsForProfile(user: UserHandle?): List<App> =
 		this.apps.filter { user == it.user }
 
 	/**
@@ -127,9 +127,9 @@ class AppRepository(private val context: Context) {
 	fun search(pattern: String, maxResults: Int): List<App> =
 		this.search(pattern, maxResults) { true }
 
-	/** Like [search], but restricted to one workspace (null = the personal profile). */
-	fun searchWorkspace(pattern: String, maxResults: Int, workspace: UserHandle?): List<App> =
-		this.search(pattern, maxResults) { workspace == it.user }
+	/** Like [search], but restricted to one profile (null = the personal profile). */
+	fun searchProfile(pattern: String, maxResults: Int, profile: UserHandle?): List<App> =
+		this.search(pattern, maxResults) { profile == it.user }
 
 	private fun search(pattern: String, maxResults: Int, filter: (App) -> Boolean): List<App> {
 		if (pattern.isEmpty()) {
@@ -205,7 +205,7 @@ class AppRepository(private val context: Context) {
 		// The key equals "package\nactivity" for personal-profile apps (the
 		// pre-work-profile format), with the profile serial appended otherwise //
 		for ((i, app) in this.pinnedApps.withIndex()) {
-			editor.putString(i.toString(), app.workspaceScopedKey)
+			editor.putString(i.toString(), app.profileScopedKey)
 		}
 
 		editor.apply()

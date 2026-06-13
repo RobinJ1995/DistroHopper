@@ -69,10 +69,13 @@ class HomeActivityTest {
 
     @Test fun appsDashContainsInstalledApps() {
         onView(withId(R.id.lalBfb)).perform(click())
-        onView(withId(R.id.gvDashHomeApps)).check { view, error ->
-            if (error != null) throw error
-            val grid = view as GridView
-            assertNotNull(grid.adapter)
+        // The dash grid lives on the pager's current page, laid out lazily;
+        // force it, then assert the page's adapter holds the installed apps.
+        scenario.onActivity { activity ->
+            ActivityTestSupport.layoutDashApps(activity)
+            val grid = ActivityTestSupport.dashGrid(activity)
+            assertNotNull(grid)
+            assertNotNull(grid!!.adapter)
             assertTrue(grid.adapter.count > 0)
         }
     }

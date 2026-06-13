@@ -50,7 +50,7 @@ public abstract class Lens
 	 * Searches and groups the results into one or more named collections, each
 	 * shown as its own section in the dash. Most lenses return a single
 	 * collection wrapping {@link #search(String, int)}; the InstalledApps lens
-	 * returns one per workspace (personal/work profile). maxResults applies
+	 * returns one per profile (personal/work profile). maxResults applies
 	 * per collection.
 	 */
 	public List<LensSearchResultCollection> searchCollections (final String str, final int maxResults) throws IOException, JSONException

@@ -168,8 +168,8 @@ object AppsLoader {
 		for (app in appManager.installedApps) {
 			if (! app.isLabelLoaded) {
 				n += if (app.setLabel(app.getLabel(false), appLabelCache)) 1 else 0
-			} else if (! appLabelCache.containsKey(app.workspaceScopedKey)) {
-				appLabelCache[app.workspaceScopedKey] = app.label
+			} else if (! appLabelCache.containsKey(app.profileScopedKey)) {
+				appLabelCache[app.profileScopedKey] = app.label
 				n += 1
 			}
 		}
@@ -200,8 +200,8 @@ object AppsLoader {
 		val populateIconCache = mutableMapOf<String, Drawable>()
 
 		for (app in appManager.installedApps) {
-			if (! appIconCache.containsKey(app.workspaceScopedKey)) {
-				populateIconCache[app.workspaceScopedKey] = app.icon.drawable
+			if (! appIconCache.containsKey(app.profileScopedKey)) {
+				populateIconCache[app.profileScopedKey] = app.icon.drawable
 				n += 1
 			}
 		}

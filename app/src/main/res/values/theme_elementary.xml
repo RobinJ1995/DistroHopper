@@ -86,5 +86,5 @@
     <bool name="theme_elementary_dash_ribbon_show">false</bool>
     <dimen name="theme_elementary_dash_blur_radius">5dp</dimen>
     <integer name="theme_elementary_dash_animation">@integer/dash_animation_elementary</integer>
-    <integer name="theme_elementary_workspace_indicator">@integer/workspace_indicator_none</integer>
+    <integer name="theme_elementary_profile_indicator">@integer/profile_indicator_none</integer>
 </resources>

@@ -167,9 +167,14 @@ class ThemeApplier(
 	 */
 	fun applyDashIconWidth(width: Int) {
 		val density = this.activity.resources.displayMetrics.density
-
-		this.viewFinder.get<GridView>(R.id.gvDashHomeApps).setColumnWidth(Math.round((80 // 80 is the minimum
+		val columnWidth = Math.round((80 // 80 is the minimum
 			+ width)
-			* density)) // Adjust for the screen's pixel density
+			* density) // Adjust for the screen's pixel density
+
+		// The dash apps grid lives on the current pager page, which only exists
+		// once the dash has been laid out; null-safe so a theme apply before
+		// that (and the live width path via AppManager.applyDashIconWidth) both
+		// work. Future pages pick the width up from the pager adapter.
+		this.activity.findViewById<GridView>(R.id.gvDashHomeApps)?.setColumnWidth(columnWidth)
 	}
 }

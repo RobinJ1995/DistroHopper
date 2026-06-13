@@ -5,10 +5,10 @@
     <string name="dash_search_hint">Search</string>
     <string name="dash_lens_apps_title">Applications</string>
     <string name="dash_lens_other_title">Other</string>
-    <string name="workspace_personal">Personal</string>
-    <string name="workspace_work">Work</string>
-    <!-- Section title of a lens's results for one workspace: lens name, workspace name -->
-    <string name="lens_workspace_section">%1$s (%2$s)</string>
+    <string name="profile_personal">Personal</string>
+    <string name="profile_work">Work</string>
+    <!-- Section title of a lens's results for one profile: lens name, profile name -->
+    <string name="lens_profile_section">%1$s (%2$s)</string>
     <string name="title_activity_preferences">Preferences</string>
     <string name="shortcut_label_distrohopper_settings">DistroHopper Settings</string>
     <string name="title_activity_about">About</string>

@@ -94,7 +94,7 @@ public class AppManager implements Iterable<App>
 		this.getBinder ().applyDashIconWidth (dashIconWidth);
 	}
 
-	/** Notifies the dash that it opened or closed (for the workspace indicator). */
+	/** Notifies the dash that it opened or closed (for the profile indicator). */
 	public void setDashOpen (boolean open)
 	{
 		this.getBinder ().setDashOpen (open);
@@ -260,16 +260,16 @@ public class AppManager implements Iterable<App>
 		return this.repository.search (pattern, maxResults);
 	}
 
-	/** Like search(), but restricted to one workspace (null = the personal profile). */
-	public List<App> searchWorkspace (String pattern, final int maxResults, final UserHandle workspace)
+	/** Like search(), but restricted to one profile (null = the personal profile). */
+	public List<App> searchProfile (String pattern, final int maxResults, final UserHandle profile)
 	{
-		return this.repository.searchWorkspace (pattern, maxResults, workspace);
+		return this.repository.searchProfile (pattern, maxResults, profile);
 	}
 
 	/** The profiles the installed apps belong to; null = the personal profile. */
-	public List<UserHandle> getWorkspaces ()
+	public List<UserHandle> getProfiles ()
 	{
-		return this.repository.workspaces ();
+		return this.repository.profiles ();
 	}
 
 	public int size ()

@@ -117,7 +117,7 @@ class DashAnimator(
 			this.viewFinder.get<LinearLayout>(R.id.llPanel).alpha = this.panelRestingAlpha()
 			this.resetDashTransforms(this.viewFinder.get(R.id.llDash))
 			this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened).alpha = 1F
-			this.resetIconTransforms(this.viewFinder.get(R.id.gvDashHomeApps))
+			this.dashGrid()?.let { this.resetIconTransforms(it) }
 			this.finishBlur()
 			return
 		}
@@ -143,8 +143,12 @@ class DashAnimator(
 		overlay.visibility = View.VISIBLE
 		overlay.alpha = 1F
 		this.resetDashTransforms(llDash)
-		this.resetIconTransforms(this.viewFinder.get(R.id.gvDashHomeApps))
+		this.dashGrid()?.let { this.resetIconTransforms(it) }
 	}
+
+	/** The GridView of the dash pager's current page, or null if not laid out yet. */
+	private fun dashGrid(): GridView? =
+		this.activity.findViewById(R.id.gvDashHomeApps)
 
 	/** @return whether an animation was in flight (i.e. the new call reverses it). */
 	private fun cancelRunning(): Boolean {
@@ -166,7 +170,10 @@ class DashAnimator(
 		val llDash = this.viewFinder.get<LinearLayout>(R.id.llDash)
 		val flOverlayWhenOpened =
 			this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened)
-		val gvDashHomeApps = this.viewFinder.get<GridView>(R.id.gvDashHomeApps)
+		// The apps grid lives on the current pager page; resolved each time and
+		// null-safe since the genie's start is gated on llDash's pre-draw, by
+		// which point the page is laid out (so on-device it is non-null).
+		val gvDashHomeApps = this.dashGrid()
 
 		val animators = mutableListOf<Animator>()
 		val blurAnimator = this.buildBlurAnimator(opening, blurRadiusPx, duration)
@@ -180,8 +187,11 @@ class DashAnimator(
 				if (opening) 1F else this.panelRestingAlpha(), duration)
 			animators += alphaAnimator(flOverlayWhenOpened, if (opening) 1F else 0F, duration)
 			animators += when (mode) {
-				DashAnimation.GNOME -> this.buildGnomeAnimators(opening, freshOpen, llDash,
-					gvDashHomeApps, duration)
+				DashAnimation.GNOME -> if (gvDashHomeApps != null) {
+					this.buildGnomeAnimators(opening, freshOpen, llDash, gvDashHomeApps, duration)
+				} else {
+					this.buildUnityAnimators(opening, freshOpen, llDash, duration)
+				}
 				DashAnimation.CINNAMON -> this.buildCinnamonAnimators(opening, freshOpen, llDash,
 					duration)
 				DashAnimation.ELEMENTARY -> this.buildElementaryAnimators(opening, freshOpen,
@@ -226,12 +236,12 @@ class DashAnimator(
 					}
 
 					if (opening) {
-						resetIconTransforms(gvDashHomeApps)
+						gvDashHomeApps?.let { resetIconTransforms(it) }
 					} else {
 						withLayoutTransitionsSuppressed { teardown?.invoke() }
 						resetDashTransforms(llDash)
 						flOverlayWhenOpened.alpha = 1F
-						resetIconTransforms(gvDashHomeApps)
+						gvDashHomeApps?.let { resetIconTransforms(it) }
 						finishBlur()
 					}
 				}

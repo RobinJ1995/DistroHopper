@@ -85,7 +85,7 @@ public class App implements Parcelable
 
 		if (! Process.myUserHandle ().equals (launcherActivityInfo.getUser ())) {
 			this.user = launcherActivityInfo.getUser ();
-			this.userSerial = Workspaces.serialOf (context, this.user);
+			this.userSerial = Profiles.serialOf (context, this.user);
 		}
 	}
 
@@ -99,7 +99,7 @@ public class App implements Parcelable
 	}
 
 	private void loadFromCaches(final ICache<String> appLabelCache, final ICache<Drawable> iconCache) {
-		final String key = this.getWorkspaceScopedKey();
+		final String key = this.getProfileScopedKey();
 		final String label = appLabelCache.get(key);
 		if (label != null) {
 			this.label = label;
@@ -267,8 +267,8 @@ public class App implements Parcelable
 		this.label = label;
 		this.labelLoaded = true;
 
-		if (!Objects.equals(old, label) || !appLabelCache.containsKey(this.getWorkspaceScopedKey())) {
-			appLabelCache.put(this.getWorkspaceScopedKey(), label);
+		if (!Objects.equals(old, label) || !appLabelCache.containsKey(this.getProfileScopedKey())) {
+			appLabelCache.put(this.getProfileScopedKey(), label);
 
 			return true;
 		}
@@ -323,8 +323,8 @@ public class App implements Parcelable
 		this.icon = icon;
 		this.iconLoaded = true;
 
-		if (! appIconCache.containsKey(this.getWorkspaceScopedKey())) { // There's no proper way to check equality without comparing all pixels
-			appIconCache.put(this.getWorkspaceScopedKey(), icon.getDrawable());
+		if (! appIconCache.containsKey(this.getProfileScopedKey())) { // There's no proper way to check equality without comparing all pixels
+			appIconCache.put(this.getProfileScopedKey(), icon.getDrawable());
 
 			return true;
 		}
@@ -371,7 +371,7 @@ public class App implements Parcelable
 	 * The profile this app lives in; null for the personal profile. The same
 	 * package can be installed in several profiles, so anything that
 	 * identifies an app across profiles must combine this with the
-	 * package/activity name (see {@link #getWorkspaceScopedKey()}).
+	 * package/activity name (see {@link #getProfileScopedKey()}).
 	 */
 	public UserHandle getUser ()
 	{
@@ -384,7 +384,7 @@ public class App implements Parcelable
 	 * existing persisted keys and caches keep matching), with the profile's
 	 * serial number appended for apps in other profiles.
 	 */
-	public String getWorkspaceScopedKey() {
+	public String getProfileScopedKey() {
 		final String key = this.getPackageAndActivityName();
 
 		return this.user == null ? key : key + "\n" + this.userSerial;

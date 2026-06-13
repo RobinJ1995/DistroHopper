@@ -117,6 +117,7 @@ class ThemeApplierTest {
 					LauncherEdgeController(activity, activity.viewFinder,
 						container.themeManager.current, container.prefs))
 
+				ActivityTestSupport.layoutDashApps(activity)
 				applier.applyDashIconWidth(40)
 
 				val density = activity.resources.displayMetrics.density
@@ -131,6 +132,7 @@ class ThemeApplierTest {
 			it.putInt(Preference.DASHICON_WIDTH.getName(), 64)
 		}).use { scenario ->
 			scenario.onActivity { activity ->
+				ActivityTestSupport.layoutDashApps(activity)
 				val density = activity.resources.displayMetrics.density
 				assertEquals(Math.round((80 + 64) * density),
 					requestedColumnWidth(activity.findViewById(R.id.gvDashHomeApps)))

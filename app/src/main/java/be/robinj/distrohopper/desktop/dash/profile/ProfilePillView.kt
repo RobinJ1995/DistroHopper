@@ -1,4 +1,4 @@
-package be.robinj.distrohopper.desktop.dash.workspace
+package be.robinj.distrohopper.desktop.dash.profile
 
 import android.content.Context
 import android.graphics.Canvas
@@ -9,14 +9,14 @@ import android.view.MotionEvent
 import android.view.View
 
 /**
- * Approximates the GNOME Shell workspace pill: a dark rounded container with
- * one shape per workspace, the current one drawn as an elongated capsule and
+ * Approximates the GNOME Shell profile pill: a dark rounded container with
+ * one shape per profile, the current one drawn as an elongated capsule and
  * the rest as dots. Each shape sits in a fixed-width cell (so the layout never
  * reflows) and morphs between dot and capsule based on how close [position] is
  * to it, which gives a smooth slide as the dash pager is swiped — [position]
  * is fractional during a swipe.
  */
-class WorkspacePillView(context: Context) : View(context) {
+class ProfilePillView(context: Context) : View(context) {
 	var count: Int = 0
 		set(value) {
 			field = value
