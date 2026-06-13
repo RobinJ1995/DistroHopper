@@ -11,6 +11,9 @@
 	<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
 	<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<!-- Lets LauncherApps also surface hidden profiles (private space, Android 15+);
+	     only granted by the system while DistroHopper holds the HOME role -->
+	<uses-permission android:name="android.permission.ACCESS_HIDDEN_PROFILES" />
 	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 	<uses-permission android:name="android.permission.GET_TASKS" />
 

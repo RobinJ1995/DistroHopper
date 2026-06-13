@@ -80,5 +80,7 @@ public class Budgie extends Theme
 		this.dash_ribbon_show = R.bool.theme_budgie_dash_ribbon_show;
 		this.dash_blur_radius = R.dimen.theme_budgie_dash_blur_radius;
 		this.dash_animation = R.integer.theme_budgie_dash_animation;
+		this.profile_indicator = R.integer.theme_budgie_profile_indicator;
+		this.profile_indicator_personal_glyph = R.drawable.ic_profile;
 	}
 }

@@ -1,7 +1,9 @@
 package be.robinj.distrohopper;
 
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.UserHandle;
 import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -73,6 +75,29 @@ public class AppManager implements Iterable<App>
 	public void add (ResolveInfo resInf, boolean checkDuplicate, boolean sortAndNotifyAdapter)
 	{
 		this.add (new App(this.getContext (), this, resInf), checkDuplicate, sortAndNotifyAdapter);
+	}
+
+	public void add (LauncherActivityInfo launcherActivityInfo, boolean checkDuplicate, boolean sortAndNotifyAdapter)
+	{
+		this.add (new App(this.getContext (), this, launcherActivityInfo), checkDuplicate, sortAndNotifyAdapter);
+	}
+
+	/** Binds the dash app grid(s); see LauncherBarBinder.bindDashApps(). */
+	public void bindDashApps (float displayDensity, int dashIconWidth)
+	{
+		this.getBinder ().bindDashApps (displayDensity, dashIconWidth);
+	}
+
+	/** Applies the dash icon-width preference to the dash grid and pager pages. */
+	public void applyDashIconWidth (int dashIconWidth)
+	{
+		this.getBinder ().applyDashIconWidth (dashIconWidth);
+	}
+
+	/** Notifies the dash that it opened or closed (for the profile indicator). */
+	public void setDashOpen (boolean open)
+	{
+		this.getBinder ().setDashOpen (open);
 	}
 
 	public void addRunningApps (int colour)
@@ -289,6 +314,18 @@ public class AppManager implements Iterable<App>
 	public List<App> search (String pattern, final int maxResults)
 	{
 		return this.repository.search (pattern, maxResults);
+	}
+
+	/** Like search(), but restricted to one profile (null = the personal profile). */
+	public List<App> searchProfile (String pattern, final int maxResults, final UserHandle profile)
+	{
+		return this.repository.searchProfile (pattern, maxResults, profile);
+	}
+
+	/** The profiles the installed apps belong to; null = the personal profile. */
+	public List<UserHandle> getProfiles ()
+	{
+		return this.repository.profiles ();
 	}
 
 	public int size ()

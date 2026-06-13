@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,6 +45,19 @@ public abstract class Lens
 	}
 
 	public abstract List<LensSearchResult> search (final String str, final int maxResults) throws IOException, JSONException;
+
+	/**
+	 * Searches and groups the results into one or more named collections, each
+	 * shown as its own section in the dash. Most lenses return a single
+	 * collection wrapping {@link #search(String, int)}; the InstalledApps lens
+	 * returns one per profile (personal/work profile). maxResults applies
+	 * per collection.
+	 */
+	public List<LensSearchResultCollection> searchCollections (final String str, final int maxResults) throws IOException, JSONException
+	{
+		return Collections.singletonList (
+				new LensSearchResultCollection (this, this.search (str, maxResults)));
+	}
 
 	public abstract String getName ();
 

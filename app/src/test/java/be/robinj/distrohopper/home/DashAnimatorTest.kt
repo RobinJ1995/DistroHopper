@@ -52,7 +52,11 @@ class DashAnimatorTest {
 	 * pre-draw by hand makes the animation start deterministic under Robolectric.
 	 */
 	private fun startPendingAnimation(activity: HomeActivity) {
-		activity.findViewById<GridView>(R.id.gvDashHomeApps).viewTreeObserver.dispatchOnPreDraw()
+		// The genie reads the current pager page's grid; lay the pager out so it
+		// exists, then fire the pre-draw the fresh-open start is gated on (on
+		// llDash, which shares the window's ViewTreeObserver with the page).
+		ActivityTestSupport.layoutDashApps(activity)
+		activity.findViewById<LinearLayout>(R.id.llDash).viewTreeObserver.dispatchOnPreDraw()
 	}
 
 	private fun assertSettledOpen(activity: HomeActivity) {
@@ -91,7 +95,7 @@ class DashAnimatorTest {
 	}
 
 	private fun assertIconsAtRest(activity: HomeActivity) {
-		val grid = activity.findViewById<GridView>(R.id.gvDashHomeApps)
+		val grid = activity.findViewById<GridView>(R.id.gvDashHomeApps) ?: return
 		for (i in 0 until grid.childCount) {
 			this.assertIdentityTransforms(grid.getChildAt(i))
 		}

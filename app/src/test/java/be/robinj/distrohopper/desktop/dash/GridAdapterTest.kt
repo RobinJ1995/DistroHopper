@@ -24,13 +24,20 @@ class GridAdapterTest {
 	@Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
 	@After fun tearDown() { scenario.close() }
 
+	// GridAdapter is exercised directly with a throwaway parent rather than
+	// through the dash grid: that grid now lives on a lazily-laid-out pager
+	// page, and the adapter's behaviour is independent of where it is bound.
+	private fun gridAdapter(activity: HomeActivity): GridAdapter =
+		GridAdapter(activity, activity.appManager.installedApps,
+			activity.resources.displayMetrics.density, 24)
+
 	@Test fun getViewBindsTheAppLabelIconAndTag() {
 		scenario.onActivity { activity ->
-			val gvDashHomeApps = activity.findViewById<GridView>(R.id.gvDashHomeApps)
-			val adapter = gvDashHomeApps.adapter as GridAdapter
+			val parent = GridView(activity)
+			val adapter = this.gridAdapter(activity)
 			val app = activity.appManager[0]
 
-			val view = adapter.getView(0, null, gvDashHomeApps)
+			val view = adapter.getView(0, null, parent)
 
 			assertEquals(app.label, view.findViewById<TextView>(R.id.tvLabel).text.toString())
 			assertTrue(view.tag is AppLauncher)
@@ -40,10 +47,10 @@ class GridAdapterTest {
 
 	@Test fun getViewSizesTheCellSquareByDensityAndIconWidthPreference() {
 		scenario.onActivity { activity ->
-			val gvDashHomeApps = activity.findViewById<GridView>(R.id.gvDashHomeApps)
-			val adapter = gvDashHomeApps.adapter as GridAdapter
+			val parent = GridView(activity)
+			val adapter = this.gridAdapter(activity)
 
-			val view = adapter.getView(0, null, gvDashHomeApps)
+			val view = adapter.getView(0, null, parent)
 
 			// 80 base + the DASHICON_WIDTH default of 24, density-scaled
 			val expected = Math.round(
@@ -55,11 +62,11 @@ class GridAdapterTest {
 
 	@Test fun getViewRecyclesTheConvertView() {
 		scenario.onActivity { activity ->
-			val gvDashHomeApps = activity.findViewById<GridView>(R.id.gvDashHomeApps)
-			val adapter = gvDashHomeApps.adapter as GridAdapter
+			val parent = GridView(activity)
+			val adapter = this.gridAdapter(activity)
 
-			val first = adapter.getView(0, null, gvDashHomeApps)
-			val second = adapter.getView(1, first, gvDashHomeApps)
+			val first = adapter.getView(0, null, parent)
+			val second = adapter.getView(1, first, parent)
 
 			assertSame(first, second)
 			assertEquals(activity.appManager[1].label,
@@ -69,8 +76,7 @@ class GridAdapterTest {
 
 	@Test fun adapterListsAllInstalledApps() {
 		scenario.onActivity { activity ->
-			val adapter = activity.findViewById<GridView>(R.id.gvDashHomeApps)
-				.adapter as GridAdapter
+			val adapter = this.gridAdapter(activity)
 
 			assertEquals(activity.appManager.size(), adapter.count)
 			assertTrue(adapter.count > 0)

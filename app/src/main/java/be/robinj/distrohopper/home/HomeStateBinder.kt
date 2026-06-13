@@ -32,6 +32,9 @@ object HomeStateBinder {
 				this.launch {
 					viewModel.dashOpen.collect { open ->
 						if (open) dash.open() else dash.close()
+						// Gates the dash profile indicator (the GNOME pill only
+						// shows while the dash is open); no-op until apps load.
+						activity.appManager?.setDashOpen(open)
 					}
 				}
 
@@ -46,7 +49,12 @@ object HomeStateBinder {
 
 				this.launch {
 					viewModel.dashIconWidth.collect { width ->
-						themeApplier.applyDashIconWidth(width)
+						// Once apps load, the binder owns the dash grid and the
+						// per-profile pager pages; before that, the ThemeApplier
+						// sizes the (only) grid.
+						val apps = activity.appManager
+						if (apps != null) apps.applyDashIconWidth(width)
+						else themeApplier.applyDashIconWidth(width)
 					}
 				}
 

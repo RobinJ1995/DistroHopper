@@ -1,13 +1,21 @@
 package be.robinj.distrohopper
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.content.pm.ApplicationInfo
+import android.content.pm.LauncherActivityInfo
+import android.content.pm.LauncherApps
 import android.content.pm.ResolveInfo
+import android.os.UserHandle
+import android.os.UserManager
+import android.view.View
+import android.widget.GridView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.viewpager2.widget.ViewPager2
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +23,11 @@ import org.robolectric.Robolectric
 import org.robolectric.Shadows
 import org.robolectric.annotation.LooperMode
 import org.robolectric.config.ConfigurationRegistry
+import org.robolectric.shadow.api.Shadow
+import org.robolectric.shadows.ShadowLauncherApps
 import org.robolectric.shadows.ShadowLooper
+import org.robolectric.util.ReflectionHelpers
+import org.robolectric.util.ReflectionHelpers.ClassParameter
 
 internal object ActivityTestSupport {
     private val packages = listOf(
@@ -46,6 +58,68 @@ internal object ActivityTestSupport {
             activity.packageName,
             "be.robinj.distrohopper.preferences.PreferencesActivity",
         ))
+
+    private const val WORK_PROFILE_USER_ID = 10
+    /** UserHandle.PER_USER_RANGE: uids per user, for getUserHandleForUid(). */
+    private const val UIDS_PER_USER = 100_000
+
+    fun workProfileHandle(userId: Int = WORK_PROFILE_USER_ID): UserHandle =
+        UserHandle.getUserHandleForUid(userId * UIDS_PER_USER)
+
+    /** Seeds a managed ("work") profile next to the personal one. */
+    fun addWorkProfile(userId: Int = WORK_PROFILE_USER_ID): UserHandle {
+        val application = ApplicationProvider.getApplicationContext<Application>()
+        val userManager = application.getSystemService(Context.USER_SERVICE) as UserManager
+        Shadows.shadowOf(userManager).addProfile(
+            0, userId, "Work", 0x20 /* UserInfo.FLAG_MANAGED_PROFILE (hidden API) */)
+
+        return workProfileHandle(userId)
+    }
+
+    /** Registers a launcher activity in [user]'s profile with ShadowLauncherApps. */
+    fun addWorkProfileApp(
+        user: UserHandle, packageName: String, activityName: String, label: String) {
+        val application = ApplicationProvider.getApplicationContext<Application>()
+        val launcherApps = application.getSystemService(LauncherApps::class.java)
+        val shadow = Shadow.extract<ShadowLauncherApps>(launcherApps)
+        shadow.addActivity(user, launcherActivityInfo(packageName, activityName, label, user))
+    }
+
+    /**
+     * Builds a LauncherActivityInfo reflectively (its constructor is hidden);
+     * the constructor chain matches SDK 36, which robolectric.properties pins.
+     */
+    fun launcherActivityInfo(
+        packageName: String, activityName: String, label: String, user: UserHandle,
+    ): LauncherActivityInfo {
+        val activityInfo = ActivityInfo().apply {
+            this.packageName = packageName
+            name = activityName
+            nonLocalizedLabel = label
+            applicationInfo = ApplicationInfo().apply {
+                this.packageName = packageName
+                nonLocalizedLabel = label
+                enabled = true
+            }
+        }
+
+        val internalClass = Class.forName("android.content.pm.LauncherActivityInfoInternal")
+        val statesInfoClass = Class.forName("android.content.pm.IncrementalStatesInfo")
+        val internal = ReflectionHelpers.callConstructor(
+            internalClass,
+            ClassParameter(ActivityInfo::class.java, activityInfo),
+            ClassParameter(statesInfoClass, null),
+            ClassParameter(UserHandle::class.java, user),
+            ClassParameter(java.lang.Boolean.TYPE, false),
+        )
+
+        return ReflectionHelpers.callConstructor(
+            LauncherActivityInfo::class.java,
+            ClassParameter(Context::class.java,
+                ApplicationProvider.getApplicationContext<Application>()),
+            ClassParameter(internalClass, internal),
+        )
+    }
 
     fun resolveInfo(packageName: String, activityName: String, label: String): ResolveInfo {
         val activityInfo = ActivityInfo().apply {
@@ -98,6 +172,24 @@ internal object ActivityTestSupport {
                 override val default = Dispatchers.Unconfined
             }
     }
+
+    /**
+     * Forces the dash apps ViewPager2 to measure and lay out so its current
+     * page (the GridView carrying the gvDashHomeApps id) exists. ViewPager2
+     * pages are created lazily on layout, which Robolectric does not do on its
+     * own, so tests that need the dash grid call this first.
+     */
+    fun layoutDashApps(activity: HomeActivity) {
+        val vp = activity.findViewById<ViewPager2>(R.id.vpDashProfiles) ?: return
+        vp.measure(
+            View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.makeMeasureSpec(1600, View.MeasureSpec.EXACTLY))
+        vp.layout(0, 0, 1080, 1600)
+    }
+
+    /** The dash apps grid of the pager's current page (after [layoutDashApps]). */
+    fun dashGrid(activity: HomeActivity): GridView? =
+        activity.findViewById(R.id.gvDashHomeApps)
 
     fun drainTasks() {
         // The background scheduler only exists under the LEGACY looper; animator-driven

@@ -88,4 +88,5 @@
     <bool name="theme_mate_dash_ribbon_show">false</bool>
     <dimen name="theme_mate_dash_blur_radius">5dp</dimen>
     <integer name="theme_mate_dash_animation">@integer/dash_animation_mate</integer>
+    <integer name="theme_mate_profile_indicator">@integer/profile_indicator_none</integer>
 </resources>

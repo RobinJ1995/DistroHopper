@@ -99,4 +99,5 @@
     <bool name="theme_budgie_dash_ribbon_show">false</bool>
     <dimen name="theme_budgie_dash_blur_radius">5dp</dimen>
     <integer name="theme_budgie_dash_animation">@integer/dash_animation_budgie</integer>
+    <integer name="theme_budgie_profile_indicator">@integer/profile_indicator_none</integer>
 </resources>

@@ -67,6 +67,9 @@ class ReactivePrefsTest {
 		ActivityTestSupport.drainTasks()
 
 		this.scenario.onActivity { activity ->
+			// The dash grid lives on a lazily-laid-out pager page; the pref change
+			// updated the pager adapter's width, so the page picks it up on layout.
+			ActivityTestSupport.layoutDashApps(activity)
 			val density = activity.resources.displayMetrics.density
 			val expected = Math.round((80 + 60) * density)
 

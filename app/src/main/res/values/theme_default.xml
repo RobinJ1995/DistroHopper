@@ -87,4 +87,5 @@
     <bool name="theme_default_dash_ribbon_show">true</bool>
     <dimen name="theme_default_dash_blur_radius">10dp</dimen>
     <integer name="theme_default_dash_animation">@integer/dash_animation_unity</integer>
+    <integer name="theme_default_profile_indicator">@integer/profile_indicator_unity_ribbon</integer>
 </resources>

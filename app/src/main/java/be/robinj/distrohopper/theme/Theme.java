@@ -105,6 +105,14 @@ public abstract class Theme
 	public int dash_ribbon_show;
 	public int dash_blur_radius;
 	public int dash_animation;
+	/** Integer mapping to ProfileIndicatorStyle; see profile_indicator.xml. */
+	public int profile_indicator;
+	/**
+	 * Drawable for the personal profile's glyph in a glyph-based indicator (the
+	 * Unity ribbon); other profiles use the badged base glyph. Defaults to the
+	 * generic profile glyph; Unity overrides it to its house glyph.
+	 */
+	public int profile_indicator_personal_glyph;
 	
 	public String getName ()
 	{

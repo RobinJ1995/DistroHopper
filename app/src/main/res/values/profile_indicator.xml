@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Values for ProfileIndicatorStyle, referenced by each theme's
+     theme_*_profile_indicator integer. -->
+<resources>
+    <integer name="profile_indicator_none">0</integer>
+    <integer name="profile_indicator_unity_ribbon">1</integer>
+    <integer name="profile_indicator_gnome_panel">2</integer>
+</resources>

@@ -3,7 +3,6 @@ package be.robinj.distrohopper.home
 import android.animation.LayoutTransition
 import android.content.res.Resources
 import android.widget.FrameLayout
-import android.widget.GridView
 import android.widget.LinearLayout
 import android.widget.ListView
 import be.robinj.distrohopper.R
@@ -17,10 +16,8 @@ import be.robinj.distrohopper.ViewFinder
 object LayoutTransitionConfigurer {
 	@JvmStatic
 	fun apply(viewFinder: ViewFinder, res: Resources) {
-		val gvDashHomeApps_transition = LayoutTransition()
-		gvDashHomeApps_transition.setDuration(180L)
-		gvDashHomeApps_transition.setStartDelay(LayoutTransition.APPEARING, 0)
-		viewFinder.get<GridView>(R.id.gvDashHomeApps).layoutTransition = gvDashHomeApps_transition
+		// The dash app grid's transition is set per pager page in
+		// ProfilePagerAdapter — the pages don't exist yet at this point.
 
 		val lvDashHomeLensResults_transition = LayoutTransition()
 		lvDashHomeLensResults_transition.setDuration(180L)

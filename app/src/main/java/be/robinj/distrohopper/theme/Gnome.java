@@ -79,5 +79,7 @@ public class Gnome extends Theme
 		this.dash_ribbon_show = R.bool.theme_gnome_dash_ribbon_show;
 		this.dash_blur_radius = R.dimen.theme_gnome_dash_blur_radius;
 		this.dash_animation = R.integer.theme_gnome_dash_animation;
+		this.profile_indicator = R.integer.theme_gnome_profile_indicator;
+		this.profile_indicator_personal_glyph = R.drawable.ic_profile;
 	}
 }

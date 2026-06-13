@@ -85,4 +85,5 @@
     <bool name="theme_gnome_dash_ribbon_show">false</bool>
     <dimen name="theme_gnome_dash_blur_radius">20dp</dimen>
     <integer name="theme_gnome_dash_animation">@integer/dash_animation_gnome</integer>
+    <integer name="theme_gnome_profile_indicator">@integer/profile_indicator_gnome_panel</integer>
 </resources>

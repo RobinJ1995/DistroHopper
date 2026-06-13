@@ -95,28 +95,42 @@ public class AsyncSearch extends AsyncTask<String, AsyncSearch.AsyncSearchProgre
 					return null;
 
 				Lens lens = lenses.get (i);
-				List<LensSearchResult> lensResults = null;
-				LensSearchResultCollection collection = null;
+				// A lens may return several collections (sections), e.g. the
+				// InstalledApps lens returns one per profile //
+				List<LensSearchResultCollection> collections = new ArrayList<> ();
 
 				try
 				{
-					lensResults = lens.search (pattern, maxResultsPerLens);
-
-					if (lensResults.size () > 0)
+					for (LensSearchResultCollection collection : lens.searchCollections (pattern, maxResultsPerLens))
 					{
-						if (lensResults.size() > maxResultsPerLens) {
-							lensResults = lensResults.subList(0, maxResultsPerLens);
+						List<LensSearchResult> lensResults = collection.getResults ();
+
+						if (lensResults == null || lensResults.size () == 0)
+							continue;
+
+						if (lensResults.size () > maxResultsPerLens) {
+							collection = new LensSearchResultCollection (lens,
+									collection.getName (),
+									lensResults.subList (0, maxResultsPerLens));
 						}
 
-						collection = new LensSearchResultCollection (lens, lensResults);
+						collections.add (collection);
 					}
 				}
 				catch (Exception ex)
 				{
-					collection = new LensSearchResultCollection (lens, ex);
+					collections.add (new LensSearchResultCollection (lens, ex));
 				}
 
-				this.publishProgress (new AsyncSearchProgressUpdate (collection, i + 1, nLenses));
+				if (collections.isEmpty ())
+				{
+					this.publishProgress (new AsyncSearchProgressUpdate (null, i + 1, nLenses));
+				}
+				else
+				{
+					for (LensSearchResultCollection collection : collections)
+						this.publishProgress (new AsyncSearchProgressUpdate (collection, i + 1, nLenses));
+				}
 			}
 		}
 

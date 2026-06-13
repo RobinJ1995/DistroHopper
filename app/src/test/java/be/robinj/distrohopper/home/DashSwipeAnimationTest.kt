@@ -45,7 +45,11 @@ class DashSwipeAnimationTest {
 	/* Geometry for a fresh open is captured in a pre-draw listener on the dash. */
 	private fun beginOpenSwipe(activity: HomeActivity, dash: DashController) {
 		assertTrue(dash.swipeOpenBegin())
-		activity.findViewById<GridView>(R.id.gvDashHomeApps).viewTreeObserver.dispatchOnPreDraw()
+		// The grid lives on the dash pager's current page, laid out lazily; force
+		// it, then fire the pre-draw the capture is gated on (on llDash, which
+		// shares the window's ViewTreeObserver with the page).
+		ActivityTestSupport.layoutDashApps(activity)
+		activity.findViewById<LinearLayout>(R.id.llDash).viewTreeObserver.dispatchOnPreDraw()
 	}
 
 	private fun llDash(activity: HomeActivity) = activity.findViewById<LinearLayout>(R.id.llDash)

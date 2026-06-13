@@ -1,10 +1,10 @@
 package be.robinj.distrohopper.home
 
 import android.os.PowerManager
+import android.os.UserHandle
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.GridView
 import android.widget.LinearLayout
+import androidx.viewpager2.widget.ViewPager2
 import be.robinj.distrohopper.App
 import be.robinj.distrohopper.AppManager
 import be.robinj.distrohopper.DependencyContainer
@@ -12,6 +12,10 @@ import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
+import be.robinj.distrohopper.desktop.dash.ProfilePagerAdapter
+import be.robinj.distrohopper.desktop.dash.profile.GnomeProfilePillIndicator
+import be.robinj.distrohopper.desktop.dash.profile.UnityRibbonIndicator
+import be.robinj.distrohopper.desktop.dash.profile.ProfileIndicator
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
 import be.robinj.distrohopper.desktop.launcher.AppLauncherClickListener
 import be.robinj.distrohopper.desktop.launcher.AppLauncherDragListener
@@ -19,6 +23,7 @@ import be.robinj.distrohopper.desktop.launcher.AppLauncherLongClickListener
 import be.robinj.distrohopper.desktop.launcher.PinnedAppsBar
 import be.robinj.distrohopper.desktop.launcher.RunningAppLauncher
 import be.robinj.distrohopper.theme.Location
+import be.robinj.distrohopper.theme.ProfileIndicatorStyle
 
 /**
  * The view half of app management: keeps the launcher bar's pinned and
@@ -51,9 +56,21 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	private val llLauncherRunningApps: LinearLayout by lazy {
 		this.activity.viewFinder.get(this.llLauncher, R.id.llLauncherRunningApps)
 	}
-	private val gvDashHomeApps: GridView by lazy {
-		this.activity.viewFinder.get(R.id.gvDashHomeApps)
+	private val vpDashProfiles: ViewPager2 by lazy {
+		this.activity.viewFinder.get(R.id.vpDashProfiles)
 	}
+
+	private var dashBound = false
+	private var dashDisplayDensity = 0F
+	private var dashIconWidth = 0
+	/** The profiles the dash was last bound for (null = the personal profile). */
+	private var boundProfiles: List<UserHandle?> = emptyList()
+	/** The current profile tab; preserved across rebinds (app install/remove). */
+	private var currentProfileIndex = 0
+	private var pagerAdapter: ProfilePagerAdapter? = null
+	private var indicator: ProfileIndicator? = null
+	private var pageCallbackRegistered = false
+	private var dashOpen = false
 
 	fun addPinnedAppView(app: App) {
 		this.llLauncherPinnedApps.addView(this.pinnedAppLauncher(app))
@@ -197,12 +214,107 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		}
 	}
 
+	/**
+	 * Binds the dash app grid: always a ViewPager2 with one swipeable page per
+	 * profile — a single page in the usual single-profile case, so the dash
+	 * looks and behaves like the plain grid. A theme-specific tab indicator is
+	 * shown only when more than one profile exists.
+	 */
+	fun bindDashApps(displayDensity: Float, dashIconWidth: Int) {
+		this.dashDisplayDensity = displayDensity
+		this.dashIconWidth = dashIconWidth
+		this.dashBound = true
+
+		this.rebindDashApps()
+	}
+
+	private fun rebindDashApps() {
+		val profiles = this.appManager.repository.profiles()
+		this.boundProfiles = profiles
+
+		val selected = this.currentProfileIndex.coerceIn(0, profiles.size - 1)
+		this.currentProfileIndex = selected
+
+		val adapter = ProfilePagerAdapter(this.activity, this.appManager, profiles,
+			this.dashDisplayDensity, this.dashIconWidth)
+		this.pagerAdapter = adapter
+		this.vpDashProfiles.adapter = adapter
+		this.vpDashProfiles.setCurrentItem(selected, false)
+		this.registerPageCallback()
+
+		// The tab indicator only appears once there is more than one profile //
+		this.indicator?.clear()
+		this.indicator = if (profiles.size > 1) {
+			this.createIndicator()?.also {
+				it.bind(profiles, selected)
+				it.onDashOpenChanged(this.dashOpen)
+			}
+		} else {
+			null
+		}
+	}
+
+	private fun registerPageCallback() {
+		if (this.pageCallbackRegistered) {
+			return
+		}
+		this.pageCallbackRegistered = true
+
+		this.vpDashProfiles.registerOnPageChangeCallback(
+			object : ViewPager2.OnPageChangeCallback() {
+				override fun onPageScrolled(
+					position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+					this@LauncherBarBinder.indicator?.onPageScrolled(position, positionOffset)
+				}
+
+				override fun onPageSelected(position: Int) {
+					this@LauncherBarBinder.currentProfileIndex = position
+					this@LauncherBarBinder.indicator?.onPageSelected(position)
+				}
+			})
+	}
+
+	private fun createIndicator(): ProfileIndicator? {
+		val theme = DependencyContainer.of(this.activity).themeManager.current
+		val select: (Int) -> Unit = { this.vpDashProfiles.setCurrentItem(it, true) }
+
+		return when (ProfileIndicatorStyle.of(
+				this.activity.resources.getInteger(theme.profile_indicator))) {
+			ProfileIndicatorStyle.UNITY_RIBBON -> UnityRibbonIndicator(this.activity,
+				this.activity.viewFinder.get(R.id.llDashRibbonProfiles),
+				theme.profile_indicator_personal_glyph, select)
+			ProfileIndicatorStyle.GNOME_PANEL -> GnomeProfilePillIndicator(this.activity,
+				this.activity.viewFinder.get(R.id.llPanelProfileIndicator), select)
+			ProfileIndicatorStyle.NONE -> null
+		}
+	}
+
 	fun notifyDashAdapterChanged() {
-		(this.gvDashHomeApps.adapter as? ArrayAdapter<*>)?.notifyDataSetChanged()
+		if (this.dashBound && this.appManager.repository.profiles() != this.boundProfiles) {
+			// A profile appeared or vanished (e.g. the first work-profile app was
+			// installed, or the last removed): rebuild the pager and indicator //
+			this.rebindDashApps()
+
+			return
+		}
+
+		this.pagerAdapter?.refresh()
 	}
 
 	fun invalidateDashViews() {
-		this.gvDashHomeApps.invalidateViews()
+		this.pagerAdapter?.invalidatePages(this.vpDashProfiles)
+	}
+
+	/** Applies the dash icon-width preference to the pager pages. */
+	fun applyDashIconWidth(dashIconWidth: Int) {
+		this.dashIconWidth = dashIconWidth
+		this.pagerAdapter?.applyIconWidth(this.vpDashProfiles, dashIconWidth)
+	}
+
+	/** The dash opened or closed; indicators that only show while open react. */
+	fun setDashOpen(open: Boolean) {
+		this.dashOpen = open
+		this.indicator?.onDashOpenChanged(open)
 	}
 
 	fun startedDraggingPinnedApp() = startedDragging(this.activity)

@@ -1,7 +1,7 @@
 package be.robinj.distrohopper.home
 
-import android.widget.GridView
 import androidx.test.core.app.ActivityScenario
+import androidx.viewpager2.widget.ViewPager2
 import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.DispatcherProvider
@@ -10,7 +10,7 @@ import be.robinj.distrohopper.R
 import be.robinj.distrohopper.cache.ICache
 import be.robinj.distrohopper.cache.TestDrawableCache
 import be.robinj.distrohopper.desktop.Wallpaper
-import be.robinj.distrohopper.desktop.dash.GridAdapter
+import be.robinj.distrohopper.desktop.dash.ProfilePagerAdapter
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
 import be.robinj.distrohopper.desktop.launcher.SpinnerAppLauncher
 import android.view.View
@@ -74,7 +74,6 @@ class StartupLoaderTest {
 			activity.findViewById<Wallpaper>(R.id.wpWallpaper),
 			activity.findViewById<SpinnerAppLauncher>(R.id.lalSpinner),
 			activity.findViewById<AppLauncher>(R.id.lalBfb),
-			activity.findViewById<GridView>(R.id.gvDashHomeApps),
 			labelCache,
 			iconCache,
 			activity.resources.displayMetrics.density,
@@ -88,7 +87,8 @@ class StartupLoaderTest {
 			assertEquals(View.VISIBLE,
 				activity.findViewById<AppLauncher>(R.id.lalBfb).visibility)
 			assertTrue(
-				activity.findViewById<GridView>(R.id.gvDashHomeApps).adapter is GridAdapter)
+				activity.findViewById<ViewPager2>(R.id.vpDashProfiles).adapter
+					is ProfilePagerAdapter)
 			assertNotNull(activity.appManager)
 		}
 	}
@@ -106,8 +106,9 @@ class StartupLoaderTest {
 		}
 
 		scenario.onActivity { activity ->
-			val gvDashHomeApps = activity.findViewById<GridView>(R.id.gvDashHomeApps)
-			gvDashHomeApps.adapter = null
+			// launchHome already loaded apps (the pager has an adapter); clear it
+			// so a cancelled load is observable as the pager staying unbound.
+			activity.findViewById<ViewPager2>(R.id.vpDashProfiles).adapter = null
 
 			val loader = StartupLoader(activity, object : DispatcherProvider {
 				override val main = Dispatchers.Main
@@ -122,7 +123,7 @@ class StartupLoaderTest {
 		ActivityTestSupport.drainTasks()
 
 		scenario.onActivity { activity ->
-			assertNull(activity.findViewById<GridView>(R.id.gvDashHomeApps).adapter)
+			assertNull(activity.findViewById<ViewPager2>(R.id.vpDashProfiles).adapter)
 		}
 		assertNull("a cancelled startup must not show an error dialog",
 			ShadowAlertDialog.getLatestAlertDialog())
