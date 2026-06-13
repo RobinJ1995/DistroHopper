@@ -1,6 +1,5 @@
 package be.robinj.distrohopper.widgets
 
-import android.app.AlertDialog
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
@@ -13,6 +12,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import java.text.Collator
 import be.robinj.distrohopper.R
 
@@ -28,8 +28,14 @@ class WidgetPickerDialog(
 
 		val listView = ListView(this.context)
 		listView.adapter = Adapter(this.context, items)
+		// A clean, edge-to-edge list: the rows carry their own ripple and spacing. //
+		listView.divider = null
+		listView.dividerHeight = 0
+		listView.selector = android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT)
+		listView.setPadding(0, listView.paddingTop, 0, listView.resources.displayMetrics.density.times(8).toInt())
+		listView.clipToPadding = false
 
-		val dialog = AlertDialog.Builder(this.context)
+		val dialog = AlertDialog.Builder(this.context, R.style.ModernDialogTheme)
 			.setTitle(R.string.widget_picker_title)
 			.setView(listView)
 			.setNegativeButton(android.R.string.cancel, null)

@@ -23,4 +23,12 @@
 
     <color name="onboarding_accent">#E95420</color>
     <color name="onboarding_accent_pressed">#C7431B</color>
+
+    <!-- Modern dialog palette (widget picker, icon pack picker, lens errors, …). -->
+    <color name="dialog_surface">#FFFFFFFF</color>
+    <color name="dialog_on_surface">#DE000000</color>
+    <color name="dialog_on_surface_variant">#8A000000</color>
+    <color name="dialog_accent">#E95420</color>
+    <color name="dialog_preview_background">#0F000000</color>
+    <color name="dialog_ripple">#1FE95420</color>
 </resources>

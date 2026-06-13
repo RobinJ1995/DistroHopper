@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Section header (one per app) in the widget picker. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:paddingTop="8dp"
-    android:paddingBottom="4dp"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp">
+    android:paddingTop="20dp"
+    android:paddingBottom="8dp"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp">
 
     <ImageView
         android:id="@+id/imgIcon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginRight="8dp" />
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginRight="12dp" />
 
     <TextView
         android:id="@+id/tvName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textStyle="bold" />
+        android:textColor="@color/dialog_accent"
+        android:textSize="13sp"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.04"
+        android:textAllCaps="true" />
 </LinearLayout>

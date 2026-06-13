@@ -7,6 +7,9 @@
         <!-- Required for Window#setBackgroundBlurRadius; a transparent background alone doesn't
              make Window#isTranslucent() true, and DecorView ignores the blur radius otherwise. -->
         <item name="android:windowIsTranslucent">true</item>
+        <!-- Pop-up dialogs spawned from the launcher (e.g. the widget picker)
+             pick up the modern look. -->
+        <item name="alertDialogTheme">@style/ModernDialogTheme</item>
     </style>
 
     <style name="HomeTheme" parent="AppTheme">
@@ -26,6 +29,38 @@
              fallback wherever cross-window blur is unavailable. -->
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackgroundBlurRadius">@dimen/dialog_blur_radius</item>
+        <!-- Pop-up dialogs spawned from these activities (e.g. the icon-pack
+             ListPreference) pick up the modern look. -->
+        <item name="alertDialogTheme">@style/ModernDialogTheme</item>
+    </style>
+
+    <!-- Shared modern styling for the app's pop-up dialogs: a rounded surface,
+         the Ubuntu-orange brand accent, and modern typography. -->
+    <style name="ModernDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/dialog_accent</item>
+        <!-- android:-prefixed so framework dialogs (e.g. the crash reporter) match too. -->
+        <item name="android:colorAccent">@color/dialog_accent</item>
+        <item name="android:colorBackground">@color/dialog_surface</item>
+        <item name="android:windowBackground">@drawable/dialog_window_background</item>
+        <item name="android:textColorPrimary">@color/dialog_on_surface</item>
+        <item name="android:textColorSecondary">@color/dialog_on_surface_variant</item>
+        <item name="android:windowTitleStyle">@style/ModernDialogTitle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/ModernDialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/ModernDialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/ModernDialogButton</item>
+    </style>
+
+    <style name="ModernDialogTitle" parent="DialogWindowTitle.AppCompat">
+        <item name="android:textColor">@color/dialog_on_surface</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="ModernDialogButton" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:textColor">@color/dialog_accent</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0.01</item>
     </style>
 
     <style name="AboutTheme" parent="DialogTheme">
