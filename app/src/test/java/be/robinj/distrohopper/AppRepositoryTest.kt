@@ -48,6 +48,49 @@ class AppRepositoryTest {
 		assertEquals(listOf("Alpha", "Bravo"), this.repository.installed.value.map { it.label })
 	}
 
+	private fun setSortOrder(value: String) =
+		Preferences.getSharedPreferences(this.context).edit()
+			.putString("app_sort_order", value).commit()
+
+	private fun seedUsage(app: App, count: Int, lastUsed: Long) =
+		Preferences.getSharedPreferences(this.context, Preferences.APP_USAGE).edit()
+			.putInt("count\n${app.profileScopedKey}", count)
+			.putLong("last\n${app.profileScopedKey}", lastUsed)
+			.commit()
+
+	@Test fun sortByMostUsedRanksByLaunchCountThenAlphabetically() {
+		this.setSortOrder("most_used")
+		val alpha = this.app("com.example.a", "A", "Alpha")
+		val bravo = this.app("com.example.b", "B", "Bravo")
+		val charlie = this.app("com.example.c", "C", "Charlie")
+		this.repository.add(charlie, false)
+		this.repository.add(alpha, false)
+		this.repository.add(bravo, false)
+		this.seedUsage(charlie, 5, 100L) // Alpha and Bravo never launched -> alphabetical //
+
+		this.repository.sort()
+
+		assertEquals(listOf("Charlie", "Alpha", "Bravo"),
+			this.repository.installedLive.map { it.label })
+	}
+
+	@Test fun sortByMostRecentlyUsedRanksByLastLaunchThenAlphabetically() {
+		this.setSortOrder("recent")
+		val alpha = this.app("com.example.a", "A", "Alpha")
+		val bravo = this.app("com.example.b", "B", "Bravo")
+		val charlie = this.app("com.example.c", "C", "Charlie")
+		this.repository.add(charlie, false)
+		this.repository.add(alpha, false)
+		this.repository.add(bravo, false)
+		this.seedUsage(alpha, 1, 100L)
+		this.seedUsage(bravo, 1, 200L) // Charlie never launched -> trails the rest //
+
+		this.repository.sort()
+
+		assertEquals(listOf("Bravo", "Alpha", "Charlie"),
+			this.repository.installedLive.map { it.label })
+	}
+
 	@Test fun searchPrefersPrefixMatchesAndHonoursMaxResults() {
 		this.repository.add(this.app("com.example.a", "A", "Alpha"), false)
 		this.repository.add(this.app("com.example.b", "B", "Kalpha"), false)
@@ -87,6 +130,19 @@ class AppRepositoryTest {
 		assertEquals("com.example.b\nB", prefs.getString("0", null))
 		assertEquals("com.example.a\nA", prefs.getString("1", null))
 		assertNull(prefs.getString("2", null))
+	}
+
+	@Test fun isUsageBasedSortOrderTracksThePreference() {
+		val prefs = Preferences.getSharedPreferences(this.context)
+
+		prefs.edit().putString("app_sort_order", "alphabetical").commit()
+		assertFalse(this.repository.isUsageBasedSortOrder())
+
+		prefs.edit().putString("app_sort_order", "recent").commit()
+		assertTrue(this.repository.isUsageBasedSortOrder())
+
+		prefs.edit().putString("app_sort_order", "most_used").commit()
+		assertTrue(this.repository.isUsageBasedSortOrder())
 	}
 
 	@Test fun findersLocateAppsByIdentity() {

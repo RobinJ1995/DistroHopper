@@ -344,6 +344,21 @@ public class AppManager implements Iterable<App>
 		this.repository.sort ();
 	}
 
+	/**
+	 * Re-sorts the dash for the usage-based orders ("most recently used" / "most
+	 * used") and refreshes the grid, so an app launched since the dash was last
+	 * built moves to its new position the next time the dash opens. A no-op for
+	 * the alphabetical order, whose result never changes between loads.
+	 */
+	public void refreshDashSortOrder ()
+	{
+		if (this.repository.isUsageBasedSortOrder ())
+		{
+			this.repository.sort ();
+			this.getBinder ().notifyDashAdapterChanged ();
+		}
+	}
+
 	public boolean unpin (int index)
 	{
 		return this.unpin (this.repository.getPinnedLive ().get (index));

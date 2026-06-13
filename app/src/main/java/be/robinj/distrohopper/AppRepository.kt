@@ -7,6 +7,7 @@ import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.content.pm.ResolveInfo
 import android.os.UserHandle
+import be.robinj.distrohopper.preferences.AppSortOrder
 import be.robinj.distrohopper.preferences.LauncherPinMode
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
@@ -75,9 +76,17 @@ class AppRepository(private val context: Context) {
 	}
 
 	fun sort() {
-		this.apps.sortWith(AppComparatorAlphabetical())
+		val order = AppSortOrder.current(Preferences.getSharedPreferences(this.context))
+		this.apps.sortWith(AppComparators.forOrder(order, AppUsageStats(this.context)))
 		this.installedChanged()
 	}
+
+	/**
+	 * Whether the active sort order ranks by usage data (so it goes stale as apps
+	 * are launched and the dash should be re-sorted when it next opens).
+	 */
+	fun isUsageBasedSortOrder(): Boolean =
+		AppSortOrder.current(Preferences.getSharedPreferences(this.context)).usesUsageData
 
 	fun size(): Int = this.apps.size
 
@@ -125,16 +134,18 @@ class AppRepository(private val context: Context) {
 	}
 
 	/**
-	 * The distinct profiles ("profiles") the installed apps belong to:
-	 * always the personal profile (null) first, other profiles in the order
-	 * their apps were loaded.
+	 * The distinct profiles ("profiles") the installed apps belong to: always the
+	 * personal profile (null) first, the other profiles after it ordered by their
+	 * stable profile serial. The order is deliberately independent of the app
+	 * list's order — deriving it from the (usage-)sorted [apps] directly would let
+	 * a launch reorder the dash's profile pages.
 	 */
 	fun profiles(): List<UserHandle?> {
-		val users = LinkedHashSet<UserHandle?>()
-		users.add(null)
-		this.apps.mapTo(users) { it.user }
+		val others = this.apps.mapNotNull { it.user }
+			.distinct()
+			.sortedBy { Profiles.serialOf(this.context, it) }
 
-		return users.toList()
+		return listOf<UserHandle?>(null) + others
 	}
 
 	fun appsForProfile(user: UserHandle?): List<App> =

@@ -14,6 +14,7 @@ public enum Preference {
 	DASH_SEARCH_FOCUS_ON_OPEN("dashsearch_focus_on_open", false),
 	DASH_SEARCH_LENSES_MAX_RESULTS("dashsearch_lenses_maxresults"),
 	DASH_GRID_COLUMNS("dash_grid_columns"),
+	APP_SORT_ORDER("app_sort_order", "alphabetical"),
 	CRASH_REPORTING_ENABLED("crash_reporting_enabled"),
 	THEME("theme"),
 	ICON_PACK("icon_pack"),

@@ -181,6 +181,8 @@ public class App implements Parcelable
 					((Activity) this.context).startActivityForResult (
 							intent, this.launchForResultRequestCode);
 
+					this.recordLaunch ();
+
 					return;
 				}
 			}
@@ -193,6 +195,8 @@ public class App implements Parcelable
 						new ComponentName (this.packageName, this.activityName),
 						this.user, null, null);
 
+				this.recordLaunch ();
+
 				return;
 			}
 			else {
@@ -204,11 +208,26 @@ public class App implements Parcelable
 			}
 
 			this.context.startActivity(intent);
+
+			this.recordLaunch ();
 		} catch (final Exception ex) {
 			final String errorMessage = format("Failed to launch %s/%s: %s.",
 					this.packageName, this.activityName, ex.getClass().getSimpleName());
 			Log.getInstance().e("App", errorMessage);
 			Toast.makeText(this.context, errorMessage, Toast.LENGTH_SHORT).show(); //TODO// getString () //
+		}
+	}
+
+	// Track app launches for the usage-based dash sort orders, recorded only
+	// after the start call is accepted so a failed launch (e.g. a stale package
+	// entry, a disabled activity, or a locked work profile) can't push a
+	// never-opened app to the top.
+	private void recordLaunch ()
+	{
+		try {
+			new AppUsageStats (this.context).recordLaunch (this.getProfileScopedKey ());
+		} catch (final Exception ex) {
+			Log.getInstance ().w ("App", "Failed to record app usage: " + ex.getMessage ());
 		}
 	}
 

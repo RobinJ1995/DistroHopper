@@ -1,5 +1,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <ListPreference
+        android:key="app_sort_order"
+        android:title="@string/option_app_sort_order"
+        android:summary="@string/hint_app_sort_order"
+        android:entries="@array/app_sort_order_entries"
+        android:entryValues="@array/app_sort_order_values"
+        android:defaultValue="alphabetical" />
+
     <SwitchPreferenceCompat
         android:key="dummy_launcher_pin_per_desktop"
         android:persistent="false"
