@@ -161,10 +161,11 @@ public class PreferencesActivity extends AppCompatActivity
 				}
 			);
 
-			this.findPreference (
-				be.robinj.distrohopper.preferences.Preference.DEV_CLEAR_CACHE.getName ())
-				.setOnPreferenceClickListener (
-				new Preference.OnPreferenceClickListener ()
+			final Preference clearCache = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.DEV_CLEAR_CACHE.getName ());
+			if (clearCache != null)
+			{
+				clearCache.setOnPreferenceClickListener (new Preference.OnPreferenceClickListener ()
 				{
 					@Override
 					public boolean onPreferenceClick (Preference preference)
@@ -182,8 +183,8 @@ public class PreferencesActivity extends AppCompatActivity
 
 						return true;
 					}
-				}
-			);
+				});
+			}
 
 			this.findPreference ("dummy_rerun_onboarding").setOnPreferenceClickListener (
 				new Preference.OnPreferenceClickListener ()
@@ -266,6 +267,11 @@ public class PreferencesActivity extends AppCompatActivity
 				be.robinj.distrohopper.preferences.Preference.DEV.getName ());
 			if (pref == null)
 				return;
+
+			if (! pref.isChecked ())
+			{
+				this.clearDevPreferences ();
+			}
 
 			pref.setOnPreferenceChangeListener ((preference, newValue) ->
 			{
