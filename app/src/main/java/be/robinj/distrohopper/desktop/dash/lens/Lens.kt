@@ -24,6 +24,8 @@ import java.net.URLConnection
  * a [LensResultEmitter], rather than returning the whole batch at once. The
  * runner (home/SearchLoader) calls [search] on a background dispatcher inside a
  * cancellable job and marshals each emit onto the UI thread.
+ *
+ * Created by robin on 4/11/14.
  */
 abstract class Lens(protected val context: Context) {
 
