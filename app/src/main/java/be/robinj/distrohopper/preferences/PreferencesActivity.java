@@ -9,6 +9,8 @@ import android.widget.Toast;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 import androidx.preference.ListPreference;
@@ -106,6 +108,25 @@ public class PreferencesActivity extends AppCompatActivity
 	public static class PreferencesFragment extends PreferenceFragmentCompat
 	{
 		private PreferenceCategory devCategory;
+
+		// The native HOME-role dialog is broken on some OEM builds (notably
+		// Samsung): it returns without ever showing a picker. When the role still
+		// isn't held after it closes, fall back to the system home settings;
+		// homeSettingsRequest is a separate launcher so its result never
+		// re-triggers that fallback (which would loop). //
+		private final ActivityResultLauncher<Intent> roleRequest =
+			this.registerForActivityResult (
+				new ActivityResultContracts.StartActivityForResult (),
+				result ->
+				{
+					if (! HomeRole.isHeld (this.requireContext ()))
+						this.homeSettingsRequest.launch (HomeRole.homeSettingsIntent ());
+				});
+
+		private final ActivityResultLauncher<Intent> homeSettingsRequest =
+			this.registerForActivityResult (
+				new ActivityResultContracts.StartActivityForResult (),
+				result -> { /* onResume re-checks the option's visibility */ });
 
 		@Override
 		public void onCreatePreferences (Bundle savedInstanceState, String rootKey)
@@ -227,7 +248,12 @@ public class PreferencesActivity extends AppCompatActivity
 					{
 						try
 						{
-							startActivity (HomeRole.requestIntent (requireContext ()));
+							final Intent roleIntent =
+								HomeRole.roleRequestIntent (requireContext ());
+							if (roleIntent != null)
+								roleRequest.launch (roleIntent);
+							else
+								homeSettingsRequest.launch (HomeRole.homeSettingsIntent ());
 						}
 						catch (Exception ex)
 						{

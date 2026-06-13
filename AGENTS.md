@@ -126,7 +126,12 @@ etc/                                        — design assets (SVG/XCF sources, 
   - `IconPackHelper`, `Image`, `Utils`, `ViewFinder`, `InsetsHelper`,
     `Permission`, `RequestCode`, `ExceptionHandler`, `HomeRole` —
     support/utilities. `HomeRole` wraps the HOME-role (default launcher)
-    checks/request intent used by the wizard and the preferences screen.
+    checks/request intents used by the wizard and the preferences screen. The
+    native role dialog (`roleRequestIntent`) is unreliable on some OEM builds
+    (notably Samsung One UI), where it returns without ever showing a picker, so
+    both callers observe its result and fall back to the system home-settings
+    screen (`homeSettingsIntent`, `Settings.ACTION_HOME_SETTINGS`) when the role
+    still isn't held afterwards.
     `InsetsHelper` handles system bar / display cutout insets (e.g. keeping
     UI clear of the 3-button navigation bar).
   - `Observed`/`IObserver` — small homegrown observer pattern.
