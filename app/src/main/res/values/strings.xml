@@ -74,7 +74,7 @@
     <string name="option_dev">Developer mode</string>
     <string name="hint_dev">Access debug logs and other technical information. Enabling this will negatively impact performance and stability.</string>
     <string name="option_dev_logs">Logs</string>
-    <string name="option_clear_cache">Clear app caches</string>
+    <string name="option_clear_cache">Clear cache</string>
     <string name="toast_cache_cleared">Cache cleared</string>
     <string name="option_widget_resize_any">Allow unsupported widget dimensions</string>
     <string name="hint_widget_resize_any">Allow widgets to be resized beyond their supported size constraints.</string>
