@@ -18,6 +18,13 @@ import be.robinj.distrohopper.dev.Log
  */
 class WorkProfileAppsCallback(private val parent: HomeActivity) : LauncherApps.Callback() {
 	override fun onPackageAdded(packageName: String, user: UserHandle) {
+		// Never add our own package as an app in another profile (see
+		// AppRepository.queryOtherProfileApps): tapping a work-profile copy of
+		// DistroHopper would drop the user into that profile's first-run wizard.
+		if (packageName == this.parent.packageName) {
+			return
+		}
+
 		this.handle(user) { appManager ->
 			val launcherApps = this.parent.getSystemService(LauncherApps::class.java)
 
