@@ -134,16 +134,18 @@ class AppRepository(private val context: Context) {
 	}
 
 	/**
-	 * The distinct profiles ("profiles") the installed apps belong to:
-	 * always the personal profile (null) first, other profiles in the order
-	 * their apps were loaded.
+	 * The distinct profiles ("profiles") the installed apps belong to: always the
+	 * personal profile (null) first, the other profiles after it ordered by their
+	 * stable profile serial. The order is deliberately independent of the app
+	 * list's order — deriving it from the (usage-)sorted [apps] directly would let
+	 * a launch reorder the dash's profile pages.
 	 */
 	fun profiles(): List<UserHandle?> {
-		val users = LinkedHashSet<UserHandle?>()
-		users.add(null)
-		this.apps.mapTo(users) { it.user }
+		val others = this.apps.mapNotNull { it.user }
+			.distinct()
+			.sortedBy { Profiles.serialOf(this.context, it) }
 
-		return users.toList()
+		return listOf<UserHandle?>(null) + others
 	}
 
 	fun appsForProfile(user: UserHandle?): List<App> =
