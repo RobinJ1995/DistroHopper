@@ -113,8 +113,15 @@ class AppRepository(private val context: Context) {
 		val launcherApps = this.context.getSystemService(LauncherApps::class.java)
 			?: return emptyList()
 
+		// Skip our own package the way the personal-profile load does
+		// (AppsLoader): a DistroHopper installed in another profile would
+		// otherwise show up as an app in that profile's dash tab, and tapping
+		// it would launch HomeActivity in that profile straight into the
+		// first-run wizard. A second launcher inside a work profile is never
+		// useful anyway.
 		return Profiles.otherProfiles(this.context)
 			.flatMap { launcherApps.getActivityList(null, it) }
+			.filter { it.componentName.packageName != this.context.packageName }
 	}
 
 	/**
