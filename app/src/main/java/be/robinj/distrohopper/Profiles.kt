@@ -9,6 +9,7 @@ import android.graphics.ColorMatrixColorFilter
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Process
 import android.os.UserHandle
 import android.os.UserManager
@@ -31,10 +32,41 @@ object Profiles {
 		return launcherApps.profiles.filter { personal != it }
 	}
 
+	/**
+	 * A display label for [user]'s profile. Android exposes the profile *type*
+	 * to launchers but not the user-assigned name, so — like AOSP's launcher —
+	 * we map the system type to our own (translatable) label rather than invent
+	 * a name. [LauncherApps.getLauncherUserInfo] is API 34+; before that the only
+	 * non-personal profile a launcher can see is a managed (work) profile.
+	 */
 	@JvmStatic
-	fun label(context: Context, user: UserHandle?): String =
-		context.getString(
-			if (user == null) R.string.profile_personal else R.string.profile_work)
+	fun label(context: Context, user: UserHandle?): String {
+		if (user == null) {
+			return context.getString(R.string.profile_personal)
+		}
+
+		val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+			context.getSystemService(LauncherApps::class.java)?.getLauncherUserInfo(user)?.userType
+		} else {
+			null
+		}
+
+		return context.getString(this.labelRes(type))
+	}
+
+	/**
+	 * Our label string for a [LauncherApps.getLauncherUserInfo] profile type
+	 * (a `UserManager.USER_TYPE_PROFILE_*`). Null = unknown/pre-34, where the
+	 * only non-personal profile a launcher sees is a managed (work) one. Split
+	 * out so the type→label mapping is unit-testable without LauncherApps.
+	 */
+	@JvmStatic
+	fun labelRes(type: String?): Int = when (type) {
+		UserManager.USER_TYPE_PROFILE_MANAGED, null -> R.string.profile_work
+		UserManager.USER_TYPE_PROFILE_PRIVATE -> R.string.profile_private
+		UserManager.USER_TYPE_PROFILE_CLONE -> R.string.profile_clone
+		else -> R.string.profile_other
+	}
 
 	/** Stable-across-reboots identifier used to persist a profile (e.g. for pinned apps). */
 	@JvmStatic
