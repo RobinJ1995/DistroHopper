@@ -79,6 +79,8 @@
     <string name="option_dev_logs">Logs</string>
     <string name="option_clear_cache">Clear cache</string>
     <string name="toast_cache_cleared">Cache cleared</string>
+    <string name="option_full_restart">Full restart</string>
+    <string name="hint_full_restart">Kill and relaunch the app to fully re-initialise it.</string>
     <string name="option_widget_resize_any">Allow unsupported widget dimensions</string>
     <string name="hint_widget_resize_any">Allow widgets to be resized beyond their supported size constraints.</string>
     <string name="option_rerun_onboarding">Run setup wizard again</string>
