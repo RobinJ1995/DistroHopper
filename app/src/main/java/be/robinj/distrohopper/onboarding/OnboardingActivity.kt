@@ -51,6 +51,20 @@ class OnboardingActivity : AppCompatActivity() {
 
 	private val roleRequest = this.registerForActivityResult(
 		ActivityResultContracts.StartActivityForResult()
+	) {
+		// The native HOME-role dialog is broken on some OEM builds (notably
+		// Samsung): it returns without ever showing a picker. When the role still
+		// isn't held after it closes, fall back to the system home settings. //
+		if (!HomeRole.isHeld(this)) {
+			this.homeSettingsRequest.launch(HomeRole.homeSettingsIntent())
+		}
+		this.adapter.rebind(OnboardingPage.DEFAULT_LAUNCHER)
+	}
+
+	// A separate launcher so the home-settings result never re-triggers the
+	// fallback above (which would loop). //
+	private val homeSettingsRequest = this.registerForActivityResult(
+		ActivityResultContracts.StartActivityForResult()
 	) { this.adapter.rebind(OnboardingPage.DEFAULT_LAUNCHER) }
 
 	/**
@@ -171,8 +185,13 @@ class OnboardingActivity : AppCompatActivity() {
 		view.findViewById<Button>(R.id.btnOnboardingSetDefault).apply {
 			this.visibility = if (isDefault) View.GONE else View.VISIBLE
 			this.setOnClickListener {
-				this@OnboardingActivity.roleRequest
-					.launch(HomeRole.requestIntent(this@OnboardingActivity))
+				val roleIntent = HomeRole.roleRequestIntent(this@OnboardingActivity)
+				if (roleIntent != null) {
+					this@OnboardingActivity.roleRequest.launch(roleIntent)
+				} else {
+					this@OnboardingActivity.homeSettingsRequest
+						.launch(HomeRole.homeSettingsIntent())
+				}
 			}
 		}
 		view.findViewById<TextView>(R.id.tvOnboardingAlreadyDefault)
