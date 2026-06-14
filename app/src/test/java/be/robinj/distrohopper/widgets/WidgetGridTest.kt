@@ -1,12 +1,135 @@
 package be.robinj.distrohopper.widgets
 
+import android.view.Surface
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 
 class WidgetGridTest {
+    // Reset to historic defaults so pure-math tests are not affected by any
+    // Robolectric test that called WidgetGrid.init() on a different screen config.
+    @Before fun resetGrid() {
+        WidgetGrid.COLS = 8
+        WidgetGrid.ROWS = 8
+    }
+
+    // ---- calculate() -------------------------------------------------------
+
+    @Test fun calculateGivesRoughlySquareCellsForTypicalPhone() {
+        val (cols, rows) = WidgetGrid.calculate(360, 800)
+        // Cells should be roughly square: aspect = 800/360 ≈ 2.2
+        assertEquals(8, cols)
+        assertEquals(17, rows)
+    }
+
+    @Test fun calculateScalesProportionallyWithAspectRatio() {
+        val (cols, rows) = WidgetGrid.calculate(480, 960)
+        // 480/48=10 cols, 960/48=20 rows
+        assertEquals(10, cols)
+        assertEquals(20, rows)
+    }
+
+    @Test fun calculateRowsNeverBelowCols() {
+        // A hypothetical square screen should give ROWS >= COLS
+        val (cols, rows) = WidgetGrid.calculate(360, 360)
+        assertTrue(rows >= cols)
+    }
+
+    @Test fun calculateClampsToMinCols() {
+        // Very narrow screen — should not go below 2 columns
+        val (cols, _) = WidgetGrid.calculate(64, 200)
+        assertTrue(cols >= 2)
+    }
+
+    // ---- rotation transforms -----------------------------------------------
+
+    private fun portraitToDisplay(col: Int, row: Int, colSpan: Int, rowSpan: Int, rotation: Int) =
+        WidgetGrid.portraitToDisplay(col, row, colSpan, rowSpan, rotation)
+
+    private fun displayToPortrait(dc: Int, dr: Int, dcs: Int, drs: Int, rotation: Int) =
+        WidgetGrid.displayToPortrait(dc, dr, dcs, drs, rotation)
+
+    @Test fun portraitToDisplayIsIdentityForPortrait() {
+        val d = portraitToDisplay(2, 3, 4, 5, Surface.ROTATION_0)
+        assertEquals(2, d.col); assertEquals(3, d.row)
+        assertEquals(4, d.colSpan); assertEquals(5, d.rowSpan)
+    }
+
+    @Test fun portraitToDisplayCcwMovesTopRowToLeftColumn() {
+        // Full top row → full left column (CCW: top becomes left)
+        val d = portraitToDisplay(0, 0, WidgetGrid.COLS, 1, Surface.ROTATION_90)
+        assertEquals(0, d.col)
+        assertEquals(0, d.row)
+        assertEquals(1, d.colSpan)
+        assertEquals(WidgetGrid.COLS, d.rowSpan)
+    }
+
+    @Test fun portraitToDisplayCcwMovesBottomRowToRightColumn() {
+        // Full bottom row (portrait) → full right column in CCW landscape
+        val d = portraitToDisplay(0, WidgetGrid.ROWS - 1, WidgetGrid.COLS, 1, Surface.ROTATION_90)
+        assertEquals(WidgetGrid.ROWS - 1, d.col)
+        assertEquals(0, d.row)
+        assertEquals(1, d.colSpan)
+        assertEquals(WidgetGrid.COLS, d.rowSpan)
+    }
+
+    @Test fun portraitToDisplayCwMovesTopRowToRightColumn() {
+        // Full top row → full right column (CW: top becomes right)
+        val d = portraitToDisplay(0, 0, WidgetGrid.COLS, 1, Surface.ROTATION_270)
+        assertEquals(WidgetGrid.ROWS - 1, d.col)
+        assertEquals(0, d.row)
+        assertEquals(1, d.colSpan)
+        assertEquals(WidgetGrid.COLS, d.rowSpan)
+    }
+
+    @Test fun ccwRoundTrip() {
+        val rotation = Surface.ROTATION_90
+        for (col in 0 until WidgetGrid.COLS) {
+            for (row in 0 until WidgetGrid.ROWS) {
+                val d = portraitToDisplay(col, row, 1, 1, rotation)
+                val p = displayToPortrait(d.col, d.row, d.colSpan, d.rowSpan, rotation)
+                assertEquals("round-trip col at ($col,$row)", col, p.col)
+                assertEquals("round-trip row at ($col,$row)", row, p.row)
+                assertEquals(1, p.colSpan); assertEquals(1, p.rowSpan)
+            }
+        }
+    }
+
+    @Test fun cwRoundTrip() {
+        val rotation = Surface.ROTATION_270
+        for (col in 0 until WidgetGrid.COLS) {
+            for (row in 0 until WidgetGrid.ROWS) {
+                val d = portraitToDisplay(col, row, 1, 1, rotation)
+                val p = displayToPortrait(d.col, d.row, d.colSpan, d.rowSpan, rotation)
+                assertEquals("round-trip col at ($col,$row)", col, p.col)
+                assertEquals("round-trip row at ($col,$row)", row, p.row)
+                assertEquals(1, p.colSpan); assertEquals(1, p.rowSpan)
+            }
+        }
+    }
+
+    @Test fun isLandscapeDetectsRotations() {
+        assertFalse(WidgetGrid.isLandscape(Surface.ROTATION_0))
+        assertTrue(WidgetGrid.isLandscape(Surface.ROTATION_90))
+        assertFalse(WidgetGrid.isLandscape(Surface.ROTATION_180))
+        assertTrue(WidgetGrid.isLandscape(Surface.ROTATION_270))
+    }
+
+    @Test fun displayColsAndRowsSwapInLandscape() {
+        // In portrait: displayCols=COLS, displayRows=ROWS
+        assertEquals(WidgetGrid.COLS, WidgetGrid.displayCols(Surface.ROTATION_0))
+        assertEquals(WidgetGrid.ROWS, WidgetGrid.displayRows(Surface.ROTATION_0))
+        // In landscape: displayCols=ROWS (transposed), displayRows=COLS
+        assertEquals(WidgetGrid.ROWS, WidgetGrid.displayCols(Surface.ROTATION_90))
+        assertEquals(WidgetGrid.COLS, WidgetGrid.displayRows(Surface.ROTATION_90))
+    }
+
+    // ---- existing tests (unchanged) ----------------------------------------
+
+
     @Test fun snapToCellRoundsToNearestBoundary() {
         assertEquals(0, WidgetGrid.snapToCell(0, 100, 7))
         assertEquals(0, WidgetGrid.snapToCell(49, 100, 7))

@@ -77,6 +77,7 @@ import be.robinj.distrohopper.desktop.launcher.LauncherDragListener;
 import be.robinj.distrohopper.desktop.launcher.TrashDragListener;
 import be.robinj.distrohopper.desktop.launcher.service.LauncherService;
 import be.robinj.distrohopper.widgets.DesktopAppHost;
+import be.robinj.distrohopper.widgets.WidgetGrid;
 import be.robinj.distrohopper.widgets.WidgetHost;
 import be.robinj.distrohopper.widgets.WidgetHost_LongClickListener;
 import be.robinj.distrohopper.widgets.WidgetsContainer_DragListener;
@@ -137,6 +138,9 @@ public class HomeActivity extends AppCompatActivity
 		setContentView (R.layout.activity_home);
 		this.viewFinder = new ViewFinder(this);
 
+		// Compute the adaptive widget grid size from this device's screen dimensions.
+		WidgetGrid.init (this);
+
 		try
 		{
 			// Reset first, before anything that can throw: the flag is app-scoped
@@ -178,6 +182,7 @@ public class HomeActivity extends AppCompatActivity
 			final LinearLayout llPanel = this.viewFinder.get(R.id.llPanel);
 			final ImageButton ibPanelDashClose = this.viewFinder.get(llPanel, R.id.ibPanelDashClose);
 			final WidgetsPager vgWidgets = this.viewFinder.get(R.id.vgWidgets);
+			vgWidgets.setDisplayRotation (this.getWindowManager ().getDefaultDisplay ().getRotation ());
 
 			// Load up the theme and wire up the controllers that manage the views //
 			this.theme = container.getThemeManager ().getCurrent ();
@@ -678,10 +683,13 @@ public class HomeActivity extends AppCompatActivity
 	{
 		super.onConfigurationChanged (newConfig);
 
-		// The activity is not recreated on rotation (configChanges in the
-		// manifest); re-apply the dash grid's column count for the new
-		// orientation. Widgets reflow on their own via the cell-based
-		// WidgetsContainer layout. //
+		// The activity is not recreated on rotation (configChanges in the manifest).
+		// Propagate the new display rotation to the widget pager so each page
+		// re-lays-out with the correct portrait-to-display transform. //
+		final WidgetsPager vgWidgets = this.viewFinder.get (R.id.vgWidgets);
+		vgWidgets.setDisplayRotation (this.getWindowManager ().getDefaultDisplay ().getRotation ());
+
+		// Re-apply the dash grid's column count for the new orientation. //
 		if (this.apps != null)
 			this.apps.applyDashColumns ();
 

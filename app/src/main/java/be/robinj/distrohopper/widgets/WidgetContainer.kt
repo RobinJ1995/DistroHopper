@@ -199,6 +199,8 @@ class WidgetContainer internal constructor(
 
 				val cellW = parent.cellWidth
 				val cellH = parent.cellHeight
+				val dCols = parent.displayCols()
+				val dRows = parent.displayRows()
 				val allowUnsupportedResize = this.allowUnsupportedResize
 
 				// The drag itself is limited to whole cells within the active size
@@ -209,13 +211,13 @@ class WidgetContainer internal constructor(
 				val minResizeHeight = this.minResizeHeightPx(allowUnsupportedResize)
 				val maxResizeHeight = this.maxResizeHeightPx(allowUnsupportedResize)
 				val minColSpan = WidgetGrid.clampSpan(
-					1, minResizeWidth, maxResizeWidth, cellW, WidgetGrid.COLS)
+					1, minResizeWidth, maxResizeWidth, cellW, dCols)
 				val maxColSpan = WidgetGrid.clampSpan(
-					WidgetGrid.COLS, minResizeWidth, maxResizeWidth, cellW, WidgetGrid.COLS)
+					dCols, minResizeWidth, maxResizeWidth, cellW, dCols)
 				val minRowSpan = WidgetGrid.clampSpan(
-					1, minResizeHeight, maxResizeHeight, cellH, WidgetGrid.ROWS)
+					1, minResizeHeight, maxResizeHeight, cellH, dRows)
 				val maxRowSpan = WidgetGrid.clampSpan(
-					WidgetGrid.ROWS, minResizeHeight, maxResizeHeight, cellH, WidgetGrid.ROWS)
+					dRows, minResizeHeight, maxResizeHeight, cellH, dRows)
 
 				val gridLeft = parent.paddingLeft
 				val gridTop = parent.paddingTop
@@ -229,7 +231,7 @@ class WidgetContainer internal constructor(
 						lp.previewWidthPx = (this.startWidth + dx).coerceIn(minW, maxW)
 
 						val snapX = gridLeft + WidgetGrid.snapToCell(
-							lp.previewLeftPx + lp.previewWidthPx - gridLeft, cellW, WidgetGrid.COLS) * cellW
+							lp.previewLeftPx + lp.previewWidthPx - gridLeft, cellW, dCols) * cellW
 						parent.showSnapLine(true, snapX.toFloat(),
 							lp.previewTopPx.toFloat(), (lp.previewTopPx + lp.previewHeightPx).toFloat())
 					}
@@ -239,7 +241,7 @@ class WidgetContainer internal constructor(
 						lp.previewHeightPx = (this.startHeight + dy).coerceIn(minH, maxH)
 
 						val snapY = gridTop + WidgetGrid.snapToCell(
-							lp.previewTopPx + lp.previewHeightPx - gridTop, cellH, WidgetGrid.ROWS) * cellH
+							lp.previewTopPx + lp.previewHeightPx - gridTop, cellH, dRows) * cellH
 						parent.showSnapLine(false, snapY.toFloat(),
 							lp.previewLeftPx.toFloat(), (lp.previewLeftPx + lp.previewWidthPx).toFloat())
 					}
@@ -252,7 +254,7 @@ class WidgetContainer internal constructor(
 						lp.previewWidthPx = width
 
 						val snapX = gridLeft + WidgetGrid.snapToCell(
-							lp.previewLeftPx - gridLeft, cellW, WidgetGrid.COLS - 1) * cellW
+							lp.previewLeftPx - gridLeft, cellW, dCols - 1) * cellW
 						parent.showSnapLine(true, snapX.toFloat(),
 							lp.previewTopPx.toFloat(), (lp.previewTopPx + lp.previewHeightPx).toFloat())
 					}
@@ -265,7 +267,7 @@ class WidgetContainer internal constructor(
 						lp.previewHeightPx = height
 
 						val snapY = gridTop + WidgetGrid.snapToCell(
-							lp.previewTopPx - gridTop, cellH, WidgetGrid.ROWS - 1) * cellH
+							lp.previewTopPx - gridTop, cellH, dRows - 1) * cellH
 						parent.showSnapLine(false, snapY.toFloat(),
 							lp.previewLeftPx.toFloat(), (lp.previewLeftPx + lp.previewWidthPx).toFloat())
 					}
@@ -325,35 +327,46 @@ class WidgetContainer internal constructor(
 
 	/**
 	 * Snap the pixel preview position back to grid cells; keep it only if it fits.
+	 * The preview is in display pixel space; the result is inverse-transformed to
+	 * portrait canonical coordinates before persisting.
 	 */
 	private fun commitPreview(parent: WidgetsContainer, lp: WidgetsContainer.LayoutParams) {
 		val cellWidth = parent.cellWidth
 		val cellHeight = parent.cellHeight
+		val dCols = parent.displayCols()
+		val dRows = parent.displayRows()
+		val rotation = parent.displayRotation
 
 		if (cellWidth <= 0 || cellHeight <= 0) {
 			return
 		}
 
-		val col = WidgetGrid.snapToCell(lp.previewLeftPx - parent.paddingLeft, cellWidth, WidgetGrid.COLS - 1)
-		val row = WidgetGrid.snapToCell(lp.previewTopPx - parent.paddingTop, cellHeight, WidgetGrid.ROWS - 1)
-		val colEnd = WidgetGrid.snapToCell(lp.previewLeftPx + lp.previewWidthPx - parent.paddingLeft, cellWidth, WidgetGrid.COLS)
-		val rowEnd = WidgetGrid.snapToCell(lp.previewTopPx + lp.previewHeightPx - parent.paddingTop, cellHeight, WidgetGrid.ROWS)
+		// Snap to display-space cells.
+		val displayCol = WidgetGrid.snapToCell(lp.previewLeftPx - parent.paddingLeft, cellWidth, dCols - 1)
+		val displayRow = WidgetGrid.snapToCell(lp.previewTopPx - parent.paddingTop, cellHeight, dRows - 1)
+		val displayColEnd = WidgetGrid.snapToCell(lp.previewLeftPx + lp.previewWidthPx - parent.paddingLeft, cellWidth, dCols)
+		val displayRowEnd = WidgetGrid.snapToCell(lp.previewTopPx + lp.previewHeightPx - parent.paddingTop, cellHeight, dRows)
 
 		val allowUnsupportedResize = this.allowUnsupportedResize
-		val colSpan = WidgetGrid.clampSpan(
-			max(1, colEnd - col),
+		val displayColSpan = WidgetGrid.clampSpan(
+			max(1, displayColEnd - displayCol),
 			this.minResizeWidthPx(allowUnsupportedResize),
 			this.maxResizeWidthPx(allowUnsupportedResize),
 			cellWidth,
-			WidgetGrid.COLS)
-		val rowSpan = WidgetGrid.clampSpan(
-			max(1, rowEnd - row),
+			dCols)
+		val displayRowSpan = WidgetGrid.clampSpan(
+			max(1, displayRowEnd - displayRow),
 			this.minResizeHeightPx(allowUnsupportedResize),
 			this.maxResizeHeightPx(allowUnsupportedResize),
 			cellHeight,
-			WidgetGrid.ROWS)
+			dRows)
 
-		val candidate = WidgetLayout(this.appWidgetId, col, row, colSpan, rowSpan)
+		// Inverse-transform display coords to portrait canonical coords.
+		val portrait = WidgetGrid.displayToPortrait(
+			displayCol, displayRow, displayColSpan, displayRowSpan, rotation)
+
+		val candidate = WidgetLayout(this.appWidgetId, portrait.col, portrait.row,
+			portrait.colSpan, portrait.rowSpan)
 
 		if (!WidgetGrid.fits(parent.collectOccupied(this), candidate)) {
 			return // Revert to the previous position //

@@ -74,7 +74,11 @@ internal class WidgetsContainer_DragListener(
 		}
 	}
 
-	/** Snaps the drag to a grid cell, centring the non-view (dash/launcher) drags. */
+	/**
+	 * Snaps the drag to a grid cell, centring the non-view (dash/launcher) drags.
+	 * Returns portrait canonical (col, row) — the display-space snap is inverse-
+	 * transformed so the result can be stored directly in LayoutParams.
+	 */
 	private fun snap(receiver: View, event: DragEvent, kind: Drag): Pair<Int, Int> {
 		val receiverLocation = IntArray(2)
 		val gridLocation = IntArray(2)
@@ -85,12 +89,22 @@ internal class WidgetsContainer_DragListener(
 		val gridY = event.y.toInt() + receiverLocation[1] - gridLocation[1]
 		val left = gridX - kind.grabOffsetX(this.vgWidgets) - this.vgWidgets.paddingLeft
 		val top = gridY - kind.grabOffsetY(this.vgWidgets) - this.vgWidgets.paddingTop
-		val col = WidgetGrid.snapToCell(
-			left, this.vgWidgets.cellWidth, WidgetGrid.COLS - kind.colSpan)
-		val row = WidgetGrid.snapToCell(
-			top, this.vgWidgets.cellHeight, WidgetGrid.ROWS - kind.rowSpan)
 
-		return col to row
+		val rotation = this.vgWidgets.displayRotation
+		// Compute the display-space span so the snap boundary is correct in landscape.
+		val displaySpan = WidgetGrid.portraitToDisplay(
+			0, 0, kind.colSpan, kind.rowSpan, rotation)
+		val dColSpan = displaySpan.colSpan
+		val dRowSpan = displaySpan.rowSpan
+
+		val displayCol = WidgetGrid.snapToCell(
+			left, this.vgWidgets.cellWidth, this.vgWidgets.displayCols() - dColSpan)
+		val displayRow = WidgetGrid.snapToCell(
+			top, this.vgWidgets.cellHeight, this.vgWidgets.displayRows() - dRowSpan)
+
+		// Inverse-transform display col/row back to portrait canonical coords.
+		val portrait = WidgetGrid.displayToPortrait(displayCol, displayRow, dColSpan, dRowSpan, rotation)
+		return portrait.col to portrait.row
 	}
 
 	private fun kindOf(event: DragEvent): Drag? {
