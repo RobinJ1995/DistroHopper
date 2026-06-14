@@ -264,14 +264,9 @@ def main():
         (anydpi / name).write_text(ADAPTIVE_ICON_XML, encoding='utf-8')
         print(f'  mipmap-anydpi-v26/{name}')
 
-    print('\n=== Legacy mipmap PNGs ===')
-    legacy = {'mdpi': 48, 'hdpi': 72, 'xhdpi': 96, 'xxhdpi': 144, 'xxxhdpi': 192}
-    for density, px in legacy.items():
-        save_png(composite, RES / f'mipmap-{density}' / 'ic_launcher.png', px)
-
-    print('\n=== Web / store icon (512×512) ===')
-    save_png(composite, ROOT / 'app/src/main/ic_launcher-web.png', 512)
-    save_png(composite, ROOT / 'fastlane/metadata/android/en-US/images/icon.png', 512)
+    print('\n=== Legacy mipmap PNGs (kept from original — include drop shadow) ===')
+    print('  Skipped: mipmap-*/ic_launcher.png and ic_launcher-web.png are preserved as-is.')
+    print('  To regenerate them, remove this block and restore the save_png calls.')
 
     print('\nDone.')
 
