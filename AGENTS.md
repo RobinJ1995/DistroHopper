@@ -93,7 +93,14 @@ etc/                                        — design assets (SVG/XCF sources, 
     (the genie) and `ThemeApplier` reach the live grid (both null-safe for when
     it isn't laid out yet). The per-page `LayoutTransition` is set in the adapter
     (it can't be in `LayoutTransitionConfigurer`, which runs before any page
-    exists). Tests force the lazy layout via `ActivityTestSupport.layoutDashApps`.
+    exists). Each page's title (`tvDashHomeTitle` — the profile name, or
+    "Applications" for a single profile) overlays the top of its grid rather
+    than sitting in a row above it: the grid reserves a top padding the height
+    of the title (`clipToPadding=false` so that padding scrolls away with the
+    apps) and `ProfilePagerAdapter.bindTitleCollapse` translates the title in
+    step with the grid's scroll, so the title scrolls off-screen with the first
+    row instead of permanently occupying the top of the dash.
+    Tests force the lazy layout via `ActivityTestSupport.layoutDashApps`.
     Grid sizing is owned by `desktop/dash/DashGrid` (the dash counterpart to
     `widgets/WidgetGrid`): the user picks a column count across the short screen
     edge (`DASH_GRID_COLUMNS`, adaptive default from `smallestScreenWidthDp`),

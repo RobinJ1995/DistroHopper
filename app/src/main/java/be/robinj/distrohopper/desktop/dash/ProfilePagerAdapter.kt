@@ -5,6 +5,7 @@ import android.os.UserHandle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
 import android.widget.GridView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -51,7 +52,57 @@ class ProfilePagerAdapter(
 			setStartDelay(LayoutTransition.APPEARING, 0)
 		}
 
+		this.bindTitleCollapse(holder)
+
 		return holder
+	}
+
+	/**
+	 * Makes the page title scroll off-screen together with the apps instead of
+	 * staying pinned above them. The title overlays the grid's top padding (see
+	 * widget_dash_profile_page); we keep that padding the height of the title and
+	 * translate the title in step with the grid's scroll, so it slides up out of
+	 * view as the first row of apps does.
+	 */
+	private fun bindTitleCollapse(holder: PageViewHolder) {
+		// Reserve room at the top of the grid for the overlaid title, refreshed
+		// whenever the title's height changes (text/theme/rotation). clipToPadding
+		// is false (see layout) so this padding scrolls away with the apps.
+		holder.title.addOnLayoutChangeListener { _, _, top, _, bottom, _, _, _, _ ->
+			val height = bottom - top
+			if (holder.grid.paddingTop != height) {
+				holder.grid.setPadding(holder.grid.paddingLeft, height,
+					holder.grid.paddingRight, holder.grid.paddingBottom)
+			}
+			this.updateTitleOffset(holder)
+		}
+
+		holder.grid.setOnScrollListener(object : AbsListView.OnScrollListener {
+			override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {}
+			override fun onScroll(view: AbsListView, firstVisibleItem: Int,
+				visibleItemCount: Int, totalItemCount: Int) {
+				this@ProfilePagerAdapter.updateTitleOffset(holder)
+			}
+		})
+	}
+
+	private fun updateTitleOffset(holder: PageViewHolder) {
+		val collapse = holder.title.height
+		if (collapse == 0) {
+			holder.title.translationY = 0F
+			return
+		}
+
+		// At rest the first row sits at paddingTop (== title height); as the grid
+		// scrolls up that gap shrinks. Once the first row has scrolled past the
+		// top the title is fully gone, so clamp to the title's height.
+		val first = holder.grid.getChildAt(0)
+		val scrolled = if (holder.grid.firstVisiblePosition == 0 && first != null) {
+			holder.grid.paddingTop - first.top
+		} else {
+			collapse
+		}
+		holder.title.translationY = -scrolled.coerceIn(0, collapse).toFloat()
 	}
 
 	override fun getItemCount(): Int = this.profiles.size
