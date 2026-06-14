@@ -32,9 +32,11 @@
     <drawable name="theme_gnome_launcher_bfb_image">@drawable/theme_gnome_res_launcher_bfb</drawable>
     <drawable name="theme_gnome_launcher_bfb_image_vertical">@drawable/theme_gnome_res_launcher_bfb</drawable>
     <bool name="theme_gnome_launcher_bfb_hide_while_dragging">true</bool>
+    <bool name="theme_gnome_launcher_bfb_user_toggleable">false</bool>
+    <bool name="theme_gnome_launcher_bfb_visible_by_default">true</bool>
     <integer name="theme_gnome_launcher_preferences_location">@integer/position_none</integer>
     <drawable name="theme_gnome_launcher_preferences_image">@drawable/launcher_preferences</drawable>
-    <integer name="theme_gnome_launcher_preferences_location_when_panel_hidden">@integer/position_bottom</integer>
+    <integer name="theme_gnome_launcher_preferences_location_when_panel_hidden">@integer/position_none</integer>
     <drawable name="theme_gnome_launcher_trash_image">@drawable/launcher_trash</drawable>
     <bool name="theme_gnome_launcher_applauncher_backgroundcolour_dynamic">false</bool>
     <color name="theme_gnome_launcher_applauncher_backgroundcolour">@android:color/transparent</color>
@@ -51,6 +53,7 @@
     <integer name="theme_gnome_panel_location">@integer/position_top</integer>
     <array name="theme_gnome_panel_location_supported">
         <item>@integer/position_top</item>
+        <item>@integer/position_none</item>
     </array>
     <dimen name="theme_gnome_panel_height">28dp</dimen>
     <drawable name="theme_gnome_panel_background">@drawable/theme_gnome_res_panel_background</drawable>

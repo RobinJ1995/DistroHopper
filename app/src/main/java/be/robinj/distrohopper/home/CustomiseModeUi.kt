@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.Spinner
@@ -129,6 +130,25 @@ class CustomiseModeUi(
 				currentPanelEdge, spiCustomiseSpinnerTextColour, Preference.PANEL_EDGE)
 		} else {
 			this.viewFinder.get<View>(llDashCustomise, R.id.llCustomisePanelEdge).visibility = View.GONE
+		}
+
+		// Menu button (BFB) // Only themes that allow it (Pantheon, COSMIC) offer
+		// the toggle; the choice is applied by re-running the theme on relaunch.
+		val llCustomiseMenuButton =
+			this.viewFinder.get<View>(llDashCustomise, R.id.llCustomiseMenuButton)
+		if (res.getBoolean(this.theme.launcher_bfb_user_toggleable)) {
+			llCustomiseMenuButton.visibility = View.VISIBLE
+			val cbCustomiseMenuButton = this.viewFinder.get<CheckBox>(R.id.cbCustomiseMenuButton)
+			cbCustomiseMenuButton.isChecked = prefs.getBoolean(
+				Preference.LAUNCHER_MENU_BUTTON_VISIBLE.getName(),
+				res.getBoolean(this.theme.launcher_bfb_visible_by_default))
+			cbCustomiseMenuButton.setOnCheckedChangeListener { _, checked ->
+				prefsEdit.putBoolean(Preference.LAUNCHER_MENU_BUTTON_VISIBLE.getName(), checked)
+				prefsEdit.commit()
+				this.relaunchInCustomiseMode.run()
+			}
+		} else {
+			llCustomiseMenuButton.visibility = View.GONE
 		}
 	}
 

@@ -103,4 +103,28 @@
             android:id="@+id/spiCustomisePanelEdge"></Spinner>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:id="@+id/llCustomiseMenuButton">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/option_menu_button"
+            style="@style/TextAppearance.AppCompat.Title" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hint_menu_button" />
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/option_menu_button_show"
+            android:id="@+id/cbCustomiseMenuButton" />
+
+    </LinearLayout>
 </LinearLayout>
