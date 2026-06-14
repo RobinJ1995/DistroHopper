@@ -5,18 +5,21 @@ import android.os.Looper
 import be.robinj.distrohopper.HomeActivity
 
 /**
- * Resolves the cross-surface drag's dash open/close intent. During a drag the
- * launcher and panel want the dash CLOSED (so the desktop can be reached), while
- * either BFB (the launcher's, or the panel's "Applications"/"Activities" label)
- * wants it OPEN (so something can be dragged into the dash).
+ * Resolves the cross-surface drag's dash open/close intent, **based on the
+ * dash's current state**:
  *
- * Because a BFB sits inside the launcher/panel, hovering it makes both the BFB
- * (open) and its container (close) register at once; tracking the hovered
- * surfaces as two sets and giving **open precedence** resolves that cleanly:
- * over a BFB the dash opens, and stepping off it back onto the bar closes it
- * again. The visibility change is posted (never run during event dispatch) and
- * debounced, and is a no-op when the dash is already in the target state, so the
- * dash never flickers as the drag crosses a parent/child boundary.
+ *  - while the dash is OPEN, hovering anything on the launcher or panel closes
+ *    it so the desktop can be reached — and a BFB counts as part of the bar it
+ *    sits in, so hovering a BFB closes the dash too;
+ *  - while the dash is CLOSED, hovering a BFB (the launcher's, or the panel's
+ *    "Applications"/"Activities" label) re-opens it so something can be dragged
+ *    into the dash; a plain launcher/panel hover does nothing (already closed).
+ *
+ * Hovered surfaces are tracked as two sets (a BFB also lives inside its bar, so
+ * both register at once); the state-based rule needs no precedence between them.
+ * Drag enter/exit are edge-triggered (the listeners don't act on every
+ * LOCATION), so a single hover resolves once and the dash doesn't oscillate; the
+ * visibility change is posted (never during event dispatch) and debounced.
  */
 class DashCrossSurfaceController(private val activity: HomeActivity) {
 	private val openTargets = HashSet<Int>()
@@ -24,9 +27,16 @@ class DashCrossSurfaceController(private val activity: HomeActivity) {
 	private val handler = Handler(Looper.getMainLooper())
 
 	private val apply = Runnable {
-		when {
-			this.openTargets.isNotEmpty() -> if (!this.activity.dashIsOpen()) this.activity.openDash()
-			this.closeTargets.isNotEmpty() -> if (this.activity.dashIsOpen()) this.activity.closeDash()
+		if (this.activity.dashIsOpen()) {
+			// Open: any launcher/panel hover — BFB included — closes the dash.
+			if (this.openTargets.isNotEmpty() || this.closeTargets.isNotEmpty()) {
+				this.activity.closeDash()
+			}
+		} else {
+			// Closed: only a BFB hover re-opens it.
+			if (this.openTargets.isNotEmpty()) {
+				this.activity.openDash()
+			}
 		}
 	}
 
