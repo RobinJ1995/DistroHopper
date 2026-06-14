@@ -130,8 +130,6 @@ def make_adaptive_bg(swirl_bg: Image.Image, size: int = 108) -> Image.Image:
     dist     = np.sqrt(dx * dx + dy * dy)
     angles   = np.arctan2(dy, dx)
 
-    outside  = dist >= r - 0.5
-
     # Angular blur width: 0° at the rim → 30° at the farthest corner pixel
     max_extra = (math.sqrt(2) - 1.0) * r            # rim-to-corner distance ≈ 22 px
     extra     = np.clip(dist - r, 0.0, max_extra)
@@ -151,9 +149,16 @@ def make_adaptive_bg(swirl_bg: Image.Image, size: int = 108) -> Image.Image:
         s_yi = np.clip((cy + np.sin(sa) * sample_r).astype(np.int32), 0, size - 1)
         result += arr[s_yi, s_xi] * w
 
-    out           = arr.copy()
-    out[outside]  = result[outside]
-    out[:, :, 3]  = 255
+    # Smooth blend: 0 well inside circle → 1 in corners (smoothstep across 40% of r)
+    blend_width  = r * 0.20
+    blend_weight = np.clip(
+        (dist - (r - blend_width)) / (2.0 * blend_width), 0.0, 1.0
+    )
+    blend_weight = blend_weight * blend_weight * (3.0 - 2.0 * blend_weight)
+
+    w4  = blend_weight[:, :, np.newaxis]
+    out = arr * (1.0 - w4) + result * w4
+    out[:, :, 3] = 255
     return Image.fromarray(out.astype(np.uint8))
 
 
