@@ -8,6 +8,7 @@ import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.HomeActivity;
+import be.robinj.distrohopper.home.LauncherBarBinder;
 
 /**
  * Created by robin on 8/21/14.
@@ -26,9 +27,16 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 	{
 		try
 		{
-			AppLauncher appLauncher = (AppLauncher) view.getTag ();
+			Object tag = view.getTag ();
 
-			startAppDrag (view, appLauncher.getApp ());
+			if (tag instanceof DashItem.AppItem)
+			{
+				startAppDrag (view, ((DashItem.AppItem) tag).getApp ());
+			}
+			else if (tag instanceof DashItem.FolderItem)
+			{
+				startFolderDrag (view, ((DashItem.FolderItem) tag).getFolder ().getId ());
+			}
 		}
 		catch (Exception ex)
 		{
@@ -37,6 +45,24 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 		}
 
 		return true;
+	}
+
+	/**
+	 * Starts dragging a whole folder: a reposition (committed only under custom
+	 * ordering) or a drop on the trash to delete it. The folder cannot leave the
+	 * dash — only its contents can — so this carries a {@link DashDragPayload}.
+	 */
+	private void startFolderDrag (View view, String folderId)
+	{
+		View source = view.isAttachedToWindow ()
+			? view
+			: this.parent.getWindow ().getDecorView ();
+
+		DashDragPayload payload = new DashDragPayload.FolderDrag (folderId);
+		ClipData data = ClipData.newPlainText ("dashFolder", folderId);
+
+		if (source.startDragAndDrop (data, new View.DragShadowBuilder (view), payload, 0))
+			LauncherBarBinder.startedDragging (this.parent);
 	}
 
 	/**

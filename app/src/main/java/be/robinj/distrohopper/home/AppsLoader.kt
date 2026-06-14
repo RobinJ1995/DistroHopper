@@ -129,6 +129,9 @@ object AppsLoader {
 		// installedAppsMap, so work-profile pins are restored too.
 		appManager.loadPinnedApps()
 
+		// Dash folders + custom order, layered over the now-loaded installed list //
+		appManager.loadDashLayout()
+
 		val prefs = Preferences.getSharedPreferences(context)
 		if (prefs.getBoolean(Preference.DEFAULT_PINS_PENDING.getName(), false)) {
 			val defaults = DefaultPinnedApps.select(

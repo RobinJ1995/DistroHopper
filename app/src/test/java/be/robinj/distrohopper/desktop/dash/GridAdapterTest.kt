@@ -28,8 +28,11 @@ class GridAdapterTest {
 	// GridAdapter is exercised directly with a throwaway parent rather than
 	// through the dash grid: that grid now lives on a lazily-laid-out pager
 	// page, and the adapter's behaviour is independent of where it is bound.
+	// The dash grid now holds DashItems (apps + folders); wrap the installed
+	// apps as plain AppItems in install order so the index-based assertions hold.
 	private fun gridAdapter(activity: HomeActivity): GridAdapter =
-		GridAdapter(activity, activity.appManager.installedApps)
+		GridAdapter(activity,
+			activity.appManager.installedApps.map { DashItem.AppItem(it) as DashItem }.toMutableList())
 
 	@Test fun getViewBindsTheAppLabelIconAndTag() {
 		scenario.onActivity { activity ->
@@ -40,8 +43,8 @@ class GridAdapterTest {
 			val view = adapter.getView(0, null, parent)
 
 			assertEquals(app.label, view.findViewById<TextView>(R.id.tvLabel).text.toString())
-			assertTrue(view.tag is AppLauncher)
-			assertEquals(app.label, (view.tag as AppLauncher).label)
+			assertTrue(view.tag is DashItem.AppItem)
+			assertEquals(app.label, (view.tag as DashItem.AppItem).app.label)
 		}
 	}
 

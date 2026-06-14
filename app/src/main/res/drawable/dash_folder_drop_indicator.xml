@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ring shown around an app/folder cell while a drag pauses over it, signalling
+     that releasing will create or extend a folder. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#33FFFFFF" />
+    <stroke android:width="2dp" android:color="#FFFFFFFF" />
+    <corners android:radius="14dp" />
+</shape>

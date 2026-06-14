@@ -9,6 +9,7 @@ import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.HomeActivity;
+import be.robinj.distrohopper.desktop.dash.DashDragPayload;
 import be.robinj.distrohopper.home.LauncherBarBinder;
 import be.robinj.distrohopper.widgets.DesktopAppHost;
 import be.robinj.distrohopper.widgets.DesktopAppView;
@@ -56,6 +57,25 @@ public class TrashDragListener implements ViewGroup.OnDragListener
 						final DesktopAppHost host = this.activity.getDesktopAppHost ();
 						if (host != null)
 							host.remove ((DesktopAppView) event.getLocalState ());
+					}
+					else if (event.getLocalState () instanceof DashDragPayload)
+					{
+						// Dropping a dash folder on the trash deletes it (members return
+						// to the dash); a folder member dropped here leaves its folder //
+						final AppManager appManager = this.activity.getAppManager ();
+						if (appManager != null)
+						{
+							DashDragPayload payload = (DashDragPayload) event.getLocalState ();
+							if (payload instanceof DashDragPayload.FolderDrag)
+								appManager.getDashLayout ().deleteFolder (
+									((DashDragPayload.FolderDrag) payload).getFolderId ());
+							else if (payload instanceof DashDragPayload.FolderMemberDrag)
+								appManager.getDashLayout ().removeFromFolder (
+									((DashDragPayload.FolderMemberDrag) payload).getFolderId (),
+									((DashDragPayload.FolderMemberDrag) payload).getApp ().getProfileScopedKey ());
+
+							appManager.dashLayoutChanged ();
+						}
 					}
 					else if (event.getLocalState () instanceof App)
 					{

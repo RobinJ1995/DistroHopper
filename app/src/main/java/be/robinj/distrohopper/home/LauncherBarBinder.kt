@@ -479,13 +479,15 @@ class LauncherBarBinder(private val appManager: AppManager) {
 			val lalPreferences = viewFinder.get<AppLauncher>(llLauncher, R.id.lalPreferences)
 			val lalTrash = viewFinder.get<AppLauncher>(llLauncher, R.id.lalTrash)
 
-			val theme = DependencyContainer.of(activity).themeManager.current
-			if (activity.resources.getBoolean(theme.launcher_bfb_hide_while_dragging)) {
-				lalBfb.visibility = View.GONE
-			}
+			// The BFB stays visible during the drag: it is the "re-open the dash"
+			// target for the cross-surface drag (hover it to bring the dash back),
+			// and the dash is no longer auto-closed when a drag starts (folders and
+			// in-dash reordering need it to stay open; the launcher sits beside the
+			// dash so dropping there still pins). Hovering the launcher/panel closes
+			// the dash to reveal the desktop — see Bfb/Launcher drag listeners.
+			lalBfb.visibility = View.VISIBLE
 			lalPreferences.visibility = View.GONE
 			lalTrash.visibility = View.VISIBLE
-			activity.closeDash()
 
 			viewFinder.get<LinearLayout>(llLauncher, R.id.llLauncherPinnedApps).alpha = 0.9F
 

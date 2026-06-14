@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.desktop.dash.DashDragPayload;
 import be.robinj.distrohopper.widgets.DesktopAppView;
 import be.robinj.distrohopper.widgets.WidgetContainer;
 
@@ -29,6 +30,11 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 			// Widget drags are handled by WidgetsContainer_DragListener and the trash's
 			// own listener; reacting here would hide the trash mid-drag //
 			if (event.getLocalState () instanceof WidgetContainer)
+				return false;
+
+			// Dash folders / folder members never pin to the launcher (a folder
+			// can't leave the dash); let the dash grid listener handle them //
+			if (event.getLocalState () instanceof DashDragPayload)
 				return false;
 
 			switch (event.getAction ())

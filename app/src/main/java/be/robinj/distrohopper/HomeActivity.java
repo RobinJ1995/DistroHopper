@@ -75,6 +75,7 @@ import be.robinj.distrohopper.desktop.dash.SearchTextWatcher;
 import be.robinj.distrohopper.desktop.dash.SwipeToCloseLayout;
 import be.robinj.distrohopper.desktop.dash.lens.LensManager;
 import be.robinj.distrohopper.desktop.launcher.AppLauncher;
+import be.robinj.distrohopper.desktop.launcher.DashEdgeDragListener;
 import be.robinj.distrohopper.desktop.launcher.LauncherDragListener;
 import be.robinj.distrohopper.desktop.launcher.TrashDragListener;
 import be.robinj.distrohopper.desktop.launcher.service.LauncherService;
@@ -337,6 +338,16 @@ public class HomeActivity extends AppCompatActivity
 			// Attached here rather than once apps are loaded: widgets are draggable
 			// (and droppable on the trash) as soon as they are restored below //
 			lalTrash.setOnDragListener (new TrashDragListener (this));
+
+			// Cross-surface drag: hovering the pinned-apps dock closes the dash to
+			// reveal the desktop (the BFB sits apart, so no open/close fight), while
+			// hovering either BFB (launcher or panel "Applications" label) re-opens
+			// it so an app can be dragged back into the dash //
+			this.viewFinder.get (llLauncher, R.id.llLauncherPinnedApps)
+					.setOnDragListener (new DashEdgeDragListener (this, false));
+			lalBfb.setOnDragListener (new DashEdgeDragListener (this, true));
+			final View tvPanelBfb = this.viewFinder.get (llPanel, R.id.tvPanelBfb);
+			tvPanelBfb.setOnDragListener (new DashEdgeDragListener (this, true));
 
 			vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this.widgetHost));
 			llLauncherAndDashContainer.setOnDragListener (
@@ -1008,6 +1019,12 @@ public class HomeActivity extends AppCompatActivity
 	}
 
 	//# Dash #//
+	/** Whether the dash is currently open (null-safe before it is built). */
+	public boolean dashIsOpen ()
+	{
+		return this.dash != null && this.dash.isOpen ();
+	}
+
 	public void closeDash ()
 	{
 		if (! this.dash.isOpen ()) {

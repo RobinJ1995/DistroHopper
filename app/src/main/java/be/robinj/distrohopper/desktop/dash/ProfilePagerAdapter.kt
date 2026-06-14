@@ -30,7 +30,7 @@ class ProfilePagerAdapter(
 
 	private val gridAdapters: List<GridAdapter> = this.profiles.map { profile ->
 		GridAdapter(this.activity.applicationContext,
-			ArrayList(this.appManager.repository.appsForProfile(profile)))
+			ArrayList(this.appManager.dashLayout.dashItems(profile)))
 	}
 
 	class PageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -73,6 +73,10 @@ class ProfilePagerAdapter(
 		holder.grid.adapter = this.gridAdapters[position]
 		holder.grid.onItemClickListener = AppLauncherClickListener(this.activity)
 		holder.grid.onItemLongClickListener = AppLauncherLongClickListener(this.activity)
+		// Dash-internal dragging: reorder (custom order), folder create/add, and
+		// folder-member extraction, scoped to this page's profile.
+		holder.grid.setOnDragListener(
+			DashGridDragListener(this.activity, this.appManager, this.profiles[position]))
 	}
 
 	override fun onViewAttachedToWindow(holder: PageViewHolder) {
@@ -87,13 +91,13 @@ class ProfilePagerAdapter(
 		DashGridSizer.apply(holder.grid)
 	}
 
-	/** Refreshes every page's apps from the repository, preserving page scroll. */
+	/** Refreshes every page's items (apps + folders) from the layout, preserving page scroll. */
 	fun refresh() {
 		for ((i, profile) in this.profiles.withIndex()) {
 			val adapter = this.gridAdapters[i]
 			adapter.setNotifyOnChange(false)
 			adapter.clear()
-			adapter.addAll(this.appManager.repository.appsForProfile(profile))
+			adapter.addAll(this.appManager.dashLayout.dashItems(profile))
 			adapter.notifyDataSetChanged()
 		}
 	}
