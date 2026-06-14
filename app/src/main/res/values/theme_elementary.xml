@@ -9,7 +9,6 @@
     <!-- Launcher -->
     <integer name="theme_elementary_launcher_location">@integer/position_bottom</integer>
     <array name="theme_elementary_launcher_location_supported">
-        <item>@integer/position_top</item>
         <item>@integer/position_right</item>
         <item>@integer/position_bottom</item>
         <item>@integer/position_left</item>
@@ -60,6 +59,8 @@
     <drawable name="theme_elementary_panel_background_when_dash_opened">@android:color/transparent</drawable>
     <drawable name="theme_elementary_statusbar_background">@android:color/transparent</drawable>
     <drawable name="theme_elementary_statusbar_background_when_panel_not_top">@android:color/transparent</drawable>
+    <drawable name="theme_elementary_statusbar_colour_when_panel_hidden">@android:color/transparent</drawable>
+    <bool name="theme_elementary_statusbar_follows_launcher_edge">false</bool>
     <drawable name="theme_elementary_statusbar_background_when_dash_opened">@android:color/transparent</drawable>
     <bool name="theme_elementary_panel_background_dynamic_when_dash_opened">false</bool>
     <integer name="theme_elementary_panel_bfb_location">@integer/position_left</integer>

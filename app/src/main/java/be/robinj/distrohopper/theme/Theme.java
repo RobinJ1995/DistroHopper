@@ -3,6 +3,7 @@ package be.robinj.distrohopper.theme;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
+import be.robinj.distrohopper.preferences.BfbLocation;
 import be.robinj.distrohopper.preferences.Preference;
 
 /**
@@ -17,10 +18,10 @@ public abstract class Theme
 	/*
 	 * Panel-less themes (Budgie) have no panel to drive the status bar, so the
 	 * status bar instead follows the launcher edge: opaque (statusbar_background)
-	 * when the launcher is at the top, transparent otherwise. Off by default so
-	 * panelled themes keep the panel-based resolution below.
+	 * when the launcher is at the top, transparent otherwise. Off (R.bool false)
+	 * for panelled themes, which keep the panel-based resolution below.
 	 */
-	public boolean statusbar_follows_launcher_edge = false;
+	public int statusbar_follows_launcher_edge;
 
 	/** The distro's brand/accent colour (used by the theme picker cards). */
 	public int card_colour;
@@ -77,6 +78,13 @@ public abstract class Theme
 	public int panel_background_when_dash_opened;
 	public int statusbar_background;
 	public int statusbar_background_when_panel_not_top;
+	/*
+	 * The status bar background while the panel is hidden (panel edge None), on
+	 * panelled themes that can hide their panel (Unity, GNOME). Lets a theme blend
+	 * the status bar with its launcher chrome instead of keeping the panelled
+	 * status_background; resolved by statusbar_background_resolved.
+	 */
+	public int statusbar_colour_when_panel_hidden;
 	public int statusbar_background_when_dash_opened;
 	public int panel_background_dynamic_when_dash_opened;
 	public int panel_bfb_location;
@@ -149,12 +157,17 @@ public abstract class Theme
 				panelEdge = launcherEdge == Location.TOP.n ? Location.BOTTOM.n : Location.TOP.n;
 			}
 		}
-		else if (this.statusbar_follows_launcher_edge)
+		else if (res.getBoolean (this.statusbar_follows_launcher_edge))
 		{
 			final int launcherEdge = prefs.getInt (Preference.LAUNCHER_EDGE.getName (),
 					res.getInteger (this.launcher_location));
 			return launcherEdge == Location.TOP.n
 					? this.statusbar_background : this.statusbar_background_when_panel_not_top;
+		}
+		else
+		{
+			// Panel hidden on a panelled theme: its own panel-hidden background.
+			return this.statusbar_colour_when_panel_hidden;
 		}
 
 		if (panelEdge != Location.TOP.n)
@@ -164,18 +177,69 @@ public abstract class Theme
 	}
 
 	/*
-	 * Whether the launcher's menu button (BFB) should be shown. For themes that
-	 * let the user toggle it (Pantheon, COSMIC) this follows the user's choice,
-	 * falling back to the theme's default; other themes simply follow whether
-	 * their themed BFB location is set at all.
+	 * Where the launcher's menu button (BFB) should sit. For themes that let the
+	 * user move/hide it (Pantheon, COSMIC) this follows the user's choice of
+	 * none/start/end, falling back to the theme's default; other themes always
+	 * use their fixed themed BFB location.
 	 */
-	public boolean launcherBfbVisible(final Resources res, final SharedPreferences prefs) {
-		if (res.getBoolean(this.launcher_bfb_user_toggleable)) {
-			return prefs.getBoolean(Preference.LAUNCHER_MENU_BUTTON_VISIBLE.getName(),
-					res.getBoolean(this.launcher_bfb_visible_by_default));
-		}
+	public Location launcherBfbLocationResolved(final Resources res, final SharedPreferences prefs) {
+		final Location nativeLocation = Location.of(res.getInteger(this.launcher_bfb_location));
 
-		return Location.of(res.getInteger(this.launcher_bfb_location)) != Location.NONE;
+		if (! res.getBoolean(this.launcher_bfb_user_toggleable))
+			return nativeLocation;
+
+		final BfbLocation choice;
+		final String stored = prefs.getString(Preference.LAUNCHER_BFB_LOCATION.getName(), null);
+		if (stored == null)
+			choice = res.getBoolean(this.launcher_bfb_visible_by_default)
+					? this.bfbNativeSide(nativeLocation) : BfbLocation.NONE;
+		else
+			choice = BfbLocation.of(stored);
+
+		switch (choice) {
+			case START:
+				return this.isStartSide(nativeLocation) ? nativeLocation : this.opposite(nativeLocation);
+			case END:
+				return this.isStartSide(nativeLocation) ? this.opposite(nativeLocation) : nativeLocation;
+			case NONE:
+			default:
+				return Location.NONE;
+		}
+	}
+
+	/** The user-facing default side for this (toggleable) theme: none, or its native side. */
+	public BfbLocation launcherBfbDefaultChoice(final Resources res) {
+		if (! res.getBoolean(this.launcher_bfb_visible_by_default))
+			return BfbLocation.NONE;
+
+		return this.bfbNativeSide(Location.of(res.getInteger(this.launcher_bfb_location)));
+	}
+
+	/** Whether the BFB is shown at all; thin wrapper over the resolved location. */
+	public boolean launcherBfbVisible(final Resources res, final SharedPreferences prefs) {
+		return this.launcherBfbLocationResolved(res, prefs) != Location.NONE;
+	}
+
+	/** The launcher's leading edge (top of a vertical bar, left of a horizontal one). */
+	private boolean isStartSide(final Location location) {
+		return location == Location.TOP || location == Location.LEFT;
+	}
+
+	private BfbLocation bfbNativeSide(final Location nativeLocation) {
+		if (nativeLocation == Location.NONE)
+			return BfbLocation.NONE;
+
+		return this.isStartSide(nativeLocation) ? BfbLocation.START : BfbLocation.END;
+	}
+
+	private Location opposite(final Location location) {
+		switch (location) {
+			case TOP: return Location.BOTTOM;
+			case BOTTOM: return Location.TOP;
+			case LEFT: return Location.RIGHT;
+			case RIGHT: return Location.LEFT;
+			default: return Location.NONE;
+		}
 	}
 
 	public Location lalPreferences_getLocation(final Resources res, final SharedPreferences prefs) {

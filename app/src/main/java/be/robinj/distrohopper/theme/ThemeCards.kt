@@ -75,8 +75,10 @@ class ThemeCards(
 				this.putString(Preference.THEME.getName(), theme.getName())
 				this.putInt(Preference.LAUNCHER_EDGE.getName(), res.getInteger(theme.launcher_location))
 				this.putInt(Preference.PANEL_EDGE.getName(), res.getInteger(theme.panel_location))
-				this.putBoolean(Preference.LAUNCHER_MENU_BUTTON_VISIBLE.getName(),
-					res.getBoolean(theme.launcher_bfb_visible_by_default))
+				// Reset the menu-button (BFB) position to the new theme's default so
+				// a choice carried over from the previous theme can't leave the
+				// customise dropdown out of sync with what's actually shown.
+				this.remove(Preference.LAUNCHER_BFB_LOCATION.getName())
 			}
 		}
 	}

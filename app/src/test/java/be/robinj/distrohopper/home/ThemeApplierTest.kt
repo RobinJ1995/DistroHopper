@@ -10,6 +10,7 @@ import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.desktop.dash.DashGrid
+import be.robinj.distrohopper.preferences.BfbLocation
 import be.robinj.distrohopper.preferences.Preference
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -126,7 +127,7 @@ class ThemeApplierTest {
 	@Test fun menuButtonPreferenceHidesItOnAToggleableTheme() {
 		ActivityTestSupport.launchHome(configurePrefs = {
 			it.putString(Preference.THEME.getName(), "cosmic")
-			it.putBoolean(Preference.LAUNCHER_MENU_BUTTON_VISIBLE.getName(), false)
+			it.putString(Preference.LAUNCHER_BFB_LOCATION.getName(), BfbLocation.NONE.value)
 		}).use { scenario ->
 			scenario.onActivity { activity ->
 				assertEquals(View.GONE,

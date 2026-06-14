@@ -358,6 +358,26 @@ public class HomeActivity extends AppCompatActivity
 				}
 			});
 
+			// A LayoutTransition collapse/expand of the launcher (a bottom dock
+			// emptying as you swipe desktops) animates its bounds via setTop/Bottom,
+			// which never fire onLayoutChange — so the widget area would only resize
+			// at the end. Re-apply the insets every frame the launcher's rendered
+			// size actually changes, keeping the desktop growing in step with it. //
+			final int[] lastLauncherSize = { -1, -1 };
+			llLauncher.getViewTreeObserver ().addOnPreDrawListener (() ->
+			{
+				final int width = llLauncher.getWidth ();
+				final int height = llLauncher.getHeight ();
+				if (width != lastLauncherSize[0] || height != lastLauncherSize[1])
+				{
+					lastLauncherSize[0] = width;
+					lastLauncherSize[1] = height;
+					HomeActivity.this.edgeController.updateWidgetAreaInsets (vgWidgets, llLauncher);
+				}
+
+				return true;
+			});
+
 			this.widgetHost.restoreWidgets ();
 
 			if (container.getCustomiseMode ().getValue ())

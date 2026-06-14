@@ -62,6 +62,8 @@
     <drawable name="theme_cosmic_panel_background_when_dash_opened">@drawable/theme_cosmic_res_panel_background</drawable>
     <drawable name="theme_cosmic_statusbar_background">@drawable/theme_cosmic_res_panel_background</drawable>
     <drawable name="theme_cosmic_statusbar_background_when_panel_not_top">@android:color/transparent</drawable>
+    <drawable name="theme_cosmic_statusbar_colour_when_panel_hidden">@android:color/transparent</drawable>
+    <bool name="theme_cosmic_statusbar_follows_launcher_edge">false</bool>
     <drawable name="theme_cosmic_statusbar_background_when_dash_opened">@drawable/theme_cosmic_res_panel_background</drawable>
     <bool name="theme_cosmic_panel_background_dynamic_when_dash_opened">false</bool>
     <integer name="theme_cosmic_panel_bfb_location">@integer/position_none</integer>

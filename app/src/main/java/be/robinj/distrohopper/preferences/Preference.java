@@ -6,7 +6,7 @@ public enum Preference {
 	PANEL_EDGE("panel_edge_v2"),
 	PANEL_OPACITY("panel_opacity"),
 	LAUNCHER_EDGE("launcher_edge_v2"),
-	LAUNCHER_MENU_BUTTON_VISIBLE("launcher_menu_button_visible"),
+	LAUNCHER_BFB_LOCATION("launcher_bfb_location"),
 	LAUNCHER_SHOW_RUNNING_APPS("launcher_running_show"),
 	LAUNCHER_APP_PIN_MODE("launcher_app_pin_mode", "desktop"),
 	LAUNCHERICON_WIDTH("launchericon_width"),

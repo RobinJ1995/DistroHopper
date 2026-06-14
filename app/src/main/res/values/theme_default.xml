@@ -60,6 +60,8 @@
     <drawable name="theme_default_panel_background_when_dash_opened">@drawable/panel_background</drawable>
     <drawable name="theme_default_statusbar_background">@android:color/black</drawable>
     <drawable name="theme_default_statusbar_background_when_panel_not_top">@android:color/black</drawable>
+    <drawable name="theme_default_statusbar_colour_when_panel_hidden">#80000000</drawable>
+    <bool name="theme_default_statusbar_follows_launcher_edge">false</bool>
     <drawable name="theme_default_statusbar_background_when_dash_opened">@android:color/black</drawable>
     <bool name="theme_default_panel_background_dynamic_when_dash_opened">true</bool>
     <integer name="theme_default_panel_bfb_location">@integer/position_none</integer>

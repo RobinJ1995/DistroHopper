@@ -349,16 +349,25 @@ etc/                                        — design assets (SVG/XCF sources, 
   by `Location.n` that lets a directional dash pick its background per launcher
   edge (Budgie's "ear" must point at the BFB whichever edge the launcher
   sits on; `WallpaperColourApplier` selects it, falling back to the scalar
-  `dash_background`); `statusbar_follows_launcher_edge` makes a panel-less
-  theme (Budgie) drive the status bar off the launcher edge instead of the
-  panel — opaque (`statusbar_background`) when the launcher is at the top,
-  transparent (`statusbar_background_when_panel_not_top`) otherwise, resolved
-  in `Theme.statusbar_background_resolved`. A third opt-in,
+  `dash_background`); `statusbar_follows_launcher_edge` (a themed `bool`) makes
+  a panel-less theme (Budgie) drive the status bar off the launcher edge instead
+  of the panel — opaque (`statusbar_background`) when the launcher is at the top,
+  transparent (`statusbar_background_when_panel_not_top`) otherwise. Panelled
+  themes that can hide their panel use `statusbar_colour_when_panel_hidden` for
+  the status bar while the panel edge is None (Unity blends it toward the
+  launcher; others keep their previous value). All resolved in
+  `Theme.statusbar_background_resolved`. A further opt-in,
   `launcher_bfb_user_toggleable`, lets a theme (Pantheon, COSMIC) expose a
-  "menu button" (the launcher BFB) show/hide checkbox in customise mode;
-  `launcher_bfb_visible_by_default` is its default state and
-  `Theme.launcherBfbVisible` resolves the live value (pref → default), with
-  non-toggleable themes simply following `launcher_bfb_location`. The launcher
+  "menu button" (the launcher BFB) position dropdown in customise mode;
+  `launcher_bfb_visible_by_default` is its default state. The choice is stored
+  as the named string `Preference.LAUNCHER_BFB_LOCATION` (`none`/`start`/`end`,
+  see the `BfbLocation` enum), and `Theme.launcherBfbLocationResolved` resolves
+  the live edge (pref → theme default), mapping `start`/`end` to the launcher's
+  leading/trailing end relative to the theme's native `launcher_bfb_location`;
+  non-toggleable themes always use that fixed location. The dropdown only offers
+  the sides a theme actually supports (currently Hide / "At the start of the
+  launcher"), and switching theme (`ThemeCards.applyTheme`) clears the pref so it
+  can't carry over. The launcher
   preferences icon was removed from every theme (`launcher_preferences_location`
   is `none`); settings are reached via the panel cog or the dash's customise
   cog, and the dash is always reachable by swiping up — so the old

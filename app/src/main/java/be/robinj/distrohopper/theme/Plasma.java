@@ -54,6 +54,8 @@ public class Plasma extends Theme
 		this.panel_background_when_dash_opened = R.drawable.theme_plasma_panel_background_when_dash_opened;
 		this.statusbar_background = R.drawable.theme_plasma_statusbar_background;
 		this.statusbar_background_when_panel_not_top = R.drawable.theme_plasma_statusbar_background_when_panel_not_top;
+		this.statusbar_colour_when_panel_hidden = R.drawable.theme_plasma_statusbar_colour_when_panel_hidden;
+		this.statusbar_follows_launcher_edge = R.bool.theme_plasma_statusbar_follows_launcher_edge;
 		this.statusbar_background_when_dash_opened = R.drawable.theme_plasma_statusbar_background_when_dash_opened;
 		this.panel_background_dynamic_when_dash_opened = R.bool.theme_plasma_panel_background_dynamic_when_dash_opened;
 		this.panel_bfb_location = R.integer.theme_plasma_panel_bfb_location;

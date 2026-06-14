@@ -3,9 +3,9 @@ package be.robinj.distrohopper.home
 import android.app.Activity
 import android.content.res.ColorStateList
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.Spinner
@@ -15,6 +15,7 @@ import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.ViewFinder
 import be.robinj.distrohopper.desktop.dash.DashGrid
+import be.robinj.distrohopper.preferences.BfbLocation
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.theme.Location
@@ -133,24 +134,76 @@ class CustomiseModeUi(
 		}
 
 		// Menu button (BFB) // Only themes that allow it (Pantheon, COSMIC) offer
-		// the toggle; the choice is applied by re-running the theme on relaunch.
+		// the dropdown; the choice is applied by re-running the theme on relaunch.
 		val llCustomiseMenuButton =
 			this.viewFinder.get<View>(llDashCustomise, R.id.llCustomiseMenuButton)
 		if (res.getBoolean(this.theme.launcher_bfb_user_toggleable)) {
 			llCustomiseMenuButton.visibility = View.VISIBLE
-			val cbCustomiseMenuButton = this.viewFinder.get<CheckBox>(R.id.cbCustomiseMenuButton)
-			cbCustomiseMenuButton.isChecked = prefs.getBoolean(
-				Preference.LAUNCHER_MENU_BUTTON_VISIBLE.getName(),
-				res.getBoolean(this.theme.launcher_bfb_visible_by_default))
-			cbCustomiseMenuButton.setOnCheckedChangeListener { _, checked ->
-				prefsEdit.putBoolean(Preference.LAUNCHER_MENU_BUTTON_VISIBLE.getName(), checked)
-				prefsEdit.commit()
-				this.relaunchInCustomiseMode.run()
-			}
+			this.initMenuButtonSpinner(
+				this.viewFinder.get(R.id.spiCustomiseMenuButton), spiCustomiseSpinnerTextColour)
 		} else {
 			llCustomiseMenuButton.visibility = View.GONE
 		}
 	}
+
+	/*
+	 * The menu-button (BFB) position dropdown, on themes that allow it. Only the
+	 * positions the theme supports are offered (Pantheon/COSMIC: Hide or Start),
+	 * so no new options are exposed where there weren't any before. The choice
+	 * is stored as a named string ([BfbLocation]) and applied on relaunch.
+	 */
+	private fun initMenuButtonSpinner(spinner: Spinner, textColour: Int) {
+		val res = this.activity.resources
+		val prefs = Preferences.getSharedPreferences(this.activity)
+
+		val nativeLocation = Location.of(res.getInteger(this.theme.launcher_bfb_location))
+		val nativeSide = if (nativeLocation == Location.TOP || nativeLocation == Location.LEFT)
+			BfbLocation.START else BfbLocation.END
+		val options = listOf(BfbLocation.NONE, nativeSide)
+
+		val stored = prefs.getString(Preference.LAUNCHER_BFB_LOCATION.getName(), null)
+		val current = if (stored == null) this.theme.launcherBfbDefaultChoice(res)
+			else BfbLocation.of(stored)
+
+		val labels = options.map { this.activity.getString(this.menuButtonLabel(it)) }.toTypedArray()
+		spinner.adapter = this.colouredSpinnerAdapter(labels, textColour)
+		spinner.setSelection(options.indexOf(current).coerceAtLeast(0))
+		ViewCompat.setBackgroundTintList(spinner, ColorStateList.valueOf(textColour))
+		spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+			override fun onItemSelected(adapterView: AdapterView<*>, view: View?, i: Int, l: Long) {
+				val choice = options[i]
+				if (choice != current) {
+					Preferences.getSharedPreferences(this@CustomiseModeUi.activity).edit()
+						.putString(Preference.LAUNCHER_BFB_LOCATION.getName(), choice.value).commit()
+					this@CustomiseModeUi.relaunchInCustomiseMode.run()
+				}
+			}
+
+			override fun onNothingSelected(adapterView: AdapterView<*>) {}
+		}
+	}
+
+	private fun menuButtonLabel(location: BfbLocation): Int = when (location) {
+		BfbLocation.NONE -> R.string.menu_button_none
+		BfbLocation.START -> R.string.menu_button_start
+		BfbLocation.END -> R.string.menu_button_end
+	}
+
+	/*
+	 * A spinner adapter that paints the selected (closed) item in the theme's
+	 * customise text colour. Doing it in getView keeps the colour correct even
+	 * when no item is selected yet (e.g. setSelection(-1)), which is why the
+	 * panel-edge dropdown could otherwise show its default white text.
+	 */
+	private fun colouredSpinnerAdapter(items: Array<String>, textColour: Int): ArrayAdapter<String> =
+		object : ArrayAdapter<String>(this.activity,
+			android.R.layout.simple_spinner_dropdown_item, items) {
+			override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+				val view = super.getView(position, convertView, parent)
+				(view as? TextView)?.setTextColor(textColour)
+				return view
+			}
+		}
 
 	/** Re-renders the grid-size hint; called on rotation while customising. */
 	fun refreshDashGridHint() {
@@ -211,9 +264,7 @@ class CustomiseModeUi(
 		val supportedEdgeNames = supportedEdges.map { edgeNames[it] }.toTypedArray()
 		val currentEdgeIndex = supportedEdges.indexOf(currentEdge)
 
-		val adapter = ArrayAdapter(this.activity,
-			android.R.layout.simple_spinner_dropdown_item, supportedEdgeNames)
-		spinner.adapter = adapter
+		spinner.adapter = this.colouredSpinnerAdapter(supportedEdgeNames, textColour)
 		spinner.setSelection(currentEdgeIndex)
 		ViewCompat.setBackgroundTintList(spinner, ColorStateList.valueOf(textColour))
 		spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -243,9 +294,6 @@ class CustomiseModeUi(
 
 					this@CustomiseModeUi.relaunchInCustomiseMode.run()
 				}
-
-				// Apply spinner text colour
-				(adapterView.getChildAt(0) as? TextView)?.setTextColor(textColour)
 			}
 
 			override fun onNothingSelected(adapterView: AdapterView<*>) {}

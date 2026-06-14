@@ -88,10 +88,9 @@ class ThemeApplier(
 		}
 
 		// The menu button (BFB) is hidden either when the theme has no BFB or when
-		// the user has hidden it on a theme that lets them (see launcherBfbVisible).
-		if (!this.theme.launcherBfbVisible(res, prefs)) {
-			llBfbSpinnerWrapper.visibility = View.GONE
-		} else when (Location.of(res.getInteger(this.theme.launcher_bfb_location))) {
+		// the user has hidden it on a theme that lets them; its resolved location
+		// also picks which end of the launcher it sits at (see Theme).
+		when (this.theme.launcherBfbLocationResolved(res, prefs)) {
 			Location.NONE ->
 				llBfbSpinnerWrapper.visibility = View.GONE
 			Location.TOP, Location.LEFT ->

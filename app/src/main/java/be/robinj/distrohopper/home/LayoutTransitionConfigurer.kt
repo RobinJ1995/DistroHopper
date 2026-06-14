@@ -47,6 +47,11 @@ object LayoutTransitionConfigurer {
 		this.zeroStartDelays(llLauncherAndDashContainer_transition)
 		llLauncherAndDashContainer_transition.setDuration(
 			res.getInteger(android.R.integer.config_shortAnimTime).toLong())
+		// CHANGING animates the launcher's own bounds when it resizes for reasons
+		// other than a child being added/removed here — chiefly a bottom dock
+		// (elementary) collapsing/expanding as you swipe to a desktop whose pinned
+		// set is empty/non-empty, instead of snapping to the new height.
+		llLauncherAndDashContainer_transition.enableTransitionType(LayoutTransition.CHANGING)
 		viewFinder.get<LinearLayout>(R.id.llLauncherAndDashContainer).layoutTransition = llLauncherAndDashContainer_transition
 
 		val flWallpaperOverlayContainer_transition = LayoutTransition()

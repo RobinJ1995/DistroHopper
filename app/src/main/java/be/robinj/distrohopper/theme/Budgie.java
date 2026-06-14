@@ -12,7 +12,6 @@ public class Budgie extends Theme
 		this.card_logo = R.drawable.theme_budgie_card_logo;
 
 		// Panel-less: the status bar tracks the launcher edge instead.
-		this.statusbar_follows_launcher_edge = true;
 
 		this.wallpaper_overlay = R.drawable.theme_budgie_wallpaper_overlay;
 		this.wallpaper_overlay_when_dash_opened = R.drawable.theme_budgie_wallpaper_overlay_when_dash_opened;
@@ -54,6 +53,8 @@ public class Budgie extends Theme
 		this.panel_background_when_dash_opened = R.drawable.theme_budgie_panel_background_when_dash_opened;
 		this.statusbar_background = R.drawable.theme_budgie_statusbar_background;
 		this.statusbar_background_when_panel_not_top = R.drawable.theme_budgie_statusbar_background_when_panel_not_top;
+		this.statusbar_colour_when_panel_hidden = R.drawable.theme_budgie_statusbar_colour_when_panel_hidden;
+		this.statusbar_follows_launcher_edge = R.bool.theme_budgie_statusbar_follows_launcher_edge;
 		this.statusbar_background_when_dash_opened = R.drawable.theme_budgie_statusbar_background_when_dash_opened;
 		this.panel_background_dynamic_when_dash_opened = R.bool.theme_budgie_panel_background_dynamic_when_dash_opened;
 		this.panel_bfb_location = R.integer.theme_budgie_panel_bfb_location;

@@ -3,6 +3,7 @@ package be.robinj.distrohopper.theme
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.preferences.BfbLocation
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import org.junit.Assert.*
@@ -74,17 +75,22 @@ class ThemeTest {
 
     @Test fun menuButtonPreferenceOverridesTheDefault() {
         val prefs = Preferences.getSharedPreferences(context)
-        prefs.edit().putBoolean(Preference.LAUNCHER_MENU_BUTTON_VISIBLE.getName(), true).commit()
+        prefs.edit().putString(Preference.LAUNCHER_BFB_LOCATION.getName(),
+            BfbLocation.START.value).commit()
         assertTrue(Elementary().launcherBfbVisible(context.resources, prefs))
+        assertEquals(Location.LEFT,
+            Elementary().launcherBfbLocationResolved(context.resources, prefs))
 
-        prefs.edit().putBoolean(Preference.LAUNCHER_MENU_BUTTON_VISIBLE.getName(), false).commit()
+        prefs.edit().putString(Preference.LAUNCHER_BFB_LOCATION.getName(),
+            BfbLocation.NONE.value).commit()
         assertFalse(Cosmic().launcherBfbVisible(context.resources, prefs))
     }
 
     @Test fun menuButtonPreferenceIgnoredOnNonToggleableThemes() {
         val prefs = Preferences.getSharedPreferences(context)
         // The Unity launcher always shows its menu button regardless of the pref.
-        prefs.edit().putBoolean(Preference.LAUNCHER_MENU_BUTTON_VISIBLE.getName(), false).commit()
+        prefs.edit().putString(Preference.LAUNCHER_BFB_LOCATION.getName(),
+            BfbLocation.NONE.value).commit()
         assertTrue(Default().launcherBfbVisible(context.resources, prefs))
     }
 

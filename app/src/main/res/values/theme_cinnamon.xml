@@ -60,6 +60,8 @@
     <drawable name="theme_cinnamon_panel_background_when_dash_opened">@android:color/transparent</drawable>
     <drawable name="theme_cinnamon_statusbar_background">@android:color/transparent</drawable>
     <drawable name="theme_cinnamon_statusbar_background_when_panel_not_top">@android:color/transparent</drawable>
+    <drawable name="theme_cinnamon_statusbar_colour_when_panel_hidden">@android:color/transparent</drawable>
+    <bool name="theme_cinnamon_statusbar_follows_launcher_edge">false</bool>
     <drawable name="theme_cinnamon_statusbar_background_when_dash_opened">@android:color/transparent</drawable>
     <bool name="theme_cinnamon_panel_background_dynamic_when_dash_opened">false</bool>
     <integer name="theme_cinnamon_panel_bfb_location">@integer/position_none</integer>
