@@ -23,9 +23,10 @@ class AccessibilityGestureSetupActivity : AppCompatActivity() {
 		this.flipper = this.findViewById(R.id.vfGestureSetup)
 
 		this.findViewById<Button>(R.id.btnGestureSetupCancel).setOnClickListener { this.finish() }
+		// Proceed only advances to the guide page; the user reads it and opens
+		// settings from there (launching settings here would bury the guide). //
 		this.findViewById<Button>(R.id.btnGestureSetupProceed).setOnClickListener {
 			this.flipper.displayedChild = STEP_GUIDE
-			this.openAccessibilitySettings()
 		}
 		this.findViewById<Button>(R.id.btnGestureSetupOpenSettings).setOnClickListener {
 			this.openAccessibilitySettings()
