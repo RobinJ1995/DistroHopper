@@ -33,9 +33,11 @@
     <drawable name="theme_mate_launcher_bfb_image">@drawable/theme_mate_res_launcher_bfb</drawable>
     <drawable name="theme_mate_launcher_bfb_image_vertical">@drawable/theme_mate_res_launcher_bfb_vertical</drawable>
     <bool name="theme_mate_launcher_bfb_hide_while_dragging">false</bool>
-    <integer name="theme_mate_launcher_preferences_location">@integer/position_right</integer>
+    <bool name="theme_mate_launcher_bfb_user_toggleable">false</bool>
+    <bool name="theme_mate_launcher_bfb_visible_by_default">true</bool>
+    <integer name="theme_mate_launcher_preferences_location">@integer/position_none</integer>
     <drawable name="theme_mate_launcher_preferences_image">@drawable/theme_mate_res_launcher_preferences</drawable>
-    <integer name="theme_mate_launcher_preferences_location_when_panel_hidden">@integer/position_right</integer>
+    <integer name="theme_mate_launcher_preferences_location_when_panel_hidden">@integer/position_none</integer>
     <drawable name="theme_mate_launcher_trash_image">@drawable/launcher_trash</drawable>
     <bool name="theme_mate_launcher_applauncher_backgroundcolour_dynamic">false</bool>
     <color name="theme_mate_launcher_applauncher_backgroundcolour">@android:color/transparent</color>

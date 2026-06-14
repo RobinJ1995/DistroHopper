@@ -353,7 +353,17 @@ etc/                                        — design assets (SVG/XCF sources, 
   theme (Budgie) drive the status bar off the launcher edge instead of the
   panel — opaque (`statusbar_background`) when the launcher is at the top,
   transparent (`statusbar_background_when_panel_not_top`) otherwise, resolved
-  in `Theme.statusbar_background_resolved`.
+  in `Theme.statusbar_background_resolved`. A third opt-in,
+  `launcher_bfb_user_toggleable`, lets a theme (Pantheon, COSMIC) expose a
+  "menu button" (the launcher BFB) show/hide checkbox in customise mode;
+  `launcher_bfb_visible_by_default` is its default state and
+  `Theme.launcherBfbVisible` resolves the live value (pref → default), with
+  non-toggleable themes simply following `launcher_bfb_location`. The launcher
+  preferences icon was removed from every theme (`launcher_preferences_location`
+  is `none`); settings are reached via the panel cog or the dash's customise
+  cog, and the dash is always reachable by swiping up — so the old
+  `launcher_preferences_location_when_panel_hidden` fallback is now `none` too.
+  Removed icons keep their drawables.
 - **`widgets/`** — home-screen widget hosting (mostly Kotlin): `WidgetHost`
   (AppWidgetHost), `WidgetPersistence`, `WidgetPickerDialog`.
   `WidgetsPager` (`R.id.vgWidgets`) is a horizontal pager of widget

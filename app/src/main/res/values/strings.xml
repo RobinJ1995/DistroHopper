@@ -54,6 +54,9 @@
     <string name="hint_panel_edge">To which screen edge the Panel should be attached.</string>
     <string name="option_launcher_edge">Launcher location</string>
     <string name="hint_launcher_edge">To which screen edge the Launcher should be attached.</string>
+    <string name="option_menu_button">Menu button</string>
+    <string name="hint_menu_button">Show the menu button in the Launcher. You can also open the Dash by swiping up from the screen edge.</string>
+    <string name="option_menu_button_show">Show the menu button</string>
     <string name="widget_picker_title">Add widget</string>
     <string name="widget_no_room">There is no room left on the home screen for this widget.</string>
     <string name="option_dashsearch_focus_on_open">Start search when Dash opened</string>

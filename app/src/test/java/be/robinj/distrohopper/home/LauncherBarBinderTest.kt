@@ -151,8 +151,8 @@ class LauncherBarBinderTest {
 			binder.stoppedDraggingPinnedApp()
 
 			assertEquals(View.GONE, activity.findViewById<View>(R.id.lalTrash).visibility)
-			// The default theme places the preferences launcher at the bottom.
-			assertEquals(View.VISIBLE,
+			// The default theme no longer shows a preferences launcher.
+			assertEquals(View.GONE,
 				activity.findViewById<View>(R.id.lalPreferences).visibility)
 			assertEquals(View.VISIBLE, activity.findViewById<View>(R.id.lalBfb).visibility)
 			assertEquals(1.0F, pinnedContainer(activity).alpha, 0.001F)

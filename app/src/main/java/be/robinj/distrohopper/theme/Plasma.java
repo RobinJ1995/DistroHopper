@@ -29,6 +29,8 @@ public class Plasma extends Theme
 		this.launcher_bfb_image = R.drawable.theme_plasma_launcher_bfb_image;
 		this.launcher_bfb_image_vertical = R.drawable.theme_plasma_launcher_bfb_image_vertical;
 		this.launcher_bfb_hide_while_dragging = R.bool.theme_plasma_launcher_bfb_hide_while_dragging;
+		this.launcher_bfb_user_toggleable = R.bool.theme_plasma_launcher_bfb_user_toggleable;
+		this.launcher_bfb_visible_by_default = R.bool.theme_plasma_launcher_bfb_visible_by_default;
 		this.launcher_preferences_location = R.integer.theme_plasma_launcher_preferences_location;
 		this.launcher_preferences_image = R.drawable.theme_plasma_launcher_preferences_image;
 		this.launcher_preferences_location_when_panel_hidden = R.integer.theme_plasma_launcher_preferences_location_when_panel_hidden;

@@ -47,6 +47,13 @@ public abstract class Theme
 	public int launcher_bfb_image;
 	public int launcher_bfb_image_vertical;
 	public int launcher_bfb_hide_while_dragging;
+	/*
+	 * Whether the launcher's menu button (the "BFB") can be shown or hidden by
+	 * the user in customise mode, and its default state when it can. Themes that
+	 * are not toggleable always follow launcher_bfb_location.
+	 */
+	public int launcher_bfb_user_toggleable;
+	public int launcher_bfb_visible_by_default;
 	public int launcher_preferences_location;
 	public int launcher_preferences_image;
 	public int launcher_preferences_location_when_panel_hidden;
@@ -154,6 +161,21 @@ public abstract class Theme
 			return this.statusbar_background_when_panel_not_top;
 
 		return this.statusbar_background;
+	}
+
+	/*
+	 * Whether the launcher's menu button (BFB) should be shown. For themes that
+	 * let the user toggle it (Pantheon, COSMIC) this follows the user's choice,
+	 * falling back to the theme's default; other themes simply follow whether
+	 * their themed BFB location is set at all.
+	 */
+	public boolean launcherBfbVisible(final Resources res, final SharedPreferences prefs) {
+		if (res.getBoolean(this.launcher_bfb_user_toggleable)) {
+			return prefs.getBoolean(Preference.LAUNCHER_MENU_BUTTON_VISIBLE.getName(),
+					res.getBoolean(this.launcher_bfb_visible_by_default));
+		}
+
+		return Location.of(res.getInteger(this.launcher_bfb_location)) != Location.NONE;
 	}
 
 	public Location lalPreferences_getLocation(final Resources res, final SharedPreferences prefs) {

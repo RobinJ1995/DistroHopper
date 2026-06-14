@@ -33,7 +33,9 @@ class ThemeApplierTest {
 					activity.findViewById<TextView>(R.id.tvPanelBfb).visibility)
 				assertEquals(View.VISIBLE,
 					activity.findViewById<LinearLayout>(R.id.llDashRibbon).visibility)
-				assertEquals(View.VISIBLE,
+				// The launcher preferences icon was removed: settings are reached
+				// via the cog in the dash.
+				assertEquals(View.GONE,
 					activity.findViewById<View>(R.id.lalPreferences).visibility)
 
 				val llLauncher = activity.findViewById<LinearLayout>(R.id.llLauncher)
@@ -74,14 +76,15 @@ class ThemeApplierTest {
 		}
 	}
 
-	@Test fun cinnamonThemeHidesPanelAndRibbonButShowsPreferences() {
+	@Test fun cinnamonThemeHidesPanelRibbonAndPreferences() {
 		launch("cinnamon").use { scenario ->
 			scenario.onActivity { activity ->
 				assertEquals(View.GONE,
 					activity.findViewById<TextView>(R.id.tvPanelBfb).visibility)
 				assertEquals(View.GONE,
 					activity.findViewById<LinearLayout>(R.id.llDashRibbon).visibility)
-				assertEquals(View.VISIBLE,
+				// The launcher preferences icon was removed.
+				assertEquals(View.GONE,
 					activity.findViewById<View>(R.id.lalPreferences).visibility)
 				assertEquals(View.VISIBLE,
 					activity.findViewById<View>(R.id.llBfbSpinnerWrapper).visibility)
@@ -92,7 +95,7 @@ class ThemeApplierTest {
 		}
 	}
 
-	@Test fun elementaryThemeShowsPanelBfbAndHidesPreferences() {
+	@Test fun elementaryThemeShowsPanelBfbAndHidesPreferencesAndMenuButton() {
 		launch("elementary").use { scenario ->
 			scenario.onActivity { activity ->
 				assertEquals(View.VISIBLE,
@@ -101,6 +104,33 @@ class ThemeApplierTest {
 					activity.findViewById<LinearLayout>(R.id.llDashRibbon).visibility)
 				assertEquals(View.GONE,
 					activity.findViewById<View>(R.id.lalPreferences).visibility)
+				// The menu button defaults to hidden on Pantheon.
+				assertEquals(View.GONE,
+					activity.findViewById<View>(R.id.llBfbSpinnerWrapper).visibility)
+			}
+		}
+	}
+
+	@Test fun cosmicThemeShowsMenuButtonByDefault() {
+		launch("cosmic").use { scenario ->
+			scenario.onActivity { activity ->
+				assertEquals(View.GONE,
+					activity.findViewById<View>(R.id.lalPreferences).visibility)
+				// The menu button defaults to visible on COSMIC.
+				assertEquals(View.VISIBLE,
+					activity.findViewById<View>(R.id.llBfbSpinnerWrapper).visibility)
+			}
+		}
+	}
+
+	@Test fun menuButtonPreferenceHidesItOnAToggleableTheme() {
+		ActivityTestSupport.launchHome(configurePrefs = {
+			it.putString(Preference.THEME.getName(), "cosmic")
+			it.putBoolean(Preference.LAUNCHER_MENU_BUTTON_VISIBLE.getName(), false)
+		}).use { scenario ->
+			scenario.onActivity { activity ->
+				assertEquals(View.GONE,
+					activity.findViewById<View>(R.id.llBfbSpinnerWrapper).visibility)
 			}
 		}
 	}

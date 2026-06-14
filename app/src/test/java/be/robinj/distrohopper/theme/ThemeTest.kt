@@ -58,6 +58,36 @@ class ThemeTest {
             theme.lalPreferences_getLocation(context.resources, prefs))
     }
 
+    @Test fun gnomePanelCanBeHidden() {
+        // The GNOME panel offers Top or Hidden in customise mode.
+        val supported = context.resources.getIntArray(Gnome().panel_location_supported)
+        assertTrue(supported.contains(Location.TOP.n))
+        assertTrue(supported.contains(Location.NONE.n))
+    }
+
+    @Test fun menuButtonDefaultsPerToggleableTheme() {
+        val prefs = Preferences.getSharedPreferences(context)
+        // Pantheon hides the menu button by default; COSMIC shows it.
+        assertFalse(Elementary().launcherBfbVisible(context.resources, prefs))
+        assertTrue(Cosmic().launcherBfbVisible(context.resources, prefs))
+    }
+
+    @Test fun menuButtonPreferenceOverridesTheDefault() {
+        val prefs = Preferences.getSharedPreferences(context)
+        prefs.edit().putBoolean(Preference.LAUNCHER_MENU_BUTTON_VISIBLE.getName(), true).commit()
+        assertTrue(Elementary().launcherBfbVisible(context.resources, prefs))
+
+        prefs.edit().putBoolean(Preference.LAUNCHER_MENU_BUTTON_VISIBLE.getName(), false).commit()
+        assertFalse(Cosmic().launcherBfbVisible(context.resources, prefs))
+    }
+
+    @Test fun menuButtonPreferenceIgnoredOnNonToggleableThemes() {
+        val prefs = Preferences.getSharedPreferences(context)
+        // The Unity launcher always shows its menu button regardless of the pref.
+        prefs.edit().putBoolean(Preference.LAUNCHER_MENU_BUTTON_VISIBLE.getName(), false).commit()
+        assertTrue(Default().launcherBfbVisible(context.resources, prefs))
+    }
+
     @Test fun panelLessThemeStatusBarFollowsLauncherEdge() {
         val theme = Budgie(); val prefs = Preferences.getSharedPreferences(context)
         // No panel: the status bar is opaque only when the launcher is at the top.
