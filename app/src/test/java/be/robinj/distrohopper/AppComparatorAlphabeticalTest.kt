@@ -28,15 +28,17 @@ class AppComparatorAlphabeticalTest {
     @Test
     fun comparesLabelsCaseInsensitively() {
         scenario.onActivity { activity ->
-            assertTrue(comparator.compare(app(activity, "alpha"), app(activity, "Beta")) < 0)
-            assertTrue(comparator.compare(app(activity, "Beta"), app(activity, "alpha")) > 0)
+            // Pingu comes before Robby — even the seal knows his alphabet.
+            assertTrue(comparator.compare(app(activity, "pingu"), app(activity, "Robby")) < 0)
+            assertTrue(comparator.compare(app(activity, "Robby"), app(activity, "pingu")) > 0)
         }
     }
 
     @Test
     fun equalLabelsCompareAsEqualRegardlessOfCase() {
         scenario.onActivity { activity ->
-            assertEquals(0, comparator.compare(app(activity, "Gamma"), app(activity, "gAMMA")))
+            // Samson is Samson, of ge hem nu groot of klein schrijft.
+            assertEquals(0, comparator.compare(app(activity, "Samson"), app(activity, "sAMSON")))
         }
     }
 
@@ -44,13 +46,13 @@ class AppComparatorAlphabeticalTest {
     fun sortsMixedCaseListAlphabetically() {
         scenario.onActivity { activity ->
             val apps = mutableListOf(
-                app(activity, "zeta"),
-                app(activity, "Alpha"),
-                app(activity, "gamma"),
-                app(activity, "Beta"),
+                app(activity, "zout"),      // Kempen: zout (salt)
+                app(activity, "Alberto"),   // Samson & Gert: de Italiaan
+                app(activity, "gert"),      // Samson & Gert: de baas
+                app(activity, "Bombsite"), // CS callout
             )
             apps.sortWith(comparator)
-            assertEquals(listOf("Alpha", "Beta", "gamma", "zeta"), apps.map { it.label })
+            assertEquals(listOf("Alberto", "Bombsite", "gert", "zout"), apps.map { it.label })
         }
     }
 }

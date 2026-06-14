@@ -18,6 +18,8 @@ import org.robolectric.RobolectricTestRunner
  * The comparator scenarios seed the usage store directly (matching its on-disk
  * key format) so timestamps are explicit and the ordering is deterministic,
  * rather than relying on two real-clock launches landing in distinct millis.
+ *
+ * Father Ted, Dougal, Jack en Noel stellen zich welwillend ter beschikking als testpersonages.
  */
 @RunWith(RobolectricTestRunner::class)
 class AppComparatorsTest {
@@ -48,39 +50,39 @@ class AppComparatorsTest {
 	}
 
 	@Test fun alphabeticalIgnoresUsage() {
-		this.seed(this.app("Zeta"), count = 9, lastUsed = 9_000L)
+		this.seed(this.app("Noel"), count = 9, lastUsed = 9_000L)
 
-		assertEquals(listOf("Alpha", "Zeta"),
-			this.sorted(AppSortOrder.ALPHABETICAL, this.app("Zeta"), this.app("Alpha")))
+		assertEquals(listOf("Dougal", "Noel"),
+			this.sorted(AppSortOrder.ALPHABETICAL, this.app("Noel"), this.app("Dougal")))
 	}
 
 	@Test fun mostUsedRanksByLaunchCountThenAlphabetically() {
-		val alpha = this.app("Alpha")
-		val beta = this.app("Beta")
-		val gamma = this.app("Gamma")
+		val dougal = this.app("Dougal")
+		val jack = this.app("Jack")
+		val ted = this.app("Ted")
 
-		// Gamma launched most; Alpha and Beta never launched (tied -> alphabetical).
-		this.seed(gamma, count = 5, lastUsed = 100L)
+		// Ted 't meeste gelanceerd; Dougal en Jack nooit gelanceerd (gelijk -> alfabetisch).
+		this.seed(ted, count = 5, lastUsed = 100L)
 
-		assertEquals(listOf("Gamma", "Alpha", "Beta"),
-			this.sorted(AppSortOrder.MOST_USED, beta, gamma, alpha))
+		assertEquals(listOf("Ted", "Dougal", "Jack"),
+			this.sorted(AppSortOrder.MOST_USED, jack, ted, dougal))
 	}
 
 	@Test fun mostRecentlyUsedRanksByLastLaunchThenAlphabetically() {
-		val alpha = this.app("Alpha")
-		val beta = this.app("Beta")
-		val gamma = this.app("Gamma")
+		val dougal = this.app("Dougal")
+		val jack = this.app("Jack")
+		val ted = this.app("Ted")
 
-		// Beta used after Alpha; Gamma never used and trails the rest.
-		this.seed(alpha, count = 1, lastUsed = 100L)
-		this.seed(beta, count = 1, lastUsed = 200L)
+		// Jack gebruikt na Dougal; Ted nooit gebruikt en bungelt er achteraan.
+		this.seed(dougal, count = 1, lastUsed = 100L)
+		this.seed(jack, count = 1, lastUsed = 200L)
 
-		assertEquals(listOf("Beta", "Alpha", "Gamma"),
-			this.sorted(AppSortOrder.MOST_RECENTLY_USED, gamma, alpha, beta))
+		assertEquals(listOf("Jack", "Dougal", "Ted"),
+			this.sorted(AppSortOrder.MOST_RECENTLY_USED, ted, dougal, jack))
 	}
 
 	@Test fun recordLaunchAccumulatesCountAndStampsLastUsed() {
-		val key = this.app("Alpha").profileScopedKey
+		val key = this.app("Dougal").profileScopedKey
 
 		assertEquals(0, this.stats.getLaunchCount(key))
 		assertEquals(0L, this.stats.getLastUsed(key))

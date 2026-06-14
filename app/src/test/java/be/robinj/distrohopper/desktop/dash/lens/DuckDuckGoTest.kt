@@ -21,6 +21,8 @@ import java.net.URLConnection
  * DuckDuckGo streams each result as soon as its own icon download finishes
  * (per-result, fully-loaded — no placeholders), rather than returning the
  * whole batch only once every icon has downloaded.
+ *
+ * de_dust2 en de_inferno melden zich voor dienst als testresultaten. GG.
  */
 @RunWith(RobolectricTestRunner::class)
 class DuckDuckGoTest {
@@ -33,15 +35,15 @@ class DuckDuckGoTest {
     @Test fun searchEmitsEachResultWithItsDownloadedIcon() {
         val json = """
             {"RelatedTopics":[
-              {"Text":"Result A","FirstURL":"https://a.example","Icon":{"URL":"/a.png"}},
-              {"Text":"Result B","FirstURL":"https://b.example","Icon":{"URL":"/b.png"}}
+              {"Text":"de_dust2","FirstURL":"https://cs.example/maps/dust2","Icon":{"URL":"/dust2.png"}},
+              {"Text":"de_inferno","FirstURL":"https://cs.example/maps/inferno","Icon":{"URL":"/inferno.png"}}
             ]}
         """.trimIndent()
         val lens = FakeDuckDuckGo(application, json)
 
-        val emitted = lens.collect("query", 10).results
+        val emitted = lens.collect("buy ak", 10).results
 
-        assertEquals(listOf("Result A", "Result B"), emitted.map { it.name })
+        assertEquals(listOf("de_dust2", "de_inferno"), emitted.map { it.name })
         // Each emitted result already carries its own downloaded icon (the 4x4
         // test bitmap), not the lens fallback placeholder //
         emitted.forEach {
@@ -54,14 +56,14 @@ class DuckDuckGoTest {
     @Test fun searchStopsAtMaxResults() {
         val json = """
             {"RelatedTopics":[
-              {"Text":"A","FirstURL":"https://a","Icon":{"URL":"/a.png"}},
-              {"Text":"B","FirstURL":"https://b","Icon":{"URL":"/b.png"}},
-              {"Text":"C","FirstURL":"https://c","Icon":{"URL":"/c.png"}}
+              {"Text":"AWP","FirstURL":"https://cs.example/awp","Icon":{"URL":"/awp.png"}},
+              {"Text":"AK-47","FirstURL":"https://cs.example/ak47","Icon":{"URL":"/ak47.png"}},
+              {"Text":"Flashbang","FirstURL":"https://cs.example/flash","Icon":{"URL":"/flash.png"}}
             ]}
         """.trimIndent()
         val lens = FakeDuckDuckGo(application, json)
 
-        assertEquals(2, lens.collect("query", 2).results.size)
+        assertEquals(2, lens.collect("buy", 2).results.size)
     }
 
     /** Serves the canned API JSON for the api.duckduckgo.com call and a 4x4 PNG for icon URLs. */

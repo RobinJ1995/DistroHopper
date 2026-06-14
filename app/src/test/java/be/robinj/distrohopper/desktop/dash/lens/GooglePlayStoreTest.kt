@@ -48,77 +48,78 @@ class GooglePlayStoreTest {
 
     @Test fun parsesAppResults() {
         val lens = FakeGooglePlayStore(application, page(
-            appNode("WhatsApp Messenger", "com.whatsapp", "https://play-lh.googleusercontent.com/whatsapp"),
-            appNode("Telegram", "org.telegram.messenger", "https://play-lh.googleusercontent.com/telegram"),
+            appNode("Pingu Mail", "noot.noot.mail", "https://play-lh.googleusercontent.com/pingumail"),
+            appNode("Noot Messenger", "noot.noot.chat", "https://play-lh.googleusercontent.com/noot"),
         ))
 
-        val results = lens.collect("messenger", 10).results
+        val results = lens.collect("noot", 10).results
 
-        assertEquals(listOf("WhatsApp Messenger", "Telegram"), results.map { it.name })
+        assertEquals(listOf("Pingu Mail", "Noot Messenger"), results.map { it.name })
         assertEquals(
-            listOf("market://details?id=com.whatsapp", "market://details?id=org.telegram.messenger"),
+            listOf("market://details?id=noot.noot.mail", "market://details?id=noot.noot.chat"),
             results.map { it.url },
         )
     }
 
     @Test fun preservesAllCapsTitles() {
-        // An all-caps / token-shaped title (e.g. "X", "AIDE") must survive rather
+        // An all-caps / token-shaped title (e.g. "AWP", "CS2") must survive rather
         // than falling back to the package name.
         val lens = FakeGooglePlayStore(application, page(
-            appNode("X", "com.twitter.android", "https://play-lh.googleusercontent.com/x"),
-            appNode("AIDE", "com.aide.ui", "https://play-lh.googleusercontent.com/aide"),
+            appNode("AWP", "gg.valve.awp", "https://play-lh.googleusercontent.com/awp"),
+            appNode("CS2", "gg.valve.cs2", "https://play-lh.googleusercontent.com/cs2"),
         ))
 
-        val results = lens.collect("x", 10).results
+        val results = lens.collect("awp", 10).results
 
-        assertEquals(listOf("X", "AIDE"), results.map { it.name })
+        assertEquals(listOf("AWP", "CS2"), results.map { it.name })
     }
 
     @Test fun downloadsEachAppsOwnIcon() {
         val lens = FakeGooglePlayStore(application, page(
-            appNode("WhatsApp Messenger", "com.whatsapp", "https://play-lh.googleusercontent.com/whatsapp"),
+            appNode("Pingu Mail", "noot.noot.mail", "https://play-lh.googleusercontent.com/pingumail"),
         ))
 
-        lens.collect("whatsapp", 10).results
+        lens.collect("pingu", 10).results
 
         // The real app icon URL is used (with a small size hint), not the lens icon.
         assertEquals(1, lens.requestedIconUrls.size)
-        assertTrue(lens.requestedIconUrls[0].startsWith("https://play-lh.googleusercontent.com/whatsapp"))
+        assertTrue(lens.requestedIconUrls[0].startsWith("https://play-lh.googleusercontent.com/pingumail"))
     }
 
     @Test fun dedupesByPackage() {
         val lens = FakeGooglePlayStore(application, page(
-            appNode("WhatsApp Messenger", "com.whatsapp", "https://play-lh.googleusercontent.com/whatsapp"),
-            appNode("WhatsApp Messenger", "com.whatsapp", "https://play-lh.googleusercontent.com/whatsapp2"),
+            appNode("Pingu Mail", "noot.noot.mail", "https://play-lh.googleusercontent.com/pingumail1"),
+            appNode("Pingu Mail", "noot.noot.mail", "https://play-lh.googleusercontent.com/pingumail2"),
         ))
 
-        val results = lens.collect("whatsapp", 10).results
+        val results = lens.collect("pingu", 10).results
 
         assertEquals(1, results.size)
     }
 
     @Test fun respectsMaxResults() {
         val lens = FakeGooglePlayStore(application, page(
-            appNode("App One", "com.example.one", "https://play-lh.googleusercontent.com/one"),
-            appNode("App Two", "com.example.two", "https://play-lh.googleusercontent.com/two"),
-            appNode("App Three", "com.example.three", "https://play-lh.googleusercontent.com/three"),
+            appNode("AK-47", "gg.valve.ak47", "https://play-lh.googleusercontent.com/ak47"),
+            appNode("AWP", "gg.valve.awp", "https://play-lh.googleusercontent.com/awp"),
+            appNode("M4A4", "gg.valve.m4a4", "https://play-lh.googleusercontent.com/m4a4"),
         ))
 
-        val results = lens.collect("app", 2).results
+        val results = lens.collect("guns", 2).results
 
         assertEquals(2, results.size)
     }
 
     @Test fun hidesInstalledApps() {
-        val packageInfo = android.content.pm.PackageInfo().apply { packageName = "com.whatsapp" }
+        // Pingu Mail al geïnstalleerd — alleen Noot Messenger blijft over.
+        val packageInfo = android.content.pm.PackageInfo().apply { packageName = "noot.noot.mail" }
         Shadows.shadowOf(application.packageManager).installPackage(packageInfo)
 
         val lens = FakeGooglePlayStore(application, page(
-            appNode("WhatsApp Messenger", "com.whatsapp", "https://play-lh.googleusercontent.com/whatsapp"),
-            appNode("Telegram", "org.telegram.messenger", "https://play-lh.googleusercontent.com/telegram"),
+            appNode("Pingu Mail", "noot.noot.mail", "https://play-lh.googleusercontent.com/pingumail"),
+            appNode("Noot Messenger", "noot.noot.chat", "https://play-lh.googleusercontent.com/noot"),
         ))
 
-        assertEquals(listOf("Telegram"), lens.collect("messenger", 10).results.map { it.name })
+        assertEquals(listOf("Noot Messenger"), lens.collect("noot", 10).results.map { it.name })
     }
 
     @Test fun returnsEmptyWhenNothingParses() {
@@ -126,7 +127,7 @@ class GooglePlayStoreTest {
 
         val results = lens.collect("obscure query", 10).results
 
-        // No results is no results: no fallback tile, no icon downloads.
+        // No results is no results: no fallback tile, no icon downloads. Noot noot.
         assertTrue(results.isEmpty())
         assertTrue(lens.requestedIconUrls.isEmpty())
     }
@@ -134,11 +135,11 @@ class GooglePlayStoreTest {
     @Test fun clickOpensPlayStoreApp() {
         val lens = GooglePlayStore(application)
 
-        lens.onClick("market://details?id=com.whatsapp")
+        lens.onClick("market://details?id=noot.noot.mail")
 
         val intent = Shadows.shadowOf(application).nextStartedActivity
         assertEquals(Intent.ACTION_VIEW, intent.action)
-        assertEquals("market://details?id=com.whatsapp", intent.dataString)
+        assertEquals("market://details?id=noot.noot.mail", intent.dataString)
         assertTrue(intent.flags and Intent.FLAG_ACTIVITY_NEW_TASK != 0)
     }
 }

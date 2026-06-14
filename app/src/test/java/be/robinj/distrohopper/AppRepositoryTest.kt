@@ -31,7 +31,7 @@ class AppRepositoryTest {
 	}
 
 	@Test fun addRejectsDuplicatesWhenAsked() {
-		val app = this.app("com.example.a", "A", "Alpha")
+		val app = this.app("noot.noot.pingu", "PinguActivity", "Pingu")
 
 		assertTrue(this.repository.add(app, true))
 		assertFalse(this.repository.add(app, true))
@@ -39,13 +39,13 @@ class AppRepositoryTest {
 	}
 
 	@Test fun sortOrdersByLabelAndEmitsASnapshot() {
-		this.repository.add(this.app("com.example.b", "B", "Bravo"), false)
-		this.repository.add(this.app("com.example.a", "A", "Alpha"), false)
+		this.repository.add(this.app("noot.noot.pinga", "PingaActivity", "Pinga"), false)
+		this.repository.add(this.app("noot.noot.pingu", "PinguActivity", "Pingu"), false)
 
 		this.repository.sort()
 
-		assertEquals(listOf("Alpha", "Bravo"), this.repository.installedLive.map { it.label })
-		assertEquals(listOf("Alpha", "Bravo"), this.repository.installed.value.map { it.label })
+		assertEquals(listOf("Pinga", "Pingu"), this.repository.installedLive.map { it.label })
+		assertEquals(listOf("Pinga", "Pingu"), this.repository.installed.value.map { it.label })
 	}
 
 	private fun setSortOrder(value: String) =
@@ -60,51 +60,51 @@ class AppRepositoryTest {
 
 	@Test fun sortByMostUsedRanksByLaunchCountThenAlphabetically() {
 		this.setSortOrder("most_used")
-		val alpha = this.app("com.example.a", "A", "Alpha")
-		val bravo = this.app("com.example.b", "B", "Bravo")
-		val charlie = this.app("com.example.c", "C", "Charlie")
-		this.repository.add(charlie, false)
-		this.repository.add(alpha, false)
-		this.repository.add(bravo, false)
-		this.seedUsage(charlie, 5, 100L) // Alpha and Bravo never launched -> alphabetical //
+		val pinga = this.app("noot.noot.pinga", "PingaActivity", "Pinga")
+		val pingu = this.app("noot.noot.pingu", "PinguActivity", "Pingu")
+		val robby = this.app("noot.noot.robby", "RobbyActivity", "Robby")
+		this.repository.add(robby, false)
+		this.repository.add(pinga, false)
+		this.repository.add(pingu, false)
+		this.seedUsage(robby, 5, 100L) // Pinga en Pingu nooit gelanceerd (gelijk -> alfabetisch).
 
 		this.repository.sort()
 
-		assertEquals(listOf("Charlie", "Alpha", "Bravo"),
+		assertEquals(listOf("Robby", "Pinga", "Pingu"),
 			this.repository.installedLive.map { it.label })
 	}
 
 	@Test fun sortByMostRecentlyUsedRanksByLastLaunchThenAlphabetically() {
 		this.setSortOrder("recent")
-		val alpha = this.app("com.example.a", "A", "Alpha")
-		val bravo = this.app("com.example.b", "B", "Bravo")
-		val charlie = this.app("com.example.c", "C", "Charlie")
-		this.repository.add(charlie, false)
-		this.repository.add(alpha, false)
-		this.repository.add(bravo, false)
-		this.seedUsage(alpha, 1, 100L)
-		this.seedUsage(bravo, 1, 200L) // Charlie never launched -> trails the rest //
+		val pinga = this.app("noot.noot.pinga", "PingaActivity", "Pinga")
+		val pingu = this.app("noot.noot.pingu", "PinguActivity", "Pingu")
+		val robby = this.app("noot.noot.robby", "RobbyActivity", "Robby")
+		this.repository.add(robby, false)
+		this.repository.add(pinga, false)
+		this.repository.add(pingu, false)
+		this.seedUsage(pinga, 1, 100L)
+		this.seedUsage(pingu, 1, 200L) // Robby nooit gelanceerd, hangt er achteraan.
 
 		this.repository.sort()
 
-		assertEquals(listOf("Bravo", "Alpha", "Charlie"),
+		assertEquals(listOf("Pingu", "Pinga", "Robby"),
 			this.repository.installedLive.map { it.label })
 	}
 
 	@Test fun searchPrefersPrefixMatchesAndHonoursMaxResults() {
-		this.repository.add(this.app("com.example.a", "A", "Alpha"), false)
-		this.repository.add(this.app("com.example.b", "B", "Kalpha"), false)
-		this.repository.add(this.app("com.example.c", "C", "Beta"), false)
+		this.repository.add(this.app("ie.craggy.jack", "JackActivity", "Jack"), false)
+		this.repository.add(this.app("ie.craggy.blackjack", "BlackjackActivity", "Blackjack"), false)
+		this.repository.add(this.app("ie.craggy.dougal", "DougalActivity", "Dougal"), false)
 
-		val results = this.repository.search("alpha", Integer.MAX_VALUE)
-		assertEquals(listOf("Alpha", "Kalpha"), results.map { it.label })
+		val results = this.repository.search("jack", Integer.MAX_VALUE)
+		assertEquals(listOf("Jack", "Blackjack"), results.map { it.label })
 
-		assertEquals(1, this.repository.search("alpha", 1).size)
+		assertEquals(1, this.repository.search("jack", 1).size)
 		assertEquals(3, this.repository.search("", 1).size) // maxResults ignored when empty
 	}
 
 	@Test fun pinUnpinRoundTripsAndEmits() {
-		val app = this.app("com.example.a", "A", "Alpha")
+		val app = this.app("noot.noot.pingu", "PinguActivity", "Pingu")
 		this.repository.add(app, false)
 
 		assertTrue(this.repository.pin(app))
@@ -118,17 +118,17 @@ class AppRepositoryTest {
 	}
 
 	@Test fun savePinnedAppsPersistsInOrder() {
-		val alpha = this.app("com.example.a", "A", "Alpha")
-		val beta = this.app("com.example.b", "B", "Beta")
-		this.repository.pin(alpha)
-		this.repository.pin(beta)
+		val pingu = this.app("noot.noot.pingu", "PinguActivity", "Pingu")
+		val pinga = this.app("noot.noot.pinga", "PingaActivity", "Pinga")
+		this.repository.pin(pingu)
+		this.repository.pin(pinga)
 		this.repository.movePinnedApp(0, 1)
 
 		this.repository.savePinnedApps()
 
 		val prefs = Preferences.getSharedPreferences(this.context, Preferences.PINNED_APPS)
-		assertEquals("com.example.b\nB", prefs.getString("0", null))
-		assertEquals("com.example.a\nA", prefs.getString("1", null))
+		assertEquals("noot.noot.pinga\nPingaActivity", prefs.getString("0", null))
+		assertEquals("noot.noot.pingu\nPinguActivity", prefs.getString("1", null))
 		assertNull(prefs.getString("2", null))
 	}
 
@@ -146,14 +146,14 @@ class AppRepositoryTest {
 	}
 
 	@Test fun findersLocateAppsByIdentity() {
-		val alpha = this.app("com.example.a", "AlphaActivity", "Alpha")
-		this.repository.add(alpha, false)
+		val pingu = this.app("noot.noot.pingu", "PinguActivity", "Pingu")
+		this.repository.add(pingu, false)
 
-		assertEquals(alpha,
-			this.repository.findAppByPackageAndActivityName("com.example.a", "AlphaActivity"))
-		assertNull(this.repository.findAppByPackageAndActivityName("com.example.a", "Other"))
-		assertEquals(listOf(alpha), this.repository.findAppsByPackageName("com.example.a"))
-		assertEquals(alpha,
-			this.repository.installedAppsMap()[alpha.packageAndActivityName])
+		assertEquals(pingu,
+			this.repository.findAppByPackageAndActivityName("noot.noot.pingu", "PinguActivity"))
+		assertNull(this.repository.findAppByPackageAndActivityName("noot.noot.pingu", "Other"))
+		assertEquals(listOf(pingu), this.repository.findAppsByPackageName("noot.noot.pingu"))
+		assertEquals(pingu,
+			this.repository.installedAppsMap()[pingu.packageAndActivityName])
 	}
 }

@@ -50,35 +50,37 @@ class LocalFilesTest {
     // ── Existing tests ─────────────────────────────────────────────────────────
 
     @Test fun searchReturnsResultsFromMediaStore() {
-        provider.cursorToReturn = mediaCursor(1L to "notes.txt", 2L to "notes2.txt")
-        val results = lens.collect("notes", 10).results
+        provider.cursorToReturn = mediaCursor(1L to "ted_sermon.txt", 2L to "ted_sermon2.txt")
+        val results = lens.collect("ted", 10).results
         assertEquals(2, results.size)
-        assertEquals("notes.txt", results[0].name)
-        assertEquals("notes2.txt", results[1].name)
+        assertEquals("ted_sermon.txt", results[0].name)
+        assertEquals("ted_sermon2.txt", results[1].name)
     }
 
     @Test fun searchReturnsEmptyListWhenQueryFails() {
         provider.cursorToReturn = null
-        val results = lens.collect("anything", 10).results
+        val results = lens.collect("nootnoot", 10).results
         assertTrue(results.isEmpty())
     }
 
     @Test fun searchClosesCursor() {
-        val cursor = mediaCursor(1L to "notes.txt")
+        val cursor = mediaCursor(1L to "ted_sermon.txt")
         provider.cursorToReturn = cursor
-        lens.collect("notes", 10).results
+        lens.collect("ted", 10).results
         assertTrue(cursor.isClosed)
     }
 
     @Test fun searchClosesCursorWhenNoResults() {
         val cursor = mediaCursor()
         provider.cursorToReturn = cursor
-        lens.collect("nothing", 10).results
+        // Would you like some tea? Are you sure? Go on.
+        lens.collect("mrs_doyle", 10).results
         assertTrue(cursor.isClosed)
     }
 
     @Test fun searchUsesSelectionArgsInsteadOfStringConcatenation() {
         provider.cursorToReturn = mediaCursor()
+        // Craggy Island's finest — apostrophes must be parameterised, not concatenated
         lens.collect("o'brien", 10).results
         assertNotNull(provider.lastSelection)
         assertTrue(provider.lastSelection!!.contains("?"))
@@ -88,14 +90,14 @@ class LocalFilesTest {
     }
 
     @Test fun searchRespectsMaxResults() {
-        provider.cursorToReturn = mediaCursor(1L to "a.txt", 2L to "b.txt", 3L to "c.txt", 4L to "d.txt")
+        provider.cursorToReturn = mediaCursor(1L to "dougal.txt", 2L to "jack.txt", 3L to "ted.txt", 4L to "bishop.txt")
         val results = lens.collect("txt", 2).results
         assertEquals(2, results.size)
     }
 
     @Test fun resultUrlIsAContentUriForTheMediaStoreEntry() {
-        provider.cursorToReturn = mediaCursor(42L to "notes.txt")
-        val results = lens.collect("notes", 10).results
+        provider.cursorToReturn = mediaCursor(42L to "ted_sermon.txt")
+        val results = lens.collect("ted", 10).results
         val uri = Uri.parse(results[0].url)
         assertEquals("content", uri.scheme)
         assertEquals("42", uri.lastPathSegment)

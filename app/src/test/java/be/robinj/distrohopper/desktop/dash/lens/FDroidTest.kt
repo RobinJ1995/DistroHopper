@@ -42,17 +42,17 @@ class FDroidTest {
 
     @Test fun parsesAppResults() {
         val lens = FakeFDroid(application, page(
-            app("Wire • Secure Messenger", "com.wire", "https://icons.example/wire.png"),
-            app("Meshenger", "d.d.meshenger", "https://icons.example/meshenger.png"),
+            app("Samson de Hond", "be.samson.hond", "https://icons.example/samson.png"),
+            app("Alberto Italiaano", "be.alberto.italiaan", "https://icons.example/alberto.png"),
         ))
 
-        val results = lens.collect("messenger", 10).results
+        val results = lens.collect("hond", 10).results
 
-        assertEquals(listOf("Wire • Secure Messenger", "Meshenger"), results.map { it.name })
+        assertEquals(listOf("Samson de Hond", "Alberto Italiaano"), results.map { it.name })
         assertEquals(
             listOf(
-                "https://f-droid.org/packages/com.wire/",
-                "https://f-droid.org/packages/d.d.meshenger/",
+                "https://f-droid.org/packages/be.samson.hond/",
+                "https://f-droid.org/packages/be.alberto.italiaan/",
             ),
             results.map { it.url },
         )
@@ -60,34 +60,35 @@ class FDroidTest {
 
     @Test fun downloadsEachAppsOwnIcon() {
         val lens = FakeFDroid(application, page(
-            app("Wire", "com.wire", "https://icons.example/wire.png"),
+            app("Samson de Hond", "be.samson.hond", "https://icons.example/samson.png"),
         ))
 
-        lens.collect("wire", 10).results
+        lens.collect("samson", 10).results
 
-        assertEquals(listOf("https://icons.example/wire.png"), lens.requestedIconUrls)
+        assertEquals(listOf("https://icons.example/samson.png"), lens.requestedIconUrls)
     }
 
     @Test fun respectsMaxResults() {
         val lens = FakeFDroid(application, page(
-            app("One", "com.example.one", "https://icons.example/1.png"),
-            app("Two", "com.example.two", "https://icons.example/2.png"),
-            app("Three", "com.example.three", "https://icons.example/3.png"),
+            app("Gert", "be.gert.geerts", "https://icons.example/gert.png"),
+            app("Octaaf", "be.octaaf.oud", "https://icons.example/octaaf.png"),
+            app("Marie", "be.marie.moeder", "https://icons.example/marie.png"),
         ))
 
-        assertEquals(2, lens.collect("app", 2).results.size)
+        assertEquals(2, lens.collect("kempen", 2).results.size)
     }
 
     @Test fun hidesInstalledApps() {
-        val packageInfo = android.content.pm.PackageInfo().apply { packageName = "com.wire" }
+        // Samson al geïnstalleerd — alleen Alberto blijft over.
+        val packageInfo = android.content.pm.PackageInfo().apply { packageName = "be.samson.hond" }
         Shadows.shadowOf(application.packageManager).installPackage(packageInfo)
 
         val lens = FakeFDroid(application, page(
-            app("Wire", "com.wire", "https://icons.example/wire.png"),
-            app("Meshenger", "d.d.meshenger", "https://icons.example/meshenger.png"),
+            app("Samson de Hond", "be.samson.hond", "https://icons.example/samson.png"),
+            app("Alberto Italiaano", "be.alberto.italiaan", "https://icons.example/alberto.png"),
         ))
 
-        assertEquals(listOf("Meshenger"), lens.collect("messenger", 10).results.map { it.name })
+        assertEquals(listOf("Alberto Italiaano"), lens.collect("hond", 10).results.map { it.name })
     }
 
     @Test fun returnsEmptyWhenNothingMatches() {
@@ -99,11 +100,11 @@ class FDroidTest {
     @Test fun clickTargetsTheFDroidClient() {
         val lens = FDroid(application)
 
-        lens.onClick("https://f-droid.org/packages/com.wire/")
+        lens.onClick("https://f-droid.org/packages/be.samson.hond/")
 
         val intent = Shadows.shadowOf(application).nextStartedActivity
         assertEquals(Intent.ACTION_VIEW, intent.action)
-        assertEquals("https://f-droid.org/packages/com.wire/", intent.dataString)
+        assertEquals("https://f-droid.org/packages/be.samson.hond/", intent.dataString)
         assertEquals("org.fdroid.fdroid", intent.`package`)
         assertTrue(intent.flags and Intent.FLAG_ACTIVITY_NEW_TASK != 0)
     }
