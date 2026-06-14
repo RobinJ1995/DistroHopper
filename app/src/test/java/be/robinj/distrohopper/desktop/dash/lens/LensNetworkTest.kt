@@ -26,12 +26,12 @@ class LensNetworkTest {
     }
 
     @Test fun downloadStrReadsAllContent() {
-        lens.stream = TrackingInputStream("line1\nline2".byteInputStream())
-        assertEquals("line1line2", lens.download("http://example.com"))
+        lens.stream = TrackingInputStream("noot\nnoot".byteInputStream())
+        assertEquals("nootnoot", lens.download("http://example.com"))
     }
 
     @Test fun downloadStrClosesStreamOnSuccess() {
-        val stream = TrackingInputStream("content".byteInputStream())
+        val stream = TrackingInputStream("noot noot".byteInputStream())
         lens.stream = stream
         lens.download("http://example.com")
         assertTrue(stream.closed)

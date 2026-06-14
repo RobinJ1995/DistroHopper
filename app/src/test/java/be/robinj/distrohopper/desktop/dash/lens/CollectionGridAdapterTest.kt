@@ -48,7 +48,7 @@ class CollectionGridAdapterTest {
 	@Test fun resultsArePopulatedIntoTheInnerGridUnderTheLensName() {
 		scenario.onActivity { activity ->
 			val lens = StubLens(activity)
-			val result = LensSearchResult(activity, "A result",
+			val result = LensSearchResult(activity, "Noot Mail",
 				"https://example.com", ColorDrawable(Color.RED))
 
 			val view = getView(activity, LensSearchResultCollection(lens, listOf(result)))
@@ -65,7 +65,7 @@ class CollectionGridAdapterTest {
 	@Test fun lensResultsUseTheSameColumnCountAsTheDashAppsGrid() {
 		scenario.onActivity { activity ->
 			val lens = StubLens(activity)
-			val result = LensSearchResult(activity, "A result",
+			val result = LensSearchResult(activity, "Noot Mail",
 				"https://example.com", ColorDrawable(Color.RED))
 
 			val view = getView(activity, LensSearchResultCollection(lens, listOf(result)))

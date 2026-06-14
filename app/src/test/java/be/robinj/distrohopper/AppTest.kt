@@ -114,14 +114,14 @@ class AppTest {
 
     @Test fun parcelRoundTripPreservesPersistedFields() {
         scenario.onActivity { activity ->
-            val original = activity.appManager[0].apply { description = "description" }
+            val original = activity.appManager[0].apply { description = "noot noot" }
             val parcel = Parcel.obtain()
             original.writeToParcel(parcel, 0); parcel.setDataPosition(0)
             val restored = App.CREATOR.createFromParcel(parcel)
             assertEquals(original.packageName, restored.packageName)
             assertEquals(original.activityName, restored.activityName)
             assertEquals(original.label, restored.label)
-            assertEquals("description", restored.description)
+            assertEquals("noot noot", restored.description)
             parcel.recycle()
         }
     }
@@ -133,12 +133,12 @@ class AppTest {
             val app = App(
                 activity,
                 activity.appManager,
-                ActivityTestSupport.resolveInfo("com.example.unloaded", "UnloadedActivity", "Unloaded"),
+                ActivityTestSupport.resolveInfo("noot.noot.robby", "RobbyActivity", "Robby"),
             )
             val cache = TestStringCache(activity, "app_label_test").apply { clear() }
             assertFalse(app.isLabelLoaded)
-            assertTrue(app.setLabel("Renamed", cache))
-            assertEquals("Renamed", cache[app.packageAndActivityName])
+            assertTrue(app.setLabel("Pinga", cache))
+            assertEquals("Pinga", cache[app.packageAndActivityName])
             cache.clear()
         }
     }
@@ -147,8 +147,8 @@ class AppTest {
         scenario.onActivity { activity ->
             val app = activity.appManager[0]
             val cache = TestStringCache(activity, "app_label_test").apply { clear() }
-            app.setLabel("Renamed", cache)
-            assertFalse(app.setLabel("Renamed", cache))
+            app.setLabel("Pinga", cache)
+            assertFalse(app.setLabel("Pinga", cache))
             cache.clear()
         }
     }

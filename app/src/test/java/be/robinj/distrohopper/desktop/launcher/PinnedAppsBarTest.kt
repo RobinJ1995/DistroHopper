@@ -18,7 +18,7 @@ class PinnedAppsBarTest {
 	private val context: Context = ApplicationProvider.getApplicationContext()
 
 	private fun app(): App =
-		App(this.context, null, ActivityTestSupport.resolveInfo("a", "A", "Alpha"))
+		App(this.context, null, ActivityTestSupport.resolveInfo("noot.noot.pingu", "PinguActivity", "Pingu"))
 
 	private fun child(width: Int, height: Int): View =
 		View(this.context).apply { layoutParams = LinearLayout.LayoutParams(width, height) }

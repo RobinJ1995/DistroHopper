@@ -22,25 +22,33 @@ class PinnedAppsMigrationTest {
 	@Before fun setUp() { this.prefs.edit().clear().commit() }
 
 	@Test fun globalToDesktopKeepsTheGlobalsAsDesktopZero() {
-		this.prefs.edit().putString("0", "a\nA").putString("1", "b\nB").commit()
+		this.prefs.edit()
+			.putString("0", "noot.noot.pingu\nPinguActivity")
+			.putString("1", "ie.craggy.ted\nTedActivity")
+			.commit()
 
 		PinnedAppsMigration.migrate(this.context, LauncherPinMode.DESKTOP)
 
-		assertEquals("a\nA", this.prefs.getString("0/0", null)) // Per-desktop format now //
-		assertEquals(listOf(listOf("a\nA", "b\nB")), PinnedAppsStorage.read(this.prefs))
+		assertEquals("noot.noot.pingu\nPinguActivity", this.prefs.getString("0/0", null)) // Per-desktop format now //
+		assertEquals(
+			listOf(listOf("noot.noot.pingu\nPinguActivity", "ie.craggy.ted\nTedActivity")),
+			PinnedAppsStorage.read(this.prefs))
 	}
 
 	@Test fun desktopToGlobalFlattensInOrderAndDeDuplicates() {
 		this.prefs.edit()
-			.putString("0/0", "a\nA")
-			.putString("1/0", "b\nB").putString("1/1", "a\nA") // a is on desktops 0 and 1 //
+			.putString("0/0", "noot.noot.pingu\nPinguActivity")
+			.putString("1/0", "ie.craggy.ted\nTedActivity")
+			.putString("1/1", "noot.noot.pingu\nPinguActivity") // pingu is on desktops 0 and 1 //
 			.commit()
 
 		PinnedAppsMigration.migrate(this.context, LauncherPinMode.GLOBAL)
 
-		assertEquals(listOf(listOf("a\nA", "b\nB")), PinnedAppsStorage.read(this.prefs))
-		assertEquals("a\nA", this.prefs.getString("0", null))
-		assertEquals("b\nB", this.prefs.getString("1", null))
+		assertEquals(
+			listOf(listOf("noot.noot.pingu\nPinguActivity", "ie.craggy.ted\nTedActivity")),
+			PinnedAppsStorage.read(this.prefs))
+		assertEquals("noot.noot.pingu\nPinguActivity", this.prefs.getString("0", null))
+		assertEquals("ie.craggy.ted\nTedActivity", this.prefs.getString("1", null))
 		assertNull(this.prefs.getString("2", null))
 	}
 }

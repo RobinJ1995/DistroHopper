@@ -22,12 +22,12 @@ class LensTest {
     }
 
     @Test fun searchWithoutLimitUsesDefaultTwenty() {
-        runBlocking { lens.search("query", RecordingEmitter()) }
+        runBlocking { lens.search("noot noot", RecordingEmitter()) }
         assertEquals(20, lens.lastMaxResults)
     }
 
     @Test fun explicitSearchLimitIsForwarded() {
-        runBlocking { lens.search("query", 3, RecordingEmitter()) }
+        runBlocking { lens.search("noot noot", 3, RecordingEmitter()) }
         assertEquals(3, lens.lastMaxResults)
     }
 

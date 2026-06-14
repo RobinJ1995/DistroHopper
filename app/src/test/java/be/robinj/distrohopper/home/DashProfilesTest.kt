@@ -61,7 +61,7 @@ class DashProfilesTest {
 	@Test fun workProfileAddsASecondSwipeablePage() {
 		val workUser = ActivityTestSupport.addWorkProfile()
 		ActivityTestSupport.addWorkProfileApp(
-			workUser, "com.example.work", "WorkChatActivity", "WorkChat")
+			workUser, "noot.noot.work", "NootMailActivity", "NootMail")
 
 		ActivityTestSupport.launchHome().use { scenario ->
 			scenario.onActivity { activity ->
@@ -80,7 +80,7 @@ class DashProfilesTest {
 				// As delivered by WorkProfileAppsCallback.onPackageAdded //
 				val workUser = ActivityTestSupport.addWorkProfile()
 				activity.appManager.add(ActivityTestSupport.launcherActivityInfo(
-					"com.example.work", "WorkChatActivity", "WorkChat", workUser),
+					"noot.noot.work", "NootMailActivity", "NootMail", workUser),
 					true, true)
 
 				assertEquals(2, pageCount(activity))
@@ -91,7 +91,7 @@ class DashProfilesTest {
 	@Test fun removingTheLastWorkProfileAppReturnsToOneTab() {
 		val workUser = ActivityTestSupport.addWorkProfile()
 		ActivityTestSupport.addWorkProfileApp(
-			workUser, "com.example.work", "WorkChatActivity", "WorkChat")
+			workUser, "noot.noot.work", "NootMailActivity", "NootMail")
 
 		ActivityTestSupport.launchHome().use { scenario ->
 			scenario.onActivity { activity ->
@@ -110,7 +110,7 @@ class DashProfilesTest {
 	@Test fun unityRibbonShowsOneTabGlyphPerProfile() {
 		val workUser = ActivityTestSupport.addWorkProfile()
 		ActivityTestSupport.addWorkProfileApp(
-			workUser, "com.example.work", "WorkChatActivity", "WorkChat")
+			workUser, "noot.noot.work", "NootMailActivity", "NootMail")
 
 		// Default theme is Unity-style //
 		ActivityTestSupport.launchHome().use { scenario ->
@@ -125,7 +125,7 @@ class DashProfilesTest {
 	@Test fun gnomePanelPillReflectsProfilesAndShowsOnlyWhileDashOpen() {
 		val workUser = ActivityTestSupport.addWorkProfile()
 		ActivityTestSupport.addWorkProfileApp(
-			workUser, "com.example.work", "WorkChatActivity", "WorkChat")
+			workUser, "noot.noot.work", "NootMailActivity", "NootMail")
 
 		ActivityTestSupport.launchHome(configurePrefs = {
 			it.putString(Preference.THEME.getName(), "gnome")
@@ -154,7 +154,7 @@ class DashProfilesTest {
 		// is now applied on attach, not just on bind.
 		val workUser = ActivityTestSupport.addWorkProfile()
 		ActivityTestSupport.addWorkProfileApp(
-			workUser, "com.example.work", "WorkChatActivity", "WorkChat")
+			workUser, "noot.noot.work", "NootMailActivity", "NootMail")
 
 		ActivityTestSupport.launchHome().use { scenario ->
 			scenario.onActivity { activity ->

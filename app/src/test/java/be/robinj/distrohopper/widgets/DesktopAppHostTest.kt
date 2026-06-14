@@ -40,7 +40,7 @@ class DesktopAppHostTest {
 			val alpha = WidgetTestSupport.app(activity, "com.example.alpha")
 			this.writeStored(activity,
 				DesktopAppLayout(alpha.profileScopedKey, 0, 0, 0),
-				DesktopAppLayout("com.example.gone\nGoneActivity", 1, 0, 0))
+				DesktopAppLayout("ie.craggy.noel\nNoelActivity", 1, 0, 0))
 
 			host.restore()
 

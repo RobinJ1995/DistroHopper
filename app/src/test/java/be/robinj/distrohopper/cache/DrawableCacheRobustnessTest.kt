@@ -46,8 +46,8 @@ class DrawableCacheRobustnessTest {
     }
 
     @Test fun staleKeyCleanupDoesNotThrowConcurrentModification() {
-        cache["a"] = drawable(Color.RED)
-        cache["b"] = drawable(Color.BLUE)
+        cache["samson"] = drawable(Color.RED)
+        cache["gert"] = drawable(Color.BLUE)
         deleteBackingFiles()
 
         val keys = cache.keys // triggers cleanup of keys whose files are gone
@@ -57,31 +57,31 @@ class DrawableCacheRobustnessTest {
     }
 
     @Test fun cachedDrawablesSurviveReload() {
-        cache["icon"] = drawable(Color.RED)
+        cache["pingu"] = drawable(Color.RED)
 
         val reloaded = TestDrawableCache(context, "drawables_robustness_test")
 
-        assertTrue(reloaded.containsKey("icon"))
-        assertNotNull(reloaded["icon"])
+        assertTrue(reloaded.containsKey("pingu"))
+        assertNotNull(reloaded["pingu"])
     }
 
     @Test fun removedKeysStayRemovedAfterReload() {
-        cache["a"] = drawable(Color.RED)
-        cache["b"] = drawable(Color.BLUE)
-        cache.remove("a")
+        cache["samson"] = drawable(Color.RED)
+        cache["gert"] = drawable(Color.BLUE)
+        cache.remove("samson")
 
         val reloaded = TestDrawableCache(context, "drawables_robustness_test")
 
-        assertFalse(reloaded.containsKey("a"))
-        assertTrue(reloaded.containsKey("b"))
+        assertFalse(reloaded.containsKey("samson"))
+        assertTrue(reloaded.containsKey("gert"))
     }
 
     @Test fun mutationsAfterReadingKeySetDoNotLeakIntoTheReturnedSet() {
-        cache["a"] = drawable(Color.RED)
+        cache["samson"] = drawable(Color.RED)
         val keys = cache.keys
 
-        cache["b"] = drawable(Color.BLUE)
+        cache["gert"] = drawable(Color.BLUE)
 
-        assertEquals(setOf("a"), keys)
+        assertEquals(setOf("samson"), keys)
     }
 }

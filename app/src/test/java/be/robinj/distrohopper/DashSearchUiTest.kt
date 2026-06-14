@@ -45,33 +45,33 @@ class DashSearchUiTest {
     }
 
     @Test fun searchFieldAcceptsAndDisplaysTypedText() {
-        openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("hello"))
-        onView(withId(R.id.etDashSearch)).check(matches(withText("hello")))
+        openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("noot"))
+        onView(withId(R.id.etDashSearch)).check(matches(withText("noot")))
     }
 
     @Test fun clearingSearchRestoresAppGridImmediately() {
-        openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("settings"), replaceText(""))
+        openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("ted"), replaceText(""))
         onView(withId(R.id.llDashHomeAppsContainer)).check(matches(isDisplayed()))
     }
 
     @Test fun clearingSearchHidesLensResultsContainer() {
-        openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("test"), replaceText(""))
+        openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("de_dust2"), replaceText(""))
         onView(withId(R.id.llDashHomeLensesContainer)).check(matches(not(isDisplayed())))
     }
 
     @Test fun searchFieldClearsWhenDashIsClosedWithBackButton() {
-        openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("something")); pressBack(); ActivityTestSupport.drainTasks(); openDash()
+        openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("rush b")); pressBack(); ActivityTestSupport.drainTasks(); openDash()
         onView(withId(R.id.etDashSearch)).check(matches(withText("")))
     }
 
     @Test fun searchFieldClearsWhenDashIsClosedWithCloseButton() {
-        openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("query"))
+        openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("de_inferno"))
         onView(withId(R.id.ibPanelDashClose)).perform(click()); ActivityTestSupport.drainTasks(); openDash()
         onView(withId(R.id.etDashSearch)).check(matches(withText("")))
     }
 
     @Test fun appGridRestoredAfterDashClosedAndReopened() {
-        openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("filter")); pressBack(); ActivityTestSupport.drainTasks(); openDash()
+        openDash(); onView(withId(R.id.etDashSearch)).perform(replaceText("banana")); pressBack(); ActivityTestSupport.drainTasks(); openDash()
         onView(withId(R.id.llDashHomeAppsContainer)).check(matches(isDisplayed()))
     }
 }

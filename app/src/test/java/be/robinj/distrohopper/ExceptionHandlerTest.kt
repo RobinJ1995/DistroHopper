@@ -23,7 +23,7 @@ class ExceptionHandlerTest {
     }
 
     @Test fun showFromMainThreadDisplaysDialog() {
-        ExceptionHandler(IllegalStateException("boom")).show(context)
+        ExceptionHandler(IllegalStateException("noot")).show(context)
 
         ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
 
@@ -33,7 +33,7 @@ class ExceptionHandlerTest {
     }
 
     @Test fun showFromBackgroundThreadDisplaysDialog() {
-        val background = Thread { ExceptionHandler(IllegalStateException("boom")).show(context) }
+        val background = Thread { ExceptionHandler(IllegalStateException("noot")).show(context) }
         background.start()
         background.join(5000)
 
@@ -46,16 +46,16 @@ class ExceptionHandlerTest {
     }
 
     @Test fun dialogMessageDescribesTheException() {
-        ExceptionHandler(IllegalStateException("something exploded")).show(context)
+        ExceptionHandler(IllegalStateException("rush b no stop")).show(context)
 
         ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
 
         val message = Shadows.shadowOf(ShadowAlertDialog.getLatestAlertDialog()).message.toString()
         assertTrue(message.contains("IllegalStateException"))
-        assertTrue(message.contains("something exploded"))
+        assertTrue(message.contains("rush b no stop"))
     }
 
     @Test fun showWithNullContextDoesNotThrow() {
-        ExceptionHandler(IllegalStateException("boom")).show(null)
+        ExceptionHandler(IllegalStateException("noot")).show(null)
     }
 }

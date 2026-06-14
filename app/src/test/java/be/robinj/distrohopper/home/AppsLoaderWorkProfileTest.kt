@@ -49,13 +49,13 @@ class AppsLoaderWorkProfileTest {
 	@Test fun workProfileAppsAreLoadedIntoTheirOwnProfile() {
 		val workUser = ActivityTestSupport.addWorkProfile()
 		ActivityTestSupport.addWorkProfileApp(
-			workUser, "com.example.work", "WorkChatActivity", "WorkChat")
+			workUser, "noot.noot.work", "NootMailActivity", "NootMail")
 
 		this.scenario.onActivity { activity ->
 			val appManager = this.loadApps(activity, "apps_loader_work_icons")
 
 			val workApp = appManager.installedApps.single { it.user != null }
-			assertEquals("WorkChat", workApp.label)
+			assertEquals("NootMail", workApp.label)
 			assertEquals(workUser, workApp.user)
 			assertEquals(listOf(null, workUser), appManager.profiles)
 
@@ -82,7 +82,7 @@ class AppsLoaderWorkProfileTest {
 	@Test fun pinnedWorkProfileAppsPersistWithTheProfileSerialAndAreRestored() {
 		val workUser = ActivityTestSupport.addWorkProfile()
 		ActivityTestSupport.addWorkProfileApp(
-			workUser, "com.example.work", "WorkChatActivity", "WorkChat")
+			workUser, "noot.noot.work", "NootMailActivity", "NootMail")
 
 		this.scenario.onActivity { activity ->
 			val appManager = this.loadApps(activity, "apps_loader_pin_work_icons")
@@ -96,7 +96,7 @@ class AppsLoaderWorkProfileTest {
 			// profile serial so the work-profile pin persists distinctly.
 			val stored = PinnedAppsStorage.read(
 				Preferences.getSharedPreferences(this.application, Preferences.PINNED_APPS))
-			assertEquals("com.example.work\nWorkChatActivity\n10", stored[0][0])
+			assertEquals("noot.noot.work\nNootMailActivity\n10", stored[0][0])
 
 			val reloaded = this.loadApps(activity, "apps_loader_pin_work_icons_reloaded")
 			assertEquals(listOf(workApp), reloaded.pinned)

@@ -43,7 +43,7 @@ class AppManagerTest {
         AppIconCache(ApplicationProvider.getApplicationContext()).containsKey(key)
 
     @Test fun changingTheIconConfigPurgesTheIconCache() = withManager { manager ->
-        val key = "purge-me"
+        val key = "pingu"
         assertTrue(cacheAnIcon(key).containsKey(key))
 
         // A new shape makes the icon config signature no longer match the cache. //
@@ -55,7 +55,7 @@ class AppManagerTest {
     }
 
     @Test fun unchangedIconConfigKeepsTheIconCache() = withManager { manager ->
-        val key = "keep-me"
+        val key = "robby"
         assertTrue(cacheAnIcon(key).containsKey(key))
 
         manager.iconRenderer // same config as at launch: nothing to reconcile

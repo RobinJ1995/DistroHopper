@@ -66,23 +66,23 @@ class PackageManagerBroadcastReceiverTest {
         scenario.onActivity { activity ->
             val manager = activity.appManager
             val before = manager.size()
-            installPackage("com.example.delta", "Delta")
+            installPackage("be.samsonengert.modest", "Modest")
 
             PackageManagerBroadcastReceiver(activity).onReceive(activity,
-                Intent(Intent.ACTION_PACKAGE_ADDED, Uri.parse("package:com.example.delta")))
+                Intent(Intent.ACTION_PACKAGE_ADDED, Uri.parse("package:be.samsonengert.modest")))
 
             assertEquals(before + 1, manager.size())
-            assertEquals(1, manager.findAppsByPackageName("com.example.delta").size)
+            assertEquals(1, manager.findAppsByPackageName("be.samsonengert.modest").size)
         }
     }
 
     @Test fun packageAddedWhileReplacingIsIgnored() {
         scenario.onActivity { activity ->
             val before = activity.appManager.size()
-            installPackage("com.example.delta", "Delta")
+            installPackage("be.samsonengert.modest", "Modest")
 
             PackageManagerBroadcastReceiver(activity).onReceive(activity,
-                Intent(Intent.ACTION_PACKAGE_ADDED, Uri.parse("package:com.example.delta"))
+                Intent(Intent.ACTION_PACKAGE_ADDED, Uri.parse("package:be.samsonengert.modest"))
                     .putExtra(Intent.EXTRA_REPLACING, true))
 
             assertEquals(before, activity.appManager.size())

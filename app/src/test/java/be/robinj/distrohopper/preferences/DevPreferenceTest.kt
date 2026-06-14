@@ -102,8 +102,8 @@ class DevPreferenceTest {
 			AppIconCache(this.application),
 			AppIconCache.EXPIRATION,
 		)
-		labelCache["label-key"] = "Label"
-		iconCache["icon-key"] = ColorDrawable(0xff00ff)
+		labelCache["pingu-label"] = "Noot"
+		iconCache["pingu-icon"] = ColorDrawable(0xff00ff)
 
 		ActivityScenario.launch(PreferencesActivity::class.java).use { scenario ->
 			scenario.onActivity { activity ->
@@ -122,7 +122,7 @@ class DevPreferenceTest {
 			AppIconCache(this.application),
 			AppIconCache.EXPIRATION,
 		)
-		assertFalse(freshLabelCache.containsKey("label-key"))
-		assertFalse(freshIconCache.containsKey("icon-key"))
+		assertFalse(freshLabelCache.containsKey("pingu-label"))
+		assertFalse(freshIconCache.containsKey("pingu-icon"))
 	}
 }

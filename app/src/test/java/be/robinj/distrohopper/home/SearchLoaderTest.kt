@@ -59,7 +59,7 @@ class SearchLoaderTest {
         val wheel = ProgressWheel(activity, Robolectric.buildAttributeSet().build())
         wheel.visibility = View.GONE
         val loader = SearchLoader(activity, testDispatchers)
-        loader.start("query", lenses, 10, adapter, results, wheel)
+        loader.start("de_dust2", lenses, 10, adapter, results, wheel)
         return Fixture(loader, results, wheel)
     }
 
