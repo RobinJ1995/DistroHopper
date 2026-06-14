@@ -132,8 +132,8 @@
 
     <!-- Accessibility gesture setup wizard -->
     <string name="title_activity_gesture_setup">Notification gestures</string>
-    <string name="gesture_setup_explain_title">Open the notification tray</string>
-    <string name="gesture_setup_explain_body">Android doesn\'t give ordinary apps any way to open the notification tray — for a home screen like DistroHopper, the only mechanism available is an accessibility service.\n\nThat\'s why DistroHopper\'s accessibility service needs to be enabled. It is used for nothing but opening the notification tray: it does not read what\'s on your screen, collect any data, or perform any other action.</string>
+    <string name="gesture_setup_explain_title">Notification tray gesture setup</string>
+    <string name="gesture_setup_explain_body">Android doesn\'t give ordinary apps any way to open the notification tray. For a home screen like DistroHopper, the only mechanism available is an accessibility service.\n\nDistroHopper\'s accessibility service needs to be enabled for that reason alone. It only opens the notification tray. It does not read what\'s on your screen, collect any data, or perform any other action.</string>
     <string name="gesture_setup_guide_title">Turn on the service</string>
     <string name="gesture_setup_guide_body">Find DistroHopper in the accessibility settings list and switch it on, then come back here.</string>
     <string name="gesture_setup_cancel">Cancel</string>
