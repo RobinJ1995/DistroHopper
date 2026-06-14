@@ -1,0 +1,34 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<!-- Not configurable: a non-selectable hint that surfaces the fixed
+	     swipe-left/right behaviour. -->
+	<Preference
+		android:enabled="false"
+		android:selectable="false"
+		android:persistent="false"
+		android:title="@string/option_gesture_swipe_sides"
+		android:summary="@string/hint_gesture_swipe_sides" />
+
+	<!-- Entries/values are populated in code so the notification-tray option can
+	     be hidden while the accessibility service is off. -->
+	<ListPreference
+		android:key="gesture_swipe_up"
+		android:title="@string/option_gesture_swipe_up"
+		android:dialogTitle="@string/option_gesture_swipe_up"
+		android:defaultValue="open_dash" />
+
+	<ListPreference
+		android:key="gesture_swipe_down"
+		android:title="@string/option_gesture_swipe_down"
+		android:dialogTitle="@string/option_gesture_swipe_down"
+		android:defaultValue="none" />
+
+	<!-- Shown only while the accessibility service is disabled; launches the
+	     enable wizard. -->
+	<Preference
+		android:key="dummy_enable_notification_gestures"
+		android:persistent="false"
+		android:title="@string/option_enable_notification_gestures"
+		android:summary="@string/hint_enable_notification_gestures" />
+
+</PreferenceScreen>

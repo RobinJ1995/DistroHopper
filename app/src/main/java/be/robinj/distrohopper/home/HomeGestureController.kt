@@ -16,16 +16,18 @@ import kotlin.math.abs
  * The home screen's swipe gestures. On empty desktop space (the widget
  * pager's OnTouchListener feeds in its touches, and HomeActivity those no
  * view claimed; the panel and launcher are excluded by hit-testing):
- *  - swiping up slides the dash in, tracking the finger with the theme's
- *    own open animation — DashController and DashAnimator do the visual
- *    work — committing or cancelling when it lifts;
- *  - swiping down opens the system notification tray, but only when the
- *    experimental [notificationGestureEnabled] developer setting is on. The
- *    only public API for that is an accessibility service's global action, so
- *    the shade can't be finger-tracked: the commit decision (same fling /
- *    distance thresholds as the dash open) is made on release. If the service
- *    isn't actually connected, [promptEnableAccessibility] nudges the user to
- *    enable it instead;
+ *  - swiping up or down runs the user-configured [GestureAction] for that
+ *    direction ([swipeUpAction] / [swipeDownAction]):
+ *     - opening the dash slides it in tracking the finger with the theme's own
+ *       open animation (DashController and DashAnimator do the visual work),
+ *       either direction, committing or cancelling when it lifts; the search
+ *       variant additionally focuses the dash search field;
+ *     - opening the notification tray goes through the accessibility service's
+ *       global action, which can't be finger-tracked, so the commit decision
+ *       (same fling / distance thresholds as the dash open) is made on release;
+ *       if the service isn't connected, [promptEnableAccessibility] nudges the
+ *       user to enable it;
+ *     - "do nothing" leaves the swipe inert;
  *  - swiping sideways pans between the widget desktops (WidgetsPager does
  *    the same for swipes that start on a widget).
  * As SwipeToCloseLayout's delegate it likewise tracks the open dash being
@@ -41,7 +43,8 @@ class HomeGestureController(
 	private val dash: DashController,
 	private val viewModel: HomeViewModel,
 	private val customiseMode: () -> Boolean,
-	private val notificationGestureEnabled: () -> Boolean = { false },
+	private val swipeUpAction: () -> GestureAction = { GestureAction.OPEN_DASH },
+	private val swipeDownAction: () -> GestureAction = { GestureAction.NONE },
 	private val serviceConnected: () -> Boolean = { NotificationAccessibilityService.isConnected },
 	private val onOpenNotifications: () -> Unit =
 		{ NotificationAccessibilityService.instance?.openNotifications() },
@@ -49,7 +52,7 @@ class HomeGestureController(
 ) : SwipeToCloseLayout.Delegate {
 	/**
 	 * Production constructor (Java call site): the service-touching callbacks use
-	 * their real implementations; only the two app-supplied behaviours are passed.
+	 * their real implementations; only the app-supplied behaviours are passed.
 	 */
 	constructor(
 		activity: Activity,
@@ -57,14 +60,15 @@ class HomeGestureController(
 		dash: DashController,
 		viewModel: HomeViewModel,
 		customiseMode: () -> Boolean,
-		notificationGestureEnabled: () -> Boolean,
+		swipeUpAction: () -> GestureAction,
+		swipeDownAction: () -> GestureAction,
 		promptEnableAccessibility: () -> Unit,
-	) : this(activity, viewFinder, dash, viewModel, customiseMode, notificationGestureEnabled,
+	) : this(activity, viewFinder, dash, viewModel, customiseMode, swipeUpAction, swipeDownAction,
 		{ NotificationAccessibilityService.isConnected },
 		{ NotificationAccessibilityService.instance?.openNotifications() },
 		promptEnableAccessibility)
 
-	private enum class State { IDLE, PENDING, TRACKING_OPEN, TRACKING_PAGES, TRACKING_NOTIFICATIONS, INSTANT_OPEN, DONE }
+	private enum class State { IDLE, PENDING, TRACKING_OPEN, TRACKING_PAGES, TRACKING_ACTION, INSTANT_OPEN, DONE }
 
 	private val touchSlop = ViewConfiguration.get(activity).scaledTouchSlop
 	private val flingVelocityPx =
@@ -74,6 +78,10 @@ class HomeGestureController(
 	private var downX = 0F
 	private var downY = 0F
 	private var startOpenness = 0F
+	/** Whether the in-flight vertical gesture travels downward (only one is ever live). */
+	private var swipeDownward = false
+	/** Whether the in-flight dash open should force the search field to focus. */
+	private var forceSearch = false
 	private var velocityTracker: VelocityTracker? = null
 
 	private var closeTracking = false
@@ -116,10 +124,10 @@ class HomeGestureController(
 				when (this.state) {
 					State.PENDING -> this.maybeStart(ev)
 					State.TRACKING_OPEN -> this.dash.swipeUpdate(this.startOpenness
-						+ (this.downY - ev.y) / this.dash.swipeDistancePx)
+						+ this.openTravel(ev) / this.dash.swipeDistancePx)
 					State.TRACKING_PAGES -> this.pager.panBy(this.downX - ev.x)
-					State.INSTANT_OPEN -> if (this.downY - ev.y > this.touchSlop * 4F) {
-						this.dash.open()
+					State.INSTANT_OPEN -> if (this.openTravel(ev) > this.touchSlop * 4F) {
+						this.dash.open(this.forceSearch)
 						this.viewModel.openDash()
 						this.state = State.DONE
 					}
@@ -132,27 +140,24 @@ class HomeGestureController(
 
 				when (this.state) {
 					State.TRACKING_OPEN -> {
-						val velocityY = this.currentVelocity { it.yVelocity }
-						val commit = if (abs(velocityY) > this.flingVelocityPx) {
-							velocityY < 0F // Flung in the opening (upward) direction //
+						val commit = if (this.flung()) {
+							this.flungOpen() // Flung in the opening direction //
 						} else {
 							this.dash.swipeOpenness > COMMIT_FRACTION
 						}
 
-						this.dash.swipeOpenEnd(commit)
+						this.dash.swipeOpenEnd(commit, this.forceSearch)
 						if (commit) {
 							this.viewModel.openDash()
 						}
 					}
 					State.TRACKING_PAGES ->
 						this.pager.panSettle(this.currentVelocity { it.xVelocity })
-					State.TRACKING_NOTIFICATIONS -> {
-						val velocityY = this.currentVelocity { it.yVelocity }
-						val distance = ev.y - this.downY
-						val commit = if (abs(velocityY) > this.flingVelocityPx) {
-							velocityY > 0F // Flung in the opening (downward) direction //
+					State.TRACKING_ACTION -> {
+						val commit = if (this.flung()) {
+							this.flungOpen() // Flung in the gesture's direction //
 						} else {
-							distance > this.dash.swipeDistancePx * COMMIT_FRACTION
+							this.openTravel(ev) > this.dash.swipeDistancePx * COMMIT_FRACTION
 						}
 
 						if (commit) {
@@ -199,25 +204,41 @@ class HomeGestureController(
 			return // Not (yet) locked to either axis //
 		}
 
-		if (dy >= 0F) {
-			// Downwards opens the notification tray, if the experimental gesture
-			// is enabled. There is nothing to finger-track (the shade isn't ours);
-			// the commit decision is made on release. //
-			if (this.notificationGestureEnabled()) {
-				this.state = State.TRACKING_NOTIFICATIONS
+		this.swipeDownward = dy >= 0F
+		val action = if (this.swipeDownward) this.swipeDownAction() else this.swipeUpAction()
+		this.forceSearch = action == GestureAction.OPEN_DASH_SEARCH
+
+		when (action) {
+			GestureAction.NONE -> return // Inert: leave the swipe unconsumed //
+			GestureAction.OPEN_DASH, GestureAction.OPEN_DASH_SEARCH ->
+				if (this.dash.swipeOpenBegin()) { // Pull in the dash, tracking the finger //
+					this.state = State.TRACKING_OPEN
+					this.startOpenness = this.dash.swipeOpenness
+					this.downY = ev.y // Track from where the swipe was recognised //
+				} else { // Battery saver: nothing to track; open at the trigger distance //
+					this.state = State.INSTANT_OPEN
+				}
+			GestureAction.NOTIFICATIONS -> {
+				// The notification shade isn't ours to finger-track; the commit
+				// decision is made on release. //
+				this.state = State.TRACKING_ACTION
 				this.downY = ev.y // Track from where the swipe was recognised //
 			}
-
-			return
 		}
+	}
 
-		if (this.dash.swipeOpenBegin()) { // Upwards: pull in the dash //
-			this.state = State.TRACKING_OPEN
-			this.startOpenness = this.dash.swipeOpenness
-			this.downY = ev.y // Track from where the swipe was recognised //
-		} else { // Battery saver: nothing to track; open at the trigger distance //
-			this.state = State.INSTANT_OPEN
-		}
+	/** How far the finger has travelled in the gesture's opening direction. */
+	private fun openTravel(ev: MotionEvent): Float =
+		if (this.swipeDownward) ev.y - this.downY else this.downY - ev.y
+
+	/** Whether the lift was a fling (fast enough for direction alone to decide). */
+	private fun flung(): Boolean =
+		abs(this.currentVelocity { it.yVelocity }) > this.flingVelocityPx
+
+	/** Whether a fling went in the gesture's opening direction. */
+	private fun flungOpen(): Boolean {
+		val velocityY = this.currentVelocity { it.yVelocity }
+		return if (this.swipeDownward) velocityY > 0F else velocityY < 0F
 	}
 
 	private fun openNotifications() {

@@ -73,15 +73,16 @@ class HomeGestureControllerTest {
 			}
 		}
 
-		/* A controller wired up for the experimental notification-tray gesture. */
-		fun notificationGestures(
-			enabled: Boolean = true,
+		/* A controller wired up with explicit per-direction actions. */
+		fun gesturesWith(
+			up: GestureAction = GestureAction.OPEN_DASH,
+			down: GestureAction = GestureAction.NONE,
 			serviceConnected: Boolean = true,
 			onOpen: () -> Unit = {},
 			onPrompt: () -> Unit = {},
 		): HomeGestureController =
 			HomeGestureController(this.activity, this.activity.viewFinder, this.dash,
-				this.viewModel, { false }, { enabled }, { serviceConnected }, onOpen, onPrompt)
+				this.viewModel, { false }, { up }, { down }, { serviceConnected }, onOpen, onPrompt)
 	}
 
 	private fun onHarness(block: (Harness) -> Unit) {
@@ -89,7 +90,7 @@ class HomeGestureControllerTest {
 	}
 
 	@Test fun swipingDownOnEmptySpaceDoesNothing() = this.onHarness { h ->
-		// The notification-tray gesture is off by default; a downward swipe is inert //
+		// Swipe-down defaults to "do nothing"; a downward swipe is inert //
 		h.touch(MotionEvent.ACTION_DOWN, h.emptyX, h.emptyY - 200F, 0)
 		val consumedMove = h.touch(MotionEvent.ACTION_MOVE, h.emptyX, h.emptyY - 100F, 50)
 		val consumedUp = h.touch(MotionEvent.ACTION_UP, h.emptyX, h.emptyY - 100F, 100)
@@ -102,7 +103,8 @@ class HomeGestureControllerTest {
 	@Test fun swipingDownWithTheGestureEnabledOpensNotifications() = this.onHarness { h ->
 		var opened = 0
 		var prompted = 0
-		val g = h.notificationGestures(onOpen = { opened++ }, onPrompt = { prompted++ })
+		val g = h.gesturesWith(down = GestureAction.NOTIFICATIONS,
+			onOpen = { opened++ }, onPrompt = { prompted++ })
 		val distance = h.dash.swipeDistancePx
 
 		h.touch(g, MotionEvent.ACTION_DOWN, h.emptyX, h.emptyY, 0)
@@ -121,7 +123,7 @@ class HomeGestureControllerTest {
 
 	@Test fun aFastFlickDownOpensNotificationsOnVelocityAlone() = this.onHarness { h ->
 		var opened = 0
-		val g = h.notificationGestures(onOpen = { opened++ })
+		val g = h.gesturesWith(down = GestureAction.NOTIFICATIONS, onOpen = { opened++ })
 		val distance = h.dash.swipeDistancePx
 
 		h.touch(g, MotionEvent.ACTION_DOWN, h.emptyX, h.emptyY, 0)
@@ -136,7 +138,7 @@ class HomeGestureControllerTest {
 
 	@Test fun aShortSlowSwipeDownDoesNotOpenNotifications() = this.onHarness { h ->
 		var opened = 0
-		val g = h.notificationGestures(onOpen = { opened++ })
+		val g = h.gesturesWith(down = GestureAction.NOTIFICATIONS, onOpen = { opened++ })
 
 		h.touch(g, MotionEvent.ACTION_DOWN, h.emptyX, h.emptyY, 0)
 		h.touch(g, MotionEvent.ACTION_MOVE, h.emptyX, h.emptyY + h.slop * 3F, 200)
@@ -149,7 +151,7 @@ class HomeGestureControllerTest {
 	@Test fun swipingDownWithoutTheServiceConnectedPromptsToEnableIt() = this.onHarness { h ->
 		var opened = 0
 		var prompted = 0
-		val g = h.notificationGestures(
+		val g = h.gesturesWith(down = GestureAction.NOTIFICATIONS,
 			serviceConnected = false, onOpen = { opened++ }, onPrompt = { prompted++ })
 		val distance = h.dash.swipeDistancePx
 
@@ -163,11 +165,12 @@ class HomeGestureControllerTest {
 		assertEquals(1, prompted) // Nudged towards the accessibility settings instead //
 	}
 
-	@Test fun aDisabledNotificationGestureLeavesTheDownSwipeInert() = this.onHarness { h ->
+	@Test fun aDoNothingDownGestureLeavesTheDownSwipeInert() = this.onHarness { h ->
 		var opened = 0
 		var prompted = 0
-		val g = h.notificationGestures(
-			enabled = false, onOpen = { opened++ }, onPrompt = { prompted++ })
+		// down = NONE (the default): the swipe is inert and not consumed //
+		val g = h.gesturesWith(down = GestureAction.NONE,
+			onOpen = { opened++ }, onPrompt = { prompted++ })
 		val distance = h.dash.swipeDistancePx
 
 		h.touch(g, MotionEvent.ACTION_DOWN, h.emptyX, h.emptyY, 0)
@@ -178,10 +181,40 @@ class HomeGestureControllerTest {
 		assertEquals(0, opened)
 		assertEquals(0, prompted)
 		assertFalse(consumedUp)
+		assertFalse(h.dash.isOpen)
 	}
 
-	@Test fun enablingTheNotificationGestureLeavesSwipeUpForTheDashWorking() = this.onHarness { h ->
-		val g = h.notificationGestures()
+	@Test fun aNotificationsDownGestureLeavesSwipeUpForTheDashWorking() = this.onHarness { h ->
+		val g = h.gesturesWith(down = GestureAction.NOTIFICATIONS)
+		val distance = h.dash.swipeDistancePx
+
+		h.touch(g, MotionEvent.ACTION_DOWN, h.emptyX, h.emptyY, 0)
+		h.touch(g, MotionEvent.ACTION_MOVE, h.emptyX, h.emptyY - h.slop * 3F, 50)
+		h.touch(g, MotionEvent.ACTION_MOVE, h.emptyX, h.emptyY - h.slop * 3F - distance * 0.6F, 250)
+		h.touch(g, MotionEvent.ACTION_UP, h.emptyX, h.emptyY - h.slop * 3F - distance * 0.6F, 300)
+		ActivityTestSupport.drainTasks()
+
+		assertTrue(h.dash.isOpen)
+	}
+
+	@Test fun swipingDownToOpenDashFingerTracksAndCommits() = this.onHarness { h ->
+		val g = h.gesturesWith(down = GestureAction.OPEN_DASH)
+		val distance = h.dash.swipeDistancePx
+
+		h.touch(g, MotionEvent.ACTION_DOWN, h.emptyX, h.emptyY, 0)
+		h.touch(g, MotionEvent.ACTION_MOVE, h.emptyX, h.emptyY + h.slop * 3F, 50)
+		// Mid-flight: the dash tracks the downward finger //
+		h.touch(g, MotionEvent.ACTION_MOVE, h.emptyX, h.emptyY + h.slop * 3F + distance * 0.3F, 250)
+		assertTrue(h.dash.swipeOpenness > 0F && h.dash.swipeOpenness < 1F)
+		h.touch(g, MotionEvent.ACTION_MOVE, h.emptyX, h.emptyY + h.slop * 3F + distance * 0.6F, 450)
+		h.touch(g, MotionEvent.ACTION_UP, h.emptyX, h.emptyY + h.slop * 3F + distance * 0.6F, 500)
+		ActivityTestSupport.drainTasks()
+
+		assertTrue(h.dash.isOpen)
+	}
+
+	@Test fun swipingUpToOpenDashAndSearchOpensTheDash() = this.onHarness { h ->
+		val g = h.gesturesWith(up = GestureAction.OPEN_DASH_SEARCH)
 		val distance = h.dash.swipeDistancePx
 
 		h.touch(g, MotionEvent.ACTION_DOWN, h.emptyX, h.emptyY, 0)

@@ -117,13 +117,14 @@ class DashController(
 		}
 	}
 
-	fun open() {
+	@JvmOverloads
+	fun open(forceSearchFocus: Boolean = false) {
 		if (this.isOpen) {
 			return
 		}
 
 		this.animator.open(this.blurRadiusPx())
-		this.applyOpenedChrome()
+		this.applyOpenedChrome(forceSearchFocus)
 
 		this.isOpen = true
 	}
@@ -175,14 +176,14 @@ class DashController(
 	 * Ends a finger-tracked open: [commit] settles the dash fully open and
 	 * applies the opened chrome, otherwise it settles back closed.
 	 */
-	fun swipeOpenEnd(commit: Boolean) {
+	fun swipeOpenEnd(commit: Boolean, forceSearchFocus: Boolean = false) {
 		if (this.isOpen || ! this.animator.swipeInProgress) {
 			return
 		}
 
 		if (commit) {
 			this.animator.swipeSettle(open = true)
-			this.applyOpenedChrome()
+			this.applyOpenedChrome(forceSearchFocus)
 			this.isOpen = true
 		} else {
 			this.animator.swipeSettle(open = false) { this.teardownDashViews() }
@@ -208,10 +209,10 @@ class DashController(
 		this.activity.resources.getDimensionPixelSize(this.theme.dash_blur_radius)
 
 	/** The non-dash side of opening: the panel's close button, backgrounds and search focus. */
-	private fun applyOpenedChrome() {
+	private fun applyOpenedChrome(forceSearchFocus: Boolean = false) {
 		val llPanel = this.viewFinder.get<LinearLayout>(R.id.llPanel)
 
-		if (this.prefs.getBoolean(Preference.DASH_SEARCH_FOCUS_ON_OPEN, false)) {
+		if (forceSearchFocus || this.prefs.getBoolean(Preference.DASH_SEARCH_FOCUS_ON_OPEN, false)) {
 			val llDashContent = this.viewFinder.get<LinearLayout>(R.id.llDashContent)
 			val etDashSearch = this.viewFinder.get<EditText>(R.id.etDashSearch)
 			// Defer until the dash view is laid out/visible so the focus and

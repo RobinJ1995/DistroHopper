@@ -29,13 +29,6 @@
 		android:summary="@string/hint_show_grid_on_drag"
 		android:defaultValue="false" />
 
-	<SwitchPreferenceCompat
-		android:key="gesture_notification_tray"
-		android:dependency="dev"
-		android:title="@string/option_gesture_notification_tray"
-		android:summary="@string/hint_gesture_notification_tray"
-		android:defaultValue="false" />
-
 	<Preference
 		android:key="dummy_rerun_onboarding"
 		android:dependency="dev"

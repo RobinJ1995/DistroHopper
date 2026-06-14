@@ -183,13 +183,21 @@ etc/                                        — design assets (SVG/XCF sources, 
     tracking an openness fraction (blur/panel/overlay follow the same
     fraction) and settles open or closed when the finger lifts.
   - `HomeGestureController` — the home screen's swipe gestures on empty
-    desktop space: swiping up pulls in the dash tracking the finger (with
+    desktop space. Swipe-up and swipe-down are each configurable
+    (`home/GestureAction`, persisted via `GESTURE_SWIPE_UP`/
+    `GESTURE_SWIPE_DOWN`, edited in the Gestures preferences section): open
+    the dash, open the dash and focus search, open the notification tray, or
+    do nothing. Opening the dash tracks the finger in either direction (with
     the theme's own open animation scrubbed by the swipe — see
-    `DashAnimator`), and swiping sideways pans between the widget desktops
+    `DashAnimator`); swiping sideways pans between the widget desktops
     (`widgets/WidgetsPager`). It is also `SwipeToCloseLayout`'s delegate for
-    swiping the open dash closed. (Swiping down once pulled down the system
-    notification shade, but the only API for that is blocklisted to
-    non-system apps on modern Android, so it was dropped.)
+    swiping the open dash closed. The notification-tray action can't be
+    finger-tracked (the only API for it is an `AccessibilityService`'s global
+    action — see `accessibility/NotificationAccessibilityService`, since the
+    `StatusBarManager` route is blocklisted for non-system apps), so its
+    commit is decided on release; it is offered only once that service is
+    enabled, and a no-lockout rule (`GestureAction.reconcileOther`) keeps at
+    least one of the two gestures opening the dash.
     Touch routing gotcha: the widget pager is clickable (tap = exit widget
     edit mode), so empty-desktop touches are consumed by it and never reach
     `Activity#onTouchEvent` — HomeActivity therefore feeds the pager's

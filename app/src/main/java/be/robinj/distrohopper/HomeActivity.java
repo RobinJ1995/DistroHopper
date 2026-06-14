@@ -48,6 +48,7 @@ import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.home.CustomiseModeUi;
 import be.robinj.distrohopper.home.DashController;
 import be.robinj.distrohopper.home.Desktops;
+import be.robinj.distrohopper.home.GestureAction;
 import be.robinj.distrohopper.home.HomeGestureController;
 import be.robinj.distrohopper.home.HomeStateBinder;
 import be.robinj.distrohopper.home.HomeViewModel;
@@ -196,7 +197,10 @@ public class HomeActivity extends AppCompatActivity
 			HomeStateBinder.bind (this, this.viewModel, this.dash, this.themeApplier);
 			this.gestures = new HomeGestureController (this, this.viewFinder, this.dash,
 					this.viewModel, () -> container.getCustomiseMode ().getValue (),
-					() -> prefs.getBoolean (Preference.GESTURE_NOTIFICATION_TRAY.getName (), false),
+					() -> GestureAction.fromValue (
+						prefs.getString (Preference.GESTURE_SWIPE_UP.getName (), "open_dash")),
+					() -> GestureAction.fromValue (
+						prefs.getString (Preference.GESTURE_SWIPE_DOWN.getName (), "none")),
 					() -> { this.promptEnableNotificationAccessibility (); return kotlin.Unit.INSTANCE; });
 			((SwipeToCloseLayout) this.llDash).setDelegate (this.gestures);
 
@@ -580,10 +584,9 @@ public class HomeActivity extends AppCompatActivity
 	}
 
 	/**
-	 * Swipe-down-for-notifications fired, but the accessibility service that
-	 * performs the action isn't enabled yet. Brisk nudge: drop the user onto the
-	 * system accessibility settings so they can turn DistroHopper on. (Toast text
-	 * is kept inline rather than in strings.xml while this is experimental.)
+	 * A gesture mapped to the notification tray fired, but the accessibility
+	 * service that performs the action isn't connected yet. Brisk nudge: drop the
+	 * user onto the system accessibility settings so they can turn DistroHopper on.
 	 */
 	private void promptEnableNotificationAccessibility ()
 	{

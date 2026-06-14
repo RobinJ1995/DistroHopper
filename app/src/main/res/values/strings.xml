@@ -44,6 +44,7 @@
     <string name="pref_header_advanced">Advanced</string>
     <string name="pref_header_dev">Developer options</string>
     <string name="pref_header_functionality">Functionality</string>
+    <string name="pref_header_gestures">Gestures</string>
     <string name="pref_header_appearance">Appearance</string>
     <string name="option_launchericon_size">Pinned icon size</string>
     <string name="hint_launchericon_size">How large icons for pinned apps should be. The slider goes from 48dip to 120dip, with the default (right in the middle) being 84dip.</string>
@@ -115,9 +116,30 @@
     <string name="hint_widget_resize_any">Allow widgets to be resized beyond their supported size constraints.</string>
     <string name="option_show_grid_on_drag">Show desktop grid while dragging</string>
     <string name="hint_show_grid_on_drag">Show a dot at each grid intersection while dragging or resizing widgets and apps.</string>
-    <string name="option_gesture_notification_tray">Swipe down for notifications</string>
-    <string name="hint_gesture_notification_tray">Experimental: swipe down on the home screen to open the notification tray. Requires DistroHopper\'s accessibility service to be enabled.</string>
     <string name="accessibility_service_notification_tray_description">Lets DistroHopper open the notification tray when you swipe down on the home screen. Only used to perform that one action; no screen content is read.</string>
+
+    <!-- Gestures preferences -->
+    <string name="option_gesture_swipe_sides">Swipe left or right</string>
+    <string name="hint_gesture_swipe_sides">Switches between desktops.</string>
+    <string name="option_gesture_swipe_up">Swipe up</string>
+    <string name="option_gesture_swipe_down">Swipe down</string>
+    <string name="gesture_action_none">Do nothing</string>
+    <string name="gesture_action_open_dash">Open dash</string>
+    <string name="gesture_action_open_dash_search">Open dash and start search</string>
+    <string name="gesture_action_notifications_tray">Open notifications tray</string>
+    <string name="option_enable_notification_gestures">Enable open notifications tray gestures</string>
+    <string name="hint_enable_notification_gestures">A system accessibility service needs to be enabled in order for this to work.</string>
+
+    <!-- Accessibility gesture setup wizard -->
+    <string name="title_activity_gesture_setup">Notification gestures</string>
+    <string name="gesture_setup_explain_title">Open the notification tray</string>
+    <string name="gesture_setup_explain_body">Android doesn\'t give ordinary apps any way to open the notification tray — for a home screen like DistroHopper, the only mechanism available is an accessibility service.\n\nThat\'s why DistroHopper\'s accessibility service needs to be enabled. It is used for nothing but opening the notification tray: it does not read what\'s on your screen, collect any data, or perform any other action.</string>
+    <string name="gesture_setup_guide_title">Turn on the service</string>
+    <string name="gesture_setup_guide_body">Find DistroHopper in the accessibility settings list and switch it on, then come back here.</string>
+    <string name="gesture_setup_cancel">Cancel</string>
+    <string name="gesture_setup_proceed">I understand, proceed</string>
+    <string name="gesture_setup_open_settings">Open accessibility settings</string>
+    <string name="toast_gesture_setup_enabled">Notification tray gestures enabled</string>
     <string name="option_rerun_onboarding">Run setup wizard again</string>
     <string name="hint_rerun_onboarding">The first-run setup wizard will be shown the next time DistroHopper starts.</string>
     <string name="toast_rerun_onboarding">Setup wizard will run on next start</string>
