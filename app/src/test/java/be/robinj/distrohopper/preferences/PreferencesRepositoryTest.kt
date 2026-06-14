@@ -34,6 +34,23 @@ class PreferencesRepositoryTest {
 	}
 
 	@Test
+	fun iconPreferencesDefaultToSystemShapeAndThemedOff() {
+		assertEquals("system", this.repo.iconShape())
+		assertEquals(false, this.repo.themedIcons())
+	}
+
+	@Test
+	fun iconPreferencesRoundTripThroughEdit() {
+		this.repo.edit {
+			putString(Preference.ICON_SHAPE.getName(), "circle")
+			putBoolean(Preference.THEMED_ICONS.getName(), true)
+		}
+
+		assertEquals("circle", this.repo.iconShape())
+		assertEquals(true, this.repo.themedIcons())
+	}
+
+	@Test
 	fun accessorsReturnDefaultsWhenUnset() {
 		assertEquals(24, this.repo.getInt(Preference.PANEL_OPACITY, 24))
 		assertEquals(false, this.repo.getBoolean(Preference.DEV, false))
