@@ -9,6 +9,7 @@ import android.net.Uri
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.desktop.FrostedGlass
 import java.io.BufferedInputStream
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
@@ -100,7 +101,11 @@ abstract class Lens(protected val context: Context) {
         dlg.setMessage(message)
         dlg.setCancelable(true)
         dlg.setNeutralButton(android.R.string.ok, null)
-        dlg.show()
+
+        val dialog = dlg.create()
+        // Keep the surface legible where cross-window blur isn't available (e.g. Samsung). //
+        dialog.setOnShowListener { dialog.window?.let(FrostedGlass::applyDialogFallback) }
+        dialog.show()
     }
 
     protected open fun openConnection(url: String): URLConnection {
