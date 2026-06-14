@@ -18,8 +18,8 @@ android {
         applicationId "be.robinj.distrohopper"
         minSdk 31
         targetSdk 36
-        versionCode 104
-        versionName "3.0.0b"
+        versionCode 105
+        versionName "3.0.0c"
         buildConfigField "String", "ACRA_USERNAME", "\"" + (properties['acra_username'] ?: "") + "\""
         buildConfigField "String", "ACRA_PASSWORD", "\"" + (properties['acra_password'] ?: "") + "\""
         def acraConfigured = ((properties['acra_username'] ?: "") != "") && ((properties['acra_password'] ?: "") != "")
