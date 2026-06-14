@@ -92,11 +92,13 @@
 
 		<!-- Experimental: opens the notification tray on a home-screen swipe-down.
 		     Opt-in via the developer setting + the user enabling it in system
-		     accessibility settings. -->
+		     accessibility settings. Must be exported so the system's accessibility
+		     manager can bind to it; the BIND_ACCESSIBILITY_SERVICE permission (held
+		     only by the system) is what keeps that binding privileged. -->
 		<service
 			android:name="be.robinj.distrohopper.accessibility.NotificationAccessibilityService"
 			android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-			android:exported="false">
+			android:exported="true">
 			<intent-filter>
 				<action android:name="android.accessibilityservice.AccessibilityService" />
 			</intent-filter>
