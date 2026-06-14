@@ -11,6 +11,8 @@ import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.widgets.WidgetTestSupport.CELL
+import be.robinj.distrohopper.widgets.WidgetTestSupport.CELL_H
+import be.robinj.distrohopper.widgets.WidgetTestSupport.GRID_SIZE
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -26,14 +28,7 @@ import org.robolectric.annotation.LooperMode
 class WidgetContainerTest {
 	private lateinit var scenario: ActivityScenario<HomeActivity>
 
-	@Before fun setUp() {
-		scenario = ActivityTestSupport.launchHome()
-		// HomeActivity.onCreate() calls WidgetGrid.init() which sets COLS/ROWS from
-		// the Robolectric screen config (non-square). Reset to the historic 8×8
-		// default so pixel coordinates in this test remain consistent.
-		WidgetGrid.COLS = 8
-		WidgetGrid.ROWS = 8
-	}
+	@Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
 	@After fun tearDown() {
 		scenario.onActivity { activity ->
 			Preferences.getSharedPreferences(activity)
@@ -235,10 +230,11 @@ class WidgetContainerTest {
 	@Test fun draggingTheBottomEdgeGrowsTheRowSpan() {
 		scenario.onActivity { activity ->
 			val container = widgetAt22(activity).container
+			val bottomY = (4 * CELL_H).toFloat() // widget at row=2 with span=2: bottom = 4*cellHeight
 
-			touch(container, R.id.llEdgeBottom, MotionEvent.ACTION_DOWN, 300F, 400F)
-			touch(container, R.id.llEdgeBottom, MotionEvent.ACTION_MOVE, 300F, 400F + 2 * CELL)
-			touch(container, R.id.llEdgeBottom, MotionEvent.ACTION_UP, 300F, 400F + 2 * CELL)
+			touch(container, R.id.llEdgeBottom, MotionEvent.ACTION_DOWN, 300F, bottomY)
+			touch(container, R.id.llEdgeBottom, MotionEvent.ACTION_MOVE, 300F, bottomY + 2 * CELL_H)
+			touch(container, R.id.llEdgeBottom, MotionEvent.ACTION_UP, 300F, bottomY + 2 * CELL_H)
 
 			assertEquals(4, lp(container).rowSpan)
 			assertEquals(2, lp(container).row)
@@ -262,12 +258,12 @@ class WidgetContainerTest {
 		scenario.onActivity { activity ->
 			val container = widgetAt22(activity).container
 
-			touch(container, R.id.llEdgeRight, MotionEvent.ACTION_DOWN, 400F, 300F)
+			touch(container, R.id.llEdgeRight, MotionEvent.ACTION_DOWN, (4 * CELL).toFloat(), 300F)
 			// Way beyond the right edge of the 800px grid
-			touch(container, R.id.llEdgeRight, MotionEvent.ACTION_MOVE, 400F + 20 * CELL, 300F)
+			touch(container, R.id.llEdgeRight, MotionEvent.ACTION_MOVE, (4 * CELL + 20 * CELL).toFloat(), 300F)
 
-			// Clamped to gridRight - startLeft = 800 - 200
-			assertEquals(6 * CELL, lp(container).previewWidthPx)
+			// Clamped to gridRight - startLeft = GRID_SIZE - 2*cellWidth
+			assertEquals(GRID_SIZE - 2 * CELL, lp(container).previewWidthPx)
 		}
 	}
 
@@ -396,8 +392,13 @@ class WidgetContainerTest {
 			val container = widgetAt22(activity).container
 			container.editMode = true
 
-			touch(container, R.id.widgetOverlayCenter, MotionEvent.ACTION_DOWN, 250F, 250F)
-			touch(container, R.id.widgetOverlayCenter, MotionEvent.ACTION_MOVE, 250F + CELL, 250F)
+			// Widget at col=2,row=2 so left=2*CELL, top=2*CELL_H.
+			// Grab 50px+CELL into the widget from the left, 50px down from the top.
+			// dragGrabOffset is recorded from the MOVE event (which starts the system drag).
+			val moveX = (50 + 3 * CELL).toFloat()  // 2*CELL (widget left) + CELL + 50
+			val moveY = (50 + 2 * CELL_H).toFloat() // 2*CELL_H (widget top) + 50
+			touch(container, R.id.widgetOverlayCenter, MotionEvent.ACTION_DOWN, (50 + 2 * CELL).toFloat(), moveY)
+			touch(container, R.id.widgetOverlayCenter, MotionEvent.ACTION_MOVE, moveX, moveY)
 
 			assertEquals(50 + CELL, container.dragGrabOffsetX)
 			assertEquals(50, container.dragGrabOffsetY)

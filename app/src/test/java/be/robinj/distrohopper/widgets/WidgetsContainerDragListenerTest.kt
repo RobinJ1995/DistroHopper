@@ -8,6 +8,7 @@ import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.DragEvents
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.widgets.WidgetTestSupport.CELL
+import be.robinj.distrohopper.widgets.WidgetTestSupport.CELL_H
 import be.robinj.distrohopper.widgets.WidgetTestSupport.GRID_SIZE
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -24,14 +25,7 @@ import org.robolectric.annotation.LooperMode
 class WidgetsContainerDragListenerTest {
 	private lateinit var scenario: ActivityScenario<HomeActivity>
 
-	@Before fun setUp() {
-		scenario = ActivityTestSupport.launchHome()
-		// HomeActivity.onCreate() calls WidgetGrid.init() which sets COLS/ROWS from
-		// the Robolectric screen config (non-square). Reset to the historic 8×8
-		// default so pixel coordinates in this test remain consistent.
-		WidgetGrid.COLS = 8
-		WidgetGrid.ROWS = 8
-	}
+	@Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
 	@After fun tearDown() { scenario.close() }
 
 	private class Fixture(
@@ -61,7 +55,7 @@ class WidgetsContainerDragListenerTest {
 		root.layout(0, 0, 10 * CELL, 11 * CELL)
 
 		container.dragGrabOffsetX = CELL / 2
-		container.dragGrabOffsetY = CELL / 2
+		container.dragGrabOffsetY = CELL_H / 2
 
 		return Fixture(receiver, grid, container,
 			WidgetsContainer_DragListener(activity, WidgetTestSupport.pagerOf(grid)))
@@ -72,7 +66,7 @@ class WidgetsContainerDragListenerTest {
 	// Event coordinates are therefore in the grid's own coordinate space directly.
 	private fun receiverPositionForCell(col: Int, row: Int): Pair<Float, Float> =
 		(col * CELL + CELL / 2).toFloat() to
-			(row * CELL + CELL / 2).toFloat()
+			(row * CELL_H + CELL_H / 2).toFloat()
 
 	private fun lp(container: WidgetContainer): WidgetsContainer.LayoutParams =
 		container.layoutParams as WidgetsContainer.LayoutParams

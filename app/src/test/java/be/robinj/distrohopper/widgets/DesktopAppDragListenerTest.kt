@@ -14,6 +14,7 @@ import be.robinj.distrohopper.desktop.launcher.AppLauncherDragListener
 import be.robinj.distrohopper.desktop.launcher.LauncherDragListener
 import be.robinj.distrohopper.desktop.launcher.TrashDragListener
 import be.robinj.distrohopper.widgets.WidgetTestSupport.CELL
+import be.robinj.distrohopper.widgets.WidgetTestSupport.CELL_H
 import be.robinj.distrohopper.widgets.WidgetTestSupport.GRID_SIZE
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -36,14 +37,7 @@ import org.robolectric.util.ReflectionHelpers
 class DesktopAppDragListenerTest {
 	private lateinit var scenario: ActivityScenario<HomeActivity>
 
-	@Before fun setUp() {
-		this.scenario = ActivityTestSupport.launchHome()
-		// HomeActivity.onCreate() calls WidgetGrid.init() which sets COLS/ROWS from
-		// the Robolectric screen config (non-square). Reset to the historic 8×8
-		// default so pixel coordinates in this test remain consistent.
-		WidgetGrid.COLS = 8
-		WidgetGrid.ROWS = 8
-	}
+	@Before fun setUp() { this.scenario = ActivityTestSupport.launchHome() }
 	@After fun tearDown() { this.scenario.close() }
 
 	private class Fixture(
@@ -80,7 +74,7 @@ class DesktopAppDragListenerTest {
 	}
 
 	private fun cell(col: Int, row: Int): Pair<Float, Float> =
-		(col * CELL + CELL / 2).toFloat() to (row * CELL + CELL / 2).toFloat()
+		(col * CELL + CELL / 2).toFloat() to (row * CELL_H + CELL_H / 2).toFloat()
 
 	private fun lp(view: View): WidgetsContainer.LayoutParams =
 		view.layoutParams as WidgetsContainer.LayoutParams
@@ -135,7 +129,7 @@ class DesktopAppDragListenerTest {
 			f.host.pinAt(alpha, 0, 0, 0)
 			val view = WidgetTestSupport.desktopAppsOn(f.grid).single()
 			view.dragGrabOffsetX = CELL / 2
-			view.dragGrabOffsetY = CELL / 2
+			view.dragGrabOffsetY = CELL_H / 2
 
 			this.drag(f, DragEvent.ACTION_DROP, 6, 5, localState = view)
 
@@ -249,7 +243,7 @@ class DesktopAppDragListenerTest {
 			val widgetHost = WidgetTestSupport.host(activity, f.grid)
 			val widget = WidgetTestSupport.addWidget(activity, widgetHost, f.grid, 42, 0, 0, 1, 1)
 			widget.dragGrabOffsetX = CELL / 2
-			widget.dragGrabOffsetY = CELL / 2
+			widget.dragGrabOffsetY = CELL_H / 2
 
 			// Try to drop the widget onto the desktop app's cell //
 			this.drag(f, DragEvent.ACTION_DROP, 4, 4, localState = widget)
@@ -268,7 +262,7 @@ class DesktopAppDragListenerTest {
 			f.host.pinAt(alpha, 0, 0, 0)
 			val view = WidgetTestSupport.desktopAppsOn(f.grid).single()
 			view.dragGrabOffsetX = CELL / 2
-			view.dragGrabOffsetY = CELL / 2
+			view.dragGrabOffsetY = CELL_H / 2
 
 			// The drag opens the bar's placeholder (as the real drag does), but the
 			// app is dropped back on the desktop, not the bar //
