@@ -8,14 +8,27 @@ import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 
 internal object WidgetTestSupport {
-	/** Grid size used by [layoutGrid]. */
+	/**
+	 * Width of the laid-out test grid in px. [be.robinj.distrohopper.HomeActivity]'s
+	 * onCreate runs [WidgetGrid.init], which derives [WidgetGrid.COLS]/[WidgetGrid.ROWS]
+	 * from the Robolectric screen (pinned to a modern 360×800dp phone in
+	 * robolectric.properties → an 8×17 grid), so the geometry below is whatever a real
+	 * device produces rather than a hand-picked grid.
+	 */
 	const val GRID_SIZE = 800
 
-	/** Width of one cell in the test grid (depends on the current [WidgetGrid.COLS]). */
+	/** Width of one cell: the grid width split across the current column count. */
 	val CELL get() = GRID_SIZE / WidgetGrid.COLS
 
-	/** Height of one cell in the test grid (depends on the current [WidgetGrid.ROWS]). */
-	val CELL_H get() = GRID_SIZE / WidgetGrid.ROWS
+	/**
+	 * Height of one cell. [WidgetGrid] targets roughly square cells, so the test grid
+	 * uses square cells: this equals [CELL]. The grid is [GRID_SIZE] wide and
+	 * [gridHeight] tall — taller than it is wide, like a phone's widget area.
+	 */
+	val CELL_H get() = CELL
+
+	/** Height of the laid-out test grid: square cells across every current row. */
+	val gridHeight get() = WidgetGrid.ROWS * CELL_H
 
 	/**
 	 * A standalone widget grid (the first page of a fresh pager), detached
@@ -96,12 +109,12 @@ internal object WidgetTestSupport {
 	fun desktopAppsOn(grid: WidgetsContainer): List<DesktopAppView> =
 		(0 until grid.childCount).mapNotNull { grid.getChildAt(it) as? DesktopAppView }
 
-	/** Measures and lays out the grid so cell sizes are non-zero. */
+	/** Measures and lays out the grid (square cells) so cell sizes are non-zero. */
 	fun layoutGrid(grid: WidgetsContainer) {
 		grid.setPadding(0, 0, 0, 0)
 		grid.measure(
 			View.MeasureSpec.makeMeasureSpec(GRID_SIZE, View.MeasureSpec.EXACTLY),
-			View.MeasureSpec.makeMeasureSpec(GRID_SIZE, View.MeasureSpec.EXACTLY))
-		grid.layout(0, 0, GRID_SIZE, GRID_SIZE)
+			View.MeasureSpec.makeMeasureSpec(gridHeight, View.MeasureSpec.EXACTLY))
+		grid.layout(0, 0, GRID_SIZE, gridHeight)
 	}
 }

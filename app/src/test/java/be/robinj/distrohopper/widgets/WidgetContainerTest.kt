@@ -44,7 +44,7 @@ class WidgetContainerTest {
 		val container: WidgetContainer,
 	)
 
-	/** A 2x2-cell widget at cell (2, 2) on a laid-out 8x8 grid of 100px cells. */
+	/** A 2x2-cell widget at cell (2, 2) on a laid-out grid of 100px square cells. */
 	private fun widgetAt22(
 		activity: HomeActivity,
 		info: AppWidgetProviderInfo? = WidgetTestSupport.providerInfo(),
@@ -259,8 +259,8 @@ class WidgetContainerTest {
 			// Way beyond the right edge of the 800px grid
 			touch(container, R.id.llEdgeRight, MotionEvent.ACTION_MOVE, 400F + 20 * CELL, 300F)
 
-			// Clamped to gridRight - startLeft = 800 - 200
-			assertEquals(6 * CELL, lp(container).previewWidthPx)
+			// Clamped to gridRight - startLeft = GRID_SIZE - 2 cells (the widget's col)
+			assertEquals((WidgetGrid.COLS - 2) * CELL, lp(container).previewWidthPx)
 		}
 	}
 

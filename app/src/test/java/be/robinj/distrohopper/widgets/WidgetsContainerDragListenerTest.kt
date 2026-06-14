@@ -41,17 +41,18 @@ class WidgetsContainerDragListenerTest {
 		val host = WidgetTestSupport.host(activity, grid)
 		val container = WidgetTestSupport.addWidget(activity, host, grid, 42, 2, 2, 2, 2)
 
+		val gridHeight = WidgetTestSupport.gridHeight
 		root.addView(WidgetTestSupport.pagerOf(grid),
-			FrameLayout.LayoutParams(GRID_SIZE, GRID_SIZE).apply {
+			FrameLayout.LayoutParams(GRID_SIZE, gridHeight).apply {
 				leftMargin = CELL
 				topMargin = 2 * CELL
 			})
-		root.addView(receiver, FrameLayout.LayoutParams(10 * CELL, 11 * CELL))
+		root.addView(receiver, FrameLayout.LayoutParams(GRID_SIZE, gridHeight))
 		root.measure(
-			View.MeasureSpec.makeMeasureSpec(10 * CELL, View.MeasureSpec.EXACTLY),
-			View.MeasureSpec.makeMeasureSpec(11 * CELL, View.MeasureSpec.EXACTLY),
+			View.MeasureSpec.makeMeasureSpec(GRID_SIZE, View.MeasureSpec.EXACTLY),
+			View.MeasureSpec.makeMeasureSpec(gridHeight, View.MeasureSpec.EXACTLY),
 		)
-		root.layout(0, 0, 10 * CELL, 11 * CELL)
+		root.layout(0, 0, GRID_SIZE, gridHeight)
 
 		container.dragGrabOffsetX = CELL / 2
 		container.dragGrabOffsetY = CELL / 2

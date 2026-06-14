@@ -58,12 +58,13 @@ class DesktopAppDragListenerTest {
 		val pager = WidgetTestSupport.pagerOf(grid)
 		val receiver = View(activity)
 
-		root.addView(pager, FrameLayout.LayoutParams(GRID_SIZE, GRID_SIZE))
-		root.addView(receiver, FrameLayout.LayoutParams(GRID_SIZE, GRID_SIZE))
+		val gridHeight = WidgetTestSupport.gridHeight
+		root.addView(pager, FrameLayout.LayoutParams(GRID_SIZE, gridHeight))
+		root.addView(receiver, FrameLayout.LayoutParams(GRID_SIZE, gridHeight))
 		root.measure(
 			View.MeasureSpec.makeMeasureSpec(GRID_SIZE, View.MeasureSpec.EXACTLY),
-			View.MeasureSpec.makeMeasureSpec(GRID_SIZE, View.MeasureSpec.EXACTLY))
-		root.layout(0, 0, GRID_SIZE, GRID_SIZE)
+			View.MeasureSpec.makeMeasureSpec(gridHeight, View.MeasureSpec.EXACTLY))
+		root.layout(0, 0, GRID_SIZE, gridHeight)
 
 		val host = DesktopAppHost(activity, pager, activity.appManager.repository)
 		ReflectionHelpers.setField(activity, "desktopAppHost", host)
