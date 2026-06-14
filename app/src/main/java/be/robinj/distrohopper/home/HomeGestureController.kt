@@ -184,8 +184,10 @@ class HomeGestureController(
 		val dx = ev.x - this.downX
 		val dy = ev.y - this.downY
 
-		if (abs(dx) > this.touchSlop && abs(dx) > abs(dy) * 2F) {
-			// Sideways: pan between the widget desktops //
+		if (!this.pager.hasEditModeChild()
+				&& abs(dx) > this.touchSlop && abs(dx) > abs(dy) * 2F) {
+			// Sideways: pan between the widget desktops (not while a widget is
+			// being edited — one less gesture to compete with the resize handles) //
 			this.pager.panBegin()
 			this.state = State.TRACKING_PAGES
 			this.downX = ev.x // Track from where the swipe was recognised //

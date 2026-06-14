@@ -334,6 +334,11 @@ public class HomeActivity extends AppCompatActivity
 
 				return handled;
 			});
+			// Swipe-ups that start on a widget are handed off here: the widget
+			// consumes the touch so they never reach the listener above, so the
+			// pager forwards them to the same gestures (priming with the DOWN) //
+			vgWidgets.setSwipeGestureForwarder (event ->
+					this.gestures != null && this.gestures.onHomeTouchEvent (event));
 
 			// Per-desktop pins: the launcher morphs/rebuilds as the desktops are
 			// swiped between. The desktop count follows widgets + pins via the
