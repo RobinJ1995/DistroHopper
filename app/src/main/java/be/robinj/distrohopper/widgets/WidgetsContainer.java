@@ -229,6 +229,47 @@ public class WidgetsContainer extends ViewGroup
 		return layouts;
 	}
 
+	/**
+	 * Grid cells occupied by the desktop-pinned apps (1x1 each), optionally
+	 * excluding one (e.g. the one being moved). The app world's counterpart to
+	 * {@link #collectLayouts(View)}; the returned {@link WidgetLayout}s carry no
+	 * widget id ({@link DesktopAppLayout#NO_WIDGET_ID}) — only their rectangle
+	 * matters for collision.
+	 */
+	public List<WidgetLayout> collectAppCells (final View exclude)
+	{
+		final List<WidgetLayout> layouts = new ArrayList<> ();
+
+		for (int i = 0; i < this.getChildCount (); i++)
+		{
+			final View child = this.getChildAt (i);
+
+			if (child == exclude || ! (child instanceof DesktopAppView))
+				continue;
+
+			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
+
+			layouts.add (new WidgetLayout (
+				DesktopAppLayout.NO_WIDGET_ID, lp.col, lp.row, lp.colSpan, lp.rowSpan));
+		}
+
+		return layouts;
+	}
+
+	/**
+	 * Every occupied rectangle on this desktop — widgets <em>and</em> desktop
+	 * apps — so collision checks keep the two kinds from overlapping. Every
+	 * placement/move/resize path must validate against this, not the
+	 * widgets-only {@link #collectLayouts(View)}.
+	 */
+	public List<WidgetLayout> collectOccupied (final View exclude)
+	{
+		final List<WidgetLayout> layouts = this.collectLayouts (exclude);
+		layouts.addAll (this.collectAppCells (exclude));
+
+		return layouts;
+	}
+
 	public void exitEditMode ()
 	{
 		for (int i = 0; i < this.getChildCount (); i++)

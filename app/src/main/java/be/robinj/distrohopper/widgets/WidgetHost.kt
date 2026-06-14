@@ -83,7 +83,8 @@ class WidgetHost(
 		// on purpose; only the grid bounds and overlaps are still enforced //
 		val unrestricted = this.allowUnsupportedResize()
 
-		val kept = ArrayList<WidgetLayout>()
+		// Seed with the desktop apps' cells so re-clamped widgets avoid them //
+		val kept = ArrayList<WidgetLayout>(container.collectAppCells(null))
 		var changed = false
 
 		for (i in 0 until container.childCount) {
@@ -329,7 +330,7 @@ class WidgetHost(
 			}
 
 			val layout = WidgetGrid.findFreeRect(
-				pageContainer.collectLayouts(null), spans.first, spans.second)
+				pageContainer.collectOccupied(null), spans.first, spans.second)
 
 			if (layout == null) {
 				this.deleteAppWidgetId(appWidgetId)
