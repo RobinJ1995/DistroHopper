@@ -144,6 +144,7 @@ public class PreferencesActivity extends AppCompatActivity
 			this.devCategory = this.addCategory (R.string.pref_header_dev, R.xml.pref_dev);
 
 			this.initIconPackList ();
+			this.initFontPreference ();
 			this.initCrashReportsPreference ();
 			this.initLauncherPinModePreference ();
 			this.initDevPreference ();
@@ -446,6 +447,28 @@ public class PreferencesActivity extends AppCompatActivity
 					{
 						new ExceptionHandler (ex).logAndTrack ();
 					}
+					return true;
+				}
+			});
+		}
+
+		private void initFontPreference ()
+		{
+			final ListPreference fontPref = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.FONT.getName ());
+			if (fontPref == null)
+				return;
+
+			// Show the chosen font as the summary; recreate so the new font is
+			// applied to this screen immediately. Other activities pick it up
+			// the next time they are created. //
+			fontPref.setSummaryProvider (ListPreference.SimpleSummaryProvider.getInstance ());
+			fontPref.setOnPreferenceChangeListener (new Preference.OnPreferenceChangeListener ()
+			{
+				@Override
+				public boolean onPreferenceChange (final Preference preference, final Object newValue)
+				{
+					requireActivity ().recreate ();
 					return true;
 				}
 			});

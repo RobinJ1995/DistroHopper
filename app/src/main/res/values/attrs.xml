@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- App-wide font families, resolved from the active theme. The base theme
+         defaults these to the system fonts; the per-font theme overlays in
+         styles.xml (applied at runtime from the "font" preference) override them
+         with a bundled font. Referencing these via ?attr/ everywhere a font is
+         set lets a single overlay restyle the whole app. -->
+    <attr name="dhFontBody" format="string|reference" />
+    <attr name="dhFontMedium" format="string|reference" />
+
+</resources>

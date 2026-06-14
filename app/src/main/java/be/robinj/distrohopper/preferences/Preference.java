@@ -18,6 +18,7 @@ public enum Preference {
 	CRASH_REPORTING_ENABLED("crash_reporting_enabled"),
 	THEME("theme"),
 	ICON_PACK("icon_pack"),
+	FONT("font", "system"),
 	SETUP_COMPLETED("setup_completed"),
 	SETUP_STARTED("setup_started"),
 	DEFAULT_PINS_PENDING("default_pins_pending"),

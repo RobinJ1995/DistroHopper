@@ -72,6 +72,12 @@
     <string name="option_icon_pack">Icon pack</string>
     <string name="hint_icon_pack">Choose a third-party icon pack to apply to app icons.</string>
     <string name="option_icon_pack_none">None</string>
+    <string name="option_font">Font</string>
+    <string name="hint_font">Choose the font used for text throughout DistroHopper.</string>
+    <string name="font_system">System default</string>
+    <string name="font_opendyslexic">OpenDyslexic</string>
+    <string name="font_ubuntu">Ubuntu</string>
+    <string name="font_oxygen">Oxygen</string>
     <string name="option_crash_reports">Send crash reports</string>
     <string name="hint_crash_reports">Automatically send anonymous crash reports to help fix bugs. Reports go to a private server and are never shared with third parties.</string>
     <string name="option_dev">Developer mode</string>

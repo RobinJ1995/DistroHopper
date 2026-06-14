@@ -20,6 +20,14 @@
         android:summary="@string/hint_icon_pack"
         android:defaultValue=""/>
 
+    <ListPreference
+        android:key="font"
+        android:title="@string/option_font"
+        android:summary="@string/hint_font"
+        android:entries="@array/font_entries"
+        android:entryValues="@array/font_values"
+        android:defaultValue="system"/>
+
     <Preference
         android:key="dummy_customise"
         android:title="@string/option_customise"

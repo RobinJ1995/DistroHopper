@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Font picker (Appearance settings). Keep entries and values in lockstep;
+         the values are persisted under the "font" preference and mapped to a
+         theme overlay in FontPreference.kt. -->
+    <string-array name="font_entries">
+        <item>@string/font_system</item>
+        <item>@string/font_opendyslexic</item>
+        <item>@string/font_ubuntu</item>
+        <item>@string/font_oxygen</item>
+    </string-array>
+
+    <string-array name="font_values" translatable="false">
+        <item>system</item>
+        <item>opendyslexic</item>
+        <item>ubuntu</item>
+        <item>oxygen</item>
+    </string-array>
+
+</resources>

@@ -10,6 +10,31 @@
         <!-- Pop-up dialogs spawned from the launcher (e.g. the widget picker)
              pick up the modern look. -->
         <item name="alertDialogTheme">@style/ModernDialogTheme</item>
+        <!-- App font, driven by the "font" preference. These default to the
+             system fonts (so "System" is visually identical to before); the
+             FontOverlay.* styles below override them at runtime for the bundled
+             fonts. android:fontFamily here applies the body font to every
+             TextView that doesn't set its own. -->
+        <item name="dhFontBody">sans-serif</item>
+        <item name="dhFontMedium">sans-serif-medium</item>
+        <item name="android:fontFamily">?attr/dhFontBody</item>
+    </style>
+
+    <!-- Per-font theme overlays, applied on top of the active theme at runtime
+         (see FontPreference / Application). "System" applies no overlay. -->
+    <style name="FontOverlay.OpenDyslexic" parent="">
+        <item name="dhFontBody">@font/opendyslexic</item>
+        <item name="dhFontMedium">@font/opendyslexic</item>
+    </style>
+
+    <style name="FontOverlay.Ubuntu" parent="">
+        <item name="dhFontBody">@font/ubuntu</item>
+        <item name="dhFontMedium">@font/ubuntu</item>
+    </style>
+
+    <style name="FontOverlay.Oxygen" parent="">
+        <item name="dhFontBody">@font/oxygen</item>
+        <item name="dhFontMedium">@font/oxygen</item>
     </style>
 
     <style name="HomeTheme" parent="AppTheme">
@@ -64,12 +89,12 @@
     <style name="ModernDialogTitle" parent="TextAppearance.AppCompat.Title">
         <item name="android:textColor">@color/dialog_on_surface</item>
         <item name="android:textSize">22sp</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily">?attr/dhFontMedium</item>
     </style>
 
     <style name="ModernDialogButton" parent="Widget.AppCompat.Button.Borderless.Colored">
         <item name="android:textColor">@color/dialog_accent</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily">?attr/dhFontMedium</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:letterSpacing">0.01</item>
     </style>
