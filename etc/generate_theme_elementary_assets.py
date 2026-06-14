@@ -180,12 +180,26 @@ def etc_sources():
 	save(rounded_rect((160, 56), 6, DOCK, 1.0), f"{ETC}/theme_elementary_launcher_background.png")
 
 
+def bfb_background_when_dash_opened(density, scale):
+	# While the launcher is open the elementary "Applications" button is active;
+	# Pantheon marks it with a subtle translucent dark rounded highlight behind
+	# the icon (the dock itself is light/translucent). 9-patch so it scales to
+	# the BFB's icon size.
+	content = rounded_rect((40, 40), 8, (0, 0, 0, 38), scale)
+	w, h = content.size
+	mid = (w // 2 - 1, w // 2 + 1)
+	pad = (int(round(4 * scale)), w - int(round(4 * scale)))
+	save(nine_patch(content, mid, mid, pad, pad),
+		dpi_path("theme_elementary_res_launcher_bfb_background_when_dash_opened.9.png", density))
+
+
 def main():
 	for density, scale in DENSITIES.items():
 		launcher_background(density, scale)
 		dash_search_background(density, scale)
 		app_running(density, scale)
 		panel_bfb(density, scale)
+		bfb_background_when_dash_opened(density, scale)
 	etc_sources()
 
 

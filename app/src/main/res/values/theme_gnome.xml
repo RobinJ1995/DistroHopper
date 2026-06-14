@@ -31,6 +31,7 @@
     <integer name="theme_gnome_launcher_bfb_location">@integer/position_bottom</integer>
     <drawable name="theme_gnome_launcher_bfb_image">@drawable/theme_gnome_res_launcher_bfb</drawable>
     <drawable name="theme_gnome_launcher_bfb_image_vertical">@drawable/theme_gnome_res_launcher_bfb</drawable>
+    <drawable name="theme_gnome_launcher_bfb_background_when_dash_opened">@drawable/theme_gnome_res_launcher_bfb_background_when_dash_opened</drawable>
     <bool name="theme_gnome_launcher_bfb_hide_while_dragging">true</bool>
     <bool name="theme_gnome_launcher_bfb_user_toggleable">false</bool>
     <bool name="theme_gnome_launcher_bfb_visible_by_default">true</bool>

@@ -268,6 +268,21 @@ def bfb(density, scale):
 	save(img, dpi_path("theme_budgie_res_launcher_bfb.png", density))
 
 
+def bfb_background_when_dash_opened(density, scale):
+	# While the menu is open the Budgie Menu button is active; Arc-Dark fills it
+	# with the lighter menu-surface tint behind the icon. 9-patch so it scales to
+	# the BFB's icon size.
+	w = int(round(40 * scale))
+	img = Image.new("RGBA", (w * SS, w * SS), CLEAR)
+	draw = ImageDraw.Draw(img)
+	draw.rounded_rectangle((0, 0, w * SS - 1, w * SS - 1), radius=8 * scale * SS, fill=MENU)
+	content = img.resize((w, w), Image.LANCZOS)
+	mid = (w // 2 - 1, w // 2 + 1)
+	pad = (int(round(4 * scale)), w - int(round(4 * scale)))
+	save(nine_patch(content, mid, mid, pad, pad),
+		dpi_path("theme_budgie_res_launcher_bfb_background_when_dash_opened.9.png", density))
+
+
 # ---------------------------------------------------------------------------
 # Launcher preferences: the teal "tweak tool" settings cog
 # (etc/theme_budgie_launcher_preferences.png).
@@ -320,6 +335,7 @@ def main():
 		dash_search_background(density, scale)
 		app_running(density, scale)
 		bfb(density, scale)
+		bfb_background_when_dash_opened(density, scale)
 		launcher_preferences(density, scale)
 	card_logo()
 	etc_sources()

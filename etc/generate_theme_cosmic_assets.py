@@ -242,6 +242,19 @@ def etc_sources():
 	save(rounded_rect((160, 160), 10, LIBRARY, 1.0), f"{ETC}/theme_cosmic_dash_background.png")
 
 
+def bfb_background_when_dash_opened(density, scale):
+	# While the launcher is open the COSMIC "Applications" button is active;
+	# marked with a translucent light rounded highlight (subtle border) behind
+	# the icon. 9-patch so it scales to the BFB's icon size.
+	content = rounded_rect((40, 40), 8, (0xFF, 0xFF, 0xFF, 30), scale,
+		outline=SURFACE_BORDER, outline_width_dp=1)
+	w, h = content.size
+	mid = (w // 2 - 1, w // 2 + 1)
+	pad = (int(round(4 * scale)), w - int(round(4 * scale)))
+	save(nine_patch(content, mid, mid, pad, pad),
+		dpi_path("theme_cosmic_res_launcher_bfb_background_when_dash_opened.9.png", density))
+
+
 def main():
 	for density, scale in DENSITIES.items():
 		launcher_background(density, scale)
@@ -250,6 +263,7 @@ def main():
 		dash_search_background(density, scale)
 		app_running(density, scale)
 		bfb(density, scale)
+		bfb_background_when_dash_opened(density, scale)
 		launcher_preferences(density, scale)
 	card_logo()
 	etc_sources()

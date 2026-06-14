@@ -47,6 +47,14 @@ public abstract class Theme
 	public int launcher_bfb_location;
 	public int launcher_bfb_image;
 	public int launcher_bfb_image_vertical;
+	/*
+	 * The background drawn behind the menu button (the "BFB") while the dash is
+	 * open, crossfaded in/out with the dash overlay (see DashController). Mirrors
+	 * the real desktop's active "show apps"/menu button highlight. Themes without
+	 * such a state (Unity) point this at their resting BFB background, making the
+	 * fade inert.
+	 */
+	public int launcher_bfb_background_when_dash_opened;
 	public int launcher_bfb_hide_while_dragging;
 	/*
 	 * Whether the launcher's menu button (the "BFB") can be shown or hidden by

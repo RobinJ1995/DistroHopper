@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.ViewFinder
 import be.robinj.distrohopper.desktop.Wallpaper
+import be.robinj.distrohopper.desktop.launcher.AppLauncher
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.preferences.PreferencesRepository
@@ -78,6 +79,23 @@ class DashController(
 			})
 	}
 
+	/*
+	 * The BFB (menu button) gains a themed highlight behind its icon while the
+	 * dash is open, faded in step with the dash overlay — mirroring the real
+	 * desktop's active "show apps"/menu button. Unlike the panel and status bar,
+	 * the BFB's resting background is (usually) transparent and the highlight has
+	 * to fade *in* on top of it, so it uses BfbHighlightFade rather than the
+	 * resting-layer-on-top BackgroundFade. Skipped entirely for themes whose
+	 * dash-opened background equals their resting one (Unity), leaving the BFB
+	 * untouched.
+	 */
+	private val bfbHasDashOpenedState: Boolean =
+		this.theme.launcher_bfb_background_when_dash_opened != this.theme.launcher_applauncher_background
+	private val bfbHighlight by lazy {
+		BfbHighlightFade(this.activity.resources, this.theme.launcher_applauncher_background,
+			this.theme.launcher_bfb_background_when_dash_opened)
+	}
+
 	private class BackgroundFade(res: Resources, restingRes: Int, dashOpenedRes: Int) {
 		/*
 		 * mutate(): drawables from the same resource share their constant
@@ -103,6 +121,44 @@ class DashController(
 					animator.addUpdateListener {
 						this.fraction = it.animatedValue as Float
 						this.resting.alpha = ((1F - this.fraction) * 255F).toInt()
+					}
+					animator.start()
+				}
+		}
+	}
+
+	/**
+	 * Fades the BFB's dash-opened highlight in (open) and out (close) over its
+	 * resting background. The resting drawable sits underneath and the highlight
+	 * on top ramps its own alpha 0..255, so a transparent resting background
+	 * shows nothing when closed and the highlight when open. Reused across
+	 * open/close so a mid-flight reversal resumes from the current position.
+	 */
+	private class BfbHighlightFade(res: Resources, restingRes: Int, highlightRes: Int) {
+		/* mutate() so the alpha ramp does not leak to other users of the drawable. */
+		private val highlight = res.getDrawable(highlightRes).mutate()
+		val drawable = LayerDrawable(arrayOf(res.getDrawable(restingRes), this.highlight))
+		private var fraction = 0F // 0 = resting only, 1 = highlight fully shown
+		private var animator: ValueAnimator? = null
+
+		init {
+			this.highlight.alpha = 0
+		}
+
+		fun animateTo(shown: Boolean, durationMs: Long) {
+			this.animator?.cancel()
+			if (durationMs == 0L) {
+				this.fraction = if (shown) 1F else 0F
+				this.highlight.alpha = (this.fraction * 255F).toInt()
+				this.animator = null
+				return
+			}
+			this.animator = ValueAnimator.ofFloat(this.fraction, if (shown) 1F else 0F)
+				.also { animator ->
+					animator.duration = durationMs
+					animator.addUpdateListener {
+						this.fraction = it.animatedValue as Float
+						this.highlight.alpha = (this.fraction * 255F).toInt()
 					}
 					animator.start()
 				}
@@ -243,6 +299,8 @@ class DashController(
 			this.panelFade.animateTo(dashOpened = true, duration)
 			this.statusBarFade.animateTo(dashOpened = true, duration)
 		}
+
+		this.fadeBfbHighlight(shown = true)
 	}
 
 	/** Hides the dash and restores the overlays once a close has settled. */
@@ -276,8 +334,45 @@ class DashController(
 			this.statusBarFade.animateTo(dashOpened = false, duration)
 		}
 
+		this.fadeBfbHighlight(shown = false)
+
 		val imm = this.activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
 		imm?.hideSoftInputFromWindow(
 			this.activity.window.decorView.rootView.windowToken, 0)
+	}
+
+	/**
+	 * Fades the BFB's dash-opened highlight in or out, in step with the dash
+	 * overlay. No-op for themes without a dash-opened BFB state (Unity) or when
+	 * the launcher has no visible BFB (theme without one, or the user hid it),
+	 * so there is nothing to highlight.
+	 */
+	private fun fadeBfbHighlight(shown: Boolean) {
+		if (! this.bfbHasDashOpenedState) {
+			return
+		}
+
+		val llLauncher = this.viewFinder.get<LinearLayout>(R.id.llLauncher)
+		val llBfbSpinnerWrapper =
+			this.viewFinder.get<LinearLayout>(llLauncher, R.id.llBfbSpinnerWrapper)
+		if (llBfbSpinnerWrapper.visibility != View.VISIBLE) {
+			return
+		}
+
+		val lalBfb = this.viewFinder.get<AppLauncher>(llBfbSpinnerWrapper, R.id.lalBfb)
+		/*
+		 * llBackground is not a unique id (every AppLauncher has one), so resolve
+		 * it from the BFB's own subtree rather than via the root-searching,
+		 * id-caching ViewFinder.
+		 */
+		val llBackground = lalBfb.findViewById<View>(R.id.llBackground)
+		val duration = if (this.animator.animationsEnabled) {
+			if (shown) DashAnimator.OPEN_DURATION_MS else DashAnimator.CLOSE_DURATION_MS
+		} else {
+			0L
+		}
+
+		llBackground.background = this.bfbHighlight.drawable
+		this.bfbHighlight.animateTo(shown, duration)
 	}
 }

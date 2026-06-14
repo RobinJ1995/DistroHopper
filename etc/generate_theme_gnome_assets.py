@@ -36,6 +36,9 @@ BACKDROP = (0x22, 0x22, 0x26, 255)
 PILL = (0x40, 0x40, 0x45, 217)
 HINT = (0xC0, 0xC0, 0xC2, 255)
 DOT = (0xFA, 0xFA, 0xFB, 255)
+# Active "show apps" button highlight while the overview/dash is open: GNOME's
+# translucent light rounded square behind the icon.
+ACTIVE = (0xFF, 0xFF, 0xFF, 38)
 BLACK = (0, 0, 0, 255)
 CLEAR = (0, 0, 0, 0)
 
@@ -172,6 +175,18 @@ def bfb(density, scale):
 	save(img.resize((s, s), Image.LANCZOS), dpi_path("theme_gnome_res_launcher_bfb.png", density))
 
 
+def bfb_background_when_dash_opened(density, scale):
+	# While the dash is open the "show apps" grid button is active; GNOME marks
+	# it with a translucent rounded highlight behind the icon. 9-patch so it
+	# scales to the BFB's icon size.
+	content = rounded_rect((40, 40), 10, ACTIVE, scale)
+	w, h = content.size
+	mid = (w // 2 - 1, w // 2 + 1)
+	pad = (int(round(4 * scale)), w - int(round(4 * scale)))
+	save(nine_patch(content, mid, mid, pad, pad),
+		dpi_path("theme_gnome_res_launcher_bfb_background_when_dash_opened.9.png", density))
+
+
 def etc_sources():
 	"""Flat (non-9-patch) renders kept in etc/ alongside the other theme sources."""
 	save(rounded_rect((160, 160), 18, DOCK, 1.0), f"{ETC}/theme_gnome_launcher_background.png")
@@ -190,6 +205,7 @@ def main():
 		dash_search_background(density, scale)
 		app_running(density, scale)
 		bfb(density, scale)
+		bfb_background_when_dash_opened(density, scale)
 	etc_sources()
 
 

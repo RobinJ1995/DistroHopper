@@ -268,6 +268,19 @@ def etc_sources():
 	save(rounded_rect((160, 160), 0, KICKOFF, 1.0), f"{ETC}/theme_plasma_dash_background.png")
 
 
+def bfb_background_when_dash_opened(density, scale):
+	# While the menu is open the Plasma Application Launcher is active; Breeze
+	# marks the checked button with a translucent accent highlight (accent
+	# border) behind the icon. 9-patch so it scales to the BFB's icon size.
+	content = rounded_rect((40, 40), 6, (0x3D, 0xAE, 0xE9, 64), scale,
+		outline=(0x3D, 0xAE, 0xE9, 160), outline_width_dp=1)
+	w, h = content.size
+	mid = (w // 2 - 1, w // 2 + 1)
+	pad = (int(round(4 * scale)), w - int(round(4 * scale)))
+	save(nine_patch(content, mid, mid, pad, pad),
+		dpi_path("theme_plasma_res_launcher_bfb_background_when_dash_opened.9.png", density))
+
+
 def main():
 	for density, scale in DENSITIES.items():
 		launcher_background(density, scale)
@@ -275,6 +288,7 @@ def main():
 		dash_search_background(density, scale)
 		app_running(density, scale)
 		launcher_preferences(density, scale)
+		bfb_background_when_dash_opened(density, scale)
 	bfb()
 	card_logo()
 	etc_sources()
