@@ -316,6 +316,19 @@ class WidgetsPager @JvmOverloads constructor(
 		}
 	}
 
+	/** Shows the grid-intersection overlay on every desktop (no-op unless the dev option is on). */
+	fun showGridOverlay() {
+		for (i in 0 until this.childCount) {
+			(this.getChildAt(i) as WidgetsContainer).showGridOverlay()
+		}
+	}
+
+	fun hideGridOverlay() {
+		for (i in 0 until this.childCount) {
+			(this.getChildAt(i) as WidgetsContainer).hideGridOverlay()
+		}
+	}
+
 	/**
 	 * Keeps each desktop clear of the launcher and the navigation bar; applied
 	 * as padding on every page (existing and future) rather than the pager

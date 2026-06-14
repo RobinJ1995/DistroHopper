@@ -107,6 +107,8 @@
     <string name="hint_full_restart">Kill and relaunch the app to fully re-initialise it.</string>
     <string name="option_widget_resize_any">Allow unsupported widget dimensions</string>
     <string name="hint_widget_resize_any">Allow widgets to be resized beyond their supported size constraints.</string>
+    <string name="option_show_grid_on_drag">Show desktop grid while dragging</string>
+    <string name="hint_show_grid_on_drag">Show a dot at each grid intersection while dragging or resizing widgets and apps.</string>
     <string name="option_rerun_onboarding">Run setup wizard again</string>
     <string name="hint_rerun_onboarding">The first-run setup wizard will be shown the next time DistroHopper starts.</string>
     <string name="toast_rerun_onboarding">Setup wizard will run on next start</string>

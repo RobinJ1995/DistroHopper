@@ -63,7 +63,9 @@ enum class Preference(
 	/** Dev: surface internal log messages as on-screen toasts. */
 	DEV_LOG_TOASTER("dev_log_toaster", null, DEV),
 	/** Dev: allow freely resizing any widget, ignoring its declared limits. */
-	DEV_WIDGET_RESIZE_ANY("dev_widget_resize_any", false, DEV);
+	DEV_WIDGET_RESIZE_ANY("dev_widget_resize_any", false, DEV),
+	/** Dev: show a dot at every grid intersection while dragging or resizing. */
+	DEV_SHOW_GRID_ON_DRAG("dev_show_grid_on_drag", false, DEV);
 
 	fun getName(): String = this.key
 

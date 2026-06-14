@@ -152,6 +152,7 @@ class WidgetContainer internal constructor(
 					lp.previewTopPx = this.startTop
 					lp.previewWidthPx = this.startWidth
 					lp.previewHeightPx = this.startHeight
+					parent.showGridOverlay()
 				}
 
 				val cellW = parent.cellWidth
@@ -242,6 +243,7 @@ class WidgetContainer internal constructor(
 
 					lp.clearPreview()
 					parent.hideSnapLine()
+					parent.hideGridOverlay()
 					parent.requestLayout()
 				}
 

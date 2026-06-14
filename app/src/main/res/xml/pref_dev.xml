@@ -22,6 +22,13 @@
 		android:summary="@string/hint_widget_resize_any"
 		android:defaultValue="false" />
 
+	<SwitchPreferenceCompat
+		android:key="dev_show_grid_on_drag"
+		android:dependency="dev"
+		android:title="@string/option_show_grid_on_drag"
+		android:summary="@string/hint_show_grid_on_drag"
+		android:defaultValue="false" />
+
 	<Preference
 		android:key="dummy_rerun_onboarding"
 		android:dependency="dev"
