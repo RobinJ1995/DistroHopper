@@ -8,6 +8,7 @@ public class Preferences {
 	public static final String PINNED_APPS = "pinned";
 	public static final String LENSES = "lenses";
 	public static final String WIDGETS = "widgets";
+	public static final String DESKTOP_APPS = "desktop_apps";
 	public static final String APP_USAGE = "app_usage";
 
 	public static SharedPreferences getSharedPreferences(final Context context) {

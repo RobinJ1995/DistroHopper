@@ -242,6 +242,10 @@ public class AppManager implements Iterable<App>
 		this.getBinder ().removePinnedAppView (app);
 		this.savePinnedApps ();
 
+		// And remove its desktop pin, if any //
+		if (this.parent.getDesktopAppHost () != null)
+			this.parent.getDesktopAppHost ().unpinFromAllDesktops (app);
+
 		this.getBinder ().notifyDashAdapterChanged ();
 
 		return modified;

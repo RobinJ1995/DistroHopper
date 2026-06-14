@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.widgets.DesktopAppHost;
+import be.robinj.distrohopper.widgets.DesktopAppView;
 import be.robinj.distrohopper.widgets.WidgetContainer;
 
 /**
@@ -29,6 +31,33 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 			// own listener; reacting here would hide the trash mid-drag //
 			if (event.getLocalState () instanceof WidgetContainer)
 				return false;
+
+			// A desktop app dragged onto the bar is a move: unpin it from the
+			// desktop and pin it to the bar. The reorder placeholder machinery
+			// doesn't apply (it was never a bar icon), so handle it separately //
+			if (event.getLocalState () instanceof DesktopAppView)
+			{
+				final DesktopAppView appView = (DesktopAppView) event.getLocalState ();
+
+				switch (event.getAction ())
+				{
+					case DragEvent.ACTION_DROP:
+						final DesktopAppHost host = this.appManager.getParent ().getDesktopAppHost ();
+						if (host != null)
+						{
+							host.remove (appView);
+							this.appManager.pin (appView.getApp (), true, false, true);
+						}
+						this.appManager.stoppedDraggingPinnedApp ();
+						break;
+					case DragEvent.ACTION_DRAG_ENDED:
+						// Restores the bar chrome (trash/bfb) once the drag is over //
+						view.post (() -> this.appManager.stoppedDraggingPinnedApp ());
+						break;
+				}
+
+				return true;
+			}
 
 			switch (event.getAction ())
 			{

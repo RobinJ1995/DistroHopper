@@ -7,6 +7,7 @@ import be.robinj.distrohopper.R
 import be.robinj.distrohopper.widgets.WidgetContainer
 import be.robinj.distrohopper.widgets.WidgetTestSupport
 import be.robinj.distrohopper.widgets.WidgetsPager
+import be.robinj.distrohopper.widgets.DesktopAppView
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -37,12 +38,19 @@ class DesktopsTest {
 			.map { it.appWidgetId }
 	}
 
+	private fun desktopAppKeysOn(pager: WidgetsPager, page: Int): List<String> {
+		val container = pager.pageAt(page)
+		return (0 until container.childCount)
+			.mapNotNull { container.getChildAt(it) as? DesktopAppView }
+			.map { it.key }
+	}
+
 	@Test fun highestOccupiedDesktopCombinesWidgetsAndPins() {
 		this.scenario.onActivity { activity ->
 			val pager = activity.findViewById<WidgetsPager>(R.id.vgWidgets)
 			val host = WidgetTestSupport.host(activity)
 			val appManager = requireNotNull(activity.appManager)
-			val desktops = Desktops(host, appManager)
+			val desktops = Desktops(host, appManager, requireNotNull(activity.desktopAppHost))
 
 			// A widget on desktop 1, a pin on desktop 3 //
 			WidgetTestSupport.addWidget(activity, host, pager.pageAt(1), 11, 0, 0, 2, 2)
@@ -50,6 +58,20 @@ class DesktopsTest {
 				appManager.findAppsByPackageName("com.example.alpha").first(), 3)
 
 			assertEquals(3, desktops.highestOccupiedDesktop())
+		}
+	}
+
+	@Test fun highestOccupiedDesktopCountsDesktopApps() {
+		this.scenario.onActivity { activity ->
+			val host = WidgetTestSupport.host(activity)
+			val appManager = requireNotNull(activity.appManager)
+			val desktopAppHost = requireNotNull(activity.desktopAppHost)
+			val desktops = Desktops(host, appManager, desktopAppHost)
+
+			// Only a desktop app, on desktop 4 //
+			desktopAppHost.pinAt(WidgetTestSupport.app(activity, "com.example.alpha"), 0, 0, 4)
+
+			assertEquals(4, desktops.highestOccupiedDesktop())
 		}
 	}
 
@@ -70,7 +92,7 @@ class DesktopsTest {
 			host.persist()
 			pager.pagesChanged()
 
-			Desktops(host, appManager).deleteDesktop(1)
+			Desktops(host, appManager, requireNotNull(activity.desktopAppHost)).deleteDesktop(1)
 			ActivityTestSupport.drainTasks()
 
 			// Desktop 1's own contents are gone //
@@ -79,6 +101,29 @@ class DesktopsTest {
 			assertTrue(repo.isPinnedOn(appB, 1))
 			assertEquals(1, repo.highestPinnedDesktop())
 			assertEquals(listOf(22), this.widgetIdsOn(pager, 1))
+		}
+	}
+
+	@Test fun deleteDesktopRemovesDesktopAppsAndShiftsHigherOnesDown() {
+		this.scenario.onActivity { activity ->
+			val pager = activity.findViewById<WidgetsPager>(R.id.vgWidgets)
+			val host = WidgetTestSupport.host(activity)
+			val appManager = requireNotNull(activity.appManager)
+			val desktopAppHost = requireNotNull(activity.desktopAppHost)
+			val appA = WidgetTestSupport.app(activity, "com.example.alpha")
+			val appB = WidgetTestSupport.app(activity, "com.example.beta")
+
+			// Desktop 1: appA; desktop 2: appB //
+			desktopAppHost.pinAt(appA, 0, 0, 1)
+			desktopAppHost.pinAt(appB, 0, 0, 2)
+
+			Desktops(host, appManager, desktopAppHost).deleteDesktop(1)
+			ActivityTestSupport.drainTasks()
+
+			// appA (desktop 1) gone; appB shifted down from desktop 2 to desktop 1 //
+			assertFalse(desktopAppHost.isPinnedOnDesktop(appA))
+			assertTrue(desktopAppHost.isPinnedOnDesktop(appB))
+			assertEquals(listOf(appB.profileScopedKey), this.desktopAppKeysOn(pager, 1))
 		}
 	}
 }

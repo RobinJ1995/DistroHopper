@@ -73,6 +73,7 @@ import be.robinj.distrohopper.desktop.launcher.AppLauncher;
 import be.robinj.distrohopper.desktop.launcher.LauncherDragListener;
 import be.robinj.distrohopper.desktop.launcher.TrashDragListener;
 import be.robinj.distrohopper.desktop.launcher.service.LauncherService;
+import be.robinj.distrohopper.widgets.DesktopAppHost;
 import be.robinj.distrohopper.widgets.WidgetHost;
 import be.robinj.distrohopper.widgets.WidgetHost_LongClickListener;
 import be.robinj.distrohopper.widgets.WidgetsContainer_DragListener;
@@ -85,6 +86,7 @@ public class HomeActivity extends AppCompatActivity
 	private AppManager apps;
 	private AppWidgetManager widgetManager;
 	private WidgetHost widgetHost;
+	private DesktopAppHost desktopAppHost;
 
 	private ViewFinder viewFinder;
 
@@ -659,6 +661,11 @@ public class HomeActivity extends AppCompatActivity
 		return this.apps;
 	}
 
+	public DesktopAppHost getDesktopAppHost ()
+	{
+		return this.desktopAppHost;
+	}
+
 	public ViewFinder getViewFinder() {
 		return this.viewFinder;
 	}
@@ -677,11 +684,18 @@ public class HomeActivity extends AppCompatActivity
 			// Runs searches on the activity's lifecycleScope + dispatchers, like StartupLoader //
 			this.lenses.setSearchLoader (new SearchLoader (this, DependencyContainer.of (this).getDispatchers ()));
 
-			// Desktops is the authority for how many desktops exist (widgets + pins);
-			// wire it now that the app model is loaded and re-derive the desktop row //
-			this.desktops = new Desktops (this.widgetHost, this.apps);
+			// Desktop-pinned apps: own host alongside the widget host. Created now,
+			// not in onCreate, because their stored keys only resolve once the app
+			// model has loaded (AppRepository.installedAppsMap) //
 			final WidgetsPager vgWidgets = this.viewFinder.get (R.id.vgWidgets);
+			this.desktopAppHost = new DesktopAppHost (this, vgWidgets, this.apps.getRepository ());
+
+			// Desktops is the authority for how many desktops exist (widgets + pins
+			// + desktop apps); wire it now that the app model is loaded //
+			this.desktops = new Desktops (this.widgetHost, this.apps, this.desktopAppHost);
 			vgWidgets.setOccupiedDesktopSupplier (() -> this.desktops.highestOccupiedDesktop ());
+
+			this.desktopAppHost.restore ();
 			vgWidgets.pagesChanged ();
 
 			EditText etDashSearch = this.viewFinder.get(R.id.etDashSearch);

@@ -10,6 +10,8 @@ import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.HomeActivity;
 import be.robinj.distrohopper.home.LauncherBarBinder;
+import be.robinj.distrohopper.widgets.DesktopAppHost;
+import be.robinj.distrohopper.widgets.DesktopAppView;
 import be.robinj.distrohopper.widgets.WidgetContainer;
 
 /**
@@ -48,6 +50,12 @@ public class TrashDragListener implements ViewGroup.OnDragListener
 					if (event.getLocalState () instanceof WidgetContainer)
 					{
 						((WidgetContainer) event.getLocalState ()).removeWidget ();
+					}
+					else if (event.getLocalState () instanceof DesktopAppView)
+					{
+						final DesktopAppHost host = this.activity.getDesktopAppHost ();
+						if (host != null)
+							host.remove ((DesktopAppView) event.getLocalState ());
 					}
 					else if (event.getLocalState () instanceof App)
 					{

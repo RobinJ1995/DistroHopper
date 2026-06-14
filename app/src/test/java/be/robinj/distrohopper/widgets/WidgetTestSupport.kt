@@ -3,6 +3,7 @@ package be.robinj.distrohopper.widgets
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.view.View
+import be.robinj.distrohopper.App
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 
@@ -62,6 +63,33 @@ internal object WidgetTestSupport {
 		grid.addView(container, WidgetsContainer.LayoutParams(col, row, colSpan, rowSpan))
 		return container
 	}
+
+	/**
+	 * A [DesktopAppHost] bound to the given grid's pager, with the pager's
+	 * occupied-desktop supplier widened to count desktop apps too (production
+	 * wires this through `home/Desktops`; a standalone test pager otherwise only
+	 * counts widgets and would trim the page a desktop app was just placed on).
+	 */
+	fun desktopHost(
+		activity: HomeActivity,
+		grid: WidgetsContainer =
+			activity.findViewById<WidgetsPager>(R.id.vgWidgets).pageAt(0),
+	): DesktopAppHost {
+		val pager = pagerOf(grid)
+		val host = DesktopAppHost(activity, pager, activity.appManager.repository)
+		val widgets = pager.occupiedDesktopSupplier
+		pager.occupiedDesktopSupplier = { maxOf(widgets(), host.highestDesktop()) }
+
+		return host
+	}
+
+	/** The (first) installed app for a seeded test package. */
+	fun app(activity: HomeActivity, packageName: String): App =
+		activity.appManager.findAppsByPackageName(packageName).first()
+
+	/** The desktop-app views on a grid page, in child order. */
+	fun desktopAppsOn(grid: WidgetsContainer): List<DesktopAppView> =
+		(0 until grid.childCount).mapNotNull { grid.getChildAt(it) as? DesktopAppView }
 
 	/** Measures and lays out the grid so cell sizes are non-zero. */
 	fun layoutGrid(grid: WidgetsContainer) {

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.widgets.DesktopAppView;
 import be.robinj.distrohopper.widgets.WidgetContainer;
 
 /**
@@ -27,8 +28,11 @@ public class AppLauncherDragListener implements ViewGroup.OnDragListener
 		try
 		{
 			// Widget drags are handled by WidgetsContainer_DragListener and the trash's
-			// own listener //
-			if (event.getLocalState () instanceof WidgetContainer)
+			// own listener. A desktop app dragged onto the bar is a move-to-bar,
+			// handled by the bar container's LauncherDragListener (and the trash) —
+			// not here, where it would be misread as a reorder of this icon //
+			if (event.getLocalState () instanceof WidgetContainer
+					|| event.getLocalState () instanceof DesktopAppView)
 				return false;
 
 			AppLauncher appLauncher = (AppLauncher) view;

@@ -311,7 +311,7 @@ class WidgetContainer internal constructor(
 
 		val candidate = WidgetLayout(this.appWidgetId, col, row, colSpan, rowSpan)
 
-		if (!WidgetGrid.fits(parent.collectLayouts(this), candidate)) {
+		if (!WidgetGrid.fits(parent.collectOccupied(this), candidate)) {
 			return // Revert to the previous position //
 		}
 
@@ -332,7 +332,7 @@ class WidgetContainer internal constructor(
 
 		val candidate = WidgetLayout(this.appWidgetId, col, row, lp.colSpan, lp.rowSpan)
 
-		if (!WidgetGrid.fits(parent.collectLayouts(this), candidate)) {
+		if (!WidgetGrid.fits(parent.collectOccupied(this), candidate)) {
 			return // Revert to the previous position //
 		}
 
