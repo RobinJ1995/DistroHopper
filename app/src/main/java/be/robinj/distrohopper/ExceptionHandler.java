@@ -9,6 +9,7 @@ import org.acra.ACRA;
 
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.desktop.FrostedGlass;
+import be.robinj.distrohopper.preferences.FontPreference;
 
 /**
  * Created by robin on 8/22/14.
@@ -69,8 +70,13 @@ public class ExceptionHandler {
 			dlg.setNeutralButton (android.R.string.ok, null);
 
 			final AlertDialog dialog = dlg.create ();
-			// Keep the surface legible where cross-window blur isn't available (e.g. Samsung). //
-			dialog.setOnShowListener (d -> FrostedGlass.INSTANCE.applyDialogFallback (dialog.getWindow ()));
+			dialog.setOnShowListener (d -> {
+				// Keep the surface legible where cross-window blur isn't available (e.g. Samsung). //
+				FrostedGlass.INSTANCE.applyDialogFallback (dialog.getWindow ());
+				// Dialog chrome inflates through the dialog window's own inflater,
+				// which doesn't carry the activity's font factory. //
+				FontPreference.INSTANCE.applyTo (dialog);
+			});
 			dialog.show ();
 		}
 		catch (Exception ex2)

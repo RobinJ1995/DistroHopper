@@ -10,6 +10,7 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.desktop.FrostedGlass
+import be.robinj.distrohopper.preferences.FontPreference
 import java.io.BufferedInputStream
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
@@ -103,8 +104,13 @@ abstract class Lens(protected val context: Context) {
         dlg.setNeutralButton(android.R.string.ok, null)
 
         val dialog = dlg.create()
-        // Keep the surface legible where cross-window blur isn't available (e.g. Samsung). //
-        dialog.setOnShowListener { dialog.window?.let(FrostedGlass::applyDialogFallback) }
+        dialog.setOnShowListener {
+            // Keep the surface legible where cross-window blur isn't available (e.g. Samsung). //
+            dialog.window?.let(FrostedGlass::applyDialogFallback)
+            // Dialog chrome inflates through the dialog window's own inflater,
+            // which doesn't carry the activity's font factory. //
+            FontPreference.applyTo(dialog)
+        }
         dialog.show()
     }
 

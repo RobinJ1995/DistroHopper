@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import java.text.Collator
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.desktop.FrostedGlass
+import be.robinj.distrohopper.preferences.FontPreference
 
 /**
  * Lists the installed app widget providers, grouped by application.
@@ -51,8 +52,14 @@ class WidgetPickerDialog(
 			}
 		}
 
-		// Keep the surface legible where cross-window blur isn't available (e.g. Samsung). //
-		dialog.setOnShowListener { dialog.window?.let(FrostedGlass::applyDialogFallback) }
+		dialog.setOnShowListener {
+			// Keep the surface legible where cross-window blur isn't available (e.g. Samsung). //
+			dialog.window?.let(FrostedGlass::applyDialogFallback)
+			// The title inflates through the dialog window's own inflater, which
+			// doesn't carry the activity's font factory; apply the chosen font
+			// once the dialog's views exist. //
+			FontPreference.applyTo(dialog)
+		}
 
 		dialog.show()
 	}
