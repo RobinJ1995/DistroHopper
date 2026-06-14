@@ -31,7 +31,7 @@ public class GridAdapter extends ArrayAdapter<LensSearchResult> {
 		LensSearchResult result = this.getItem (position);
 
 		if (view == null)
-			view = LayoutInflater.from (this.getContext ()).inflate (R.layout.widget_dash_lens_result, parent, false);
+			view = LayoutInflater.from (parent.getContext ()).inflate (R.layout.widget_dash_lens_result, parent, false);
 
 		TextView tvLabel = (TextView) view.findViewById (R.id.tvLabel);
 		ImageView imgIcon = (ImageView) view.findViewById (R.id.imgIcon);

@@ -35,7 +35,7 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 		boolean show = true;
 
 		if (view == null)
-			view = LayoutInflater.from (this.getContext ()).inflate (R.layout.widget_dash_lens_result_collection, parent, false);
+			view = LayoutInflater.from (parent.getContext ()).inflate (R.layout.widget_dash_lens_result_collection, parent, false);
 
 		TextView tvLabel = (TextView) view.findViewById (R.id.tvLabel);
 		GridView gvResults = (GridView) view.findViewById (R.id.gvResults);

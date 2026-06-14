@@ -31,7 +31,7 @@ public class GridAdapter extends ArrayAdapter<App> {
 		AppLauncher appLauncher = (this.getItem (position)).getDashAppLauncher ();
 
 		if (view == null)
-			view = LayoutInflater.from (this.getContext ()).inflate (R.layout.widget_dash_applauncher, parent, false);
+			view = LayoutInflater.from (parent.getContext ()).inflate (R.layout.widget_dash_applauncher, parent, false);
 
 		TextView tvLabel = (TextView) view.findViewById (R.id.tvLabel);
 		ImageView imgIcon = (ImageView) view.findViewById (R.id.imgIcon);

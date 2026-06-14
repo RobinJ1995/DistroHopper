@@ -1,8 +1,10 @@
 package be.robinj.distrohopper
 
+import android.app.Dialog
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
@@ -72,6 +74,36 @@ class FontPreferenceTest {
 		val activity = Robolectric.buildActivity(FontTestActivity::class.java).create().get()
 
 		FontPreference.applyTo(activity) // must not throw
+	}
+
+	/** The Dialog overload sweeps the decor view, reaching nested TextViews
+	 *  (e.g. the title) that the inflater factory never touches. */
+	@Test fun applyToDialogAppliesFontToNestedTextViews() {
+		this.setFont("ubuntu")
+		val activity = Robolectric.buildActivity(FontTestActivity::class.java).create().get()
+
+		val dialog = Dialog(activity)
+		val tvLabel = TextView(activity)
+		dialog.setContentView(LinearLayout(activity).apply { this.addView(tvLabel) })
+
+		FontPreference.applyTo(dialog)
+
+		assertEquals(FontPreference.typeface(activity), tvLabel.typeface)
+	}
+
+	/** The Dialog overload leaves text untouched when the system font is selected. */
+	@Test fun applyToDialogIsNoOpForSystem() {
+		this.setFont("system")
+		val activity = Robolectric.buildActivity(FontTestActivity::class.java).create().get()
+
+		val dialog = Dialog(activity)
+		val tvLabel = TextView(activity)
+		val before = tvLabel.typeface
+		dialog.setContentView(tvLabel)
+
+		FontPreference.applyTo(dialog)
+
+		assertEquals(before, tvLabel.typeface)
 	}
 }
 

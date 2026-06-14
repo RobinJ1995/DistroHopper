@@ -1,8 +1,12 @@
 package be.robinj.distrohopper.preferences
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.graphics.Typeface
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.FontRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -62,5 +66,30 @@ object FontPreference {
 			inflater,
 			FontInflaterFactory(activity.delegate, typeface),
 		)
+	}
+
+	/**
+	 * Applies the chosen font to an already-shown [dialog]. A dialog inflates its
+	 * title (and chrome) through the dialog window's own LayoutInflater, which
+	 * doesn't carry the activity's [FontInflaterFactory], so we sweep the decor
+	 * view and force the typeface onto every TextView. No-op for System.
+	 *
+	 * Attach via [Dialog.setOnShowListener] so the views exist when this runs.
+	 */
+	fun applyTo(dialog: Dialog) {
+		val typeface = this.typeface(dialog.context) ?: return
+		val root = dialog.window?.decorView ?: return
+
+		this.applyTypeface(root, typeface)
+	}
+
+	private fun applyTypeface(view: View, typeface: Typeface) {
+		when (view) {
+			is ViewGroup -> for (i in 0 until view.childCount) {
+				this.applyTypeface(view.getChildAt(i), typeface)
+			}
+			// Keep each view's own style (bold/italic) while swapping the family.
+			is TextView -> view.setTypeface(typeface, view.typeface?.style ?: Typeface.NORMAL)
+		}
 	}
 }
