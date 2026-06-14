@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.robinj.distrohopper.R;
+import be.robinj.distrohopper.preferences.Preference;
+import be.robinj.distrohopper.preferences.Preferences;
 
 /**
  * The widget area of the home screen. Positions its children on an invisible
@@ -26,6 +28,12 @@ public class WidgetsContainer extends ViewGroup
 	private final Paint snapLinePaint = new Paint (Paint.ANTI_ALIAS_FLAG);
 	private final Paint moveTargetFillPaint = new Paint (Paint.ANTI_ALIAS_FLAG);
 	private final Paint moveTargetStrokePaint = new Paint (Paint.ANTI_ALIAS_FLAG);
+	private final Paint gridDotPaint = new Paint (Paint.ANTI_ALIAS_FLAG);
+	private final float gridDotRadius;
+
+	// When the developer option is on, dots are drawn at every grid intersection
+	// while a widget or app is being dragged or a widget is being resized //
+	private boolean gridOverlayVisible = false;
 
 	// While an edge is being dragged, the line shows where it will snap on release //
 	private boolean snapLineVisible = false;
@@ -52,6 +60,38 @@ public class WidgetsContainer extends ViewGroup
 		this.moveTargetStrokePaint.setStyle (Paint.Style.STROKE);
 		this.moveTargetStrokePaint.setStrokeWidth (TypedValue.applyDimension (
 				TypedValue.COMPLEX_UNIT_DIP, 2, context.getResources ().getDisplayMetrics ()));
+		this.gridDotPaint.setColor (Color.argb (190, 255, 255, 255));
+		this.gridDotPaint.setStyle (Paint.Style.FILL);
+		this.gridDotRadius = TypedValue.applyDimension (
+				TypedValue.COMPLEX_UNIT_DIP, 2.5f, context.getResources ().getDisplayMetrics ());
+	}
+
+	/**
+	 * Shows the grid-intersection dot overlay, if the developer option is enabled.
+	 * No-op otherwise, so callers can fire it unconditionally on every drag/resize.
+	 */
+	public void showGridOverlay ()
+	{
+		if (this.gridOverlayVisible || ! this.isGridOverlayEnabled ())
+			return;
+
+		this.gridOverlayVisible = true;
+		this.invalidate ();
+	}
+
+	public void hideGridOverlay ()
+	{
+		if (! this.gridOverlayVisible)
+			return;
+
+		this.gridOverlayVisible = false;
+		this.invalidate ();
+	}
+
+	private boolean isGridOverlayEnabled ()
+	{
+		return Preferences.getSharedPreferences (this.getContext ())
+				.getBoolean (Preference.DEV_SHOW_GRID_ON_DRAG.getName (), false);
 	}
 
 	public void showMoveTarget (final int col, final int row, final int colSpan, final int rowSpan,
@@ -121,6 +161,23 @@ public class WidgetsContainer extends ViewGroup
 	protected void dispatchDraw (final Canvas canvas)
 	{
 		super.dispatchDraw (canvas);
+
+		if (this.gridOverlayVisible)
+		{
+			final int cellWidth = this.getCellWidth ();
+			final int cellHeight = this.getCellHeight ();
+
+			for (int col = 0; col <= WidgetGrid.COLS; col++)
+			{
+				final float x = this.getPaddingLeft () + col * cellWidth;
+
+				for (int row = 0; row <= WidgetGrid.ROWS; row++)
+				{
+					final float y = this.getPaddingTop () + row * cellHeight;
+					canvas.drawCircle (x, y, this.gridDotRadius, this.gridDotPaint);
+				}
+			}
+		}
 
 		if (this.moveTargetVisible)
 		{

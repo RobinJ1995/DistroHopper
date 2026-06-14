@@ -29,6 +29,7 @@ class DevPreferenceTest {
 			.putBoolean(Preference.DEV.getName(), true)
 			.putBoolean(Preference.DEV_LOG_TOASTER.getName(), true)
 			.putBoolean(Preference.DEV_WIDGET_RESIZE_ANY.getName(), true)
+			.putBoolean(Preference.DEV_SHOW_GRID_ON_DRAG.getName(), true)
 			.commit()
 	}
 
@@ -43,14 +44,18 @@ class DevPreferenceTest {
 					Preference.DEV_LOG_TOASTER.getName())!!
 				val widgetResize = fragment.findPreference<SwitchPreferenceCompat>(
 					Preference.DEV_WIDGET_RESIZE_ANY.getName())!!
+				val showGrid = fragment.findPreference<SwitchPreferenceCompat>(
+					Preference.DEV_SHOW_GRID_ON_DRAG.getName())!!
 
 				assertTrue(logToaster.isChecked)
 				assertTrue(widgetResize.isChecked)
+				assertTrue(showGrid.isChecked)
 
 				dev.performClick()
 
 				assertFalse(logToaster.isChecked)
 				assertFalse(widgetResize.isChecked)
+				assertFalse(showGrid.isChecked)
 			}
 		}
 
@@ -58,6 +63,7 @@ class DevPreferenceTest {
 		assertFalse(prefs.getBoolean(Preference.DEV.getName(), true))
 		assertFalse(prefs.contains(Preference.DEV_LOG_TOASTER.getName()))
 		assertFalse(prefs.contains(Preference.DEV_WIDGET_RESIZE_ANY.getName()))
+		assertFalse(prefs.contains(Preference.DEV_SHOW_GRID_ON_DRAG.getName()))
 	}
 
 	@Test fun openingPreferencesWithDeveloperModeOffClearsStaleDeveloperToggles() {
@@ -74,15 +80,19 @@ class DevPreferenceTest {
 					Preference.DEV_LOG_TOASTER.getName())!!
 				val widgetResize = fragment.findPreference<SwitchPreferenceCompat>(
 					Preference.DEV_WIDGET_RESIZE_ANY.getName())!!
+				val showGrid = fragment.findPreference<SwitchPreferenceCompat>(
+					Preference.DEV_SHOW_GRID_ON_DRAG.getName())!!
 
 				assertFalse(logToaster.isChecked)
 				assertFalse(widgetResize.isChecked)
+				assertFalse(showGrid.isChecked)
 			}
 		}
 
 		val prefs = Preferences.getSharedPreferences(this.application)
 		assertFalse(prefs.contains(Preference.DEV_LOG_TOASTER.getName()))
 		assertFalse(prefs.contains(Preference.DEV_WIDGET_RESIZE_ANY.getName()))
+		assertFalse(prefs.contains(Preference.DEV_SHOW_GRID_ON_DRAG.getName()))
 	}
 
 	@Test fun clickingClearCacheClearsLabelIconAndExpirationCaches() {

@@ -22,6 +22,7 @@ import be.robinj.distrohopper.desktop.launcher.AppLauncherDragListener
 import be.robinj.distrohopper.desktop.launcher.AppLauncherLongClickListener
 import be.robinj.distrohopper.desktop.launcher.PinnedAppsBar
 import be.robinj.distrohopper.desktop.launcher.RunningAppLauncher
+import be.robinj.distrohopper.widgets.WidgetsPager
 import be.robinj.distrohopper.theme.Location
 import be.robinj.distrohopper.theme.ProfileIndicatorStyle
 
@@ -463,6 +464,8 @@ class LauncherBarBinder(private val appManager: AppManager) {
 			activity.closeDash()
 
 			viewFinder.get<LinearLayout>(llLauncher, R.id.llLauncherPinnedApps).alpha = 0.9F
+
+			viewFinder.get<WidgetsPager>(R.id.vgWidgets).showGridOverlay()
 		}
 
 		@JvmStatic
@@ -482,6 +485,8 @@ class LauncherBarBinder(private val appManager: AppManager) {
 			lalTrash.visibility = View.GONE
 
 			viewFinder.get<LinearLayout>(llLauncher, R.id.llLauncherPinnedApps).alpha = 1.0F
+
+			viewFinder.get<WidgetsPager>(R.id.vgWidgets).hideGridOverlay()
 		}
 	}
 }
