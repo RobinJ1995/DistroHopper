@@ -65,6 +65,14 @@ public class TrashDragListener implements ViewGroup.OnDragListener
 							this.activity.getDesktopFolderHost ().deleteFolder (
 								((be.robinj.distrohopper.widgets.DesktopFolderView) event.getLocalState ()).getFolderId ());
 					}
+					else if (event.getLocalState () instanceof be.robinj.distrohopper.widgets.DesktopFolderMemberDrag)
+					{
+						// A member pulled out of a desktop folder, dropped on the trash: delete it //
+						final be.robinj.distrohopper.widgets.DesktopFolderMemberDrag m =
+							(be.robinj.distrohopper.widgets.DesktopFolderMemberDrag) event.getLocalState ();
+						if (this.activity.getDesktopFolderHost () != null)
+							this.activity.getDesktopFolderHost ().deleteMember (m.getFolderId (), m.getMember ());
+					}
 					else if (event.getLocalState () instanceof DashDragPayload)
 					{
 						// Dropping a dash folder on the trash deletes it (members return

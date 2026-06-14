@@ -181,7 +181,28 @@ class DesktopFolderHost(
 		this.vgWidgets.pagesChanged()
 	}
 
-	/** Moves the folder [view] to [col],[row] on its desktop, keeping it put if taken. */
+	/**
+	 * Removes a member from the folder and deletes it (dropped on the trash): an
+	 * app simply leaves; a widget is unbound. Dissolves the folder at <2, the
+	 * remaining members returning loose.
+	 */
+	fun deleteMember(folderId: String, member: FolderMember) {
+		val folderView = this.folderViewFor(folderId) ?: return
+		val appMap = this.repository.installedAppsMap()
+
+		if (member is FolderMember.WidgetMember) {
+			this.retainedWidgets.remove(member.appWidgetId)?.let { this.widgetHost.removeWidget(it) }
+		}
+
+		val remaining = folderView.layout.without(member)
+		if (remaining.appCount < 1 || remaining.cells.size < 2) {
+			this.dissolve(folderView, remaining, appMap, exclude = member)
+		} else {
+			this.replaceFolderView(folderView, remaining)
+		}
+		this.persist()
+		this.vgWidgets.pagesChanged()
+	}
 	fun moveTo(view: DesktopFolderView, col: Int, row: Int) {
 		val container = view.parent as? WidgetsContainer ?: return
 		val lp = view.layoutParams as WidgetsContainer.LayoutParams

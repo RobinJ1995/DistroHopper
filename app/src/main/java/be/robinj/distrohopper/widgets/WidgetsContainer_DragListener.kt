@@ -102,6 +102,9 @@ internal class WidgetsContainer_DragListener(
 			is Drag.Widget -> kind.container.commitMove(col, row)
 			is Drag.DesktopApp -> kind.host.moveTo(kind.view, col, row)
 			is Drag.DesktopFolder -> kind.host.moveTo(kind.view, col, row)
+			is Drag.FolderMember ->
+				kind.host.removeMember(kind.payload.folderId, kind.payload.member,
+					col, row, this.pager.currentPage)
 			is Drag.DashApp -> kind.host.pinAt(kind.app, col, row, this.pager.currentPage)
 			is Drag.LauncherPin ->
 				if (kind.host.pinAt(kind.app, col, row, this.pager.currentPage)) {
@@ -204,6 +207,11 @@ internal class WidgetsContainer_DragListener(
 
 				return Drag.DesktopFolder(localState, host)
 			}
+			is DesktopFolderMemberDrag -> {
+				val host = this.parent.desktopFolderHost ?: return null
+
+				return Drag.FolderMember(localState, host)
+			}
 			is App -> {
 				val host = this.parent.desktopAppHost ?: return null
 
@@ -261,6 +269,16 @@ internal class WidgetsContainer_DragListener(
 			override val exclude get() = this.view
 			override fun grabOffsetX(grid: WidgetsContainer) = this.view.dragGrabOffsetX
 			override fun grabOffsetY(grid: WidgetsContainer) = this.view.dragGrabOffsetY
+		}
+
+		/** A member pulled out of an open desktop folder; lands loose at the drop cell. */
+		class FolderMember(val payload: DesktopFolderMemberDrag, val host: DesktopFolderHost) : Drag() {
+			override val widgetId = DesktopAppLayout.NO_WIDGET_ID
+			override val colSpan get() = this.payload.colSpan
+			override val rowSpan get() = this.payload.rowSpan
+			override val exclude: View? = null
+			override fun grabOffsetX(grid: WidgetsContainer) = this.colSpan * grid.cellWidth / 2
+			override fun grabOffsetY(grid: WidgetsContainer) = this.rowSpan * grid.cellHeight / 2
 		}
 
 		/** A non-view drag (from the dash or the bar): centre the block under the finger. */

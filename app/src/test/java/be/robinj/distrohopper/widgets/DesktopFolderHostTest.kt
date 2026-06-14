@@ -132,6 +132,45 @@ class DesktopFolderHostTest {
 		}
 	}
 
+	@Test fun removeMemberExtractsAnAppLooseAndDissolvesATwoMemberFolder() {
+		this.scenario.onActivity { activity ->
+			val f = this.fixture(activity)
+			val a = this.pin(activity, f, "com.example.alpha", 0, 0)
+			val b = this.pin(activity, f, "com.example.beta", 2, 0)
+			f.folderHost.createFolder(a, b)
+			val id = this.folder(f).folderId
+			val alpha = WidgetTestSupport.app(activity, "com.example.alpha")
+
+			f.folderHost.removeMember(id, be.robinj.distrohopper.folder.FolderMember.AppMember(
+				alpha.profileScopedKey), 4, 4, 0)
+
+			// Folder dropped to one member → dissolves; both apps are loose again.
+			assertEquals(0, WidgetTestSupport.foldersOn(f.grid).size)
+			assertEquals(2, WidgetTestSupport.desktopAppsOn(f.grid).size)
+		}
+	}
+
+	@Test fun deleteMemberDropsItWithoutReturningItLoose() {
+		this.scenario.onActivity { activity ->
+			val f = this.fixture(activity)
+			val a = this.pin(activity, f, "com.example.alpha", 0, 0)
+			val b = this.pin(activity, f, "com.example.beta", 2, 0)
+			val c = this.pin(activity, f, "com.example.gamma", 4, 0)
+			f.folderHost.createFolder(a, b)
+			val id = this.folder(f).folderId
+			f.folderHost.addApp(id, c) // folder now has 3 apps
+
+			val gamma = WidgetTestSupport.app(activity, "com.example.gamma")
+			f.folderHost.deleteMember(id, be.robinj.distrohopper.folder.FolderMember.AppMember(
+				gamma.profileScopedKey))
+
+			// Folder survives with 2 apps; the deleted member is not on the desktop.
+			assertEquals(1, WidgetTestSupport.foldersOn(f.grid).size)
+			assertEquals(2, this.folder(f).layout.appCount)
+			assertEquals(0, WidgetTestSupport.desktopAppsOn(f.grid).size)
+		}
+	}
+
 	@Test fun unpinFromAllDesktopsDropsTheAppAndDissolvesAtTwo() {
 		this.scenario.onActivity { activity ->
 			val f = this.fixture(activity)

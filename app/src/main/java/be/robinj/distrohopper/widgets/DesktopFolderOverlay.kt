@@ -43,6 +43,12 @@ class DesktopFolderOverlay(
 
 		for (cell0 in this.layout.cells) {
 			val child = this.childFor(cell0) ?: continue
+			// Long-press a member to pull it out of the folder: start the drag from
+			// the decor view (so it survives the overlay closing) and dismiss.
+			child.setOnLongClickListener {
+				this.startExtractDrag(cell0, child)
+				true
+			}
 			val lp = FrameLayout.LayoutParams(cell0.colSpan * cell, cell0.rowSpan * cell).apply {
 				leftMargin = pad + cell0.col * cell
 				topMargin = pad + cell0.row * cell
@@ -93,6 +99,22 @@ class DesktopFolderOverlay(
 		}
 		is FolderMember.WidgetMember -> this.host.retainedWidget(member.appWidgetId)?.also {
 			(it.parent as? ViewGroup)?.removeView(it)
+		}
+	}
+
+	private fun startExtractDrag(cell: DesktopFolderCell, shadowView: android.view.View) {
+		// An extracted app lands as a SPAN-square desktop icon; a widget keeps its span.
+		val (colSpan, rowSpan) = when (cell.member) {
+			is FolderMember.AppMember -> DesktopFolderLayout.SPAN to DesktopFolderLayout.SPAN
+			is FolderMember.WidgetMember -> cell.colSpan to cell.rowSpan
+		}
+		val payload = DesktopFolderMemberDrag(this.layout.folderId, cell.member, colSpan, rowSpan)
+		val clip = android.content.ClipData.newPlainText("desktopFolderMember", this.layout.folderId)
+		val source = this.activity.window.decorView
+
+		if (source.startDragAndDrop(clip, android.view.View.DragShadowBuilder(shadowView), payload, 0)) {
+			be.robinj.distrohopper.home.LauncherBarBinder.startedDragging(this.activity)
+			this.dismiss()
 		}
 	}
 
