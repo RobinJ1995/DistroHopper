@@ -95,6 +95,16 @@ class WidgetsPager @JvmOverloads constructor(
 	private var panStartScrollX = 0
 	private var velocityTracker: VelocityTracker? = null
 	private var downEvent: MotionEvent? = null
+	/*
+	 * Set on the first upward MOVE so we don't intercept until a second one
+	 * confirms the gesture is genuinely upward. Without the delay, the first
+	 * upward frame of a horizontal desktop swipe (starting on a widget) would
+	 * call swipeOpenBegin() and make the dash briefly visible — the "flash of
+	 * launcher icons". Two consecutive upward moves is strong enough signal;
+	 * if the next move is horizontal the horizontal check wins instead and
+	 * HomeGestureController enters TRACKING_PAGES cleanly.
+	 */
+	private var upwardPending = false
 
 	/*
 	 * A row of dots overlaid on the desktops while they are being swiped
@@ -263,14 +273,21 @@ class WidgetsPager @JvmOverloads constructor(
 					return true
 				}
 
-				// Swipe up that started on a widget: hand the stream to the home
-				// gestures (priming them with the original DOWN they never saw, since
-				// the widget consumed it) so the dash opens just like on empty space //
 				if (abs(dy) > this.touchSlop && abs(dy) > abs(dx) * 2F && dy < 0F) {
+					if (this.upwardPending) {
+						// Second consecutive upward move confirms intent: intercept and let the
+						// normal OnTouchListener dispatch deliver this MOVE to HomeGestureController
+						// (it is already PENDING from the DOWN we forwarded on the first move) //
+						this.recycleDownEvent()
+						return true
+					}
+					// First upward move: prime HomeGestureController with the DOWN so it is
+					// PENDING when the next move arrives, but don't intercept yet — if that
+					// next move is horizontal the horizontal check above wins and
+					// HomeGestureController enters TRACKING_PAGES instead of TRACKING_OPEN,
+					// preventing the dash from flashing during a horizontal desktop swipe //
 					this.downEvent?.let { this.swipeGestureForwarder?.invoke(it) }
-					this.recycleDownEvent()
-
-					return true
+					this.upwardPending = true
 				}
 			}
 			MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> this.clearGesture()
@@ -309,6 +326,7 @@ class WidgetsPager @JvmOverloads constructor(
 
 	private fun clearGesture() {
 		this.panning = false
+		this.upwardPending = false
 		this.velocityTracker?.recycle()
 		this.velocityTracker = null
 		this.recycleDownEvent()
