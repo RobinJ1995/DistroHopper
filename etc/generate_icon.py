@@ -1,241 +1,159 @@
 #!/usr/bin/env python3
 """
-Generate modern DistroHopper icon assets.
-Design: clean 12-segment orange pinwheel + goofy Tux eyes & beak.
-All geometry is authored at 108×108 (Android adaptive icon canvas).
+Generate DistroHopper icon assets from the original XCF source.
+Usage: python3 etc/generate_icon.py [path/to/distrohopper.xcf]
+
+If no XCF path is supplied the script re-uses the cached layer PNGs that
+were previously exported to /tmp by this same script.
 """
 
 import math
+import os
+import sys
 from pathlib import Path
+
+try:
+    from gimpformats.gimpXcfDocument import GimpDocument
+    HAS_GIMP = True
+except ImportError:
+    HAS_GIMP = False
+
+from PIL import Image
 import cairosvg
 
 ROOT = Path(__file__).parent.parent
 RES  = ROOT / 'app/src/main/res'
-ETC  = ROOT / 'etc'
 
-# ─── Colour palette ──────────────────────────────────────────────────────────
-C_LIGHT   = '#FF6B2B'   # vivid orange  (pinwheel light blades)
-C_DARK    = '#C83E08'   # burnt orange  (pinwheel dark blades)
-C_PUPIL   = '#141414'
-C_BEAK_HI = '#FFD84A'
-C_BEAK_LO = '#E08610'
+# ─── Extract layers from XCF (or load cached PNGs) ───────────────────────────
 
+CACHE = {
+    'face':    Path('/tmp/dh_layer_face.png'),
+    'swirl_bg': Path('/tmp/dh_layer_swirl_bg.png'),
+    'composite': Path('/tmp/dh_composite.png'),
+}
 
-# ─── Helpers ─────────────────────────────────────────────────────────────────
+XCF_SRC_WIDTH = 1472   # original canvas size
 
-def polar(cx, cy, r, deg):
-    rad = math.radians(deg)
-    return cx + r * math.cos(rad), cy + r * math.sin(rad)
+def extract_from_xcf(xcf_path: str):
+    """Export the key layers from the XCF to our cache paths."""
+    doc = GimpDocument(xcf_path)
+    layers = doc._layers
+    # Layer order (top→bottom): Clipboard(face), Layer(swirl), Background copy(orange circle), Background(blank)
+    by_name = {l.name: l for l in layers}
 
-def circle_path(cx, cy, r):
-    """SVG/Android path for a full circle (two arcs)."""
-    return (f'M{cx},{cy - r} '
-            f'A{r},{r} 0 0 1 {cx},{cy + r} '
-            f'A{r},{r} 0 0 1 {cx},{cy - r} Z')
+    face_layer   = by_name.get('Clipboard')
+    swirl_layer  = by_name.get('Layer')
+    orange_layer = by_name.get('Background copy')
 
+    W = H = doc.width
+    assert W == XCF_SRC_WIDTH, f"Unexpected canvas size {W}"
 
-# ─── Pinwheel segments ───────────────────────────────────────────────────────
+    # ── Full composite (all visible layers, bottom→top) ──
+    canvas = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    for layer in reversed(layers):
+        img = layer.image
+        if img is None:
+            continue
+        img = img.convert('RGBA')
+        tmp = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+        tmp.paste(img, (layer.xOffset, layer.yOffset))
+        canvas = Image.alpha_composite(canvas, tmp)
+    canvas.save(str(CACHE['composite']))
 
-def pinwheel_segments(cx=54.0, cy=54.0, r=54.0, n=12):
-    """Return list of (colour, path_d) for n alternating pie slices."""
-    sector = 360.0 / n
-    out = []
-    for i in range(n):
-        colour = C_LIGHT if i % 2 == 0 else C_DARK
-        a1 = -90 + i * sector
-        a2 = a1 + sector
-        x1, y1 = polar(cx, cy, r, a1)
-        x2, y2 = polar(cx, cy, r, a2)
-        d = f'M{cx},{cy} L{x1:.4f},{y1:.4f} A{r},{r} 0 0 1 {x2:.4f},{y2:.4f} Z'
-        out.append((colour, d))
-    return out
+    # ── Background only (orange circle + swirl, no face) ──
+    bg = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    for layer in [orange_layer, swirl_layer]:
+        if layer is None:
+            continue
+        img = layer.image.convert('RGBA')
+        tmp = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+        tmp.paste(img, (layer.xOffset, layer.yOffset))
+        bg = Image.alpha_composite(bg, tmp)
+    bg.save(str(CACHE['swirl_bg']))
 
+    # ── Face only (Clipboard layer at its offset) ──
+    if face_layer:
+        face_img = face_layer.image.convert('RGBA')
+        # Store the face alongside its offset in the filename
+        face_img.save(str(CACHE['face']))
+        offset_file = Path('/tmp/dh_face_offset.txt')
+        offset_file.write_text(f"{face_layer.xOffset},{face_layer.yOffset}")
 
-# ─── Face geometry (108×108 canvas) ──────────────────────────────────────────
-# Safe zone for adaptive icons: x[18..90], y[18..90]
-
-EY  = 47.0   # eye centre Y
-LX  = 35.0   # left eye centre X
-RX  = 73.0   # right eye centre X
-ER  = 17.0   # eye radius
-
-PLX = 38.5   # left pupil X (inward)
-PRX = 69.5   # right pupil X (inward)
-PY  = 51.5   # pupil Y (slightly down — goofy look)
-PR  = 9.0    # pupil radius
-
-BX, BY = 54.0, 67.5   # beak centre
-
-BEAK_PATH = (
-    f'M{BX-14},{BY-5} '
-    f'C{BX-14},{BY-13} {BX+14},{BY-13} {BX+14},{BY-5} '
-    f'C{BX+12},{BY+7}  {BX+4},{BY+12}  {BX},{BY+13} '
-    f'C{BX-4},{BY+12}  {BX-12},{BY+7}  {BX-14},{BY-5} Z'
-)
+    print(f"Extracted layers from {xcf_path}")
 
 
-# ─── SVG generators ──────────────────────────────────────────────────────────
+def load_layers():
+    """Load cached layer PNGs (call extract_from_xcf first if missing)."""
+    for key, path in CACHE.items():
+        if not path.exists():
+            raise FileNotFoundError(
+                f"{path} missing — run with an XCF path to regenerate: "
+                f"python3 etc/generate_icon.py path/to/icon.xcf"
+            )
+    face      = Image.open(str(CACHE['face'])).convert('RGBA')
+    swirl_bg  = Image.open(str(CACHE['swirl_bg'])).convert('RGBA')
+    composite = Image.open(str(CACHE['composite'])).convert('RGBA')
 
-def background_svg():
-    segs = pinwheel_segments()
-    seg_xml = '\n  '.join(f'<path fill="{c}" d="{d}"/>' for c, d in segs)
-    return f'''\
-<?xml version="1.0" encoding="utf-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108">
-  <defs>
-    <radialGradient id="glow" cx="50%" cy="42%" r="54%">
-      <stop offset="0%"   stop-color="white" stop-opacity="0.20"/>
-      <stop offset="58%"  stop-color="white" stop-opacity="0"/>
-      <stop offset="100%" stop-color="black" stop-opacity="0.13"/>
-    </radialGradient>
-  </defs>
-  {seg_xml}
-  <circle cx="54" cy="54" r="54" fill="url(#glow)"/>
-</svg>'''
+    offset_file = Path('/tmp/dh_face_offset.txt')
+    ox, oy = (359, 420)   # fallback defaults
+    if offset_file.exists():
+        parts = offset_file.read_text().split(',')
+        ox, oy = int(parts[0]), int(parts[1])
 
-
-def foreground_svg():
-    return f'''\
-<?xml version="1.0" encoding="utf-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108">
-  <defs>
-    <radialGradient id="eg" cx="38%" cy="30%" r="70%">
-      <stop offset="0%"   stop-color="#FFFFFF"/>
-      <stop offset="100%" stop-color="#CCCCCC"/>
-    </radialGradient>
-    <linearGradient id="bkg" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%"   stop-color="{C_BEAK_HI}"/>
-      <stop offset="100%" stop-color="{C_BEAK_LO}"/>
-    </linearGradient>
-    <filter id="sh" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="0" dy="1.5" stdDeviation="2.8"
-                    flood-color="#000" flood-opacity="0.30"/>
-    </filter>
-  </defs>
-
-  <!-- Left eye -->
-  <circle cx="{LX}" cy="{EY}" r="{ER}" fill="url(#eg)" filter="url(#sh)"/>
-  <circle cx="{PLX}" cy="{PY}" r="{PR}" fill="{C_PUPIL}"/>
-  <circle cx="{LX - 5.5}" cy="{EY - 7}" r="3.5" fill="white" opacity="0.85"/>
-
-  <!-- Right eye -->
-  <circle cx="{RX}" cy="{EY}" r="{ER}" fill="url(#eg)" filter="url(#sh)"/>
-  <circle cx="{PRX}" cy="{PY}" r="{PR}" fill="{C_PUPIL}"/>
-  <circle cx="{RX + 5.5}" cy="{EY - 7}" r="3.5" fill="white" opacity="0.85"/>
-
-  <!-- Beak -->
-  <path d="{BEAK_PATH}" fill="url(#bkg)" filter="url(#sh)"/>
-</svg>'''
+    return face, swirl_bg, composite, (ox, oy)
 
 
-def composite_svg():
-    """Background + foreground merged with circle clip, for legacy PNG rendering."""
-    segs = pinwheel_segments()
-    seg_xml = '\n    '.join(f'<path fill="{c}" d="{d}"/>' for c, d in segs)
-    return f'''\
-<?xml version="1.0" encoding="utf-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108">
-  <defs>
-    <radialGradient id="glow" cx="50%" cy="42%" r="54%">
-      <stop offset="0%"   stop-color="white" stop-opacity="0.20"/>
-      <stop offset="58%"  stop-color="white" stop-opacity="0"/>
-      <stop offset="100%" stop-color="black" stop-opacity="0.13"/>
-    </radialGradient>
-    <radialGradient id="eg" cx="38%" cy="30%" r="70%">
-      <stop offset="0%"   stop-color="#FFFFFF"/>
-      <stop offset="100%" stop-color="#CCCCCC"/>
-    </radialGradient>
-    <linearGradient id="bkg" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%"   stop-color="{C_BEAK_HI}"/>
-      <stop offset="100%" stop-color="{C_BEAK_LO}"/>
-    </linearGradient>
-    <filter id="sh" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="0" dy="1.5" stdDeviation="2.8"
-                    flood-color="#000" flood-opacity="0.30"/>
-    </filter>
-    <clipPath id="circ">
-      <circle cx="54" cy="54" r="54"/>
-    </clipPath>
-  </defs>
-  <g clip-path="url(#circ)">
-    {seg_xml}
-    <circle cx="54" cy="54" r="54" fill="url(#glow)"/>
-    <!-- Left eye -->
-    <circle cx="{LX}" cy="{EY}" r="{ER}" fill="url(#eg)" filter="url(#sh)"/>
-    <circle cx="{PLX}" cy="{PY}" r="{PR}" fill="{C_PUPIL}"/>
-    <circle cx="{LX - 5.5}" cy="{EY - 7}" r="3.5" fill="white" opacity="0.85"/>
-    <!-- Right eye -->
-    <circle cx="{RX}" cy="{EY}" r="{ER}" fill="url(#eg)" filter="url(#sh)"/>
-    <circle cx="{PRX}" cy="{PY}" r="{PR}" fill="{C_PUPIL}"/>
-    <circle cx="{RX + 5.5}" cy="{EY - 7}" r="3.5" fill="white" opacity="0.85"/>
-    <!-- Beak -->
-    <path d="{BEAK_PATH}" fill="url(#bkg)" filter="url(#sh)"/>
-  </g>
-</svg>'''
+# ─── Build adaptive icon layers (108×108) ────────────────────────────────────
+
+def make_adaptive_bg(swirl_bg: Image.Image) -> Image.Image:
+    """
+    Scale the original circle+swirl to 108×108 and fill the transparent
+    corners with the average outer-rim orange colour, so all clip shapes
+    (circle, squircle, square) show a consistent orange.
+    """
+    SRC = XCF_SRC_WIDTH
+    SIZE = 108
+    cx = cy = SRC // 2
+    r_sample = SRC // 2 * 0.88
+    samples = []
+    for deg in range(0, 360, 10):
+        rad = math.radians(deg)
+        px = int(cx + r_sample * math.cos(rad))
+        py = int(cy + r_sample * math.sin(rad))
+        pixel = swirl_bg.getpixel((px, py))
+        if pixel[3] > 200:
+            samples.append(pixel[:3])
+
+    fill_r = int(sum(s[0] for s in samples) / len(samples))
+    fill_g = int(sum(s[1] for s in samples) / len(samples))
+    fill_b = int(sum(s[2] for s in samples) / len(samples))
+
+    bg = Image.new('RGBA', (SIZE, SIZE), (fill_r, fill_g, fill_b, 255))
+    bg = Image.alpha_composite(bg, swirl_bg.resize((SIZE, SIZE), Image.LANCZOS))
+    return bg
 
 
-# ─── Android Vector Drawable generators ──────────────────────────────────────
+def make_adaptive_fg(face: Image.Image, offset: tuple) -> Image.Image:
+    """
+    Place the face layer at the correct proportional position on a 108×108
+    transparent canvas.  The face is perfectly centred in the XCF canvas, so
+    it stays centred in the adaptive-icon safe zone (18–90 on both axes).
+    """
+    SIZE  = 108
+    scale = SIZE / XCF_SRC_WIDTH
+    fw    = int(round(face.width  * scale))
+    fh    = int(round(face.height * scale))
+    fx    = int(round(offset[0]   * scale))
+    fy    = int(round(offset[1]   * scale))
 
-def background_vector_xml():
-    segs = pinwheel_segments()
-    path_els = '\n    '.join(
-        f'<path android:fillColor="{c}" android:pathData="{d}"/>'
-        for c, d in segs
-    )
-    return f'''\
-<?xml version="1.0" encoding="utf-8"?>
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    {path_els}
-    <!-- Subtle centre highlight -->
-    <path
-        android:fillColor="#33FFFFFF"
-        android:pathData="{circle_path(54, 54, 40)}"/>
-</vector>'''
+    fg = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
+    fg.paste(face.resize((fw, fh), Image.LANCZOS), (fx, fy), face.resize((fw, fh), Image.LANCZOS))
+    return fg
 
 
-def foreground_vector_xml():
-    return f'''\
-<?xml version="1.0" encoding="utf-8"?>
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-
-    <!-- Left eye -->
-    <path android:fillColor="#FFFFFF"
-          android:pathData="{circle_path(LX, EY, ER)}"/>
-    <path android:fillColor="{C_PUPIL}"
-          android:pathData="{circle_path(PLX, PY, PR)}"/>
-    <path android:fillColor="#DDFFFFFF"
-          android:pathData="{circle_path(LX - 5.5, EY - 7, 3.5)}"/>
-
-    <!-- Right eye -->
-    <path android:fillColor="#FFFFFF"
-          android:pathData="{circle_path(RX, EY, ER)}"/>
-    <path android:fillColor="{C_PUPIL}"
-          android:pathData="{circle_path(PRX, PY, PR)}"/>
-    <path android:fillColor="#DDFFFFFF"
-          android:pathData="{circle_path(RX + 5.5, EY - 7, 3.5)}"/>
-
-    <!-- Beak with gradient -->
-    <path android:pathData="{BEAK_PATH}">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:type="linear"
-                android:startX="{BX}" android:startY="{BY - 13}"
-                android:endX="{BX}"   android:endY="{BY + 13}"
-                android:startColor="{C_BEAK_HI}"
-                android:endColor="{C_BEAK_LO}"/>
-        </aapt:attr>
-    </path>
-</vector>'''
-
+# ─── Android vector XML for the adaptive icon ────────────────────────────────
+# We reference PNG drawables rather than vector XML so pixel-perfect quality
+# from the original artwork is preserved.
 
 ADAPTIVE_ICON_XML = '''\
 <?xml version="1.0" encoding="utf-8"?>
@@ -245,60 +163,71 @@ ADAPTIVE_ICON_XML = '''\
 </adaptive-icon>'''
 
 
-# ─── PNG rendering ────────────────────────────────────────────────────────────
+# ─── Helpers ─────────────────────────────────────────────────────────────────
 
-def render_png(svg_str: str, out_path: Path, size: int):
-    """Render SVG to PNG at the given pixel size."""
-    png_bytes = cairosvg.svg2png(
-        bytestring=svg_str.encode('utf-8'),
-        output_width=size,
-        output_height=size,
-    )
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_bytes(png_bytes)
-    kb = len(png_bytes) / 1024
-    print(f'  {out_path.relative_to(ROOT)}  ({size}×{size}, {kb:.1f} KB)')
+def save_png(img: Image.Image, path: Path, size: int):
+    out = img.resize((size, size), Image.LANCZOS)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    out.save(str(path), optimize=True)
+    kb = path.stat().st_size / 1024
+    print(f"  {path.relative_to(ROOT)}  ({size}×{size}, {kb:.1f} KB)")
 
 
 # ─── Main ────────────────────────────────────────────────────────────────────
 
 def main():
-    comp = composite_svg()
-    bg   = background_svg()
-    fg   = foreground_svg()
+    if len(sys.argv) > 1:
+        xcf_path = sys.argv[1]
+        if not HAS_GIMP:
+            sys.exit("gimpformats is not installed. Run: pip install gimpformats")
+        extract_from_xcf(xcf_path)
 
-    print('=== SVG source files ===')
-    (ETC / 'icon_bg.svg').write_text(bg,   encoding='utf-8')
-    (ETC / 'icon_fg.svg').write_text(fg,   encoding='utf-8')
-    (ETC / 'icon_composite.svg').write_text(comp, encoding='utf-8')
-    print('  etc/icon_bg.svg, icon_fg.svg, icon_composite.svg')
+    face, swirl_bg, composite, offset = load_layers()
 
-    print('\n=== Legacy mipmap PNGs ===')
-    densities = {'mdpi': 48, 'hdpi': 72, 'xhdpi': 96, 'xxhdpi': 144, 'xxxhdpi': 192}
-    for density, px in densities.items():
-        render_png(comp, RES / f'mipmap-{density}' / 'ic_launcher.png', px)
+    print('\n=== Building adaptive icon layers ===')
+    adaptive_bg = make_adaptive_bg(swirl_bg)
+    adaptive_fg = make_adaptive_fg(face, offset)
 
-    print('\n=== Web / store icon (512×512) ===')
-    render_png(comp, ROOT / 'app/src/main/ic_launcher-web.png', 512)
-    render_png(comp, ROOT / 'fastlane/metadata/android/en-US/images/icon.png', 512)
-
-    print('\n=== Android drawable vectors ===')
+    # Save to drawable/ as PNGs (highest quality, no lossy vector conversion)
     drawable = RES / 'drawable'
     drawable.mkdir(exist_ok=True)
-    (drawable / 'ic_launcher_background.xml').write_text(background_vector_xml(), encoding='utf-8')
-    print('  drawable/ic_launcher_background.xml')
-    (drawable / 'ic_launcher_foreground.xml').write_text(foreground_vector_xml(), encoding='utf-8')
-    print('  drawable/ic_launcher_foreground.xml')
+    save_png(adaptive_bg, drawable / 'ic_launcher_background.png', 108)
+    save_png(adaptive_fg, drawable / 'ic_launcher_foreground.png', 108)
 
     print('\n=== Adaptive icon XMLs (API 26+) ===')
     anydpi = RES / 'mipmap-anydpi-v26'
     anydpi.mkdir(exist_ok=True)
-    (anydpi / 'ic_launcher.xml').write_text(ADAPTIVE_ICON_XML, encoding='utf-8')
-    (anydpi / 'ic_launcher_round.xml').write_text(ADAPTIVE_ICON_XML, encoding='utf-8')
-    print('  mipmap-anydpi-v26/ic_launcher.xml')
-    print('  mipmap-anydpi-v26/ic_launcher_round.xml')
+    for name in ('ic_launcher.xml', 'ic_launcher_round.xml'):
+        (anydpi / name).write_text(ADAPTIVE_ICON_XML, encoding='utf-8')
+        print(f'  mipmap-anydpi-v26/{name}')
 
-    print('\nAll done.')
+    # Update adaptive icon XML to point at PNG drawables
+    PNG_ADAPTIVE_XML = '''\
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background"/>
+    <foreground android:drawable="@drawable/ic_launcher_foreground"/>
+</adaptive-icon>'''
+    for name in ('ic_launcher.xml', 'ic_launcher_round.xml'):
+        (anydpi / name).write_text(PNG_ADAPTIVE_XML, encoding='utf-8')
+
+    print('\n=== Legacy mipmap PNGs ===')
+    densities = {'mdpi': 48, 'hdpi': 72, 'xhdpi': 96, 'xxhdpi': 144, 'xxxhdpi': 192}
+    for density, px in densities.items():
+        save_png(composite, RES / f'mipmap-{density}' / 'ic_launcher.png', px)
+
+    print('\n=== Web / store icon (512×512) ===')
+    save_png(composite, ROOT / 'app/src/main/ic_launcher-web.png', 512)
+    save_png(composite, ROOT / 'fastlane/metadata/android/en-US/images/icon.png', 512)
+
+    # Remove old vector drawables (replaced by PNG drawables)
+    for old in ('ic_launcher_background.xml', 'ic_launcher_foreground.xml'):
+        p = drawable / old
+        if p.exists():
+            p.unlink()
+            print(f'  removed drawable/{old} (replaced by PNG)')
+
+    print('\nDone.')
 
 
 if __name__ == '__main__':
