@@ -19,7 +19,6 @@ import org.robolectric.RobolectricTestRunner
  * key format) so timestamps are explicit and the ordering is deterministic,
  * rather than relying on two real-clock launches landing in distinct millis.
  *
- * Father Ted, Dougal, Jack en Noel stellen zich welwillend ter beschikking als testpersonages.
  */
 @RunWith(RobolectricTestRunner::class)
 class AppComparatorsTest {

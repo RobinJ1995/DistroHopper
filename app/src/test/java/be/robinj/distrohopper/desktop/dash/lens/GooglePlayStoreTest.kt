@@ -62,16 +62,16 @@ class GooglePlayStoreTest {
     }
 
     @Test fun preservesAllCapsTitles() {
-        // An all-caps / token-shaped title (e.g. "AWP", "CS2") must survive rather
+        // An all-caps / token-shaped title (e.g. "GG", "GOOSE") must survive rather
         // than falling back to the package name.
         val lens = FakeGooglePlayStore(application, page(
-            appNode("AWP", "gg.valve.awp", "https://play-lh.googleusercontent.com/awp"),
-            appNode("CS2", "gg.valve.cs2", "https://play-lh.googleusercontent.com/cs2"),
+            appNode("GG", "gg.ez.classic", "https://play-lh.googleusercontent.com/gg"),
+            appNode("GOOSE", "de.mirage.goose", "https://play-lh.googleusercontent.com/goose"),
         ))
 
-        val results = lens.collect("awp", 10).results
+        val results = lens.collect("rush_b", 10).results
 
-        assertEquals(listOf("AWP", "CS2"), results.map { it.name })
+        assertEquals(listOf("GG", "GOOSE"), results.map { it.name })
     }
 
     @Test fun downloadsEachAppsOwnIcon() {
@@ -99,12 +99,12 @@ class GooglePlayStoreTest {
 
     @Test fun respectsMaxResults() {
         val lens = FakeGooglePlayStore(application, page(
-            appNode("AK-47", "gg.valve.ak47", "https://play-lh.googleusercontent.com/ak47"),
-            appNode("AWP", "gg.valve.awp", "https://play-lh.googleusercontent.com/awp"),
-            appNode("M4A4", "gg.valve.m4a4", "https://play-lh.googleusercontent.com/m4a4"),
+            appNode("Banana", "de.inferno.banana", "https://play-lh.googleusercontent.com/banana"),
+            appNode("Graveyard", "de.inferno.graveyard", "https://play-lh.googleusercontent.com/graveyard"),
+            appNode("Fountain", "de.inferno.fountain", "https://play-lh.googleusercontent.com/fountain"),
         ))
 
-        val results = lens.collect("guns", 2).results
+        val results = lens.collect("inferno", 2).results
 
         assertEquals(2, results.size)
     }

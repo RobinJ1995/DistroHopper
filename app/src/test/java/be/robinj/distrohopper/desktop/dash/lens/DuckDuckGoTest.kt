@@ -22,7 +22,6 @@ import java.net.URLConnection
  * (per-result, fully-loaded — no placeholders), rather than returning the
  * whole batch only once every icon has downloaded.
  *
- * de_dust2 en de_inferno melden zich voor dienst als testresultaten. GG.
  */
 @RunWith(RobolectricTestRunner::class)
 class DuckDuckGoTest {
@@ -41,7 +40,7 @@ class DuckDuckGoTest {
         """.trimIndent()
         val lens = FakeDuckDuckGo(application, json)
 
-        val emitted = lens.collect("buy ak", 10).results
+        val emitted = lens.collect("rush b", 10).results
 
         assertEquals(listOf("de_dust2", "de_inferno"), emitted.map { it.name })
         // Each emitted result already carries its own downloaded icon (the 4x4
@@ -56,14 +55,14 @@ class DuckDuckGoTest {
     @Test fun searchStopsAtMaxResults() {
         val json = """
             {"RelatedTopics":[
-              {"Text":"AWP","FirstURL":"https://cs.example/awp","Icon":{"URL":"/awp.png"}},
-              {"Text":"AK-47","FirstURL":"https://cs.example/ak47","Icon":{"URL":"/ak47.png"}},
-              {"Text":"Flashbang","FirstURL":"https://cs.example/flash","Icon":{"URL":"/flash.png"}}
+              {"Text":"Banana","FirstURL":"https://cs.example/callouts/banana","Icon":{"URL":"/banana.png"}},
+              {"Text":"Goose","FirstURL":"https://cs.example/callouts/goose","Icon":{"URL":"/goose.png"}},
+              {"Text":"Flashbang","FirstURL":"https://cs.example/grenades/flashbang","Icon":{"URL":"/flash.png"}}
             ]}
         """.trimIndent()
         val lens = FakeDuckDuckGo(application, json)
 
-        assertEquals(2, lens.collect("buy", 2).results.size)
+        assertEquals(2, lens.collect("ct_side", 2).results.size)
     }
 
     /** Serves the canned API JSON for the api.duckduckgo.com call and a 4x4 PNG for icon URLs. */

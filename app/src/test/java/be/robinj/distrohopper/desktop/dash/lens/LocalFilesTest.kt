@@ -80,7 +80,6 @@ class LocalFilesTest {
 
     @Test fun searchUsesSelectionArgsInsteadOfStringConcatenation() {
         provider.cursorToReturn = mediaCursor()
-        // Craggy Island's finest — apostrophes must be parameterised, not concatenated
         lens.collect("o'brien", 10).results
         assertNotNull(provider.lastSelection)
         assertTrue(provider.lastSelection!!.contains("?"))

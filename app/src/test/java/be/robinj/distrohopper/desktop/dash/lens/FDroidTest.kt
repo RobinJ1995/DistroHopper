@@ -42,17 +42,17 @@ class FDroidTest {
 
     @Test fun parsesAppResults() {
         val lens = FakeFDroid(application, page(
-            app("Samson de Hond", "be.samson.hond", "https://icons.example/samson.png"),
-            app("Alberto Italiaano", "be.alberto.italiaan", "https://icons.example/alberto.png"),
+            app("Samson", "be.samsonengert.samson", "https://icons.example/samson.png"),
+            app("Alberto", "be.samsonengert.alberto", "https://icons.example/alberto.png"),
         ))
 
-        val results = lens.collect("hond", 10).results
+        val results = lens.collect("samson", 10).results
 
-        assertEquals(listOf("Samson de Hond", "Alberto Italiaano"), results.map { it.name })
+        assertEquals(listOf("Samson", "Alberto"), results.map { it.name })
         assertEquals(
             listOf(
-                "https://f-droid.org/packages/be.samson.hond/",
-                "https://f-droid.org/packages/be.alberto.italiaan/",
+                "https://f-droid.org/packages/be.samsonengert.samson/",
+                "https://f-droid.org/packages/be.samsonengert.alberto/",
             ),
             results.map { it.url },
         )
@@ -60,7 +60,7 @@ class FDroidTest {
 
     @Test fun downloadsEachAppsOwnIcon() {
         val lens = FakeFDroid(application, page(
-            app("Samson de Hond", "be.samson.hond", "https://icons.example/samson.png"),
+            app("Samson", "be.samsonengert.samson", "https://icons.example/samson.png"),
         ))
 
         lens.collect("samson", 10).results
@@ -70,25 +70,25 @@ class FDroidTest {
 
     @Test fun respectsMaxResults() {
         val lens = FakeFDroid(application, page(
-            app("Gert", "be.gert.geerts", "https://icons.example/gert.png"),
-            app("Octaaf", "be.octaaf.oud", "https://icons.example/octaaf.png"),
-            app("Marie", "be.marie.moeder", "https://icons.example/marie.png"),
+            app("Modest", "be.samsonengert.modest", "https://icons.example/modest.png"),
+            app("Octaaf", "be.samsonengert.octaaf", "https://icons.example/octaaf.png"),
+            app("Marie", "be.samsonengert.marie", "https://icons.example/marie.png"),
         ))
 
-        assertEquals(2, lens.collect("kempen", 2).results.size)
+        assertEquals(2, lens.collect("samsonengert", 2).results.size)
     }
 
     @Test fun hidesInstalledApps() {
         // Samson al geïnstalleerd — alleen Alberto blijft over.
-        val packageInfo = android.content.pm.PackageInfo().apply { packageName = "be.samson.hond" }
+        val packageInfo = android.content.pm.PackageInfo().apply { packageName = "be.samsonengert.samson" }
         Shadows.shadowOf(application.packageManager).installPackage(packageInfo)
 
         val lens = FakeFDroid(application, page(
-            app("Samson de Hond", "be.samson.hond", "https://icons.example/samson.png"),
-            app("Alberto Italiaano", "be.alberto.italiaan", "https://icons.example/alberto.png"),
+            app("Samson", "be.samsonengert.samson", "https://icons.example/samson.png"),
+            app("Alberto", "be.samsonengert.alberto", "https://icons.example/alberto.png"),
         ))
 
-        assertEquals(listOf("Alberto Italiaano"), lens.collect("hond", 10).results.map { it.name })
+        assertEquals(listOf("Alberto"), lens.collect("samson", 10).results.map { it.name })
     }
 
     @Test fun returnsEmptyWhenNothingMatches() {
@@ -100,11 +100,11 @@ class FDroidTest {
     @Test fun clickTargetsTheFDroidClient() {
         val lens = FDroid(application)
 
-        lens.onClick("https://f-droid.org/packages/be.samson.hond/")
+        lens.onClick("https://f-droid.org/packages/be.samsonengert.samson/")
 
         val intent = Shadows.shadowOf(application).nextStartedActivity
         assertEquals(Intent.ACTION_VIEW, intent.action)
-        assertEquals("https://f-droid.org/packages/be.samson.hond/", intent.dataString)
+        assertEquals("https://f-droid.org/packages/be.samsonengert.samson/", intent.dataString)
         assertEquals("org.fdroid.fdroid", intent.`package`)
         assertTrue(intent.flags and Intent.FLAG_ACTIVITY_NEW_TASK != 0)
     }
