@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """
 Generate DistroHopper icon assets from the original XCF source.
-Usage: python3 etc/generate_icon.py [path/to/distrohopper.xcf]
 
-If no XCF path is supplied the script re-uses the cached layer PNGs that
-were previously exported to /tmp by this same script.
+Usage:
+    python3 etc/generate_icon.py                   # uses etc/icon_source.xcf
+    python3 etc/generate_icon.py path/to/icon.xcf  # explicit path
+
+Requires: pip install cairosvg gimpformats Pillow numpy
 """
 
 import math
@@ -185,12 +187,16 @@ def save_png(img: Image.Image, path: Path, size: int):
 
 # ─── Main ────────────────────────────────────────────────────────────────────
 
+DEFAULT_XCF = ROOT / 'etc' / 'icon_source.xcf'
+
 def main():
-    if len(sys.argv) > 1:
-        xcf_path = sys.argv[1]
+    xcf_path = sys.argv[1] if len(sys.argv) > 1 else str(DEFAULT_XCF)
+    if Path(xcf_path).exists():
         if not HAS_GIMP:
-            sys.exit("gimpformats is not installed. Run: pip install gimpformats")
+            sys.exit("gimpformats is not installed. Run: pip install gimpformats numpy")
         extract_from_xcf(xcf_path)
+    else:
+        print(f"XCF not found at {xcf_path}, using cached /tmp layers (if present)")
 
     face, swirl_bg, composite, offset = load_layers()
 
