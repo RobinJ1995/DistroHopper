@@ -144,6 +144,16 @@
 				android:value="be.robinj.distrohopper.preferences.PreferencesActivity" />
 		</activity>
 		<activity
+			android:name="be.robinj.distrohopper.accessibility.AccessibilityGestureSetupActivity"
+			android:label="@string/title_activity_gesture_setup"
+			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity"
+			android:theme="@style/OnboardingTheme"
+			android:exported="false">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="be.robinj.distrohopper.preferences.PreferencesActivity" />
+		</activity>
+		<activity
 			android:name="be.robinj.distrohopper.dev.DevLogsActivity"
 			android:label="@string/title_activity_dev_logs"
 			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity"

@@ -38,6 +38,9 @@ import be.robinj.distrohopper.ContributeActivity;
 import be.robinj.distrohopper.DependencyContainer;
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.HomeRole;
+import be.robinj.distrohopper.accessibility.AccessibilityGestureSetupActivity;
+import be.robinj.distrohopper.accessibility.NotificationAccessibilityService;
+import be.robinj.distrohopper.home.GestureAction;
 import be.robinj.distrohopper.IconPackHelper;
 import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
@@ -144,6 +147,7 @@ public class PreferencesActivity extends AppCompatActivity
 
 			this.addCategory (R.string.pref_header_appearance, R.xml.pref_appearance);
 			this.addCategory (R.string.pref_header_functionality, R.xml.pref_functionality);
+			this.addCategory (R.string.pref_header_gestures, R.xml.pref_gestures);
 			this.addCategory (R.string.pref_header_advanced, R.xml.pref_advanced);
 			this.devCategory = this.addCategory (R.string.pref_header_dev, R.xml.pref_dev);
 
@@ -151,7 +155,7 @@ public class PreferencesActivity extends AppCompatActivity
 			this.initCrashReportsPreference ();
 			this.initLauncherPinModePreference ();
 			this.initDevPreference ();
-			this.initNotificationGesturePreference ();
+			this.initGesturePreferences ();
 
 			this.findPreference ("dummy_wallpaper").setOnPreferenceClickListener (
 				new Preference.OnPreferenceClickListener ()
@@ -303,6 +307,10 @@ public class PreferencesActivity extends AppCompatActivity
 			{
 				setDefaultLauncher.setVisible (! HomeRole.isHeld (this.requireContext ()));
 			}
+
+			// Re-evaluate the notification-tray option in case the user just
+			// enabled (or disabled) the accessibility service. //
+			this.applyGesturePreferences ();
 		}
 
 		// The icon-pack and app-sort-order pickers are framework-created ListPreference
@@ -372,38 +380,103 @@ public class PreferencesActivity extends AppCompatActivity
 			});
 		}
 
-		// Experimental swipe-down-for-notifications gesture. It needs the
-		// accessibility service the user has to grant by hand, so switching it on
-		// drops them straight onto the system accessibility settings. No guided
-		// flow — this is a developer-only experiment for now. //
-		private void initNotificationGesturePreference ()
+		// The swipe-up / swipe-down gesture dropdowns. The notification-tray
+		// option is only offered once the accessibility service is enabled, and a
+		// no-lockout rule keeps at least one gesture opening the dash. Re-run on
+		// resume because the user may return from the enable wizard / system
+		// settings with the service now on. //
+		private void initGesturePreferences ()
 		{
-			final SwitchPreferenceCompat pref = this.findPreference (
-				be.robinj.distrohopper.preferences.Preference.GESTURE_NOTIFICATION_TRAY.getName ());
-			if (pref == null)
+			this.applyGesturePreferences ();
+		}
+
+		private void applyGesturePreferences ()
+		{
+			final ListPreference up = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.GESTURE_SWIPE_UP.getName ());
+			final ListPreference down = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.GESTURE_SWIPE_DOWN.getName ());
+			if (up == null || down == null)
 				return;
 
-			pref.setOnPreferenceChangeListener ((preference, newValue) ->
-			{
-				if (Boolean.TRUE.equals (newValue))
-				{
-					try
-					{
-						// Toast kept inline (not in strings.xml) while experimental. //
-						Toast.makeText (this.requireContext (),
-							"Enable DistroHopper in the list to use the notification gesture",
-							Toast.LENGTH_LONG).show ();
-						this.startActivity (
-							new Intent (android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS));
-					}
-					catch (Exception ex)
-					{
-						new ExceptionHandler (ex).show (this.requireActivity ());
-					}
-				}
+			final boolean serviceEnabled =
+				NotificationAccessibilityService.isEnabled (this.requireContext ());
 
+			this.populateGestureList (up, serviceEnabled);
+			this.populateGestureList (down, serviceEnabled);
+
+			// A stored notifications choice can't work with the service off: fall
+			// back to opening the dash. //
+			if (! serviceEnabled)
+			{
+				resetIfNotifications (up);
+				resetIfNotifications (down);
+			}
+
+			up.setSummaryProvider (ListPreference.SimpleSummaryProvider.getInstance ());
+			down.setSummaryProvider (ListPreference.SimpleSummaryProvider.getInstance ());
+
+			up.setOnPreferenceChangeListener ((preference, newValue) ->
+			{
+				reconcileSiblingGesture (down, String.valueOf (newValue));
 				return true;
 			});
+			down.setOnPreferenceChangeListener ((preference, newValue) ->
+			{
+				reconcileSiblingGesture (up, String.valueOf (newValue));
+				return true;
+			});
+
+			final Preference enableRow = this.findPreference ("dummy_enable_notification_gestures");
+			if (enableRow != null)
+			{
+				enableRow.setVisible (! serviceEnabled);
+				enableRow.setOnPreferenceClickListener (preference ->
+				{
+					this.startActivity (new Intent (this.requireContext (),
+						AccessibilityGestureSetupActivity.class));
+					return true;
+				});
+			}
+		}
+
+		private void populateGestureList (final ListPreference pref, final boolean withNotifications)
+		{
+			final List<CharSequence> entries = new ArrayList<> ();
+			final List<CharSequence> values = new ArrayList<> ();
+
+			entries.add (this.getString (R.string.gesture_action_none));
+			values.add (GestureAction.NONE.getValue ());
+			entries.add (this.getString (R.string.gesture_action_open_dash));
+			values.add (GestureAction.OPEN_DASH.getValue ());
+			entries.add (this.getString (R.string.gesture_action_open_dash_search));
+			values.add (GestureAction.OPEN_DASH_SEARCH.getValue ());
+			if (withNotifications)
+			{
+				entries.add (this.getString (R.string.gesture_action_notifications_tray));
+				values.add (GestureAction.NOTIFICATIONS.getValue ());
+			}
+
+			pref.setEntries (entries.toArray (new CharSequence[0]));
+			pref.setEntryValues (values.toArray (new CharSequence[0]));
+		}
+
+		private static void resetIfNotifications (final ListPreference pref)
+		{
+			if (GestureAction.fromValue (pref.getValue ()) == GestureAction.NOTIFICATIONS)
+				pref.setValue (GestureAction.OPEN_DASH.getValue ());
+		}
+
+		// Enforce the no-lockout rule: once one gesture is set to [changedValue],
+		// nudge the other back to "open dash" if neither would open the dash.
+		// Package-private + static so it can be unit-tested without the Activity. //
+		static void reconcileSiblingGesture (final ListPreference other, final String changedValue)
+		{
+			final GestureAction fix = GestureAction.reconcileOther (
+				GestureAction.fromValue (changedValue),
+				GestureAction.fromValue (other.getValue ()));
+			if (fix != null)
+				other.setValue (fix.getValue ());
 		}
 
 		// Only surface the developer options section while developer mode is on;

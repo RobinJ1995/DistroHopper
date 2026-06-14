@@ -68,8 +68,10 @@ enum class Preference(
 	DEV_WIDGET_RESIZE_ANY("dev_widget_resize_any", false, DEV),
 	/** Dev: show a dot at every grid intersection while dragging or resizing. */
 	DEV_SHOW_GRID_ON_DRAG("dev_show_grid_on_drag", false, DEV),
-	/** Dev: experimental swipe-down gesture that opens the notification shade. */
-	GESTURE_NOTIFICATION_TRAY("gesture_notification_tray", false, DEV);
+	/** What the home-screen swipe-up gesture does (a GestureAction value). */
+	GESTURE_SWIPE_UP("gesture_swipe_up", "open_dash"),
+	/** What the home-screen swipe-down gesture does (a GestureAction value). */
+	GESTURE_SWIPE_DOWN("gesture_swipe_down", "none");
 
 	fun getName(): String = this.key
 
