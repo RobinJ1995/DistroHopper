@@ -14,6 +14,8 @@ import os
 import sys
 from pathlib import Path
 
+import numpy as np
+
 try:
     from gimpformats.gimpXcfDocument import GimpDocument
     HAS_GIMP = True
@@ -107,59 +109,67 @@ def load_layers():
 
 # ─── Build adaptive icon layers (108×108) ────────────────────────────────────
 
-def make_adaptive_bg(swirl_bg: Image.Image) -> Image.Image:
+def make_adaptive_bg(swirl_bg: Image.Image, size: int = 108) -> Image.Image:
     """
-    Scale the swirl circle to 108×108, then fill the four transparent corners
-    by projecting each outside pixel onto the nearest point on the circle rim
-    and using that colour.  This preserves the full radial gradient (light
-    centre → deep orange rim) while letting the swirl bleed naturally into
-    every corner.
+    Scale the swirl circle to `size`×`size`, then fill the transparent corners.
+
+    Near the rim the angular blend window is narrow (preserving swirl stripes);
+    further into the corners it widens with a Gaussian taper so the stripes merge
+    smoothly into a uniform orange — avoiding the cross/swastika artefact that
+    appears with straight single-ray projection.
     """
-    import numpy as np
+    img = swirl_bg.resize((size, size), Image.LANCZOS).convert('RGBA')
+    arr = np.array(img, dtype=np.float64)
 
-    SIZE = 108
-    img = swirl_bg.resize((SIZE, SIZE), Image.LANCZOS).convert('RGBA')
-    arr = np.array(img, dtype=np.float32)   # shape (108, 108, 4)
+    cx = cy = size / 2.0
+    r  = cx
 
-    cx = cy = SIZE / 2.0
-    r  = cx  # 54.0
+    ys, xs   = np.meshgrid(np.arange(size), np.arange(size), indexing='ij')
+    dx       = (xs - cx).astype(np.float64)
+    dy       = (ys - cy).astype(np.float64)
+    dist     = np.sqrt(dx * dx + dy * dy)
+    angles   = np.arctan2(dy, dx)
 
-    ys, xs = np.meshgrid(np.arange(SIZE), np.arange(SIZE), indexing='ij')
-    dx   = xs.astype(np.float32) - cx
-    dy   = ys.astype(np.float32) - cy
-    dist = np.sqrt(dx * dx + dy * dy)
+    outside  = dist >= r - 0.5
 
-    outside   = dist >= r - 0.5
-    safe_dist = np.where(dist > 0, dist, 1.0)
+    # Angular blur width: 0° at the rim → 30° at the farthest corner pixel
+    max_extra = (math.sqrt(2) - 1.0) * r            # rim-to-corner distance ≈ 22 px
+    extra     = np.clip(dist - r, 0.0, max_extra)
+    sigma     = (extra / max_extra) * (math.pi / 6)  # per-pixel, 0..π/6
 
-    # Project onto the rim, sampling 2 px inside to avoid antialiased edge pixels
-    sample_r = r - 2.0
-    rim_xi = np.clip((cx + dx / safe_dist * sample_r).astype(np.int32), 0, SIZE - 1)
-    rim_yi = np.clip((cy + dy / safe_dist * sample_r).astype(np.int32), 0, SIZE - 1)
+    sample_r = r - 2.0   # sample slightly inside the circle to avoid AA fringe
 
-    rim_colours    = arr[rim_yi, rim_xi]   # (108, 108, 4)
-    out            = arr.copy()
-    out[outside]   = rim_colours[outside]
-    out[:, :, 3]   = 255                   # fully opaque
+    n       = 9
+    t_vals  = np.linspace(-2.0, 2.0, n)
+    gauss_w = np.exp(-0.5 * t_vals ** 2)
+    gauss_w /= gauss_w.sum()
 
+    result = np.zeros((size, size, 4), dtype=np.float64)
+    for t, w in zip(t_vals, gauss_w):
+        sa   = angles + t * sigma
+        s_xi = np.clip((cx + np.cos(sa) * sample_r).astype(np.int32), 0, size - 1)
+        s_yi = np.clip((cy + np.sin(sa) * sample_r).astype(np.int32), 0, size - 1)
+        result += arr[s_yi, s_xi] * w
+
+    out           = arr.copy()
+    out[outside]  = result[outside]
+    out[:, :, 3]  = 255
     return Image.fromarray(out.astype(np.uint8))
 
 
-def make_adaptive_fg(face: Image.Image, offset: tuple) -> Image.Image:
+def make_adaptive_fg(face: Image.Image, offset: tuple, size: int = 108) -> Image.Image:
     """
-    Place the face layer at the correct proportional position on a 108×108
-    transparent canvas.  The face is perfectly centred in the XCF canvas, so
-    it stays centred in the adaptive-icon safe zone (18–90 on both axes).
+    Place the face layer at the correct proportional position on a `size`×`size`
+    transparent canvas.
     """
-    SIZE  = 108
-    scale = SIZE / XCF_SRC_WIDTH
-    fw    = int(round(face.width  * scale))
-    fh    = int(round(face.height * scale))
-    fx    = int(round(offset[0]   * scale))
-    fy    = int(round(offset[1]   * scale))
-
-    fg = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
-    fg.paste(face.resize((fw, fh), Image.LANCZOS), (fx, fy), face.resize((fw, fh), Image.LANCZOS))
+    scale      = size / XCF_SRC_WIDTH
+    fw         = int(round(face.width  * scale))
+    fh         = int(round(face.height * scale))
+    fx         = int(round(offset[0]   * scale))
+    fy         = int(round(offset[1]   * scale))
+    face_scaled = face.resize((fw, fh), Image.LANCZOS)
+    fg          = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+    fg.paste(face_scaled, (fx, fy), face_scaled)
     return fg
 
 
@@ -189,26 +199,55 @@ def save_png(img: Image.Image, path: Path, size: int):
 
 DEFAULT_XCF = ROOT / 'etc' / 'icon_source.xcf'
 
+ADAPTIVE_DENSITIES = {
+    'mdpi':    108,
+    'hdpi':    162,
+    'xhdpi':   216,
+    'xxhdpi':  324,
+    'xxxhdpi': 432,
+}
+
 def main():
     xcf_path = sys.argv[1] if len(sys.argv) > 1 else str(DEFAULT_XCF)
+    cache_ok  = all(p.exists() for p in CACHE.values())
+
     if Path(xcf_path).exists():
         if not HAS_GIMP:
-            sys.exit("gimpformats is not installed. Run: pip install gimpformats numpy")
-        extract_from_xcf(xcf_path)
+            if cache_ok:
+                print("gimpformats unavailable — using existing /tmp cache")
+            else:
+                sys.exit(
+                    "gimpformats not installed and no /tmp cache found.\n"
+                    "Run: pip install cairosvg gimpformats Pillow numpy"
+                )
+        else:
+            extract_from_xcf(xcf_path)
+    elif not cache_ok:
+        sys.exit(f"XCF not found at {xcf_path} and no /tmp cache.")
     else:
-        print(f"XCF not found at {xcf_path}, using cached /tmp layers (if present)")
+        print(f"XCF not found at {xcf_path} — using /tmp cache")
 
     face, swirl_bg, composite, offset = load_layers()
 
-    print('\n=== Building adaptive icon layers ===')
-    adaptive_bg = make_adaptive_bg(swirl_bg)
-    adaptive_fg = make_adaptive_fg(face, offset)
+    print('\n=== Adaptive icon layers (density-qualified) ===')
+    for density, px in ADAPTIVE_DENSITIES.items():
+        folder = RES / f'drawable-{density}'
+        folder.mkdir(exist_ok=True)
+        bg_img  = make_adaptive_bg(swirl_bg, px)
+        fg_img  = make_adaptive_fg(face, offset, px)
+        bg_path = folder / 'ic_launcher_background.png'
+        fg_path = folder / 'ic_launcher_foreground.png'
+        bg_img.save(str(bg_path), optimize=True)
+        fg_img.save(str(fg_path), optimize=True)
+        print(f"  drawable-{density}/  bg={bg_path.stat().st_size//1024}KB"
+              f"  fg={fg_path.stat().st_size//1024}KB  ({px}×{px})")
 
-    # Save to drawable/ as PNGs (highest quality, no lossy vector conversion)
-    drawable = RES / 'drawable'
-    drawable.mkdir(exist_ok=True)
-    save_png(adaptive_bg, drawable / 'ic_launcher_background.png', 108)
-    save_png(adaptive_fg, drawable / 'ic_launcher_foreground.png', 108)
+    # Remove old unqualified PNG drawables if present
+    for name in ('ic_launcher_background.png', 'ic_launcher_foreground.png'):
+        p = RES / 'drawable' / name
+        if p.exists():
+            p.unlink()
+            print(f"  removed drawable/{name}")
 
     print('\n=== Adaptive icon XMLs (API 26+) ===')
     anydpi = RES / 'mipmap-anydpi-v26'
@@ -217,31 +256,14 @@ def main():
         (anydpi / name).write_text(ADAPTIVE_ICON_XML, encoding='utf-8')
         print(f'  mipmap-anydpi-v26/{name}')
 
-    # Update adaptive icon XML to point at PNG drawables
-    PNG_ADAPTIVE_XML = '''\
-<?xml version="1.0" encoding="utf-8"?>
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@drawable/ic_launcher_background"/>
-    <foreground android:drawable="@drawable/ic_launcher_foreground"/>
-</adaptive-icon>'''
-    for name in ('ic_launcher.xml', 'ic_launcher_round.xml'):
-        (anydpi / name).write_text(PNG_ADAPTIVE_XML, encoding='utf-8')
-
     print('\n=== Legacy mipmap PNGs ===')
-    densities = {'mdpi': 48, 'hdpi': 72, 'xhdpi': 96, 'xxhdpi': 144, 'xxxhdpi': 192}
-    for density, px in densities.items():
+    legacy = {'mdpi': 48, 'hdpi': 72, 'xhdpi': 96, 'xxhdpi': 144, 'xxxhdpi': 192}
+    for density, px in legacy.items():
         save_png(composite, RES / f'mipmap-{density}' / 'ic_launcher.png', px)
 
     print('\n=== Web / store icon (512×512) ===')
     save_png(composite, ROOT / 'app/src/main/ic_launcher-web.png', 512)
     save_png(composite, ROOT / 'fastlane/metadata/android/en-US/images/icon.png', 512)
-
-    # Remove old vector drawables (replaced by PNG drawables)
-    for old in ('ic_launcher_background.xml', 'ic_launcher_foreground.xml'):
-        p = drawable / old
-        if p.exists():
-            p.unlink()
-            print(f'  removed drawable/{old} (replaced by PNG)')
 
     print('\nDone.')
 
