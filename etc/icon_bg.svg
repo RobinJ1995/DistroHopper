@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="42%" r="54%">
+      <stop offset="0%"   stop-color="white" stop-opacity="0.20"/>
+      <stop offset="58%"  stop-color="white" stop-opacity="0"/>
+      <stop offset="100%" stop-color="black" stop-opacity="0.13"/>
+    </radialGradient>
+  </defs>
+  <path fill="#FF6B2B" d="M54.0,54.0 L54.0000,0.0000 A54.0,54.0 0 0 1 81.0000,7.2346 Z"/>
+  <path fill="#C83E08" d="M54.0,54.0 L81.0000,7.2346 A54.0,54.0 0 0 1 100.7654,27.0000 Z"/>
+  <path fill="#FF6B2B" d="M54.0,54.0 L100.7654,27.0000 A54.0,54.0 0 0 1 108.0000,54.0000 Z"/>
+  <path fill="#C83E08" d="M54.0,54.0 L108.0000,54.0000 A54.0,54.0 0 0 1 100.7654,81.0000 Z"/>
+  <path fill="#FF6B2B" d="M54.0,54.0 L100.7654,81.0000 A54.0,54.0 0 0 1 81.0000,100.7654 Z"/>
+  <path fill="#C83E08" d="M54.0,54.0 L81.0000,100.7654 A54.0,54.0 0 0 1 54.0000,108.0000 Z"/>
+  <path fill="#FF6B2B" d="M54.0,54.0 L54.0000,108.0000 A54.0,54.0 0 0 1 27.0000,100.7654 Z"/>
+  <path fill="#C83E08" d="M54.0,54.0 L27.0000,100.7654 A54.0,54.0 0 0 1 7.2346,81.0000 Z"/>
+  <path fill="#FF6B2B" d="M54.0,54.0 L7.2346,81.0000 A54.0,54.0 0 0 1 0.0000,54.0000 Z"/>
+  <path fill="#C83E08" d="M54.0,54.0 L0.0000,54.0000 A54.0,54.0 0 0 1 7.2346,27.0000 Z"/>
+  <path fill="#FF6B2B" d="M54.0,54.0 L7.2346,27.0000 A54.0,54.0 0 0 1 27.0000,7.2346 Z"/>
+  <path fill="#C83E08" d="M54.0,54.0 L27.0000,7.2346 A54.0,54.0 0 0 1 54.0000,0.0000 Z"/>
+  <circle cx="54" cy="54" r="54" fill="url(#glow)"/>
+</svg>

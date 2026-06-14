@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108">
+  <defs>
+    <radialGradient id="eg" cx="38%" cy="30%" r="70%">
+      <stop offset="0%"   stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#CCCCCC"/>
+    </radialGradient>
+    <linearGradient id="bkg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#FFD84A"/>
+      <stop offset="100%" stop-color="#E08610"/>
+    </linearGradient>
+    <filter id="sh" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="2.8"
+                    flood-color="#000" flood-opacity="0.30"/>
+    </filter>
+  </defs>
+
+  <!-- Left eye -->
+  <circle cx="35.0" cy="47.0" r="17.0" fill="url(#eg)" filter="url(#sh)"/>
+  <circle cx="38.5" cy="51.5" r="9.0" fill="#141414"/>
+  <circle cx="29.5" cy="40.0" r="3.5" fill="white" opacity="0.85"/>
+
+  <!-- Right eye -->
+  <circle cx="73.0" cy="47.0" r="17.0" fill="url(#eg)" filter="url(#sh)"/>
+  <circle cx="69.5" cy="51.5" r="9.0" fill="#141414"/>
+  <circle cx="78.5" cy="40.0" r="3.5" fill="white" opacity="0.85"/>
+
+  <!-- Beak -->
+  <path d="M40.0,62.5 C40.0,54.5 68.0,54.5 68.0,62.5 C66.0,74.5  58.0,79.5  54.0,80.5 C50.0,79.5  42.0,74.5  40.0,62.5 Z" fill="url(#bkg)" filter="url(#sh)"/>
+</svg>
