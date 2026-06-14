@@ -81,7 +81,7 @@ class AppManagerTest {
     @Test fun appsWithDifferentIdentitiesAreNotEqual() = withManager { assertNotEquals(it[0], it[1]) }
 
     @Test fun appDoesNotEqualNonAppObject() = withManager {
-        assertNotEquals(it[0], "a string")
+        assertNotEquals(it[0], "noot noot")
         assertNotEquals(it[0], null)
     }
 
@@ -104,7 +104,7 @@ class AppManagerTest {
 
     @Test fun searchEmptyPatternReturnsAllApps() = withManager { assertEquals(it.size(), it.search("").size) }
 
-    @Test fun searchWithNoMatchReturnsEmpty() = withManager { assertTrue(it.search("xyzqvnomatch123").isEmpty()) }
+    @Test fun searchWithNoMatchReturnsEmpty() = withManager { assertTrue(it.search("nootnootnomatch").isEmpty()) }
 
     @Test fun searchIsCaseInsensitive() = withManager {
         assertEquals(it.search("alpha"), it.search("ALPHA"))
@@ -184,7 +184,7 @@ class AppManagerTest {
     }
 
     @Test fun findAppByPackageAndActivityNameReturnsNullForUnknown() = withManager {
-        assertNull(it.findAppByPackageAndActivityName("no.such.package", "NoSuchActivity"))
+        assertNull(it.findAppByPackageAndActivityName("ie.craggy.nobody", "NeverExistedActivity"))
     }
 
     @Test fun findAppsByPackageNameReturnsOnlyMatchingApps() = withManager {

@@ -19,7 +19,7 @@ class InstalledAppsProfilesTest {
 	@Test fun resultsAreSplitIntoOneSectionPerProfile() {
 		val workUser = ActivityTestSupport.addWorkProfile()
 		ActivityTestSupport.addWorkProfileApp(
-			workUser, "com.example.work", "AlphaWorkActivity", "Alpha Work")
+			workUser, "ie.craggy.work", "AlphaCraggyActivity", "Alpha Work")
 
 		ActivityTestSupport.launchHome().use { scenario ->
 			scenario.onActivity { activity ->
@@ -42,7 +42,7 @@ class InstalledAppsProfilesTest {
 	@Test fun profilesWithoutMatchesGetNoSection() {
 		val workUser = ActivityTestSupport.addWorkProfile()
 		ActivityTestSupport.addWorkProfileApp(
-			workUser, "com.example.work", "WorkChatActivity", "WorkChat")
+			workUser, "noot.noot.work", "NootChatActivity", "NootChat")
 
 		ActivityTestSupport.launchHome().use { scenario ->
 			scenario.onActivity { activity ->

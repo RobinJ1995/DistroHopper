@@ -29,26 +29,26 @@ class ExpiringCacheTest {
         cache.clear()
     }
 
-    @Test fun putAndGetRoundTripWithinTtl() { cache["key"] = "value"; assertEquals("value", cache["key"]) }
+    @Test fun putAndGetRoundTripWithinTtl() { cache["mrs_doyle"] = "go_on"; assertEquals("go_on", cache["mrs_doyle"]) }
     @Test fun getMissingKeyReturnsNull() = assertNull(cache["missing"])
-    @Test fun putReturnsPreviousValue() { cache["key"] = "one"; assertEquals("one", cache.put("key", "two")) }
-    @Test fun overwriteRefreshesExpiration() { cache["key"] = "one"; now += 75; cache["key"] = "two"; now += 75; assertEquals("two", cache["key"]) }
-    @Test fun itemExpiresAtDeadline() { cache["key"] = "value"; now += 100; assertNull(cache["key"]) }
-    @Test fun itemRemainsBeforeDeadline() { cache["key"] = "value"; now += 99; assertEquals("value", cache["key"]) }
-    @Test fun containsKeyPrunesExpiredItem() { cache["key"] = "value"; now += 100; assertFalse(cache.containsKey("key")); assertFalse(inner.containsKey("key")) }
-    @Test fun containsValueKeepsFreshItems() { cache["key"] = "value"; assertTrue(cache.containsValue("value")) }
-    @Test fun containsValuePrunesExpiredItems() { cache["key"] = "value"; now += 100; assertFalse(cache.containsValue("value")) }
-    @Test fun sizeCountsFreshItems() { cache.putAll(mapOf("a" to "one", "b" to "two")); assertEquals(2, cache.size) }
-    @Test fun sizePrunesExpiredItems() { cache.putAll(mapOf("a" to "one", "b" to "two")); now += 100; assertEquals(0, cache.size) }
-    @Test fun isEmptyIsFalseForFreshItems() { cache["key"] = "value"; assertFalse(cache.isEmpty()) }
-    @Test fun isEmptyPrunesExpiredItems() { cache["key"] = "value"; now += 100; assertTrue(cache.isEmpty()) }
-    @Test fun removeReturnsValueAndExpiration() { cache["key"] = "value"; assertEquals("value", cache.remove("key")); assertNull(cache["key"]) }
-    @Test fun clearRemovesValuesAndExpirations() { cache["key"] = "value"; cache.clear(); assertTrue(cache.isEmpty()); assertTrue(TestLongCache(context, "expiring_test_expiration").isEmpty()) }
-    @Test fun putAllStoresEveryValue() { cache.putAll(mapOf("a" to "one", "b" to "two")); assertEquals("one", cache["a"]); assertEquals("two", cache["b"]) }
-    @Test fun putAllUsesCommonExpirationWindow() { cache.putAll(mapOf("a" to "one", "b" to "two")); now += 100; assertTrue(cache.isEmpty()) }
-    @Test fun keysKeepFreshEntries() { cache.putAll(mapOf("a" to "one", "b" to "two")); assertEquals(setOf("a", "b"), cache.keys) }
-    @Test fun keysPruneExpiredEntries() { cache["a"] = "one"; now += 100; assertTrue(cache.keys.isEmpty()) }
-    @Test fun valuesKeepFreshEntries() { cache.putAll(mapOf("a" to "one", "b" to "two")); assertEquals(setOf("one", "two"), cache.values.toSet()) }
-    @Test fun entriesKeepFreshEntries() { cache["a"] = "one"; assertEquals(mapOf("a" to "one").entries, cache.entries) }
+    @Test fun putReturnsPreviousValue() { cache["mrs_doyle"] = "cup_of_tea"; assertEquals("cup_of_tea", cache.put("mrs_doyle", "biscuit")) }
+    @Test fun overwriteRefreshesExpiration() { cache["mrs_doyle"] = "cup_of_tea"; now += 75; cache["mrs_doyle"] = "biscuit"; now += 75; assertEquals("biscuit", cache["mrs_doyle"]) }
+    @Test fun itemExpiresAtDeadline() { cache["mrs_doyle"] = "go_on"; now += 100; assertNull(cache["mrs_doyle"]) }
+    @Test fun itemRemainsBeforeDeadline() { cache["mrs_doyle"] = "go_on"; now += 99; assertEquals("go_on", cache["mrs_doyle"]) }
+    @Test fun containsKeyPrunesExpiredItem() { cache["mrs_doyle"] = "go_on"; now += 100; assertFalse(cache.containsKey("mrs_doyle")); assertFalse(inner.containsKey("mrs_doyle")) }
+    @Test fun containsValueKeepsFreshItems() { cache["mrs_doyle"] = "go_on"; assertTrue(cache.containsValue("go_on")) }
+    @Test fun containsValuePrunesExpiredItems() { cache["mrs_doyle"] = "go_on"; now += 100; assertFalse(cache.containsValue("go_on")) }
+    @Test fun sizeCountsFreshItems() { cache.putAll(mapOf("mrs_doyle" to "cup_of_tea", "father_jack" to "drink")); assertEquals(2, cache.size) }
+    @Test fun sizePrunesExpiredItems() { cache.putAll(mapOf("mrs_doyle" to "cup_of_tea", "father_jack" to "drink")); now += 100; assertEquals(0, cache.size) }
+    @Test fun isEmptyIsFalseForFreshItems() { cache["mrs_doyle"] = "go_on"; assertFalse(cache.isEmpty()) }
+    @Test fun isEmptyPrunesExpiredItems() { cache["mrs_doyle"] = "go_on"; now += 100; assertTrue(cache.isEmpty()) }
+    @Test fun removeReturnsValueAndExpiration() { cache["mrs_doyle"] = "go_on"; assertEquals("go_on", cache.remove("mrs_doyle")); assertNull(cache["mrs_doyle"]) }
+    @Test fun clearRemovesValuesAndExpirations() { cache["mrs_doyle"] = "go_on"; cache.clear(); assertTrue(cache.isEmpty()); assertTrue(TestLongCache(context, "expiring_test_expiration").isEmpty()) }
+    @Test fun putAllStoresEveryValue() { cache.putAll(mapOf("mrs_doyle" to "cup_of_tea", "father_jack" to "drink")); assertEquals("cup_of_tea", cache["mrs_doyle"]); assertEquals("drink", cache["father_jack"]) }
+    @Test fun putAllUsesCommonExpirationWindow() { cache.putAll(mapOf("mrs_doyle" to "cup_of_tea", "father_jack" to "drink")); now += 100; assertTrue(cache.isEmpty()) }
+    @Test fun keysKeepFreshEntries() { cache.putAll(mapOf("mrs_doyle" to "cup_of_tea", "father_jack" to "drink")); assertEquals(setOf("mrs_doyle", "father_jack"), cache.keys) }
+    @Test fun keysPruneExpiredEntries() { cache["mrs_doyle"] = "go_on"; now += 100; assertTrue(cache.keys.isEmpty()) }
+    @Test fun valuesKeepFreshEntries() { cache.putAll(mapOf("mrs_doyle" to "cup_of_tea", "father_jack" to "drink")); assertEquals(setOf("cup_of_tea", "drink"), cache.values.toSet()) }
+    @Test fun entriesKeepFreshEntries() { cache["mrs_doyle"] = "go_on"; assertEquals(mapOf("mrs_doyle" to "go_on").entries, cache.entries) }
     @Test fun getNameDelegatesToInnerCache() = assertEquals("expiring_test", cache.name)
 }

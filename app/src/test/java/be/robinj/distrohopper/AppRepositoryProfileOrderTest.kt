@@ -42,9 +42,9 @@ class AppRepositoryProfileOrderTest {
 		val workA = ActivityTestSupport.addWorkProfile(10)
 		val workB = ActivityTestSupport.addWorkProfile(11)
 		val repo = AppRepository(this.context)
-		this.add(repo, "com.example.personal", "Alpha", null)
-		val inA = this.add(repo, "com.example.worka", "Mike", workA)
-		val inB = this.add(repo, "com.example.workb", "Zulu", workB)
+		this.add(repo, "noot.noot.personal", "Pingu", null)
+		val inA = this.add(repo, "ie.craggy.worka", "Ted", workA)
+		val inB = this.add(repo, "be.samsonengert.workb", "Gert", workB)
 
 		val before = repo.profiles()
 		assertEquals(null, before.first())

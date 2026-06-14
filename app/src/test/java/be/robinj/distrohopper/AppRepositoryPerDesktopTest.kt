@@ -30,8 +30,8 @@ class AppRepositoryPerDesktopTest {
 	}
 
 	@Test fun pinsAreKeptPerDesktop() {
-		val a = this.app("a")
-		val b = this.app("b")
+		val a = this.app("banana")
+		val b = this.app("goose")
 
 		this.repository.pin(a, 0)
 		this.repository.pin(b, 1)
@@ -42,7 +42,7 @@ class AppRepositoryPerDesktopTest {
 	}
 
 	@Test fun theSameAppCanBePinnedOnSeveralDesktops() {
-		val a = this.app("a")
+		val a = this.app("banana")
 
 		this.repository.pin(a, 0)
 		this.repository.pin(a, 2)
@@ -53,7 +53,7 @@ class AppRepositoryPerDesktopTest {
 	}
 
 	@Test fun unpinAffectsOnlyTheGivenDesktop() {
-		val a = this.app("a")
+		val a = this.app("banana")
 		this.repository.pin(a, 0)
 		this.repository.pin(a, 1)
 
@@ -64,8 +64,8 @@ class AppRepositoryPerDesktopTest {
 	}
 
 	@Test fun removingADesktopShiftsHigherOnesDown() {
-		val a = this.app("a")
-		val b = this.app("b")
+		val a = this.app("banana")
+		val b = this.app("goose")
 		this.repository.pin(a, 0)
 		this.repository.pin(b, 1)
 
@@ -76,7 +76,7 @@ class AppRepositoryPerDesktopTest {
 	}
 
 	@Test fun noDesktopOpsTargetTheCurrentDesktop() {
-		val a = this.app("a")
+		val a = this.app("banana")
 		this.repository.setCurrentDesktop(1)
 
 		this.repository.pin(a) // no-desktop overload //
@@ -87,8 +87,8 @@ class AppRepositoryPerDesktopTest {
 	}
 
 	@Test fun savePersistsThePerDesktopFormat() {
-		val a = this.app("a")
-		val b = this.app("b")
+		val a = this.app("banana")
+		val b = this.app("goose")
 		this.repository.pin(a, 0)
 		this.repository.pin(b, 1)
 

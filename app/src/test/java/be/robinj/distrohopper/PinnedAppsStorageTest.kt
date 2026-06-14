@@ -23,34 +23,54 @@ class PinnedAppsStorageTest {
 	}
 
 	@Test fun readsTheLegacyFlatFormatAsDesktopZero() {
-		this.prefs.edit().putString("0", "a\nA").putString("1", "b\nB").commit()
+		this.prefs.edit()
+			.putString("0", "noot.noot.pingu\nPinguActivity")
+			.putString("1", "noot.noot.pinga\nPingaActivity")
+			.commit()
 
-		assertEquals(listOf(listOf("a\nA", "b\nB")), PinnedAppsStorage.read(this.prefs))
+		assertEquals(
+			listOf(listOf("noot.noot.pingu\nPinguActivity", "noot.noot.pinga\nPingaActivity")),
+			PinnedAppsStorage.read(this.prefs))
 	}
 
 	@Test fun readsThePerDesktopFormatDenselyAcrossGaps() {
 		this.prefs.edit()
-			.putString("0/0", "a\nA")
-			.putString("2/0", "c\nC").putString("2/1", "d\nD")
+			.putString("0/0", "noot.noot.pingu\nPinguActivity")
+			.putString("2/0", "ie.craggy.ted\nTedActivity")
+			.putString("2/1", "ie.craggy.dougal\nDougalActivity")
 			.commit()
 
 		assertEquals(
-			listOf(listOf("a\nA"), emptyList(), listOf("c\nC", "d\nD")),
+			listOf(
+				listOf("noot.noot.pingu\nPinguActivity"),
+				emptyList(),
+				listOf("ie.craggy.ted\nTedActivity", "ie.craggy.dougal\nDougalActivity"),
+			),
 			PinnedAppsStorage.read(this.prefs))
 	}
 
 	@Test fun writeGlobalRoundTripsViaTheFlatFormat() {
-		PinnedAppsStorage.writeGlobal(this.prefs, listOf("a\nA", "b\nB"))
+		PinnedAppsStorage.writeGlobal(this.prefs,
+			listOf("noot.noot.pingu\nPinguActivity", "noot.noot.pinga\nPingaActivity"))
 
-		assertEquals("a\nA", this.prefs.getString("0", null))
-		assertEquals(listOf(listOf("a\nA", "b\nB")), PinnedAppsStorage.read(this.prefs))
+		assertEquals("noot.noot.pingu\nPinguActivity", this.prefs.getString("0", null))
+		assertEquals(
+			listOf(listOf("noot.noot.pingu\nPinguActivity", "noot.noot.pinga\nPingaActivity")),
+			PinnedAppsStorage.read(this.prefs))
 	}
 
 	@Test fun writePerDesktopRoundTripsViaThePagedFormat() {
-		PinnedAppsStorage.writePerDesktop(this.prefs, listOf(listOf("a\nA"), listOf("b\nB", "c\nC")))
+		PinnedAppsStorage.writePerDesktop(this.prefs, listOf(
+			listOf("noot.noot.pingu\nPinguActivity"),
+			listOf("ie.craggy.ted\nTedActivity", "ie.craggy.dougal\nDougalActivity"),
+		))
 
-		assertEquals("b\nB", this.prefs.getString("1/0", null))
+		assertEquals("ie.craggy.ted\nTedActivity", this.prefs.getString("1/0", null))
 		assertEquals(
-			listOf(listOf("a\nA"), listOf("b\nB", "c\nC")), PinnedAppsStorage.read(this.prefs))
+			listOf(
+				listOf("noot.noot.pingu\nPinguActivity"),
+				listOf("ie.craggy.ted\nTedActivity", "ie.craggy.dougal\nDougalActivity"),
+			),
+			PinnedAppsStorage.read(this.prefs))
 	}
 }

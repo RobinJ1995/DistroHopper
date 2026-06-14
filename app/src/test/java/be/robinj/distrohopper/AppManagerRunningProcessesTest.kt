@@ -69,7 +69,7 @@ class AppManagerRunningProcessesTest {
     @Test fun getRunningAppsIgnoresProcessesOfUnknownPackages() {
         scenario.onActivity { activity ->
             setProcesses(activity, listOf(
-                process("com.example.notinstalled", ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND),
+                process("de.craggy.ghost", ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND),
             ))
             assertTrue(activity.appManager.runningApps.isEmpty())
         }
