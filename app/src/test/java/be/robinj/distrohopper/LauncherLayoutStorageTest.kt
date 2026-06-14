@@ -24,15 +24,13 @@ class LauncherLayoutStorageTest {
 	private fun folder(id: String, vararg keys: String): Folder =
 		Folder(id, keys.map { FolderMember.AppMember(it) as FolderMember })
 
-	@Test fun roundTripsFoldersAndOrderPerDesktop() {
+	@Test fun roundTripsFoldersPerDesktop() {
 		val data = mapOf(
 			0 to LauncherLayoutStorage.DesktopLayout(
 				folders = listOf(this.folder("folder-1", "a\nA", "b\nB")),
-				order = listOf("folder:folder-1", "app:c\nC"),
 			),
 			2 to LauncherLayoutStorage.DesktopLayout(
-				folders = emptyList(),
-				order = listOf("app:d\nD"),
+				folders = listOf(this.folder("folder-2", "c\nC", "d\nD")),
 			),
 		)
 

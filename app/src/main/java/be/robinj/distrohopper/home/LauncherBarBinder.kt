@@ -5,6 +5,7 @@ import android.os.PowerManager
 import android.os.UserHandle
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import be.robinj.distrohopper.App
 import be.robinj.distrohopper.AppManager
@@ -13,6 +14,7 @@ import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
+import be.robinj.distrohopper.desktop.dash.FolderPopup
 import be.robinj.distrohopper.desktop.dash.ProfilePagerAdapter
 import be.robinj.distrohopper.desktop.dash.profile.GnomeProfilePillIndicator
 import be.robinj.distrohopper.desktop.dash.profile.UnityRibbonIndicator
@@ -21,6 +23,9 @@ import be.robinj.distrohopper.desktop.launcher.AppLauncher
 import be.robinj.distrohopper.desktop.launcher.AppLauncherClickListener
 import be.robinj.distrohopper.desktop.launcher.AppLauncherDragListener
 import be.robinj.distrohopper.desktop.launcher.AppLauncherLongClickListener
+import be.robinj.distrohopper.desktop.launcher.LauncherDragPayload
+import be.robinj.distrohopper.desktop.launcher.LauncherFolderView
+import be.robinj.distrohopper.desktop.launcher.LauncherItem
 import be.robinj.distrohopper.desktop.launcher.PinnedAppsBar
 import be.robinj.distrohopper.desktop.launcher.RunningAppLauncher
 import be.robinj.distrohopper.theme.Location
@@ -39,7 +44,8 @@ class LauncherBarBinder(private val appManager: AppManager) {
 
 	/** While a pinned icon is dragged, its own view stays in the bar as an
 	 *  invisible placeholder: the empty slot previewing where it would drop. */
-	private var draggedPinnedApp: AppLauncher? = null
+	/** The view (app icon or folder) being dragged within the bar; its empty slot previews the drop. */
+	private var draggedPinnedApp: View? = null
 	private var draggedPinnedAppOldIndex = -1
 	private var draggedPinnedAppDropped = false
 
@@ -99,10 +105,33 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		}
 		this.withPinnedLayoutTransitionSuppressed {
 			this.llLauncherPinnedApps.removeAllViews()
-			for (app in this.appManager.pinned) {
-				this.llLauncherPinnedApps.addView(this.pinnedAppLauncher(app))
+			for (item in this.appManager.launcherLayout.launcherItems(this.appManager.currentDesktop)) {
+				this.llLauncherPinnedApps.addView(this.launcherItemView(item))
 			}
 		}
+	}
+
+	/** A pinned-bar child for a launcher item: an app icon or a folder mini-grid. */
+	private fun launcherItemView(item: LauncherItem): View = when (item) {
+		is LauncherItem.LauncherApp -> this.pinnedAppLauncher(item.app)
+		is LauncherItem.LauncherFolder -> this.launcherFolderView(item)
+	}
+
+	private fun launcherFolderView(item: LauncherItem.LauncherFolder): View {
+		val view = LauncherFolderView(this.activity, item.folder.id, item.apps)
+		view.setOnClickListener {
+			FolderPopup(this.activity, item.folder.id, item.apps,
+				clipLabel = "launcherFolderMember",
+				memberPayload = { app -> LauncherDragPayload.FolderMemberDrag(item.folder.id, app) })
+				.showAt(view)
+		}
+		view.setOnLongClickListener {
+			AppLauncherLongClickListener.startFolderDrag(this.activity, view, item.folder.id)
+			true
+		}
+		view.setOnDragListener(AppLauncherDragListener(this.appManager))
+
+		return view
 	}
 
 	fun removePinnedAppView(app: App) {
@@ -162,18 +191,19 @@ class LauncherBarBinder(private val appManager: AppManager) {
 
 		// Build the union once, without the LayoutTransition fading each icon in //
 		val union = LauncherMorph.union(
-			this.appManager.pinnedOn(fromPage), this.appManager.pinnedOn(toPage))
+			this.appManager.launcherLayout.launcherItems(fromPage),
+			this.appManager.launcherLayout.launcherItems(toPage))
 		this.withPinnedLayoutTransitionSuppressed {
 			this.llLauncherPinnedApps.removeAllViews()
-			for (app in union) {
-				this.llLauncherPinnedApps.addView(this.pinnedAppLauncher(app))
+			for (item in union) {
+				this.llLauncherPinnedApps.addView(this.launcherItemView(item))
 			}
 		}
 	}
 
 	private fun applyMorph(fraction: Float) {
-		val from = this.appManager.pinnedOn(this.morphFrom)
-		val to = this.appManager.pinnedOn(this.morphTo)
+		val from = this.appManager.launcherLayout.launcherItems(this.morphFrom)
+		val to = this.appManager.launcherLayout.launcherItems(this.morphTo)
 		// The bar's length interpolates between the two desktops' icon counts, so
 		// an auto-sizing launcher resizes smoothly with the morph //
 		val length = from.size + (to.size - from.size) * fraction
@@ -220,10 +250,11 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		this.llLauncherRunningApps.removeAllViews()
 
 		for (i in 0 until this.llLauncherPinnedApps.childCount)
-			(this.llLauncherPinnedApps.getChildAt(i) as AppLauncher).setRunning(false)
+			(this.llLauncherPinnedApps.getChildAt(i) as? AppLauncher)?.setRunning(false)
 
 		for (app in this.appManager.runningApps) {
 			if (this.appManager.isPinned(app)) {
+				// Folder members have no loose icon to flag as running; skip them.
 				val appLauncher = this.llLauncherPinnedApps.findViewWithTag<AppLauncher>(app)
 				appLauncher?.setRunning(true)
 			} else {
@@ -395,15 +426,13 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	}
 
 	/**
-	 * The drag is hovering over another pinned icon: shift the placeholder
-	 * into that icon's slot, so that the icons in between slide over
-	 * (animated by the container's LayoutTransition) and the empty slot
-	 * shows exactly where the dragged icon would land.
+	 * The drag is hovering over another pinned item: shift the placeholder into
+	 * [targetView]'s slot, so the items in between slide over (animated by the
+	 * container's LayoutTransition) and the empty slot shows where the drop lands.
 	 */
-	fun draggedPinnedAppOver(target: App) {
+	fun draggedPinnedItemOver(targetView: View) {
 		val dragged = this.draggedPinnedApp ?: return
-		val targetView = this.llLauncherPinnedApps.findViewWithTag<AppLauncher>(target)
-		if (targetView == null || targetView == dragged)
+		if (targetView == dragged)
 			return
 
 		val targetIndex = this.llLauncherPinnedApps.indexOfChild(targetView)
@@ -414,30 +443,96 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		this.llLauncherPinnedApps.addView(dragged, targetIndex)
 	}
 
-	/** Commits the order previewed by the placeholder's position. */
+	/** Compat shim: the per-icon drag listener and tests hover by target app. */
+	fun draggedPinnedAppOver(target: App) {
+		val targetView = this.llLauncherPinnedApps.findViewWithTag<View>(target) ?: return
+		this.draggedPinnedItemOver(targetView)
+	}
+
+	/**
+	 * Commits the order previewed by the placeholder's position. The bar's order
+	 * is the pinned order, so this flattens the bar's items (folder members
+	 * included, in membership order) into a key sequence and reorders the pinned
+	 * model to match — which keeps the floating launcher service and persistence
+	 * in step too.
+	 */
 	fun droppedPinnedApp() {
 		val dragged = this.draggedPinnedApp ?: return
-		val newIndex = this.llLauncherPinnedApps.indexOfChild(dragged)
-		if (newIndex < 0)
+		if (this.llLauncherPinnedApps.indexOfChild(dragged) < 0)
 			return
 		this.draggedPinnedAppDropped = true
 
-		if (this.draggedPinnedAppOldIndex == NOT_YET_PINNED) {
-			// A dash app dropped onto the bar: pin appends it to the model,
-			// then shift it to the previewed slot //
-			if (!this.appManager.pin(dragged.tag as App, false, false, false)) {
-				this.draggedPinnedAppDropped = false // pinned meanwhile: let ended rebuild //
-				return
-			}
+		val desktop = this.appManager.currentDesktop
+		if (this.draggedPinnedAppOldIndex == NOT_YET_PINNED &&
+			!this.appManager.pin(dragged.tag as App, false, false, false)) {
+			this.draggedPinnedAppDropped = false // pinned meanwhile: let ended rebuild //
+			return
+		}
 
-			val appendedIndex = this.appManager.pinned.size - 1
-			if (newIndex != appendedIndex)
-				this.appManager.movePinnedApp(appendedIndex, newIndex)
-			this.appManager.savePinnedApps()
-		} else if (newIndex != this.draggedPinnedAppOldIndex) {
-			this.appManager.movePinnedApp(this.draggedPinnedAppOldIndex, newIndex)
+		this.appManager.reorderPinned(desktop, this.flattenBarKeys())
+		this.appManager.savePinnedApps()
+		this.refreshPinnedView()
+	}
+
+	/** The bar's current item order flattened to pinned-app keys (folders expanded). */
+	private fun flattenBarKeys(): List<String> {
+		val keys = ArrayList<String>()
+		for (i in 0 until this.llLauncherPinnedApps.childCount) {
+			when (val child = this.llLauncherPinnedApps.getChildAt(i)) {
+				is LauncherFolderView -> child.apps.forEach { keys.add(it.profileScopedKey) }
+				else -> (child.tag as? App)?.let { keys.add(it.profileScopedKey) }
+			}
+		}
+
+		return keys
+	}
+
+	/**
+	 * Folds the dragged app onto [targetView] (a dwell-armed drop): create a
+	 * folder with the target app, or add to the target folder. Folders cannot be
+	 * folded, and a not-yet-pinned dash app is pinned first.
+	 */
+	fun foldDraggedOnto(targetView: View): Boolean {
+		val dragged = this.draggedPinnedApp ?: return false
+		val draggedApp = dragged.tag as? App ?: return false // a folder can't go into a folder
+		if (targetView == dragged)
+			return false
+		val desktop = this.appManager.currentDesktop
+		val layout = this.appManager.launcherLayout
+
+		if (this.draggedPinnedAppOldIndex == NOT_YET_PINNED) {
+			if (!this.appManager.pin(draggedApp, false, false, false)) {
+				return false
+			}
 			this.appManager.savePinnedApps()
 		}
+		this.draggedPinnedAppDropped = true
+
+		if (targetView is LauncherFolderView) {
+			if (!layout.addToFolder(targetView.folderId, draggedApp)) {
+				Toast.makeText(this.activity, R.string.folder_full, Toast.LENGTH_SHORT).show()
+			}
+		} else {
+			val targetApp = targetView.tag as? App
+			if (targetApp == null || targetApp == draggedApp) {
+				return false
+			}
+			layout.createFolder(desktop, draggedApp, targetApp)
+		}
+
+		this.refreshPinnedView()
+		return true
+	}
+
+	/** Begins dragging a pinned folder (reposition / drop on trash to delete). */
+	fun startedDraggingFolder(folderId: String) {
+		val view = this.llLauncherPinnedApps.findViewWithTag<View>(folderId) ?: return
+		this.draggedPinnedApp = view
+		this.draggedPinnedAppOldIndex = this.llLauncherPinnedApps.indexOfChild(view)
+		this.draggedPinnedAppDropped = false
+		view.visibility = View.INVISIBLE
+
+		this.startedDraggingPinnedApp()
 	}
 
 	fun endedDraggingPinnedApp() {

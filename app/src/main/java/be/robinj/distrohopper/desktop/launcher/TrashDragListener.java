@@ -77,6 +77,25 @@ public class TrashDragListener implements ViewGroup.OnDragListener
 							appManager.dashLayoutChanged ();
 						}
 					}
+					else if (event.getLocalState () instanceof LauncherDragPayload)
+					{
+						// Dropping a launcher folder on the trash deletes it and unpins
+						// its members; a folder member dropped here leaves its folder //
+						final AppManager appManager = this.activity.getAppManager ();
+						if (appManager != null)
+						{
+							LauncherDragPayload payload = (LauncherDragPayload) event.getLocalState ();
+							if (payload instanceof LauncherDragPayload.FolderDrag)
+								appManager.getLauncherLayout ().deleteFolder (
+									((LauncherDragPayload.FolderDrag) payload).getFolderId ());
+							else if (payload instanceof LauncherDragPayload.FolderMemberDrag)
+								appManager.getLauncherLayout ().removeFromFolder (
+									((LauncherDragPayload.FolderMemberDrag) payload).getFolderId (),
+									((LauncherDragPayload.FolderMemberDrag) payload).getApp ().getProfileScopedKey ());
+
+							appManager.launcherLayoutChanged ();
+						}
+					}
 					else if (event.getLocalState () instanceof App)
 					{
 						// A not-yet-pinned app dragged from the dash: nothing to unpin //

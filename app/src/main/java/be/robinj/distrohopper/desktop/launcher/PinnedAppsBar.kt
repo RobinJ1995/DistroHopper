@@ -21,7 +21,7 @@ class PinnedAppsBar @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
 ) : LinearLayout(context, attrs) {
-	private var morphSlots: List<LauncherMorph.Slot>? = null
+	private var morphSlots: List<LauncherMorph.Slot<*>>? = null
 	private var morphStride = 0F
 	private var morphLengthSlots = 0F
 
@@ -34,7 +34,7 @@ class PinnedAppsBar @JvmOverloads constructor(
 	 * [stride] is the per-slot advance along the axis, and [lengthSlots] the
 	 * bar's overall length (in slots) — interpolate it for a smooth resize.
 	 */
-	fun setMorph(slots: List<LauncherMorph.Slot>, stride: Float, lengthSlots: Float) {
+	fun setMorph(slots: List<LauncherMorph.Slot<*>>, stride: Float, lengthSlots: Float) {
 		this.morphSlots = slots
 		this.morphStride = stride
 		this.morphLengthSlots = lengthSlots

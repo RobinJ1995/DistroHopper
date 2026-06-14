@@ -33,7 +33,7 @@ class LauncherMorphTest {
 		val to = listOf(b, a) // swapped //
 
 		fun positionOf(app: App, fraction: Float) =
-			LauncherMorph.slots(from, to, fraction).first { it.app == app }.position
+			LauncherMorph.slots(from, to, fraction).first { it.item == app }.position
 
 		assertEquals(0F, positionOf(a, 0F), 0.001F) // a: slot 0 -> 1 //
 		assertEquals(0.5F, positionOf(a, 0.5F), 0.001F)
@@ -46,7 +46,7 @@ class LauncherMorphTest {
 		val a = this.app("a")
 		val b = this.app("b")
 
-		val slot = LauncherMorph.slots(listOf(a, b), listOf(a), 1F).first { it.app == b }
+		val slot = LauncherMorph.slots(listOf(a, b), listOf(a), 1F).first { it.item == b }
 
 		assertEquals(1F, slot.position, 0.001F)
 		assertEquals(0F, slot.alpha, 0.001F)
@@ -57,12 +57,12 @@ class LauncherMorphTest {
 		val a = this.app("a")
 		val b = this.app("b")
 
-		val closed = LauncherMorph.slots(listOf(a), listOf(a, b), 0F).first { it.app == b }
+		val closed = LauncherMorph.slots(listOf(a), listOf(a, b), 0F).first { it.item == b }
 		assertEquals(1F, closed.position, 0.001F)
 		assertEquals(0F, closed.alpha, 0.001F)
 		assertEquals(LauncherMorph.EXIT_SCALE, closed.scale, 0.001F)
 
-		val open = LauncherMorph.slots(listOf(a), listOf(a, b), 1F).first { it.app == b }
+		val open = LauncherMorph.slots(listOf(a), listOf(a, b), 1F).first { it.item == b }
 		assertEquals(1F, open.alpha, 0.001F)
 		assertEquals(1F, open.scale, 0.001F)
 	}

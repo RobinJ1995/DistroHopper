@@ -33,6 +33,8 @@ public class AppManager implements Iterable<App>
 
 	private final DashLayoutRepository dashLayout;
 
+	private final LauncherLayoutRepository launcherLayout;
+
 	private final IconPackHelper iconPack;
 
 	private IconRenderer iconRenderer;
@@ -46,6 +48,7 @@ public class AppManager implements Iterable<App>
 		this.parent = parent;
 		this.repository = new AppRepository (parent);
 		this.dashLayout = new DashLayoutRepository (parent, this.repository);
+		this.launcherLayout = new LauncherLayoutRepository (parent, this.repository);
 		this.iconPack = new IconPackHelper (parent.getApplicationContext ());
 	}
 
@@ -78,6 +81,23 @@ public class AppManager implements Iterable<App>
 	public void dashLayoutChanged ()
 	{
 		this.getBinder ().notifyDashAdapterChanged ();
+	}
+
+	public LauncherLayoutRepository getLauncherLayout ()
+	{
+		return this.launcherLayout;
+	}
+
+	/** Loads the persisted launcher folders + order; call once pins are loaded. */
+	public void loadLauncherLayout ()
+	{
+		this.launcherLayout.load ();
+	}
+
+	/** Rebuilds the pinned bar after a launcher folder / order change. */
+	public void launcherLayoutChanged ()
+	{
+		this.getBinder ().refreshPinnedView ();
 	}
 
 	public void add (App app)
@@ -317,8 +337,9 @@ public class AppManager implements Iterable<App>
 		if (this.parent.getDesktopAppHost () != null)
 			this.parent.getDesktopAppHost ().unpinFromAllDesktops (app);
 
-		// Drop it from any dash folder / custom-order slot it lived in //
+		// Drop it from any dash / launcher folder / order slot it lived in //
 		this.dashLayout.reconcile ();
+		this.launcherLayout.reconcile ();
 
 		this.getBinder ().notifyDashAdapterChanged ();
 
@@ -485,9 +506,31 @@ public class AppManager implements Iterable<App>
 		this.getBinder ().startedDraggingDashApp (app);
 	}
 
+	public void draggedPinnedItemOver (android.view.View targetView)
+	{
+		this.getBinder ().draggedPinnedItemOver (targetView);
+	}
+
 	public void draggedPinnedAppOver (App app)
 	{
 		this.getBinder ().draggedPinnedAppOver (app);
+	}
+
+	/** Reorders the desktop's pins to match the launcher bar's flattened item order. */
+	public void reorderPinned (int desktop, java.util.List<String> orderedKeys)
+	{
+		this.repository.reorderPinned (desktop, orderedKeys);
+	}
+
+	/** @return whether the dragged app was folded onto the target (else reorder). */
+	public boolean foldDraggedOnto (android.view.View targetView)
+	{
+		return this.getBinder ().foldDraggedOnto (targetView);
+	}
+
+	public void startedDraggingFolder (String folderId)
+	{
+		this.getBinder ().startedDraggingFolder (folderId);
 	}
 
 	public void droppedPinnedApp ()

@@ -15,21 +15,21 @@ import org.json.JSONObject
  *
  * It is layered over [PinnedAppsStorage] (which still stores every pinned app
  * key per desktop, unchanged): this file only records which of those apps are
- * grouped into folders and the order folders/loose apps appear in. If it is
- * missing or unreadable every pinned app simply renders loose, exactly as before
- * folders existed.
+ * grouped into folders (and the in-folder member order). The bar's order is the
+ * pinned order itself, so there is no separate order to store. If it is missing
+ * or unreadable every pinned app simply renders loose, exactly as before folders
+ * existed.
  *
  * Stored as a single JSON object under [KEY], keyed by desktop index:
  * ```
- * { "0": { "folders": [ { "id": "folder-…", "apps": ["pkg\nact", …] } ],
- *          "order":   ["folder:folder-…", "app:pkg\nact", …] }, … }
+ * { "0": { "folders": [ { "id": "folder-…", "apps": ["pkg\nact", …] } ] }, … }
  * ```
  */
 object LauncherLayoutStorage {
 	const val KEY = "launcher_layout"
 
-	/** A single desktop's persisted launcher layout. */
-	data class DesktopLayout(val folders: List<Folder>, val order: List<String>)
+	/** A single desktop's persisted launcher folders. */
+	data class DesktopLayout(val folders: List<Folder>)
 
 	@JvmStatic
 	fun read(prefs: SharedPreferences): Map<Int, DesktopLayout> {
@@ -41,10 +41,7 @@ object LauncherLayoutStorage {
 			for (key in root.keys()) {
 				val desktop = key.toIntOrNull() ?: continue
 				val obj = root.getJSONObject(key)
-				out[desktop] = DesktopLayout(
-					folders = readFolders(obj.optJSONArray("folders")),
-					order = readStrings(obj.optJSONArray("order")),
-				)
+				out[desktop] = DesktopLayout(readFolders(obj.optJSONArray("folders")))
 			}
 
 			out
@@ -65,10 +62,7 @@ object LauncherLayoutStorage {
 				folders.put(JSONObject().put("id", folder.id).put("apps", apps))
 			}
 
-			val order = JSONArray()
-			layout.order.forEach { order.put(it) }
-
-			root.put(desktop.toString(), JSONObject().put("folders", folders).put("order", order))
+			root.put(desktop.toString(), JSONObject().put("folders", folders))
 		}
 
 		prefs.edit().putString(KEY, root.toString()).apply()

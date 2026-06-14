@@ -251,6 +251,27 @@ class AppRepository(private val context: Context) {
 		this.pinnedChanged()
 	}
 
+	/**
+	 * Reorders [desktop]'s pins to match [orderedKeys] (profile-scoped keys). The
+	 * launcher bar — whose visual order is derived from this list, with folders
+	 * positioned by their first member — commits a drag-reorder this way: it
+	 * flattens the bar's items (folder members included, in membership order) to a
+	 * key sequence. Keys not currently pinned are ignored; any pinned app the
+	 * sequence omits is kept, appended in its existing order.
+	 */
+	fun reorderPinned(desktop: Int, orderedKeys: List<String>) {
+		val list = this.pageList(desktop)
+		val byKey = list.associateBy { it.profileScopedKey }
+		val reordered = orderedKeys.mapNotNull { byKey[it] }
+		val mentioned = reordered.toHashSet()
+		val tail = list.filter { it !in mentioned }
+
+		list.clear()
+		list.addAll(reordered)
+		list.addAll(tail)
+		this.pinnedChanged()
+	}
+
 	/** Removes [app] from every desktop (e.g. when it is uninstalled). */
 	fun unpinFromAllDesktops(app: App): Boolean {
 		var modified = false

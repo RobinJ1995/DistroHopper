@@ -96,16 +96,25 @@ class LauncherLayoutRepositoryTest {
 		assertFalse(this.appRepository.isPinnedOn(b, 0))
 	}
 
-	@Test fun customOrderIsAppliedAndPersisted() {
-		this.pin("Alpha"); this.pin("Bravo"); this.pin("Charlie")
+	@Test fun foldersPersistAcrossReloadAndRenderAtFirstMemberPosition() {
+		this.pin("Alpha")
+		val b = this.pin("Bravo")
+		this.pin("Charlie")
+		val d = this.pin("Delta")
+		// A folder of Bravo + Delta renders at Bravo's (earlier) position.
+		this.repository.createFolder(0, b, d)
 
-		this.repository.moveItem(0, 2, 0)
-		assertEquals(listOf("Charlie", "Alpha", "Bravo"), this.items())
+		assertEquals(listOf("Alpha", "[Bravo,Delta]", "Charlie"), this.items())
 
 		val reloaded = LauncherLayoutRepository(this.context, this.appRepository)
 		reloaded.load()
-		assertEquals(listOf("Charlie", "Alpha", "Bravo"),
-			reloaded.launcherItems(0).map { (it as LauncherItem.LauncherApp).app.label })
+		assertEquals(listOf("Alpha", "[Bravo,Delta]", "Charlie"),
+			reloaded.launcherItems(0).map {
+				when (it) {
+					is LauncherItem.LauncherApp -> it.app.label
+					is LauncherItem.LauncherFolder -> "[${it.apps.joinToString(",") { a -> a.label }}]"
+				}
+			})
 	}
 
 	@Test fun reconcileDropsUnpinnedMembersAndDissolves() {

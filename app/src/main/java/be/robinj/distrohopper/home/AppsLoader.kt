@@ -132,6 +132,9 @@ object AppsLoader {
 		// Dash folders + custom order, layered over the now-loaded installed list //
 		appManager.loadDashLayout()
 
+		// Launcher folders + order, layered over the now-loaded per-desktop pins //
+		appManager.loadLauncherLayout()
+
 		val prefs = Preferences.getSharedPreferences(context)
 		if (prefs.getBoolean(Preference.DEFAULT_PINS_PENDING.getName(), false)) {
 			val defaults = DefaultPinnedApps.select(

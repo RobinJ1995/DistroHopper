@@ -24,10 +24,12 @@ import be.robinj.distrohopper.preferences.Preferences
  * dash removes the app from the folder, and pausing over another app folds them.
  * In-folder reordering is allowed only when the custom sort order is active.
  */
-class FolderPopup(
+class FolderPopup @JvmOverloads constructor(
 	private val activity: HomeActivity,
 	private val folderId: String,
 	private val apps: List<App>,
+	private val clipLabel: String = "dashFolderMember",
+	private val memberPayload: (App) -> Any = { app -> DashDragPayload.FolderMemberDrag(folderId, app) },
 ) {
 	private val window = PopupWindow(this.activity)
 
@@ -79,8 +81,8 @@ class FolderPopup(
 			// Start the drag from the decor view so it survives the popup closing,
 			// matching dash.AppLauncherLongClickListener's detached-view handling.
 			val source = activity.window.decorView
-			val payload = DashDragPayload.FolderMemberDrag(folderId, app)
-			val clip = ClipData.newPlainText("dashFolderMember", folderId)
+			val payload = memberPayload(app)
+			val clip = ClipData.newPlainText(clipLabel, folderId)
 			val started = source.startDragAndDrop(clip, View.DragShadowBuilder(view), payload, 0)
 			if (started) {
 				LauncherBarBinder.startedDragging(activity)
