@@ -120,7 +120,7 @@
 
     <!-- Gestures preferences -->
     <string name="option_gesture_swipe_sides">Swipe left or right</string>
-    <string name="hint_gesture_swipe_sides">Switches between desktops. This can\'t be changed.</string>
+    <string name="hint_gesture_swipe_sides">Switches between desktops.</string>
     <string name="option_gesture_swipe_up">Swipe up</string>
     <string name="option_gesture_swipe_down">Swipe down</string>
     <string name="gesture_action_none">Do nothing</string>
@@ -133,7 +133,7 @@
     <!-- Accessibility gesture setup wizard -->
     <string name="title_activity_gesture_setup">Notification gestures</string>
     <string name="gesture_setup_explain_title">Open the notification tray</string>
-    <string name="gesture_setup_explain_body">To open the notification tray from a swipe, DistroHopper needs you to turn on its accessibility service.\n\nThis service is only ever used to open the notification tray. It does not read screen content, collect any data, or perform any other action.</string>
+    <string name="gesture_setup_explain_body">Android doesn\'t give ordinary apps any way to open the notification tray — for a home screen like DistroHopper, the only mechanism available is an accessibility service.\n\nThat\'s why DistroHopper\'s accessibility service needs to be enabled. It is used for nothing but opening the notification tray: it does not read what\'s on your screen, collect any data, or perform any other action.</string>
     <string name="gesture_setup_guide_title">Turn on the service</string>
     <string name="gesture_setup_guide_body">Find DistroHopper in the accessibility settings list and switch it on, then come back here.</string>
     <string name="gesture_setup_cancel">Cancel</string>
