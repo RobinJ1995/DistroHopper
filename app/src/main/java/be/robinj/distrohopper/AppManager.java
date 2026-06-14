@@ -337,6 +337,10 @@ public class AppManager implements Iterable<App>
 		if (this.parent.getDesktopAppHost () != null)
 			this.parent.getDesktopAppHost ().unpinFromAllDesktops (app);
 
+		// And drop it from any desktop folder it lived in //
+		if (this.parent.getDesktopFolderHost () != null)
+			this.parent.getDesktopFolderHost ().unpinFromAllDesktops (app);
+
 		// Drop it from any dash / launcher folder / order slot it lived in //
 		this.dashLayout.reconcile ();
 		this.launcherLayout.reconcile ();

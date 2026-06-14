@@ -81,6 +81,7 @@ import be.robinj.distrohopper.desktop.launcher.LauncherDragListener;
 import be.robinj.distrohopper.desktop.launcher.TrashDragListener;
 import be.robinj.distrohopper.desktop.launcher.service.LauncherService;
 import be.robinj.distrohopper.widgets.DesktopAppHost;
+import be.robinj.distrohopper.widgets.DesktopFolderHost;
 import be.robinj.distrohopper.widgets.WidgetGrid;
 import be.robinj.distrohopper.widgets.WidgetHost;
 import be.robinj.distrohopper.widgets.WidgetHost_LongClickListener;
@@ -95,6 +96,7 @@ public class HomeActivity extends AppCompatActivity
 	private AppWidgetManager widgetManager;
 	private WidgetHost widgetHost;
 	private DesktopAppHost desktopAppHost;
+	private DesktopFolderHost desktopFolderHost;
 
 	private ViewFinder viewFinder;
 
@@ -850,6 +852,11 @@ public class HomeActivity extends AppCompatActivity
 		return this.desktopAppHost;
 	}
 
+	public DesktopFolderHost getDesktopFolderHost ()
+	{
+		return this.desktopFolderHost;
+	}
+
 	public ViewFinder getViewFinder() {
 		return this.viewFinder;
 	}
@@ -874,12 +881,19 @@ public class HomeActivity extends AppCompatActivity
 			final WidgetsPager vgWidgets = this.viewFinder.get (R.id.vgWidgets);
 			this.desktopAppHost = new DesktopAppHost (this, vgWidgets, this.apps.getRepository ());
 
+			// Desktop folders: a third desktop host, alongside widgets and apps //
+			this.desktopFolderHost = new DesktopFolderHost (this, vgWidgets,
+					this.apps.getRepository (), this.widgetHost, this.desktopAppHost);
+
 			// Desktops is the authority for how many desktops exist (widgets + pins
-			// + desktop apps); wire it now that the app model is loaded //
-			this.desktops = new Desktops (this.widgetHost, this.apps, this.desktopAppHost);
+			// + desktop apps + folders); wire it now that the app model is loaded //
+			this.desktops = new Desktops (
+					this.widgetHost, this.apps, this.desktopAppHost, this.desktopFolderHost);
 			vgWidgets.setOccupiedDesktopSupplier (() -> this.desktops.highestOccupiedDesktop ());
 
 			this.desktopAppHost.restore ();
+			// Folders restore AFTER apps + widgets so their 2x2 avoids occupied cells //
+			this.desktopFolderHost.restore ();
 			vgWidgets.pagesChanged ();
 
 			EditText etDashSearch = this.viewFinder.get(R.id.etDashSearch);

@@ -1,24 +1,28 @@
 package be.robinj.distrohopper.widgets
 
+import android.os.Handler
+import android.os.Looper
 import android.view.DragEvent
 import android.view.View
 import be.robinj.distrohopper.App
 import be.robinj.distrohopper.HomeActivity
+import be.robinj.distrohopper.R
 import be.robinj.distrohopper.home.LauncherBarBinder
 
 /**
  * Handles drops over the topmost desktop layer while the system drag shadow
  * follows the finger. The underlying widget grid draws the snapped landing
- * target. All coordinates target the pager's current desktop: the pages cannot
- * change mid-drag (the drag owns the touch stream), so that is also the desktop
- * a moved widget or desktop app came from.
+ * target. All coordinates target the pager's current desktop.
  *
- * Four kinds of drag land here, told apart by the drag's local state:
+ * Drag kinds, told apart by the drag's local state:
  *  - a [WidgetContainer] — a widget being moved on its grid;
  *  - a [DesktopAppView] — a desktop app being moved on its grid;
+ *  - a [DesktopFolderView] — a desktop folder being moved on its grid;
  *  - an [App] — a not-yet-pinned app dragged from the dash, pinned to the desktop;
- *  - otherwise the launcher-bar reorder clip (label = pinned index) — an existing
- *    launcher icon, **moved** onto the desktop (pinned here, unpinned from the bar).
+ *  - otherwise the launcher-bar reorder clip (label = pinned index) — moved here.
+ *
+ * Pausing a desktop app over another desktop app/folder, or a widget over a
+ * folder, arms a **fold** (create / add to folder); a quick pass instead moves.
  */
 internal class WidgetsContainer_DragListener(
 	private val parent: HomeActivity,
@@ -27,21 +31,30 @@ internal class WidgetsContainer_DragListener(
 	private val vgWidgets: WidgetsContainer
 		get() = this.pager.currentPageContainer
 
+	private val handler = Handler(Looper.getMainLooper())
+	private var hoverCol = -1
+	private var hoverRow = -1
+	private var armedFoldTarget: View? = null
+
 	override fun onDrag(view: View, event: DragEvent): Boolean {
 		val kind = this.kindOf(event) ?: return false
 
 		when (event.action) {
 			// Must claim the drag here to receive LOCATION/DROP for it //
 			DragEvent.ACTION_DRAG_STARTED -> return true
-			DragEvent.ACTION_DRAG_LOCATION -> this.showTarget(view, event, kind)
+			DragEvent.ACTION_DRAG_LOCATION -> this.onLocation(view, event, kind)
 			DragEvent.ACTION_DROP -> this.commit(view, event, kind)
-			DragEvent.ACTION_DRAG_EXITED -> this.vgWidgets.hideMoveTarget()
+			DragEvent.ACTION_DRAG_EXITED -> {
+				this.clearFoldArm()
+				this.vgWidgets.hideMoveTarget()
+			}
 			DragEvent.ACTION_DRAG_ENDED -> {
+				this.clearFoldArm()
 				this.vgWidgets.hideMoveTarget()
 
 				// Not via appManager: widgets are draggable before app loading finishes.
-				// Posted: mutating views (even just visibility) during ENDED
-				// dispatch throws a ConcurrentModificationException //
+				// Posted: mutating views during ENDED dispatch throws a
+				// ConcurrentModificationException //
 				view.post { LauncherBarBinder.stoppedDragging(this.parent) }
 			}
 		}
@@ -49,29 +62,100 @@ internal class WidgetsContainer_DragListener(
 		return true
 	}
 
-	private fun showTarget(receiver: View, event: DragEvent, kind: Drag) {
+	private fun onLocation(receiver: View, event: DragEvent, kind: Drag) {
 		val (col, row) = this.snap(receiver, event, kind)
-		val candidate = WidgetLayout(kind.widgetId, col, row, kind.colSpan, kind.rowSpan)
-		val fits = WidgetGrid.fits(this.vgWidgets.collectOccupied(kind.exclude), candidate)
 
-		this.vgWidgets.showMoveTarget(col, row, kind.colSpan, kind.rowSpan, fits)
+		if (col != this.hoverCol || row != this.hoverRow) {
+			this.hoverCol = col
+			this.hoverRow = row
+			this.clearFoldArm()
+
+			val target = this.foldTarget(col, row, kind)
+			if (target != null) {
+				this.handler.postDelayed({
+					this.armedFoldTarget = target
+					target.setBackgroundResource(R.drawable.dash_folder_drop_indicator)
+				}, FOLD_DWELL_MS)
+			}
+		}
+
+		if (this.armedFoldTarget == null) {
+			val candidate = WidgetLayout(kind.widgetId, col, row, kind.colSpan, kind.rowSpan)
+			val fits = WidgetGrid.fits(this.vgWidgets.collectOccupied(kind.exclude), candidate)
+			this.vgWidgets.showMoveTarget(col, row, kind.colSpan, kind.rowSpan, fits)
+		} else {
+			this.vgWidgets.hideMoveTarget()
+		}
 	}
 
 	private fun commit(receiver: View, event: DragEvent, kind: Drag) {
 		val (col, row) = this.snap(receiver, event, kind)
 		this.vgWidgets.hideMoveTarget()
+		val foldTarget = this.armedFoldTarget
+		this.clearFoldArm()
+
+		if (foldTarget != null && this.fold(kind, foldTarget)) {
+			return
+		}
 
 		when (kind) {
 			is Drag.Widget -> kind.container.commitMove(col, row)
 			is Drag.DesktopApp -> kind.host.moveTo(kind.view, col, row)
+			is Drag.DesktopFolder -> kind.host.moveTo(kind.view, col, row)
 			is Drag.DashApp -> kind.host.pinAt(kind.app, col, row, this.pager.currentPage)
-			is Drag.LauncherPin -> {
-				// Move: pin onto the desktop, then unpin from the bar //
+			is Drag.LauncherPin ->
 				if (kind.host.pinAt(kind.app, col, row, this.pager.currentPage)) {
 					this.parent.appManager?.unpin(kind.app, false)
 				}
-			}
 		}
+	}
+
+	/** The fold target under ([col],[row]) for this drag, or null if folding doesn't apply. */
+	private fun foldTarget(col: Int, row: Int, kind: Drag): View? {
+		if (this.parent.desktopFolderHost == null) {
+			return null
+		}
+		val target = this.vgWidgets.findViewAtCell(col, row) ?: return null
+		if (target === kind.exclude) {
+			return null
+		}
+
+		return when (kind) {
+			// An on-desktop app folds onto another app (create) or a folder (add).
+			is Drag.DesktopApp ->
+				if (target is DesktopAppView || target is DesktopFolderView) target else null
+			// A widget can only be added to an existing folder.
+			is Drag.Widget -> if (target is DesktopFolderView) target else null
+			else -> null
+		}
+	}
+
+	private fun fold(kind: Drag, target: View): Boolean {
+		val folderHost = this.parent.desktopFolderHost ?: return false
+
+		return when (kind) {
+			is Drag.DesktopApp -> {
+				when (target) {
+					is DesktopAppView -> { folderHost.createFolder(kind.view, target); true }
+					is DesktopFolderView -> { folderHost.addApp(target.folderId, kind.view); true }
+					else -> false
+				}
+			}
+			is Drag.Widget -> {
+				if (target is DesktopFolderView) {
+					folderHost.addWidget(target.folderId, kind.container); true
+				} else {
+					false
+				}
+			}
+			else -> false
+		}
+	}
+
+	private fun clearFoldArm() {
+		this.handler.removeCallbacksAndMessages(null)
+		this.armedFoldTarget?.background = null
+		this.armedFoldTarget = null
 	}
 
 	/**
@@ -114,6 +198,11 @@ internal class WidgetsContainer_DragListener(
 				val host = this.parent.desktopAppHost ?: return null
 
 				return Drag.DesktopApp(localState, host)
+			}
+			is DesktopFolderView -> {
+				val host = this.parent.desktopFolderHost ?: return null
+
+				return Drag.DesktopFolder(localState, host)
 			}
 			is App -> {
 				val host = this.parent.desktopAppHost ?: return null
@@ -165,6 +254,15 @@ internal class WidgetsContainer_DragListener(
 			override fun grabOffsetY(grid: WidgetsContainer) = this.view.dragGrabOffsetY
 		}
 
+		class DesktopFolder(val view: DesktopFolderView, val host: DesktopFolderHost) : Drag() {
+			override val widgetId = DesktopAppLayout.NO_WIDGET_ID
+			override val colSpan = DesktopFolderLayout.SPAN
+			override val rowSpan = DesktopFolderLayout.SPAN
+			override val exclude get() = this.view
+			override fun grabOffsetX(grid: WidgetsContainer) = this.view.dragGrabOffsetX
+			override fun grabOffsetY(grid: WidgetsContainer) = this.view.dragGrabOffsetY
+		}
+
 		/** A non-view drag (from the dash or the bar): centre the block under the finger. */
 		sealed class IncomingApp : Drag() {
 			override val widgetId = DesktopAppLayout.NO_WIDGET_ID
@@ -178,5 +276,9 @@ internal class WidgetsContainer_DragListener(
 		class DashApp(val app: App, val host: DesktopAppHost) : IncomingApp()
 
 		class LauncherPin(val app: App, val host: DesktopAppHost) : IncomingApp()
+	}
+
+	companion object {
+		private const val FOLD_DWELL_MS = 550L
 	}
 }

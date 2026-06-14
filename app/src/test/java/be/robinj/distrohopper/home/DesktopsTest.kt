@@ -50,7 +50,7 @@ class DesktopsTest {
 			val pager = activity.findViewById<WidgetsPager>(R.id.vgWidgets)
 			val host = WidgetTestSupport.host(activity)
 			val appManager = requireNotNull(activity.appManager)
-			val desktops = Desktops(host, appManager, requireNotNull(activity.desktopAppHost))
+			val desktops = Desktops(host, appManager, requireNotNull(activity.desktopAppHost), requireNotNull(activity.desktopFolderHost))
 
 			// A widget on desktop 1, a pin on desktop 3 //
 			WidgetTestSupport.addWidget(activity, host, pager.pageAt(1), 11, 0, 0, 2, 2)
@@ -66,7 +66,7 @@ class DesktopsTest {
 			val host = WidgetTestSupport.host(activity)
 			val appManager = requireNotNull(activity.appManager)
 			val desktopAppHost = requireNotNull(activity.desktopAppHost)
-			val desktops = Desktops(host, appManager, desktopAppHost)
+			val desktops = Desktops(host, appManager, desktopAppHost, requireNotNull(activity.desktopFolderHost))
 
 			// Only a desktop app, on desktop 4 //
 			desktopAppHost.pinAt(WidgetTestSupport.app(activity, "com.example.alpha"), 0, 0, 4)
@@ -92,7 +92,7 @@ class DesktopsTest {
 			host.persist()
 			pager.pagesChanged()
 
-			Desktops(host, appManager, requireNotNull(activity.desktopAppHost)).deleteDesktop(1)
+			Desktops(host, appManager, requireNotNull(activity.desktopAppHost), requireNotNull(activity.desktopFolderHost)).deleteDesktop(1)
 			ActivityTestSupport.drainTasks()
 
 			// Desktop 1's own contents are gone //
@@ -117,7 +117,7 @@ class DesktopsTest {
 			desktopAppHost.pinAt(appA, 0, 0, 1)
 			desktopAppHost.pinAt(appB, 0, 0, 2)
 
-			Desktops(host, appManager, desktopAppHost).deleteDesktop(1)
+			Desktops(host, appManager, desktopAppHost, requireNotNull(activity.desktopFolderHost)).deleteDesktop(1)
 			ActivityTestSupport.drainTasks()
 
 			// appA (desktop 1) gone; appB shifted down from desktop 2 to desktop 1 //

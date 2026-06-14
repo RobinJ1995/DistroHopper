@@ -2,6 +2,7 @@ package be.robinj.distrohopper.home
 
 import be.robinj.distrohopper.AppManager
 import be.robinj.distrohopper.widgets.DesktopAppHost
+import be.robinj.distrohopper.widgets.DesktopFolderHost
 import be.robinj.distrohopper.widgets.WidgetHost
 import kotlin.math.max
 
@@ -21,20 +22,22 @@ class Desktops(
 	private val widgetHost: WidgetHost,
 	private val appManager: AppManager,
 	private val desktopAppHost: DesktopAppHost,
+	private val desktopFolderHost: DesktopFolderHost,
 ) {
-	/** Highest occupied desktop index across widgets, pins and desktop apps (or -1 when empty). */
+	/** Highest occupied desktop index across widgets, pins, desktop apps and folders (or -1). */
 	fun highestOccupiedDesktop(): Int =
 		max(
 			max(this.widgetHost.highestWidgetDesktop(), this.appManager.highestPinnedDesktop()),
-			this.desktopAppHost.highestDesktop())
+			max(this.desktopAppHost.highestDesktop(), this.desktopFolderHost.highestDesktop()))
 
 	/**
-	 * Deletes desktop [page]: removes its widgets, its pinned apps and its desktop
-	 * apps, and shifts every higher desktop down by one.
+	 * Deletes desktop [page]: removes its widgets, its pinned apps, its desktop
+	 * apps and its folders, and shifts every higher desktop down by one.
 	 */
 	fun deleteDesktop(page: Int) {
 		this.appManager.removePinnedDesktop(page)
 		this.appManager.savePinnedApps()
+		this.desktopFolderHost.removeDesktopPage(page)
 		this.desktopAppHost.removeDesktopPage(page)
 		// Re-derives the pager (which reads the now-updated pinned desktops too) //
 		this.widgetHost.removeWidgetPage(page)

@@ -1,0 +1,364 @@
+package be.robinj.distrohopper.widgets
+
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import be.robinj.distrohopper.App
+import be.robinj.distrohopper.AppRepository
+import be.robinj.distrohopper.HomeActivity
+import be.robinj.distrohopper.dev.Log
+import be.robinj.distrohopper.folder.FolderMember
+
+/**
+ * Owns the folders pinned to the desktops — the folder-world counterpart of
+ * [DesktopAppHost]. Each folder is a [DesktopFolderView] (a 2x2 grid child) whose
+ * contents are apps and widgets; widget members live off-grid as retained
+ * [WidgetContainer]s (binding kept) shown live only in the folder overlay.
+ *
+ * Uniqueness mirrors the desktop's single-copy invariant: an app or widget is
+ * loose on the desktop **or** in one folder, never both. Creating/adding removes
+ * the loose view; deleting a folder removes its members (apps vanish, widgets are
+ * unbound); extracting returns a member to the grid.
+ */
+class DesktopFolderHost(
+	private val parent: HomeActivity,
+	private val vgWidgets: WidgetsPager,
+	private val repository: AppRepository,
+	private val widgetHost: WidgetHost,
+	private val desktopAppHost: DesktopAppHost,
+) {
+	private val persistence = DesktopFolderPersistence(parent.applicationContext)
+
+	/** Foldered widgets' containers, kept off-grid (binding alive) for the overlay. */
+	private val retainedWidgets = HashMap<Int, WidgetContainer>()
+
+	// --- Restore / persist -------------------------------------------------
+
+	/** Recreates folder views from persistence; run AFTER widgets and desktop apps restore. */
+	fun restore() {
+		val appMap = this.repository.installedAppsMap()
+		var changed = false
+
+		for (saved in this.persistence.load()) {
+			val keptCells = saved.cells.filter { cell ->
+				when (val member = cell.member) {
+					is FolderMember.AppMember -> appMap.containsKey(member.key)
+					is FolderMember.WidgetMember -> this.widgetHost.hasWidget(member.appWidgetId)
+				}
+			}
+			val layout = saved.copy(cells = keptCells)
+
+			if (layout.appCount < 1 || layout.cells.size < 2) {
+				changed = true // Dissolved: too few members left; return them loose //
+				this.returnMembersLoose(layout, appMap)
+				continue
+			}
+			if (keptCells.size != saved.cells.size) {
+				changed = true
+			}
+
+			val page = layout.page.coerceIn(0, WidgetsPager.MAX_PAGES - 1)
+			val container = this.vgWidgets.pageAt(page)
+			val placed = if (WidgetGrid.fits(container.collectOccupied(null), layout.toGridRect())) {
+				layout.copy(page = page)
+			} else {
+				val free = WidgetGrid.findFreeRect(container.collectOccupied(null),
+					DesktopFolderLayout.SPAN, DesktopFolderLayout.SPAN)
+				changed = true
+				if (free == null) {
+					Log.getInstance().w(this.javaClass.simpleName, "No room for desktop folder on $page")
+					this.returnMembersLoose(layout, appMap)
+					continue
+				}
+				layout.copy(col = free.col, row = free.row, page = page)
+			}
+
+			for (id in placed.widgetIds) {
+				this.widgetHost.createDetachedWidget(id)?.let { this.retainedWidgets[id] = it }
+			}
+			this.addFolderView(placed, appMap)
+		}
+
+		this.vgWidgets.pagesChanged()
+		if (changed) {
+			this.persist()
+		}
+	}
+
+	fun persist() {
+		val layouts = ArrayList<DesktopFolderLayout>()
+		for (page in 0 until this.vgWidgets.childCount) {
+			val container = this.vgWidgets.pageAt(page)
+			for (view in this.foldersOf(container)) {
+				val lp = view.layoutParams as WidgetsContainer.LayoutParams
+				layouts.add(view.layout.copy(col = lp.col, row = lp.row, page = page))
+			}
+		}
+
+		this.persistence.save(layouts)
+	}
+
+	// --- Mutations ---------------------------------------------------------
+
+	/** Creates a folder from two loose desktop apps, at [a]'s cell. */
+	fun createFolder(a: DesktopAppView, b: DesktopAppView) {
+		val container = a.parent as? WidgetsContainer ?: return
+		val page = this.pageOf(container)
+		val lp = a.layoutParams as WidgetsContainer.LayoutParams
+		val col = lp.col
+		val row = lp.row
+
+		this.desktopAppHost.remove(a)
+		this.desktopAppHost.remove(b)
+
+		var layout = DesktopFolderLayout(java.util.UUID.randomUUID().toString(), col, row, page)
+		layout = layout.withApp(a.app.profileScopedKey)!!.withApp(b.app.profileScopedKey)!!
+
+		this.addFolderView(layout, this.repository.installedAppsMap())
+		this.persist()
+		this.vgWidgets.pagesChanged()
+	}
+
+	/** Adds a loose desktop app [view] into folder [folderId]; toast + no-op if full. */
+	fun addApp(folderId: String, view: DesktopAppView) {
+		val folderView = this.folderViewFor(folderId) ?: return
+		val newLayout = folderView.layout.withApp(view.app.profileScopedKey)
+		if (newLayout == null) {
+			android.widget.Toast.makeText(this.parent,
+				be.robinj.distrohopper.R.string.folder_full, android.widget.Toast.LENGTH_SHORT).show()
+			return
+		}
+
+		this.desktopAppHost.remove(view)
+		this.replaceFolderView(folderView, newLayout)
+		this.persist()
+	}
+
+	/** Adds a loose desktop widget [container] into folder [folderId]; toast if it doesn't fit. */
+	fun addWidget(folderId: String, container: WidgetContainer) {
+		val folderView = this.folderViewFor(folderId) ?: return
+		val lp = container.layoutParams as WidgetsContainer.LayoutParams
+		val newLayout = folderView.layout.withWidget(container.appWidgetId, lp.colSpan, lp.rowSpan)
+		if (newLayout == null) {
+			android.widget.Toast.makeText(this.parent,
+				be.robinj.distrohopper.R.string.folder_full, android.widget.Toast.LENGTH_SHORT).show()
+			return
+		}
+
+		(container.parent as? WidgetsContainer)?.removeView(container)
+		this.retainedWidgets[container.appWidgetId] = container
+		this.widgetHost.persist()
+
+		this.replaceFolderView(folderView, newLayout)
+		this.persist()
+		this.vgWidgets.pagesChanged()
+	}
+
+	/** A retained, off-grid widget container for a folder member (for the overlay). */
+	fun retainedWidget(appWidgetId: Int): WidgetContainer? = this.retainedWidgets[appWidgetId]
+
+	/** Extracts a member back onto the desktop near [col],[row] of [page]; dissolves at <2. */
+	fun removeMember(folderId: String, member: FolderMember, col: Int, row: Int, page: Int) {
+		val folderView = this.folderViewFor(folderId) ?: return
+		val appMap = this.repository.installedAppsMap()
+
+		when (member) {
+			is FolderMember.AppMember -> appMap[member.key]?.let {
+				this.desktopAppHost.pinAt(it, col, row, page)
+			}
+			is FolderMember.WidgetMember -> this.retainedWidgets.remove(member.appWidgetId)?.let {
+				this.placeWidget(it, col, row, page)
+			}
+		}
+
+		val remaining = folderView.layout.without(member)
+		if (remaining.appCount < 1 || remaining.cells.size < 2) {
+			this.dissolve(folderView, remaining, appMap, exclude = member)
+		} else {
+			this.replaceFolderView(folderView, remaining)
+		}
+		this.persist()
+		this.vgWidgets.pagesChanged()
+	}
+
+	/** Moves the folder [view] to [col],[row] on its desktop, keeping it put if taken. */
+	fun moveTo(view: DesktopFolderView, col: Int, row: Int) {
+		val container = view.parent as? WidgetsContainer ?: return
+		val lp = view.layoutParams as WidgetsContainer.LayoutParams
+		if (! WidgetGrid.fits(container.collectOccupied(view),
+				DesktopFolderLayout(view.folderId, col, row).toGridRect())) {
+			return
+		}
+
+		lp.col = col
+		lp.row = row
+		container.requestLayout()
+		this.persist()
+	}
+
+	/** Deletes the folder and its members (apps vanish; widgets are unbound). */
+	fun deleteFolder(folderId: String) {
+		val folderView = this.folderViewFor(folderId) ?: return
+		for (id in folderView.layout.widgetIds) {
+			this.retainedWidgets.remove(id)?.let { this.widgetHost.removeWidget(it) }
+		}
+		(folderView.parent as? WidgetsContainer)?.removeView(folderView)
+
+		this.persist()
+		this.vgWidgets.pagesChanged()
+	}
+
+	/** Drops [app] from every desktop folder it is in (e.g. when uninstalled), dissolving at <2. */
+	fun unpinFromAllDesktops(app: App) {
+		val key = app.profileScopedKey
+		val appMap = this.repository.installedAppsMap()
+		var changed = false
+
+		for (page in 0 until this.vgWidgets.childCount) {
+			for (view in this.foldersOf(this.vgWidgets.pageAt(page))) {
+				if (! view.layout.appKeys.contains(key)) {
+					continue
+				}
+				changed = true
+				val remaining = view.layout.without(FolderMember.AppMember(key))
+				if (remaining.appCount < 1 || remaining.cells.size < 2) {
+					this.dissolve(view, remaining, appMap, FolderMember.AppMember(key))
+				} else {
+					this.replaceFolderView(view, remaining)
+				}
+			}
+		}
+
+		if (changed) {
+			this.persist()
+			this.vgWidgets.pagesChanged()
+		}
+	}
+
+	fun removeDesktopPage(page: Int) {
+		if (page in 0 until this.vgWidgets.childCount) {
+			val container = this.vgWidgets.pageAt(page)
+			for (view in this.foldersOf(container)) {
+				container.removeView(view)
+			}
+			for (higher in (page + 1) until this.vgWidgets.childCount) {
+				val from = this.vgWidgets.pageAt(higher)
+				val to = this.vgWidgets.pageAt(higher - 1)
+				for (view in this.foldersOf(from)) {
+					val layoutParams = view.layoutParams
+					from.removeView(view)
+					to.addView(view, layoutParams)
+				}
+			}
+		}
+
+		this.persist()
+		this.vgWidgets.pagesChanged()
+	}
+
+	fun highestDesktop(): Int {
+		for (i in this.vgWidgets.childCount - 1 downTo 0) {
+			if (this.foldersOf(this.vgWidgets.pageAt(i)).isNotEmpty()) {
+				return i
+			}
+		}
+
+		return -1
+	}
+
+	// --- Helpers -----------------------------------------------------------
+
+	private fun addFolderView(layout: DesktopFolderLayout, appMap: Map<String, App>) {
+		val apps = layout.appKeys.mapNotNull { appMap[it] }
+		if (apps.isEmpty()) {
+			return
+		}
+
+		val icons = ArrayList<Drawable>()
+		// Member icons in cell order so the mini-grid mirrors the contents layout.
+		for (cell in layout.cells) {
+			when (val member = cell.member) {
+				is FolderMember.AppMember -> appMap[member.key]?.let { icons.add(it.icon.drawable) }
+				is FolderMember.WidgetMember -> icons.add(ColorDrawable(Color.argb(160, 200, 200, 200)))
+			}
+		}
+
+		val view = DesktopFolderView(this.parent, apps.first(), layout, icons) { this.open(it) }
+		this.vgWidgets.pageAt(layout.page).addView(view, WidgetsContainer.LayoutParams(
+			layout.col, layout.row, DesktopFolderLayout.SPAN, DesktopFolderLayout.SPAN))
+	}
+
+	private fun replaceFolderView(view: DesktopFolderView, newLayout: DesktopFolderLayout) {
+		val container = view.parent as? WidgetsContainer ?: return
+		val lp = view.layoutParams as WidgetsContainer.LayoutParams
+		container.removeView(view)
+		this.addFolderView(newLayout.copy(col = lp.col, row = lp.row, page = this.pageOf(container)),
+			this.repository.installedAppsMap())
+	}
+
+	private fun dissolve(
+		view: DesktopFolderView,
+		remaining: DesktopFolderLayout,
+		appMap: Map<String, App>,
+		exclude: FolderMember,
+	) {
+		(view.parent as? WidgetsContainer)?.removeView(view)
+		this.returnMembersLoose(remaining, appMap)
+	}
+
+	/** Returns a layout's members to the desktop as loose apps / widgets. */
+	private fun returnMembersLoose(layout: DesktopFolderLayout, appMap: Map<String, App>) {
+		val page = layout.page.coerceIn(0, WidgetsPager.MAX_PAGES - 1)
+		for (key in layout.appKeys) {
+			appMap[key]?.let { this.desktopAppHost.pinAt(it, 0, 0, page) }
+		}
+		for (id in layout.widgetIds) {
+			val container = this.retainedWidgets.remove(id) ?: this.widgetHost.createDetachedWidget(id)
+			container?.let { this.placeWidget(it, 0, 0, page) }
+		}
+	}
+
+	private fun placeWidget(container: WidgetContainer, col: Int, row: Int, page: Int) {
+		val grid = this.vgWidgets.pageAt(page.coerceIn(0, WidgetsPager.MAX_PAGES - 1))
+		val lp = container.layoutParams as? WidgetsContainer.LayoutParams
+			?: WidgetsContainer.LayoutParams(col, row, 1, 1)
+		val occupied = grid.collectOccupied(null)
+		val target = if (WidgetGrid.fits(occupied,
+				WidgetLayout(container.appWidgetId, col, row, lp.colSpan, lp.rowSpan))) {
+			WidgetLayout(container.appWidgetId, col, row, lp.colSpan, lp.rowSpan)
+		} else {
+			WidgetGrid.findFreeRect(occupied, lp.colSpan, lp.rowSpan) ?: return
+		}
+		(container.parent as? WidgetsContainer)?.removeView(container)
+		grid.addView(container, WidgetsContainer.LayoutParams(
+			target.col, target.row, target.colSpan, target.rowSpan))
+		this.widgetHost.persist()
+	}
+
+	private fun open(view: DesktopFolderView) {
+		DesktopFolderOverlay(this.parent, this, view.layout,
+			this.repository.installedAppsMap()).show()
+	}
+
+	private fun folderViewFor(folderId: String): DesktopFolderView? {
+		for (page in 0 until this.vgWidgets.childCount) {
+			this.foldersOf(this.vgWidgets.pageAt(page)).firstOrNull { it.folderId == folderId }
+				?.let { return it }
+		}
+
+		return null
+	}
+
+	private fun foldersOf(container: WidgetsContainer): List<DesktopFolderView> =
+		(0 until container.childCount).mapNotNull { container.getChildAt(it) as? DesktopFolderView }
+
+	private fun pageOf(container: WidgetsContainer): Int {
+		for (i in 0 until this.vgWidgets.childCount) {
+			if (this.vgWidgets.pageAt(i) === container) {
+				return i
+			}
+		}
+
+		return 0
+	}
+}

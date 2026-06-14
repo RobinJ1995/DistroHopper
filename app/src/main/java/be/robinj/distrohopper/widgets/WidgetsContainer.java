@@ -367,8 +367,53 @@ public class WidgetsContainer extends ViewGroup
 	}
 
 	/**
-	 * Every occupied rectangle on this desktop — widgets <em>and</em> desktop
-	 * apps — so collision checks keep the two kinds from overlapping. Every
+	 * Grid cells occupied by the desktop folders (a {@link DesktopFolderLayout#SPAN}-
+	 * square each), optionally excluding one. Folded into {@link #collectOccupied}
+	 * so widgets and desktop apps can't overlap a folder.
+	 */
+	public List<WidgetLayout> collectFolderCells (final View exclude)
+	{
+		final List<WidgetLayout> layouts = new ArrayList<> ();
+
+		for (int i = 0; i < this.getChildCount (); i++)
+		{
+			final View child = this.getChildAt (i);
+
+			if (child == exclude || ! (child instanceof DesktopFolderView))
+				continue;
+
+			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
+
+			layouts.add (new WidgetLayout (
+				DesktopAppLayout.NO_WIDGET_ID, lp.col, lp.row, lp.colSpan, lp.rowSpan));
+		}
+
+		return layouts;
+	}
+
+	/** The desktop child (app, widget or folder) whose rectangle covers ([col], [row]), or null. */
+	public View findViewAtCell (final int col, final int row)
+	{
+		for (int i = 0; i < this.getChildCount (); i++)
+		{
+			final View child = this.getChildAt (i);
+
+			if (! (child instanceof WidgetContainer || child instanceof DesktopAppView
+					|| child instanceof DesktopFolderView))
+				continue;
+
+			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
+			if (col >= lp.col && col < lp.col + lp.colSpan
+					&& row >= lp.row && row < lp.row + lp.rowSpan)
+				return child;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Every occupied rectangle on this desktop — widgets, desktop apps <em>and</em>
+	 * folders — so collision checks keep the kinds from overlapping. Every
 	 * placement/move/resize path must validate against this, not the
 	 * widgets-only {@link #collectLayouts(View)}.
 	 */
@@ -376,6 +421,7 @@ public class WidgetsContainer extends ViewGroup
 	{
 		final List<WidgetLayout> layouts = this.collectLayouts (exclude);
 		layouts.addAll (this.collectAppCells (exclude));
+		layouts.addAll (this.collectFolderCells (exclude));
 
 		return layouts;
 	}

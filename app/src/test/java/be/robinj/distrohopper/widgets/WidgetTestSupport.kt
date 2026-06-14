@@ -109,6 +109,25 @@ internal object WidgetTestSupport {
 	fun desktopAppsOn(grid: WidgetsContainer): List<DesktopAppView> =
 		(0 until grid.childCount).mapNotNull { grid.getChildAt(it) as? DesktopAppView }
 
+	/** The desktop-folder views on a grid page, in child order. */
+	fun foldersOn(grid: WidgetsContainer): List<DesktopFolderView> =
+		(0 until grid.childCount).mapNotNull { grid.getChildAt(it) as? DesktopFolderView }
+
+	/** A [DesktopFolderHost] bound to the grid's pager (widening the occupied supplier for folders). */
+	fun desktopFolderHost(
+		activity: HomeActivity,
+		grid: WidgetsContainer,
+		appHost: DesktopAppHost,
+		widgetHost: WidgetHost,
+	): DesktopFolderHost {
+		val pager = pagerOf(grid)
+		val host = DesktopFolderHost(activity, pager, activity.appManager.repository, widgetHost, appHost)
+		val prev = pager.occupiedDesktopSupplier
+		pager.occupiedDesktopSupplier = { maxOf(prev(), host.highestDesktop()) }
+
+		return host
+	}
+
 	/** Measures and lays out the grid (square cells) so cell sizes are non-zero. */
 	fun layoutGrid(grid: WidgetsContainer) {
 		grid.setPadding(0, 0, 0, 0)
