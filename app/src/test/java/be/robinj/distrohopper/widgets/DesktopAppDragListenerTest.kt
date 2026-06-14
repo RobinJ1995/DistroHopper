@@ -36,7 +36,14 @@ import org.robolectric.util.ReflectionHelpers
 class DesktopAppDragListenerTest {
 	private lateinit var scenario: ActivityScenario<HomeActivity>
 
-	@Before fun setUp() { this.scenario = ActivityTestSupport.launchHome() }
+	@Before fun setUp() {
+		this.scenario = ActivityTestSupport.launchHome()
+		// HomeActivity.onCreate() calls WidgetGrid.init() which sets COLS/ROWS from
+		// the Robolectric screen config (non-square). Reset to the historic 8×8
+		// default so pixel coordinates in this test remain consistent.
+		WidgetGrid.COLS = 8
+		WidgetGrid.ROWS = 8
+	}
 	@After fun tearDown() { this.scenario.close() }
 
 	private class Fixture(
