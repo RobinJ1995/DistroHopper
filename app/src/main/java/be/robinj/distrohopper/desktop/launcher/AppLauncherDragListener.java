@@ -28,11 +28,8 @@ public class AppLauncherDragListener implements ViewGroup.OnDragListener
 		try
 		{
 			// Widget drags are handled by WidgetsContainer_DragListener and the trash's
-			// own listener. A desktop app dragged onto the bar is a move-to-bar,
-			// handled by the bar container's LauncherDragListener (and the trash) —
-			// not here, where it would be misread as a reorder of this icon //
-			if (event.getLocalState () instanceof WidgetContainer
-					|| event.getLocalState () instanceof DesktopAppView)
+			// own listener //
+			if (event.getLocalState () instanceof WidgetContainer)
 				return false;
 
 			AppLauncher appLauncher = (AppLauncher) view;
@@ -46,7 +43,14 @@ public class AppLauncherDragListener implements ViewGroup.OnDragListener
 					this.appManager.draggedPinnedAppOver (app);
 					break;
 				case DragEvent.ACTION_DROP:
+					// Commits at the previewed slot. A desktop app dragged here is a
+					// move: it gets pinned to the bar by droppedPinnedApp (it rode in
+					// on a dash-style placeholder), then removed from the desktop //
 					this.appManager.droppedPinnedApp ();
+					if (event.getLocalState () instanceof DesktopAppView
+							&& this.appManager.getParent ().getDesktopAppHost () != null)
+						this.appManager.getParent ().getDesktopAppHost ()
+							.remove ((DesktopAppView) event.getLocalState ());
 					this.appManager.stoppedDraggingPinnedApp ();
 					break;
 				case DragEvent.ACTION_DRAG_ENDED:

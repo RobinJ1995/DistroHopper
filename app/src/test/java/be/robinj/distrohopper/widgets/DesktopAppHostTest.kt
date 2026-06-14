@@ -149,6 +149,40 @@ class DesktopAppHostTest {
 		}
 	}
 
+	@Test fun aPinnedDesktopAppOccupiesA2x2Block() {
+		this.scenario.onActivity { activity ->
+			val grid = WidgetTestSupport.standaloneGrid(activity)
+			val host = WidgetTestSupport.desktopHost(activity, grid)
+
+			host.pinAt(WidgetTestSupport.app(activity, "com.example.alpha"), 1, 1, 0)
+
+			val lp = WidgetTestSupport.desktopAppsOn(grid).single()
+				.layoutParams as WidgetsContainer.LayoutParams
+			assertEquals(DesktopAppLayout.SPAN, lp.colSpan)
+			assertEquals(DesktopAppLayout.SPAN, lp.rowSpan)
+			assertEquals(2, lp.colSpan) // The chosen footprint, guarding against a 1x1 regression //
+		}
+	}
+
+	@Test fun twoDesktopAppsCannotOverlapTheir2x2Blocks() {
+		this.scenario.onActivity { activity ->
+			val grid = WidgetTestSupport.standaloneGrid(activity)
+			val host = WidgetTestSupport.desktopHost(activity, grid)
+			val alpha = WidgetTestSupport.app(activity, "com.example.alpha")
+			val beta = WidgetTestSupport.app(activity, "com.example.beta")
+
+			host.pinAt(alpha, 0, 0, 0) // Occupies cols 0-1, rows 0-1 //
+			host.pinAt(beta, 1, 1, 0)  // Would overlap a 2x2 alpha (a 1x1 would not) //
+
+			val betaLp = WidgetTestSupport.desktopAppsOn(grid)
+				.first { it.key == beta.profileScopedKey }
+				.layoutParams as WidgetsContainer.LayoutParams
+			// Relocated clear of alpha's block //
+			assertFalse(betaLp.col == 1 && betaLp.row == 1)
+			assertEquals(2, WidgetTestSupport.desktopAppsOn(grid).size)
+		}
+	}
+
 	@Test fun moveToRepositionsWithinTheDesktop() {
 		this.scenario.onActivity { activity ->
 			val grid = WidgetTestSupport.standaloneGrid(activity)

@@ -76,9 +76,19 @@ class DesktopAppView(
 		this.dragGrabOffsetY = (this.lastDownRawY - location[1]).toInt() - this.top
 
 		val clip = ClipData.newPlainText("desktopApp", this.key)
-		this.startDragAndDrop(clip, View.DragShadowBuilder(this), this, 0)
+		if (! this.startDragAndDrop(clip, View.DragShadowBuilder(this), this, 0)) {
+			return
+		}
 
-		// Not via appManager: keep this view-only, like WidgetContainer's drag //
-		(this.context as? HomeActivity)?.let { LauncherBarBinder.startedDragging(it) }
+		// Open the launcher bar's placeholder slot too — exactly like a dash-app
+		// drag — so dropping on the bar gets the same "create space" preview and
+		// drops at the hovered position, not just appended to the end. The bar
+		// listeners then complete the move (unpin from the desktop) on drop //
+		val appManager = (this.context as? HomeActivity)?.appManager
+		if (appManager != null) {
+			appManager.startedDraggingDashApp(this.pinnedApp)
+		} else {
+			(this.context as? HomeActivity)?.let { LauncherBarBinder.startedDragging(it) }
+		}
 	}
 }

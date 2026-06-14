@@ -9,6 +9,8 @@ import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.DragEvents
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.desktop.launcher.AppLauncher
+import be.robinj.distrohopper.desktop.launcher.AppLauncherDragListener
 import be.robinj.distrohopper.desktop.launcher.LauncherDragListener
 import be.robinj.distrohopper.desktop.launcher.TrashDragListener
 import be.robinj.distrohopper.widgets.WidgetTestSupport.CELL
@@ -195,12 +197,40 @@ class DesktopAppDragListenerTest {
 			val view = WidgetTestSupport.desktopAppsOn(f.grid).single()
 			val barListener = LauncherDragListener(activity.appManager)
 
+			// The drag opens the bar's placeholder slot (as the real drag does) //
+			activity.appManager.startedDraggingDashApp(alpha)
 			barListener.onDrag(activity.findViewById(R.id.llLauncher),
 				DragEvents.obtain(DragEvent.ACTION_DROP, localState = view))
 
 			// Moved: pinned to the bar, gone from the desktop //
 			assertTrue(activity.appManager.isPinned(alpha))
 			assertFalse(f.host.isPinnedOnDesktop(alpha))
+		}
+	}
+
+	@Test fun desktopAppDroppedOntoABarIconLandsAtThatPositionNotTheEnd() {
+		this.scenario.onActivity { activity ->
+			val f = this.fixture(activity)
+			val first = WidgetTestSupport.app(activity, "com.example.beta")
+			val second = WidgetTestSupport.app(activity, "com.example.gamma")
+			activity.appManager.pin(first, false, false, true)
+			activity.appManager.pin(second, false, false, true)
+			val moved = WidgetTestSupport.app(activity, "com.example.alpha")
+			f.host.pinAt(moved, 0, 0, 0)
+			val view = WidgetTestSupport.desktopAppsOn(f.grid).single()
+
+			// Drag toward the bar (placeholder opens), hover the first icon so the
+			// gap shifts to index 0, then drop on it //
+			activity.appManager.startedDraggingDashApp(moved)
+			val firstIcon = activity.findViewById<android.widget.LinearLayout>(R.id.llLauncherPinnedApps)
+				.findViewWithTag<AppLauncher>(first)
+			val iconListener = AppLauncherDragListener(activity.appManager)
+			iconListener.onDrag(firstIcon, DragEvents.obtain(DragEvent.ACTION_DRAG_ENTERED, localState = view))
+			iconListener.onDrag(firstIcon, DragEvents.obtain(DragEvent.ACTION_DROP, localState = view))
+
+			// Inserted at the hovered position, not appended to the end //
+			assertEquals(moved, activity.appManager.pinned[0])
+			assertFalse(f.host.isPinnedOnDesktop(moved))
 		}
 	}
 
@@ -221,6 +251,33 @@ class DesktopAppDragListenerTest {
 			assertEquals(0, lp(widget).col)
 			assertEquals(0, lp(widget).row)
 			assertEquals(4, lp(WidgetTestSupport.desktopAppsOn(f.grid).single()).col)
+		}
+	}
+
+	@Test fun repositioningOnTheDesktopAfterTheBarPlaceholderOpenedDoesNotPinToTheBar() {
+		this.scenario.onActivity { activity ->
+			val f = this.fixture(activity)
+			val alpha = WidgetTestSupport.app(activity, "com.example.alpha")
+			f.host.pinAt(alpha, 0, 0, 0)
+			val view = WidgetTestSupport.desktopAppsOn(f.grid).single()
+			view.dragGrabOffsetX = CELL / 2
+			view.dragGrabOffsetY = CELL / 2
+
+			// The drag opens the bar's placeholder (as the real drag does), but the
+			// app is dropped back on the desktop, not the bar //
+			activity.appManager.startedDraggingDashApp(alpha)
+			this.drag(f, DragEvent.ACTION_DROP, 5, 5, localState = view)
+			// The bar's end-of-drag cleanup runs (posted) //
+			LauncherDragListener(activity.appManager).onDrag(
+				activity.findViewById(R.id.llLauncher),
+				DragEvents.obtain(DragEvent.ACTION_DRAG_ENDED, localState = view))
+			ActivityTestSupport.drainTasks()
+
+			// Stayed on the desktop (repositioned); the placeholder left no bar pin //
+			assertTrue(f.host.isPinnedOnDesktop(alpha))
+			assertFalse(activity.appManager.isPinned(alpha))
+			assertEquals(5, lp(view).col)
+			assertEquals(5, lp(view).row)
 		}
 	}
 

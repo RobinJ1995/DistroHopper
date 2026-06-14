@@ -58,13 +58,13 @@ class DesktopAppHost(
 			val container = this.vgWidgets.pageAt(page)
 			val occupied = container.collectOccupied(null)
 
-			val placed = if (WidgetGrid.fits(occupied, WidgetLayout(
-					DesktopAppLayout.NO_WIDGET_ID, layout.col, layout.row, 1, 1))) {
+			val placed = if (WidgetGrid.fits(occupied,
+					DesktopAppLayout(layout.key, layout.col, layout.row, page).toGridRect())) {
 				DesktopAppLayout(layout.key, layout.col, layout.row, page)
 			} else {
 				// The saved cell is taken (e.g. by a widget restored before us):
-				// re-pack into the first free cell, or drop it if the page is full //
-				val free = WidgetGrid.findFreeRect(occupied, 1, 1)
+				// re-pack into the first free block, or drop it if the page is full //
+				val free = WidgetGrid.findFreeRect(occupied, DesktopAppLayout.SPAN, DesktopAppLayout.SPAN)
 				changed = true
 
 				if (free == null) {
@@ -103,11 +103,11 @@ class DesktopAppHost(
 		val container = this.vgWidgets.pageAt(targetPage)
 		val occupied = container.collectOccupied(null)
 
-		val candidate = WidgetLayout(DesktopAppLayout.NO_WIDGET_ID, col, row, 1, 1)
+		val candidate = DesktopAppLayout(app.profileScopedKey, col, row, targetPage).toGridRect()
 		val target = if (WidgetGrid.fits(occupied, candidate)) {
 			candidate
 		} else {
-			WidgetGrid.findFreeRect(occupied, 1, 1)
+			WidgetGrid.findFreeRect(occupied, DesktopAppLayout.SPAN, DesktopAppLayout.SPAN)
 		} ?: return false
 
 		this.addAppView(app, DesktopAppLayout(app.profileScopedKey, target.col, target.row, targetPage))
@@ -126,7 +126,7 @@ class DesktopAppHost(
 		val container = view.parent as? WidgetsContainer ?: return
 		val lp = view.layoutParams as WidgetsContainer.LayoutParams
 
-		val candidate = WidgetLayout(DesktopAppLayout.NO_WIDGET_ID, col, row, 1, 1)
+		val candidate = DesktopAppLayout(view.key, col, row, 0).toGridRect()
 		if (! WidgetGrid.fits(container.collectOccupied(view), candidate)) {
 			return // Revert to the previous position //
 		}
@@ -219,8 +219,8 @@ class DesktopAppHost(
 
 	private fun addAppView(app: App, layout: DesktopAppLayout) {
 		val view = DesktopAppView(this.parent, app, layout)
-		this.vgWidgets.pageAt(layout.page).addView(
-			view, WidgetsContainer.LayoutParams(layout.col, layout.row, 1, 1))
+		this.vgWidgets.pageAt(layout.page).addView(view, WidgetsContainer.LayoutParams(
+			layout.col, layout.row, DesktopAppLayout.SPAN, DesktopAppLayout.SPAN))
 	}
 
 	/** @return whether any view was removed. */

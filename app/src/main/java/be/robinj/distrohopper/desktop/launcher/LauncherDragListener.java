@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
-import be.robinj.distrohopper.widgets.DesktopAppHost;
 import be.robinj.distrohopper.widgets.DesktopAppView;
 import be.robinj.distrohopper.widgets.WidgetContainer;
 
@@ -32,33 +31,6 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 			if (event.getLocalState () instanceof WidgetContainer)
 				return false;
 
-			// A desktop app dragged onto the bar is a move: unpin it from the
-			// desktop and pin it to the bar. The reorder placeholder machinery
-			// doesn't apply (it was never a bar icon), so handle it separately //
-			if (event.getLocalState () instanceof DesktopAppView)
-			{
-				final DesktopAppView appView = (DesktopAppView) event.getLocalState ();
-
-				switch (event.getAction ())
-				{
-					case DragEvent.ACTION_DROP:
-						final DesktopAppHost host = this.appManager.getParent ().getDesktopAppHost ();
-						if (host != null)
-						{
-							host.remove (appView);
-							this.appManager.pin (appView.getApp (), true, false, true);
-						}
-						this.appManager.stoppedDraggingPinnedApp ();
-						break;
-					case DragEvent.ACTION_DRAG_ENDED:
-						// Restores the bar chrome (trash/bfb) once the drag is over //
-						view.post (() -> this.appManager.stoppedDraggingPinnedApp ());
-						break;
-				}
-
-				return true;
-			}
-
 			switch (event.getAction ())
 			{
 				case DragEvent.ACTION_DRAG_ENTERED:
@@ -66,8 +38,15 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 					break;
 				case DragEvent.ACTION_DROP:
 					// A drop on the bar itself — most often on the empty slot kept
-					// open for the dragged icon — commits the previewed order //
+					// open for the dragged icon — commits the previewed order. A
+					// desktop app rode in on a dash-style placeholder, so the same
+					// commit pins it to the bar; then remove it from the desktop to
+					// complete the move //
 					this.appManager.droppedPinnedApp ();
+					if (event.getLocalState () instanceof DesktopAppView
+							&& this.appManager.getParent ().getDesktopAppHost () != null)
+						this.appManager.getParent ().getDesktopAppHost ()
+							.remove ((DesktopAppView) event.getLocalState ());
 					this.appManager.stoppedDraggingPinnedApp ();
 					break;
 				// No ACTION_DRAG_EXITED case: spurious exits fire while the icons

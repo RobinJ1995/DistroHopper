@@ -144,21 +144,21 @@ internal class WidgetsContainer_DragListener(
 
 		class DesktopApp(val view: DesktopAppView, val host: DesktopAppHost) : Drag() {
 			override val widgetId = DesktopAppLayout.NO_WIDGET_ID
-			override val colSpan = 1
-			override val rowSpan = 1
+			override val colSpan = DesktopAppLayout.SPAN
+			override val rowSpan = DesktopAppLayout.SPAN
 			override val exclude get() = this.view
 			override fun grabOffsetX(grid: WidgetsContainer) = this.view.dragGrabOffsetX
 			override fun grabOffsetY(grid: WidgetsContainer) = this.view.dragGrabOffsetY
 		}
 
-		/** A non-view drag (from the dash or the bar): centre the 1x1 under the finger. */
+		/** A non-view drag (from the dash or the bar): centre the block under the finger. */
 		sealed class IncomingApp : Drag() {
 			override val widgetId = DesktopAppLayout.NO_WIDGET_ID
-			override val colSpan = 1
-			override val rowSpan = 1
+			override val colSpan = DesktopAppLayout.SPAN
+			override val rowSpan = DesktopAppLayout.SPAN
 			override val exclude: View? = null
-			override fun grabOffsetX(grid: WidgetsContainer) = grid.cellWidth / 2
-			override fun grabOffsetY(grid: WidgetsContainer) = grid.cellHeight / 2
+			override fun grabOffsetX(grid: WidgetsContainer) = this.colSpan * grid.cellWidth / 2
+			override fun grabOffsetY(grid: WidgetsContainer) = this.rowSpan * grid.cellHeight / 2
 		}
 
 		class DashApp(val app: App, val host: DesktopAppHost) : IncomingApp()
