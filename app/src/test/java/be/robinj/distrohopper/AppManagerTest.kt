@@ -1,8 +1,11 @@
 package be.robinj.distrohopper
 
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.cache.AppIconCache
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.PreferencesActivity
 import be.robinj.distrohopper.preferences.Preferences
@@ -27,6 +30,38 @@ class AppManagerTest {
     }
     private fun AppManager.unpinned() = firstOrNull { !isPinned(it) }
     private fun AppManager.settingsShortcut() = ActivityTestSupport.settingsShortcut(this.context)
+
+    private fun cacheAnIcon(key: String): AppIconCache {
+        val ctx = ApplicationProvider.getApplicationContext<android.content.Context>()
+        val cache = AppIconCache(ctx)
+        cache.put(key, BitmapDrawable(ctx.resources,
+            Bitmap.createBitmap(8, 8, Bitmap.Config.ARGB_8888)))
+        return cache
+    }
+
+    private fun cacheContains(key: String): Boolean =
+        AppIconCache(ApplicationProvider.getApplicationContext()).containsKey(key)
+
+    @Test fun changingTheIconConfigPurgesTheIconCache() = withManager { manager ->
+        val key = "purge-me"
+        assertTrue(cacheAnIcon(key).containsKey(key))
+
+        // A new shape makes the icon config signature no longer match the cache. //
+        Preferences.getSharedPreferences(manager.context).edit()
+            .putString(Preference.ICON_SHAPE.getName(), "circle").commit()
+        manager.iconRenderer // rebuilds the renderer, which reconciles the cache
+
+        assertFalse(cacheContains(key))
+    }
+
+    @Test fun unchangedIconConfigKeepsTheIconCache() = withManager { manager ->
+        val key = "keep-me"
+        assertTrue(cacheAnIcon(key).containsKey(key))
+
+        manager.iconRenderer // same config as at launch: nothing to reconcile
+
+        assertTrue(cacheContains(key))
+    }
 
     @Test fun everyAppHasNonEmptyPackageName() = withManager { manager ->
         manager.forEach { assertTrue(it.packageName.isNotEmpty()) }

@@ -33,9 +33,14 @@ class PreferencesRepository(context: Context) {
 		this.getString(Preference.ICON_SHAPE, Preference.ICON_SHAPE.getDefault())
 			?: Preference.ICON_SHAPE.getDefault()
 
-	/** Whether Material You themed (monochrome) icons are enabled. */
-	fun themedIcons(): Boolean =
-		this.getBoolean(Preference.THEMED_ICONS, Preference.THEMED_ICONS.getDefault())
+	/** Whether monochrome icons are recoloured to a single tint colour. */
+	fun tintedIcons(): Boolean =
+		this.getBoolean(Preference.TINTED_ICONS, Preference.TINTED_ICONS.getDefault())
+
+	/** The selected tint source/colour token (e.g. "wallpaper", "accent", "theme", "#RRGGBB"). */
+	fun iconTint(): String =
+		this.getString(Preference.ICON_TINT, Preference.ICON_TINT.getDefault())
+			?: Preference.ICON_TINT.getDefault()
 
 	/**
 	 * Emits the current value immediately, then again whenever [pref] changes.

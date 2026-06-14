@@ -147,9 +147,6 @@ public class PreferencesActivity extends AppCompatActivity
 			this.addCategory (R.string.pref_header_advanced, R.xml.pref_advanced);
 			this.devCategory = this.addCategory (R.string.pref_header_dev, R.xml.pref_dev);
 
-			this.initIconPackList ();
-			this.initIconShapePreference ();
-			this.initThemedIconsPreference ();
 			this.initCrashReportsPreference ();
 			this.initLauncherPinModePreference ();
 			this.initDevPreference ();
@@ -412,56 +409,6 @@ public class PreferencesActivity extends AppCompatActivity
 			AppIconCache.clearAll (this.requireContext ().getApplicationContext ());
 		}
 
-		/** Clear the rendered-icon cache so a new shape/themed setting takes effect on the next load. */
-		private void clearIconCacheForReRender ()
-		{
-			try
-			{
-				AppIconCache.clearAll (this.requireContext ().getApplicationContext ());
-			}
-			catch (final Exception ex)
-			{
-				new ExceptionHandler (ex).logAndTrack ();
-			}
-		}
-
-		private void initIconShapePreference ()
-		{
-			final ListPreference pref = this.findPreference (
-				be.robinj.distrohopper.preferences.Preference.ICON_SHAPE.getName ());
-			if (pref == null)
-				return;
-
-			if (pref.getEntry () != null)
-				pref.setSummary (pref.getEntry ());
-
-			pref.setOnPreferenceChangeListener ((preference, newValue) ->
-			{
-				final int index = pref.findIndexOfValue (String.valueOf (newValue));
-				if (index >= 0 && pref.getEntries () != null)
-					preference.setSummary (pref.getEntries ()[index]);
-
-				this.clearIconCacheForReRender ();
-
-				return true;
-			});
-		}
-
-		private void initThemedIconsPreference ()
-		{
-			final SwitchPreferenceCompat pref = this.findPreference (
-				be.robinj.distrohopper.preferences.Preference.THEMED_ICONS.getName ());
-			if (pref == null)
-				return;
-
-			pref.setOnPreferenceChangeListener ((preference, newValue) ->
-			{
-				this.clearIconCacheForReRender ();
-
-				return true;
-			});
-		}
-
 		private void initLauncherPinModePreference ()
 		{
 			final SwitchPreferenceCompat pref = this.findPreference ("dummy_launcher_pin_per_desktop");
@@ -533,99 +480,6 @@ public class PreferencesActivity extends AppCompatActivity
 			});
 		}
 
-		private void initIconPackList ()
-		{
-			try
-			{
-				final ListPreference lpIconPack = this.findPreference (
-					be.robinj.distrohopper.preferences.Preference.ICON_PACK.getName ());
-				if (lpIconPack == null) return;
-
-				final IconPackHelper helper = new IconPackHelper (this.requireContext ().getApplicationContext ());
-				final Map<String, ResolveInfo> packs = helper.getIconPacks ();
-
-				final List<CharSequence> entries = new ArrayList<> ();
-				final List<CharSequence> entryValues = new ArrayList<> ();
-
-				// Add "None" option
-				entries.add (this.getString (R.string.option_icon_pack_none));
-				entryValues.add ("");
-
-				final PackageManager pm = this.requireContext ().getPackageManager ();
-				for (Map.Entry<String, ResolveInfo> e : packs.entrySet ())
-				{
-					final String packageName = e.getKey ();
-					final CharSequence label = e.getValue ().loadLabel (pm);
-					entries.add (label != null ? label : packageName);
-					entryValues.add (packageName);
-				}
-
-				lpIconPack.setEntries (entries.toArray (new CharSequence[0]));
-				lpIconPack.setEntryValues (entryValues.toArray (new CharSequence[0]));
-
-				final SharedPreferences prefs = Preferences.getSharedPreferences (
-					this.requireContext (), Preferences.PREFERENCES);
-				final String current = prefs.getString (
-					be.robinj.distrohopper.preferences.Preference.ICON_PACK.getName (), "");
-				if (current == null || current.isEmpty ())
-				{
-					lpIconPack.setSummary (this.getString (R.string.option_icon_pack_none));
-				}
-				else
-				{
-					final ResolveInfo resInf = packs.get (current);
-					if (resInf != null)
-					{
-						final CharSequence label = resInf.loadLabel (pm);
-						lpIconPack.setSummary (label != null ? label : current);
-					}
-					else
-					{
-						lpIconPack.setSummary (current);
-					}
-				}
-
-				lpIconPack.setOnPreferenceChangeListener (new Preference.OnPreferenceChangeListener ()
-				{
-					@Override
-					public boolean onPreferenceChange (Preference preference, Object newValue)
-					{
-						final String value = String.valueOf (newValue);
-						if (value == null || value.isEmpty ())
-						{
-							preference.setSummary (getString (R.string.option_icon_pack_none));
-						}
-						else
-						{
-							final ResolveInfo resInf = packs.get (value);
-							if (resInf != null)
-							{
-								final CharSequence label = resInf.loadLabel (pm);
-								preference.setSummary (label != null ? label : value);
-							}
-							else
-							{
-								preference.setSummary (value);
-							}
-						}
-						// Clear the app icon cache so the newly selected icon pack can take effect
-						try
-						{
-							new AppIconCache (requireContext ().getApplicationContext ()).clear ();
-						}
-						catch (Exception ex)
-						{
-							new ExceptionHandler (ex).logAndTrack ();
-						}
-						return true;
-					}
-				});
-			}
-			catch (Exception ex)
-			{
-				new ExceptionHandler (ex).logAndTrack ();
-			}
-		}
 	}
 
 	/**

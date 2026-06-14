@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -56,8 +57,16 @@ public final class IconRenderer {
 		final Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
 		final Canvas canvas = new Canvas(bitmap);
 
-		if (this.config.themedRenderingSupported() && this.drawThemed(canvas, adaptive, size)) {
-			this.applyMask(canvas, size);
+		if (this.config.tintedRenderingSupported() && this.drawTinted(canvas, adaptive, size)) {
+			this.applyMask(canvas, adaptive, size);
+			return bitmap;
+		}
+
+		if (this.config.getShape() == IconShape.SYSTEM) {
+			// Let the platform mask it exactly like the OS does, so "System default" //
+			// always matches the device's real adaptive-icon shape. //
+			adaptive.setBounds(0, 0, size, size);
+			adaptive.draw(canvas);
 			return bitmap;
 		}
 
@@ -65,17 +74,17 @@ public final class IconRenderer {
 		// oversized so the spec's 18/108 per-edge bleed falls under the mask. //
 		this.drawLayer(canvas, adaptive.getBackground(), size);
 		this.drawLayer(canvas, adaptive.getForeground(), size);
-		this.applyMask(canvas, size);
+		this.applyMask(canvas, adaptive, size);
 
 		return bitmap;
 	}
 
 	/**
-	 * Draws the accent-tinted monochrome layer over a themed background. Returns
-	 * {@code false} (so the caller falls back to standard compositing) when the
-	 * icon carries no monochrome layer.
+	 * Draws the monochrome layer recoloured with the tint foreground over a tonal
+	 * tint background. Returns {@code false} (so the caller falls back to standard
+	 * compositing) when the icon carries no monochrome layer.
 	 */
-	private boolean drawThemed(final Canvas canvas, final AdaptiveIconDrawable adaptive, final int size) {
+	private boolean drawTinted(final Canvas canvas, final AdaptiveIconDrawable adaptive, final int size) {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
 			return false;
 		}
@@ -85,10 +94,10 @@ public final class IconRenderer {
 			return false;
 		}
 
-		canvas.drawColor(this.config.getThemedBackground());
+		canvas.drawColor(this.config.getTintBackground());
 
 		final Drawable tinted = monochrome.mutate();
-		tinted.setTint(this.config.getAccentColor());
+		tinted.setTint(this.config.getTintForeground());
 		this.drawLayer(canvas, tinted, size);
 
 		return true;
@@ -108,16 +117,33 @@ public final class IconRenderer {
 	}
 
 	/** Clips whatever is already on {@code canvas} to the mask shape via anti-aliased DST_IN. */
-	private void applyMask(final Canvas canvas, final int size) {
+	private void applyMask(final Canvas canvas, final AdaptiveIconDrawable adaptive, final int size) {
 		final Bitmap mask = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
 		final Paint fill = new Paint(Paint.ANTI_ALIAS_FLAG);
 		fill.setColor(Color.WHITE);
-		new Canvas(mask).drawPath(IconMask.pathFor(this.config.getShape(), size), fill);
+		new Canvas(mask).drawPath(this.maskPath(adaptive, size), fill);
 
 		final Paint maskPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		maskPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
 		canvas.drawBitmap(mask, 0F, 0F, maskPaint);
 		mask.recycle();
+	}
+
+	/**
+	 * The clip path for the configured shape. For {@link IconShape#SYSTEM} this is
+	 * the real adaptive drawable's own device mask (more reliable than synthesising
+	 * a maskless one), so tinted system icons match the OS silhouette exactly.
+	 */
+	private Path maskPath(final AdaptiveIconDrawable adaptive, final int size) {
+		if (this.config.getShape() == IconShape.SYSTEM) {
+			adaptive.setBounds(0, 0, size, size);
+			final Path mask = new Path(adaptive.getIconMask());
+			if (!mask.isEmpty()) {
+				return mask;
+			}
+		}
+
+		return IconMask.pathFor(this.config.getShape(), size);
 	}
 
 	@NonNull

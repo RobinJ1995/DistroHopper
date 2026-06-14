@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A plain caption row: a single secondary-coloured line used for group
+     descriptions under a PreferenceCategory header. -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="10dp"
+    android:textColor="?android:attr/textColorSecondary"
+    android:textSize="13sp"
+    android:lineSpacingMultiplier="1.1" />

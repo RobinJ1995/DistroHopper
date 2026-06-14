@@ -14,26 +14,13 @@
         android:summary="@string/hint_wallpaper">
     </Preference>
 
-    <ListPreference
-        android:key="icon_pack"
-        android:title="@string/option_icon_pack"
-        android:summary="@string/hint_icon_pack"
-        android:defaultValue=""/>
-
-    <ListPreference
-        android:key="icon_shape"
-        android:title="@string/option_icon_shape"
-        android:summary="@string/hint_icon_shape"
-        android:dialogTitle="@string/option_icon_shape"
-        android:entries="@array/icon_shape_entries"
-        android:entryValues="@array/icon_shape_values"
-        android:defaultValue="system"/>
-
-    <SwitchPreferenceCompat
-        android:key="themed_icons"
-        android:title="@string/option_themed_icons"
-        android:summary="@string/hint_themed_icons"
-        android:defaultValue="false"/>
+    <Preference
+        android:title="@string/option_icons"
+        android:summary="@string/hint_icons">
+        <intent
+            android:targetPackage="be.robinj.distrohopper"
+            android:targetClass="be.robinj.distrohopper.preferences.IconPreferencesActivity" />
+    </Preference>
 
     <Preference
         android:key="dummy_customise"

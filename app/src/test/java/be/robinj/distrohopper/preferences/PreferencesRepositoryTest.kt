@@ -34,20 +34,23 @@ class PreferencesRepositoryTest {
 	}
 
 	@Test
-	fun iconPreferencesDefaultToSystemShapeAndThemedOff() {
+	fun iconPreferencesDefaultToSystemShapeAndTintOff() {
 		assertEquals("system", this.repo.iconShape())
-		assertEquals(false, this.repo.themedIcons())
+		assertEquals(false, this.repo.tintedIcons())
+		assertEquals("wallpaper", this.repo.iconTint())
 	}
 
 	@Test
 	fun iconPreferencesRoundTripThroughEdit() {
 		this.repo.edit {
 			putString(Preference.ICON_SHAPE.getName(), "circle")
-			putBoolean(Preference.THEMED_ICONS.getName(), true)
+			putBoolean(Preference.TINTED_ICONS.getName(), true)
+			putString(Preference.ICON_TINT.getName(), "accent")
 		}
 
 		assertEquals("circle", this.repo.iconShape())
-		assertEquals(true, this.repo.themedIcons())
+		assertEquals(true, this.repo.tintedIcons())
+		assertEquals("accent", this.repo.iconTint())
 	}
 
 	@Test

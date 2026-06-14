@@ -117,6 +117,15 @@
 				android:value="be.robinj.distrohopper.preferences.PreferencesActivity" />
 		</activity>
 		<activity
+			android:name="be.robinj.distrohopper.preferences.IconPreferencesActivity"
+			android:label="@string/title_activity_icon_preferences"
+			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity"
+			android:theme="@style/PreferencesTheme">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="be.robinj.distrohopper.preferences.PreferencesActivity" />
+		</activity>
+		<activity
 			android:name="be.robinj.distrohopper.dev.DevLogsActivity"
 			android:label="@string/title_activity_dev_logs"
 			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity"

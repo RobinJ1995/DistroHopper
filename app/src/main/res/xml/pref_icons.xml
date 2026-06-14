@@ -1,0 +1,46 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="category_adaptive"
+        android:title="@string/pref_section_adaptive_icons">
+
+        <Preference
+            android:key="adaptive_note"
+            android:layout="@layout/pref_caption"
+            android:title="@string/hint_adaptive_icons"
+            android:selectable="false" />
+
+        <be.robinj.distrohopper.icons.IconShapePreference
+            android:key="icon_shape"
+            android:title="@string/option_icon_shape"
+            android:summary="@string/hint_icon_shape"
+            android:defaultValue="system"
+            android:selectable="false" />
+
+        <SwitchPreferenceCompat
+            android:key="tinted_icons"
+            android:title="@string/option_tinted_icons"
+            android:summary="@string/hint_tinted_icons"
+            android:defaultValue="false" />
+
+        <be.robinj.distrohopper.icons.IconTintPreference
+            android:key="icon_tint"
+            android:title="@string/option_icon_tint"
+            android:defaultValue="wallpaper"
+            android:selectable="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="category_icon_packs"
+        android:title="@string/pref_section_icon_packs">
+
+        <ListPreference
+            android:key="icon_pack"
+            android:title="@string/option_icon_pack"
+            android:summary="@string/hint_icon_pack"
+            android:defaultValue="" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

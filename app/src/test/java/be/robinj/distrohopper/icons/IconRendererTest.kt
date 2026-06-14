@@ -23,14 +23,14 @@ import org.robolectric.annotation.GraphicsMode
 class IconRendererTest {
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val size = 48
-    private val accent = Color.BLUE
-    private val themedBg = Color.DKGRAY
+    private val tintForeground = Color.BLUE
+    private val tintBackground = Color.DKGRAY
 
-    private fun config(shape: IconShape, themed: Boolean = false) =
-        IconConfig(shape, themed, this.size, this.accent, this.themedBg)
+    private fun config(shape: IconShape, tinted: Boolean = false) =
+        IconConfig(shape, tinted, this.size, this.tintForeground, this.tintBackground, this.tintForeground)
 
-    private fun renderer(shape: IconShape, themed: Boolean = false) =
-        IconRenderer(this.context, this.config(shape, themed))
+    private fun renderer(shape: IconShape, tinted: Boolean = false) =
+        IconRenderer(this.context, this.config(shape, tinted))
 
     private fun adaptive(background: Int, foreground: Int): AdaptiveIconDrawable =
         AdaptiveIconDrawable(ColorDrawable(background), ColorDrawable(foreground))
@@ -83,29 +83,29 @@ class IconRendererTest {
         assertSame(once, renderer.render(once))
     }
 
-    @Test fun themedOffRendersTheForeground() {
-        val out = this.renderer(IconShape.SQUARE, themed = false).render(this.adaptive(Color.RED, Color.GREEN))
+    @Test fun tintOffRendersTheForeground() {
+        val out = this.renderer(IconShape.SQUARE, tinted = false).render(this.adaptive(Color.RED, Color.GREEN))
         assertEquals(Color.GREEN, this.centre(out))
     }
 
     @Config(sdk = [Build.VERSION_CODES.TIRAMISU])
-    @Test fun themedTintsTheMonochromeLayerWithTheAccent() {
+    @Test fun tintRecoloursTheMonochromeLayerWithTheTintForeground() {
         val adaptive = AdaptiveIconDrawable(
             ColorDrawable(Color.RED), ColorDrawable(Color.GREEN), ColorDrawable(Color.WHITE))
-        val out = this.renderer(IconShape.SQUARE, themed = true).render(adaptive)
-        assertEquals(this.accent, this.centre(out))
+        val out = this.renderer(IconShape.SQUARE, tinted = true).render(adaptive)
+        assertEquals(this.tintForeground, this.centre(out))
     }
 
     @Config(sdk = [Build.VERSION_CODES.TIRAMISU])
-    @Test fun themedFallsBackToStandardCompositeWhenThereIsNoMonochromeLayer() {
-        val out = this.renderer(IconShape.SQUARE, themed = true).render(this.adaptive(Color.RED, Color.GREEN))
+    @Test fun tintFallsBackToStandardCompositeWhenThereIsNoMonochromeLayer() {
+        val out = this.renderer(IconShape.SQUARE, tinted = true).render(this.adaptive(Color.RED, Color.GREEN))
         assertEquals(Color.GREEN, this.centre(out))
     }
 
-    @Config(sdk = [Build.VERSION_CODES.S_V2]) // API 32, below themed-icon support
-    @Test fun themedIsIgnoredBelowApi33() {
+    @Config(sdk = [Build.VERSION_CODES.S_V2]) // API 32, below tinted-icon support
+    @Test fun tintIsIgnoredBelowApi33() {
         val adaptive = this.adaptive(Color.RED, Color.GREEN)
-        val out = this.renderer(IconShape.SQUARE, themed = true).render(adaptive)
+        val out = this.renderer(IconShape.SQUARE, tinted = true).render(adaptive)
         assertEquals(Color.GREEN, this.centre(out))
         assertTrue(out is BitmapDrawable)
     }

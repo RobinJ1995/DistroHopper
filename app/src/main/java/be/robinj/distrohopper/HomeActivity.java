@@ -59,6 +59,8 @@ import be.robinj.distrohopper.home.WallpaperColourApplier;
 import be.robinj.distrohopper.dev.LogToaster;
 import be.robinj.distrohopper.onboarding.OnboardingActivity;
 import be.robinj.distrohopper.onboarding.OnboardingGate;
+import be.robinj.distrohopper.icons.IconConfig;
+import be.robinj.distrohopper.icons.IconTint;
 import be.robinj.distrohopper.preferences.Preference;
 import be.robinj.distrohopper.preferences.Preferences;
 import be.robinj.distrohopper.preferences.PreferencesActivity;
@@ -566,6 +568,15 @@ public class HomeActivity extends AppCompatActivity
 			// The default-launcher status may have changed while we were away //
 			this.updateBackCallback ();
 
+			// A wallpaper change (e.g. via the wallpaper picker) only resumes us, it
+			// doesn't recreate us; if the icon tint follows the wallpaper, the cached
+			// icons are now stale. Rebuild so the reload purges them and re-renders. //
+			if (this.apps != null && this.iconConfigOutOfDate ())
+			{
+				this.recreate ();
+				return;
+			}
+
 			Intent intent = this.getIntent ();
 			boolean openDash = intent.getBooleanExtra ("openDash", false);
 
@@ -653,6 +664,26 @@ public class HomeActivity extends AppCompatActivity
 
 	private SharedPreferences getSharedPreferences() {
 		return Preferences.getSharedPreferences(this, Preferences.PREFERENCES);
+	}
+
+	/**
+	 * Whether the live icon config no longer matches the one the cached icons were
+	 * rendered with (typically because a wallpaper- or theme-following tint colour
+	 * changed). Skipped while the wallpaper colour is momentarily unavailable, so we
+	 * don't flap between it and the accent fallback.
+	 */
+	private boolean iconConfigOutOfDate ()
+	{
+		final SharedPreferences prefs = this.getSharedPreferences ();
+
+		final String tint = prefs.getString (
+			Preference.ICON_TINT.getName (), Preference.ICON_TINT.getDefault ());
+		if (IconTint.WALLPAPER.equals (tint) && IconTint.wallpaper (this) == null)
+			return false;
+
+		final String stored = prefs.getString (Preference.ICON_CONFIG_SIGNATURE.getName (), null);
+
+		return ! IconConfig.fromPrefs (this).signature ().equals (stored);
 	}
 
 

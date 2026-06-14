@@ -36,6 +36,11 @@ object AppsLoader {
 	): AppManager {
 		val appManager = AppManager(parent)
 
+		// Reconcile the icon cache against the current icon config *before* any app
+		// loads its icon from cache, so a changed shape/theme/wallpaper tint purges
+		// the now-stale cached icons instead of serving them.
+		appManager.iconRenderer
+
 		// Load selected icon pack before any icons are requested
 		try {
 			val iconPack = Preferences.getSharedPreferences(context)
