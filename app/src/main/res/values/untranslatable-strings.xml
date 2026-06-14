@@ -8,6 +8,7 @@
         <item>alphabetical</item>
         <item>recent</item>
         <item>most_used</item>
+        <item>custom</item>
     </string-array>
 
 </resources>

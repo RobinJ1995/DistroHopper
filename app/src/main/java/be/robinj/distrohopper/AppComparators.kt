@@ -13,7 +13,10 @@ object AppComparators {
 
 	@JvmStatic
 	fun forOrder(order: AppSortOrder, stats: AppUsageStats): Comparator<App> = when (order) {
-		AppSortOrder.ALPHABETICAL -> this.alphabetical
+		// CUSTOM is a manual per-item arrangement applied by DashLayoutRepository;
+		// as an app comparator it degrades to alphabetical (the stable tail order
+		// for apps that have no manual position yet).
+		AppSortOrder.ALPHABETICAL, AppSortOrder.CUSTOM -> this.alphabetical
 		AppSortOrder.MOST_RECENTLY_USED ->
 			Comparator<App> { a, b ->
 				stats.getLastUsed(b.profileScopedKey).compareTo(stats.getLastUsed(a.profileScopedKey))

@@ -13,14 +13,16 @@ import android.content.SharedPreferences
 enum class AppSortOrder(val value: String) {
 	ALPHABETICAL("alphabetical"),
 	MOST_RECENTLY_USED("recent"),
-	MOST_USED("most_used");
+	MOST_USED("most_used"),
+	CUSTOM("custom");
 
 	/**
 	 * Whether this order ranks by usage data, so its result changes as apps are
-	 * launched and the dash must be re-sorted on the way back in. Alphabetical is
-	 * stable between loads and never needs the refresh.
+	 * launched and the dash must be re-sorted on the way back in. Alphabetical
+	 * and the manual [CUSTOM] order are stable between loads and never need the
+	 * refresh.
 	 */
-	val usesUsageData: Boolean get() = this != ALPHABETICAL
+	val usesUsageData: Boolean get() = this == MOST_RECENTLY_USED || this == MOST_USED
 
 	companion object {
 		/** Maps a stored value to an order, defaulting to [ALPHABETICAL]. */

@@ -34,7 +34,7 @@ enum class Preference(
 	DASH_SEARCH_LENSES_MAX_RESULTS("dashsearch_lenses_maxresults"),
 	/** Number of icon columns across the dash app grid. */
 	DASH_GRID_COLUMNS("dash_grid_columns"),
-	/** How dash apps are ordered (alphabetical, usage, …). */
+	/** How dash apps are ordered (alphabetical, usage, custom, …). */
 	APP_SORT_ORDER("app_sort_order", "alphabetical"),
 	/** Whether opt-in crash reporting is enabled. */
 	CRASH_REPORTING_ENABLED("crash_reporting_enabled"),

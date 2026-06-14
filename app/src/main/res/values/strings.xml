@@ -153,11 +153,14 @@
     <string name="option_app_sort_order_alphabetic">Alphabetic</string>
     <string name="option_app_sort_order_recent">Most recently used</string>
     <string name="option_app_sort_order_most_used">Most used</string>
+    <string name="option_app_sort_order_custom">Custom (drag to reorder)</string>
     <string-array name="app_sort_order_entries">
         <item>@string/option_app_sort_order_alphabetic</item>
         <item>@string/option_app_sort_order_recent</item>
         <item>@string/option_app_sort_order_most_used</item>
+        <item>@string/option_app_sort_order_custom</item>
     </string-array>
+    <string name="folder_full">Folder is full</string>
     <string name="option_pin_per_desktop">Per-desktop pinned apps</string>
     <string name="hint_pin_per_desktop">Give each desktop its own pinned apps in the Launcher, instead of sharing the same ones across every desktop.</string>
     <string name="title_activity_contribute">How can I contribute?</string>

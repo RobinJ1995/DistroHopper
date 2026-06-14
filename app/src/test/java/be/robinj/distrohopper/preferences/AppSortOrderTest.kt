@@ -15,6 +15,7 @@ class AppSortOrderTest {
 		assertEquals(AppSortOrder.ALPHABETICAL, AppSortOrder.of("alphabetical"))
 		assertEquals(AppSortOrder.MOST_RECENTLY_USED, AppSortOrder.of("recent"))
 		assertEquals(AppSortOrder.MOST_USED, AppSortOrder.of("most_used"))
+		assertEquals(AppSortOrder.CUSTOM, AppSortOrder.of("custom"))
 		assertEquals(AppSortOrder.ALPHABETICAL, AppSortOrder.of(null))
 		assertEquals(AppSortOrder.ALPHABETICAL, AppSortOrder.of("nonsense"))
 	}
@@ -37,5 +38,6 @@ class AppSortOrderTest {
 		assertEquals(false, AppSortOrder.ALPHABETICAL.usesUsageData)
 		assertEquals(true, AppSortOrder.MOST_RECENTLY_USED.usesUsageData)
 		assertEquals(true, AppSortOrder.MOST_USED.usesUsageData)
+		assertEquals(false, AppSortOrder.CUSTOM.usesUsageData)
 	}
 }
