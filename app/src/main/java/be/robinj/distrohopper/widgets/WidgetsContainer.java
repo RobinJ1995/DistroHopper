@@ -229,10 +229,10 @@ public class WidgetsContainer extends ViewGroup
 					this.moveTargetColSpan, this.moveTargetRowSpan,
 					this.displayRotation);
 			final RectF target = new RectF (
-					this.getPaddingLeft () + dt.getCol () * cellWidth,
-					this.getPaddingTop () + dt.getRow () * cellHeight,
-					this.getPaddingLeft () + (dt.getCol () + dt.getColSpan ()) * cellWidth,
-					this.getPaddingTop () + (dt.getRow () + dt.getRowSpan ()) * cellHeight);
+					this.getPaddingLeft () + dt.col * cellWidth,
+					this.getPaddingTop () + dt.row * cellHeight,
+					this.getPaddingLeft () + (dt.col + dt.colSpan) * cellWidth,
+					this.getPaddingTop () + (dt.row + dt.rowSpan) * cellHeight);
 
 			canvas.drawRoundRect (target, radius, radius, this.moveTargetFillPaint);
 			canvas.drawRoundRect (target, radius, radius, this.moveTargetStrokePaint);
@@ -280,8 +280,8 @@ public class WidgetsContainer extends ViewGroup
 			// Measure using display-space span so the child gets the right physical size.
 			final WidgetLayout display = WidgetGrid.portraitToDisplay (
 					lp.col, lp.row, lp.colSpan, lp.rowSpan, this.displayRotation);
-			final int width = lp.previewWidthPx >= 0 ? lp.previewWidthPx : display.getColSpan () * cellWidth;
-			final int height = lp.previewHeightPx >= 0 ? lp.previewHeightPx : display.getRowSpan () * cellHeight;
+			final int width = lp.previewWidthPx >= 0 ? lp.previewWidthPx : display.colSpan * cellWidth;
+			final int height = lp.previewHeightPx >= 0 ? lp.previewHeightPx : display.rowSpan * cellHeight;
 
 			child.measure (
 				MeasureSpec.makeMeasureSpec (width, MeasureSpec.EXACTLY),
@@ -308,9 +308,9 @@ public class WidgetsContainer extends ViewGroup
 			final WidgetLayout display = WidgetGrid.portraitToDisplay (
 					lp.col, lp.row, lp.colSpan, lp.rowSpan, this.displayRotation);
 			final int left = lp.previewLeftPx >= 0 ? lp.previewLeftPx
-					: this.getPaddingLeft () + display.getCol () * cellWidth;
+					: this.getPaddingLeft () + display.col * cellWidth;
 			final int top = lp.previewTopPx >= 0 ? lp.previewTopPx
-					: this.getPaddingTop () + display.getRow () * cellHeight;
+					: this.getPaddingTop () + display.row * cellHeight;
 
 			child.layout (left, top, left + child.getMeasuredWidth (), top + child.getMeasuredHeight ());
 		}
