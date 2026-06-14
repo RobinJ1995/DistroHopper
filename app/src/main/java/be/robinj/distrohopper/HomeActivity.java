@@ -75,6 +75,7 @@ import be.robinj.distrohopper.desktop.dash.SearchTextWatcher;
 import be.robinj.distrohopper.desktop.dash.SwipeToCloseLayout;
 import be.robinj.distrohopper.desktop.dash.lens.LensManager;
 import be.robinj.distrohopper.desktop.launcher.AppLauncher;
+import be.robinj.distrohopper.desktop.launcher.DashCrossSurfaceController;
 import be.robinj.distrohopper.desktop.launcher.DashEdgeDragListener;
 import be.robinj.distrohopper.desktop.launcher.LauncherDragListener;
 import be.robinj.distrohopper.desktop.launcher.TrashDragListener;
@@ -111,6 +112,7 @@ public class HomeActivity extends AppCompatActivity
 	private HomeViewModel viewModel;
 	private LauncherEdgeController edgeController;
 	private DashController dash;
+	private DashCrossSurfaceController dashCrossSurface;
 	private HomeGestureController gestures;
 	private Desktops desktops;
 	private ThemeApplier themeApplier;
@@ -339,12 +341,15 @@ public class HomeActivity extends AppCompatActivity
 			// (and droppable on the trash) as soon as they are restored below //
 			lalTrash.setOnDragListener (new TrashDragListener (this));
 
-			// Cross-surface drag: hovering the pinned-apps dock closes the dash to
-			// reveal the desktop (the BFB sits apart, so no open/close fight), while
-			// hovering either BFB (launcher or panel "Applications" label) re-opens
-			// it so an app can be dragged back into the dash //
-			this.viewFinder.get (llLauncher, R.id.llLauncherPinnedApps)
-					.setOnDragListener (new DashEdgeDragListener (this, false));
+			// Cross-surface drag: hovering the launcher or panel closes the dash to
+			// reveal the desktop, while hovering either BFB (the launcher's, or the
+			// panel's "Applications"/"Activities" label) re-opens it so an app can be
+			// dragged back into the dash. The DashCrossSurfaceController gives the BFB
+			// open precedence over its enclosing bar's close, so the two don't fight.
+			// The launcher's own close is reported from LauncherDragListener (it
+			// already owns llLauncher's drag listener); the panel and BFBs are wired
+			// here. //
+			llPanel.setOnDragListener (new DashEdgeDragListener (this, false));
 			lalBfb.setOnDragListener (new DashEdgeDragListener (this, true));
 			final View tvPanelBfb = this.viewFinder.get (llPanel, R.id.tvPanelBfb);
 			tvPanelBfb.setOnDragListener (new DashEdgeDragListener (this, true));
@@ -1023,6 +1028,15 @@ public class HomeActivity extends AppCompatActivity
 	public boolean dashIsOpen ()
 	{
 		return this.dash != null && this.dash.isOpen ();
+	}
+
+	/** Shared resolver for the cross-surface drag's open/close-the-dash-on-hover. */
+	public DashCrossSurfaceController getDashCrossSurface ()
+	{
+		if (this.dashCrossSurface == null)
+			this.dashCrossSurface = new DashCrossSurfaceController (this);
+
+		return this.dashCrossSurface;
 	}
 
 	public void closeDash ()

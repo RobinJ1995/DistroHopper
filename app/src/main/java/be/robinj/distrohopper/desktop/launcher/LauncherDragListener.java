@@ -41,6 +41,11 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 			{
 				case DragEvent.ACTION_DRAG_ENTERED:
 					this.appManager.startedDraggingPinnedApp ();
+					// Cross-surface drag: hovering the launcher asks for the dash to
+					// close (resolved with BFB-open precedence by the controller), so
+					// the app can continue onto the desktop; dropping here still pins //
+					this.appManager.getParent ().getDashCrossSurface ()
+						.entered (view.getId (), false);
 					break;
 				case DragEvent.ACTION_DROP:
 					// A drop on the bar itself — most often on the empty slot kept
@@ -59,6 +64,8 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 				// animate out of the way (and when hovering the trash), briefly
 				// flickering the bar out of drag mode; ENDED always follows anyway //
 				case DragEvent.ACTION_DRAG_ENDED:
+					this.appManager.getParent ().getDashCrossSurface ()
+						.exited (view.getId (), false);
 					// Restores the bar if the drag ended without a drop on it.
 					// Posted: mutating views (even just visibility) during ENDED
 					// dispatch throws a ConcurrentModificationException //
