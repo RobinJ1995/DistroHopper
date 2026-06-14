@@ -8,9 +8,14 @@ import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 
 internal object WidgetTestSupport {
-	/** Grid size used by [layoutGrid]; with 8x8 cells this gives 100px cells. */
+	/** Grid size used by [layoutGrid]. */
 	const val GRID_SIZE = 800
-	const val CELL = GRID_SIZE / WidgetGrid.COLS
+
+	/** Width of one cell in the test grid (depends on the current [WidgetGrid.COLS]). */
+	val CELL get() = GRID_SIZE / WidgetGrid.COLS
+
+	/** Height of one cell in the test grid (depends on the current [WidgetGrid.ROWS]). */
+	val CELL_H get() = GRID_SIZE / WidgetGrid.ROWS
 
 	/**
 	 * A standalone widget grid (the first page of a fresh pager), detached

@@ -10,6 +10,7 @@ import be.robinj.distrohopper.home.LauncherBarBinder
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.widgets.WidgetTestSupport.CELL
+import be.robinj.distrohopper.widgets.WidgetTestSupport.CELL_H
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -91,12 +92,12 @@ class WidgetsContainerGridOverlayTest {
 			assertEquals(
 				(WidgetGrid.COLS + 1) * (WidgetGrid.ROWS + 1),
 				canvas.circles.size)
-			// The four extreme corners of the 800x800 grid (100px cells) //
+			// The four extreme corners of the test grid //
 			assertTrue(canvas.circles.contains(0F to 0F))
 			assertTrue(canvas.circles.contains((WidgetGrid.COLS * CELL).toFloat() to 0F))
-			assertTrue(canvas.circles.contains(0F to (WidgetGrid.ROWS * CELL).toFloat()))
+			assertTrue(canvas.circles.contains(0F to (WidgetGrid.ROWS * CELL_H).toFloat()))
 			assertTrue(canvas.circles.contains(
-				(WidgetGrid.COLS * CELL).toFloat() to (WidgetGrid.ROWS * CELL).toFloat()))
+				(WidgetGrid.COLS * CELL).toFloat() to (WidgetGrid.ROWS * CELL_H).toFloat()))
 		}
 	}
 

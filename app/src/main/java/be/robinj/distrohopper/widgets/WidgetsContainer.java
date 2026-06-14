@@ -19,9 +19,14 @@ import be.robinj.distrohopper.preferences.Preferences;
 
 /**
  * The widget area of the home screen. Positions its children on an invisible
- * {@link WidgetGrid#COLS} x {@link WidgetGrid#ROWS} grid spanning the part of
- * the screen that is not covered by the launcher or the panel (the covered
- * strips are excluded via padding set by HomeActivity).
+ * {@link WidgetGrid#COLS} x {@link WidgetGrid#ROWS} portrait grid spanning the
+ * part of the screen not covered by the launcher or panel.
+ *
+ * Widget positions are always stored in <em>portrait canonical coordinates</em>.
+ * In landscape, {@link WidgetGrid#portraitToDisplay} transforms them so that a
+ * widget pinned to the top edge in portrait occupies the left (ROTATION_90) or
+ * right (ROTATION_270) edge in landscape. Call {@link #setDisplayRotation} when
+ * the device rotates.
  */
 public class WidgetsContainer extends ViewGroup
 {
@@ -30,6 +35,10 @@ public class WidgetsContainer extends ViewGroup
 	private final Paint moveTargetStrokePaint = new Paint (Paint.ANTI_ALIAS_FLAG);
 	private final Paint gridDotPaint = new Paint (Paint.ANTI_ALIAS_FLAG);
 	private final float gridDotRadius;
+
+	// Current display rotation; 0 (portrait) by default.
+	// Updated via setDisplayRotation() when the device rotates.
+	private int displayRotation = 0;
 
 	// When the developer option is on, dots are drawn at every grid intersection
 	// while a widget or app is being dragged or a widget is being resized //
@@ -42,6 +51,7 @@ public class WidgetsContainer extends ViewGroup
 	private float snapLineFrom;
 	private float snapLineTo;
 	private boolean moveTargetVisible = false;
+	// Move-target stored in portrait coords; transformed to display coords in dispatchDraw.
 	private int moveTargetCol;
 	private int moveTargetRow;
 	private int moveTargetColSpan;
@@ -65,6 +75,26 @@ public class WidgetsContainer extends ViewGroup
 		this.gridDotRadius = TypedValue.applyDimension (
 				TypedValue.COMPLEX_UNIT_DIP, 2.5f, context.getResources ().getDisplayMetrics ());
 	}
+
+	// ---- Orientation ---------------------------------------------------------
+
+	/** Sets the display rotation and triggers a re-layout with the new transform. */
+	public void setDisplayRotation (final int rotation)
+	{
+		this.displayRotation = rotation;
+		this.requestLayout ();
+		this.invalidate ();
+	}
+
+	public int getDisplayRotation () { return this.displayRotation; }
+
+	/** Columns visible in display space (ROWS when landscape, COLS when portrait). */
+	public int displayCols () { return WidgetGrid.displayCols (this.displayRotation); }
+
+	/** Rows visible in display space (COLS when landscape, ROWS when portrait). */
+	public int displayRows () { return WidgetGrid.displayRows (this.displayRotation); }
+
+	// ---- Grid overlay --------------------------------------------------------
 
 	/**
 	 * Shows the grid-intersection dot overlay, if the developer option is enabled.
@@ -171,12 +201,14 @@ public class WidgetsContainer extends ViewGroup
 		{
 			final int cellWidth = this.getCellWidth ();
 			final int cellHeight = this.getCellHeight ();
+			final int dCols = this.displayCols ();
+			final int dRows = this.displayRows ();
 
-			for (int col = 0; col <= WidgetGrid.COLS; col++)
+			for (int col = 0; col <= dCols; col++)
 			{
 				final float x = this.getPaddingLeft () + col * cellWidth;
 
-				for (int row = 0; row <= WidgetGrid.ROWS; row++)
+				for (int row = 0; row <= dRows; row++)
 				{
 					final float y = this.getPaddingTop () + row * cellHeight;
 					canvas.drawCircle (x, y, this.gridDotRadius, this.gridDotPaint);
@@ -190,11 +222,17 @@ public class WidgetsContainer extends ViewGroup
 			final int cellHeight = this.getCellHeight ();
 			final float radius = TypedValue.applyDimension (
 					TypedValue.COMPLEX_UNIT_DIP, 12, this.getResources ().getDisplayMetrics ());
+
+			// Move-target stored in portrait coords; transform to display space for drawing.
+			final WidgetLayout dt = WidgetGrid.portraitToDisplay (
+					this.moveTargetCol, this.moveTargetRow,
+					this.moveTargetColSpan, this.moveTargetRowSpan,
+					this.displayRotation);
 			final RectF target = new RectF (
-					this.getPaddingLeft () + this.moveTargetCol * cellWidth,
-					this.getPaddingTop () + this.moveTargetRow * cellHeight,
-					this.getPaddingLeft () + (this.moveTargetCol + this.moveTargetColSpan) * cellWidth,
-					this.getPaddingTop () + (this.moveTargetRow + this.moveTargetRowSpan) * cellHeight);
+					this.getPaddingLeft () + dt.getCol () * cellWidth,
+					this.getPaddingTop () + dt.getRow () * cellHeight,
+					this.getPaddingLeft () + (dt.getCol () + dt.getColSpan ()) * cellWidth,
+					this.getPaddingTop () + (dt.getRow () + dt.getRowSpan ()) * cellHeight);
 
 			canvas.drawRoundRect (target, radius, radius, this.moveTargetFillPaint);
 			canvas.drawRoundRect (target, radius, radius, this.moveTargetStrokePaint);
@@ -212,12 +250,12 @@ public class WidgetsContainer extends ViewGroup
 
 	public int getCellWidth ()
 	{
-		return (this.getMeasuredWidth () - this.getPaddingLeft () - this.getPaddingRight ()) / WidgetGrid.COLS;
+		return (this.getMeasuredWidth () - this.getPaddingLeft () - this.getPaddingRight ()) / this.displayCols ();
 	}
 
 	public int getCellHeight ()
 	{
-		return (this.getMeasuredHeight () - this.getPaddingTop () - this.getPaddingBottom ()) / WidgetGrid.ROWS;
+		return (this.getMeasuredHeight () - this.getPaddingTop () - this.getPaddingBottom ()) / this.displayRows ();
 	}
 
 	@Override
@@ -238,8 +276,12 @@ public class WidgetsContainer extends ViewGroup
 				continue;
 
 			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
-			final int width = lp.previewWidthPx >= 0 ? lp.previewWidthPx : lp.colSpan * cellWidth;
-			final int height = lp.previewHeightPx >= 0 ? lp.previewHeightPx : lp.rowSpan * cellHeight;
+
+			// Measure using display-space span so the child gets the right physical size.
+			final WidgetLayout display = WidgetGrid.portraitToDisplay (
+					lp.col, lp.row, lp.colSpan, lp.rowSpan, this.displayRotation);
+			final int width = lp.previewWidthPx >= 0 ? lp.previewWidthPx : display.getColSpan () * cellWidth;
+			final int height = lp.previewHeightPx >= 0 ? lp.previewHeightPx : display.getRowSpan () * cellHeight;
 
 			child.measure (
 				MeasureSpec.makeMeasureSpec (width, MeasureSpec.EXACTLY),
@@ -261,8 +303,14 @@ public class WidgetsContainer extends ViewGroup
 				continue;
 
 			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
-			final int left = lp.previewLeftPx >= 0 ? lp.previewLeftPx : this.getPaddingLeft () + lp.col * cellWidth;
-			final int top = lp.previewTopPx >= 0 ? lp.previewTopPx : this.getPaddingTop () + lp.row * cellHeight;
+
+			// Compute display-space position from portrait canonical coords.
+			final WidgetLayout display = WidgetGrid.portraitToDisplay (
+					lp.col, lp.row, lp.colSpan, lp.rowSpan, this.displayRotation);
+			final int left = lp.previewLeftPx >= 0 ? lp.previewLeftPx
+					: this.getPaddingLeft () + display.getCol () * cellWidth;
+			final int top = lp.previewTopPx >= 0 ? lp.previewTopPx
+					: this.getPaddingTop () + display.getRow () * cellHeight;
 
 			child.layout (left, top, left + child.getMeasuredWidth (), top + child.getMeasuredHeight ());
 		}

@@ -82,6 +82,7 @@ class WidgetsPager @JvmOverloads constructor(
 	private var insetTop = 0
 	private var insetRight = 0
 	private var insetBottom = 0
+	private var displayRotation = 0
 
 	private var settle: ValueAnimator? = null
 
@@ -130,10 +131,23 @@ class WidgetsPager @JvmOverloads constructor(
 		while (this.childCount <= index) {
 			val page = WidgetsContainer(this.context, null)
 			page.setPadding(this.insetLeft, this.insetTop, this.insetRight, this.insetBottom)
+			page.setDisplayRotation(this.displayRotation)
 			this.addView(page)
 		}
 
 		return this.getChildAt(index) as WidgetsContainer
+	}
+
+	/**
+	 * Propagates a display rotation change to all pages so they re-layout
+	 * with the correct portrait-to-display transform. Call from
+	 * [be.robinj.distrohopper.HomeActivity.onConfigurationChanged].
+	 */
+	fun setDisplayRotation(rotation: Int) {
+		this.displayRotation = rotation
+		for (i in 0 until this.childCount) {
+			(this.getChildAt(i) as? WidgetsContainer)?.setDisplayRotation(rotation)
+		}
 	}
 
 	/**
