@@ -10,6 +10,7 @@ import android.widget.TextView
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
+import be.robinj.distrohopper.widget.bfb.BfbWidgetProvider
 
 /**
  * Populates a container with one selectable card per theme; used by the
@@ -80,6 +81,9 @@ class ThemeCards(
 				// customise dropdown out of sync with what's actually shown.
 				this.remove(Preference.LAUNCHER_BFB_LOCATION.getName())
 			}
+
+			// Repaint any placed BFB widget in the newly-selected theme.
+			BfbWidgetProvider.requestUpdate(context)
 		}
 	}
 }

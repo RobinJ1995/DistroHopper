@@ -191,4 +191,7 @@
     <string name="onboarding_button_set_default">Set as home screen</string>
     <string name="onboarding_button_next">Next</string>
     <string name="onboarding_button_done">Finish</string>
+
+    <string name="bfb_widget_label">Menu button</string>
+    <string name="bfb_widget_description">The menu button in your current theme. Tap to open the dash.</string>
 </resources>

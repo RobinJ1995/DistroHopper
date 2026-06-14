@@ -667,6 +667,12 @@ public class HomeActivity extends AppCompatActivity
 			Intent intent = this.getIntent ();
 			boolean openDash = intent.getBooleanExtra ("openDash", false);
 
+			// Consume the flag so it can't re-open the dash on a later resume; it is
+			// a one-shot request (e.g. from the BFB widget's PendingIntent), and the
+			// activity's intent persists across resumes once setIntent() adopts it //
+			if (openDash)
+				intent.removeExtra ("openDash");
+
 			if (openDash)
 				this.openDash ();
 			else if (this.apps != null && this.dash.isOpen ())
