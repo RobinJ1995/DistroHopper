@@ -149,15 +149,18 @@ def make_adaptive_bg(swirl_bg: Image.Image, size: int = 108) -> Image.Image:
         s_yi = np.clip((cy + np.sin(sa) * sample_r).astype(np.int32), 0, size - 1)
         result += arr[s_yi, s_xi] * w
 
-    # Smooth blend: 0 well inside circle → 1 in corners (smoothstep across 40% of r)
-    blend_width  = r * 0.20
-    blend_weight = np.clip(
-        (dist - (r - blend_width)) / (2.0 * blend_width), 0.0, 1.0
-    )
-    blend_weight = blend_weight * blend_weight * (3.0 - 2.0 * blend_weight)
+    # Fade from original swirl (well inside) → corner fill (at rim and beyond).
+    # Gate by arr's alpha so transparent/AA edge pixels never bleed dark values in.
+    alpha_norm = arr[:, :, 3:4] / 255.0   # 1 inside circle, 0 outside
 
-    w4  = blend_weight[:, :, np.newaxis]
-    out = arr * (1.0 - w4) + result * w4
+    t = np.clip((dist - r * 0.80) / (r * 0.20), 0.0, 1.0)
+    t = t * t * (3.0 - 2.0 * t)           # smoothstep
+    dist_weight = t[:, :, np.newaxis]
+
+    # Outside the circle (alpha=0) always use result; inside, use distance fade
+    eff_weight = np.maximum(dist_weight, 1.0 - alpha_norm)
+
+    out = arr * (1.0 - eff_weight) + result * eff_weight
     out[:, :, 3] = 255
     return Image.fromarray(out.astype(np.uint8))
 
