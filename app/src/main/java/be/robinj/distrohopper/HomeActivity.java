@@ -22,6 +22,7 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import android.animation.LayoutTransition;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -281,6 +282,24 @@ public class HomeActivity extends AppCompatActivity
 
 			// Setup layout transitions //
 			LayoutTransitionConfigurer.apply (this.viewFinder, res);
+			// When the CHANGING animation on llLauncherAndDashContainer ends, sync
+			// the widget insets to the dock's final size. The preDrawListener below
+			// skips its requestLayout while the transition is running to avoid the
+			// feedback loop where each layout pass cancels and restarts the animation. //
+			llLauncherAndDashContainer.getLayoutTransition().addTransitionListener(
+				new LayoutTransition.TransitionListener() {
+					@Override
+					public void startTransition(LayoutTransition t, ViewGroup container,
+							View view, int type) {}
+					@Override
+					public void endTransition(LayoutTransition t, ViewGroup container,
+							View view, int type) {
+						if (type == LayoutTransition.CHANGING) {
+							HomeActivity.this.edgeController.updateWidgetAreaInsets(
+								vgWidgets, llLauncher);
+						}
+					}
+				});
 
 			Intent intent = this.getIntent ();
 			if (intent != null)
@@ -374,13 +393,23 @@ public class HomeActivity extends AppCompatActivity
 			// emptying as you swipe desktops) animates its bounds via setTop/Bottom,
 			// which never fire onLayoutChange — so the widget area would only resize
 			// at the end. Re-apply the insets every frame the launcher's rendered
-			// size actually changes, keeping the desktop growing in step with it. //
+			// size actually changes, keeping the desktop growing in step with it.
+			// Exception: while the CHANGING animation is running we skip the
+			// requestLayout that updateWidgetAreaInsets would trigger, because that
+			// layout pass would override the animation's bounds and immediately
+			// restart it — a feedback loop that makes the dock flicker. The
+			// TransitionListener above fires updateWidgetAreaInsets once on end. //
 			final int[] lastLauncherSize = { -1, -1 };
 			llLauncher.getViewTreeObserver ().addOnPreDrawListener (() ->
 			{
 				final int width = llLauncher.getWidth ();
 				final int height = llLauncher.getHeight ();
-				if (width != lastLauncherSize[0] || height != lastLauncherSize[1])
+				final LayoutTransition containerTransition =
+					llLauncherAndDashContainer.getLayoutTransition ();
+				final boolean changingLayout = containerTransition != null
+					&& containerTransition.isChangingLayout ();
+				if (!changingLayout && (width != lastLauncherSize[0]
+						|| height != lastLauncherSize[1]))
 				{
 					lastLauncherSize[0] = width;
 					lastLauncherSize[1] = height;

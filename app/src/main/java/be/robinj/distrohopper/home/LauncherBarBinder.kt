@@ -1,5 +1,6 @@
 package be.robinj.distrohopper.home
 
+import android.animation.LayoutTransition
 import android.os.PowerManager
 import android.os.UserHandle
 import android.view.View
@@ -47,7 +48,12 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	private var morphTo = -1
 	private var morphStride = 0F
 	private var morphVertical = true
+	/** Container transition saved while morphing so it is not fired per-frame. */
+	private var savedContainerTransition: LayoutTransition? = null
 
+	private val llLauncherAndDashContainer: LinearLayout by lazy {
+		this.activity.viewFinder.get(R.id.llLauncherAndDashContainer)
+	}
 	private val llLauncher: LinearLayout by lazy {
 		this.activity.viewFinder.get(R.id.llLauncher)
 	}
@@ -79,11 +85,18 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	}
 
 	fun refreshPinnedView() {
+		val wasMorphing = this.morphFrom != -1
 		// A plain rebuild ends any in-flight morph. LayoutTransition is suppressed
 		// so the whole bar doesn't fade its icons in one by one (the "flash") //
 		this.morphFrom = -1
 		this.morphTo = -1
 		this.llLauncherPinnedApps.clearMorph()
+		// Restore the container transition suppressed during the morph so the
+		// dock's final resize can animate cleanly with a single CHANGING pass. //
+		if (wasMorphing) {
+			this.llLauncherAndDashContainer.layoutTransition = this.savedContainerTransition
+			this.savedContainerTransition = null
+		}
 		this.withPinnedLayoutTransitionSuppressed {
 			this.llLauncherPinnedApps.removeAllViews()
 			for (app in this.appManager.pinned) {
@@ -135,6 +148,17 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		this.morphStride = this.captureStride() // Read from the current (from) bar first //
 		this.morphFrom = fromPage
 		this.morphTo = toPage
+
+		// Suppress the container's CHANGING transition for the morph's lifetime:
+		// applyMorph calls requestLayout every frame via setMorph, which changes
+		// the dock's measured size each frame. Each change would fire-then-cancel
+		// a CHANGING animation, creating a noisy cancel-restart cycle. The
+		// transition is restored in refreshPinnedView so the final settle resize
+		// runs as one clean animation. //
+		if (this.savedContainerTransition == null) {
+			this.savedContainerTransition = this.llLauncherAndDashContainer.layoutTransition
+			this.llLauncherAndDashContainer.layoutTransition = null
+		}
 
 		// Build the union once, without the LayoutTransition fading each icon in //
 		val union = LauncherMorph.union(
