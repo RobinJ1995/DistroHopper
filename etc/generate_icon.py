@@ -107,23 +107,40 @@ def load_layers():
 
 def make_adaptive_bg(swirl_bg: Image.Image) -> Image.Image:
     """
-    Scale the swirl circle large enough that its radius covers every corner of
-    the 108×108 canvas (radius ≥ half-diagonal ≈ 76.4 px), then centre-crop to
-    108×108.  This makes the gradient+swirl fill the full rectangle with no
-    plain-colour corners.
+    Scale the swirl circle to 108×108, then fill the four transparent corners
+    by projecting each outside pixel onto the nearest point on the circle rim
+    and using that colour.  This preserves the full radial gradient (light
+    centre → deep orange rim) while letting the swirl bleed naturally into
+    every corner.
     """
+    import numpy as np
+
     SIZE = 108
-    # The circle must reach all four corners: radius ≥ 108/2 * sqrt(2) ≈ 76.4
-    # Use a couple of extra pixels as margin.
-    needed_radius = math.ceil(SIZE * math.sqrt(2) / 2) + 2   # 79
-    scaled_size   = needed_radius * 2                          # 158
+    img = swirl_bg.resize((SIZE, SIZE), Image.LANCZOS).convert('RGBA')
+    arr = np.array(img, dtype=np.float32)   # shape (108, 108, 4)
 
-    scaled = swirl_bg.resize((scaled_size, scaled_size), Image.LANCZOS)
+    cx = cy = SIZE / 2.0
+    r  = cx  # 54.0
 
-    # Centre-crop: every pixel in the 108×108 window is inside the circle
-    x0 = (scaled_size - SIZE) // 2
-    y0 = (scaled_size - SIZE) // 2
-    return scaled.crop((x0, y0, x0 + SIZE, y0 + SIZE)).convert('RGBA')
+    ys, xs = np.meshgrid(np.arange(SIZE), np.arange(SIZE), indexing='ij')
+    dx   = xs.astype(np.float32) - cx
+    dy   = ys.astype(np.float32) - cy
+    dist = np.sqrt(dx * dx + dy * dy)
+
+    outside   = dist >= r - 0.5
+    safe_dist = np.where(dist > 0, dist, 1.0)
+
+    # Project onto the rim, sampling 2 px inside to avoid antialiased edge pixels
+    sample_r = r - 2.0
+    rim_xi = np.clip((cx + dx / safe_dist * sample_r).astype(np.int32), 0, SIZE - 1)
+    rim_yi = np.clip((cy + dy / safe_dist * sample_r).astype(np.int32), 0, SIZE - 1)
+
+    rim_colours    = arr[rim_yi, rim_xi]   # (108, 108, 4)
+    out            = arr.copy()
+    out[outside]   = rim_colours[outside]
+    out[:, :, 3]   = 255                   # fully opaque
+
+    return Image.fromarray(out.astype(np.uint8))
 
 
 def make_adaptive_fg(face: Image.Image, offset: tuple) -> Image.Image:
