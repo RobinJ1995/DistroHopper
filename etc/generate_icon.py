@@ -107,30 +107,23 @@ def load_layers():
 
 def make_adaptive_bg(swirl_bg: Image.Image) -> Image.Image:
     """
-    Scale the original circle+swirl to 108×108 and fill the transparent
-    corners with the average outer-rim orange colour, so all clip shapes
-    (circle, squircle, square) show a consistent orange.
+    Scale the swirl circle large enough that its radius covers every corner of
+    the 108×108 canvas (radius ≥ half-diagonal ≈ 76.4 px), then centre-crop to
+    108×108.  This makes the gradient+swirl fill the full rectangle with no
+    plain-colour corners.
     """
-    SRC = XCF_SRC_WIDTH
     SIZE = 108
-    cx = cy = SRC // 2
-    r_sample = SRC // 2 * 0.88
-    samples = []
-    for deg in range(0, 360, 10):
-        rad = math.radians(deg)
-        px = int(cx + r_sample * math.cos(rad))
-        py = int(cy + r_sample * math.sin(rad))
-        pixel = swirl_bg.getpixel((px, py))
-        if pixel[3] > 200:
-            samples.append(pixel[:3])
+    # The circle must reach all four corners: radius ≥ 108/2 * sqrt(2) ≈ 76.4
+    # Use a couple of extra pixels as margin.
+    needed_radius = math.ceil(SIZE * math.sqrt(2) / 2) + 2   # 79
+    scaled_size   = needed_radius * 2                          # 158
 
-    fill_r = int(sum(s[0] for s in samples) / len(samples))
-    fill_g = int(sum(s[1] for s in samples) / len(samples))
-    fill_b = int(sum(s[2] for s in samples) / len(samples))
+    scaled = swirl_bg.resize((scaled_size, scaled_size), Image.LANCZOS)
 
-    bg = Image.new('RGBA', (SIZE, SIZE), (fill_r, fill_g, fill_b, 255))
-    bg = Image.alpha_composite(bg, swirl_bg.resize((SIZE, SIZE), Image.LANCZOS))
-    return bg
+    # Centre-crop: every pixel in the 108×108 window is inside the circle
+    x0 = (scaled_size - SIZE) // 2
+    y0 = (scaled_size - SIZE) // 2
+    return scaled.crop((x0, y0, x0 + SIZE, y0 + SIZE)).convert('RGBA')
 
 
 def make_adaptive_fg(face: Image.Image, offset: tuple) -> Image.Image:
