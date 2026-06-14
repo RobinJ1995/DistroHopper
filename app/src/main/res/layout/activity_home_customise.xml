@@ -31,7 +31,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:progress="36"
-            android:max="72" />
+            android:max="72"
+            android:saveEnabled="false" /><!--
+            saveEnabled=false: CustomiseModeUi.show() always sets this slider
+            from the stored preference on (re)creation, so restoring the saved
+            instance state would only overwrite that correct value with the
+            view's default and fire a spurious onProgressChanged. -->
 
     </LinearLayout>
 
@@ -73,7 +78,8 @@
         <SeekBar
             android:id="@+id/sbCustomiseDashColumns"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:saveEnabled="false" /><!-- see sbCustomiseLauncherIconSize -->
         <TextView
             android:id="@+id/tvCustomiseDashGridHint"
             android:layout_width="match_parent"
