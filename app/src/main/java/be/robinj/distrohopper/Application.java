@@ -38,8 +38,8 @@ public class Application extends android.app.Application
 		super.onCreate();
 
 		// Apply the chosen font to every activity. onActivityPreCreated runs
-		// before the activity inflates its layout, so the font overlay reaches
-		// all of its views. //
+		// before the activity inflates its layout (and before AppCompat installs
+		// its own view factory), so the font factory reaches all of its views. //
 		this.registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
 			@Override
 			public void onActivityPreCreated(@NonNull final Activity activity,

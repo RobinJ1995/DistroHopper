@@ -1,14 +1,22 @@
 package be.robinj.distrohopper
 
 import android.content.Context
-import android.util.TypedValue
-import android.view.ContextThemeWrapper
+import android.graphics.Typeface
+import android.os.Bundle
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
+import be.robinj.distrohopper.preferences.FontInflaterFactory
 import be.robinj.distrohopper.preferences.FontPreference
+import be.robinj.distrohopper.preferences.Preference
+import be.robinj.distrohopper.preferences.Preferences
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
@@ -17,42 +25,60 @@ class FontPreferenceTest {
 	private val context: Context
 		get() = ApplicationProvider.getApplicationContext()
 
-	@Test fun systemAndUnknownValuesUseNoOverlay() {
-		assertNull(FontPreference.overlayFor("system"))
-		assertNull(FontPreference.overlayFor(null))
-		assertNull(FontPreference.overlayFor("something-else"))
+	private fun setFont(value: String?) {
+		Preferences.getSharedPreferences(this.context).edit()
+			.putString(Preference.FONT.getName(), value).commit()
 	}
 
-	@Test fun bundledFontsMapToOverlays() {
-		assertEquals(R.style.FontOverlay_OpenDyslexic, FontPreference.overlayFor("opendyslexic"))
-		assertEquals(R.style.FontOverlay_Ubuntu, FontPreference.overlayFor("ubuntu"))
-		assertEquals(R.style.FontOverlay_Oxygen, FontPreference.overlayFor("oxygen"))
+	@Test fun systemAndUnknownValuesUseNoFont() {
+		assertNull(FontPreference.fontResFor("system"))
+		assertNull(FontPreference.fontResFor(null))
+		assertNull(FontPreference.fontResFor("something-else"))
 	}
 
-	/** Without any overlay, the app font attribute stays the system font. */
-	@Test fun baseThemeUsesSystemFont() {
-		val themed = ContextThemeWrapper(this.context, R.style.AppTheme)
-
-		val body = TypedValue()
-		themed.theme.resolveAttribute(R.attr.dhFontBody, body, true)
-		assertEquals("sans-serif", body.string)
-
-		val medium = TypedValue()
-		themed.theme.resolveAttribute(R.attr.dhFontMedium, medium, true)
-		assertEquals("sans-serif-medium", medium.string)
+	@Test fun bundledFontsMapToResources() {
+		assertEquals(R.font.opendyslexic, FontPreference.fontResFor("opendyslexic"))
+		assertEquals(R.font.ubuntu, FontPreference.fontResFor("ubuntu"))
+		assertEquals(R.font.oxygen, FontPreference.fontResFor("oxygen"))
 	}
 
-	/** A font overlay retargets both font attributes to the bundled family. */
-	@Test fun overlayRetargetsFontAttributes() {
-		val themed = ContextThemeWrapper(this.context, R.style.AppTheme)
-		themed.theme.applyStyle(R.style.FontOverlay_OpenDyslexic, true)
+	/** No custom typeface for System, so the app keeps the system font. */
+	@Test fun typefaceIsNullForSystem() {
+		this.setFont("system")
+		assertNull(FontPreference.typeface(this.context))
+	}
 
-		val body = TypedValue()
-		themed.theme.resolveAttribute(R.attr.dhFontBody, body, true)
-		assertEquals(R.font.opendyslexic, body.resourceId)
+	@Test fun typefaceLoadsBundledFont() {
+		this.setFont("ubuntu")
+		assertNotNull(FontPreference.typeface(this.context))
+	}
 
-		val medium = TypedValue()
-		themed.theme.resolveAttribute(R.attr.dhFontMedium, medium, true)
-		assertEquals(R.font.opendyslexic, medium.resourceId)
+	/** The factory forces its typeface onto every TextView it inflates. */
+	@Test fun factoryAppliesTypefaceToInflatedTextViews() {
+		this.setFont("system")
+		val activity = Robolectric.buildActivity(FontTestActivity::class.java).create().get()
+
+		val factory = FontInflaterFactory(activity.delegate, Typeface.MONOSPACE)
+		val attrs = Robolectric.buildAttributeSet().build()
+		val view = factory.onCreateView(null, "TextView", activity, attrs)
+
+		assertTrue(view is TextView)
+		assertEquals(Typeface.MONOSPACE, (view as TextView).typeface)
+	}
+
+	/** applyTo is a harmless no-op when the system font is selected. */
+	@Test fun applyToIsNoOpForSystem() {
+		this.setFont("system")
+		val activity = Robolectric.buildActivity(FontTestActivity::class.java).create().get()
+
+		FontPreference.applyTo(activity) // must not throw
+	}
+}
+
+/** Minimal AppCompat host so we can obtain a real delegate in tests. */
+class FontTestActivity : AppCompatActivity() {
+	override fun onCreate(savedInstanceState: Bundle?) {
+		this.setTheme(R.style.AppTheme)
+		super.onCreate(savedInstanceState)
 	}
 }
