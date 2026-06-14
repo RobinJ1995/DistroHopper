@@ -28,6 +28,15 @@ class PreferencesRepository(context: Context) {
 		this.prefs.edit().apply(block).apply()
 	}
 
+	/** The selected icon-mask shape preference value (e.g. "system", "circle"). */
+	fun iconShape(): String =
+		this.getString(Preference.ICON_SHAPE, Preference.ICON_SHAPE.getDefault())
+			?: Preference.ICON_SHAPE.getDefault()
+
+	/** Whether Material You themed (monochrome) icons are enabled. */
+	fun themedIcons(): Boolean =
+		this.getBoolean(Preference.THEMED_ICONS, Preference.THEMED_ICONS.getDefault())
+
 	/**
 	 * Emits the current value immediately, then again whenever [pref] changes.
 	 * Consecutive equal values are collapsed.

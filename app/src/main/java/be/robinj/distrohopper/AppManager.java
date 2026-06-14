@@ -13,6 +13,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import be.robinj.distrohopper.cache.AppIconCache;
+import be.robinj.distrohopper.icons.IconConfig;
+import be.robinj.distrohopper.icons.IconRenderer;
+import be.robinj.distrohopper.preferences.Preference;
+import be.robinj.distrohopper.preferences.Preferences;
 import be.robinj.distrohopper.home.LauncherBarBinder;
 
 /**
@@ -27,6 +32,8 @@ public class AppManager implements Iterable<App>
 	private final AppRepository repository;
 
 	private final IconPackHelper iconPack;
+
+	private IconRenderer iconRenderer;
 
 	private final HomeActivity parent;
 
@@ -134,6 +141,50 @@ public class AppManager implements Iterable<App>
 	public IconPackHelper getIconPack ()
 	{
 		return this.iconPack;
+	}
+
+	/**
+	 * The renderer that shapes adaptive icons to the current {@link IconConfig}.
+	 * Rebuilt whenever the icon-shape/themed preferences change (in-process or
+	 * across restarts); a config change also clears the shape-unaware icon cache
+	 * so no stale-shaped icon can be served afterwards.
+	 */
+	public synchronized IconRenderer getIconRenderer ()
+	{
+		final IconConfig config = IconConfig.fromPrefs (this.parent.getApplicationContext ());
+
+		if (this.iconRenderer == null
+			|| ! this.iconRenderer.getConfig ().signature ().equals (config.signature ()))
+		{
+			this.reconcileIconCache (config);
+			this.iconRenderer = new IconRenderer (this.parent.getApplicationContext (), config);
+		}
+
+		return this.iconRenderer;
+	}
+
+	/** Clear the icon cache when the rendered-output signature no longer matches what was cached. */
+	private void reconcileIconCache (final IconConfig config)
+	{
+		final android.content.SharedPreferences prefs =
+			Preferences.getSharedPreferences (this.parent.getApplicationContext ());
+		final String stored = prefs.getString (Preference.ICON_CONFIG_SIGNATURE.getName (), null);
+
+		if (! config.signature ().equals (stored))
+		{
+			try
+			{
+				AppIconCache.clearAll (this.parent.getApplicationContext ());
+			}
+			catch (final Exception ex)
+			{
+				new ExceptionHandler (ex).logAndTrack ();
+			}
+
+			prefs.edit ()
+				.putString (Preference.ICON_CONFIG_SIGNATURE.getName (), config.signature ())
+				.apply ();
+		}
 	}
 
 	public List<App> getInstalledApps ()

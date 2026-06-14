@@ -307,7 +307,11 @@ public class App implements Parcelable
 				icon = this.appManager.getIconPack().getIconForApp(this);
 			}
 			if (icon == null) {
-				icon = this.appManager.getIconPack().getFallbackIcon(this.loadFallbackIcon());
+				// Shape the system icon to the chosen mask (no-op for legacy icons); //
+				// icon-pack icons above are deliberately left as the pack designed them. //
+				final Drawable rendered =
+					this.appManager.getIconRenderer().render(this.loadFallbackIcon());
+				icon = this.appManager.getIconPack().getFallbackIcon(rendered);
 			}
 
 			if (this.user != null && icon != null) {

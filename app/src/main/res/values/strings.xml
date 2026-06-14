@@ -72,6 +72,15 @@
     <string name="option_icon_pack">Icon pack</string>
     <string name="hint_icon_pack">Choose a third-party icon pack to apply to app icons.</string>
     <string name="option_icon_pack_none">None</string>
+    <string name="option_icon_shape">Icon shape</string>
+    <string name="hint_icon_shape">Mask adaptive icons to a consistent shape.</string>
+    <string name="icon_shape_system">System default</string>
+    <string name="icon_shape_circle">Circle</string>
+    <string name="icon_shape_squircle">Squircle</string>
+    <string name="icon_shape_rounded_square">Rounded square</string>
+    <string name="icon_shape_square">Square</string>
+    <string name="option_themed_icons">Themed icons</string>
+    <string name="hint_themed_icons">Tint icons that provide a monochrome layer with your system accent colour (Android 13+).</string>
     <string name="option_crash_reports">Send crash reports</string>
     <string name="hint_crash_reports">Automatically send anonymous crash reports to help fix bugs. Reports go to a private server and are never shared with third parties.</string>
     <string name="option_dev">Developer mode</string>

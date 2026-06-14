@@ -144,6 +144,8 @@ public class PreferencesActivity extends AppCompatActivity
 			this.devCategory = this.addCategory (R.string.pref_header_dev, R.xml.pref_dev);
 
 			this.initIconPackList ();
+			this.initIconShapePreference ();
+			this.initThemedIconsPreference ();
 			this.initCrashReportsPreference ();
 			this.initLauncherPinModePreference ();
 			this.initDevPreference ();
@@ -378,6 +380,56 @@ public class PreferencesActivity extends AppCompatActivity
 		{
 			new AppLabelCache (this.requireContext ().getApplicationContext ()).clear ();
 			AppIconCache.clearAll (this.requireContext ().getApplicationContext ());
+		}
+
+		/** Clear the rendered-icon cache so a new shape/themed setting takes effect on the next load. */
+		private void clearIconCacheForReRender ()
+		{
+			try
+			{
+				AppIconCache.clearAll (this.requireContext ().getApplicationContext ());
+			}
+			catch (final Exception ex)
+			{
+				new ExceptionHandler (ex).logAndTrack ();
+			}
+		}
+
+		private void initIconShapePreference ()
+		{
+			final ListPreference pref = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.ICON_SHAPE.getName ());
+			if (pref == null)
+				return;
+
+			if (pref.getEntry () != null)
+				pref.setSummary (pref.getEntry ());
+
+			pref.setOnPreferenceChangeListener ((preference, newValue) ->
+			{
+				final int index = pref.findIndexOfValue (String.valueOf (newValue));
+				if (index >= 0 && pref.getEntries () != null)
+					preference.setSummary (pref.getEntries ()[index]);
+
+				this.clearIconCacheForReRender ();
+
+				return true;
+			});
+		}
+
+		private void initThemedIconsPreference ()
+		{
+			final SwitchPreferenceCompat pref = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.THEMED_ICONS.getName ());
+			if (pref == null)
+				return;
+
+			pref.setOnPreferenceChangeListener ((preference, newValue) ->
+			{
+				this.clearIconCacheForReRender ();
+
+				return true;
+			});
 		}
 
 		private void initLauncherPinModePreference ()
