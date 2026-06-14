@@ -65,7 +65,9 @@ enum class Preference(
 	/** Dev: allow freely resizing any widget, ignoring its declared limits. */
 	DEV_WIDGET_RESIZE_ANY("dev_widget_resize_any", false, DEV),
 	/** Dev: show a dot at every grid intersection while dragging or resizing. */
-	DEV_SHOW_GRID_ON_DRAG("dev_show_grid_on_drag", false, DEV);
+	DEV_SHOW_GRID_ON_DRAG("dev_show_grid_on_drag", false, DEV),
+	/** Dev: experimental swipe-down gesture that opens the notification shade. */
+	GESTURE_NOTIFICATION_TRAY("gesture_notification_tray", false, DEV);
 
 	fun getName(): String = this.key
 

@@ -189,7 +189,9 @@ public class HomeActivity extends AppCompatActivity
 					.get (HomeViewModel.class);
 			HomeStateBinder.bind (this, this.viewModel, this.dash, this.themeApplier);
 			this.gestures = new HomeGestureController (this, this.viewFinder, this.dash,
-					this.viewModel, () -> container.getCustomiseMode ().getValue ());
+					this.viewModel, () -> container.getCustomiseMode ().getValue (),
+					() -> prefs.getBoolean (Preference.GESTURE_NOTIFICATION_TRAY.getName (), false),
+					() -> { this.promptEnableNotificationAccessibility (); return kotlin.Unit.INSTANCE; });
 			((SwipeToCloseLayout) this.llDash).setDelegate (this.gestures);
 
 			// Handle Back through the dispatcher rather than the deprecated
@@ -536,6 +538,29 @@ public class HomeActivity extends AppCompatActivity
 		final boolean dashOpen = this.dash != null && this.dash.isOpen ();
 
 		this.backCallback.setEnabled (editMode || dashOpen || this.isDefaultLauncher ());
+	}
+
+	/**
+	 * Swipe-down-for-notifications fired, but the accessibility service that
+	 * performs the action isn't enabled yet. Brisk nudge: drop the user onto the
+	 * system accessibility settings so they can turn DistroHopper on. (Toast text
+	 * is kept inline rather than in strings.xml while this is experimental.)
+	 */
+	private void promptEnableNotificationAccessibility ()
+	{
+		try
+		{
+			android.widget.Toast.makeText (this,
+				"Enable DistroHopper in Accessibility to use the notification gesture",
+				android.widget.Toast.LENGTH_LONG).show ();
+			this.startActivity (
+				new Intent (android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS)
+					.addFlags (Intent.FLAG_ACTIVITY_NEW_TASK));
+		}
+		catch (Exception ex)
+		{
+			new ExceptionHandler (ex).show (this);
+		}
 	}
 
 	@Override

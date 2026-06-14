@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewConfiguration
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.ViewFinder
+import be.robinj.distrohopper.accessibility.NotificationAccessibilityService
 import be.robinj.distrohopper.desktop.dash.SwipeToCloseLayout
 import be.robinj.distrohopper.widgets.WidgetsPager
 import kotlin.math.abs
@@ -18,11 +19,15 @@ import kotlin.math.abs
  *  - swiping up slides the dash in, tracking the finger with the theme's
  *    own open animation — DashController and DashAnimator do the visual
  *    work — committing or cancelling when it lifts;
+ *  - swiping down opens the system notification tray, but only when the
+ *    experimental [notificationGestureEnabled] developer setting is on. The
+ *    only public API for that is an accessibility service's global action, so
+ *    the shade can't be finger-tracked: the commit decision (same fling /
+ *    distance thresholds as the dash open) is made on release. If the service
+ *    isn't actually connected, [promptEnableAccessibility] nudges the user to
+ *    enable it instead;
  *  - swiping sideways pans between the widget desktops (WidgetsPager does
  *    the same for swipes that start on a widget).
- * (Swiping down used to pull down the system notification shade, but the
- * only API for that is blocklisted to non-system apps on modern Android, so
- * the gesture was dropped.)
  * As SwipeToCloseLayout's delegate it likewise tracks the open dash being
  * swiped back closed (the layout only starts that swipe once the dash's
  * content is scrolled to the top). In battery saver there is nothing to
@@ -36,8 +41,30 @@ class HomeGestureController(
 	private val dash: DashController,
 	private val viewModel: HomeViewModel,
 	private val customiseMode: () -> Boolean,
+	private val notificationGestureEnabled: () -> Boolean = { false },
+	private val serviceConnected: () -> Boolean = { NotificationAccessibilityService.isConnected },
+	private val onOpenNotifications: () -> Unit =
+		{ NotificationAccessibilityService.instance?.openNotifications() },
+	private val promptEnableAccessibility: () -> Unit = {},
 ) : SwipeToCloseLayout.Delegate {
-	private enum class State { IDLE, PENDING, TRACKING_OPEN, TRACKING_PAGES, INSTANT_OPEN, DONE }
+	/**
+	 * Production constructor (Java call site): the service-touching callbacks use
+	 * their real implementations; only the two app-supplied behaviours are passed.
+	 */
+	constructor(
+		activity: Activity,
+		viewFinder: ViewFinder,
+		dash: DashController,
+		viewModel: HomeViewModel,
+		customiseMode: () -> Boolean,
+		notificationGestureEnabled: () -> Boolean,
+		promptEnableAccessibility: () -> Unit,
+	) : this(activity, viewFinder, dash, viewModel, customiseMode, notificationGestureEnabled,
+		{ NotificationAccessibilityService.isConnected },
+		{ NotificationAccessibilityService.instance?.openNotifications() },
+		promptEnableAccessibility)
+
+	private enum class State { IDLE, PENDING, TRACKING_OPEN, TRACKING_PAGES, TRACKING_NOTIFICATIONS, INSTANT_OPEN, DONE }
 
 	private val touchSlop = ViewConfiguration.get(activity).scaledTouchSlop
 	private val flingVelocityPx =
@@ -119,6 +146,19 @@ class HomeGestureController(
 					}
 					State.TRACKING_PAGES ->
 						this.pager.panSettle(this.currentVelocity { it.xVelocity })
+					State.TRACKING_NOTIFICATIONS -> {
+						val velocityY = this.currentVelocity { it.yVelocity }
+						val distance = ev.y - this.downY
+						val commit = if (abs(velocityY) > this.flingVelocityPx) {
+							velocityY > 0F // Flung in the opening (downward) direction //
+						} else {
+							distance > this.dash.swipeDistancePx * COMMIT_FRACTION
+						}
+
+						if (commit) {
+							this.openNotifications()
+						}
+					}
 					else -> {}
 				}
 				this.reset()
@@ -158,7 +198,15 @@ class HomeGestureController(
 		}
 
 		if (dy >= 0F) {
-			return // Downwards no longer does anything (notification shade dropped) //
+			// Downwards opens the notification tray, if the experimental gesture
+			// is enabled. There is nothing to finger-track (the shade isn't ours);
+			// the commit decision is made on release. //
+			if (this.notificationGestureEnabled()) {
+				this.state = State.TRACKING_NOTIFICATIONS
+				this.downY = ev.y // Track from where the swipe was recognised //
+			}
+
+			return
 		}
 
 		if (this.dash.swipeOpenBegin()) { // Upwards: pull in the dash //
@@ -167,6 +215,15 @@ class HomeGestureController(
 			this.downY = ev.y // Track from where the swipe was recognised //
 		} else { // Battery saver: nothing to track; open at the trigger distance //
 			this.state = State.INSTANT_OPEN
+		}
+	}
+
+	private fun openNotifications() {
+		if (this.serviceConnected()) {
+			this.onOpenNotifications()
+		} else {
+			// Enabled, but the accessibility service isn't actually running yet //
+			this.promptEnableAccessibility()
 		}
 	}
 
