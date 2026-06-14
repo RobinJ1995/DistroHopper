@@ -16,102 +16,93 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <!-- App header -->
+            <ImageView
+                android:id="@+id/ivLogo"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:src="@mipmap/ic_launcher"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/app_name"
+                android:gravity="center"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/tvVersion"
+                android:gravity="center" />
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/transparent80"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp" />
+
+            <!-- Developer section -->
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/robinj"
+                android:scaleType="centerCrop"
+                android:background="@drawable/circle_clip"
+                android:clipToOutline="true"
+                android:outlineProvider="background"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/developed_by"
+                style="@style/developer_by"
+                android:gravity="center"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/about_bio"
+                android:gravity="center"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="3dp" />
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp">
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="RobinJ.be"
+                    android:id="@+id/tvDevUrl"
+                    android:gravity="center"
+                    android:layout_weight="1" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="@string/app_name"
-                        android:layout_gravity="center_horizontal"
-                        android:gravity="center"
-                        android:layout_weight="1"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:id="@+id/tvVersion"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        />
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/ivLogo"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@mipmap/ic_launcher"
-                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="distrohopper@robinj.be"
+                    android:id="@+id/tvDevEmail"
+                    android:gravity="center"
+                    android:layout_weight="1" />
 
             </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/robinj"
-                    android:scaleType="fitCenter"
-                    />
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/developed_by"
-                        style="@style/developer_by"
-                        android:gravity="center"
-                        android:layout_weight="1"/>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="RobinJ.be"
-                            android:id="@+id/tvDevUrl"
-                            android:gravity="center"
-                            android:layout_weight="2"/>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="distrohopper@robinj.be"
-                            android:id="@+id/tvDevEmail"
-                            android:gravity="center"
-                            android:layout_weight="1"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-            </LinearLayout>
-
 
         </LinearLayout>
     </ScrollView>

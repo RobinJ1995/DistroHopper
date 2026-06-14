@@ -23,6 +23,7 @@
     <string name="notpinned">isn\'t pinned</string>
     <string name="alreadypinned">is already pinned</string>
     <string name="developed_by">Developed by Robin Jacobs</string>
+    <string name="about_bio">DistroHopper started as a hobby project when I was still in high school, over 15 years ago.</string>
     <string name="button_back">Back</string>
     <string name="button_about">About</string>
     <string name="button_contribute">Contribute</string>
