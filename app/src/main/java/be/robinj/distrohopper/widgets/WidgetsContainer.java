@@ -88,6 +88,11 @@ public class WidgetsContainer extends ViewGroup
 		this.invalidate ();
 	}
 
+	boolean isGridOverlayVisible ()
+	{
+		return this.gridOverlayVisible;
+	}
+
 	private boolean isGridOverlayEnabled ()
 	{
 		return Preferences.getSharedPreferences (this.getContext ())

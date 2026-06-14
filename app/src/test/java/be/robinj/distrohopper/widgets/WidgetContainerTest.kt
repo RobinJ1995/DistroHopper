@@ -32,6 +32,7 @@ class WidgetContainerTest {
 			Preferences.getSharedPreferences(activity)
 				.edit()
 				.remove(Preference.DEV_WIDGET_RESIZE_ANY.getName())
+				.remove(Preference.DEV_SHOW_GRID_ON_DRAG.getName())
 				.commit()
 		}
 		scenario.close()
@@ -260,6 +261,54 @@ class WidgetContainerTest {
 
 			// Clamped to gridRight - startLeft = 800 - 200
 			assertEquals(6 * CELL, lp(container).previewWidthPx)
+		}
+	}
+
+	@Test fun resizingShowsTheGridOverlayWhenTheDevOptionIsOnAndHidesItOnRelease() {
+		scenario.onActivity { activity ->
+			Preferences.getSharedPreferences(activity)
+				.edit()
+				.putBoolean(Preference.DEV_SHOW_GRID_ON_DRAG.getName(), true)
+				.commit()
+			val fixture = widgetAt22(activity)
+			val container = fixture.container
+
+			touch(container, R.id.llEdgeRight, MotionEvent.ACTION_DOWN, 400F, 300F)
+			touch(container, R.id.llEdgeRight, MotionEvent.ACTION_MOVE, 400F + CELL, 300F)
+			assertTrue(fixture.grid.isGridOverlayVisible)
+
+			touch(container, R.id.llEdgeRight, MotionEvent.ACTION_UP, 400F + CELL, 300F)
+			assertFalse(fixture.grid.isGridOverlayVisible)
+		}
+	}
+
+	@Test fun cancellingAResizeAlsoHidesTheGridOverlay() {
+		scenario.onActivity { activity ->
+			Preferences.getSharedPreferences(activity)
+				.edit()
+				.putBoolean(Preference.DEV_SHOW_GRID_ON_DRAG.getName(), true)
+				.commit()
+			val fixture = widgetAt22(activity)
+			val container = fixture.container
+
+			touch(container, R.id.llEdgeRight, MotionEvent.ACTION_DOWN, 400F, 300F)
+			touch(container, R.id.llEdgeRight, MotionEvent.ACTION_MOVE, 400F + CELL, 300F)
+			assertTrue(fixture.grid.isGridOverlayVisible)
+
+			touch(container, R.id.llEdgeRight, MotionEvent.ACTION_CANCEL, 400F + CELL, 300F)
+			assertFalse(fixture.grid.isGridOverlayVisible)
+		}
+	}
+
+	@Test fun resizingDoesNotShowTheGridOverlayWhenTheDevOptionIsOff() {
+		scenario.onActivity { activity ->
+			val fixture = widgetAt22(activity)
+			val container = fixture.container
+
+			touch(container, R.id.llEdgeRight, MotionEvent.ACTION_DOWN, 400F, 300F)
+			touch(container, R.id.llEdgeRight, MotionEvent.ACTION_MOVE, 400F + CELL, 300F)
+
+			assertFalse(fixture.grid.isGridOverlayVisible)
 		}
 	}
 
