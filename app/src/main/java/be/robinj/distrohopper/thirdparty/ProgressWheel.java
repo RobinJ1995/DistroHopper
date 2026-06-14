@@ -7,12 +7,14 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
 
 import be.robinj.distrohopper.R;
+import be.robinj.distrohopper.preferences.FontPreference;
 
 /*
  * Source: https://github.com/Todd-Davies/ProgressWheel/
@@ -182,6 +184,12 @@ public class ProgressWheel extends View {
 		textPaint.setStyle(Style.FILL);
 		textPaint.setAntiAlias(true);
 		textPaint.setTextSize(textSize);
+		// Follow the app-wide font choice; the text here is drawn on a Canvas,
+		// so it isn't reached by the inflater font factory. Null = system font.
+		final Typeface typeface = FontPreference.INSTANCE.typeface(getContext());
+		if (typeface != null) {
+			textPaint.setTypeface(typeface);
+		}
 		contourPaint.setColor(contourColor);
 		contourPaint.setAntiAlias(true);
 		contourPaint.setStyle(Style.STROKE);

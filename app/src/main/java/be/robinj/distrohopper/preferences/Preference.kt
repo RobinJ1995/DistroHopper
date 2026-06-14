@@ -42,6 +42,8 @@ enum class Preference(
 	THEME("theme"),
 	/** The selected icon pack (package name), or unset for system icons. */
 	ICON_PACK("icon_pack"),
+	/** The selected font family, or "system" for the device default. */
+	FONT("font", "system"),
 	/** The icon mask shape (system, circle, squircle, …). */
 	ICON_SHAPE("icon_shape", "system"),
 	/** Whether icons are recoloured with a single tint. */
