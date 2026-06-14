@@ -11,6 +11,7 @@ public class Preferences {
 	public static final String DESKTOP_APPS = "desktop_apps";
 	public static final String APP_USAGE = "app_usage";
 	public static final String DASH_LAYOUT = "dash_layout";
+	public static final String LAUNCHER_LAYOUT = "launcher_layout";
 
 	public static SharedPreferences getSharedPreferences(final Context context) {
 		return Preferences.getSharedPreferences(context, Preferences.PREFERENCES);
