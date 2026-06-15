@@ -284,6 +284,13 @@ internal class WidgetsContainer_DragListener(
 
 				return Drag.LauncherFolderMember(localState.app, localState.folderId, host)
 			}
+			// A launcher-pinned app picked up from the dash: to the desktop it is a
+			// dash pin-by-drop — pin a separate desktop copy, leave the launcher pin.
+			is be.robinj.distrohopper.desktop.launcher.LauncherDragPayload.PinnedAppDrag -> {
+				val host = this.parent.desktopAppHost ?: return null
+
+				return Drag.DashApp(localState.app, host)
+			}
 			is App -> {
 				val host = this.parent.desktopAppHost ?: return null
 

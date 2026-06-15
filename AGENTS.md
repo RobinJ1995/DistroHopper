@@ -227,8 +227,17 @@ etc/                                        — design assets (SVG/XCF sources, 
     the InstalledApps lens results starts the same kind of drag
     (pin-by-drop, via `dash.AppLauncherLongClickListener.startAppDrag`):
     the placeholder opens at the end of the bar and the app is pinned at
-    whichever slot it is dropped on — long-pressing an already-pinned app
-    moves its existing icon instead.
+    whichever slot it is dropped on. Long-pressing an *already-pinned* app in
+    the dash carries a `LauncherDragPayload.PinnedAppDrag` instead of the
+    pinned-index clip: the dash is its own surface, so dropping it back on the
+    bar still reorders the existing icon (the bar's placeholder bookkeeping
+    keys off the dragged pin, not the local state), but dropping it on the
+    **desktop** pins a *separate* desktop copy and leaves the launcher pin
+    intact (`WidgetsContainer_DragListener` routes the payload to `Drag.DashApp`).
+    The dash grid ignores the payload (it is neither an `App` nor a
+    `DashDragPayload`), so — like the old index clip — it falls through to the
+    desktop rather than being eaten as an in-dash reorder; using a plain `App`
+    here regressed because the grid claimed it and grabbed the drop.
     Gotcha: views must not be mutated (not even visibility) while
     ACTION_DRAG_ENDED is being dispatched — post such work instead, or the
     framework throws a ConcurrentModificationException.

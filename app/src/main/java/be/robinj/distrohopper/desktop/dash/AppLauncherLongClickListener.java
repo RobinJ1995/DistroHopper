@@ -8,6 +8,7 @@ import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.AppManager;
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.HomeActivity;
+import be.robinj.distrohopper.desktop.launcher.LauncherDragPayload;
 import be.robinj.distrohopper.home.LauncherBarBinder;
 
 /**
@@ -84,17 +85,22 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 
 		if (appManager.isPinned (app))
 		{
-			// Already on the launcher: dragging moves its existing icon,
-			// exactly like a long press on the launcher itself //
-			int index = appManager.indexOfPinned (app);
-
-			ClipData.Item item = new ClipData.Item (Integer.toString (index));
-			ClipData data = new ClipData (Integer.toString (index), new String[]{"text/plain"}, item);
+			// Already on the launcher, but the dash is its own surface: carry a
+			// PinnedAppDrag (a dash pin-by-drop), NOT the pinned index. So dropping
+			// on the desktop pins a *separate* desktop copy and leaves the launcher
+			// pin intact (the bug otherwise: the desktop saw the index, took it for
+			// a launcher-pin drag, and unpinned the bar icon). The dash grid ignores
+			// this payload, so it still falls through to the desktop like the index
+			// clip did. Reorder within the bar still works — the bar's bookkeeping
+			// keys off startedDraggingPinnedApp, not the local state //
+			LauncherDragPayload.PinnedAppDrag payload =
+				new LauncherDragPayload.PinnedAppDrag (app);
+			ClipData data = ClipData.newPlainText ("dash", "dash");
 
 			// Only enter drag mode if the drag really started: doing so
 			// without an active drag would leave the bar stuck, as no
 			// ACTION_DRAG_ENDED will ever restore it //
-			if (source.startDrag (data, new View.DragShadowBuilder (view), item, 0))
+			if (source.startDrag (data, new View.DragShadowBuilder (view), payload, 0))
 				appManager.startedDraggingPinnedApp (app);
 		}
 		else
