@@ -104,6 +104,9 @@ public class HomeActivity extends AppCompatActivity
 	private CustomiseModeUi customiseModeUi;
 
 	private boolean openDashWhenReady = false;
+	// Whether the queued dash open should also focus the search field (the BFB
+	// search widget); rides alongside openDashWhenReady. //
+	private boolean focusSearchWhenReady = false;
 
 	private Theme theme = new Default ();
 
@@ -312,6 +315,7 @@ public class HomeActivity extends AppCompatActivity
 						intent.getBooleanExtra ("customise", container.getCustomiseMode ().getValue ()));
 				this.openDashWhenReady = intent.getBooleanExtra ("openDash", this.openDashWhenReady)
 						|| container.getCustomiseMode ().getValue ();
+				this.focusSearchWhenReady = intent.getBooleanExtra ("focusSearch", false);
 			}
 
 			// Take control of system status bar background //
@@ -666,15 +670,19 @@ public class HomeActivity extends AppCompatActivity
 
 			Intent intent = this.getIntent ();
 			boolean openDash = intent.getBooleanExtra ("openDash", false);
+			boolean focusSearch = intent.getBooleanExtra ("focusSearch", false);
 
-			// Consume the flag so it can't re-open the dash on a later resume; it is
-			// a one-shot request (e.g. from the BFB widget's PendingIntent), and the
+			// Consume the flags so they can't re-open the dash on a later resume; it
+			// is a one-shot request (e.g. from a BFB widget's PendingIntent), and the
 			// activity's intent persists across resumes once setIntent() adopts it //
 			if (openDash)
+			{
 				intent.removeExtra ("openDash");
+				intent.removeExtra ("focusSearch");
+			}
 
 			if (openDash)
-				this.openDash ();
+				this.openDash (focusSearch);
 			else if (this.apps != null && this.dash.isOpen ())
 				// Launching from an already-open dash leaves it open, so openDash()
 				// won't run on the way back; refresh the usage-based order here too so
@@ -896,7 +904,7 @@ public class HomeActivity extends AppCompatActivity
 				this.apps.addRunningApps (this.dash.getChameleonicBgColour ());
 
 			if (this.openDashWhenReady)
-				this.openDash ();
+				this.openDash (this.focusSearchWhenReady);
 
 			// Broadcast receiver //
 			this.broadcastPackageManager = new PackageManagerBroadcastReceiver (this);
@@ -1039,13 +1047,18 @@ public class HomeActivity extends AppCompatActivity
 
 	public void openDash ()
 	{
+		this.openDash (false);
+	}
+
+	public void openDash (final boolean forceSearchFocus)
+	{
 		// Pick up launches since the dash was last built, so the usage-based sort
 		// orders ("most recently used"/"most used") aren't stale on open //
 		if (this.apps != null)
 			this.apps.refreshDashSortOrder ();
 
 		this.viewModel.openDash ();
-		this.dash.open ();
+		this.dash.open (forceSearchFocus);
 	}
 
 	//# Checks #//

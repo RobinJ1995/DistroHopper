@@ -423,25 +423,31 @@ etc/                                        — design assets (SVG/XCF sources, 
   accompanied by a snapped landing indicator drawn on `WidgetsContainer`;
   HomeActivity attaches the listener to the topmost launcher/dash container
   and the listener translates its drag coordinates into widget-grid space.
-- **`widget/bfb/`** — the BFB widget, the one App Widget DistroHopper
-  *provides* (distinct from `widgets/`, which *hosts* third-party widgets).
-  `BfbWidgetProvider` (an `AppWidgetProvider`, exported in the manifest with
-  `@xml/bfb_widget_info`) renders the launcher's menu button (BFB) in the active
-  theme so it can be placed on DistroHopper's own widget desktops or any
-  third-party home screen. `BfbWidgetRenderer` composites a bitmap mirroring
+- **`widget/bfb/`** — the BFB widgets, the App Widgets DistroHopper *provides*
+  (distinct from `widgets/`, which *hosts* third-party widgets). Two exported
+  providers share `BfbWidgetProviderBase` and look identical: `BfbWidgetProvider`
+  (`@xml/bfb_widget_info`) opens the dash on tap; `BfbSearchWidgetProvider`
+  (`@xml/bfb_search_widget_info`) opens the dash *and* focuses search (keyboard
+  up). They render the launcher's menu button (BFB) in the active theme so they
+  can be placed on DistroHopper's own widget desktops or any third-party home
+  screen. `BfbWidgetRenderer` composites a bitmap mirroring
   `desktop/launcher/AppLauncher`'s tile (themed `launcher_applauncher_background`
   shape tinted with the resolved tile colour, gloss overlay, then the BFB image),
   capped to keep the RemoteViews under the Binder limit. The tile colour comes
   from `home/LauncherTileColour` — the shared rule (static themed colour, or the
   chameleonic wallpaper colour) that `WallpaperColourApplier` also uses, so the
-  widget matches the running launcher. The provider is stateless/prefs-driven;
-  `requestUpdate(context)` repaints any placed widget and is called from
-  `theme/ThemeCards.applyTheme` (theme switch) and `WallpaperColourApplier.apply`
-  (chameleonic colour refresh). Tapping the widget starts `HomeActivity` with the
-  `openDash=true` extra (the existing dash-open contract; `HomeActivity.onResume`
-  consumes the extra once so it can't re-open the dash on a later resume) —
+  widgets match the running launcher. Providers are stateless/prefs-driven;
+  `BfbWidgetProviderBase.requestUpdate(context)` repaints every placed widget of
+  either type and is called from `theme/ThemeCards.applyTheme` (theme switch) and
+  `WallpaperColourApplier.apply` (chameleonic colour refresh). Tapping starts
+  `HomeActivity` with the `openDash=true` extra (plus `focusSearch=true` for the
+  search widget) — the existing dash-open contract; `HomeActivity.onResume`
+  consumes the extras once so they can't re-open the dash on a later resume, and
+  `openDash(forceSearchFocus)` threads the flag into `DashController.open`.
   singleTop means it opens the dash in place when DistroHopper is already
-  foreground, or launches it first otherwise.
+  foreground, or launches it first otherwise. The two tap PendingIntents must use
+  distinct request codes: they target the same HomeActivity component and differ
+  only in extras, which PendingIntent identity (Intent.filterEquals) ignores.
 - Background loading uses Kotlin coroutines: `home/StartupLoader` runs the
   startup sequence (wallpaper init → app list → label/icon caches, strictly
   in that order — both the wallpaper and app paths touch the BFB) in the

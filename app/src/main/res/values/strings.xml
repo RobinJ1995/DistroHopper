@@ -194,4 +194,6 @@
 
     <string name="bfb_widget_label">Menu button</string>
     <string name="bfb_widget_description">The menu button in your current theme. Tap to open the dash.</string>
+    <string name="bfb_search_widget_label">Search</string>
+    <string name="bfb_search_widget_description">The menu button in your current theme. Tap to open the dash and start searching.</string>
 </resources>

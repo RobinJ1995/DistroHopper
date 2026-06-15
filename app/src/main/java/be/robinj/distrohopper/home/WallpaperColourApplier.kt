@@ -8,7 +8,7 @@ import be.robinj.distrohopper.ViewFinder
 import be.robinj.distrohopper.desktop.Wallpaper
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
 import be.robinj.distrohopper.theme.Theme
-import be.robinj.distrohopper.widget.bfb.BfbWidgetProvider
+import be.robinj.distrohopper.widget.bfb.BfbWidgetProviderBase
 
 /**
  * Applies the wallpaper's average colour to the launcher items and the
@@ -69,7 +69,7 @@ class WallpaperColourApplier(
 
 		// Keep any placed BFB widget in step with the now-current chameleonic
 		// colour (the only dynamic theme tracks the wallpaper) and theme.
-		BfbWidgetProvider.requestUpdate(this.activity)
+		BfbWidgetProviderBase.requestUpdate(this.activity)
 
 		return bgColour
 	}
