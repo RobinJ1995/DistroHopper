@@ -118,10 +118,9 @@ internal object WidgetTestSupport {
 		activity: HomeActivity,
 		grid: WidgetsContainer,
 		appHost: DesktopAppHost,
-		widgetHost: WidgetHost,
 	): DesktopFolderHost {
 		val pager = pagerOf(grid)
-		val host = DesktopFolderHost(activity, pager, activity.appManager.repository, widgetHost, appHost)
+		val host = DesktopFolderHost(activity, pager, activity.appManager.repository, appHost)
 		val prev = pager.occupiedDesktopSupplier
 		pager.occupiedDesktopSupplier = { maxOf(prev(), host.highestDesktop()) }
 

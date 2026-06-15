@@ -175,26 +175,6 @@ class WidgetHost(
 		this.vgWidgets.pagesChanged()
 	}
 
-	/** Whether [appWidgetId] still has a live provider binding. */
-	fun hasWidget(appWidgetId: Int): Boolean =
-		this.widgetManager.getAppWidgetInfo(appWidgetId) != null
-
-	/**
-	 * Builds a bound widget's [WidgetContainer] WITHOUT placing it on the grid, so
-	 * a desktop folder can host it off-grid (the binding is kept; it shows live
-	 * only inside the folder overlay). Null if the provider is gone. The folder
-	 * persists the widget id, so this is the restore-time counterpart of the grid
-	 * [addWidget].
-	 */
-	fun createDetachedWidget(appWidgetId: Int): WidgetContainer? {
-		val info = this.widgetManager.getAppWidgetInfo(appWidgetId) ?: return null
-		val hostView = this.createView(this.parent.applicationContext, appWidgetId, info) as WidgetHostView
-		val container = WidgetContainer(this.parent, this, hostView)
-		hostView.setOnLongClickListener(WidgetHostView_LongClickListener(container))
-
-		return container
-	}
-
 	/**
 	 * Removes every widget on [page] and shifts the widgets on higher desktops
 	 * down by one, for desktop deletion (the per-page index is the pager child

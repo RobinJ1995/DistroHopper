@@ -883,7 +883,7 @@ public class HomeActivity extends AppCompatActivity
 
 			// Desktop folders: a third desktop host, alongside widgets and apps //
 			this.desktopFolderHost = new DesktopFolderHost (this, vgWidgets,
-					this.apps.getRepository (), this.widgetHost, this.desktopAppHost);
+					this.apps.getRepository (), this.desktopAppHost);
 
 			// Desktops is the authority for how many desktops exist (widgets + pins
 			// + desktop apps + folders); wire it now that the app model is loaded //

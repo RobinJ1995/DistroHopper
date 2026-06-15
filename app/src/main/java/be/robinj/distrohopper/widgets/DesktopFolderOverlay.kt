@@ -3,7 +3,6 @@ package be.robinj.distrohopper.widgets
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import be.robinj.distrohopper.App
@@ -13,18 +12,13 @@ import be.robinj.distrohopper.folder.FolderMember
 import be.robinj.distrohopper.folder.FolderOverlay
 
 /**
- * The popover for a desktop folder. Unlike the dash/launcher folder popups (a
- * PopupWindow) this is an in-activity overlay added to the activity's own
- * content, so a widget member can be shown **live** by reparenting its retained
- * [WidgetContainer] into it within the same window (a widget allows only one host
- * view per id). It lays the folder's contents out on the 3x3 grid exactly as
- * they are packed: apps as tappable icons (1x1), widgets at their span. The shared
- * [FolderOverlay] dims/blurs the backdrop, opens it centred over the folder icon
- * with an animation, and on close detaches the widgets back to the host's retention.
+ * The popover for a desktop folder. Like the dash/launcher folder popups it lays
+ * the folder's apps out on the 3x3 grid as tappable icons (1x1), exactly as they
+ * are packed. The shared [FolderOverlay] dims/blurs the backdrop and opens it
+ * centred over the folder icon with an animation.
  */
 class DesktopFolderOverlay(
 	private val activity: HomeActivity,
-	private val host: DesktopFolderHost,
 	private val layout: DesktopFolderLayout,
 	private val appMap: Map<String, App>,
 ) {
@@ -67,16 +61,7 @@ class DesktopFolderOverlay(
 		this.overlay.show(grid, pad * 2 + cols * cell, pad * 2 + rows * cell, anchor) { dismiss() }
 	}
 
-	fun dismiss() {
-		// Detach widgets after the close animation but before the tree is removed,
-		// so they return to the host's off-grid retention rather than being
-		// destroyed with the overlay.
-		this.overlay.dismiss(beforeRemove = {
-			for (id in this.layout.widgetIds) {
-				this.host.retainedWidget(id)?.let { (it.parent as? ViewGroup)?.removeView(it) }
-			}
-		})
-	}
+	fun dismiss() = this.overlay.dismiss()
 
 	private fun childFor(cell: DesktopFolderCell) = when (val member = cell.member) {
 		is FolderMember.AppMember -> this.appMap[member.key]?.let { app ->
@@ -97,18 +82,10 @@ class DesktopFolderOverlay(
 				}
 			}
 		}
-		is FolderMember.WidgetMember -> this.host.retainedWidget(member.appWidgetId)?.also {
-			(it.parent as? ViewGroup)?.removeView(it)
-		}
 	}
 
 	private fun startExtractDrag(cell: DesktopFolderCell, shadowView: android.view.View) {
-		// An extracted app lands as a SPAN-square desktop icon; a widget keeps its span.
-		val (colSpan, rowSpan) = when (cell.member) {
-			is FolderMember.AppMember -> DesktopFolderLayout.SPAN to DesktopFolderLayout.SPAN
-			is FolderMember.WidgetMember -> cell.colSpan to cell.rowSpan
-		}
-		val payload = DesktopFolderMemberDrag(this.layout.folderId, cell.member, colSpan, rowSpan)
+		val payload = DesktopFolderMemberDrag(this.layout.folderId, cell.member)
 		val clip = android.content.ClipData.newPlainText("desktopFolderMember", this.layout.folderId)
 		val source = this.activity.window.decorView
 

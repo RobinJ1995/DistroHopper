@@ -9,10 +9,9 @@ import org.json.JSONObject
 /**
  * A folder placed on the home-screen grid. Like a [DesktopAppLayout] it occupies
  * a fixed [SPAN]x[SPAN] block on the desktop's 8x8 grid (so it reads as one
- * icon), but its contents are themselves laid out on a small [FolderGrid] (3x3):
- * apps as 1x1 [cells][DesktopFolderCell] and widgets at their own span, so an
- * app and a widget must together fit within 3x3 (e.g. four apps leave room only
- * for a ≤2x2 widget). A desktop folder must hold at least one app.
+ * icon), but its contents are themselves laid out on a small [FolderGrid] (3x3)
+ * as 1x1 [cells][DesktopFolderCell] (max nine apps). A desktop folder must hold
+ * at least two apps.
  *
  * @see DesktopAppLayout for a plain desktop app, [WidgetLayout] for a widget.
  */
@@ -25,9 +24,6 @@ data class DesktopFolderLayout(
 ) {
 	val appKeys: List<String>
 		get() = this.cells.mapNotNull { (it.member as? FolderMember.AppMember)?.key }
-
-	val widgetIds: List<Int>
-		get() = this.cells.mapNotNull { (it.member as? FolderMember.WidgetMember)?.appWidgetId }
 
 	val appCount: Int get() = this.appKeys.size
 
@@ -46,21 +42,6 @@ data class DesktopFolderLayout(
 
 		return this.copy(cells = this.cells +
 			DesktopFolderCell(FolderMember.AppMember(key), rect.col, rect.row, 1, 1))
-	}
-
-	/**
-	 * Adds a widget of [colSpan]x[rowSpan] at the first free 3x3 block that fits
-	 * alongside the current contents, or null if there is no room.
-	 */
-	fun withWidget(appWidgetId: Int, colSpan: Int, rowSpan: Int): DesktopFolderLayout? {
-		if (this.widgetIds.contains(appWidgetId)) {
-			return this
-		}
-		val rect = FolderGrid.findFreeRect(this.occupied(), colSpan, rowSpan) ?: return null
-
-		return this.copy(cells = this.cells +
-			DesktopFolderCell(FolderMember.WidgetMember(appWidgetId), rect.col, rect.row,
-				rect.colSpan, rect.rowSpan))
 	}
 
 	fun without(member: FolderMember): DesktopFolderLayout =
@@ -113,7 +94,6 @@ data class DesktopFolderCell(
 	fun toJson(): JSONObject = JSONObject().apply {
 		when (val m = member) {
 			is FolderMember.AppMember -> put("app", m.key)
-			is FolderMember.WidgetMember -> put("widget", m.appWidgetId)
 		}
 		put("col", col)
 		put("row", row)
@@ -126,7 +106,6 @@ data class DesktopFolderCell(
 		fun fromJson(json: JSONObject): DesktopFolderCell? {
 			val member: FolderMember = when {
 				json.has("app") -> FolderMember.AppMember(json.getString("app"))
-				json.has("widget") -> FolderMember.WidgetMember(json.getInt("widget"))
 				else -> return null
 			}
 

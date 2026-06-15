@@ -6,8 +6,6 @@ import be.robinj.distrohopper.HomeActivity
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -16,8 +14,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.LooperMode
 
 /**
- * The desktop-folder host: create from two apps, add apps/widgets (with the 3x3
- * fit limit), delete (members removed), runtime uninstall, and restore reconcile.
+ * The desktop-folder host: create from two apps, add/extract apps, delete
+ * (members removed), runtime uninstall, and restore reconcile.
  */
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.LEGACY)
@@ -30,16 +28,14 @@ class DesktopFolderHostTest {
 	private class Fixture(
 		val grid: WidgetsContainer,
 		val appHost: DesktopAppHost,
-		val widgetHost: WidgetHost,
 		val folderHost: DesktopFolderHost,
 	)
 
 	private fun fixture(activity: HomeActivity): Fixture {
 		val grid = WidgetTestSupport.standaloneGrid(activity)
 		val appHost = WidgetTestSupport.desktopHost(activity, grid)
-		val widgetHost = WidgetTestSupport.host(activity, grid)
-		val folderHost = WidgetTestSupport.desktopFolderHost(activity, grid, appHost, widgetHost)
-		return Fixture(grid, appHost, widgetHost, folderHost)
+		val folderHost = WidgetTestSupport.desktopFolderHost(activity, grid, appHost)
+		return Fixture(grid, appHost, folderHost)
 	}
 
 	/** Pins an app to the desktop and returns its view. */
@@ -62,41 +58,6 @@ class DesktopFolderHostTest {
 			assertEquals(0, WidgetTestSupport.desktopAppsOn(f.grid).size)
 			val folder = this.folder(f)
 			assertEquals(2, folder.layout.appCount)
-		}
-	}
-
-	@Test fun addWidgetThatFitsMovesItIntoTheFolderAndOffTheGrid() {
-		this.scenario.onActivity { activity ->
-			val f = this.fixture(activity)
-			val a = this.pin(activity, f, "com.example.alpha", 0, 0)
-			val b = this.pin(activity, f, "com.example.beta", 2, 0)
-			f.folderHost.createFolder(a, b)
-			val id = this.folder(f).folderId
-
-			val widget = WidgetTestSupport.addWidget(activity, f.widgetHost, f.grid, 42, 5, 5, 1, 1)
-			f.folderHost.addWidget(id, widget)
-
-			assertEquals(listOf(42), this.folder(f).layout.widgetIds)
-			assertNotNull(f.folderHost.retainedWidget(42))
-			// The widget left the grid (it now lives off-grid in the folder) //
-			assertNull(f.grid.findViewAtCell(5, 5))
-		}
-	}
-
-	@Test fun aWidgetTooBigToFitIsRejected() {
-		this.scenario.onActivity { activity ->
-			val f = this.fixture(activity)
-			val a = this.pin(activity, f, "com.example.alpha", 0, 0)
-			val b = this.pin(activity, f, "com.example.beta", 2, 0)
-			f.folderHost.createFolder(a, b)
-			val id = this.folder(f).folderId
-
-			// 2 app cells + a 3x3 widget cannot fit in the 3x3 folder grid.
-			val widget = WidgetTestSupport.addWidget(activity, f.widgetHost, f.grid, 42, 4, 4, 3, 3)
-			f.folderHost.addWidget(id, widget)
-
-			assertTrue(this.folder(f).layout.widgetIds.isEmpty())
-			assertNull(f.folderHost.retainedWidget(42))
 		}
 	}
 

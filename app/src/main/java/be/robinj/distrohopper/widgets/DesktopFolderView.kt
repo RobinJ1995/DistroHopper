@@ -14,8 +14,8 @@ import be.robinj.distrohopper.home.LauncherBarBinder
 /**
  * A folder placed on a desktop: a [DesktopFolderLayout.SPAN]-square icon in the
  * [WidgetsContainer] grid, the folder-world counterpart of [DesktopAppView]. It
- * shows a [FolderIconDrawable] mini-grid (member app icons + widget placeholder
- * tiles) and no label. Tap opens the folder overlay; long-press starts a system
+ * shows a [FolderIconDrawable] mini-grid of member app icons and no label. Tap
+ * opens the folder overlay; long-press starts a system
  * drag with the view as local state (clip "desktopFolder"), so the desktop drag
  * listeners can move it on the grid or drop it on the trash. A folder can't leave
  * the desktop — only its contents can.

@@ -194,8 +194,6 @@ internal class WidgetsContainer_DragListener(
 			// An on-desktop app folds onto another app (create) or a folder (add).
 			is Drag.DesktopApp ->
 				if (target is DesktopAppView || target is DesktopFolderView) target else null
-			// A widget can only be added to an existing folder.
-			is Drag.Widget -> if (target is DesktopFolderView) target else null
 			else -> null
 		}
 	}
@@ -209,13 +207,6 @@ internal class WidgetsContainer_DragListener(
 					is DesktopAppView -> { folderHost.createFolder(kind.view, target); true }
 					is DesktopFolderView -> { folderHost.addApp(target.folderId, kind.view); true }
 					else -> false
-				}
-			}
-			is Drag.Widget -> {
-				if (target is DesktopFolderView) {
-					folderHost.addWidget(target.folderId, kind.container); true
-				} else {
-					false
 				}
 			}
 			else -> false
@@ -350,11 +341,11 @@ internal class WidgetsContainer_DragListener(
 			override fun grabOffsetY(grid: WidgetsContainer) = this.view.dragGrabOffsetY
 		}
 
-		/** A member pulled out of an open desktop folder; lands loose at the drop cell. */
+		/** An app pulled out of an open desktop folder; lands loose at the drop cell. */
 		class FolderMember(val payload: DesktopFolderMemberDrag, val host: DesktopFolderHost) : Drag() {
 			override val widgetId = DesktopAppLayout.NO_WIDGET_ID
-			override val colSpan get() = this.payload.colSpan
-			override val rowSpan get() = this.payload.rowSpan
+			override val colSpan = DesktopFolderLayout.SPAN
+			override val rowSpan = DesktopFolderLayout.SPAN
 			override val exclude: View? = null
 			override fun grabOffsetX(grid: WidgetsContainer) = this.colSpan * grid.cellWidth / 2
 			override fun grabOffsetY(grid: WidgetsContainer) = this.rowSpan * grid.cellHeight / 2
