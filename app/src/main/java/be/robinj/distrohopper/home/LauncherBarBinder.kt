@@ -12,7 +12,6 @@ import be.robinj.distrohopper.AppManager
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
-import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.desktop.dash.FolderPopup
 import be.robinj.distrohopper.desktop.dash.ProfilePagerAdapter
@@ -24,6 +23,7 @@ import be.robinj.distrohopper.desktop.launcher.AppLauncherClickListener
 import be.robinj.distrohopper.desktop.launcher.AppLauncherLongClickListener
 import be.robinj.distrohopper.desktop.launcher.LauncherDragPayload
 import be.robinj.distrohopper.desktop.launcher.LauncherFolderView
+import be.robinj.distrohopper.desktop.launcher.LauncherIconGrid
 import be.robinj.distrohopper.desktop.launcher.LauncherItem
 import be.robinj.distrohopper.desktop.launcher.PinnedAppsBar
 import be.robinj.distrohopper.desktop.launcher.RunningAppLauncher
@@ -230,11 +230,8 @@ class LauncherBarBinder(private val appManager: AppManager) {
 			}
 		}
 
-		val density = this.activity.resources.displayMetrics.density
-		val iconWidth = Preferences.getSharedPreferences(this.activity)
-			.getInt(Preference.LAUNCHERICON_WIDTH.getName(), 36)
-		val width = (48 + iconWidth) * density
-		return if (this.morphVertical) width - 4F * density else width
+		return if (this.morphVertical) LauncherIconGrid.iconHeightPx(this.activity).toFloat()
+			else LauncherIconGrid.iconSizePx(this.activity).toFloat()
 	}
 
 	private fun animationsEnabled(): Boolean =

@@ -7,6 +7,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
+import be.robinj.distrohopper.desktop.launcher.LauncherIconGrid
 import kotlinx.coroutines.launch
 
 /**
@@ -62,8 +63,8 @@ object HomeStateBinder {
 				}
 
 				this.launch {
-					viewModel.launcherIconWidth.collect { width ->
-						applyLauncherIconWidth(activity, width)
+					viewModel.launcherIconPreset.collect {
+						applyLauncherIconSize(activity)
 					}
 				}
 
@@ -85,15 +86,15 @@ object HomeStateBinder {
 
 	/**
 	 * Resizes the panel's dash-close button and re-initialises every launcher
-	 * icon with the new width preference. Used to live inside the customise
-	 * seekbar's listener; now any writer of the preference gets it applied.
+	 * icon for the current pinned-icon size preset (the pixel size is recomputed
+	 * by [LauncherIconGrid]). Used to live inside the customise seekbar's
+	 * listener; now any writer of the preference gets it applied.
 	 */
-	private fun applyLauncherIconWidth(activity: HomeActivity, width: Int) {
-		val density = activity.resources.displayMetrics.density
+	private fun applyLauncherIconSize(activity: HomeActivity) {
 		val viewFinder = activity.viewFinder
 
 		val ibDashClose_layoutParams = LinearLayout.LayoutParams(
-			((48 + width).toFloat() * density).toInt(), LinearLayout.LayoutParams.MATCH_PARENT)
+			LauncherIconGrid.iconSizePx(activity), LinearLayout.LayoutParams.MATCH_PARENT)
 		viewFinder.get<android.widget.ImageButton>(R.id.ibPanelDashClose).layoutParams =
 			ibDashClose_layoutParams
 
@@ -110,5 +111,8 @@ object HomeStateBinder {
 
 		viewFinder.get<AppLauncher>(R.id.lalTrash).init()
 		viewFinder.get<AppLauncher>(R.id.lalPreferences).init()
+
+		// The slot size changed, so the whole-slot scroll clip must re-measure.
+		viewFinder.get<LinearLayout>(R.id.llLauncher).requestLayout()
 	}
 }

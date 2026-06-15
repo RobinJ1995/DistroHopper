@@ -22,8 +22,12 @@ enum class Preference(
 	LAUNCHER_SHOW_RUNNING_APPS("launcher_running_show"),
 	/** Whether pinned launcher apps are shared globally or kept per desktop. */
 	LAUNCHER_APP_PIN_MODE("launcher_app_pin_mode", "desktop"),
-	/** Launcher icon size (the customise-mode slider value). */
-	LAUNCHERICON_WIDTH("launchericon_width"),
+	/**
+	 * Pinned-icon size preset (index 0 = Huge … 4 = Tiny, default 2 = "Default"). The pixel
+	 * size is computed at runtime from this; see [be.robinj.distrohopper.desktop.launcher.LauncherIconGrid].
+	 * A new key (the old `launchericon_width` raw-dp value is intentionally not migrated).
+	 */
+	LAUNCHER_ICON_PRESET("launcher_icon_preset", 2),
 	/** Whether the accessibility-based launcher service is enabled. */
 	LAUNCHERSERVICE_ENABLED("launcherservice_enabled"),
 	/** Whether dash search also queries the (slower) full set of lenses. */

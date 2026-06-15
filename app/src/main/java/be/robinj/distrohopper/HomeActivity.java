@@ -81,6 +81,7 @@ import be.robinj.distrohopper.desktop.launcher.AppLauncher;
 import be.robinj.distrohopper.desktop.launcher.DashCrossSurfaceController;
 import be.robinj.distrohopper.desktop.launcher.DashEdgeDragListener;
 import be.robinj.distrohopper.desktop.launcher.LauncherDragListener;
+import be.robinj.distrohopper.desktop.launcher.LauncherIconGrid;
 import be.robinj.distrohopper.desktop.launcher.TrashDragListener;
 import be.robinj.distrohopper.desktop.launcher.service.LauncherService;
 import be.robinj.distrohopper.widgets.DesktopAppHost;
@@ -292,11 +293,10 @@ public class HomeActivity extends AppCompatActivity
 
 			// Process panel user preferences // Themes should probably handle this? //
 			final Resources res = this.getResources ();
-			final float density = res.getDisplayMetrics ().density;
 
 			this.edgeController.applyPanelEdge(Location.of(prefs.getInt(Preference.PANEL_EDGE.getName(), res.getInteger(this.theme.panel_location))));
 
-			int ibDashClose_width = (int) ((float) (48 + prefs.getInt (Preference.LAUNCHERICON_WIDTH.getName(), 36)) * density);
+			int ibDashClose_width = LauncherIconGrid.iconSizePx (this);
 			LinearLayout.LayoutParams ibDashClose_layoutParams = new LinearLayout.LayoutParams (ibDashClose_width, LinearLayout.LayoutParams.MATCH_PARENT);
 			ibPanelDashClose.setLayoutParams (ibDashClose_layoutParams);
 

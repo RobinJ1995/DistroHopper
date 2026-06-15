@@ -42,7 +42,15 @@
     <string name="pref_header_gestures">Gestures</string>
     <string name="pref_header_appearance">Appearance</string>
     <string name="option_launchericon_size">Pinned icon size</string>
-    <string name="hint_launchericon_size">How large icons for pinned apps should be. The slider goes from 48dip to 120dip, with the default (right in the middle) being 84dip.</string>
+    <string name="hint_launchericon_size">How large pinned app icons are. Bigger icons mean fewer fit along the launcher without scrolling; the default adapts to your screen.</string>
+    <string name="launcher_icon_hint">%1$s · %2$d icons</string>
+    <string-array name="launcher_icon_presets">
+        <item>Huge</item>
+        <item>Large</item>
+        <item>Default</item>
+        <item>Small</item>
+        <item>Tiny</item>
+    </string-array>
     <string name="option_dash_grid_size">Dash grid size</string>
     <string name="hint_dash_grid_size">How many app icons fit across the Dash. Fewer columns means larger icons; the layout flips automatically between portrait and landscape. Search results use the same grid.</string>
     <string name="dash_grid_hint">%1$d × %2$d</string>

@@ -8,6 +8,7 @@ import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.desktop.dash.DashGrid
+import be.robinj.distrohopper.desktop.launcher.LauncherIconGrid
 import be.robinj.distrohopper.preferences.Preference
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -42,19 +43,17 @@ class ReactivePrefsTest {
 		}
 	}
 
-	@Test fun launcherIconWidthResizesThePanelCloseButton() {
+	@Test fun launcherIconPresetResizesThePanelCloseButton() {
 		this.scenario.onActivity { activity ->
+			// "Huge" (0) differs from the default preset, so the size must change.
 			DependencyContainer.of(activity).prefs.edit {
-				putInt(Preference.LAUNCHERICON_WIDTH.getName(), 52)
+				putInt(Preference.LAUNCHER_ICON_PRESET.getName(), 0)
 			}
 		}
 		ActivityTestSupport.drainTasks()
 
 		this.scenario.onActivity { activity ->
-			val density = activity.resources.displayMetrics.density
-			val expected = ((48 + 52).toFloat() * density).toInt()
-
-			assertEquals(expected,
+			assertEquals(LauncherIconGrid.iconSizePx(activity),
 				activity.findViewById<ImageButton>(R.id.ibPanelDashClose).layoutParams.width)
 		}
 	}
