@@ -33,8 +33,9 @@ import kotlin.math.roundToInt
  * Swipes over empty desktop space are driven externally (HomeGestureController
  * calls [panBegin]/[panBy]/[panSettle]); swipes that start on a widget are
  * intercepted here once they lock to the horizontal axis, and feed the same
- * pan. Interception stays out of the way while a widget is in edit mode, so
- * its resize handles keep receiving horizontal drags.
+ * pan. Vertical swipes that start on a widget are likewise intercepted and
+ * forwarded to the home gestures. Interception stays out of the way while a
+ * widget is in edit mode, so its resize handles keep receiving drags.
  *
  * A row of dots (drawn in [dispatchDraw]) appears briefly while the desktops
  * are swiped between, showing which one is in view; it snaps in on a swipe
@@ -72,9 +73,10 @@ class WidgetsPager @JvmOverloads constructor(
 
 	/**
 	 * Feeds a touch stream to the home-screen swipe gestures (HomeActivity wires
-	 * it to HomeGestureController). Used to hand off swipe-ups that start on a
-	 * widget so the dash opens just as it does on empty desktop space — see
-	 * [onInterceptTouchEvent]. Sideways pans are still handled here directly.
+	 * it to HomeGestureController). Used to hand off vertical swipes (up or down)
+	 * that start on a widget so the configured swipe gesture runs just as it does
+	 * on empty desktop space — see [onInterceptTouchEvent]. Sideways pans are
+	 * still handled here directly.
 	 */
 	var swipeGestureForwarder: ((MotionEvent) -> Boolean)? = null
 
@@ -277,10 +279,11 @@ class WidgetsPager @JvmOverloads constructor(
 					return true
 				}
 
-				// Swipe up that started on a widget: hand the stream to the home
-				// gestures (priming them with the original DOWN they never saw, since
-				// the widget consumed it) so the dash opens just like on empty space //
-				if (abs(dy) > this.touchSlop && abs(dy) > abs(dx) * 2F && dy < 0F) {
+				// Vertical swipe (up or down) that started on a widget: hand the
+				// stream to the home gestures (priming them with the original DOWN
+				// they never saw, since the widget consumed it) so the configured
+				// swipe-up/down gesture runs just like on empty desktop space //
+				if (abs(dy) > this.touchSlop && abs(dy) > abs(dx) * 2F) {
 					this.downEvent?.let { this.swipeGestureForwarder?.invoke(it) }
 					this.recycleDownEvent()
 
