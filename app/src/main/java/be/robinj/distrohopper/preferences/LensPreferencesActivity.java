@@ -1,7 +1,6 @@
 package be.robinj.distrohopper.preferences;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -12,13 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.HomeAwareActivity;
 import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.desktop.dash.lens.Lens;
 import be.robinj.distrohopper.desktop.dash.lens.LensManager;
 
 
-public class LensPreferencesActivity extends AppCompatActivity
+public class LensPreferencesActivity extends HomeAwareActivity
 {
 	private LensManager lensManager;
 	private List<Lens> lenses;

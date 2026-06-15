@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import android.widget.ViewFlipper
-import androidx.appcompat.app.AppCompatActivity
 import be.robinj.distrohopper.ExceptionHandler
+import be.robinj.distrohopper.HomeAwareActivity
 import be.robinj.distrohopper.R
 
 /**
@@ -14,7 +14,7 @@ import be.robinj.distrohopper.R
  * else), then guides the user to turn it on. Auto-finishes once the service is
  * enabled. Launched from the Gestures preferences when the service is off.
  */
-class AccessibilityGestureSetupActivity : AppCompatActivity() {
+class AccessibilityGestureSetupActivity : HomeAwareActivity() {
 	private lateinit var flipper: ViewFlipper
 
 	override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,16 +1,16 @@
 package be.robinj.distrohopper.dev;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import be.robinj.distrohopper.HomeAwareActivity;
 import be.robinj.distrohopper.IObserver;
 import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
 
-public class DevLogsActivity extends Activity implements IObserver
+public class DevLogsActivity extends HomeAwareActivity implements IObserver
 {
 	private Log log;
 	private TextView tvLogs;

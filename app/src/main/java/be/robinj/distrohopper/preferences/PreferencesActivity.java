@@ -37,6 +37,7 @@ import be.robinj.distrohopper.BuildConfig;
 import be.robinj.distrohopper.ContributeActivity;
 import be.robinj.distrohopper.DependencyContainer;
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.HomeAwareActivity;
 import be.robinj.distrohopper.HomeRole;
 import be.robinj.distrohopper.accessibility.AccessibilityGestureSetupActivity;
 import be.robinj.distrohopper.accessibility.NotificationAccessibilityService;
@@ -52,7 +53,7 @@ import be.robinj.distrohopper.onboarding.OnboardingGate;
 /**
  * Presents the application settings as a single list.
  */
-public class PreferencesActivity extends AppCompatActivity
+public class PreferencesActivity extends HomeAwareActivity
 {
 	@Override
 	protected void onCreate (Bundle savedInstanceState)

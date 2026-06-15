@@ -2,7 +2,6 @@ package be.robinj.distrohopper.preferences;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
@@ -11,13 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.robinj.distrohopper.DependencyContainer;
+import be.robinj.distrohopper.HomeAwareActivity;
 import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.theme.Theme;
 import be.robinj.distrohopper.theme.ThemeCards;
 import be.robinj.distrohopper.theme.ThemeRegistry;
 
-public class ThemePreferencesActivity extends AppCompatActivity
+public class ThemePreferencesActivity extends HomeAwareActivity
 {
 
 	@Override

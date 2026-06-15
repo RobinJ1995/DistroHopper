@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -19,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.HomeAwareActivity;
 import be.robinj.distrohopper.IconPackHelper;
 import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
@@ -28,7 +28,7 @@ import be.robinj.distrohopper.cache.AppIconCache;
  * The dedicated "Icons" settings sub-screen, grouping the icon shape, icon pack
  * and tint (recolour) options. Reached from the Appearance category.
  */
-public class IconPreferencesActivity extends AppCompatActivity
+public class IconPreferencesActivity extends HomeAwareActivity
 {
 	@Override
 	protected void onCreate (final Bundle savedInstanceState)

@@ -6,13 +6,12 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 
-public class ContributeActivity extends AppCompatActivity
+public class ContributeActivity extends HomeAwareActivity
 {
 	private static final String[] IAP_CATALOG = new String[] {"be.robinj.distrohopper.donation.e1", "be.robinj.distrohopper.donation.e2", "be.robinj.distrohopper.donation.e3", "be.robinj.distrohopper.donation.e4", "be.robinj.distrohopper.donation.e5", "be.robinj.distrohopper.donation.e10", "be.robinj.distrohopper.donation.e20"};
 	private static final String[] IAP_CATALOG_VALUES = new String[] {"€1", "€2", "€3", "€4", "€5", "€10", "€20"};
