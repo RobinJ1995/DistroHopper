@@ -11,10 +11,10 @@ import android.graphics.drawable.Drawable
 import kotlin.math.min
 
 /**
- * A folder's icon: a miniature of its contents grid. The member drawables (app
- * icons, or widget placeholders) are drawn into the adaptive [FolderGrid] layout
- * on a rounded translucent background, so a folder reads as a "grid of icons"
- * the way the popover lays them out (see the spec's 1..9 mapping).
+ * A folder's icon: a miniature of its contents grid. The member app icons are
+ * drawn into the adaptive [FolderGrid] layout on a rounded translucent
+ * background, so a folder reads as a "grid of icons" the way the popover lays
+ * them out (see the spec's 1..9 mapping).
  *
  * The member drawables are the shared, cached per-app icons, so their bounds are
  * saved and restored around each draw: an `ImageView` only re-applies a
