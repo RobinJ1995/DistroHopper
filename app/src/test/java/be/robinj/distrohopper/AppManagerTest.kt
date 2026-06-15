@@ -146,20 +146,20 @@ class AppManagerTest {
     }
 
     @Test fun pinningAnAppMarksItAsPinned() = withManager {
-        val app = requireNotNull(it.unpinned()); assertTrue(it.pin(app, false, false, false)); assertTrue(it.isPinned(app))
+        val app = requireNotNull(it.unpinned()); assertTrue(it.pin(app, false, false)); assertTrue(it.isPinned(app))
     }
 
     @Test fun pinningIncreasesThePinnedCount() = withManager {
-        val before = it.pinned.size; it.pin(requireNotNull(it.unpinned()), false, false, false); assertEquals(before + 1, it.pinned.size)
+        val before = it.pinned.size; it.pin(requireNotNull(it.unpinned()), false, false); assertEquals(before + 1, it.pinned.size)
     }
 
     @Test fun pinningAlreadyPinnedAppIsIdempotent() = withManager {
-        val app = requireNotNull(it.unpinned()); it.pin(app, false, false, false); assertFalse(it.pin(app, false, false, false))
+        val app = requireNotNull(it.unpinned()); it.pin(app, false, false); assertFalse(it.pin(app, false, false))
     }
 
     @Test fun movePinnedAppChangesOrder() = withManager {
         val first = it[0]; val second = it[1]
-        it.pin(first, false, false, false); it.pin(second, false, false, false); it.movePinnedApp(0, 1)
+        it.pin(first, false, false); it.pin(second, false, false); it.movePinnedApp(0, 1)
         assertEquals(listOf(second, first), it.pinned)
     }
 
@@ -167,8 +167,8 @@ class AppManagerTest {
         val alpha = manager.findAppsByPackageName("com.example.alpha").first()
         val settings = manager.settingsShortcut()
 
-        manager.pin(alpha, false, false, false)
-        manager.pin(settings, false, false, false)
+        manager.pin(alpha, false, false)
+        manager.pin(settings, false, false)
         manager.movePinnedApp(1, 0)
         manager.savePinnedApps()
 

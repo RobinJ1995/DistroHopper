@@ -86,8 +86,8 @@ class LauncherBarBinderTest {
 		scenario.onActivity { activity ->
 			val binder = LauncherBarBinder(activity.appManager)
 			val manager = activity.appManager
-			manager.pin(app(activity, "com.example.alpha"), false, false, false)
-			manager.pin(app(activity, "com.example.beta"), false, false, false)
+			manager.pin(app(activity, "com.example.alpha"), false, false)
+			manager.pin(app(activity, "com.example.beta"), false, false)
 
 			binder.refreshPinnedView()
 
@@ -117,7 +117,7 @@ class LauncherBarBinderTest {
 		scenario.onActivity { activity ->
 			val binder = LauncherBarBinder(activity.appManager)
 			val app = app(activity, "com.example.alpha")
-			activity.appManager.pin(app, false, false, false)
+			activity.appManager.pin(app, false, false)
 			binder.addPinnedAppView(app)
 			setRunningProcess(activity, "com.example.alpha")
 

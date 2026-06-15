@@ -68,7 +68,7 @@ class TrashDragListenerTest {
 		scenario.onActivity { activity ->
 			val manager = activity.appManager
 			val app = manager.findAppsByPackageName("com.example.alpha").first()
-			manager.pin(app, false, false, true)
+			manager.pin(app, false, true)
 			val lalTrash = activity.findViewById<AppLauncher>(R.id.lalTrash)
 			val originalColour = lalTrash.colour
 			val listener = TrashDragListener(activity)

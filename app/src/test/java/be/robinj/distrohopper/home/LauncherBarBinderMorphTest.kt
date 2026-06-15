@@ -48,10 +48,10 @@ class LauncherBarBinderMorphTest {
 	private fun seedDistinctDesktops(activity: HomeActivity) {
 		val manager = activity.appManager
 		manager.setCurrentDesktop(0)
-		manager.pin(app(activity, "com.example.alpha"), false, false, false)
+		manager.pin(app(activity, "com.example.alpha"), false, false)
 		manager.setCurrentDesktop(1)
-		manager.pin(app(activity, "com.example.beta"), false, false, false)
-		manager.pin(app(activity, "com.example.gamma"), false, false, false)
+		manager.pin(app(activity, "com.example.beta"), false, false)
+		manager.pin(app(activity, "com.example.gamma"), false, false)
 		manager.setCurrentDesktop(0)
 	}
 

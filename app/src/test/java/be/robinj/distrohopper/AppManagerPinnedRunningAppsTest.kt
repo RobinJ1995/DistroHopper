@@ -34,7 +34,7 @@ class AppManagerPinnedRunningAppsTest {
         scenario.onActivity { activity ->
             val manager = activity.appManager
             val app = manager.findAppsByPackageName("com.example.alpha").first()
-            manager.pin(app, false, false, false) // pinned, but no view in llLauncherPinnedApps
+            manager.pin(app, false, false) // pinned, but no view in llLauncherPinnedApps
             setRunningProcess(activity, "com.example.alpha")
 
             manager.addRunningApps(Color.BLACK)
@@ -45,7 +45,7 @@ class AppManagerPinnedRunningAppsTest {
         scenario.onActivity { activity ->
             val manager = activity.appManager
             val app = manager.findAppsByPackageName("com.example.alpha").first()
-            manager.pin(app, false, false, true)
+            manager.pin(app, false, true)
             setRunningProcess(activity, "com.example.alpha")
 
             manager.addRunningApps(Color.BLACK)

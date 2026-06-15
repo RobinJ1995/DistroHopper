@@ -35,7 +35,7 @@ class LauncherBarBinderReorderTest {
     private fun pinThree(activity: HomeActivity): List<App> =
         listOf("com.example.alpha", "com.example.beta", "com.example.gamma").map { packageName ->
             val app = activity.appManager.findAppsByPackageName(packageName).first()
-            activity.appManager.pin(app, false, false, true)
+            activity.appManager.pin(app, false, true)
             app
         }
 

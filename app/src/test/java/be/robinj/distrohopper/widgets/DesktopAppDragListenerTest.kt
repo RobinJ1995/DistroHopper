@@ -109,7 +109,7 @@ class DesktopAppDragListenerTest {
 		this.scenario.onActivity { activity ->
 			val f = this.fixture(activity)
 			val alpha = WidgetTestSupport.app(activity, "com.example.alpha")
-			activity.appManager.pin(alpha, false, false, true)
+			activity.appManager.pin(alpha, false, true)
 			assertTrue(activity.appManager.isPinned(alpha))
 
 			this.drag(f, DragEvent.ACTION_DROP, 4, 1,
@@ -214,8 +214,8 @@ class DesktopAppDragListenerTest {
 			val f = this.fixture(activity)
 			val first = WidgetTestSupport.app(activity, "com.example.beta")
 			val second = WidgetTestSupport.app(activity, "com.example.gamma")
-			activity.appManager.pin(first, false, false, true)
-			activity.appManager.pin(second, false, false, true)
+			activity.appManager.pin(first, false, true)
+			activity.appManager.pin(second, false, true)
 			val moved = WidgetTestSupport.app(activity, "com.example.alpha")
 			f.host.pinAt(moved, 0, 0, 0)
 			val view = WidgetTestSupport.desktopAppsOn(f.grid).single()

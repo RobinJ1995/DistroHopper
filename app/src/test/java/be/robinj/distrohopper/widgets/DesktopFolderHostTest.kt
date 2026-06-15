@@ -5,6 +5,7 @@ import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.HomeActivity
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -185,6 +186,88 @@ class DesktopFolderHostTest {
 			val beta = WidgetTestSupport.app(activity, "com.example.beta")
 			assertEquals(listOf(beta.profileScopedKey),
 				WidgetTestSupport.desktopAppsOn(f.grid).map { it.key })
+		}
+	}
+
+	@Test fun createFolderAnchorsAtTheTargetAppsCellNotTheDraggedOne() {
+		this.scenario.onActivity { activity ->
+			val f = this.fixture(activity)
+			val dragged = this.pin(activity, f, "com.example.alpha", 0, 0)
+			val target = this.pin(activity, f, "com.example.beta", 4, 2)
+
+			f.folderHost.createFolder(dragged, target)
+
+			val lp = this.folder(f).layoutParams as WidgetsContainer.LayoutParams
+			assertEquals("the folder takes the dropped-onto app's cell", 4, lp.col)
+			assertEquals(2, lp.row)
+		}
+	}
+
+	@Test fun removeMemberPlacesTheExtractedAppAtTheDropCell() {
+		this.scenario.onActivity { activity ->
+			val f = this.fixture(activity)
+			// Three apps so the folder survives the extraction (no dissolve), making
+			// it unambiguous which app must land at the drop cell.
+			val a = this.pin(activity, f, "com.example.alpha", 0, 0)
+			val b = this.pin(activity, f, "com.example.beta", 2, 0)
+			val c = this.pin(activity, f, "com.example.gamma", 4, 0)
+			f.folderHost.createFolder(a, b)
+			val id = this.folder(f).folderId
+			f.folderHost.addApp(id, c)
+			val alpha = WidgetTestSupport.app(activity, "com.example.alpha")
+
+			f.folderHost.removeMember(id, be.robinj.distrohopper.folder.FolderMember.AppMember(
+				alpha.profileScopedKey), 5, 5, 0)
+
+			// Exactly the extracted app is loose, at the drop cell (not a remaining one).
+			val loose = WidgetTestSupport.desktopAppsOn(f.grid)
+			assertEquals(1, loose.size)
+			assertEquals(alpha.profileScopedKey, loose.first().key)
+			val lp = loose.first().layoutParams as WidgetsContainer.LayoutParams
+			assertEquals(5, lp.col)
+			assertEquals(5, lp.row)
+		}
+	}
+
+	@Test fun restoreDropsAFolderMemberThatIsAlsoLooseOnTheDesktop() {
+		this.scenario.onActivity { activity ->
+			val f = this.fixture(activity)
+			val alpha = WidgetTestSupport.app(activity, "com.example.alpha")
+			val beta = WidgetTestSupport.app(activity, "com.example.beta")
+			// alpha is BOTH loose on the desktop and persisted inside a folder.
+			f.appHost.pinAt(alpha, 0, 0, 0)
+			DesktopFolderPersistence(activity.applicationContext).save(listOf(
+				DesktopFolderLayout("folder-1", 3, 3, 0)
+					.withApp(alpha.profileScopedKey)!!
+					.withApp(beta.profileScopedKey)!!))
+
+			f.folderHost.restore()
+
+			// loose wins: alpha stays loose and is dropped from the folder, which then
+			// has one member and dissolves (beta returns loose). Never both places.
+			val looseKeys = WidgetTestSupport.desktopAppsOn(f.grid).map { it.key }
+			assertTrue(looseKeys.contains(alpha.profileScopedKey))
+			assertEquals(0, WidgetTestSupport.foldersOn(f.grid).size)
+		}
+	}
+
+	@Test fun dropFromFoldersRemovesTheAppWithoutTouchingTheOthers() {
+		this.scenario.onActivity { activity ->
+			val f = this.fixture(activity)
+			val a = this.pin(activity, f, "com.example.alpha", 0, 0)
+			val b = this.pin(activity, f, "com.example.beta", 2, 0)
+			val c = this.pin(activity, f, "com.example.gamma", 4, 0)
+			f.folderHost.createFolder(a, b)
+			val id = this.folder(f).folderId
+			f.folderHost.addApp(id, c) // folder now holds 3 apps
+			val alpha = WidgetTestSupport.app(activity, "com.example.alpha")
+
+			f.folderHost.dropFromFolders(alpha)
+
+			// alpha leaves the folder (it has just been placed loose elsewhere); the
+			// folder survives with its other two members.
+			assertEquals(1, WidgetTestSupport.foldersOn(f.grid).size)
+			assertFalse(this.folder(f).layout.appKeys.contains(alpha.profileScopedKey))
 		}
 	}
 }

@@ -50,7 +50,7 @@ class LauncherDragListenersTest {
 		scenario.onActivity { activity ->
 			val manager = activity.appManager
 			val alpha = manager.findAppsByPackageName("com.example.alpha").first()
-			manager.pin(alpha, true, false, true)
+			manager.pin(alpha, true, true)
 			val alphaLauncher = activity
 				.findViewById<LinearLayout>(R.id.llLauncherPinnedApps)
 				.findViewWithTag<AppLauncher>(alpha)
@@ -94,8 +94,8 @@ class LauncherDragListenersTest {
 			val manager = activity.appManager
 			val alpha = manager.findAppsByPackageName("com.example.alpha").first()
 			val beta = manager.findAppsByPackageName("com.example.beta").first()
-			manager.pin(alpha, true, false, true)
-			manager.pin(beta, true, false, true)
+			manager.pin(alpha, true, true)
+			manager.pin(beta, true, true)
 			val betaLauncher = activity
 				.findViewById<LinearLayout>(R.id.llLauncherPinnedApps)
 				.findViewWithTag<AppLauncher>(beta)
@@ -121,7 +121,7 @@ class LauncherDragListenersTest {
 		scenario.onActivity { activity ->
 			val manager = activity.appManager
 			val alpha = manager.findAppsByPackageName("com.example.alpha").first()
-			manager.pin(alpha, false, false, true)
+			manager.pin(alpha, false, true)
 			val launcher = activity
 				.findViewById<LinearLayout>(R.id.llLauncherPinnedApps)
 				.findViewWithTag<AppLauncher>(alpha)
