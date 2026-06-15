@@ -205,6 +205,30 @@ class WidgetsPagerTest {
 		}
 	}
 
+	@Test fun interceptsVerticalSwipesOverWidgetsAndForwardsThem() = this.onActivity { activity ->
+		val grid = WidgetTestSupport.standaloneGrid(activity)
+		val pager = WidgetTestSupport.pagerOf(grid)
+		val host = WidgetTestSupport.host(activity, grid)
+		WidgetTestSupport.addWidget(activity, host, grid, 42, 0, 0, 2, 2)
+		pager.pagesChanged()
+		this.layoutPager(pager)
+
+		var forwarded = false
+		pager.swipeGestureForwarder = { forwarded = true; false }
+
+		val down = motionEvent(android.view.MotionEvent.ACTION_DOWN, 400F, 400F, 0)
+		// Swipe straight down (the direction the widget used to swallow) //
+		val move = motionEvent(android.view.MotionEvent.ACTION_MOVE, 405F, 500F, 50)
+		try {
+			assertEquals(false, pager.onInterceptTouchEvent(down))
+			assertTrue(pager.onInterceptTouchEvent(move))
+			assertTrue(forwarded) // The home gestures were primed with the DOWN //
+		} finally {
+			down.recycle()
+			move.recycle()
+		}
+	}
+
 	@Test fun doesNotInterceptWhileAWidgetIsInEditMode() = this.onActivity { activity ->
 		val grid = WidgetTestSupport.standaloneGrid(activity)
 		val pager = WidgetTestSupport.pagerOf(grid)
