@@ -510,6 +510,13 @@ public class AppManager implements Iterable<App>
 		this.getBinder ().startedDraggingDashApp (app);
 	}
 
+	/** Begins dragging an app pulled out of launcher folder [folderId], so it
+	 *  behaves like dragging the pin itself (reposition / fold / trash). */
+	public void startedDraggingLauncherFolderMember (String folderId, App app)
+	{
+		this.getBinder ().startedDraggingLauncherFolderMember (folderId, app);
+	}
+
 	public void draggedPinnedItemOver (android.view.View targetView)
 	{
 		this.getBinder ().draggedPinnedItemOver (targetView);

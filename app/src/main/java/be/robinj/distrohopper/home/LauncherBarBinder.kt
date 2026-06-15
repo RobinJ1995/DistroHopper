@@ -47,6 +47,9 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	private var draggedPinnedApp: View? = null
 	private var draggedPinnedAppOldIndex = -1
 	private var draggedPinnedAppDropped = false
+	/** When the drag is an app extracted from a launcher folder: the source folder
+	 *  id, so a committing drop ungroups it (left null for an ordinary pin drag). */
+	private var extractFromFolderId: String? = null
 
 	/** The icon/folder a dwell has armed for a fold-on-drop (held centrally; see [hoverPinnedItem]). */
 	private var foldArmedTarget: View? = null
@@ -430,6 +433,33 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	}
 
 	/**
+	 * Begins dragging an app pulled out of a launcher folder, so it behaves exactly
+	 * like dragging the pin itself: a placeholder opens in the bar and follows the
+	 * drag (gaps to reposition, fold onto an icon to make a folder, trash to remove).
+	 *
+	 * A folder only *groups* already-pinned apps, so — unlike a dash app — the app
+	 * is NOT pinned on drop; instead a committing drop ungroups it from [folderId]
+	 * (see [droppedPinnedApp] / [foldDraggedOnto]). The model is untouched until
+	 * then, so cancelling simply leaves the app in its folder (and avoids dissolving
+	 * a two-member source folder the instant the drag starts).
+	 */
+	fun startedDraggingLauncherFolderMember(folderId: String, app: App) {
+		if (this.draggedPinnedApp != null) {
+			return // a placeholder already exists for this drag //
+		}
+		this.extractFromFolderId = folderId
+		val appLauncher = this.pinnedAppLauncher(app)
+		appLauncher.visibility = View.INVISIBLE
+		this.llLauncherPinnedApps.addView(appLauncher)
+
+		this.draggedPinnedApp = appLauncher
+		this.draggedPinnedAppOldIndex = EXTRACTED_FOLDER_MEMBER
+		this.draggedPinnedAppDropped = false
+
+		this.startedDraggingPinnedApp()
+	}
+
+	/**
 	 * The drag is hovering over another pinned item: shift the placeholder into
 	 * [targetView]'s slot, so the items in between slide over (animated by the
 	 * container's LayoutTransition) and the empty slot shows where the drop lands.
@@ -565,6 +595,24 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		this.draggedPinnedAppDropped = true
 
 		val desktop = this.appManager.currentDesktop
+
+		// An app extracted from a folder is already pinned: ungroup it (the source
+		// folder dissolves if it drops to one app), keeping the remaining members,
+		// then position it where the placeholder is. flattenBarKeys is built to
+		// exclude the extracted key from the stale source folder view so it is not
+		// double-counted (the placeholder supplies it at the drop slot) //
+		if (this.draggedPinnedAppOldIndex == EXTRACTED_FOLDER_MEMBER) {
+			val app = dragged.tag as App
+			val keys = this.flattenBarKeysExtracting(dragged, app.profileScopedKey)
+			this.extractFromFolderId?.let {
+				this.appManager.launcherLayout.removeFromFolder(it, app.profileScopedKey)
+			}
+			this.appManager.reorderPinned(desktop, keys)
+			this.appManager.savePinnedApps()
+			this.refreshPinnedView()
+			return
+		}
+
 		if (this.draggedPinnedAppOldIndex == NOT_YET_PINNED &&
 			!this.appManager.pin(dragged.tag as App, false, false, false)) {
 			this.draggedPinnedAppDropped = false // pinned meanwhile: let ended rebuild //
@@ -590,6 +638,28 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	}
 
 	/**
+	 * [flattenBarKeys] for committing a folder-member extraction: the source folder
+	 * view is still showing [extractedKey] (the model is only mutated right after),
+	 * so drop exactly that occurrence from the folder's expansion. The dragged
+	 * [placeholder] still carries the key at the drop slot, so the app ends up at
+	 * the dropped position with the folder's other members left in place.
+	 */
+	private fun flattenBarKeysExtracting(placeholder: View, extractedKey: String): List<String> {
+		val keys = ArrayList<String>()
+		for (i in 0 until this.llLauncherPinnedApps.childCount) {
+			when (val child = this.llLauncherPinnedApps.getChildAt(i)) {
+				placeholder -> (child.tag as? App)?.let { keys.add(it.profileScopedKey) }
+				is LauncherFolderView -> child.apps.forEach {
+					if (it.profileScopedKey != extractedKey) keys.add(it.profileScopedKey)
+				}
+				else -> (child.tag as? App)?.let { keys.add(it.profileScopedKey) }
+			}
+		}
+
+		return keys
+	}
+
+	/**
 	 * Folds the dragged app onto [targetView] (a dwell-armed drop): create a
 	 * folder with the target app, or add to the target folder. Folders cannot be
 	 * folded, and a not-yet-pinned dash app is pinned first.
@@ -607,6 +677,12 @@ class LauncherBarBinder(private val appManager: AppManager) {
 				return false
 			}
 			this.appManager.savePinnedApps()
+		} else if (this.draggedPinnedAppOldIndex == EXTRACTED_FOLDER_MEMBER) {
+			// Already pinned (a folder member): ungroup it from its source folder
+			// first, so folding it onto another icon/folder re-groups it cleanly //
+			this.extractFromFolderId?.let {
+				layout.removeFromFolder(it, draggedApp.profileScopedKey)
+			}
 		}
 		this.draggedPinnedAppDropped = true
 
@@ -641,6 +717,9 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		val dragged = this.draggedPinnedApp ?: return
 		this.draggedPinnedApp = null
 		this.draggedPinnedAppOldIndex = -1
+		// A cancelled extraction left the model untouched (the app is still in its
+		// folder); the not-dropped refresh below rebuilds the bar to match it //
+		this.extractFromFolderId = null
 
 		dragged.visibility = View.VISIBLE
 		if (!this.draggedPinnedAppDropped)
@@ -662,6 +741,10 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	companion object {
 		/** draggedPinnedAppOldIndex value for a dash app not yet in the pinned model. */
 		private const val NOT_YET_PINNED = -1
+
+		/** draggedPinnedAppOldIndex value for an app extracted from a launcher folder:
+		 *  already pinned, so a committing drop ungroups rather than pins it. */
+		private const val EXTRACTED_FOLDER_MEMBER = -2
 
 		/** How long the drag must pause over a pinned app/folder to arm a fold. */
 		private const val FOLD_DWELL_MS = 550L

@@ -68,7 +68,18 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 			switch (event.getAction ())
 			{
 				case DragEvent.ACTION_DRAG_ENTERED:
-					this.appManager.startedDraggingPinnedApp ();
+					// An app dragged out of a launcher folder opens a placeholder in
+					// the bar (once) the first time it is brought over the dock, so it
+					// then reorders/folds exactly like dragging the pin itself //
+					if (event.getLocalState () instanceof LauncherDragPayload.FolderMemberDrag)
+					{
+						LauncherDragPayload.FolderMemberDrag member =
+							(LauncherDragPayload.FolderMemberDrag) event.getLocalState ();
+						this.appManager.startedDraggingLauncherFolderMember (
+							member.getFolderId (), member.getApp ());
+					}
+					else
+						this.appManager.startedDraggingPinnedApp ();
 					// Cross-surface drag: hovering the launcher asks for the dash to
 					// close (resolved with BFB-open precedence by the controller), so
 					// the app can continue onto the desktop; dropping here still pins //
