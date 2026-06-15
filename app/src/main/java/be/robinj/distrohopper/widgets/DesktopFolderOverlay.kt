@@ -32,11 +32,15 @@ class DesktopFolderOverlay(
 
 	fun show(anchor: View) {
 		val cell = this.dp(88)
-		val pad = this.dp(10)
+		val pad = this.dp(14)
 
 		val grid = FrameLayout(this.activity).apply {
-			setPadding(pad, pad, pad, pad)
+			// No setPadding here: each cell's margin already includes [pad], and a
+			// FrameLayout adds its padding ON TOP of child margins — doubling it and
+			// shoving the icons to the bottom-right while the panel size budgets only
+			// one [pad]. The margins alone keep the grid centred in the panel.
 			isClickable = true // consume taps so they don't fall through to dismiss //
+			clipToOutline = true // keep icons inside the rounded panel //
 			background = GradientDrawable().apply {
 				cornerRadius = dp(20).toFloat()
 				setColor(Color.argb(238, 28, 28, 28))
@@ -78,7 +82,9 @@ class DesktopFolderOverlay(
 		is FolderMember.AppMember -> this.appMap[member.key]?.let { app ->
 			ImageView(this.activity).apply {
 				setImageDrawable(app.icon.drawable)
-				val p = dp(8)
+				// Shrink the icon within its cell so adjacent icons (cells are packed
+				// edge-to-edge) keep a clear gap and don't crowd the panel.
+				val p = dp(15)
 				setPadding(p, p, p, p)
 				isClickable = true
 				setOnClickListener {
