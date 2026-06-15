@@ -63,6 +63,18 @@ internal class WidgetsContainer_DragListener(
 	}
 
 	private fun onLocation(receiver: View, event: DragEvent, kind: Drag) {
+		// While the dash is open the drop goes INTO the dash (see dropIntoDash), not
+		// the desktop, so don't paint a landing target / fold ring on the desktop
+		// behind it (this listener still gets LOCATION because the dash grid never
+		// claimed the drag) //
+		if (this.parent.dashIsOpen()) {
+			this.clearFoldArm()
+			this.vgWidgets.hideMoveTarget()
+			this.hoverCol = -1
+			this.hoverRow = -1
+			return
+		}
+
 		val (col, row) = this.snap(receiver, event, kind)
 
 		if (col != this.hoverCol || row != this.hoverRow) {
@@ -98,6 +110,17 @@ internal class WidgetsContainer_DragListener(
 		val foldTarget = this.armedFoldTarget
 		this.clearFoldArm()
 
+		// Dropped while the dash is open = dropped INTO the dash (the desktop is
+		// behind it; had the user wanted the desktop they'd have hovered the
+		// launcher/panel to close the dash first). The app returns to just the app
+		// drawer: remove it from whatever surface it came from, never land it on
+		// the desktop behind. This listener gets the drop because the dash views
+		// were GONE at drag start and so never claimed it (they can't, by then) //
+		if (this.parent.dashIsOpen()) {
+			this.dropIntoDash(kind)
+			return
+		}
+
 		if (foldTarget != null && this.fold(kind, foldTarget)) {
 			return
 		}
@@ -124,6 +147,29 @@ internal class WidgetsContainer_DragListener(
 						it.launcherLayoutChanged()
 					}
 				}
+		}
+	}
+
+	/**
+	 * Drop committed while the dash is open: the app returns to just the app drawer,
+	 * so remove it from its source surface (a widget/folder, which can't live in the
+	 * dash, simply stays put — the drag cancels). Never lands anything on the
+	 * desktop behind the dash.
+	 */
+	private fun dropIntoDash(kind: Drag) {
+		val appManager = this.parent.appManager
+		when (kind) {
+			is Drag.LauncherPin -> appManager?.unpin(kind.app, false)
+			is Drag.LauncherFolderMember -> appManager?.let {
+				it.launcherLayout.removeFromFolder(kind.folderId, kind.app.profileScopedKey)
+				it.unpin(kind.app, false)
+				it.launcherLayoutChanged()
+			}
+			is Drag.DesktopApp -> kind.host.remove(kind.view)
+			is Drag.FolderMember -> kind.host.deleteMember(kind.payload.folderId, kind.payload.member)
+			// A dash app is already in the drawer; a widget or whole folder can't go
+			// into the dash — leave them where they were (the drag just cancels) //
+			is Drag.DashApp, is Drag.DesktopFolder, is Drag.Widget -> Unit
 		}
 	}
 
