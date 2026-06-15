@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ring overlaid (as a foreground) on a pinned launcher icon/folder while a
+     drag hovers its centre, signalling that releasing will create or extend a
+     folder with it — the launcher counterpart of dash_folder_drop_indicator. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <stroke android:width="3dp" android:color="#FFFFFFFF" />
+    <corners android:radius="12dp" />
+</shape>

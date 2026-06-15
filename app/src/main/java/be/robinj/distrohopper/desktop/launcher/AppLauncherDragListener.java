@@ -1,7 +1,5 @@
 package be.robinj.distrohopper.desktop.launcher;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +14,20 @@ import be.robinj.distrohopper.widgets.WidgetContainer;
  * shifts the dragged item's empty slot to this item's position to preview a
  * reorder; pausing (a dwell) over the item instead arms a fold, so releasing
  * creates a folder with this app — or adds to this folder. A folder being
- * dragged only ever reorders (folders can't be nested), which
- * {@link AppManager#foldDraggedOnto} enforces.
+ * dragged only ever reorders (folders can't be nested).
+ *
+ * The fold's dwell timer and armed target live centrally on the binder (via
+ * {@link AppManager#hoverPinnedItem} / {@link AppManager#dropPinnedFold}), not
+ * per-listener: the reorder preview slides the dragged item's own invisible
+ * placeholder under the finger, which fires a spurious EXITED on the icon we
+ * just dwelled over — a per-listener dwell would cancel itself, and the drop
+ * would land on the placeholder rather than the target.
  *
  * Created by robin on 03/09/14.
  */
 public class AppLauncherDragListener implements ViewGroup.OnDragListener
 {
-	private static final long FOLDER_DWELL_MS = 550L;
-
 	private final AppManager appManager;
-	private final Handler handler = new Handler (Looper.getMainLooper ());
-	private boolean armedForFold = false;
 
 	public AppLauncherDragListener (AppManager appManager)
 	{
@@ -47,24 +47,16 @@ public class AppLauncherDragListener implements ViewGroup.OnDragListener
 			switch (event.getAction ())
 			{
 				case DragEvent.ACTION_DRAG_ENTERED:
-					// Preview the reorder immediately; arm a fold if the drag lingers //
-					this.appManager.draggedPinnedItemOver (view);
-					this.armedForFold = false;
-					this.handler.postDelayed (() -> this.armedForFold = true, FOLDER_DWELL_MS);
-					break;
-				case DragEvent.ACTION_DRAG_EXITED:
-					this.handler.removeCallbacksAndMessages (null);
-					this.armedForFold = false;
+					// Preview the reorder and (re)arm the dwell-fold onto this item //
+					this.appManager.hoverPinnedItem (view);
 					break;
 				case DragEvent.ACTION_DROP:
-					this.handler.removeCallbacksAndMessages (null);
-					// A dwell-armed drop folds onto this item; otherwise it commits the
-					// previewed reorder. A desktop app dragged here rode in on a
-					// dash-style placeholder, so it is pinned by the commit then removed
-					// from the desktop to complete the move //
-					if (! (this.armedForFold && this.appManager.foldDraggedOnto (view)))
+					// A dwell-armed drop folds onto the armed target; otherwise it
+					// commits the previewed reorder. A desktop app dragged here rode
+					// in on a dash-style placeholder, so it is pinned by the commit
+					// then removed from the desktop to complete the move //
+					if (! this.appManager.dropPinnedFold ())
 						this.appManager.droppedPinnedApp ();
-					this.armedForFold = false;
 					if (event.getLocalState () instanceof DesktopAppView
 							&& this.appManager.getParent ().getDesktopAppHost () != null)
 						this.appManager.getParent ().getDesktopAppHost ()
@@ -72,8 +64,7 @@ public class AppLauncherDragListener implements ViewGroup.OnDragListener
 					this.appManager.stoppedDraggingPinnedApp ();
 					break;
 				case DragEvent.ACTION_DRAG_ENDED:
-					this.handler.removeCallbacksAndMessages (null);
-					this.armedForFold = false;
+					this.appManager.cancelPinnedFold ();
 					// Posted: ENDED is dispatched by iterating each container's
 					// drag-interested children, and mutating views (even just
 					// visibility) modifies that set — a ConcurrentModificationException //

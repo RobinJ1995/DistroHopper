@@ -515,6 +515,42 @@ public class AppManager implements Iterable<App>
 		this.getBinder ().draggedPinnedItemOver (targetView);
 	}
 
+	/** The drag is hovering [targetView]: preview the reorder and arm a dwell-fold. */
+	public void hoverPinnedItem (android.view.View targetView)
+	{
+		this.getBinder ().hoverPinnedItem (targetView);
+	}
+
+	/** Whether the dragged pinned item could fold onto [targetView]. */
+	public boolean canFoldOnto (android.view.View targetView)
+	{
+		return this.getBinder ().canFoldOnto (targetView);
+	}
+
+	/** Preview a reorder/pin insertion before/after [targetView] (null = end of bar). */
+	public void previewPinnedInsert (android.view.View targetView, boolean after)
+	{
+		this.getBinder ().previewPinnedInsert (targetView, after);
+	}
+
+	/** Preview a fold onto [targetView] (ring it, collapse the insertion gap). */
+	public void previewPinnedFold (android.view.View targetView)
+	{
+		this.getBinder ().previewPinnedFold (targetView);
+	}
+
+	/** Commits a dwell-armed fold if one is pending; @return whether it folded. */
+	public boolean dropPinnedFold ()
+	{
+		return this.getBinder ().dropPinnedFold ();
+	}
+
+	/** Cancels any pending dwell-fold. */
+	public void cancelPinnedFold ()
+	{
+		this.getBinder ().cancelPinnedFold ();
+	}
+
 	public void draggedPinnedAppOver (App app)
 	{
 		this.getBinder ().draggedPinnedAppOver (app);

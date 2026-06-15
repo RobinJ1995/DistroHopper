@@ -21,7 +21,6 @@ import be.robinj.distrohopper.desktop.dash.profile.UnityRibbonIndicator
 import be.robinj.distrohopper.desktop.dash.profile.ProfileIndicator
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
 import be.robinj.distrohopper.desktop.launcher.AppLauncherClickListener
-import be.robinj.distrohopper.desktop.launcher.AppLauncherDragListener
 import be.robinj.distrohopper.desktop.launcher.AppLauncherLongClickListener
 import be.robinj.distrohopper.desktop.launcher.LauncherDragPayload
 import be.robinj.distrohopper.desktop.launcher.LauncherFolderView
@@ -48,6 +47,10 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	private var draggedPinnedApp: View? = null
 	private var draggedPinnedAppOldIndex = -1
 	private var draggedPinnedAppDropped = false
+
+	/** The icon/folder a dwell has armed for a fold-on-drop (held centrally; see [hoverPinnedItem]). */
+	private var foldArmedTarget: View? = null
+	private val foldHandler = android.os.Handler(android.os.Looper.getMainLooper())
 
 	/** The desktops the in-flight launcher morph is between (-1 = not morphing). */
 	private var morphFrom = -1
@@ -129,7 +132,8 @@ class LauncherBarBinder(private val appManager: AppManager) {
 			AppLauncherLongClickListener.startFolderDrag(this.activity, view, item.folder.id)
 			true
 		}
-		view.setOnDragListener(AppLauncherDragListener(this.appManager))
+		// Reorder/fold is hit-tested at the container level by LauncherDragListener
+		// (nested icons don't receive drag LOCATION events), so no per-icon listener.
 
 		return view
 	}
@@ -450,6 +454,105 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	}
 
 	/**
+	 * Whether the dragged item could fold onto [targetView] (the dragged item is
+	 * an app, and the target is a different app or a folder). Folders being
+	 * dragged never fold.
+	 */
+	fun canFoldOnto(targetView: View): Boolean {
+		val dragged = this.draggedPinnedApp ?: return false
+		if (targetView === dragged) {
+			return false
+		}
+		val draggedApp = dragged.tag as? App ?: return false
+		val targetTag = targetView.tag
+
+		return targetView is LauncherFolderView || (targetTag is App && targetTag != draggedApp)
+	}
+
+	/**
+	 * Preview an insertion (reorder / pin) at the gap before/after [targetView]
+	 * (or the end of the bar when null): the dragged item's empty slot opens
+	 * there, so dropping pins to that location. Clears any fold preview — an open
+	 * gap means "drop to pin here", never a fold.
+	 */
+	fun previewPinnedInsert(targetView: View?, after: Boolean) {
+		val dragged = this.draggedPinnedApp ?: return
+		this.setFoldRing(null)
+
+		val bar = this.llLauncherPinnedApps
+		bar.removeView(dragged)
+		val index = if (targetView == null || targetView === dragged) {
+			bar.childCount
+		} else {
+			bar.indexOfChild(targetView) + if (after) 1 else 0
+		}
+		bar.addView(dragged, index.coerceIn(0, bar.childCount))
+	}
+
+	/**
+	 * Preview a fold onto [targetView] (the drag is over its centre): ring the
+	 * target and park the dragged item's placeholder at the end of the bar so no
+	 * insertion gap shows. Dropping now creates/extends a folder.
+	 */
+	fun previewPinnedFold(targetView: View) {
+		val dragged = this.draggedPinnedApp ?: return
+		if (targetView === dragged) {
+			return
+		}
+
+		// Collapse any open insertion gap by parking the placeholder at the end.
+		val bar = this.llLauncherPinnedApps
+		if (bar.indexOfChild(dragged) != bar.childCount - 1) {
+			bar.removeView(dragged)
+			bar.addView(dragged)
+		}
+		this.setFoldRing(targetView)
+	}
+
+	/** Commits an armed fold if one is showing; @return whether it folded. */
+	fun dropPinnedFold(): Boolean {
+		this.foldHandler.removeCallbacksAndMessages(null)
+		val target = this.foldArmedTarget ?: return false
+		this.setFoldRing(null)
+
+		return this.foldDraggedOnto(target)
+	}
+
+	/** Cancels any fold preview (drag ended / no drop on the bar). */
+	fun cancelPinnedFold() {
+		this.foldHandler.removeCallbacksAndMessages(null)
+		this.setFoldRing(null)
+	}
+
+	/** Sets (or clears) the "release to fold here" ring on a pinned icon/folder. */
+	private fun setFoldRing(view: View?) {
+		if (this.foldArmedTarget === view) {
+			return
+		}
+		this.foldArmedTarget?.foreground = null
+		this.foldArmedTarget = view
+		view?.foreground = this.activity.getDrawable(R.drawable.launcher_folder_drop_indicator)
+	}
+
+	/**
+	 * Legacy hover used by the per-icon [be.robinj.distrohopper.desktop.launcher.AppLauncherDragListener]
+	 * (and its tests); production drives reorder/fold spatially via
+	 * [previewPinnedInsert] / [previewPinnedFold] from the container listener.
+	 */
+	fun hoverPinnedItem(targetView: View) {
+		val dragged = this.draggedPinnedApp ?: return
+		if (targetView === dragged) {
+			return
+		}
+
+		this.draggedPinnedItemOver(targetView)
+		this.foldHandler.removeCallbacksAndMessages(null)
+		if (this.canFoldOnto(targetView)) {
+			this.foldHandler.postDelayed({ this.setFoldRing(targetView) }, FOLD_DWELL_MS)
+		}
+	}
+
+	/**
 	 * Commits the order previewed by the placeholder's position. The bar's order
 	 * is the pinned order, so this flattens the bar's items (folder members
 	 * included, in membership order) into a key sequence and reorders the pinned
@@ -457,6 +560,9 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	 * in step too.
 	 */
 	fun droppedPinnedApp() {
+		if (this.draggedPinnedAppDropped) {
+			return // a dwell-fold already committed this drop //
+		}
 		val dragged = this.draggedPinnedApp ?: return
 		if (this.llLauncherPinnedApps.indexOfChild(dragged) < 0)
 			return
@@ -551,7 +657,8 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		val appLauncher = AppLauncher(this.activity, app)
 		appLauncher.setOnClickListener(AppLauncherClickListener(this.activity))
 		appLauncher.setOnLongClickListener(AppLauncherLongClickListener(this.activity))
-		appLauncher.setOnDragListener(AppLauncherDragListener(this.appManager))
+		// Reorder/fold is hit-tested at the container level by LauncherDragListener
+		// (nested icons don't receive drag LOCATION events), so no per-icon listener.
 
 		return appLauncher
 	}
@@ -559,6 +666,9 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	companion object {
 		/** draggedPinnedAppOldIndex value for a dash app not yet in the pinned model. */
 		private const val NOT_YET_PINNED = -1
+
+		/** How long the drag must pause over a pinned app/folder to arm a fold. */
+		private const val FOLD_DWELL_MS = 550L
 
 		/*
 		 * The drag decorations only touch views, not the app model, and widget
