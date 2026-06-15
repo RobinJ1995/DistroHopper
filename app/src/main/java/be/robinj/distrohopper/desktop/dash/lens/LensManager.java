@@ -215,6 +215,32 @@ public class LensManager
 		this.searchLoader = searchLoader;
 	}
 
+	/**
+	 * Activates the first available search result as if it had been tapped,
+	 * forwarding to the owning lens's onClick. Skips error sections (null
+	 * results) and empty sections, so it lands on the first real result of the
+	 * first lens that has one. Returns whether a result was activated.
+	 *
+	 * Called from the UI thread (the search box's Enter handler); the results
+	 * list is only ever read/mutated on the main thread, so no extra
+	 * synchronization is needed.
+	 */
+	public boolean activateFirstResult ()
+	{
+		for (LensSearchResultCollection coll : this.results)
+		{
+			List<LensSearchResult> res = coll.getResults ();
+			if (res != null && ! res.isEmpty ())
+			{
+				LensSearchResult result = res.get (0);
+				coll.getLens ().onClick (result.getUrl (), result.getObj ());
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public void startSearch (String pattern)
 	{
 		if (this.searchLoader != null)

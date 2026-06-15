@@ -23,6 +23,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import android.animation.LayoutTransition;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -900,6 +901,15 @@ public class HomeActivity extends AppCompatActivity
 			LinearLayout llLauncher = this.viewFinder.get(R.id.llLauncher);
 
 			etDashSearch.addTextChangedListener (new SearchTextWatcher (installedApps, this.lenses));
+			// Pressing Enter activates the first available result, as if it had been tapped.
+			// singleLine means this fires for both the soft-keyboard action and a hardware Enter //
+			etDashSearch.setOnEditorActionListener ((v, actionId, event) -> {
+				// Fire once on key-down only (hardware Enter also delivers an ACTION_UP) //
+				if (event != null && event.getAction () != KeyEvent.ACTION_DOWN)
+					return false;
+
+				return this.lenses.activateFirstResult ();
+			});
 			llLauncher.setOnDragListener (new LauncherDragListener (this.apps));
 
 			this.startLauncherService (false);

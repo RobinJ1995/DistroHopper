@@ -92,6 +92,64 @@ class LensManagerTest {
         LensManager(context, LinearLayout(context), null, null, null)
     }
 
+    @Test fun activateFirstResultForwardsUrlAndObjToTheLens() {
+        val manager = manager()
+        val lens = RecordingLens(context)
+        val obj = Any()
+        val result = LensSearchResult(context, "name", "https://example.com", null, obj)
+        setResults(manager, mutableListOf(LensSearchResultCollection(lens, mutableListOf(result))))
+
+        assertTrue(manager.activateFirstResult())
+        assertEquals("https://example.com", lens.clickedUrl)
+        assertSame(obj, lens.clickedObj)
+    }
+
+    @Test fun activateFirstResultReturnsFalseWhenThereAreNoResults() {
+        assertFalse(manager().activateFirstResult())
+    }
+
+    @Test fun activateFirstResultSkipsErrorAndEmptySectionsForTheFirstRealResult() {
+        val manager = manager()
+        val errorLens = RecordingLens(context)
+        val emptyLens = RecordingLens(context)
+        val hitLens = RecordingLens(context)
+        val result = LensSearchResult(context, "name", "https://hit.example", null, null)
+        setResults(manager, mutableListOf(
+            LensSearchResultCollection(errorLens, RuntimeException("boom")),
+            LensSearchResultCollection(emptyLens, mutableListOf()),
+            LensSearchResultCollection(hitLens, mutableListOf(result)),
+        ))
+
+        assertTrue(manager.activateFirstResult())
+        assertNull(errorLens.clickedUrl)
+        assertNull(emptyLens.clickedUrl)
+        assertEquals("https://hit.example", hitLens.clickedUrl)
+    }
+
+    private fun setResults(manager: LensManager, results: MutableList<LensSearchResultCollection>) {
+        val field = LensManager::class.java.getDeclaredField("results")
+        field.isAccessible = true
+        @Suppress("UNCHECKED_CAST")
+        val backing = field.get(manager) as MutableList<LensSearchResultCollection>
+        backing.clear()
+        backing.addAll(results)
+    }
+
+    private class RecordingLens(context: Context) : Lens(context) {
+        var clickedUrl: String? = null
+        var clickedObj: Any? = null
+
+        override val type = LensType.LOCAL
+        override fun getName() = "Recording"
+        override fun getDescription() = "Records onClick for tests"
+        override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {}
+
+        override fun onClick(url: String, obj: Any?) {
+            this.clickedUrl = url
+            this.clickedObj = obj
+        }
+    }
+
     @Test fun lensResultsViewIsResolvedFromTheLensesContainer() {
         val lensesContainer = LinearLayout(context)
         val lensResults = ListView(context).apply { id = R.id.lvDashHomeLensResults }
