@@ -49,11 +49,15 @@ public abstract class Theme
 	public int launcher_bfb_image_vertical;
 	public int launcher_bfb_hide_while_dragging;
 	/*
-	 * Whether the launcher's menu button (the "BFB") can be shown or hidden by
-	 * the user in customise mode, and its default state when it can. Themes that
-	 * are not toggleable always follow launcher_bfb_location.
+	 * The launcher menu button (BFB) positions this theme offers, as a position_*
+	 * int array (each mapped to a none/start/end side by bfbSide), mirroring
+	 * launcher_location_supported. A theme is user-toggleable — and shows the
+	 * customise-mode menu-button dropdown — only when it lists more than one
+	 * position (see launcherBfbToggleable); otherwise the BFB always follows the
+	 * theme's native launcher_bfb_location. launcher_bfb_visible_by_default is its
+	 * default state when it is toggleable.
 	 */
-	public int launcher_bfb_user_toggleable;
+	public int launcher_bfb_location_supported;
 	public int launcher_bfb_visible_by_default;
 	public int launcher_preferences_location;
 	public int launcher_preferences_image;
@@ -178,21 +182,22 @@ public abstract class Theme
 
 	/*
 	 * Where the launcher's menu button (BFB) should sit. For themes that let the
-	 * user move/hide it (Pantheon, COSMIC) this follows the user's choice of
+	 * user move/hide it (those offering more than one launcher_bfb_location_supported
+	 * position, e.g. Pantheon, COSMIC, GNOME) this follows the user's choice of
 	 * none/start/end, falling back to the theme's default; other themes always
 	 * use their fixed themed BFB location.
 	 */
 	public Location launcherBfbLocationResolved(final Resources res, final SharedPreferences prefs) {
 		final Location nativeLocation = Location.of(res.getInteger(this.launcher_bfb_location));
 
-		if (! res.getBoolean(this.launcher_bfb_user_toggleable))
+		if (! this.launcherBfbToggleable(res))
 			return nativeLocation;
 
 		final BfbLocation choice;
 		final String stored = prefs.getString(Preference.LAUNCHER_BFB_LOCATION.getName(), null);
 		if (stored == null)
 			choice = res.getBoolean(this.launcher_bfb_visible_by_default)
-					? this.bfbNativeSide(nativeLocation) : BfbLocation.NONE;
+					? this.bfbSide(nativeLocation) : BfbLocation.NONE;
 		else
 			choice = BfbLocation.of(stored);
 
@@ -212,7 +217,7 @@ public abstract class Theme
 		if (! res.getBoolean(this.launcher_bfb_visible_by_default))
 			return BfbLocation.NONE;
 
-		return this.bfbNativeSide(Location.of(res.getInteger(this.launcher_bfb_location)));
+		return this.bfbSide(Location.of(res.getInteger(this.launcher_bfb_location)));
 	}
 
 	/** Whether the BFB is shown at all; thin wrapper over the resolved location. */
@@ -220,16 +225,26 @@ public abstract class Theme
 		return this.launcherBfbLocationResolved(res, prefs) != Location.NONE;
 	}
 
+	/**
+	 * Whether the user can move/hide the BFB in customise mode: true when the theme
+	 * offers more than one position (mirrors how launcher_location_supported drives
+	 * the launcher-edge dropdown).
+	 */
+	public boolean launcherBfbToggleable(final Resources res) {
+		return res.getIntArray(this.launcher_bfb_location_supported).length > 1;
+	}
+
 	/** The launcher's leading edge (top of a vertical bar, left of a horizontal one). */
 	private boolean isStartSide(final Location location) {
 		return location == Location.TOP || location == Location.LEFT;
 	}
 
-	private BfbLocation bfbNativeSide(final Location nativeLocation) {
-		if (nativeLocation == Location.NONE)
+	/** The BFB side (none/start/end) a position_* location maps to. */
+	public BfbLocation bfbSide(final Location location) {
+		if (location == Location.NONE)
 			return BfbLocation.NONE;
 
-		return this.isStartSide(nativeLocation) ? BfbLocation.START : BfbLocation.END;
+		return this.isStartSide(location) ? BfbLocation.START : BfbLocation.END;
 	}
 
 	private Location opposite(final Location location) {

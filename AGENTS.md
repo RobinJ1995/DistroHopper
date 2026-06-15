@@ -376,17 +376,20 @@ etc/                                        — design assets (SVG/XCF sources, 
   themes that can hide their panel use `statusbar_colour_when_panel_hidden` for
   the status bar while the panel edge is None (Unity blends it toward the
   launcher; others keep their previous value). All resolved in
-  `Theme.statusbar_background_resolved`. A further opt-in,
-  `launcher_bfb_user_toggleable`, lets a theme (Pantheon, COSMIC) expose a
-  "menu button" (the launcher BFB) position dropdown in customise mode;
-  `launcher_bfb_visible_by_default` is its default state. The choice is stored
-  as the named string `Preference.LAUNCHER_BFB_LOCATION` (`none`/`start`/`end`,
-  see the `BfbLocation` enum), and `Theme.launcherBfbLocationResolved` resolves
-  the live edge (pref → theme default), mapping `start`/`end` to the launcher's
-  leading/trailing end relative to the theme's native `launcher_bfb_location`;
-  non-toggleable themes always use that fixed location. The dropdown only offers
-  the sides a theme actually supports (currently Hide / "At the start of the
-  launcher"), and switching theme (`ThemeCards.applyTheme`) clears the pref so it
+  `Theme.statusbar_background_resolved`. The "menu button" (launcher BFB) position
+  dropdown in customise mode is driven by `launcher_bfb_location_supported` — a
+  `position_*` array mirroring `launcher_location_supported`: a theme is
+  user-toggleable (and shows the dropdown) only when it lists more than one
+  position (`Theme.launcherBfbToggleable`), and `launcher_bfb_visible_by_default`
+  is its default state. The choice is stored as the named string
+  `Preference.LAUNCHER_BFB_LOCATION` (`none`/`start`/`end`, see the `BfbLocation`
+  enum), and `Theme.launcherBfbLocationResolved` resolves the live edge (pref →
+  theme default), mapping `start`/`end` to the launcher's leading/trailing end
+  relative to the theme's native `launcher_bfb_location`; non-toggleable themes
+  always use that fixed location. The dropdown only offers the positions a theme
+  declares (Pantheon/COSMIC: Hide / "At the start of the launcher"; GNOME: Hide /
+  start / "At the end of the launcher"), and switching theme
+  (`ThemeCards.applyTheme`) clears the pref so it
   can't carry over. The launcher
   preferences icon was removed from every theme (`launcher_preferences_location`
   is `none`); settings are reached via the panel cog or the dash's customise
