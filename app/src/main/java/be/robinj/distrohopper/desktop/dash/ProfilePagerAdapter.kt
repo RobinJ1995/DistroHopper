@@ -46,10 +46,15 @@ class ProfilePagerAdapter(
 
 		// The icon appear/disappear transition that LayoutTransitionConfigurer
 		// used to set on the standalone grid; set per page here since the pages
-		// don't exist when that configurer runs.
+		// don't exist when that configurer runs. setAnimateParentHierarchy(false)
+		// is required: ViewPager2 rejects a page whose child ViewGroup has a
+		// LayoutTransition that animates the parent hierarchy (the default), and
+		// crashes mid-scroll on the next layout pass (e.g. on rotation) with
+		// "...interferes with the scrolling animation".
 		holder.grid.layoutTransition = LayoutTransition().apply {
 			setDuration(180L)
 			setStartDelay(LayoutTransition.APPEARING, 0)
+			setAnimateParentHierarchy(false)
 		}
 
 		this.bindTitleCollapse(holder)
@@ -60,20 +65,24 @@ class ProfilePagerAdapter(
 	/**
 	 * Makes the page title scroll off-screen together with the apps instead of
 	 * staying pinned above them. The title overlays the grid's top padding (see
-	 * widget_dash_profile_page); we keep that padding the height of the title and
-	 * translate the title in step with the grid's scroll, so it slides up out of
-	 * view as the first row of apps does.
+	 * widget_dash_profile_page) and we translate it up in step with the grid's
+	 * scroll, so it slides out of view as the first row of apps does.
+	 *
+	 * The padding that reserves the title's space is set in onBindViewHolder
+	 * *before* the grid's adapter (so the first fill lands the first row at
+	 * paddingTop); it must not change after the grid is populated, because
+	 * AbsListView does not re-anchor already-laid-out rows when paddingTop
+	 * changes at runtime (that was the cause of the title resting pre-collapsed
+	 * on swiped-to pages). Here we only attach the listeners that read the
+	 * scroll position and move the title:
+	 *  - a scroll listener for live scrolling, and
+	 *  - a layout-change listener so the at-rest baseline is recomputed after
+	 *    any (re)fill or rotation — the scroll listener never fires for a page
+	 *    whose apps fit without scrolling. Both only set translationY, which is
+	 *    a draw-time transform, so they don't trigger further layout.
 	 */
 	private fun bindTitleCollapse(holder: PageViewHolder) {
-		// Reserve room at the top of the grid for the overlaid title, refreshed
-		// whenever the title's height changes (text/theme/rotation). clipToPadding
-		// is false (see layout) so this padding scrolls away with the apps.
-		holder.title.addOnLayoutChangeListener { _, _, top, _, bottom, _, _, _, _ ->
-			val height = bottom - top
-			if (holder.grid.paddingTop != height) {
-				holder.grid.setPadding(holder.grid.paddingLeft, height,
-					holder.grid.paddingRight, holder.grid.paddingBottom)
-			}
+		holder.grid.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
 			this.updateTitleOffset(holder)
 		}
 
@@ -87,18 +96,20 @@ class ProfilePagerAdapter(
 	}
 
 	private fun updateTitleOffset(holder: PageViewHolder) {
-		val collapse = holder.title.height
+		// The reserved space (== title height) is the grid's top padding; the
+		// title is fully off-screen once scrolled by that much.
+		val collapse = holder.grid.paddingTop
 		if (collapse == 0) {
 			holder.title.translationY = 0F
 			return
 		}
 
-		// At rest the first row sits at paddingTop (== title height); as the grid
-		// scrolls up that gap shrinks. Once the first row has scrolled past the
-		// top the title is fully gone, so clamp to the title's height.
+		// With the padding applied before the fill, the first row rests at
+		// paddingTop; as the grid scrolls up that gap shrinks. Once the first
+		// row has scrolled past the top the title is fully gone.
 		val first = holder.grid.getChildAt(0)
 		val scrolled = if (holder.grid.firstVisiblePosition == 0 && first != null) {
-			holder.grid.paddingTop - first.top
+			collapse - first.top
 		} else {
 			collapse
 		}
@@ -121,9 +132,37 @@ class ProfilePagerAdapter(
 		holder.title.setShadowLayer(5F, 2F, 2F,
 			res.getColor(theme.dash_applauncher_text_shadow_colour))
 
+		// Reserve the title's space as grid top padding *before* assigning the
+		// adapter, so the very first fill of this page lands the first row at
+		// paddingTop. Changing padding after the grid is populated does not move
+		// already-laid-out rows, which left the title pre-collapsed on swiped-to
+		// pages. The title is a single line of identical height for every
+		// profile, so a one-off measure is stable across pages.
+		val titleHeight = this.measureTitleHeight(holder.title)
+		if (holder.grid.paddingTop != titleHeight) {
+			holder.grid.setPadding(holder.grid.paddingLeft, titleHeight,
+				holder.grid.paddingRight, holder.grid.paddingBottom)
+		}
+
 		holder.grid.adapter = this.gridAdapters[position]
 		holder.grid.onItemClickListener = AppLauncherClickListener(this.activity)
 		holder.grid.onItemLongClickListener = AppLauncherLongClickListener(this.activity)
+
+		// Fresh bind starts at scroll 0; reset the baseline so a recycled holder
+		// doesn't carry a previous (scrolled) page's translation. The layout
+		// listener corrects it once this page's rows are laid out.
+		holder.title.translationY = 0F
+	}
+
+	/**
+	 * The laid-out height of the single-line title, measured without needing the
+	 * view to be attached/laid out yet, so it can be reserved as grid padding
+	 * before the first fill.
+	 */
+	private fun measureTitleHeight(title: TextView): Int {
+		val unspecified = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+		title.measure(unspecified, unspecified)
+		return title.measuredHeight
 	}
 
 	override fun onViewAttachedToWindow(holder: PageViewHolder) {

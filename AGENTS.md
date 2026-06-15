@@ -93,13 +93,24 @@ etc/                                        — design assets (SVG/XCF sources, 
     (the genie) and `ThemeApplier` reach the live grid (both null-safe for when
     it isn't laid out yet). The per-page `LayoutTransition` is set in the adapter
     (it can't be in `LayoutTransitionConfigurer`, which runs before any page
-    exists). Each page's title (`tvDashHomeTitle` — the profile name, or
-    "Applications" for a single profile) overlays the top of its grid rather
-    than sitting in a row above it: the grid reserves a top padding the height
-    of the title (`clipToPadding=false` so that padding scrolls away with the
-    apps) and `ProfilePagerAdapter.bindTitleCollapse` translates the title in
-    step with the grid's scroll, so the title scrolls off-screen with the first
-    row instead of permanently occupying the top of the dash.
+    exists) and **must** keep `setAnimateParentHierarchy(false)`: ViewPager2
+    rejects a page whose child ViewGroup has a parent-animating LayoutTransition
+    and crashes mid-scroll (notably on rotation). Each page's title
+    (`tvDashHomeTitle` — the profile name, or "Applications" for a single
+    profile) overlays the top of its grid rather than sitting in a row above it:
+    the grid reserves a top padding the height of the title (`clipToPadding=false`
+    so that padding scrolls away with the apps) and
+    `ProfilePagerAdapter.updateTitleOffset` translates the title up in step with
+    the grid's scroll, so it scrolls off-screen with the first row instead of
+    permanently occupying the top of the dash. The padding is applied in
+    `onBindViewHolder` *before* the grid's adapter is set (from a one-off
+    `measureTitleHeight`, stable since the title is one line of identical height
+    for every profile): AbsListView does not re-anchor already-filled rows when
+    paddingTop changes at runtime, so applying it after the fill left the first
+    row at `top=0` and the title resting pre-collapsed on swiped-to pages. A grid
+    layout-change listener recomputes the at-rest offset after any (re)fill or
+    rotation, since the scroll listener never fires for a page whose apps fit
+    without scrolling.
     Tests force the lazy layout via `ActivityTestSupport.layoutDashApps`.
     Grid sizing is owned by `desktop/dash/DashGrid` (the dash counterpart to
     `widgets/WidgetGrid`): the user picks a column count across the short screen
