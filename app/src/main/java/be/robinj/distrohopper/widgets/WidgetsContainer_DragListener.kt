@@ -75,6 +75,10 @@ internal class WidgetsContainer_DragListener(
 				this.handler.postDelayed({
 					this.armedFoldTarget = target
 					target.setBackgroundResource(R.drawable.dash_folder_drop_indicator)
+					// Drop the "doesn't fit" move-target shown while dwelling: no further
+					// LOCATION fires to hit the else-branch below if the pointer holds
+					// still over the target, so both borders would otherwise show //
+					this.vgWidgets.hideMoveTarget()
 				}, FOLD_DWELL_MS)
 			}
 		}
