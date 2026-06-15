@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.PixelFormat
+import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import kotlin.math.min
@@ -14,6 +15,12 @@ import kotlin.math.min
  * icons, or widget placeholders) are drawn into the adaptive [FolderGrid] layout
  * on a rounded translucent background, so a folder reads as a "grid of icons"
  * the way the popover lays them out (see the spec's 1..9 mapping).
+ *
+ * The member drawables are the shared, cached per-app icons, so their bounds are
+ * saved and restored around each draw: an `ImageView` only re-applies a
+ * drawable's bounds at layout time, not on every draw, so leaving a member with
+ * the mini bounds would make that same icon render shrunk/offset wherever else
+ * it is shown (e.g. a launcher pin) until the next relayout.
  */
 class FolderIconDrawable(
 	private val members: List<Drawable>,
@@ -21,6 +28,7 @@ class FolderIconDrawable(
 	private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
 		color = Color.argb(60, 255, 255, 255)
 	}
+	private val savedBounds = Rect()
 
 	override fun draw(canvas: Canvas) {
 		val bounds = this.bounds
@@ -54,8 +62,13 @@ class FolderIconDrawable(
 			val row = index / columns
 			val left = gridLeft + col * cell + iconGap
 			val top = gridTop + row * cell + iconGap
+
+			// Draw at the mini bounds, then restore so the shared cached icon is
+			// not left shrunk for whatever else draws it next (see the class doc).
+			this.savedBounds.set(drawable.bounds)
 			drawable.setBounds(left, top, left + iconSize, top + iconSize)
 			drawable.draw(canvas)
+			drawable.bounds = this.savedBounds
 		}
 	}
 
