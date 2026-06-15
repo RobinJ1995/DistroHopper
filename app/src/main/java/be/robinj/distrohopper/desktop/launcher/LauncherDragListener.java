@@ -33,10 +33,9 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 
 	private AppManager appManager;
 	// Last resolved drag intent, so the preview is only updated when it changes
-	// (a fold onto lastFoldTarget, else an insert before/after lastInsertTarget) //
+	// (a fold onto lastFoldTarget, else an insert before lastInsertTarget) //
 	private View lastFoldTarget = null;
 	private View lastInsertTarget = null;
-	private boolean lastInsertAfter = false;
 	private boolean lastWasInsert = false;
 
 	public LauncherDragListener (AppManager appManager)
@@ -48,7 +47,6 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 	{
 		this.lastFoldTarget = null;
 		this.lastInsertTarget = null;
-		this.lastInsertAfter = false;
 		this.lastWasInsert = false;
 	}
 
@@ -127,12 +125,19 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 
 	/**
 	 * Resolves the drag's position over the pinned bar into a fold (over an icon's
-	 * centre) or an insertion (over a gap/edge), and previews it — only when the
-	 * resolved intent changes, so the placeholder/ring don't thrash every frame.
+	 * centre) or an insertion, and previews it.
 	 *
-	 * Coordinates are converted to screen space (correct regardless of how deeply
-	 * the bar is nested, and of the launcher's edge/orientation). The dragged
-	 * item's own placeholder is INVISIBLE and skipped, so a fold never targets it.
+	 * The insertion slot is a *continuous* function of position — the number of
+	 * visible icons whose centre the drag has passed — so the open gap slides
+	 * smoothly as the drag moves and there is no dead zone in the margins between
+	 * icons (which previously snapped the gap to the end of the bar). When the
+	 * drag is over an icon's centre the target is ringed for folding and the gap
+	 * is left frozen where it is, so toggling fold only flips the ring and never
+	 * jumps the icons around.
+	 *
+	 * Coordinates are in screen space (correct regardless of nesting and the
+	 * launcher's edge/orientation); the dragged item's own placeholder is
+	 * INVISIBLE and skipped, so a fold never targets it.
 	 */
 	private void resolvePinnedDrag (View launcher, DragEvent event)
 	{
@@ -147,10 +152,11 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 			? launcherLoc[1] + (int) event.getY ()
 			: launcherLoc[0] + (int) event.getX ();
 
+		// Visible icons in order, plus the icon the drag is directly over (if any).
+		final java.util.ArrayList<View> icons = new java.util.ArrayList<> ();
+		int insertIndex = 0;
 		View over = null;
 		float frac = 0f;
-		View firstIcon = null, lastIcon = null;
-		int firstStart = Integer.MAX_VALUE, lastEnd = Integer.MIN_VALUE;
 
 		final int[] childLoc = new int[2];
 		for (int i = 0; i < bar.getChildCount (); i++)
@@ -165,8 +171,9 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 			if (size <= 0)
 				continue;
 
-			if (start < firstStart) { firstStart = start; firstIcon = child; }
-			if (start + size > lastEnd) { lastEnd = start + size; lastIcon = child; }
+			icons.add (child);
+			if (coord >= start + size / 2)
+				insertIndex++; // the drag has passed this icon's centre //
 			if (coord >= start && coord < start + size)
 			{
 				over = child;
@@ -174,25 +181,21 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 			}
 		}
 
-		if (over == null)
+		if (over != null && frac >= FOLD_ZONE_LO && frac <= FOLD_ZONE_HI
+				&& this.appManager.canFoldOnto (over))
 		{
-			// Past either end of the bar → insert before the first / after the last.
-			if (firstIcon != null && coord < firstStart)
-				this.previewInsert (firstIcon, false);
-			else
-				this.previewInsert (lastIcon, true); // lastIcon may be null → end
+			this.previewFold (over);
 			return;
 		}
 
-		if (frac >= FOLD_ZONE_LO && frac <= FOLD_ZONE_HI && this.appManager.canFoldOnto (over))
-			this.previewFold (over);
-		else
-			this.previewInsert (over, frac > 0.5f);
+		// Insert before the icon at insertIndex (or at the end of the bar).
+		final View before = insertIndex < icons.size () ? icons.get (insertIndex) : null;
+		this.previewInsert (before);
 	}
 
 	private void previewFold (View target)
 	{
-		if (target == this.lastFoldTarget && ! this.lastWasInsert)
+		if (target == this.lastFoldTarget)
 			return;
 		this.lastFoldTarget = target;
 		this.lastWasInsert = false;
@@ -200,14 +203,14 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 		this.appManager.previewPinnedFold (target);
 	}
 
-	private void previewInsert (View target, boolean after)
+	private void previewInsert (View before)
 	{
-		if (this.lastWasInsert && target == this.lastInsertTarget && after == this.lastInsertAfter)
-			return;
-		this.lastInsertTarget = target;
-		this.lastInsertAfter = after;
+		if (this.lastWasInsert && before == this.lastInsertTarget)
+			return; // already showing the gap at this slot //
+
+		this.lastInsertTarget = before;
 		this.lastWasInsert = true;
 		this.lastFoldTarget = null;
-		this.appManager.previewPinnedInsert (target, after);
+		this.appManager.previewPinnedInsert (before, false);
 	}
 }

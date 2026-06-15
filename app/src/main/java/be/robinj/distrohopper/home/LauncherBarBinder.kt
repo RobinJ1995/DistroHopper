@@ -491,8 +491,10 @@ class LauncherBarBinder(private val appManager: AppManager) {
 
 	/**
 	 * Preview a fold onto [targetView] (the drag is over its centre): ring the
-	 * target and park the dragged item's placeholder at the end of the bar so no
-	 * insertion gap shows. Dropping now creates/extends a folder.
+	 * target so dropping creates/extends a folder. The dragged item's placeholder
+	 * is left exactly where it is (the insertion preview "freezes"), so moving
+	 * between a gap and an icon's centre only toggles the ring — it never jumps
+	 * the icons around.
 	 */
 	fun previewPinnedFold(targetView: View) {
 		val dragged = this.draggedPinnedApp ?: return
@@ -500,12 +502,6 @@ class LauncherBarBinder(private val appManager: AppManager) {
 			return
 		}
 
-		// Collapse any open insertion gap by parking the placeholder at the end.
-		val bar = this.llLauncherPinnedApps
-		if (bar.indexOfChild(dragged) != bar.childCount - 1) {
-			bar.removeView(dragged)
-			bar.addView(dragged)
-		}
 		this.setFoldRing(targetView)
 	}
 
