@@ -42,7 +42,11 @@ class DesktopFolderHost(
 		for (saved in this.persistence.load()) {
 			val keptCells = saved.cells.filter { cell ->
 				when (val member = cell.member) {
-					is FolderMember.AppMember -> appMap.containsKey(member.key)
+					// Enforce the desktop's one-copy invariant: drop a member that is
+					// also loose on the desktop (loose wins — restore runs after the
+					// desktop apps are placed, so viewForKey sees them) //
+					is FolderMember.AppMember -> appMap.containsKey(member.key) &&
+						this.desktopAppHost.viewForKey(member.key) == null
 					is FolderMember.WidgetMember -> this.widgetHost.hasWidget(member.appWidgetId)
 				}
 			}
@@ -275,6 +279,13 @@ class DesktopFolderHost(
 		}
 	}
 
+	/**
+	 * Ensures [app] is in no desktop folder — its single desktop copy is now loose
+	 * on the grid (it was just dropped there). Keeps the one-copy-per-app invariant
+	 * so the same app can't sit both loose and in a folder; a no-op if it is in none.
+	 */
+	fun dropFromFolders(app: App) = this.unpinFromAllDesktops(app)
+
 	fun removeDesktopPage(page: Int) {
 		if (page in 0 until this.vgWidgets.childCount) {
 			val container = this.vgWidgets.pageAt(page)
@@ -380,7 +391,7 @@ class DesktopFolderHost(
 
 	private fun open(view: DesktopFolderView) {
 		DesktopFolderOverlay(this.parent, this, view.layout,
-			this.repository.installedAppsMap()).show()
+			this.repository.installedAppsMap()).show(view)
 	}
 
 	private fun folderViewFor(folderId: String): DesktopFolderView? {

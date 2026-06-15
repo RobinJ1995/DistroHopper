@@ -3,15 +3,13 @@ package be.robinj.distrohopper.desktop.dash
 import android.content.ClipData
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.GridView
 import be.robinj.distrohopper.App
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.dev.Log
 import be.robinj.distrohopper.folder.FolderGrid
+import be.robinj.distrohopper.folder.FolderOverlay
 import be.robinj.distrohopper.home.LauncherBarBinder
 import be.robinj.distrohopper.preferences.AppSortOrder
 import be.robinj.distrohopper.preferences.Preferences
@@ -38,8 +36,7 @@ class FolderPopup @JvmOverloads constructor(
 	private val clipLabel: String = "dashFolderMember",
 	private val memberPayload: (App) -> Any = { app -> DashDragPayload.FolderMemberDrag(folderId, app) },
 ) {
-	private val content: ViewGroup = this.activity.findViewById(android.R.id.content)
-	private var root: FrameLayout? = null
+	private val overlay = FolderOverlay(this.activity)
 
 	fun showAt(anchor: View) {
 		val grid = GridView(this.activity).apply {
@@ -63,26 +60,10 @@ class FolderPopup @JvmOverloads constructor(
 
 		val columns = FolderGrid.columns(apps.size)
 		val rows = FolderGrid.rows(apps.size)
-		val gridParams = FrameLayout.LayoutParams(
-			cell * columns + dp(16), cell * rows + dp(16), Gravity.CENTER)
-
-		val overlay = FrameLayout(this.activity).apply {
-			setBackgroundColor(Color.argb(140, 0, 0, 0))
-			isClickable = true
-			setOnClickListener { dismiss() }
-		}
-		overlay.addView(grid, gridParams)
-
-		this.root = overlay
-		this.content.addView(overlay, FrameLayout.LayoutParams(
-			FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+		this.overlay.show(grid, cell * columns + dp(16), cell * rows + dp(16), anchor) { dismiss() }
 	}
 
-	fun dismiss() {
-		val overlay = this.root ?: return
-		this.content.removeView(overlay)
-		this.root = null
-	}
+	fun dismiss() = this.overlay.dismiss()
 
 	private inner class AdapterLaunch : android.widget.AdapterView.OnItemClickListener {
 		override fun onItemClick(parent: android.widget.AdapterView<*>?, view: View, position: Int, id: Long) {

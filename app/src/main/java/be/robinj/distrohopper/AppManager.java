@@ -4,7 +4,6 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.UserHandle;
-import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -290,9 +289,6 @@ public class AppManager implements Iterable<App>
 	{
 		if (this.repository.pin (app))
 		{
-			if (showToast)
-				Toast.makeText (this.getContext (), app.getLabel () + " " + this.getContext ().getResources ().getString (R.string.pinned), Toast.LENGTH_SHORT).show ();
-
 			if (addView)
 				this.getBinder ().addPinnedAppView (app);
 
@@ -303,9 +299,6 @@ public class AppManager implements Iterable<App>
 		}
 		else
 		{
-			if (showToast)
-				Toast.makeText (this.getContext (), app.getLabel () + " " + this.getContext ().getResources ().getString (R.string.alreadypinned), Toast.LENGTH_SHORT).show ();
-
 			return false;
 		}
 	}
@@ -475,17 +468,6 @@ public class AppManager implements Iterable<App>
 	public boolean unpin (App app, boolean showToast)
 	{
 		boolean modified = this.repository.unpin (app);
-
-		if (showToast)
-		{
-			String message;
-			if (modified)
-				message = " " + this.getContext ().getResources ().getString (R.string.unpinned);
-			else
-				message = " " + this.getContext ().getResources ().getString (R.string.notpinned);
-
-			Toast.makeText (this.getContext (), app.getLabel () + message, Toast.LENGTH_SHORT).show ();
-		}
 
 		this.getBinder ().removePinnedAppView (app);
 

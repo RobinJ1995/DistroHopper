@@ -132,13 +132,20 @@ internal class WidgetsContainer_DragListener(
 			is Drag.FolderMember ->
 				kind.host.removeMember(kind.payload.folderId, kind.payload.member,
 					col, row, this.pager.currentPage)
-			is Drag.DashApp -> kind.host.pinAt(kind.app, col, row, this.pager.currentPage)
+			is Drag.DashApp ->
+				if (kind.host.pinAt(kind.app, col, row, this.pager.currentPage)) {
+					// Placed loose on the desktop: drop it from any desktop folder so
+					// it isn't both loose and in a folder (one-copy-per-app) //
+					this.parent.desktopFolderHost?.dropFromFolders(kind.app)
+				}
 			is Drag.LauncherPin ->
 				if (kind.host.pinAt(kind.app, col, row, this.pager.currentPage)) {
+					this.parent.desktopFolderHost?.dropFromFolders(kind.app)
 					this.parent.appManager?.unpin(kind.app, false)
 				}
 			is Drag.LauncherFolderMember ->
 				if (kind.host.pinAt(kind.app, col, row, this.pager.currentPage)) {
+					this.parent.desktopFolderHost?.dropFromFolders(kind.app)
 					// Now on the desktop: ungroup it and drop the pin, so it leaves the
 					// launcher entirely (the folder dissolves at one app via reconcile) //
 					this.parent.appManager?.let {
