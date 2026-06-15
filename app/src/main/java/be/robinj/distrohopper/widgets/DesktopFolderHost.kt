@@ -100,11 +100,15 @@ class DesktopFolderHost(
 
 	// --- Mutations ---------------------------------------------------------
 
-	/** Creates a folder from two loose desktop apps, at [a]'s cell. */
+	/**
+	 * Creates a folder from two loose desktop apps. [a] is the dragged app and [b]
+	 * the one it was dropped onto; the folder takes [b]'s cell, since b is the
+	 * stationary target the user aimed at (a is absorbed into it).
+	 */
 	fun createFolder(a: DesktopAppView, b: DesktopAppView) {
-		val container = a.parent as? WidgetsContainer ?: return
+		val container = b.parent as? WidgetsContainer ?: return
 		val page = this.pageOf(container)
-		val lp = a.layoutParams as WidgetsContainer.LayoutParams
+		val lp = b.layoutParams as WidgetsContainer.LayoutParams
 		val col = lp.col
 		val row = lp.row
 
@@ -161,6 +165,22 @@ class DesktopFolderHost(
 	fun removeMember(folderId: String, member: FolderMember, col: Int, row: Int, page: Int) {
 		val folderView = this.folderViewFor(folderId) ?: return
 		val appMap = this.repository.installedAppsMap()
+		val folderLp = folderView.layoutParams as WidgetsContainer.LayoutParams
+		val folderCol = folderLp.col
+		val folderRow = folderLp.row
+
+		// Clear/shrink the folder BEFORE placing the extracted member: its 2x2 still
+		// occupies the grid, so pinning into the drop cell first would let the cell
+		// (when it overlaps the folder) bump the extracted member elsewhere — and a
+		// dissolved remaining member's free-cell search could then land on the
+		// just-vacated drop cell, so the *wrong* icon ends up where you released //
+		val remaining = folderView.layout.without(member)
+		val dissolving = remaining.appCount < 1 || remaining.cells.size < 2
+		if (dissolving) {
+			(folderView.parent as? WidgetsContainer)?.removeView(folderView)
+		} else {
+			this.replaceFolderView(folderView, remaining)
+		}
 
 		when (member) {
 			is FolderMember.AppMember -> appMap[member.key]?.let {
@@ -171,11 +191,10 @@ class DesktopFolderHost(
 			}
 		}
 
-		val remaining = folderView.layout.without(member)
-		if (remaining.appCount < 1 || remaining.cells.size < 2) {
-			this.dissolve(folderView, remaining, appMap, exclude = member)
-		} else {
-			this.replaceFolderView(folderView, remaining)
+		// Return any members of a dissolved folder loose at the folder's old spot,
+		// now that the extracted member holds the drop cell (so they avoid it) //
+		if (dissolving) {
+			this.returnMembersLoose(remaining, appMap, folderCol, folderRow)
 		}
 		this.persist()
 		this.vgWidgets.pagesChanged()
@@ -327,15 +346,18 @@ class DesktopFolderHost(
 		this.returnMembersLoose(remaining, appMap)
 	}
 
-	/** Returns a layout's members to the desktop as loose apps / widgets. */
-	private fun returnMembersLoose(layout: DesktopFolderLayout, appMap: Map<String, App>) {
+	/** Returns a layout's members to the desktop as loose apps / widgets, preferring
+	 *  the [col],[row] cell (each falls back to a free cell if that is taken). */
+	private fun returnMembersLoose(
+		layout: DesktopFolderLayout, appMap: Map<String, App>, col: Int = 0, row: Int = 0,
+	) {
 		val page = layout.page.coerceIn(0, WidgetsPager.MAX_PAGES - 1)
 		for (key in layout.appKeys) {
-			appMap[key]?.let { this.desktopAppHost.pinAt(it, 0, 0, page) }
+			appMap[key]?.let { this.desktopAppHost.pinAt(it, col, row, page) }
 		}
 		for (id in layout.widgetIds) {
 			val container = this.retainedWidgets.remove(id) ?: this.widgetHost.createDetachedWidget(id)
-			container?.let { this.placeWidget(it, 0, 0, page) }
+			container?.let { this.placeWidget(it, col, row, page) }
 		}
 	}
 

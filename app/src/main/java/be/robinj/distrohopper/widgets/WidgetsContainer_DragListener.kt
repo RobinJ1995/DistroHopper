@@ -114,6 +114,16 @@ internal class WidgetsContainer_DragListener(
 				if (kind.host.pinAt(kind.app, col, row, this.pager.currentPage)) {
 					this.parent.appManager?.unpin(kind.app, false)
 				}
+			is Drag.LauncherFolderMember ->
+				if (kind.host.pinAt(kind.app, col, row, this.pager.currentPage)) {
+					// Now on the desktop: ungroup it and drop the pin, so it leaves the
+					// launcher entirely (the folder dissolves at one app via reconcile) //
+					this.parent.appManager?.let {
+						it.launcherLayout.removeFromFolder(kind.folderId, kind.app.profileScopedKey)
+						it.unpin(kind.app, false)
+						it.launcherLayoutChanged()
+					}
+				}
 		}
 	}
 
@@ -216,6 +226,11 @@ internal class WidgetsContainer_DragListener(
 
 				return Drag.FolderMember(localState, host)
 			}
+			is be.robinj.distrohopper.desktop.launcher.LauncherDragPayload.FolderMemberDrag -> {
+				val host = this.parent.desktopAppHost ?: return null
+
+				return Drag.LauncherFolderMember(localState.app, localState.folderId, host)
+			}
 			is App -> {
 				val host = this.parent.desktopAppHost ?: return null
 
@@ -298,6 +313,11 @@ internal class WidgetsContainer_DragListener(
 		class DashApp(val app: App, val host: DesktopAppHost) : IncomingApp()
 
 		class LauncherPin(val app: App, val host: DesktopAppHost) : IncomingApp()
+
+		/** An app pulled out of a *launcher* folder, dropped on the desktop: placed
+		 *  like a dash app, then removed from its folder and unpinned off the bar,
+		 *  so it leaves the launcher entirely — like dropping a dock pin here. */
+		class LauncherFolderMember(val app: App, val folderId: String, val host: DesktopAppHost) : IncomingApp()
 	}
 
 	companion object {
