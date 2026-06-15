@@ -614,7 +614,7 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		}
 
 		if (this.draggedPinnedAppOldIndex == NOT_YET_PINNED &&
-			!this.appManager.pin(dragged.tag as App, false, false, false)) {
+			!this.appManager.pin(dragged.tag as App, false, false)) {
 			this.draggedPinnedAppDropped = false // pinned meanwhile: let ended rebuild //
 			return
 		}
@@ -673,7 +673,7 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		val layout = this.appManager.launcherLayout
 
 		if (this.draggedPinnedAppOldIndex == NOT_YET_PINNED) {
-			if (!this.appManager.pin(draggedApp, false, false, false)) {
+			if (!this.appManager.pin(draggedApp, false, false)) {
 				return false
 			}
 			this.appManager.savePinnedApps()

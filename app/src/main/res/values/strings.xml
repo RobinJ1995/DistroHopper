@@ -18,10 +18,6 @@
     <string name="title_activity_lens_preferences">Search sources</string>
     <string name="title_activity_theme_preferences">Themes</string>
     <string name="title_activity_dev_logs">Logs</string>
-    <string name="pinned">has been pinned to the Launcher</string>
-    <string name="unpinned">has been unpinned from the Launcher</string>
-    <string name="notpinned">isn\'t pinned</string>
-    <string name="alreadypinned">is already pinned</string>
     <string name="developed_by">Developed by Robin Jacobs</string>
     <string name="button_back">Back</string>
     <string name="button_about">About</string>

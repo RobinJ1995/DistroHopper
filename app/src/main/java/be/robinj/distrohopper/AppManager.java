@@ -282,10 +282,10 @@ public class AppManager implements Iterable<App>
 
 	public boolean pin (App app)
 	{
-		return this.pin (app, true, true, true);
+		return this.pin (app, true, true);
 	}
 
-	public boolean pin (App app, boolean save, boolean showToast, boolean addView)
+	public boolean pin (App app, boolean save, boolean addView)
 	{
 		if (this.repository.pin (app))
 		{
@@ -461,11 +461,6 @@ public class AppManager implements Iterable<App>
 	}
 
 	public boolean unpin (App app)
-	{
-		return this.unpin (app, true);
-	}
-
-	public boolean unpin (App app, boolean showToast)
 	{
 		boolean modified = this.repository.unpin (app);
 

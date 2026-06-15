@@ -141,7 +141,7 @@ internal class WidgetsContainer_DragListener(
 			is Drag.LauncherPin ->
 				if (kind.host.pinAt(kind.app, col, row, this.pager.currentPage)) {
 					this.parent.desktopFolderHost?.dropFromFolders(kind.app)
-					this.parent.appManager?.unpin(kind.app, false)
+					this.parent.appManager?.unpin(kind.app)
 				}
 			is Drag.LauncherFolderMember ->
 				if (kind.host.pinAt(kind.app, col, row, this.pager.currentPage)) {
@@ -150,7 +150,7 @@ internal class WidgetsContainer_DragListener(
 					// launcher entirely (the folder dissolves at one app via reconcile) //
 					this.parent.appManager?.let {
 						it.launcherLayout.removeFromFolder(kind.folderId, kind.app.profileScopedKey)
-						it.unpin(kind.app, false)
+						it.unpin(kind.app)
 						it.launcherLayoutChanged()
 					}
 				}
@@ -166,10 +166,10 @@ internal class WidgetsContainer_DragListener(
 	private fun dropIntoDash(kind: Drag) {
 		val appManager = this.parent.appManager
 		when (kind) {
-			is Drag.LauncherPin -> appManager?.unpin(kind.app, false)
+			is Drag.LauncherPin -> appManager?.unpin(kind.app)
 			is Drag.LauncherFolderMember -> appManager?.let {
 				it.launcherLayout.removeFromFolder(kind.folderId, kind.app.profileScopedKey)
-				it.unpin(kind.app, false)
+				it.unpin(kind.app)
 				it.launcherLayoutChanged()
 			}
 			is Drag.DesktopApp -> kind.host.remove(kind.view)

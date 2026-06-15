@@ -2,7 +2,6 @@ package be.robinj.distrohopper.desktop.launcher
 
 import android.os.Handler
 import android.os.Looper
-import be.robinj.distrohopper.HomeActivity
 
 /**
  * Resolves the cross-surface drag's dash open/close intent, **based on the
@@ -26,24 +25,31 @@ import be.robinj.distrohopper.HomeActivity
  * LOCATION), so a single hover resolves once and the dash doesn't oscillate; the
  * visibility change is posted (never during event dispatch) and debounced.
  */
-class DashCrossSurfaceController(private val activity: HomeActivity) {
+class DashCrossSurfaceController(private val dash: Dash) {
+	/** The dash, as far as this controller needs it: its state and the two toggles. */
+	interface Dash {
+		fun isOpen(): Boolean
+		fun open()
+		fun close()
+	}
+
 	private val openTargets = HashSet<Int>()
 	private val closeTargets = HashSet<Int>()
 	private val handler = Handler(Looper.getMainLooper())
 
 	private val apply = Runnable {
-		if (this.activity.dashIsOpen()) {
+		if (this.dash.isOpen()) {
 			// Open: a launcher/panel hover closes it — but NOT while a BFB is also
 			// hovered (open precedence). A BFB only ever opens; it never closes. It
 			// sits inside its bar, so treating a BFB hover as a close would make it
 			// a toggle and the dash would flicker as the drag crosses the boundary.
 			if (this.closeTargets.isNotEmpty() && this.openTargets.isEmpty()) {
-				this.activity.closeDash()
+				this.dash.close()
 			}
 		} else {
 			// Closed: a BFB hover opens it.
 			if (this.openTargets.isNotEmpty()) {
-				this.activity.openDash()
+				this.dash.open()
 				// Drop the close-target that rode in with the BFB hover — a BFB sits
 				// inside its bar, so the bar registered a close too. Without this,
 				// the moment the drag leaves the BFB that lingering close-target

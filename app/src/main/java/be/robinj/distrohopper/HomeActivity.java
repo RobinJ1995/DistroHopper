@@ -1048,7 +1048,12 @@ public class HomeActivity extends AppCompatActivity
 	public DashCrossSurfaceController getDashCrossSurface ()
 	{
 		if (this.dashCrossSurface == null)
-			this.dashCrossSurface = new DashCrossSurfaceController (this);
+			this.dashCrossSurface = new DashCrossSurfaceController (new DashCrossSurfaceController.Dash ()
+			{
+				@Override public boolean isOpen () { return HomeActivity.this.dashIsOpen (); }
+				@Override public void open () { HomeActivity.this.openDash (); }
+				@Override public void close () { HomeActivity.this.closeDash (); }
+			});
 
 		return this.dashCrossSurface;
 	}

@@ -143,7 +143,7 @@ object AppsLoader {
 				context.packageManager,
 			)
 			for (app in defaults) {
-				appManager.pin(app, false, false, false)
+				appManager.pin(app, false, false)
 			}
 			if (defaults.isNotEmpty()) {
 				appManager.repository.savePinnedApps()
