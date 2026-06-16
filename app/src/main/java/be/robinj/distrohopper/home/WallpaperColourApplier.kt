@@ -8,6 +8,7 @@ import be.robinj.distrohopper.ViewFinder
 import be.robinj.distrohopper.desktop.Wallpaper
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
 import be.robinj.distrohopper.theme.Theme
+import be.robinj.distrohopper.widget.bfb.BfbWidgetProviderBase
 
 /**
  * Applies the wallpaper's average colour to the launcher items and the
@@ -27,15 +28,13 @@ class WallpaperColourApplier(
 		val colour_opacity = res.getInteger(this.theme.launcher_applauncher_backgroundcolour_opacity)
 		val bgColour_opacity = res.getInteger(this.theme.dynamic_background_opacity)
 
-		val colour: Int
-		val bgColour: Int
-		if (wpWallpaper.isLiveWallpaper) {
-			colour = Color.argb(40, 40, 40, 40)
-			bgColour = Color.argb(bgColour_opacity, 40, 40, 40)
-		} else {
-			colour = wpWallpaper.getAverageColour(colour_opacity)
-			bgColour = wpWallpaper.getAverageColour(bgColour_opacity)
-		}
+		// The launcher tiles (incl. the BFB) share their colour rule with the BFB
+		// widget via LauncherTileColour; the dash/launcher background keeps its own.
+		val colour = LauncherTileColour.dynamic(wpWallpaper, colour_opacity)
+		val bgColour: Int = if (wpWallpaper.isLiveWallpaper)
+			Color.argb(bgColour_opacity, 40, 40, 40)
+		else
+			wpWallpaper.getAverageColour(bgColour_opacity)
 
 		val llLauncher = this.viewFinder.get<LinearLayout>(R.id.llLauncher)
 		val llDash = this.viewFinder.get<LinearLayout>(R.id.llDash)
@@ -67,6 +66,10 @@ class WallpaperColourApplier(
 		} else {
 			llDash.setBackgroundResource(this.theme.dash_background)
 		}
+
+		// Keep any placed BFB widget in step with the now-current chameleonic
+		// colour (the only dynamic theme tracks the wallpaper) and theme.
+		BfbWidgetProviderBase.requestUpdate(this.activity)
 
 		return bgColour
 	}

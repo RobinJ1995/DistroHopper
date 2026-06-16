@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	The BFB widget: a 1x1 menu button that opens the dash. Resizable; the bitmap
+	is re-rendered for the new size. updatePeriodMillis is 0 — the content only
+	changes on theme/wallpaper changes, which the app pushes via requestUpdate.
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+	android:minWidth="60dp"
+	android:minHeight="60dp"
+	android:targetCellWidth="1"
+	android:targetCellHeight="1"
+	android:resizeMode="horizontal|vertical"
+	android:widgetCategory="home_screen"
+	android:updatePeriodMillis="0"
+	android:description="@string/bfb_widget_description"
+	android:previewLayout="@layout/widget_bfb"
+	android:previewImage="@drawable/launcher_bfb"
+	android:initialLayout="@layout/widget_bfb" />

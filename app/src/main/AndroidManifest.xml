@@ -116,6 +116,35 @@
 			</intent-filter>
 		</receiver>
 
+		<!-- The BFB widget: a themed menu button, placeable on any home screen,
+		     that opens the dash. Must be exported so the system AppWidget service
+		     can deliver its update broadcasts. -->
+		<receiver
+			android:name="be.robinj.distrohopper.widget.bfb.BfbWidgetProvider"
+			android:label="@string/bfb_widget_label"
+			android:exported="true">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data
+				android:name="android.appwidget.provider"
+				android:resource="@xml/bfb_widget_info" />
+		</receiver>
+
+		<!-- Same as the BFB widget, but its tap opens the dash with the search
+		     field focused (keyboard up). -->
+		<receiver
+			android:name="be.robinj.distrohopper.widget.bfb.BfbSearchWidgetProvider"
+			android:label="@string/bfb_search_widget_label"
+			android:exported="true">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data
+				android:name="android.appwidget.provider"
+				android:resource="@xml/bfb_search_widget_info" />
+		</receiver>
+
 		<activity
 			android:name="be.robinj.distrohopper.preferences.LensPreferencesActivity"
 			android:label="@string/title_activity_lens_preferences"
