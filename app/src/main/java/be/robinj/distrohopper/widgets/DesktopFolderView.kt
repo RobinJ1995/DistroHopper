@@ -14,9 +14,7 @@ import be.robinj.distrohopper.home.LauncherBarBinder
 /**
  * A folder placed on a desktop: a [DesktopFolderLayout.SPAN]-square icon in the
  * [WidgetsContainer] grid, the folder-world counterpart of [DesktopAppView]. It
- * shows a [FolderIconDrawable] mini-grid of member app icons under its first
- * member's label (so it reads like the labelled apps around it on the desktop,
- * rather than a label-less gap). Tap
+ * shows a [FolderIconDrawable] mini-grid of member app icons and no label. Tap
  * opens the folder overlay; long-press starts a system
  * drag with the view as local state (clip "desktopFolder"), so the desktop drag
  * listeners can move it on the grid or drop it on the trash. A folder can't leave
@@ -41,8 +39,7 @@ class DesktopFolderView(
 
 	init {
 		this.setIcon(FolderIconDrawable(iconDrawables))
-		// Keep the first member's label (set by the base AppLauncher from firstApp)
-		// so a desktop folder shows a label like the loose apps around it //
+		this.setLabel("")
 		this.tag = this.layout.folderId
 
 		this.isClickable = true

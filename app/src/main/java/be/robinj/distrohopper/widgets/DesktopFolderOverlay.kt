@@ -2,12 +2,15 @@ package be.robinj.distrohopper.widgets
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.TextView
 import be.robinj.distrohopper.App
 import be.robinj.distrohopper.ExceptionHandler
 import be.robinj.distrohopper.HomeActivity
+import be.robinj.distrohopper.R
 import be.robinj.distrohopper.folder.FolderGrid
 import be.robinj.distrohopper.folder.FolderMember
 import be.robinj.distrohopper.folder.FolderOverlay
@@ -72,24 +75,25 @@ class DesktopFolderOverlay(
 
 	fun dismiss() = this.overlay.dismiss()
 
-	private fun childFor(cell: DesktopFolderCell) = when (val member = cell.member) {
+	// An app cell: the shared icon-over-label dash launcher layout (NOT a bare icon),
+	// so the apps inside an opened folder show their labels like the dash/launcher
+	// folder popups do. The panel is always dark, so the layout's white label reads.
+	private fun childFor(cell: DesktopFolderCell): View? = when (val member = cell.member) {
 		is FolderMember.AppMember -> this.appMap[member.key]?.let { app ->
-			ImageView(this.activity).apply {
-				setImageDrawable(app.icon.drawable)
-				// Shrink the icon within its cell so adjacent icons (cells are packed
-				// edge-to-edge) keep a clear gap and don't crowd the panel.
-				val p = dp(15)
-				setPadding(p, p, p, p)
-				isClickable = true
-				setOnClickListener {
-					try {
-						app.launch()
-						dismiss()
-					} catch (ex: Exception) {
-						ExceptionHandler(ex).show(activity)
-					}
+			val view = LayoutInflater.from(this.activity)
+				.inflate(R.layout.widget_dash_applauncher, null, false)
+			view.findViewById<ImageView>(R.id.imgIcon).setImageDrawable(app.icon.drawable)
+			view.findViewById<TextView>(R.id.tvLabel).text = app.label
+			view.isClickable = true
+			view.setOnClickListener {
+				try {
+					app.launch()
+					dismiss()
+				} catch (ex: Exception) {
+					ExceptionHandler(ex).show(activity)
 				}
 			}
+			view
 		}
 	}
 
