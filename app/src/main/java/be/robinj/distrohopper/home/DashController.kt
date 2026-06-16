@@ -120,6 +120,10 @@ class DashController(
 	@JvmOverloads
 	fun open(forceSearchFocus: Boolean = false) {
 		if (this.isOpen) {
+			// The dash may already be open because viewModel.openDash() drove the
+			// state binder's flagless open() before this flag-carrying call ran
+			// (e.g. a BFB search-widget tap). Still honour the search focus.
+			if (forceSearchFocus) this.focusSearchField()
 			return
 		}
 
@@ -212,21 +216,8 @@ class DashController(
 	private fun applyOpenedChrome(forceSearchFocus: Boolean = false) {
 		val llPanel = this.viewFinder.get<LinearLayout>(R.id.llPanel)
 
-		if (forceSearchFocus || this.prefs.getBoolean(Preference.DASH_SEARCH_FOCUS_ON_OPEN, false)) {
-			val llDashContent = this.viewFinder.get<LinearLayout>(R.id.llDashContent)
-			val etDashSearch = this.viewFinder.get<EditText>(R.id.etDashSearch)
-			// Defer until the dash view is laid out/visible so the focus and
-			// keyboard request take effect. Skip in customise mode, where
-			// llDashContent (which holds the search field) is hidden — otherwise
-			// the keyboard would pop up over the customise controls.
-			etDashSearch.post {
-				if (llDashContent.visibility == View.VISIBLE && etDashSearch.requestFocus()) {
-					val imm = this.activity.getSystemService(Context.INPUT_METHOD_SERVICE)
-						as InputMethodManager?
-					imm?.showSoftInput(etDashSearch, InputMethodManager.SHOW_IMPLICIT)
-				}
-			}
-		}
+		if (forceSearchFocus || this.prefs.getBoolean(Preference.DASH_SEARCH_FOCUS_ON_OPEN, false))
+			this.focusSearchField()
 
 		if (this.activity.resources.getInteger(this.theme.panel_close_location) != -1)
 			this.viewFinder.get<ImageButton>(llPanel, R.id.ibPanelDashClose).visibility = View.VISIBLE
@@ -242,6 +233,23 @@ class DashController(
 				this.statusBarFade.drawable
 			this.panelFade.animateTo(dashOpened = true, duration)
 			this.statusBarFade.animateTo(dashOpened = true, duration)
+		}
+	}
+
+	/** Focuses the dash search field and raises the keyboard, deferred until laid out. */
+	private fun focusSearchField() {
+		val llDashContent = this.viewFinder.get<LinearLayout>(R.id.llDashContent)
+		val etDashSearch = this.viewFinder.get<EditText>(R.id.etDashSearch)
+		// Defer until the dash view is laid out/visible so the focus and
+		// keyboard request take effect. Skip in customise mode, where
+		// llDashContent (which holds the search field) is hidden — otherwise
+		// the keyboard would pop up over the customise controls.
+		etDashSearch.post {
+			if (llDashContent.visibility == View.VISIBLE && etDashSearch.requestFocus()) {
+				val imm = this.activity.getSystemService(Context.INPUT_METHOD_SERVICE)
+					as InputMethodManager?
+				imm?.showSoftInput(etDashSearch, InputMethodManager.SHOW_IMPLICIT)
+			}
 		}
 	}
 
