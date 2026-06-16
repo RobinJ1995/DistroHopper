@@ -259,8 +259,20 @@ etc/                                        — design assets (SVG/XCF sources, 
     exist (`highestOccupiedDesktop` = max of `WidgetHost.highestWidgetDesktop`
     and `AppManager.highestPinnedDesktop`; `WidgetsPager.occupiedDesktopSupplier`
     is pointed at it) and owns the structural ops that must touch both at once
-    — `deleteDesktop` removes a desktop's widgets and pins and reindexes the
-    rest (no delete UI yet; future insert/reorder belong here too).
+    — `deleteDesktop` removes a desktop's widgets, pins, desktop apps and
+    folders and reindexes the rest (future insert/reorder belong here too).
+    `removeEmptyDesktops` is the automatic clean-up: it deletes every desktop
+    in the occupied range that holds nothing — no widgets, desktop apps or
+    folders, and (in per-desktop pin mode only; in global mode the shared bar
+    can't keep a desktop alive) no launcher pins — packing the rest down so no
+    gaps remain. It runs at the end of every `WidgetsPager.pagesChanged` (wired
+    via `WidgetsPager.onPagesChanged`, but only **after** the initial restore so
+    a half-restored desktop is never seen as empty), so deleting the last item
+    from a desktop drops the desktop itself. The single trailing empty desktop
+    is the pager's own doing and sits above `highestOccupiedDesktop`, so it is
+    never touched — there is always an empty desktop at the end to add to. A
+    re-entrancy guard stops the `pagesChanged` that `deleteDesktop` itself fires
+    from recursing back in.
   - `LayoutTransitionConfigurer` — the appear/disappear animations.
 - **`desktop/`** — the desktop surface itself (`Wallpaper`, `AppIcon`, drag
   listeners). The activity is transparent over the system wallpaper

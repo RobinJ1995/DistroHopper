@@ -898,6 +898,15 @@ public class HomeActivity extends AppCompatActivity
 			this.desktopFolderHost.restore ();
 			vgWidgets.pagesChanged ();
 
+			// Now that the desktops are fully restored, auto-remove any that the
+			// user empties from here on (deleting the last item drops the desktop).
+			// Wired only after restore so a half-restored desktop is never seen as
+			// empty; the pager fires this at the end of every pagesChanged //
+			vgWidgets.setOnPagesChanged (() -> {
+				this.desktops.removeEmptyDesktops ();
+				return kotlin.Unit.INSTANCE;
+			});
+
 			EditText etDashSearch = this.viewFinder.get(R.id.etDashSearch);
 			LinearLayout llLauncher = this.viewFinder.get(R.id.llLauncher);
 
