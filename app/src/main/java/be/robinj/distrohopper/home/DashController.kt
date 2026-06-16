@@ -157,6 +157,12 @@ class DashController(
 		return this.animator.swipeBegin(opening = true, this.blurRadiusPx())
 	}
 
+	/**
+	 * Records the screen point an opening swipe began at, so the icon genie can
+	 * expand out of it when the theme has no visible BFB to grow from.
+	 */
+	fun setSwipeOrigin(x: Float, y: Float) = this.animator.setSwipeOrigin(x, y)
+
 	/** Like swipeOpenBegin(), but for swiping an open dash closed. */
 	fun swipeCloseBegin(): Boolean {
 		if (! this.isOpen) {

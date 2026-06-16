@@ -77,6 +77,11 @@ class HomeGestureController(
 	private var state = State.IDLE
 	private var downX = 0F
 	private var downY = 0F
+	// The first-touch point in screen coords (downX/downY are view-local and get
+	// re-based to where a swipe is recognised); fed to the dash so a BFB-less
+	// open animation can genie out of where the finger started.
+	private var rawDownX = 0F
+	private var rawDownY = 0F
 	private var startOpenness = 0F
 	/** Whether the in-flight vertical gesture travels downward (only one is ever live). */
 	private var swipeDownward = false
@@ -111,6 +116,8 @@ class HomeGestureController(
 				this.state = State.PENDING
 				this.downX = ev.x
 				this.downY = ev.y
+				this.rawDownX = ev.rawX
+				this.rawDownY = ev.rawY
 				this.velocityTracker = VelocityTracker.obtain().also { it.addMovement(ev) }
 
 				return false
@@ -212,6 +219,9 @@ class HomeGestureController(
 			GestureAction.NONE -> return // Inert: leave the swipe unconsumed //
 			GestureAction.OPEN_DASH, GestureAction.OPEN_DASH_SEARCH ->
 				if (this.dash.swipeOpenBegin()) { // Pull in the dash, tracking the finger //
+					// Genie the icons out of where the finger started, for themes
+					// with no visible BFB to expand from (no-op when one is shown) //
+					this.dash.setSwipeOrigin(this.rawDownX, this.rawDownY)
 					this.state = State.TRACKING_OPEN
 					this.startOpenness = this.dash.swipeOpenness
 					this.downY = ev.y // Track from where the swipe was recognised //

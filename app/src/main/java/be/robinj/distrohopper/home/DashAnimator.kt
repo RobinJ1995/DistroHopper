@@ -8,6 +8,7 @@ import android.animation.PropertyValuesHolder
 import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.app.Activity
+import android.graphics.PointF
 import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.os.PowerManager
@@ -71,13 +72,28 @@ class DashAnimator(
 	private var currentBlurRadius = 0F
 	private var swipe: SwipeSession? = null
 
+	/*
+	 * Screen point an opening *swipe* began at, for the icon genie when there is
+	 * no BFB to expand from: the icons then grow out of where the finger started
+	 * rather than zooming generically in place. Set by the gesture controller via
+	 * [setSwipeOrigin] before a swipe-open; cleared by every non-swipe-open path
+	 * (tap open, close, swipe-close) so it can never leak into them.
+	 */
+	private var swipeOrigin: PointF? = null
+
 	private val animation: DashAnimation
 		get() = DashAnimation.of(this.activity.resources.getInteger(this.theme.dash_animation))
 
 	internal val animationsEnabled: Boolean
 		get() = !this.activity.getSystemService(PowerManager::class.java).isPowerSaveMode
 
+	/** Records where an opening swipe began (screen coords); see [swipeOrigin]. */
+	fun setSwipeOrigin(x: Float, y: Float) {
+		this.swipeOrigin = PointF(x, y)
+	}
+
 	fun open(blurRadiusPx: Int) {
+		this.swipeOrigin = null // A tap-open has no swipe origin; never reuse a stale one //
 		val reversal = this.cancelRunning()
 		val llDash = this.viewFinder.get<LinearLayout>(R.id.llDash)
 
@@ -123,6 +139,7 @@ class DashAnimator(
 	 * ramps down gradually, NONE included; battery saver settles it immediately.
 	 */
 	fun close(blurRadiusPx: Int, teardown: () -> Unit) {
+		this.swipeOrigin = null // Closing never genies out of a swipe origin //
 		this.cancelRunning()
 
 		if (!this.animationsEnabled) {
@@ -168,6 +185,10 @@ class DashAnimator(
 	fun swipeBegin(opening: Boolean, blurRadiusPx: Int): Boolean {
 		if (!this.animationsEnabled) {
 			return false
+		}
+
+		if (!opening) {
+			this.swipeOrigin = null // A swipe-close doesn't genie out of an origin //
 		}
 
 		val resumeOpenness = this.swipe?.openness
@@ -688,10 +709,14 @@ class DashAnimator(
 			val centreX = location[0] - child.translationX + child.width / 2F
 			val centreY = location[1] - child.translationY + child.height / 2F
 
+			val origin = this.swipeOrigin
 			if (bfbShown) {
 				Genie(child, bfbCentreX - centreX, bfbCentreY - centreY, GENIE_START_SCALE,
 					hypot(bfbCentreX - centreX, bfbCentreY - centreY))
-			} else { // No BFB to expand from; zoom each icon in place instead //
+			} else if (origin != null) { // No BFB: genie out of where the swipe began //
+				Genie(child, origin.x - centreX, origin.y - centreY, GENIE_START_SCALE,
+					hypot(origin.x - centreX, origin.y - centreY))
+			} else { // No BFB and no swipe origin (e.g. a tap-open); zoom in place //
 				Genie(child, 0F, 0F, NO_BFB_START_SCALE, hypot(centreX, centreY))
 			}
 		}.sortedBy { if (opening) it.distance else -it.distance }
