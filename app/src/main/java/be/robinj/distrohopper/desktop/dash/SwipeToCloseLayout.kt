@@ -25,8 +25,12 @@ class SwipeToCloseLayout @JvmOverloads constructor(
 	interface Delegate {
 		/** Whether a downward swipe may begin closing the dash right now. */
 		fun dashSwipeEnabled(): Boolean
-		/** @return whether a tracked close began (false = nothing to track). */
-		fun dashSwipeStarted(): Boolean
+		/**
+		 * [startRawX]/[startRawY] are the swipe's first-touch point in screen
+		 * coords, so a BFB-less close animation can track the gesture.
+		 * @return whether a tracked close began (false = nothing to track).
+		 */
+		fun dashSwipeStarted(startRawX: Float, startRawY: Float): Boolean
 		/** [dyPx] is the downward distance travelled since the swipe started. */
 		fun dashSwipeMoved(dyPx: Float)
 		fun dashSwipeEnded(dyPx: Float, velocityY: Float)
@@ -38,6 +42,8 @@ class SwipeToCloseLayout @JvmOverloads constructor(
 	private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
 	private var downX = 0F
 	private var downY = 0F
+	private var rawDownX = 0F
+	private var rawDownY = 0F
 	private var originY = 0F
 	private var tracking = false
 	private var velocityTracker: VelocityTracker? = null
@@ -101,6 +107,8 @@ class SwipeToCloseLayout @JvmOverloads constructor(
 		this.clear()
 		this.downX = ev.x
 		this.downY = ev.y
+		this.rawDownX = ev.rawX
+		this.rawDownY = ev.rawY
 		this.velocityTracker = VelocityTracker.obtain().also { it.addMovement(ev) }
 	}
 
@@ -115,7 +123,7 @@ class SwipeToCloseLayout @JvmOverloads constructor(
 		val dx = ev.x - this.downX
 		val dy = ev.y - this.downY
 		if (dy > this.touchSlop && dy > abs(dx) * 2F && ! this.contentCanScrollUp()
-				&& delegate.dashSwipeStarted()) {
+				&& delegate.dashSwipeStarted(this.rawDownX, this.rawDownY)) {
 			this.tracking = true
 			this.originY = ev.y
 

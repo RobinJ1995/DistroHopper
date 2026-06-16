@@ -355,7 +355,7 @@ class HomeGestureControllerTest {
 		ActivityTestSupport.drainTasks()
 
 		assertTrue(h.gestures.dashSwipeEnabled())
-		assertTrue(h.gestures.dashSwipeStarted())
+		assertTrue(h.gestures.dashSwipeStarted(0F, 0F))
 		val distance = h.dash.swipeDistancePx
 		h.gestures.dashSwipeMoved(distance * 0.6F)
 		// Mid-flight: the dash is part-way out, tracking the finger //
@@ -375,7 +375,7 @@ class HomeGestureControllerTest {
 		h.viewModel.openDash()
 		ActivityTestSupport.drainTasks()
 
-		assertTrue(h.gestures.dashSwipeStarted())
+		assertTrue(h.gestures.dashSwipeStarted(0F, 0F))
 		h.gestures.dashSwipeMoved(h.dash.swipeDistancePx * 0.1F)
 		h.gestures.dashSwipeEnded(h.dash.swipeDistancePx * 0.1F, 0F)
 		ActivityTestSupport.drainTasks()
@@ -393,7 +393,7 @@ class HomeGestureControllerTest {
 		val powerManager = h.activity.getSystemService(Context.POWER_SERVICE) as PowerManager
 		Shadow.extract<ShadowPowerManager>(powerManager).setIsPowerSaveMode(true)
 
-		assertFalse(h.gestures.dashSwipeStarted()) // Nothing to track //
+		assertFalse(h.gestures.dashSwipeStarted(0F, 0F)) // Nothing to track //
 		assertFalse(h.dash.isOpen)
 		assertFalse(h.viewModel.dashOpen.value)
 	}

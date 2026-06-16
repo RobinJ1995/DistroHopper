@@ -73,11 +73,12 @@ class DashAnimator(
 	private var swipe: SwipeSession? = null
 
 	/*
-	 * Screen point an opening *swipe* began at, for the icon genie when there is
-	 * no BFB to expand from: the icons then grow out of where the finger started
-	 * rather than zooming generically in place. Set by the gesture controller via
-	 * [setSwipeOrigin] before a swipe-open; cleared by every non-swipe-open path
-	 * (tap open, close, swipe-close) so it can never leak into them.
+	 * Screen point the BFB-anchored animations should expand out of / collapse
+	 * into when the theme has no visible BFB: where an opening swipe began, or
+	 * where a closing swipe is heading, so the effect tracks the finger instead
+	 * of falling back to a generic centre/in-place one. Set by the gesture
+	 * controller via [setSwipeOrigin] at each swipe's start; cleared by the
+	 * non-swipe paths (tap open/close) so it never leaks into them.
 	 */
 	private var swipeOrigin: PointF? = null
 
@@ -185,10 +186,6 @@ class DashAnimator(
 	fun swipeBegin(opening: Boolean, blurRadiusPx: Int): Boolean {
 		if (!this.animationsEnabled) {
 			return false
-		}
-
-		if (!opening) {
-			this.swipeOrigin = null // A swipe-close doesn't genie out of an origin //
 		}
 
 		val resumeOpenness = this.swipe?.openness
@@ -683,21 +680,32 @@ class DashAnimator(
 	//# Theme geometry, shared by the time-based builders above and the #//
 	//# finger-tracked appliers below.                                  #//
 
-	/* The icons' genie targets (offset towards the BFB and start scale), nearest first. */
+	/*
+	 * The screen-space point the BFB-anchored animations expand out of / collapse
+	 * into: the launcher menu button's centre when it is shown, otherwise the
+	 * swipe gesture's origin (so a BFB-less theme tracks the finger), or null when
+	 * neither applies (a tap-open with no visible BFB) — callers fall back to a
+	 * generic centre/in-place effect then.
+	 */
+	private fun bfbAnchorCentre(): PointF? {
+		val bfb = this.viewFinder.get<View>(R.id.lalBfb)
+		if (bfb.isShown && bfb.width > 0) {
+			val location = IntArray(2)
+			bfb.getLocationOnScreen(location)
+			return PointF(location[0] + bfb.width / 2F, location[1] + bfb.height / 2F)
+		}
+
+		return this.swipeOrigin
+	}
+
+	/* The icons' genie targets (offset towards the BFB/swipe, and start scale), nearest first. */
 	private fun collectGenies(grid: GridView, opening: Boolean): List<Genie> {
 		val children = (0 until grid.childCount).map(grid::getChildAt)
 		if (children.isEmpty()) {
 			return emptyList()
 		}
 
-		val bfb = this.viewFinder.get<View>(R.id.lalBfb)
-		val bfbShown = bfb.isShown && bfb.width > 0
-		val bfbLocation = IntArray(2)
-		if (bfbShown) {
-			bfb.getLocationOnScreen(bfbLocation)
-		}
-		val bfbCentreX = bfbLocation[0] + bfb.width / 2F
-		val bfbCentreY = bfbLocation[1] + bfb.height / 2F
+		val anchor = this.bfbAnchorCentre()
 
 		return children.map { child ->
 			val location = IntArray(2)
@@ -709,13 +717,9 @@ class DashAnimator(
 			val centreX = location[0] - child.translationX + child.width / 2F
 			val centreY = location[1] - child.translationY + child.height / 2F
 
-			val origin = this.swipeOrigin
-			if (bfbShown) {
-				Genie(child, bfbCentreX - centreX, bfbCentreY - centreY, GENIE_START_SCALE,
-					hypot(bfbCentreX - centreX, bfbCentreY - centreY))
-			} else if (origin != null) { // No BFB: genie out of where the swipe began //
-				Genie(child, origin.x - centreX, origin.y - centreY, GENIE_START_SCALE,
-					hypot(origin.x - centreX, origin.y - centreY))
+			if (anchor != null) { // Genie out of / into the BFB, or the swipe point //
+				Genie(child, anchor.x - centreX, anchor.y - centreY, GENIE_START_SCALE,
+					hypot(anchor.x - centreX, anchor.y - centreY))
 			} else { // No BFB and no swipe origin (e.g. a tap-open); zoom in place //
 				Genie(child, 0F, 0F, NO_BFB_START_SCALE, hypot(centreX, centreY))
 			}
@@ -811,6 +815,20 @@ class DashAnimator(
 			endScaleY = targetHeight / llDash.height
 			llDash.pivotX = (targetLeft - dashScreenX) / (1F - endScaleX)
 			llDash.pivotY = (targetTop - dashScreenY) / (1F - endScaleY)
+		} else if (this.swipeOrigin != null && llDash.width > 0 && llDash.height > 0) {
+			// No BFB to slurp into, but a swipe is driving this: collapse the dash
+			// towards where the finger is, at the same small end scale as the
+			// centre fallback (the swipe origin is a point, not a sized button).
+			val origin = this.swipeOrigin!!
+			val dashLocation = IntArray(2)
+			llDash.getLocationOnScreen(dashLocation)
+			val dashScreenX = dashLocation[0] - llDash.translationX
+			val dashScreenY = dashLocation[1] - llDash.translationY
+
+			endScaleX = GENIE_END_SCALE_FALLBACK
+			endScaleY = GENIE_END_SCALE_FALLBACK
+			llDash.pivotX = (origin.x - dashScreenX) / (1F - endScaleX)
+			llDash.pivotY = (origin.y - dashScreenY) / (1F - endScaleY)
 		} else { // No BFB to slurp into; collapse towards the dash's centre //
 			endScaleX = GENIE_END_SCALE_FALLBACK
 			endScaleY = GENIE_END_SCALE_FALLBACK

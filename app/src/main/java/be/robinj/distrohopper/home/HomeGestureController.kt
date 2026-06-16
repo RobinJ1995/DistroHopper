@@ -294,7 +294,14 @@ class HomeGestureController(
 
 	override fun dashSwipeEnabled(): Boolean = this.dash.isOpen && ! this.customiseMode()
 
-	override fun dashSwipeStarted(): Boolean {
+	override fun dashSwipeStarted(startRawX: Float, startRawY: Float): Boolean {
+		// Collapse a BFB-less dash in the swipe's direction (downward): towards the
+		// bottom of the screen, in the finger's column. Must be set before
+		// swipeCloseBegin(), which captures the close geometry synchronously.
+		// No-op visually when a BFB is shown (the animation anchors to it instead).
+		this.dash.setSwipeOrigin(startRawX,
+			this.activity.resources.displayMetrics.heightPixels.toFloat())
+
 		if (this.dash.swipeCloseBegin()) {
 			this.closeTracking = true
 			this.closeStartOpenness = this.dash.swipeOpenness
