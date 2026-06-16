@@ -94,6 +94,49 @@ class ThemeTest {
         assertTrue(Default().launcherBfbVisible(context.resources, prefs))
     }
 
+    @Test fun toggleabilityFollowsSupportedPositionCount() {
+        // A theme is toggleable iff it lists more than one BFB position.
+        assertTrue(Gnome().launcherBfbToggleable(context.resources))
+        assertTrue(Cosmic().launcherBfbToggleable(context.resources))
+        assertTrue(Elementary().launcherBfbToggleable(context.resources))
+        assertFalse(Default().launcherBfbToggleable(context.resources))
+        assertFalse(Budgie().launcherBfbToggleable(context.resources))
+    }
+
+    @Test fun gnomeOffersHideStartAndEndMenuButtonPositions() {
+        val gnome = Gnome()
+        val offered = context.resources.getIntArray(gnome.launcher_bfb_location_supported)
+            .map { gnome.bfbSide(Location.of(it)) }
+        assertEquals(listOf(BfbLocation.NONE, BfbLocation.START, BfbLocation.END), offered)
+    }
+
+    @Test fun cosmicAndPantheonStillOfferOnlyHideAndStart() {
+        listOf(Cosmic(), Elementary()).forEach { theme ->
+            val offered = context.resources.getIntArray(theme.launcher_bfb_location_supported)
+                .map { theme.bfbSide(Location.of(it)) }
+            assertEquals(listOf(BfbLocation.NONE, BfbLocation.START), offered)
+        }
+    }
+
+    @Test fun gnomeMenuButtonDefaultsToEndAndFollowsPreference() {
+        val gnome = Gnome(); val prefs = Preferences.getSharedPreferences(context)
+        // No stored pref: visible at the end (BOTTOM), the GNOME default.
+        assertTrue(gnome.launcherBfbVisible(context.resources, prefs))
+        assertEquals(Location.BOTTOM, gnome.launcherBfbLocationResolved(context.resources, prefs))
+
+        prefs.edit().putString(Preference.LAUNCHER_BFB_LOCATION.getName(),
+            BfbLocation.START.value).commit()
+        assertEquals(Location.TOP, gnome.launcherBfbLocationResolved(context.resources, prefs))
+
+        prefs.edit().putString(Preference.LAUNCHER_BFB_LOCATION.getName(),
+            BfbLocation.END.value).commit()
+        assertEquals(Location.BOTTOM, gnome.launcherBfbLocationResolved(context.resources, prefs))
+
+        prefs.edit().putString(Preference.LAUNCHER_BFB_LOCATION.getName(),
+            BfbLocation.NONE.value).commit()
+        assertFalse(gnome.launcherBfbVisible(context.resources, prefs))
+    }
+
     @Test fun panelLessThemeStatusBarFollowsLauncherEdge() {
         val theme = Budgie(); val prefs = Preferences.getSharedPreferences(context)
         // No panel: the status bar is opaque only when the launcher is at the top.

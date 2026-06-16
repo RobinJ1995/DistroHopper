@@ -133,11 +133,11 @@ class CustomiseModeUi(
 			this.viewFinder.get<View>(llDashCustomise, R.id.llCustomisePanelEdge).visibility = View.GONE
 		}
 
-		// Menu button (BFB) // Only themes that allow it (Pantheon, COSMIC) offer
-		// the dropdown; the choice is applied by re-running the theme on relaunch.
+		// Menu button (BFB) // Only themes that offer more than one BFB position
+		// show the dropdown; the choice is applied by re-running the theme on relaunch.
 		val llCustomiseMenuButton =
 			this.viewFinder.get<View>(llDashCustomise, R.id.llCustomiseMenuButton)
-		if (res.getBoolean(this.theme.launcher_bfb_user_toggleable)) {
+		if (this.theme.launcherBfbToggleable(res)) {
 			llCustomiseMenuButton.visibility = View.VISIBLE
 			this.initMenuButtonSpinner(
 				this.viewFinder.get(R.id.spiCustomiseMenuButton), spiCustomiseSpinnerTextColour)
@@ -147,19 +147,20 @@ class CustomiseModeUi(
 	}
 
 	/*
-	 * The menu-button (BFB) position dropdown, on themes that allow it. Only the
-	 * positions the theme supports are offered (Pantheon/COSMIC: Hide or Start),
-	 * so no new options are exposed where there weren't any before. The choice
-	 * is stored as a named string ([BfbLocation]) and applied on relaunch.
+	 * The menu-button (BFB) position dropdown, on themes that offer more than one
+	 * position. The options come straight from the theme's
+	 * launcher_bfb_location_supported array (mapped to none/start/end sides), so a
+	 * theme only ever exposes the positions it declares (Pantheon/COSMIC: Hide or
+	 * Start; GNOME: Hide, Start or End). The choice is stored as a named string
+	 * ([BfbLocation]) and applied on relaunch.
 	 */
 	private fun initMenuButtonSpinner(spinner: Spinner, textColour: Int) {
 		val res = this.activity.resources
 		val prefs = Preferences.getSharedPreferences(this.activity)
 
-		val nativeLocation = Location.of(res.getInteger(this.theme.launcher_bfb_location))
-		val nativeSide = if (nativeLocation == Location.TOP || nativeLocation == Location.LEFT)
-			BfbLocation.START else BfbLocation.END
-		val options = listOf(BfbLocation.NONE, nativeSide)
+		val options = res.getIntArray(this.theme.launcher_bfb_location_supported)
+			.map { this.theme.bfbSide(Location.of(it)) }
+			.distinct()
 
 		val stored = prefs.getString(Preference.LAUNCHER_BFB_LOCATION.getName(), null)
 		val current = if (stored == null) this.theme.launcherBfbDefaultChoice(res)

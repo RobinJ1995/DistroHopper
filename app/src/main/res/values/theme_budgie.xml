@@ -37,7 +37,9 @@
     <drawable name="theme_budgie_launcher_bfb_image">@drawable/theme_budgie_res_launcher_bfb</drawable>
     <drawable name="theme_budgie_launcher_bfb_image_vertical">@drawable/theme_budgie_res_launcher_bfb</drawable>
     <bool name="theme_budgie_launcher_bfb_hide_while_dragging">false</bool>
-    <bool name="theme_budgie_launcher_bfb_user_toggleable">false</bool>
+    <array name="theme_budgie_launcher_bfb_location_supported">
+        <item>@integer/position_left</item>
+    </array>
     <bool name="theme_budgie_launcher_bfb_visible_by_default">true</bool>
     <integer name="theme_budgie_launcher_preferences_location">@integer/position_none</integer>
     <drawable name="theme_budgie_launcher_preferences_image">@drawable/theme_budgie_res_launcher_preferences</drawable>
