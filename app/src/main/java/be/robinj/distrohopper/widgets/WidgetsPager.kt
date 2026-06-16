@@ -72,6 +72,14 @@ class WidgetsPager @JvmOverloads constructor(
 	var onPageSettled: PageSettledListener? = null
 
 	/**
+	 * Fired at the end of every [pagesChanged], after the row has been re-derived.
+	 * HomeActivity points it at `home/Desktops.removeEmptyDesktops` so a desktop
+	 * left empty by a deletion is cleaned up. Wired only once the initial restore
+	 * has finished, so a half-restored desktop is never mistaken for an empty one.
+	 */
+	var onPagesChanged: (() -> Unit)? = null
+
+	/**
 	 * Feeds a touch stream to the home-screen swipe gestures (HomeActivity wires
 	 * it to HomeGestureController). Used to hand off vertical swipes (up or down)
 	 * that start on a widget so the configured swipe gesture runs just as it does
@@ -169,6 +177,8 @@ class WidgetsPager @JvmOverloads constructor(
 		if (this.currentPage > count - 1) {
 			this.setCurrentPage(count - 1, animate = true)
 		}
+
+		this.onPagesChanged?.invoke()
 	}
 
 	fun setCurrentPage(page: Int, animate: Boolean) {

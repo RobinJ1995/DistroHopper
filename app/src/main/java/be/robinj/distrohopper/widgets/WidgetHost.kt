@@ -210,6 +210,11 @@ class WidgetHost(
 	/** Highest desktop holding a widget (or -1), for the `home/Desktops` coordinator. */
 	fun highestWidgetDesktop(): Int = this.vgWidgets.highestWidgetPage()
 
+	/** Whether desktop [page] holds any widget, for the `home/Desktops` coordinator. */
+	fun hasWidgetsOnDesktop(page: Int): Boolean =
+		page in 0 until this.vgWidgets.childCount &&
+			this.widgetsOf(this.vgWidgets.pageAt(page)).isNotEmpty()
+
 	fun persist() {
 		this.persistence.save(this.vgWidgets.collectLayouts(null))
 	}

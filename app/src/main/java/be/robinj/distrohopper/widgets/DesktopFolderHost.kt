@@ -272,6 +272,11 @@ class DesktopFolderHost(
 		return -1
 	}
 
+	/** Whether desktop [page] holds any folder, for the `home/Desktops` coordinator. */
+	fun hasFoldersOnDesktop(page: Int): Boolean =
+		page in 0 until this.vgWidgets.childCount &&
+			this.foldersOf(this.vgWidgets.pageAt(page)).isNotEmpty()
+
 	// --- Helpers -----------------------------------------------------------
 
 	private fun addFolderView(layout: DesktopFolderLayout, appMap: Map<String, App>) {

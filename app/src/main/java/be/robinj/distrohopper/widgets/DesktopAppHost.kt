@@ -198,6 +198,11 @@ class DesktopAppHost(
 		return -1
 	}
 
+	/** Whether desktop [page] holds any pinned app, for the `home/Desktops` coordinator. */
+	fun hasAppsOnDesktop(page: Int): Boolean =
+		page in 0 until this.vgWidgets.childCount &&
+			this.appsOf(this.vgWidgets.pageAt(page)).isNotEmpty()
+
 	/**
 	 * Saves the current placements, reading each app's position from its view's
 	 * layout params and the index of the page it sits in — so views moved between
