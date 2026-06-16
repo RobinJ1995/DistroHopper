@@ -17,7 +17,6 @@
   <string name="honourable_mentions">Menzioni d\'onore</string>
   <string name="button_back">Indietro</string>
   <string name="button_about">Informazioni</string>
-  <string name="button_contribute">Contributo</string>
   <string name="button_apply">Applica</string>
   <string name="title_preferences">Preferenze</string>
   <string name="pref_header_general">Generali</string>
@@ -37,10 +36,5 @@
 * Aiuto con la funzione di calcolo del colore dominante</string>
   <string name="hm_todddavies_why">* Ho utilizzato il suo componente ProgressWheel dato che il componente ProgressBar di default su Android (round) non visualizza correttamente l\'avanzamento.\n
 https://github.com/Todd-Davies/ProgressWheel/</string>
-  <string name="title_activity_contribute">Come posso contribuire?</string>
-  <string name="contribute_translate_go">Vai su Transifex</string>
-  <string name="contribute_bugs_title">Segnala Bug</string>
-  <string name="contribute_bugs_go">Vai su GitHub</string>
-  <string name="contribute_donate_title">Dona</string>
   <string name="theme_elementary_res_panel_bfb_text">Applicazioni</string>
 </resources>

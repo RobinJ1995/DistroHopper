@@ -17,7 +17,6 @@
   <string name="honourable_mentions">Speciális köszönet</string>
   <string name="button_back">Vissza</string>
   <string name="button_about">Névjegy</string>
-  <string name="button_contribute">Közreműködés</string>
   <string name="button_apply">Alkalmaz</string>
   <string name="title_preferences">Beállítások</string>
   <string name="pref_header_general">Általános</string>
@@ -39,12 +38,5 @@
   <string name="option_dev">Fejlesztői mód</string>
   <string name="option_dev_logs">Naplók</string>
   <string name="hm_translators_name">A fordító csapat</string>
-  <string name="title_activity_contribute">Hogyan tudok közreműködő lenni?</string>
-  <string name="contribute_translate_title">Fordítás</string>
-  <string name="contribute_translate_description">DistroHopper számos nyelven elérhető. Ez azért van, mert önkéntesek segítik a projekt fordítását. Ha az DistroHopper-t még nem fordították le a saját nyelvén, és ért Angolul (és megfelelő ismeretekkel rendelkeznek Linux területein), valamint segít a fordításban, egy jó módja annak, hogy segítsen az Ön nyelvén is elérhetővé tenni ezt a projektet. \n \nAz DistroHopper fordításait hivatalosan a Transifex oldala kezeli. Mindössze annyit kell tennie, hogy csatlakozási kérelemmel fordul a fordító csapatunkhoz az oldalon. Utána már jóváhagyjuk a kérését, és már lehet is fordítani.</string>
-  <string name="contribute_translate_go">Lépj be a Transifex oldalára</string>
-  <string name="contribute_bugs_title">Hibák jelentése</string>
-  <string name="contribute_bugs_go">Lépj be a GitHub oldalára</string>
-  <string name="contribute_donate_title">Adományozás</string>
   <string name="theme_elementary_res_panel_bfb_text">Alkalmazások</string>
 </resources>

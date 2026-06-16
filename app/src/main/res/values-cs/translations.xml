@@ -12,7 +12,6 @@
   <string name="honourable_mentions">Čestná uznání</string>
   <string name="button_back">Zpět</string>
   <string name="button_about">O</string>
-  <string name="button_contribute">Přispět</string>
   <string name="button_apply">Použít</string>
   <string name="title_preferences">Předvolby</string>
   <string name="pref_header_general">Obecný</string>
@@ -30,12 +29,5 @@
         * Help with the dominant colour calculation function.</string>
   <string name="hm_todddavies_why">* I used his ProgressWheel component, since the default (round) Android ProgressBar component can\'t actually indicate progress.\n
         https://github.com/Todd-Davies/ProgressWheel/</string>
-  <string name="title_activity_contribute">Jak mohu přispět ?</string>
-  <string name="contribute_intro">Hodně času a tvrdé práce šla do vývoje této aplikace. Pokud byste chtěli pomoct, existuje několik způsobů, jak můžete tak učinit.</string>
-  <string name="contribute_translate_go">Přejít na Transifex</string>
-  <string name="contribute_bugs_title">Nahlásit chybu</string>
-  <string name="contribute_bugs_go">Přejít na GitHub</string>
-  <string name="contribute_donate_title">Darovat</string>
-  <string name="contribute_donate_description">Pokud chcete, můžete si také peněžní dar pro vývojáře. Dary jsou zpracovány prostřednictvím PayPal. Budete mít možnost vybrat částku, kterou chcete darovat. Poznámka: Je to dar. Já neprodávám nic, a nejste něco koupit. Dary jsou velmi ocenil, ale nebudete získávat žádné další funkce, protože to. Všechny funkce této aplikace jsou k dispozici zdarma.</string>
   <string name="theme_elementary_res_panel_bfb_text">Aplikace</string>
 </resources>

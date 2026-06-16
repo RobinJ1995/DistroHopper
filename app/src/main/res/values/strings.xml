@@ -21,7 +21,6 @@
     <string name="developed_by">Developed by Robin Jacobs</string>
     <string name="button_back">Back</string>
     <string name="button_about">About</string>
-    <string name="button_contribute">Contribute</string>
     <string name="button_apply">Apply</string>
 
     <string-array name="edges">
@@ -159,17 +158,6 @@
     <string name="folder_full">Folder is full</string>
     <string name="option_pin_per_desktop">Per-desktop pinned apps</string>
     <string name="hint_pin_per_desktop">Give each desktop its own pinned apps in the Launcher, instead of sharing the same ones across every desktop.</string>
-    <string name="title_activity_contribute">How can I contribute?</string>
-    <string name="contribute_intro">A lot of time and hard work went into the development of this application. If you\'d like to help out, there are several ways in which you can do so.</string>
-    <string name="contribute_translate_title">Translate</string>
-    <string name="contribute_translate_description">DistroHopper is available in several languages. This is because volunteers provide the project with their translations. If DistroHopper has not been translated yet into your own language, and you understand English (and you have sufficient knowledge of the Linux desktop to understand some of the more Unity-related terms), then helping out with translations is a good way to help out.
-        \nTranslations for DistroHopper are managed on Transifex. All you need to do is request to join a translation team. After that I will approve your request and you are good to go.</string>
-    <string name="contribute_translate_go">Go to Transifex</string>
-    <string name="contribute_bugs_title">Report bugs</string>
-    <string name="contribute_bugs_description">If there is a bug in DistroHopper, that does not necessarily mean that I am aware of its existence. Developers are generally quite bad at testing their own applications as they will only use them in a way they are intended to be used. Some problems also only exist in certain specific circumstances (for example a certain device running a specific version of Android with some extra options enabled). So if you find a bug in DistroHopper (or if you have a feature request) you can help out by reporting it.
-        \nBug reports for DistroHopper are kept on GitHub. If GitHub is too technical for you, you can also just send an e-mail to android-dev@robinj.be. Just make sure it\'s in English or Dutch. Please provide as much (relevant) information as possible.</string>
-    <string name="contribute_bugs_go">Go to GitHub</string>
-
     <string name="theme_elementary_res_panel_bfb_text">Applications</string>
     <string name="theme_gnome_res_panel_bfb_text">Activities</string>
 

@@ -77,9 +77,6 @@
     <style name="AboutTheme" parent="DialogTheme">
     </style>
 
-    <style name="ContributeTheme" parent="DialogTheme">
-    </style>
-
     <style name="PreferencesTheme" parent="DialogTheme">
         <item name="preferenceTheme">@style/AppPreferenceThemeOverlay</item>
     </style>

@@ -10,7 +10,6 @@
   <string name="honourable_mentions">Menções honrosas</string>
   <string name="button_back">Voltar</string>
   <string name="button_about">Sobre</string>
-  <string name="button_contribute">Contribua</string>
   <string name="title_preferences">Preferências</string>
   <string name="pref_header_general">Geral</string>
   <string name="pref_header_launcher">Launcher</string>
@@ -23,12 +22,5 @@
   <string name="option_dash_ready_show">Abrir Dash por padrão</string>
   <string name="hm_timvdstaaij_why">* Testando (Se não consegue destruí­-lo, então é seguro pro resto do mundo) * Ajuda com cálculo de cor predominante.</string>
   <string name="hm_todddavies_why">* Usei o componente ProgressWheel, uma vez que o componente padrão (round) ProgressBar Android não indica o progresso. \n         https://github.com/Todd-Davies/ProgressWheel/</string>
-  <string name="title_activity_contribute">Como posso contribuir?</string>
-  <string name="contribute_intro">Desenvolver um aplicativo como este demanda tempo e trabalho duro. Se você tem interesse em ajudar, veja como fazer:</string>
-  <string name="contribute_translate_go">Ir para Transifex</string>
-  <string name="contribute_bugs_title">Informando bugs</string>
-  <string name="contribute_bugs_go">Ir para GitHub</string>
-  <string name="contribute_donate_title">Doando</string>
-  <string name="contribute_donate_description">Se você quiser, você também pode fazer uma doação em dinheiro para o desenvolvedor. Doações são feitas através do PayPal. Você poderá escolher o valor que gostaria de doar. Nota: É uma doação. Não estamos vendendo nada, e você não está comprando nada. Doações são muito bem vindas, mas você não vai ganhar nenhum recurso adicional por causa disso. Todas as funcionalidades deste aplicativo estão disponíveis gratuitamente para todos.</string>
   <string name="theme_elementary_res_panel_bfb_text">Aplicativos</string>
 </resources>

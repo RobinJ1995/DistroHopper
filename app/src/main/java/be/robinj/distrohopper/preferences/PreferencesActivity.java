@@ -34,7 +34,6 @@ import org.acra.ACRA;
 import be.robinj.distrohopper.AboutActivity;
 import be.robinj.distrohopper.AppRestart;
 import be.robinj.distrohopper.BuildConfig;
-import be.robinj.distrohopper.ContributeActivity;
 import be.robinj.distrohopper.DependencyContainer;
 import be.robinj.distrohopper.ExceptionHandler;
 import be.robinj.distrohopper.HomeRole;
@@ -95,11 +94,6 @@ public class PreferencesActivity extends AppCompatActivity
 			else if (id == R.id.menuAbout)
 			{
 				Intent intent = new Intent (this, AboutActivity.class);
-				this.startActivity (intent);
-			}
-			else if (id == R.id.menuContribute)
-			{
-				Intent intent = new Intent (this, ContributeActivity.class);
 				this.startActivity (intent);
 			}
 		}
