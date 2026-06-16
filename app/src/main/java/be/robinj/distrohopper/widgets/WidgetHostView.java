@@ -14,8 +14,11 @@ import android.view.ViewGroup;
 public class WidgetHostView extends AppWidgetHostView
 {
 	private int longPressTimeout;
+	private int touchSlop;
 	private LongPressCheck longPressCheck;
 	private boolean performedLongPress = false;
+	private float downX;
+	private float downY;
 	private WidgetHost widgetHost;
 	private WidgetContainer widgetContainer;
 
@@ -26,6 +29,7 @@ public class WidgetHostView extends AppWidgetHostView
 		this.widgetHost = widgetHost;
 
 		this.longPressTimeout = ViewConfiguration.getLongPressTimeout ();
+		this.touchSlop = ViewConfiguration.get (context).getScaledTouchSlop ();
 	}
 
 	public void setWidgetContainer (WidgetContainer widgetContainer)
@@ -46,14 +50,24 @@ public class WidgetHostView extends AppWidgetHostView
 		switch (e.getAction ())
 		{
 			case MotionEvent.ACTION_DOWN:
+				this.downX = e.getX ();
+				this.downY = e.getY ();
 				this.postLongPressCheck ();
+				break;
+			case MotionEvent.ACTION_MOVE:
+				// A finger that travels past touch slop is swiping (e.g. between
+				// desktops), not long-pressing: abort the pending edit-mode trigger
+				// just as a stock long-press would, so swipes never enter edit mode //
+				if (Math.abs (e.getX () - this.downX) > this.touchSlop
+					|| Math.abs (e.getY () - this.downY) > this.touchSlop)
+				{
+					this.cancelPendingLongPress ();
+				}
+
 				break;
 			case MotionEvent.ACTION_UP:
 			case MotionEvent.ACTION_CANCEL:
-				this.performedLongPress = false;
-
-				if (this.longPressCheck != null)
-					this.removeCallbacks (this.longPressCheck);
+				this.cancelPendingLongPress ();
 
 				break;
 		}
@@ -66,7 +80,13 @@ public class WidgetHostView extends AppWidgetHostView
 	{
 		super.cancelLongPress ();
 
+		this.cancelPendingLongPress ();
+	}
+
+	private void cancelPendingLongPress ()
+	{
 		this.performedLongPress = false;
+
 		if (this.longPressCheck != null)
 			this.removeCallbacks (this.longPressCheck);
 	}
