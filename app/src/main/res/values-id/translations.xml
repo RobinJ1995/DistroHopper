@@ -10,7 +10,6 @@
   <string name="honourable_mentions">Yang dihormati disebutkan</string>
   <string name="button_back">Kembali</string>
   <string name="button_about">Tentang</string>
-  <string name="button_contribute">Kontribusi</string>
   <string name="title_preferences">Preferensi</string>
   <string name="pref_header_general">Umum</string>
   <string name="pref_header_launcher">Peluncur</string>
@@ -25,13 +24,5 @@
 * Bantuan dengan fungsi perhitungan warna dominan.</string>
   <string name="hm_todddavies_why">* Saya menggunakan komponen ProgressWheel nya, karena komponen standar (round) Android ProgressBar tidak benar-benar menunjukkan kemajuan.\n
 https://github.com/Todd-Davies/ProgressWheel/</string>
-  <string name="title_activity_contribute">Bagaimana Saya bisa berkontribusi?</string>
-  <string name="contribute_intro">Waktu yang lama dan kerja keras telah dilakukan untuk mengembangkan aplikasi ini. Jika Anda ingin membantu, ada beberapa cara di mana Anda dapat melakukannya.</string>
-  <string name="contribute_translate_description">DistroHopper tersedia dalam beberapa bahasa. Hal ini karena relawan memberikan proyek dengan terjemahannya. Jika DistroHopper belum diterjemahkan ke dalam bahasa Anda dan Anda mengerti bahasa Inggris (dan Anda memiliki pengetahuan yang cukup tentang Linux), kemudian membantu dengan terjemahan adalah cara yang baik untuk membantu. \nTranslasi untuk DistroHopper dikelola di Transifex. Yang perlu Anda lakukan adalah permintaan untuk bergabung dengan tim penerjemah. Setelah itu saya akan menyetujui permintaan Anda dan Anda siap untu menterjemahkan.</string>
-  <string name="contribute_translate_go">Pergi ke Transifex</string>
-  <string name="contribute_bugs_title">Laporkan bug</string>
-  <string name="contribute_bugs_go">Pergi ke GitHub</string>
-  <string name="contribute_donate_title">Donasi</string>
-  <string name="contribute_donate_description">Jika Anda ingin, Anda juga dapat membuat sumbangan moneter untuk pengembang. Sumbangan ditangani melalui PayPal. Anda akan dapat memilih jumlah uang yang ingin Anda donasikan. \ nCatatan: Ini sumbangan. Saya tidak menjual apa-apa, dan Anda tidak membeli apa-apa. Sumbangan yang sangat dihargai, tetapi Anda tidak akan mendapatkan fitur tambahan karena itu. Semua fitur dari aplikasi ini tersedia gratis.</string>
   <string name="theme_elementary_res_panel_bfb_text">Aplikasi</string>
 </resources>

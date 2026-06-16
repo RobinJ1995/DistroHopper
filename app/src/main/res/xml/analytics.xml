@@ -9,6 +9,5 @@
 	<screenName name="be.robinj.distrohopper.preferences.LensPreferencesActivity">Lens Preferences</screenName>
 	<screenName name="be.robinj.distrohopper.preferences.ThemePreferencesActivity">Theme Preferences</screenName>
 	<screenName name="be.robinj.distrohopper.AboutActivity">About</screenName>
-	<screenName name="be.robinj.distrohopper.ContributeActivity">Contribute</screenName>
 	<screenName name="be.robinj.distrohopper.dev.DevLogsActivity">Developer Logs</screenName>
 </resources>

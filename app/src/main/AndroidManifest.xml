@@ -79,16 +79,6 @@
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="be.robinj.distrohopper.HomeActivity" />
 		</activity>
-		<activity
-			android:name="be.robinj.distrohopper.ContributeActivity"
-			android:label="@string/title_activity_contribute"
-			android:parentActivityName="be.robinj.distrohopper.AboutActivity"
-			android:theme="@style/AboutTheme">
-			<meta-data
-				android:name="android.support.PARENT_ACTIVITY"
-				android:value="be.robinj.distrohopper.AboutActivity" />
-		</activity>
-
 		<service android:name="be.robinj.distrohopper.desktop.launcher.service.LauncherService" />
 
 		<!-- Experimental: opens the notification tray on a home-screen swipe-down.

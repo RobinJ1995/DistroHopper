@@ -17,7 +17,6 @@
   <string name="honourable_mentions">Menciones honorificas</string>
   <string name="button_back">Volver</string>
   <string name="button_about">Acerca de</string>
-  <string name="button_contribute">Contribuir </string>
   <string name="button_apply">Aplicar </string>
   <string-array name="edges">
     <item>Ocultar</item>
@@ -58,12 +57,5 @@
 https://github.com/Todd-Davies/ProgressWheel/</string>
   <string name="hm_translators_name">El equipo de traducción</string>
   <string name="hm_translators_why">Un grupo de personas han dedicado su tiempo y esfuerzo para hacer que esta aplicación este disponible en su idioma. Estoy agradecido con todos ellos por sus contribuciones con este proyecto.</string>
-  <string name="title_activity_contribute">¿Como puedo contribuir?</string>
-  <string name="contribute_intro">Gastamos mucho tiempo y trabajo duro  en el desarrollo de esta aplicación. Si quiere ayudar, hay muchas formas en las que puede hacerlo.</string>
-  <string name="contribute_translate_title">Traducir </string>
-  <string name="contribute_translate_go">Ir a Transifex</string>
-  <string name="contribute_bugs_title">Reportar errores</string>
-  <string name="contribute_bugs_go">Ir a GitHub</string>
-  <string name="contribute_donate_title">Donar </string>
   <string name="theme_elementary_res_panel_bfb_text">Aplicaciones</string>
 </resources>
