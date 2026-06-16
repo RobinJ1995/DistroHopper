@@ -130,6 +130,27 @@ class DesktopFolderHost(
 		this.persist()
 	}
 
+	/**
+	 * Adds an [app] coming from another surface (a dash/search result, or a pin
+	 * dragged off the launcher bar) into folder [folderId]. Unlike the [DesktopAppView]
+	 * overload there is no loose desktop view to remove — the caller clears the app's
+	 * origin surface. Shows the full toast and returns false (no-op) if the folder is
+	 * full or gone; true once the app is in it.
+	 */
+	fun addApp(folderId: String, app: App): Boolean {
+		val folderView = this.folderViewFor(folderId) ?: return false
+		val newLayout = folderView.layout.withApp(app.profileScopedKey)
+		if (newLayout == null) {
+			android.widget.Toast.makeText(this.parent,
+				be.robinj.distrohopper.R.string.folder_full, android.widget.Toast.LENGTH_SHORT).show()
+			return false
+		}
+
+		this.replaceFolderView(folderView, newLayout)
+		this.persist()
+		return true
+	}
+
 	/** Extracts a member back onto the desktop near [col],[row] of [page]; dissolves at <2. */
 	fun removeMember(folderId: String, member: FolderMember, col: Int, row: Int, page: Int) {
 		val folderView = this.folderViewFor(folderId) ?: return

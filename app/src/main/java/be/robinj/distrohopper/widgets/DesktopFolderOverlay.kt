@@ -2,20 +2,26 @@ package be.robinj.distrohopper.widgets
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.TextView
 import be.robinj.distrohopper.App
 import be.robinj.distrohopper.ExceptionHandler
 import be.robinj.distrohopper.HomeActivity
+import be.robinj.distrohopper.R
+import be.robinj.distrohopper.folder.FolderGrid
 import be.robinj.distrohopper.folder.FolderMember
 import be.robinj.distrohopper.folder.FolderOverlay
 
 /**
  * The popover for a desktop folder. Like the dash/launcher folder popups it lays
- * the folder's apps out on the 3x3 grid as tappable icons (1x1), exactly as they
- * are packed. The shared [FolderOverlay] dims/blurs the backdrop and opens it
- * centred over the folder icon with an animation.
+ * the folder's apps out with the adaptive [FolderGrid] mapping (the spec's 1..9
+ * layout) as tappable icons — the SAME layout the folder's [FolderIconDrawable]
+ * preview uses, so the opened folder matches its icon (4 apps read as a 2x2, not
+ * the row-major 3+1 of the stored packing). The shared [FolderOverlay] dims/blurs
+ * the backdrop and opens it centred over the folder icon with an animation.
  */
 class DesktopFolderOverlay(
 	private val activity: HomeActivity,
@@ -41,46 +47,53 @@ class DesktopFolderOverlay(
 			}
 		}
 
-		for (cell0 in this.layout.cells) {
-			val child = this.childFor(cell0) ?: continue
+		// Resolve the member views first (an uninstalled-but-not-yet-reconciled app
+		// has no child), then lay them out positionally with the adaptive mapping —
+		// not by the stored packed col/row — so the popover mirrors the icon preview.
+		val children = this.layout.cells.mapNotNull { cell0 ->
+			this.childFor(cell0)?.let { cell0 to it }
+		}
+		val cols = FolderGrid.columns(children.size)
+		val rows = FolderGrid.rows(children.size)
+
+		children.forEachIndexed { index, (cell0, child) ->
 			// Long-press a member to pull it out of the folder: start the drag from
 			// the decor view (so it survives the overlay closing) and dismiss.
 			child.setOnLongClickListener {
 				this.startExtractDrag(cell0, child)
 				true
 			}
-			val lp = FrameLayout.LayoutParams(cell0.colSpan * cell, cell0.rowSpan * cell).apply {
-				leftMargin = pad + cell0.col * cell
-				topMargin = pad + cell0.row * cell
+			val lp = FrameLayout.LayoutParams(cell, cell).apply {
+				leftMargin = pad + (index % cols) * cell
+				topMargin = pad + (index / cols) * cell
 			}
 			grid.addView(child, lp)
 		}
 
-		val cols = this.layout.cells.maxOf { it.col + it.colSpan }
-		val rows = this.layout.cells.maxOf { it.row + it.rowSpan }
 		this.overlay.show(grid, pad * 2 + cols * cell, pad * 2 + rows * cell, anchor) { dismiss() }
 	}
 
 	fun dismiss() = this.overlay.dismiss()
 
-	private fun childFor(cell: DesktopFolderCell) = when (val member = cell.member) {
+	// An app cell: the shared icon-over-label dash launcher layout (NOT a bare icon),
+	// so the apps inside an opened folder show their labels like the dash/launcher
+	// folder popups do. The panel is always dark, so the layout's white label reads.
+	private fun childFor(cell: DesktopFolderCell): View? = when (val member = cell.member) {
 		is FolderMember.AppMember -> this.appMap[member.key]?.let { app ->
-			ImageView(this.activity).apply {
-				setImageDrawable(app.icon.drawable)
-				// Shrink the icon within its cell so adjacent icons (cells are packed
-				// edge-to-edge) keep a clear gap and don't crowd the panel.
-				val p = dp(15)
-				setPadding(p, p, p, p)
-				isClickable = true
-				setOnClickListener {
-					try {
-						app.launch()
-						dismiss()
-					} catch (ex: Exception) {
-						ExceptionHandler(ex).show(activity)
-					}
+			val view = LayoutInflater.from(this.activity)
+				.inflate(R.layout.widget_dash_applauncher, null, false)
+			view.findViewById<ImageView>(R.id.imgIcon).setImageDrawable(app.icon.drawable)
+			view.findViewById<TextView>(R.id.tvLabel).text = app.label
+			view.isClickable = true
+			view.setOnClickListener {
+				try {
+					app.launch()
+					dismiss()
+				} catch (ex: Exception) {
+					ExceptionHandler(ex).show(activity)
 				}
 			}
+			view
 		}
 	}
 
