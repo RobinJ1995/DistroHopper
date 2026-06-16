@@ -21,8 +21,10 @@ import be.robinj.distrohopper.home.LauncherBarBinder
  *  - an [App] — a not-yet-pinned app dragged from the dash, pinned to the desktop;
  *  - otherwise the launcher-bar reorder clip (label = pinned index) — moved here.
  *
- * Pausing a desktop app over another desktop app/folder, or a widget over a
- * folder, arms a **fold** (create / add to folder); a quick pass instead moves.
+ * Pausing a desktop app over another desktop app/folder arms a **fold** (create /
+ * add to folder); pausing an incoming app (dragged from the dash/search or off the
+ * launcher bar) over an existing folder adds it to that folder. A quick pass
+ * instead moves/pins.
  */
 internal class WidgetsContainer_DragListener(
 	private val parent: HomeActivity,
@@ -194,6 +196,10 @@ internal class WidgetsContainer_DragListener(
 			// An on-desktop app folds onto another app (create) or a folder (add).
 			is Drag.DesktopApp ->
 				if (target is DesktopAppView || target is DesktopFolderView) target else null
+			// An app coming from the dash/search or the launcher bar folds INTO an
+			// existing desktop folder (it has no desktop view to pair into a new one).
+			is Drag.IncomingApp ->
+				if (target is DesktopFolderView) target else null
 			else -> null
 		}
 	}
@@ -208,6 +214,25 @@ internal class WidgetsContainer_DragListener(
 					is DesktopFolderView -> { folderHost.addApp(target.folderId, kind.view); true }
 					else -> false
 				}
+			}
+			is Drag.IncomingApp -> {
+				if (target !is DesktopFolderView) {
+					return false
+				}
+				// Consume the drop either way (a full folder just toasts); on success
+				// clear the app's origin surface like the loose-drop path in commit() //
+				if (folderHost.addApp(target.folderId, kind.app)) {
+					when (kind) {
+						is Drag.LauncherPin -> this.parent.appManager?.unpin(kind.app)
+						is Drag.LauncherFolderMember -> this.parent.appManager?.let {
+							it.launcherLayout.removeFromFolder(kind.folderId, kind.app.profileScopedKey)
+							it.unpin(kind.app)
+							it.launcherLayoutChanged()
+						}
+						is Drag.DashApp -> Unit
+					}
+				}
+				true
 			}
 			else -> false
 		}
@@ -353,6 +378,7 @@ internal class WidgetsContainer_DragListener(
 
 		/** A non-view drag (from the dash or the bar): centre the block under the finger. */
 		sealed class IncomingApp : Drag() {
+			abstract val app: App
 			override val widgetId = DesktopAppLayout.NO_WIDGET_ID
 			override val colSpan = DesktopAppLayout.SPAN
 			override val rowSpan = DesktopAppLayout.SPAN
@@ -361,14 +387,14 @@ internal class WidgetsContainer_DragListener(
 			override fun grabOffsetY(grid: WidgetsContainer) = this.rowSpan * grid.cellHeight / 2
 		}
 
-		class DashApp(val app: App, val host: DesktopAppHost) : IncomingApp()
+		class DashApp(override val app: App, val host: DesktopAppHost) : IncomingApp()
 
-		class LauncherPin(val app: App, val host: DesktopAppHost) : IncomingApp()
+		class LauncherPin(override val app: App, val host: DesktopAppHost) : IncomingApp()
 
 		/** An app pulled out of a *launcher* folder, dropped on the desktop: placed
 		 *  like a dash app, then removed from its folder and unpinned off the bar,
 		 *  so it leaves the launcher entirely — like dropping a dock pin here. */
-		class LauncherFolderMember(val app: App, val folderId: String, val host: DesktopAppHost) : IncomingApp()
+		class LauncherFolderMember(override val app: App, val folderId: String, val host: DesktopAppHost) : IncomingApp()
 	}
 
 	companion object {
