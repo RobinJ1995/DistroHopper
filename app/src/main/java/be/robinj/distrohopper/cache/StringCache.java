@@ -5,11 +5,11 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 
 import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class StringCache implements ICache<String> {
 	private final String name;
@@ -92,12 +92,9 @@ public class StringCache implements ICache<String> {
 	@NonNull
 	@Override
 	public Collection<String> values() {
-		final Collection<String> values = new ArrayList<>();
-		for (final Object value : this.prefs.getAll().values()) {
-			values.add((String) value);
-		}
-
-		return values;
+		return this.prefs.getAll().values().stream()
+			.map(String.class::cast)
+			.collect(Collectors.toList());
 	}
 
 	@NonNull
