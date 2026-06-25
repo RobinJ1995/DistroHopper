@@ -163,4 +163,51 @@ class ThemeTest {
             arr.recycle()
         }
     }
+
+    // --- Registry-wide coverage ---
+    // The behavioural tests above hardcode a handful of themes; Plasma and MATE
+    // were never instantiated by any test, so a theme shipping an out-of-range
+    // enum integer or an unresolvable resource array could reach users unnoticed.
+    // These drive every theme the picker can create straight from ThemeRegistry,
+    // so any future theme is covered automatically.
+
+    @Test fun everyRegisteredThemeNameMatchesItsRegistryKey() {
+        ThemeRegistry.themes.keys.forEach { key ->
+            assertEquals(key, ThemeRegistry.create(key).getName())
+        }
+    }
+
+    @Test fun registryIncludesPlasmaAndMate() {
+        assertTrue(ThemeRegistry.themes.keys.containsAll(listOf("plasma", "mate")))
+        assertEquals("plasma", Plasma().getName())
+        assertEquals("mate", Mate().getName())
+    }
+
+    @Test fun everyRegisteredThemeResolvesKeyResources() {
+        val prefs = Preferences.getSharedPreferences(context)
+        ThemeRegistry.themes.forEach { (key, factory) ->
+            val theme = factory()
+            // Enum-backed integer resources must map into range (catches a theme
+            // shipping an out-of-range dash_animation / profile_indicator value).
+            DashAnimation.of(context.resources.getInteger(theme.dash_animation))
+            ProfileIndicatorStyle.of(context.resources.getInteger(theme.profile_indicator))
+            // The position arrays behind the customise-mode dropdowns must resolve
+            // (panel-less themes legitimately have an empty panel array).
+            context.resources.getIntArray(theme.launcher_bfb_location_supported)
+            context.resources.getIntArray(theme.panel_location_supported)
+            // The resolved getters each read several integer/bool/array resources;
+            // none may throw for any registered theme.
+            theme.launcherBfbToggleable(context.resources)
+            theme.launcherBfbVisible(context.resources, prefs)
+            theme.lalPreferences_getLocation(context.resources, prefs)
+        }
+    }
+
+    @Test fun themeDisplayNameMayDifferFromItsLowercaseName() {
+        // The human-facing `name` field is intentionally distinct from getName()
+        // (the lowercase class name used as the registry key); lock both so a
+        // future "tidy-up" that conflates them is a deliberate, visible change.
+        assertEquals("plasma", Plasma().getName()); assertEquals("Plasma", Plasma().name)
+        assertEquals("mate", Mate().getName()); assertEquals("MATE", Mate().name)
+    }
 }
