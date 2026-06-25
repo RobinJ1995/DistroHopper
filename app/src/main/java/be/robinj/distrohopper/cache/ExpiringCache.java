@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.function.LongSupplier;
 
 public class ExpiringCache<T extends Object> implements ICache<T> {
-	private final ICache innerCache;
+	private final ICache<T> innerCache;
 	private final LongCache expiration;
 	private final long duration;
 	private final LongSupplier clock;
@@ -84,33 +84,29 @@ public class ExpiringCache<T extends Object> implements ICache<T> {
 		return this.innerCache.containsValue(value);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized T get(final Object key) {
 		this.pruneItem(key.toString());
 
-		return (T) this.innerCache.get(key);
+		return this.innerCache.get(key);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public synchronized T put(final String key, final Object value) {
+	public synchronized T put(final String key, final T value) {
 		this.expiration.put(key, this.clock.getAsLong() + this.duration);
 
-		return (T) this.innerCache.put(key, value);
+		return this.innerCache.put(key, value);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized T remove(final Object key) {
 		this.expiration.remove(key);
 
-		return (T) this.innerCache.remove(key);
+		return this.innerCache.remove(key);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public synchronized void putAll(@NonNull final Map map) {
+	public synchronized void putAll(@NonNull final Map<? extends String, ? extends T> map) {
 		final HashMap<String, Long> expirationMap = new HashMap<>();
 		for (final Object key : map.keySet()) {
 			expirationMap.put(key.toString(), this.clock.getAsLong() + this.duration);
@@ -126,7 +122,6 @@ public class ExpiringCache<T extends Object> implements ICache<T> {
 		this.innerCache.clear();
 	}
 
-	@SuppressWarnings("unchecked")
 	@NonNull
 	@Override
 	public synchronized Set<String> keySet() {
@@ -135,7 +130,6 @@ public class ExpiringCache<T extends Object> implements ICache<T> {
 		return this.innerCache.keySet();
 	}
 
-	@SuppressWarnings("unchecked")
 	@NonNull
 	@Override
 	public synchronized Collection<T> values() {
@@ -144,7 +138,6 @@ public class ExpiringCache<T extends Object> implements ICache<T> {
 		return this.innerCache.values();
 	}
 
-	@SuppressWarnings("unchecked")
 	@NonNull
 	@Override
 	public synchronized Set<Entry<String, T>> entrySet() {

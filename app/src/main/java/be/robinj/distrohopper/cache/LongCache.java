@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -96,11 +97,15 @@ public class LongCache implements ICache<Long> {
 		return this.prefs.getAll().keySet();
 	}
 
-	@SuppressWarnings("unchecked")
 	@NonNull
 	@Override
 	public Collection<Long> values() {
-		return (Collection<Long>) this.prefs.getAll().values();
+		final Collection<Long> values = new ArrayList<>();
+		for (final Object value : this.prefs.getAll().values()) {
+			values.add((Long) value);
+		}
+
+		return values;
 	}
 
 	@NonNull

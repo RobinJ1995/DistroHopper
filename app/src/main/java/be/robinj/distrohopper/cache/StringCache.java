@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -88,11 +89,15 @@ public class StringCache implements ICache<String> {
 		return this.prefs.getAll().keySet();
 	}
 
-	@SuppressWarnings("unchecked")
 	@NonNull
 	@Override
 	public Collection<String> values() {
-		return (Collection<String>) this.prefs.getAll().values();
+		final Collection<String> values = new ArrayList<>();
+		for (final Object value : this.prefs.getAll().values()) {
+			values.add((String) value);
+		}
+
+		return values;
 	}
 
 	@NonNull

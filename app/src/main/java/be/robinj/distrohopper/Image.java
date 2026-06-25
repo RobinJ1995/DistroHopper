@@ -1,5 +1,6 @@
 package be.robinj.distrohopper;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -33,11 +34,6 @@ public class Image {
 		this.drawable = drawable;
 	}
 
-	// BitmapDrawable(Bitmap) is deprecated in favour of the Resources-aware
-	// constructor, but no Resources/Context is available in this static helper
-	// and supplying one would change the drawable's target density. Suppress to
-	// preserve the existing rendering behaviour.
-	@SuppressWarnings("deprecation")
 	private static Drawable adaptiveIconToDrawable(AdaptiveIconDrawable adaptive) {
 		final Bitmap bitmap = Bitmap.createBitmap(adaptive.getIntrinsicWidth(), adaptive.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
 		final Canvas canvas = new Canvas(bitmap);
@@ -45,7 +41,7 @@ public class Image {
 		adaptive.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
 		adaptive.draw(canvas);
 
-		return new BitmapDrawable(bitmap);
+		return new BitmapDrawable(Resources.getSystem(), bitmap);
 	}
 
 	@Override
