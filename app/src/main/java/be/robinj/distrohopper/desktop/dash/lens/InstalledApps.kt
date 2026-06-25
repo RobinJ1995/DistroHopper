@@ -15,7 +15,7 @@ import be.robinj.distrohopper.desktop.dash.AppLauncherLongClickListener
 class InstalledApps(context: Context, private val apps: AppManager?) : Lens(context) {
 
     init {
-        this.icon = context.resources.getDrawable(R.mipmap.ic_launcher)
+        this.icon = context.resources.getDrawable(R.mipmap.ic_launcher, null)
     }
 
     // In-memory scan over the loaded app list — effectively instant //

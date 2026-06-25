@@ -100,7 +100,7 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 			// Only enter drag mode if the drag really started: doing so
 			// without an active drag would leave the bar stuck, as no
 			// ACTION_DRAG_ENDED will ever restore it //
-			if (source.startDrag (data, new View.DragShadowBuilder (view), payload, 0))
+			if (source.startDragAndDrop (data, new View.DragShadowBuilder (view), payload, 0))
 				appManager.startedDraggingPinnedApp (app);
 		}
 		else
@@ -110,7 +110,7 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 			// trash's listener this is a pin-by-drop, not a reorder //
 			ClipData data = ClipData.newPlainText ("dash", "dash");
 
-			if (source.startDrag (data, new View.DragShadowBuilder (view), app, 0))
+			if (source.startDragAndDrop (data, new View.DragShadowBuilder (view), app, 0))
 				appManager.startedDraggingDashApp (app);
 		}
 	}

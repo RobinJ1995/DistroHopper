@@ -33,6 +33,11 @@ public class Image {
 		this.drawable = drawable;
 	}
 
+	// BitmapDrawable(Bitmap) is deprecated in favour of the Resources-aware
+	// constructor, but no Resources/Context is available in this static helper
+	// and supplying one would change the drawable's target density. Suppress to
+	// preserve the existing rendering behaviour.
+	@SuppressWarnings("deprecation")
 	private static Drawable adaptiveIconToDrawable(AdaptiveIconDrawable adaptive) {
 		final Bitmap bitmap = Bitmap.createBitmap(adaptive.getIntrinsicWidth(), adaptive.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
 		final Canvas canvas = new Canvas(bitmap);

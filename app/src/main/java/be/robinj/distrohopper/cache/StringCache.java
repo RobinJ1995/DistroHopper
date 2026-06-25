@@ -88,6 +88,7 @@ public class StringCache implements ICache<String> {
 		return this.prefs.getAll().keySet();
 	}
 
+	@SuppressWarnings("unchecked")
 	@NonNull
 	@Override
 	public Collection<String> values() {

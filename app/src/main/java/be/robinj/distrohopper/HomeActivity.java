@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -129,8 +130,8 @@ public class HomeActivity extends AppCompatActivity
 
 	private LogToaster logToaster;
 
-	private ICache appLabelCache;
-	private ICache appIconCache;
+	private ICache<String> appLabelCache;
+	private ICache<Drawable> appIconCache;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState)
@@ -175,7 +176,7 @@ public class HomeActivity extends AppCompatActivity
 
 			// Initialise caches //
 			this.appLabelCache = new AppLabelCache(this.getBaseContext());
-			this.appIconCache = new ExpiringCache(this.getBaseContext(),
+			this.appIconCache = new ExpiringCache<Drawable>(this.getBaseContext(),
 					new AppIconCache(this.getBaseContext()), AppIconCache.EXPIRATION);
 
 			// Get ALL the views! //

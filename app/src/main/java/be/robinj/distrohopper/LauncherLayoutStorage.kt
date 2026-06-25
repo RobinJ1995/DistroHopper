@@ -76,7 +76,7 @@ object LauncherLayoutStorage {
 		val folders = ArrayList<Folder>()
 		for (i in 0 until array.length()) {
 			val obj = array.optJSONObject(i) ?: continue
-			val id = obj.optString("id", null) ?: continue
+			val id = obj.optString("id").ifEmpty { continue }
 			val members = readStrings(obj.optJSONArray("apps"))
 				.map { FolderMember.AppMember(it) as FolderMember }
 			folders.add(Folder(id, members))

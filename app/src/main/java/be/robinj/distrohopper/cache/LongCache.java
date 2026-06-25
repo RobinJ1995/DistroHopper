@@ -96,6 +96,7 @@ public class LongCache implements ICache<Long> {
 		return this.prefs.getAll().keySet();
 	}
 
+	@SuppressWarnings("unchecked")
 	@NonNull
 	@Override
 	public Collection<Long> values() {

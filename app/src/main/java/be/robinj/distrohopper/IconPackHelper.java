@@ -186,7 +186,7 @@ public class IconPackHelper
 		if (id == 0) return null;
 
 		try {
-			return this.iconPackRes.getDrawable(id);
+			return this.iconPackRes.getDrawable(id, null);
 		} catch (Resources.NotFoundException ex) {
 			return null;
 		}

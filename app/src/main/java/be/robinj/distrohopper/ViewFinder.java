@@ -19,6 +19,7 @@ public class ViewFinder {
 		return this.get(this.parent, id);
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends View> T get(final View parentView, final int id) {
 		if (this.cache.containsKey(id)) {
 			return (T) this.cache.get(id);

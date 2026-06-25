@@ -9,6 +9,7 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
@@ -69,7 +70,7 @@ public class ProgressWheel extends View {
 	private int spinSpeed = 2;
 	//The number of milliseconds to wait inbetween each draw
 	private int delayMillis = 0;
-	private Handler spinHandler = new Handler() {
+	private Handler spinHandler = new Handler(Looper.getMainLooper()) {
 		/**
 		 * This is the code that will increment the progress variable
 		 * and so spin the wheel

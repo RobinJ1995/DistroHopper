@@ -84,6 +84,7 @@ public class ExpiringCache<T extends Object> implements ICache<T> {
 		return this.innerCache.containsValue(value);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized T get(final Object key) {
 		this.pruneItem(key.toString());
@@ -91,6 +92,7 @@ public class ExpiringCache<T extends Object> implements ICache<T> {
 		return (T) this.innerCache.get(key);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized T put(final String key, final Object value) {
 		this.expiration.put(key, this.clock.getAsLong() + this.duration);
@@ -98,6 +100,7 @@ public class ExpiringCache<T extends Object> implements ICache<T> {
 		return (T) this.innerCache.put(key, value);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized T remove(final Object key) {
 		this.expiration.remove(key);
@@ -105,6 +108,7 @@ public class ExpiringCache<T extends Object> implements ICache<T> {
 		return (T) this.innerCache.remove(key);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized void putAll(@NonNull final Map map) {
 		final HashMap<String, Long> expirationMap = new HashMap<>();
@@ -122,22 +126,25 @@ public class ExpiringCache<T extends Object> implements ICache<T> {
 		this.innerCache.clear();
 	}
 
+	@SuppressWarnings("unchecked")
 	@NonNull
 	@Override
-	public synchronized Set keySet() {
+	public synchronized Set<String> keySet() {
 		this.prune();
 
 		return this.innerCache.keySet();
 	}
 
+	@SuppressWarnings("unchecked")
 	@NonNull
 	@Override
-	public synchronized Collection values() {
+	public synchronized Collection<T> values() {
 		this.prune();
 
 		return this.innerCache.values();
 	}
 
+	@SuppressWarnings("unchecked")
 	@NonNull
 	@Override
 	public synchronized Set<Entry<String, T>> entrySet() {

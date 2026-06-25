@@ -128,9 +128,9 @@ class ProfilePagerAdapter(
 		}
 		val theme = DependencyContainer.of(this.activity).themeManager.current
 		val res = this.activity.resources
-		holder.title.setTextColor(res.getColor(theme.dash_applauncher_text_colour))
+		holder.title.setTextColor(res.getColor(theme.dash_applauncher_text_colour, null))
 		holder.title.setShadowLayer(5F, 2F, 2F,
-			res.getColor(theme.dash_applauncher_text_shadow_colour))
+			res.getColor(theme.dash_applauncher_text_shadow_colour, null))
 
 		// Reserve the title's space as grid top padding *before* assigning the
 		// adapter, so the very first fill of this page lands the first row at

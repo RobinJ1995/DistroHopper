@@ -267,7 +267,7 @@ class LauncherBarBinder(private val appManager: AppManager) {
 			} else {
 				val theme = DependencyContainer.of(this.activity).themeManager.current
 				if (! this.activity.resources.getBoolean(theme.launcher_applauncher_backgroundcolour_dynamic))
-					colour = this.activity.resources.getColor(theme.launcher_applauncher_backgroundcolour)
+					colour = this.activity.resources.getColor(theme.launcher_applauncher_backgroundcolour, null)
 
 				val appLauncher = RunningAppLauncher(this.activity, app)
 				appLauncher.setOnClickListener(AppLauncherClickListener(this.activity))

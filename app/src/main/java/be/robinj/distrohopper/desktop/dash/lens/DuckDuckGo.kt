@@ -15,7 +15,7 @@ import java.net.URLEncoder
  */
 open class DuckDuckGo(context: Context) : Lens(context) {
     init {
-        this.icon = context.resources.getDrawable(R.drawable.dash_search_lens_duckduckgo)
+        this.icon = context.resources.getDrawable(R.drawable.dash_search_lens_duckduckgo, null)
     }
 
     override val type = LensType.NETWORK

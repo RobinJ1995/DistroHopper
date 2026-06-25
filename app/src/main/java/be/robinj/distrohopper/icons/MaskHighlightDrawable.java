@@ -70,6 +70,9 @@ public final class MaskHighlightDrawable extends Drawable {
 		this.stroke.setColorFilter(colorFilter);
 	}
 
+	// getOpacity() is deprecated on Drawable but must still be overridden to
+	// declare this drawable's opacity; suppress the inherited-deprecation warning.
+	@SuppressWarnings("deprecation")
 	@Override
 	public int getOpacity() {
 		return PixelFormat.TRANSLUCENT;

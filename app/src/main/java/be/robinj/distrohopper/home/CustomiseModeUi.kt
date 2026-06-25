@@ -102,7 +102,7 @@ class CustomiseModeUi(
 
 		// Launcher Edge //
 		val edgeNames = res.getStringArray(R.array.edges)
-		val spiCustomiseSpinnerTextColour = res.getColor(this.theme.dash_customise_spinner_text_colour)
+		val spiCustomiseSpinnerTextColour = res.getColor(this.theme.dash_customise_spinner_text_colour, null)
 
 		val spiCustomiseLauncherEdge = this.viewFinder.get<Spinner>(R.id.spiCustomiseLauncherEdge)
 		val supportedLauncherEdges = res.getIntArray(this.theme.launcher_location_supported)

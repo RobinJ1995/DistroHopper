@@ -89,7 +89,7 @@ public class Permission {
 			return;
 		}
 
-		LOG.i("Permission", format("Requesting permissions: %s", permissionsToRequest.toArray(new String[permissionsToRequest.size()])));
+		LOG.i("Permission", format("Requesting permissions: %s", (Object[]) permissionsToRequest.toArray(new String[permissionsToRequest.size()])));
 		ActivityCompat.requestPermissions(parent, permissionsToRequest.toArray(new String[permissionsToRequest.size()]), RequestCode.PERMISSION_REQUESTED);
 	}
 

@@ -14,6 +14,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.core.content.ContextCompat;
+
 import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.DependencyContainer;
 import be.robinj.distrohopper.folder.FolderIconDrawable;
@@ -46,8 +48,8 @@ public class GridAdapter extends ArrayAdapter<DashItem> {
 		ImageView imgIcon = (ImageView) view.findViewById (R.id.imgIcon);
 
 		final Theme theme = DependencyContainer.of (view.getContext ()).getThemeManager ().getCurrent ();
-		tvLabel.setTextColor (view.getResources ().getColor (theme.dash_applauncher_text_colour));
-		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (theme.dash_applauncher_text_shadow_colour));
+		tvLabel.setTextColor (ContextCompat.getColor (view.getContext (), theme.dash_applauncher_text_colour));
+		tvLabel.setShadowLayer (5, 2, 2, ContextCompat.getColor (view.getContext (), theme.dash_applauncher_text_shadow_colour));
 
 		if (item instanceof DashItem.AppItem) {
 			App app = ((DashItem.AppItem) item).getApp ();

@@ -84,8 +84,8 @@ class DashController(
 		 * state, so without it the alpha fade would also affect the
 		 * dash-opened layer below whenever both resolve to the same colour.
 		 */
-		private val resting = res.getDrawable(restingRes).mutate()
-		val drawable = LayerDrawable(arrayOf(res.getDrawable(dashOpenedRes), this.resting))
+		private val resting = res.getDrawable(restingRes, null).mutate()
+		val drawable = LayerDrawable(arrayOf(res.getDrawable(dashOpenedRes, null), this.resting))
 		private var fraction = 0F // 0 = resting, 1 = dash opened
 		private var animator: ValueAnimator? = null
 
