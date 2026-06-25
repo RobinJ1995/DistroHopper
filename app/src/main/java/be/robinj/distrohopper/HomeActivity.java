@@ -540,10 +540,18 @@ public class HomeActivity extends AppCompatActivity
 		}
 
 		// Pressing home (or the home navigation gesture) while the launcher is
-		// already running lands here; close the dash if it's open and return to
-		// the first desktop //
+		// already running lands here; exit widget edit mode, close the dash if
+		// it's open and return to the first desktop. Exiting edit mode matters
+		// because swipe gestures are suppressed while a widget is being edited:
+		// without this the user could land back on the first desktop still in
+		// edit mode and be unable to swipe away. //
 		if (Intent.ACTION_MAIN.equals(intent.getAction())
 				&& intent.hasCategory(Intent.CATEGORY_HOME)) {
+			if (this.viewFinder != null) {
+				this.viewFinder.<WidgetsPager>get(R.id.vgWidgets).exitEditMode();
+				this.updateBackCallback();
+			}
+
 			if (this.dash != null && this.dash.isOpen()) {
 				this.closeDash();
 			}
