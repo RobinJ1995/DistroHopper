@@ -143,7 +143,8 @@ internal object ActivityTestSupport {
         configurePrefs: (SharedPreferences.Editor) -> Unit = {},
     ): ActivityScenario<HomeActivity> {
         val application = ApplicationProvider.getApplicationContext<Application>()
-        listOf(Preferences.PREFERENCES, Preferences.PINNED_APPS, Preferences.LENSES).forEach {
+        listOf(Preferences.PREFERENCES, Preferences.PINNED_APPS, Preferences.LENSES,
+            Preferences.DASH_LAYOUT).forEach {
             application.getSharedPreferences(it, 0).edit().clear().commit()
         }
         // Fresh prefs would otherwise redirect HomeActivity to the first-run wizard //
