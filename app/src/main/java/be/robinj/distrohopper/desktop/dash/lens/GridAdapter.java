@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import androidx.core.content.ContextCompat;
+
 import be.robinj.distrohopper.DependencyContainer;
 import be.robinj.distrohopper.desktop.dash.DashGrid;
 import be.robinj.distrohopper.theme.Theme;
@@ -38,8 +40,8 @@ public class GridAdapter extends ArrayAdapter<LensSearchResult> {
 
 		tvLabel.setText (result.getName ());
 		final Theme theme = DependencyContainer.of (view.getContext ()).getThemeManager ().getCurrent ();
-		tvLabel.setTextColor (view.getResources ().getColor (theme.dash_applauncher_text_colour));
-		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (theme.dash_applauncher_text_shadow_colour));
+		tvLabel.setTextColor (ContextCompat.getColor (view.getContext (), theme.dash_applauncher_text_colour));
+		tvLabel.setShadowLayer (5, 2, 2, ContextCompat.getColor (view.getContext (), theme.dash_applauncher_text_shadow_colour));
 		imgIcon.setImageDrawable (result.getIcon ());
 
 		// Square cells that stretch to fill their column (see DashGrid); the

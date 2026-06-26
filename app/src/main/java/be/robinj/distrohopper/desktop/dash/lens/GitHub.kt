@@ -11,7 +11,7 @@ import java.net.URLEncoder
 class GitHub(context: Context) : Lens(context) {
 
     init {
-        this.icon = context.resources.getDrawable(R.drawable.dash_search_lens_github)
+        this.icon = context.resources.getDrawable(R.drawable.dash_search_lens_github, null)
     }
 
     override val type = LensType.NETWORK

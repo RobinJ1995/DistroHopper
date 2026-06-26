@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class LongCache implements ICache<Long> {
 	private final String name;
@@ -99,7 +100,9 @@ public class LongCache implements ICache<Long> {
 	@NonNull
 	@Override
 	public Collection<Long> values() {
-		return (Collection<Long>) this.prefs.getAll().values();
+		return this.prefs.getAll().values().stream()
+			.map(Long.class::cast)
+			.collect(Collectors.toList());
 	}
 
 	@NonNull

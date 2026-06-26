@@ -15,6 +15,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.core.content.ContextCompat;
+
 import be.robinj.distrohopper.DependencyContainer;
 import be.robinj.distrohopper.desktop.dash.DashGridSizer;
 import be.robinj.distrohopper.theme.Theme;
@@ -42,8 +44,8 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 
 		tvLabel.setText (coll.getName ());
 		final Theme theme = DependencyContainer.of (view.getContext ()).getThemeManager ().getCurrent ();
-		tvLabel.setTextColor (view.getResources ().getColor (theme.dash_applauncher_text_colour));
-		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (theme.dash_applauncher_text_shadow_colour));
+		tvLabel.setTextColor (ContextCompat.getColor (view.getContext (), theme.dash_applauncher_text_colour));
+		tvLabel.setShadowLayer (5, 2, 2, ContextCompat.getColor (view.getContext (), theme.dash_applauncher_text_shadow_colour));
 
 		final Exception ex = coll.getResults () == null ? coll.getException () : null;
 		List<LensSearchResult> results = coll.getResults ();
@@ -62,7 +64,7 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 						show = false;
 				}
 
-				LensSearchResult error = new LensSearchResult (this.getContext (), ex.getClass ().getSimpleName (), "", this.getContext ().getResources ().getDrawable (R.drawable.dash_search_lens_error));
+				LensSearchResult error = new LensSearchResult (this.getContext (), ex.getClass ().getSimpleName (), "", ContextCompat.getDrawable (this.getContext (), R.drawable.dash_search_lens_error));
 
 				results.add (error);
 			}

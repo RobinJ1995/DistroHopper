@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.function.LongSupplier;
 
 public class ExpiringCache<T extends Object> implements ICache<T> {
-	private final ICache innerCache;
+	private final ICache<T> innerCache;
 	private final LongCache expiration;
 	private final long duration;
 	private final LongSupplier clock;
@@ -88,25 +88,25 @@ public class ExpiringCache<T extends Object> implements ICache<T> {
 	public synchronized T get(final Object key) {
 		this.pruneItem(key.toString());
 
-		return (T) this.innerCache.get(key);
+		return this.innerCache.get(key);
 	}
 
 	@Override
-	public synchronized T put(final String key, final Object value) {
+	public synchronized T put(final String key, final T value) {
 		this.expiration.put(key, this.clock.getAsLong() + this.duration);
 
-		return (T) this.innerCache.put(key, value);
+		return this.innerCache.put(key, value);
 	}
 
 	@Override
 	public synchronized T remove(final Object key) {
 		this.expiration.remove(key);
 
-		return (T) this.innerCache.remove(key);
+		return this.innerCache.remove(key);
 	}
 
 	@Override
-	public synchronized void putAll(@NonNull final Map map) {
+	public synchronized void putAll(@NonNull final Map<? extends String, ? extends T> map) {
 		final HashMap<String, Long> expirationMap = new HashMap<>();
 		for (final Object key : map.keySet()) {
 			expirationMap.put(key.toString(), this.clock.getAsLong() + this.duration);
@@ -124,7 +124,7 @@ public class ExpiringCache<T extends Object> implements ICache<T> {
 
 	@NonNull
 	@Override
-	public synchronized Set keySet() {
+	public synchronized Set<String> keySet() {
 		this.prune();
 
 		return this.innerCache.keySet();
@@ -132,7 +132,7 @@ public class ExpiringCache<T extends Object> implements ICache<T> {
 
 	@NonNull
 	@Override
-	public synchronized Collection values() {
+	public synchronized Collection<T> values() {
 		this.prune();
 
 		return this.innerCache.values();

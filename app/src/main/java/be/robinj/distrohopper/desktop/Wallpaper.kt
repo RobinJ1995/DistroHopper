@@ -57,7 +57,7 @@ class Wallpaper : ImageView {
 
     fun set() {
         this.setImageDrawable(null)
-        this.setBackgroundColor(this.resources.getColor(R.color.transparent))
+        this.setBackgroundColor(this.resources.getColor(R.color.transparent, null))
     }
 
     /*
@@ -103,7 +103,7 @@ class Wallpaper : ImageView {
     }
 
     private fun clearFallback() {
-        this.setBackgroundColor(this.resources.getColor(R.color.transparent))
+        this.setBackgroundColor(this.resources.getColor(R.color.transparent, null))
     }
 
     private fun frostedFallbackColour(): Int {

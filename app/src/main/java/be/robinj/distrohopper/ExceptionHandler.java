@@ -31,7 +31,7 @@ public class ExceptionHandler {
 
 		message.append ("Oops! Something went wrong!\n")
 			.append ("If this happens a lot, then please send an e-mail to ")
-			.append (Html.fromHtml ("<a href=\"mailto:android-dev@robinj.be\">android-dev@robinj.be</a>"))
+			.append (Html.fromHtml ("<a href=\"mailto:android-dev@robinj.be\">android-dev@robinj.be</a>", Html.FROM_HTML_MODE_LEGACY))
 			.append (" with the contents of this dialog so I can get this problem fixed.\n\n")
 			.append ("Type: ")
 			.append (this.ex.getClass ().getSimpleName ())

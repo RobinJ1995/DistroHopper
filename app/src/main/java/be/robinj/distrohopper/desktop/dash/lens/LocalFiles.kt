@@ -16,7 +16,7 @@ import java.io.IOException
 class LocalFiles(context: Context) : Lens(context) {
 
 	init {
-		icon = context.resources.getDrawable(R.drawable.dash_search_lens_localfiles)
+		icon = context.resources.getDrawable(R.drawable.dash_search_lens_localfiles, null)
 	}
 
 	override fun getName() = "Local files"
@@ -75,7 +75,7 @@ class LocalFiles(context: Context) : Lens(context) {
 	}
 
 	private fun iconForMime(mime: String?): Drawable =
-		context.resources.getDrawable(mimeTypeIconRes(mime))
+		context.resources.getDrawable(mimeTypeIconRes(mime), null)
 
 	override fun onClick(url: String) {
 		try {

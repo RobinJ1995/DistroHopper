@@ -24,7 +24,7 @@ import java.util.regex.Pattern
 open class FDroid(context: Context) : AppStoreLens(context) {
     private val api = "https://search.f-droid.org/api/search_apps?q={:QUERY:}&lang=en"
 
-    private val lensIcon: Drawable = context.resources.getDrawable(R.drawable.dash_search_lens_fdroid)
+    private val lensIcon: Drawable = context.resources.getDrawable(R.drawable.dash_search_lens_fdroid, null)
 
     override fun getIcon(): Drawable = lensIcon
 
@@ -51,7 +51,7 @@ open class FDroid(context: Context) : AppStoreLens(context) {
                 continue
             }
 
-            if (isInstalled(pkg.group(1))) {
+            if (isInstalled(pkg.group(1)!!)) {
                 continue
             }
 

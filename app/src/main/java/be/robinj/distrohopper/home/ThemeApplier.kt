@@ -57,8 +57,8 @@ class ThemeApplier(
 		ibPanelCog.setImageResource(this.theme.panel_preferences_image)
 		ibPanelDashClose.setImageResource(this.theme.panel_close_image)
 		imgDashBackgroundGradient.setImageResource(this.theme.dash_background_gradient)
-		lalPreferences.setIcon(res.getDrawable(this.theme.launcher_preferences_image))
-		lalTrash.setIcon(res.getDrawable(this.theme.launcher_trash_image))
+		lalPreferences.setIcon(res.getDrawable(this.theme.launcher_preferences_image, null))
+		lalTrash.setIcon(res.getDrawable(this.theme.launcher_trash_image, null))
 
 		val llPanel_layoutParams = llPanel.layoutParams as RelativeLayout.LayoutParams
 		llPanel_layoutParams.height = res.getDimension(this.theme.panel_height).toInt()
@@ -69,7 +69,7 @@ class ThemeApplier(
 		lalBfb.setIcon(res.getDrawable(when (launcherEdge) {
 			Location.LEFT, Location.RIGHT -> this.theme.launcher_bfb_image_vertical
 			else -> this.theme.launcher_bfb_image
-		}))
+		}, null))
 		this.edgeController.applyLauncherEdge(launcherEdge, expandLlLauncher)
 		this.applyDashColumns()
 
@@ -117,7 +117,7 @@ class ThemeApplier(
 		}
 
 		tvPanelBfb.setText(res.getString(this.theme.panel_bfb_text))
-		tvPanelBfb.setTextColor(res.getColor(this.theme.panel_bfb_text_colour))
+		tvPanelBfb.setTextColor(res.getColor(this.theme.panel_bfb_text_colour, null))
 		/*
 		 * Colour resources have no intrinsic size, so themes without a BFB
 		 * image (transparent) get no icon rather than an empty gap.
@@ -129,7 +129,7 @@ class ThemeApplier(
 		// The dash title now lives in each pager page (styled by ProfilePagerAdapter).
 
 		etDashSearch.setBackgroundResource(this.theme.dash_search_background)
-		etDashSearch.setTextColor(res.getColor(this.theme.dash_search_text_colour))
+		etDashSearch.setTextColor(res.getColor(this.theme.dash_search_text_colour, null))
 		/*
 		 * Themes can pin the search field to a fixed width, centred (COSMIC's
 		 * library search does not span the dash); 0 keeps it full-width.
@@ -158,8 +158,8 @@ class ThemeApplier(
 			for (j in 0 until container.childCount) {
 				val textView = container.getChildAt(j) as? TextView ?: continue
 
-				textView.setTextColor(res.getColor(this.theme.dash_customise_text_colour))
-				textView.setShadowLayer(5F, 2F, 2F, res.getColor(this.theme.dash_customise_text_shadow_colour))
+				textView.setTextColor(res.getColor(this.theme.dash_customise_text_colour, null))
+				textView.setShadowLayer(5F, 2F, 2F, res.getColor(this.theme.dash_customise_text_shadow_colour, null))
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 package be.robinj.distrohopper;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -40,7 +41,7 @@ public class Image {
 		adaptive.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
 		adaptive.draw(canvas);
 
-		return new BitmapDrawable(bitmap);
+		return new BitmapDrawable(Resources.getSystem(), bitmap);
 	}
 
 	@Override

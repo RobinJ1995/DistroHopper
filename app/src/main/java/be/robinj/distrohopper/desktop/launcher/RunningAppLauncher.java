@@ -5,6 +5,8 @@ import android.graphics.drawable.GradientDrawable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import androidx.core.content.ContextCompat;
+
 import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.DependencyContainer;
 import be.robinj.distrohopper.theme.Theme;
@@ -35,7 +37,7 @@ public class RunningAppLauncher extends AppLauncher
 
 		final Theme theme = DependencyContainer.of (this.getContext ()).getThemeManager ().getCurrent ();
 		if (! this.getResources ().getBoolean (theme.launcher_applauncher_backgroundcolour_dynamic))
-			this.setColour (this.getResources ().getColor (theme.launcher_applauncher_backgroundcolour));
+			this.setColour (ContextCompat.getColor (this.getContext (), theme.launcher_applauncher_backgroundcolour));
 	}
 
 	@Override

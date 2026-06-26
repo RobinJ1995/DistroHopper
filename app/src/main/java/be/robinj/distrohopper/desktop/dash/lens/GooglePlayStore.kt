@@ -25,7 +25,7 @@ import java.util.regex.Pattern
 open class GooglePlayStore(context: Context) : AppStoreLens(context) {
     private val api = "https://play.google.com/store/search?c=apps&q={:QUERY:}&hl=en&gl=us"
 
-    private val lensIcon: Drawable = context.resources.getDrawable(R.drawable.dash_search_lens_googleplay)
+    private val lensIcon: Drawable = context.resources.getDrawable(R.drawable.dash_search_lens_googleplay, null)
 
     override fun getIcon(): Drawable = lensIcon
 

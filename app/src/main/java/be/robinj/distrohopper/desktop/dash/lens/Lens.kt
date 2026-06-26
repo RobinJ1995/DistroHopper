@@ -145,7 +145,7 @@ abstract class Lens(protected val context: Context) {
                 }
 
                 val imageBytes = out.toByteArray()
-                BitmapDrawable(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
+                BitmapDrawable(this.context.resources, BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
             }
         }
 
