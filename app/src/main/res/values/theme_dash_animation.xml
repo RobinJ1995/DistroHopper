@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Values match be.robinj.distrohopper.theme.DashAnimation -->
+    <integer name="dash_animation_none">0</integer>
+    <integer name="dash_animation_gnome">1</integer>
+    <integer name="dash_animation_cinnamon">2</integer>
+    <integer name="dash_animation_elementary">3</integer>
+    <integer name="dash_animation_unity">4</integer>
+    <integer name="dash_animation_mate">5</integer>
+    <integer name="dash_animation_cosmic">6</integer>
+    <integer name="dash_animation_budgie">7</integer>
+</resources>

@@ -2,10 +2,9 @@ package be.robinj.distrohopper.widgets;
 
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.view.LayoutInflater;
+import android.os.Bundle;
+import android.util.SizeF;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
@@ -14,10 +13,12 @@ import android.view.ViewGroup;
  */
 public class WidgetHostView extends AppWidgetHostView
 {
-	private LayoutInflater inflater;
 	private int longPressTimeout;
+	private int touchSlop;
 	private LongPressCheck longPressCheck;
 	private boolean performedLongPress = false;
+	private float downX;
+	private float downY;
 	private WidgetHost widgetHost;
 	private WidgetContainer widgetContainer;
 
@@ -27,8 +28,8 @@ public class WidgetHostView extends AppWidgetHostView
 
 		this.widgetHost = widgetHost;
 
-		this.inflater = (LayoutInflater) context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
 		this.longPressTimeout = ViewConfiguration.getLongPressTimeout ();
+		this.touchSlop = ViewConfiguration.get (context).getScaledTouchSlop ();
 	}
 
 	public void setWidgetContainer (WidgetContainer widgetContainer)
@@ -39,7 +40,7 @@ public class WidgetHostView extends AppWidgetHostView
 	@Override
 	public boolean onInterceptTouchEvent (MotionEvent e)
 	{
-		if (this.performedLongPress || this.widgetContainer.getEditMode ())
+		if (this.performedLongPress || (this.widgetContainer != null && this.widgetContainer.getEditMode ()))
 		{
 			this.performedLongPress = false;
 
@@ -49,50 +50,24 @@ public class WidgetHostView extends AppWidgetHostView
 		switch (e.getAction ())
 		{
 			case MotionEvent.ACTION_DOWN:
+				this.downX = e.getX ();
+				this.downY = e.getY ();
 				this.postLongPressCheck ();
 				break;
-			/*case MotionEvent.ACTION_MOVE:
-				this.cancelLongPress ();
-
-				if (this.editMode)
+			case MotionEvent.ACTION_MOVE:
+				// A finger that travels past touch slop is swiping (e.g. between
+				// desktops), not long-pressing: abort the pending edit-mode trigger
+				// just as a stock long-press would, so swipes never enter edit mode //
+				if (Math.abs (e.getX () - this.downX) > this.touchSlop
+					|| Math.abs (e.getY () - this.downY) > this.touchSlop)
 				{
-					int width = this.getWidth ();
-					int height = this.getHeight ();
-
-					RectF bigTop = new RectF (width / 2 - 75, -35, width / 2 + 75, 115);
-					RectF bigRight = new RectF (width - 115, height / 2 - 75, width + 35, height / 2 + 75);
-					RectF bigBottom = new RectF (width / 2 - 75, height - 115, width / 2 + 75, height + 35);
-					RectF bigLeft = new RectF (-35, height / 2 - 75, 115, height / 2 + 75);
-
-					RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) this.getLayoutParams ();
-
-					if (bigRight.contains (e.getX (), e.getY ()))
-					{
-						layoutParams.width = (int) e.getX (e.getPointerCount () - 1) + 25;
-					}
-					else if (bigBottom.contains (e.getX (), e.getY ()))
-					{
-						layoutParams.height = (int) e.getY (e.getPointerCount () - 1) + 25;
-					}
-					else if (bigTop.contains (e.getX (), e.getY ()))
-					{
-						layoutParams.topMargin = (int) e.getY (e.getPointerCount () - 1) - 25;
-					}
-					else if (bigLeft.contains (e.getX (), e.getY ()))
-					{
-						layoutParams.leftMargin = (int) e.getX (e.getPointerCount () - 1) - 25;
-					}
-
-					this.requestLayout ();
+					this.cancelPendingLongPress ();
 				}
 
-				break;*/
+				break;
 			case MotionEvent.ACTION_UP:
 			case MotionEvent.ACTION_CANCEL:
-				this.performedLongPress = false;
-
-				if (this.longPressCheck != null)
-					this.removeCallbacks (this.longPressCheck);
+				this.cancelPendingLongPress ();
 
 				break;
 		}
@@ -105,7 +80,13 @@ public class WidgetHostView extends AppWidgetHostView
 	{
 		super.cancelLongPress ();
 
+		this.cancelPendingLongPress ();
+	}
+
+	private void cancelPendingLongPress ()
+	{
 		this.performedLongPress = false;
+
 		if (this.longPressCheck != null)
 			this.removeCallbacks (this.longPressCheck);
 	}
@@ -119,6 +100,27 @@ public class WidgetHostView extends AppWidgetHostView
 
 		this.longPressCheck.setNWindowsAttached (this.getWindowAttachCount ());
 		this.postDelayed (this.longPressCheck, this.longPressTimeout);
+	}
+
+	@Override
+	protected void onSizeChanged (final int w, final int h, final int oldw, final int oldh)
+	{
+		super.onSizeChanged (w, h, oldw, oldh);
+
+		if (w <= 0 || h <= 0)
+			return;
+
+		// Tell the provider its actual size so it re-renders for the new bounds
+		// (this fires after every committed resize, since the commit relayouts).
+		// The activity handles orientation changes itself, so this never goes
+		// through an activity recreate. Use the API 31 SizeF list overload,
+		// which lets the provider pick the best RemoteViews for the size //
+		final float density = this.getResources ().getDisplayMetrics ().density;
+		final SizeF size = new SizeF (w / density, h / density);
+
+		// A fresh Bundle, not Bundle.EMPTY: updateAppWidgetSize writes the sizes
+		// into the bundle it is given, and Bundle.EMPTY is immutable //
+		this.updateAppWidgetSize (new Bundle (), java.util.Collections.singletonList (size));
 	}
 
 	@Override
@@ -151,55 +153,5 @@ public class WidgetHostView extends AppWidgetHostView
 		{
 			this.nWindowsAttached = n;
 		}
-	}
-
-	@Override
-	protected boolean drawChild (Canvas canvas, View child, long drawingTime)
-	{
-		boolean returnValue = super.drawChild (canvas, child, drawingTime);
-
-		/*Paint paintOverlay = new Paint ();
-		paintOverlay.setColor (Color.argb (50, 0, 0, 0));
-
-		Paint paintOverlayLight = new Paint ();
-		paintOverlayLight.setColor (Color.argb (50, 255, 255, 255));
-
-		Paint paintLight = new Paint ();
-		paintLight.setColor (Color.argb (200, 255, 255, 255));
-
-		int width = canvas.getWidth ();
-		int height = canvas.getHeight ();
-
-		if (this.editMode)
-		{
-			canvas.drawRect (0, 0, width, height, paintOverlay);
-
-			RectF smallTop = new RectF (width / 2 - 25, -5, width / 2 + 25, 45);
-			RectF bigTop = new RectF (width / 2 - 75, -35, width / 2 + 75, 115);
-			RectF smallRight = new RectF (width - 45, height / 2 - 25, width + 5, height / 2 + 25);
-			RectF bigRight = new RectF (width - 115, height / 2 - 75, width + 35, height / 2 + 75);
-			RectF smallBottom = new RectF (width / 2 - 25, height - 45, width / 2 + 25, height + 5);
-			RectF bigBottom = new RectF (width / 2 - 75, height - 115, width / 2 + 75, height + 35);
-			RectF smallLeft = new RectF (-5, height / 2 - 25, 45, height / 2 + 25);
-			RectF bigLeft = new RectF (-35, height / 2 - 75, 115, height / 2 + 75);
-			RectF smallMiddle = new RectF (width / 2 - 50, height / 2 - 50, width / 2 + 50, height / 2 + 50);
-			RectF bigMiddle = new RectF (width / 2 - 53, height / 2 - 53, width / 2 + 53, height / 2 + 53);
-
-			canvas.drawArc (bigTop, 0, 360, true, paintOverlay);
-			canvas.drawArc (smallTop, 0, 360, true, paintOverlayLight);
-			canvas.drawArc (bigRight, 0, 360, true, paintOverlay);
-			canvas.drawArc (smallRight, 0, 360, true, paintOverlayLight);
-			canvas.drawArc (bigBottom, 0, 360, true, paintOverlay);
-			canvas.drawArc (smallBottom, 0, 360, true, paintOverlayLight);
-			canvas.drawArc (bigLeft, 0, 360, true, paintOverlay);
-			canvas.drawArc (smallLeft, 0, 360, true, paintOverlayLight);
-			canvas.drawArc (bigMiddle, 0, 360, true, paintOverlayLight);
-			canvas.drawArc (smallMiddle, 0, 360, true, paintOverlay);
-			canvas.drawArc (smallMiddle, 0, 360, true, paintOverlay);
-			canvas.drawLine (smallMiddle.left + smallMiddle.width () / 4, smallMiddle.top + smallMiddle.height () / 4, smallMiddle.right - smallMiddle.width () / 4, smallMiddle.bottom - smallMiddle.height () / 4, paintLight);
-			canvas.drawLine (smallMiddle.left + smallMiddle.width () / 4, smallMiddle.bottom - smallMiddle.height () / 4, smallMiddle.right - smallMiddle.width () / 4, smallMiddle.top + smallMiddle.height () / 4, paintLight);
-		}*/
-
-		return returnValue;
 	}
 }

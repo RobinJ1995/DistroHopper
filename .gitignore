@@ -1,6 +1,7 @@
 .directory
 *.iml
 .gradle
+.kotlin/
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
@@ -10,6 +11,8 @@
 /captures
 .externalNativeBuild
 secret.properties
+key.properties
+*.jks
 app-release.apk
 /app/release/
 /app/build/

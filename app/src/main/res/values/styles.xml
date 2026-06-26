@@ -4,9 +4,20 @@
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowShowWallpaper">true</item>
+        <!-- Required for Window#setBackgroundBlurRadius; a transparent background alone doesn't
+             make Window#isTranslucent() true, and DecorView ignores the blur radius otherwise. -->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- Pop-up dialogs spawned from the launcher (e.g. the widget picker)
+             pick up the modern look. -->
+        <item name="alertDialogTheme">@style/ModernDialogTheme</item>
     </style>
 
     <style name="HomeTheme" parent="AppTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <!-- Full-screen over the wallpaper, like the home screen itself. -->
+    <style name="OnboardingTheme" parent="AppTheme">
     </style>
 
     <style name="DialogTheme" parent="Theme.AppCompat">
@@ -14,21 +25,89 @@
         <item name="android:windowShowWallpaper">true</item>
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:backgroundDimAmount">0.8</item>
+        <!-- Blur the wallpaper showing through; the dim above doubles as the
+             fallback wherever cross-window blur is unavailable. -->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackgroundBlurRadius">@dimen/dialog_blur_radius</item>
+        <!-- Pop-up dialogs spawned from these activities (e.g. the icon-pack
+             ListPreference) pick up the modern look. -->
+        <item name="alertDialogTheme">@style/ModernDialogTheme</item>
     </style>
 
-    <style name="HoloDialogTheme" parent="android:Theme.Holo.Wallpaper">
+    <!-- Shared modern styling for the app's pop-up dialogs: a dark, frosted
+         (translucent + blurred) surface, the system primary accent, and modern
+         typography. -->
+    <style name="ModernDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="colorAccent">@color/dialog_accent</item>
+        <!-- android:-prefixed so framework dialogs (e.g. the crash reporter) match too. -->
+        <item name="android:colorAccent">@color/dialog_accent</item>
+        <item name="android:colorBackground">@color/dialog_surface</item>
+        <item name="android:windowBackground">@drawable/dialog_window_background</item>
+        <item name="android:textColorPrimary">@color/dialog_on_surface</item>
+        <item name="android:textColorSecondary">@color/dialog_on_surface_variant</item>
+        <!-- Translucent so the blur shows through the surface (frosted glass). -->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- Carry our own blur + dim so the backdrop stays consistently dark.
+             Host activities like Preferences dim the wallpaper via cross-window
+             blur, which the system drops once this dialog takes focus; without
+             this the raw wallpaper would show through, brightly. -->
         <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:backgroundDimAmount">0.8</item>
-        <item name="android:actionBarStyle">@style/actionbar_solid</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+        <item name="android:windowBlurBehindEnabled">true</item>
+        <item name="android:windowBlurBehindRadius">@dimen/dialog_blur_radius</item>
+        <item name="android:windowTitleStyle">@style/ModernDialogTitle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/ModernDialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/ModernDialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/ModernDialogButton</item>
+    </style>
+
+    <style name="ModernDialogTitle" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@color/dialog_on_surface</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="ModernDialogButton" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:textColor">@color/dialog_accent</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0.01</item>
     </style>
 
     <style name="AboutTheme" parent="DialogTheme">
     </style>
 
-    <style name="ContributeTheme" parent="DialogTheme">
+    <style name="PreferencesTheme" parent="DialogTheme">
+        <item name="preferenceTheme">@style/AppPreferenceThemeOverlay</item>
     </style>
 
-    <style name="PreferencesTheme" parent="HoloDialogTheme">
+    <!-- Don't reserve icon space; the framework preferences this app used before didn't either. -->
+    <style name="AppPreferenceThemeOverlay" parent="PreferenceThemeOverlay">
+        <item name="preferenceStyle">@style/AppPreference</item>
+        <item name="checkBoxPreferenceStyle">@style/AppCheckBoxPreference</item>
+        <item name="switchPreferenceCompatStyle">@style/AppSwitchPreference</item>
+        <item name="dialogPreferenceStyle">@style/AppDialogPreference</item>
+        <item name="preferenceCategoryStyle">@style/AppPreferenceCategory</item>
+    </style>
+
+    <style name="AppPreference" parent="Preference.Material">
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="AppCheckBoxPreference" parent="Preference.CheckBoxPreference.Material">
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="AppSwitchPreference" parent="Preference.SwitchPreferenceCompat.Material">
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="AppDialogPreference" parent="Preference.DialogPreference.Material">
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="AppPreferenceCategory" parent="Preference.Category.Material">
+        <item name="iconSpaceReserved">false</item>
     </style>
 
     <style name="ThemePreferencesTheme" parent="DialogTheme">
@@ -41,11 +120,6 @@
     <style name="DevLogsTheme" parent="DialogTheme">
     </style>
 
-    <style name="actionbar_solid" parent="android:Widget.ActionBar">
-        <item name="android:background">@color/transparentblack10</item>
-        <item name="android:icon">@color/transparent</item>
-    </style>
-
     <style name="textshadow_2px_black" parent="android:TextAppearance.Holo.Widget.TextView">
         <item name="android:shadowColor">@android:color/black</item>
         <item name="android:shadowDx">2</item>
@@ -53,9 +127,6 @@
         <item name="android:shadowRadius">5</item>
     </style>
 
-    <style name="honourable_mentions_name" parent="TextAppearance.AppCompat.Large">
-        <item name="android:textSize">18sp</item>
-    </style>
 
     <style name="developer_by" parent="TextAppearance.AppCompat.Large">
         <item name="android:textSize">17sp</item>

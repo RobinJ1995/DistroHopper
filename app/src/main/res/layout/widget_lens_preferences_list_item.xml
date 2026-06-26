@@ -1,47 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<!-- Outer wrapper because ListView rows can't carry margins. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="4dp"
     android:paddingBottom="4dp">
 
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:id="@+id/imgIcon"
-        android:layout_marginRight="4dp" />
-
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:background="@drawable/lens_row_background"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@android:color/primary_text_dark"
-            android:text="[Name]"
-            android:id="@+id/tvName"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"/>
+        <ImageView
+            android:id="@+id/ivDragHandle"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:alpha="0.4"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_drag_handle" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textColor="@android:color/secondary_text_dark"
-            android:text="[Description]"
-            android:id="@+id/tvDescription"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"/>
+        <ImageView
+            android:id="@+id/imgIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="12dp"
+            android:importantForAccessibility="no" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/transparent30"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/cbEnabled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:showText="false" />
     </LinearLayout>
-
-    <CheckBox
-        android:layout_width="32dp"
-        android:layout_height="match_parent"
-        android:id="@+id/cbEnabled"
-        android:layout_weight="0"/>
-</LinearLayout>
+</FrameLayout>

@@ -16,7 +16,6 @@
   <string name="honourable_mentions">Hedersomnämningar</string>
   <string name="button_back">Tillbaka</string>
   <string name="button_about">Om</string>
-  <string name="button_contribute">Bidra</string>
   <string name="button_apply">Verkställ</string>
   <string name="title_preferences">Egenskaper</string>
   <string name="pref_header_general">Generellt</string>
@@ -37,11 +36,5 @@
   <string name="option_dev">Utvecklingsläge</string>
   <string name="option_dev_logs">Loggar</string>
   <string name="hm_translators_name">Översättningsteamet</string>
-  <string name="title_activity_contribute">Hur kan jag bidra?</string>
-  <string name="contribute_translate_title">Översätt</string>
-  <string name="contribute_translate_go">Gå till Transifex</string>
-  <string name="contribute_bugs_title">Rapportera fel</string>
-  <string name="contribute_bugs_go">Gå till GitHub</string>
-  <string name="contribute_donate_title">Donera</string>
   <string name="theme_elementary_res_panel_bfb_text">Applikationer</string>
 </resources>

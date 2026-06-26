@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Minimal config: this service only ever calls performGlobalAction to open the
+	notification tray. accessibilityEventTypes is left unset (no events observed)
+	and no special capabilities or flags are needed.
+-->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+	android:accessibilityFeedbackType="feedbackGeneric"
+	android:description="@string/accessibility_service_notification_tray_description"
+	android:notificationTimeout="0" />

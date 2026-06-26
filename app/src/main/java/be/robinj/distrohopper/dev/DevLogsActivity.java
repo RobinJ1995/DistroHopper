@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import be.robinj.distrohopper.IObserver;
+import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
 
 public class DevLogsActivity extends Activity implements IObserver
@@ -19,6 +20,7 @@ public class DevLogsActivity extends Activity implements IObserver
 	{
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_dev_logs);
+		InsetsHelper.applySystemBarsPadding (this);
 
 		this.log = Log.getInstance ();
 

@@ -17,7 +17,6 @@
   <string name="honourable_mentions">Oсобая благодарность</string>
   <string name="button_back">Назад</string>
   <string name="button_about">О нас</string>
-  <string name="button_contribute">Помочь проекту</string>
   <string name="button_apply">Применить</string>
   <string-array name="edges">
     <item>Спрятать</item>
@@ -63,17 +62,5 @@
 https://github.com/Todd-Davies/ProgressWheel/</string>
   <string name="hm_translators_name">Команда переводчиков</string>
   <string name="hm_translators_why">* Группа переводчиков работающих над переводом данной программы. Я благодарен им всем за сделанный вклад в данный проект.</string>
-  <string name="title_activity_contribute">Как я могу помочь?</string>
-  <string name="contribute_intro">Данный проект потребовал больших усилий, временных и финансовых затрат. Если вы хотите помочь дальнейшему развитию проекта, сделайте это нижеприведенными способами.</string>
-  <string name="contribute_translate_title">Перевод</string>
-  <string name="contribute_translate_description">DistroHopper доступен на нескольких языках, благодаря помощи добровольцев. Если DistroHopper еще не был переведен на ваш родной язык, и вы понимаете английский (и у вас достаточно знаний о рабочем столе Linux, чтобы понять термины связанные с Unity), то помощь с переводами - это хороший способ помочь проекту..
-        \nПереводы для DistroHopper выполняются через сайт Transifex. Все, что вам нужно сделать, это выполнить запрос на присоединение к команде переводчиков. После чего я одобрю ваш запрос, и вы сможете присоединиться к команде.</string>
-  <string name="contribute_translate_go">Перейти на Transifex</string>
-  <string name="contribute_bugs_title">Сообщить об ошибке</string>
-  <string name="contribute_bugs_description">Если в DistroHopper нашлась ошибка, это не значит что я знаю о ее существовании. Обычно разработчики не очень хорошо умеют тестировать приложение на ошибки. Некоторые проблемы появляются при очень особых обстоятельствах. Если вы нашли ошибку, или хотите предложить добавить определенный функционал, вы можете помочь сообщив об этом.
-        \nОтчеты об ошибках хранятся на GitHub. Если вы хотите, вы также можете отправить электронное письмо на android-dev@robinj.be. Просто убедитесь, что сообщение написано на английском или голландском языках. Пожалуйста, предоставьте как можно больше информации о проблеме.</string>
-  <string name="contribute_bugs_go">Перейти на GitHub</string>
-  <string name="contribute_donate_title">Сделать пожертвование</string>
-  <string name="contribute_donate_description">Если вы желаете окaзать проекту финансовую помощь, вы всегда можете сделать это с помощью кнопки \"Сделать пожертвование\". \n Примечание: Оказывая финансовую помощь, вы не получаете никаких превелигий и ничего не покупаете. Мы будем очень благодарны за оказанную вами финансовую поддержку, но вы не должны ожидать получения дополнительных функций.</string>
   <string name="theme_elementary_res_panel_bfb_text">Приложения</string>
 </resources>

@@ -1,51 +1,142 @@
 apply plugin: 'com.android.application'
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = '0.8.13'
+}
 
 def properties = new Properties()
-properties.load(new FileInputStream(rootProject.file("secret.properties")))
+def secretFile = rootProject.file("secret.properties")
+if (secretFile.exists()) {
+    properties.load(new FileInputStream(secretFile))
+}
+
+def keystorePropertiesFile = rootProject.file("key.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
 
 android {
-    compileSdkVersion 33
-    buildToolsVersion '28.0.3'
+    namespace "be.robinj.distrohopper"
+    compileSdk 36
     defaultConfig {
         applicationId "be.robinj.distrohopper"
-        minSdkVersion 23
-        targetSdkVersion 33
-        versionCode 99
-        versionName "2.6.3"
-        buildConfigField "String", "ACRA_USERNAME", "\"" + properties['acra_username'] + "\""
-        buildConfigField "String", "ACRA_PASSWORD", "\"" + properties['acra_password'] + "\""
+        minSdk 31
+        targetSdk 36
+        versionCode 106
+        versionName "3.0.0d"
+        buildConfigField "String", "ACRA_USERNAME", "\"" + (properties['acra_username'] ?: "") + "\""
+        buildConfigField "String", "ACRA_PASSWORD", "\"" + (properties['acra_password'] ?: "") + "\""
+        def acraConfigured = ((properties['acra_username'] ?: "") != "") && ((properties['acra_password'] ?: "") != "")
+        buildConfigField "boolean", "ACRA_CONFIGURED", acraConfigured.toString()
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
+        }
     }
     buildTypes {
         release {
+            // Sign release builds only when a keystore is provided, so local
+            // and CI test builds without one still succeed.
+            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : null
             minifyEnabled false
             shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions {
-        disable 'MissingTranslation'
-        disable 'ExtraTranslation'
+    buildFeatures {
+        buildConfig true
+    }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+
+            all {
+                jacoco.includeNoLocationClasses = true
+                jacoco.excludes = ['jdk.internal.*']
+            }
+        }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    lint {
+        disable 'MissingTranslation', 'ExtraTranslation'
     }
 }
 
 repositories {
     maven {
         url "http://repo.commonsware.com.s3.amazonaws.com"
+        allowInsecureProtocol = true
     }
 }
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
     implementation 'asia.ivity.android:drag-sort-listview:1.0'
+    implementation 'androidx.core:core-ktx:1.17.0'
+    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.9.4'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4'
+    implementation 'androidx.viewpager2:viewpager2:1.1.0'
 
     // ACRA
-    def acraVersion = '5.5.1'
+    def acraVersion = '5.13.1'
     implementation "ch.acra:acra-http:$acraVersion"
     implementation "ch.acra:acra-toast:$acraVersion"
+
+    // Robolectric – runs on the JVM, no emulator needed
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.16.1'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2'
+    testImplementation 'androidx.test:core:1.7.0'
+    testImplementation 'androidx.test.ext:junit:1.3.0'
+    testImplementation 'androidx.test.espresso:espresso-core:3.7.0'
+    testImplementation 'androidx.test.espresso:espresso-intents:3.7.0'
+
+    // Minimal androidTest runner kept for any future on-device tests
+    androidTestImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
+}
+
+tasks.register('jacocoTestReport', JacocoReport) {
+    dependsOn 'testDebugUnitTest'
+
+    reports {
+        xml.required = true
+        html.required = true
+    }
+
+    def exclusions = [
+        '**/R.class',
+        '**/R$*.class',
+        '**/BuildConfig.*',
+        '**/Manifest*.*',
+        '**/thirdparty/**'
+    ]
+
+    classDirectories.setFrom(files(
+        fileTree(dir: "$buildDir/intermediates/javac/debug/compileDebugJavaWithJavac/classes", excludes: exclusions),
+        fileTree(dir: "$buildDir/intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes", excludes: exclusions)
+    ))
+    sourceDirectories.setFrom(files('src/main/java'))
+    executionData.setFrom(fileTree(buildDir) {
+        include 'jacoco/testDebugUnitTest.exec'
+        include 'outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec'
+    })
 }

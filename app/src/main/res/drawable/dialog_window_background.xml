@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rounded surface for modern AlertDialogs. AppCompat already centres the
+     dialog window with comfortable side margins; this just rounds the card. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/dialog_surface" />
+    <corners android:radius="@dimen/dialog_corner_radius" />
+</shape>

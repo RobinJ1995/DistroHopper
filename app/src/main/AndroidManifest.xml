@@ -5,8 +5,15 @@
 
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+		android:maxSdkVersion="32" />
+	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+	<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+	<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<!-- Lets LauncherApps also surface hidden profiles (private space, Android 15+);
+	     only granted by the system while DistroHopper holds the HOME role -->
+	<uses-permission android:name="android.permission.ACCESS_HIDDEN_PROFILES" />
 	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 	<uses-permission android:name="android.permission.GET_TASKS" />
 
@@ -15,12 +22,16 @@
 			<action android:name="android.intent.action.MAIN" />
 			<category android:name="android.intent.category.LAUNCHER" />
 		</intent>
+		<intent>
+			<action android:name="android.intent.action.SET_WALLPAPER" />
+		</intent>
 	</queries>
 
 	<application
 		android:name="be.robinj.distrohopper.Application"
 		android:allowBackup="true"
 		android:icon="@mipmap/ic_launcher"
+		android:roundIcon="@mipmap/ic_launcher_round"
 		android:label="@string/app_name"
 		android:theme="@style/AppTheme">
 
@@ -45,6 +56,12 @@
 			</intent-filter>
 		</activity>
 		<activity
+			android:name="be.robinj.distrohopper.onboarding.OnboardingActivity"
+			android:label="@string/title_activity_onboarding"
+			android:launchMode="singleTask"
+			android:theme="@style/OnboardingTheme"
+			android:exported="false" />
+		<activity
 			android:name="be.robinj.distrohopper.AboutActivity"
 			android:label="@string/title_activity_about"
 			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity"
@@ -62,17 +79,61 @@
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="be.robinj.distrohopper.HomeActivity" />
 		</activity>
-		<activity
-			android:name="be.robinj.distrohopper.ContributeActivity"
-			android:label="@string/title_activity_contribute"
-			android:parentActivityName="be.robinj.distrohopper.AboutActivity"
-			android:theme="@style/AboutTheme">
-			<meta-data
-				android:name="android.support.PARENT_ACTIVITY"
-				android:value="be.robinj.distrohopper.AboutActivity" />
-		</activity>
-
 		<service android:name="be.robinj.distrohopper.desktop.launcher.service.LauncherService" />
+
+		<!-- Experimental: opens the notification tray on a home-screen swipe-down.
+		     Opt-in via the developer setting + the user enabling it in system
+		     accessibility settings. Must be exported so the system's accessibility
+		     manager can bind to it; the BIND_ACCESSIBILITY_SERVICE permission (held
+		     only by the system) is what keeps that binding privileged. -->
+		<service
+			android:name="be.robinj.distrohopper.accessibility.NotificationAccessibilityService"
+			android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+			android:exported="true">
+			<intent-filter>
+				<action android:name="android.accessibilityservice.AccessibilityService" />
+			</intent-filter>
+			<meta-data
+				android:name="android.accessibilityservice"
+				android:resource="@xml/notification_accessibility_service" />
+		</service>
+
+		<receiver
+			android:name="be.robinj.distrohopper.broadcast.AppUpgradeReceiver"
+			android:exported="false">
+			<intent-filter>
+				<action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+			</intent-filter>
+		</receiver>
+
+		<!-- The BFB widget: a themed menu button, placeable on any home screen,
+		     that opens the dash. Must be exported so the system AppWidget service
+		     can deliver its update broadcasts. -->
+		<receiver
+			android:name="be.robinj.distrohopper.widget.bfb.BfbWidgetProvider"
+			android:label="@string/bfb_widget_label"
+			android:exported="true">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data
+				android:name="android.appwidget.provider"
+				android:resource="@xml/bfb_widget_info" />
+		</receiver>
+
+		<!-- Same as the BFB widget, but its tap opens the dash with the search
+		     field focused (keyboard up). -->
+		<receiver
+			android:name="be.robinj.distrohopper.widget.bfb.BfbSearchWidgetProvider"
+			android:label="@string/bfb_search_widget_label"
+			android:exported="true">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data
+				android:name="android.appwidget.provider"
+				android:resource="@xml/bfb_search_widget_info" />
+		</receiver>
 
 		<activity
 			android:name="be.robinj.distrohopper.preferences.LensPreferencesActivity"
@@ -88,6 +149,25 @@
 			android:label="@string/title_activity_theme_preferences"
 			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity"
 			android:theme="@style/ThemePreferencesTheme">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="be.robinj.distrohopper.preferences.PreferencesActivity" />
+		</activity>
+		<activity
+			android:name="be.robinj.distrohopper.preferences.IconPreferencesActivity"
+			android:label="@string/title_activity_icon_preferences"
+			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity"
+			android:theme="@style/PreferencesTheme">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="be.robinj.distrohopper.preferences.PreferencesActivity" />
+		</activity>
+		<activity
+			android:name="be.robinj.distrohopper.accessibility.AccessibilityGestureSetupActivity"
+			android:label="@string/title_activity_gesture_setup"
+			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity"
+			android:theme="@style/OnboardingTheme"
+			android:exported="false">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="be.robinj.distrohopper.preferences.PreferencesActivity" />

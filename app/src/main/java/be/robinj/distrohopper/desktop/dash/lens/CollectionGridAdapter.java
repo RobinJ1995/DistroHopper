@@ -15,22 +15,19 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import be.robinj.distrohopper.HomeActivity;
+import androidx.core.content.ContextCompat;
+
+import be.robinj.distrohopper.DependencyContainer;
+import be.robinj.distrohopper.desktop.dash.DashGridSizer;
+import be.robinj.distrohopper.theme.Theme;
 import be.robinj.distrohopper.R;
 
 /**
  * Created by robin on 8/21/14.
  */
 public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollection>  {
-	private final float displayDensity;
-	private final int dashIconWidth;
-
-	public CollectionGridAdapter(final Context context, final List<LensSearchResultCollection> coll,
-								 final float displayDensity, final int dashIconWidth) {
+	public CollectionGridAdapter(final Context context, final List<LensSearchResultCollection> coll) {
 		super (context, R.layout.widget_dash_lens_result_collection, coll);
-
-		this.displayDensity = displayDensity;
-		this.dashIconWidth = dashIconWidth;
 	}
 
 	@Override
@@ -40,23 +37,21 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 		boolean show = true;
 
 		if (view == null)
-			view = LayoutInflater.from (this.getContext ()).inflate (R.layout.widget_dash_lens_result_collection, parent, false);
+			view = LayoutInflater.from (parent.getContext ()).inflate (R.layout.widget_dash_lens_result_collection, parent, false);
 
 		TextView tvLabel = (TextView) view.findViewById (R.id.tvLabel);
 		GridView gvResults = (GridView) view.findViewById (R.id.gvResults);
-		gvResults.setColumnWidth(Math.round((80 // 80 is the minimum
-				+ this.dashIconWidth)
-				* this.displayDensity)); // Adjust for the screen's pixel density
 
-		tvLabel.setText (coll.getLens ().getName ());
-		tvLabel.setTextColor (view.getResources ().getColor (HomeActivity.theme.dash_applauncher_text_colour));
-		tvLabel.setShadowLayer (5, 2, 2, view.getResources ().getColor (HomeActivity.theme.dash_applauncher_text_shadow_colour));
+		tvLabel.setText (coll.getName ());
+		final Theme theme = DependencyContainer.of (view.getContext ()).getThemeManager ().getCurrent ();
+		tvLabel.setTextColor (ContextCompat.getColor (view.getContext (), theme.dash_applauncher_text_colour));
+		tvLabel.setShadowLayer (5, 2, 2, ContextCompat.getColor (view.getContext (), theme.dash_applauncher_text_shadow_colour));
 
+		final Exception ex = coll.getResults () == null ? coll.getException () : null;
 		List<LensSearchResult> results = coll.getResults ();
 		if (results == null)
 		{
 			results = new ArrayList<LensSearchResult> ();
-			Exception ex = coll.getException ();
 
 			if (ex != null)
 			{
@@ -69,7 +64,7 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 						show = false;
 				}
 
-				LensSearchResult error = new LensSearchResult (this.getContext (), ex.getClass ().getSimpleName (), "error://" + ex.getMessage (), this.getContext ().getResources ().getDrawable (R.drawable.dash_search_lens_error));
+				LensSearchResult error = new LensSearchResult (this.getContext (), ex.getClass ().getSimpleName (), "", ContextCompat.getDrawable (this.getContext (), R.drawable.dash_search_lens_error));
 
 				results.add (error);
 			}
@@ -77,9 +72,21 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 
 		if (show)
 		{
-			gvResults.setAdapter (new GridAdapter (this.getContext (), results, this.displayDensity, this.dashIconWidth));
-			gvResults.setOnItemClickListener (new LensSearchResultClickListener (coll.getLens ()));
-			gvResults.setOnItemLongClickListener (new LensSearchResultLongClickListener (coll.getLens ()));
+			gvResults.setAdapter (new GridAdapter (this.getContext (), results));
+			// Same unified column count as the dash apps grid (see DashGrid) //
+			DashGridSizer.apply (gvResults);
+
+			if (ex != null)
+			{
+				// The synthetic error tile shows the failure dialog when tapped //
+				final Lens lens = coll.getLens ();
+				gvResults.setOnItemClickListener ((parent2, view2, position2, id2) -> lens.showError (ex.getMessage ()));
+			}
+			else
+			{
+				gvResults.setOnItemClickListener (new LensSearchResultClickListener (coll.getLens ()));
+				gvResults.setOnItemLongClickListener (new LensSearchResultLongClickListener (coll.getLens ()));
+			}
 
 			view.setVisibility (View.VISIBLE);
 		}

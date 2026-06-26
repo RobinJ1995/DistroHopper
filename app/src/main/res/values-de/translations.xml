@@ -17,7 +17,6 @@
   <string name="honourable_mentions">Spezielle Erwähnungen</string>
   <string name="button_back">Zurück</string>
   <string name="button_about">Über</string>
-  <string name="button_contribute">Beitragen</string>
   <string name="button_apply">Anwenden</string>
   <string-array name="edges">
     <item>Verstecken</item>
@@ -55,15 +54,5 @@
 https://github.com/Todd-Davies/ProgressWheel/</string>
   <string name="hm_translators_name">Das Übersetzungsteam</string>
   <string name="hm_translators_why">* Ein paar Leute haben ihre Zeit und Mühe investiert um diese App in ihrer Sprache verfügbar zu machen. Ich bin all diesen Leuten für ihre Unterstützung für das Projekt dankbar.</string>
-  <string name="title_activity_contribute">Wie kann ich beitragen?</string>
-  <string name="contribute_intro">Viel Zeit und harte Arbeit wurde in die Entwicklung dieser App gesteckt. Wenn du helfen möchtest gibt es hierfür viele Möglichkeiten.</string>
-  <string name="contribute_translate_title">Übersetzen</string>
-  <string name="contribute_translate_description">DistroHopper ist in diversen Sprachen verfügbar. Dies ist möglich, weil viele freiwillige Helfer dem Projekt Übersetzungen zur Verfügung stellen. Wenn DistroHopper noch nicht in deine Sprache übersetzt wurde und du der englischen Sprache mächtig bist (und ein Verständnis für Ubuntu/Linux-eigene Begriffe und Ideen mitbringst), dann ist deine Hilfe bei der Übesetzung herzlich willkommen. \nÜbersetzungen für DistroHopper werden über Transifex verwaltet. Alles was du tun musst ist die Mitgliedschaft im Übersetzungsteam für DistroHopper anzufragen. Anschließend werde ich deiner Mitgliedschaft zustimmen und du kannst direkt loslegen.</string>
-  <string name="contribute_translate_go">Gehe zu Transifex</string>
-  <string name="contribute_bugs_title">Melde Bugs</string>
-  <string name="contribute_bugs_description">Sofern Bugs (Fehler) in DistroHopper existieren, bin ich mir dessen nicht unbedingt bewusst. Entwickler sind zumeist nicht in der Lage ihre Applikationen ausreichend gut zu prüfen weil sie sie nur in der Art und Weise nutzen, für die sie entwickelt wurden. Manche Probleme treten aber nur in sehr bestimmten Umständen auf (zum Beispiel ein sehr spezielles Gerät auf dem eine spezielle Version von Android mit zusätzlichen oder fehlenden Funktionen und Optionen). Wenn dir also Bugs in DistroHopper auffallen (oder auch wenn du Feature-Wünsche hast) kannst du damit helfen, uns dies zu melden. \nBugmeldungen werden für DistroHopper auf GitHub gesammelt. Wenn dir GitHub zu technisch ist, kannst du den Fehler auch per Email an android-dev@robinj.be mitteilen. Bitte melde die Bugs in Englisch oder Holländisch und stelle so viel Information wie möglich zur Verfügung.</string>
-  <string name="contribute_bugs_go">Gehe zu GitHub</string>
-  <string name="contribute_donate_title">Spende</string>
-  <string name="contribute_donate_description">Wenn du willst, kannst du auch eine finanzielle Spende an den Entwickler senden. Spenden werden per PayPal übermittelt. Du kannst selbst entscheiden, wieviel zu spenden möchtest. \nBeachte: Es handelt sich um eine Spende. Ich verkaufe nichts und du kaufst damit nichts. Spenden sind sehr willkommen aber ich stelle hierfür keine zusätzlichen Features zur Verfügung. Alle Features dieser Applikation sind frei (im Sinne für ohne Kosten).</string>
   <string name="theme_elementary_res_panel_bfb_text">Anwendungen</string>
 </resources>

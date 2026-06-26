@@ -1,67 +1,102 @@
 package be.robinj.distrohopper;
 
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.os.Build;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.GridView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.os.UserHandle;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import be.robinj.distrohopper.desktop.launcher.AppLauncher;
-import be.robinj.distrohopper.desktop.launcher.AppLauncherClickListener;
-import be.robinj.distrohopper.desktop.launcher.AppLauncherDragListener;
-import be.robinj.distrohopper.desktop.launcher.AppLauncherLongClickListener;
-import be.robinj.distrohopper.desktop.launcher.RunningAppLauncher;
+import be.robinj.distrohopper.cache.AppIconCache;
+import be.robinj.distrohopper.icons.IconConfig;
+import be.robinj.distrohopper.icons.IconRenderer;
 import be.robinj.distrohopper.preferences.Preference;
 import be.robinj.distrohopper.preferences.Preferences;
-import be.robinj.distrohopper.theme.Location;
+import be.robinj.distrohopper.home.LauncherBarBinder;
 
 /**
  * Created by robin on 8/20/14.
+ *
+ * Facade over the app model (AppRepository) and the launcher-bar/dash view
+ * binding (home.LauncherBarBinder), keeping the API its many callers
+ * (listeners, lenses, the broadcast receiver) already use.
  */
 public class AppManager implements Iterable<App>
 {
-	private List<App> apps = new ArrayList<App> ();
-	private List<App> pinned = new ArrayList<App> ();
+	private final AppRepository repository;
 
-	private IconPackHelper iconPack;
+	private final DashLayoutRepository dashLayout;
 
-	private LinearLayout llLauncher;
-	private LinearLayout llLauncherPinnedApps;
-	private LinearLayout llLauncherRunningApps;
-	private GridView gvDashHomeApps;
+	private final LauncherLayoutRepository launcherLayout;
 
-	private HomeActivity parent;
+	private final IconPackHelper iconPack;
+
+	private IconRenderer iconRenderer;
+
+	private final HomeActivity parent;
+
+	private LauncherBarBinder binder;
 
 	public AppManager (HomeActivity parent)
 	{
 		this.parent = parent;
-
+		this.repository = new AppRepository (parent);
+		this.dashLayout = new DashLayoutRepository (parent, this.repository);
+		this.launcherLayout = new LauncherLayoutRepository (parent, this.repository);
 		this.iconPack = new IconPackHelper (parent.getApplicationContext ());
+	}
 
-		this.llLauncher = parent.getViewFinder().get(R.id.llLauncher);
-		this.llLauncherPinnedApps = parent.getViewFinder().get(this.llLauncher, R.id.llLauncherPinnedApps);
-		this.llLauncherRunningApps = parent.getViewFinder().get(this.llLauncher, R.id.llLauncherRunningApps);
-		this.gvDashHomeApps = parent.getViewFinder().get(R.id.gvDashHomeApps);
+	/** Lazy so that AppManager can be constructed on a background thread. */
+	private LauncherBarBinder getBinder ()
+	{
+		if (this.binder == null)
+			this.binder = new LauncherBarBinder (this);
+
+		return this.binder;
+	}
+
+	public AppRepository getRepository ()
+	{
+		return this.repository;
+	}
+
+	public DashLayoutRepository getDashLayout ()
+	{
+		return this.dashLayout;
+	}
+
+	/** Loads the persisted dash folders + custom order; call once apps are loaded. */
+	public void loadDashLayout ()
+	{
+		this.dashLayout.load ();
+	}
+
+	/** Refreshes the dash grid after a folder / custom-order change. */
+	public void dashLayoutChanged ()
+	{
+		this.getBinder ().notifyDashAdapterChanged ();
+	}
+
+	public LauncherLayoutRepository getLauncherLayout ()
+	{
+		return this.launcherLayout;
+	}
+
+	/** Loads the persisted launcher folders + order; call once pins are loaded. */
+	public void loadLauncherLayout ()
+	{
+		this.launcherLayout.load ();
+	}
+
+	/** Rebuilds the pinned bar after a launcher folder / order change. */
+	public void launcherLayoutChanged ()
+	{
+		this.getBinder ().refreshPinnedView ();
 	}
 
 	public void add (App app)
@@ -71,18 +106,10 @@ public class AppManager implements Iterable<App>
 
 	public void add (App app, boolean checkDuplicate, boolean sortAndNotifyAdapter)
 	{
-		if (! (checkDuplicate && this.apps.contains (app)))
+		if (this.repository.add (app, checkDuplicate) && sortAndNotifyAdapter)
 		{
-			this.apps.add (app);
-
-			if (sortAndNotifyAdapter)
-			{
-				this.sort ();
-
-				ArrayAdapter adapter = (ArrayAdapter) this.gvDashHomeApps.getAdapter ();
-				if (adapter != null)
-					adapter.notifyDataSetChanged ();
-			}
+			this.repository.sort ();
+			this.getBinder ().notifyDashAdapterChanged ();
 		}
 	}
 
@@ -96,61 +123,53 @@ public class AppManager implements Iterable<App>
 		this.add (new App(this.getContext (), this, resInf), checkDuplicate, sortAndNotifyAdapter);
 	}
 
+	public void add (LauncherActivityInfo launcherActivityInfo, boolean checkDuplicate, boolean sortAndNotifyAdapter)
+	{
+		this.add (new App(this.getContext (), this, launcherActivityInfo), checkDuplicate, sortAndNotifyAdapter);
+	}
+
+	/** Binds the dash app grid(s); see LauncherBarBinder.bindDashApps(). */
+	public void bindDashApps ()
+	{
+		this.getBinder ().bindDashApps ();
+	}
+
+	/** Re-applies the dash grid's column count to the dash grid and pager pages. */
+	public void applyDashColumns ()
+	{
+		this.getBinder ().applyDashColumns ();
+	}
+
+	/** The apps grid's last laid-out viewport (width, height) in px, or null. */
+	public kotlin.Pair<Integer, Integer> dashGridViewport ()
+	{
+		return this.getBinder ().dashGridViewport ();
+	}
+
+	/** Notifies the dash that it opened or closed (for the profile indicator). */
+	public void setDashOpen (boolean open)
+	{
+		this.getBinder ().setDashOpen (open);
+	}
+
 	public void addRunningApps (int colour)
 	{
-		this.llLauncherRunningApps.removeAllViews ();
-
-		for (int i = 0; i < this.llLauncherPinnedApps.getChildCount (); i++)
-			((AppLauncher) this.llLauncherPinnedApps.getChildAt (i)).setRunning (false);
-
-		for (App app : this.getRunningApps ())
-		{
-			if (this.isPinned (app))
-			{
-				AppLauncher appLauncher = (AppLauncher) this.llLauncherPinnedApps.findViewWithTag (app);
-				appLauncher.setRunning (true);
-			}
-			else
-			{
-				if (! this.getContext ().getResources ().getBoolean (HomeActivity.theme.launcher_applauncher_backgroundcolour_dynamic))
-					colour = this.getContext ().getResources ().getColor (HomeActivity.theme.launcher_applauncher_backgroundcolour);
-
-				RunningAppLauncher appLauncher = new RunningAppLauncher (this.getContext (), app);
-				appLauncher.setOnClickListener (new AppLauncherClickListener (this.getContext ()));
-				appLauncher.setColour (colour);
-
-				this.llLauncherRunningApps.addView (appLauncher);
-			}
-		}
+		this.getBinder ().addRunningApps (colour);
 	}
 
 	public App findAppByPackageAndActivityName (String packageName, String activityName)
 	{
-		for (App app : this.apps)
-		{
-			if (packageName.equals (app.getPackageName ()) && activityName.equals (app.getActivityName ()))
-				return app;
-		}
-
-		return null;
+		return this.repository.findAppByPackageAndActivityName (packageName, activityName);
 	}
 
 	public List<App> findAppsByPackageName (String packageName)
 	{
-		List<App> results = new ArrayList<App> ();
-
-		for (App app : this.apps)
-		{
-			if (packageName.equals (app.getPackageName ()))
-				results.add (app);
-		}
-
-		return results;
+		return this.repository.findAppsByPackageName (packageName);
 	}
 
 	public App get (int index)
 	{
-		return this.apps.get (index);
+		return this.repository.get (index);
 	}
 
 	public HomeActivity getContext ()
@@ -163,19 +182,57 @@ public class AppManager implements Iterable<App>
 		return this.iconPack;
 	}
 
+	/**
+	 * The renderer that shapes adaptive icons to the current {@link IconConfig}.
+	 * Rebuilt whenever the icon-shape/themed preferences change (in-process or
+	 * across restarts); a config change also clears the shape-unaware icon cache
+	 * so no stale-shaped icon can be served afterwards.
+	 */
+	public synchronized IconRenderer getIconRenderer ()
+	{
+		final IconConfig config = IconConfig.fromPrefs (this.parent.getApplicationContext ());
+
+		if (this.iconRenderer == null
+			|| ! this.iconRenderer.getConfig ().signature ().equals (config.signature ()))
+		{
+			this.reconcileIconCache (config);
+			this.iconRenderer = new IconRenderer (this.parent.getApplicationContext (), config);
+		}
+
+		return this.iconRenderer;
+	}
+
+	/** Clear the icon cache when the rendered-output signature no longer matches what was cached. */
+	private void reconcileIconCache (final IconConfig config)
+	{
+		final android.content.SharedPreferences prefs =
+			Preferences.getSharedPreferences (this.parent.getApplicationContext ());
+		final String stored = prefs.getString (Preference.ICON_CONFIG_SIGNATURE.getName (), null);
+
+		if (! config.signature ().equals (stored))
+		{
+			try
+			{
+				AppIconCache.clearAll (this.parent.getApplicationContext ());
+			}
+			catch (final Exception ex)
+			{
+				new ExceptionHandler (ex).logAndTrack ();
+			}
+
+			prefs.edit ()
+				.putString (Preference.ICON_CONFIG_SIGNATURE.getName (), config.signature ())
+				.apply ();
+		}
+	}
+
 	public List<App> getInstalledApps ()
 	{
-		return this.apps;
+		return this.repository.getInstalledLive ();
 	}
 
 	public Map<String, App> getInstalledAppsMap() {
-		final Map<String, App> map = new HashMap<>();
-
-		for (final App app : this.apps) {
-			map.put(app.getPackageAndActivityName(), app);
-		}
-
-		return map;
+		return this.repository.installedAppsMap ();
 	}
 
 	public HomeActivity getParent ()
@@ -185,60 +242,17 @@ public class AppManager implements Iterable<App>
 
 	public List<App> getPinned ()
 	{
-		return this.pinned;
+		return this.repository.getPinnedLive ();
 	}
 
 	public List<App> getRunningApps ()
 	{
-		List<App> running = new ArrayList<App> ();
-		ActivityManager am = (ActivityManager) this.getContext ().getSystemService (Context.ACTIVITY_SERVICE);
-
-		if (Build.VERSION.SDK_INT >= 21) // ActivityManager.getRunningTasks () is deprecated //
-		{
-			List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = am.getRunningAppProcesses ();
-
-			for (ActivityManager.RunningAppProcessInfo appProcess : runningAppProcesses)
-			{
-				Integer[] importantImportances = new Integer[]
-				{
-					ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND,
-					ActivityManager.RunningAppProcessInfo.IMPORTANCE_PERCEPTIBLE,
-					ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE,
-					ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND,
-					ActivityManager.RunningAppProcessInfo.IMPORTANCE_SERVICE
-				};
-
-				if (Arrays.asList (importantImportances).contains (appProcess.importance))
-				{
-					for (App app : this.findAppsByPackageName (appProcess.processName))
-						running.add (app);
-				}
-			}
-		}
-		else
-		{
-			List<ActivityManager.RunningTaskInfo> runningTasks = am.getRunningTasks (16);
-
-			for (ActivityManager.RunningTaskInfo task : runningTasks)
-			{
-				String packageName = task.baseActivity.getPackageName ();
-				String activityName = task.baseActivity.getClassName ();
-
-				App app = this.findAppByPackageAndActivityName (packageName, activityName);
-
-				if (app != null)
-					running.add (app);
-			}
-		}
-
-
-
-		return running;
+		return this.repository.getRunningApps ();
 	}
 
 	public int indexOfPinned (App app)
 	{
-		return this.pinned.indexOf (app);
+		return this.repository.indexOfPinned (app);
 	}
 
 	public boolean isIconPackLoaded ()
@@ -248,12 +262,12 @@ public class AppManager implements Iterable<App>
 
 	public boolean isPinned (App app)
 	{
-		return this.pinned.contains (app);
+		return this.repository.isPinned (app);
 	}
 
 	public Iterator<App> iterator ()
 	{
-		return this.apps.iterator ();
+		return this.repository.getInstalledLive ().iterator ();
 	}
 
 	public void loadIconPack (String name) throws IOException, XmlPullParserException, PackageManager.NameNotFoundException
@@ -263,44 +277,28 @@ public class AppManager implements Iterable<App>
 
 	public void movePinnedApp (int oldIndex, int newIndex)
 	{
-		App app = this.pinned.remove (oldIndex);
-		this.pinned.add (newIndex, app);
+		this.repository.movePinnedApp (oldIndex, newIndex);
 	}
 
 	public boolean pin (App app)
 	{
-		return this.pin (app, true, true, true);
+		return this.pin (app, true, true);
 	}
 
-	public boolean pin (App app, boolean save, boolean showToast, boolean addView)
+	public boolean pin (App app, boolean save, boolean addView)
 	{
-		if (! this.isPinned (app))
+		if (this.repository.pin (app))
 		{
-			boolean returnValue = this.pinned.add (app);
-
-			if (showToast)
-				Toast.makeText (this.getContext (), app.getLabel () + " " + this.getContext ().getResources ().getString (R.string.pinned), Toast.LENGTH_SHORT).show ();
-
 			if (addView)
-			{
-				be.robinj.distrohopper.desktop.launcher.AppLauncher appLauncher = new be.robinj.distrohopper.desktop.launcher.AppLauncher (this.getContext (), app);
-				appLauncher.setOnClickListener (new AppLauncherClickListener (this.getContext ()));
-				appLauncher.setOnLongClickListener (new AppLauncherLongClickListener (this.getContext ()));
-				appLauncher.setOnDragListener (new AppLauncherDragListener (this));
-
-				this.llLauncherPinnedApps.addView (appLauncher);
-			}
+				this.getBinder ().addPinnedAppView (app);
 
 			if (save)
 				this.savePinnedApps ();
 
-			return returnValue;
+			return true;
 		}
 		else
 		{
-			if (showToast)
-				Toast.makeText (this.getContext (), app.getLabel () + " " + this.getContext ().getResources ().getString (R.string.alreadypinned), Toast.LENGTH_SHORT).show ();
-
 			return false;
 		}
 	}
@@ -311,62 +309,95 @@ public class AppManager implements Iterable<App>
 	}
 
 	public List<ResolveInfo> queryInstalledApps(final String packageName) {
-		final Intent mainIntent = new Intent(Intent.ACTION_MAIN);
-		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-		if (packageName != null) {
-			mainIntent.setPackage(packageName);
-		}
-		final PackageManager pacMan = this.getContext().getPackageManager();
-		List<ResolveInfo> apps = pacMan.queryIntentActivities(mainIntent, 0);
-
-		return apps;
+		return this.repository.queryInstalledApps (packageName);
 	}
 
 	public void refreshPinnedView ()
 	{
-		this.llLauncherPinnedApps.removeAllViews ();
-
-		for (App app : this.pinned)
-		{
-			be.robinj.distrohopper.desktop.launcher.AppLauncher appLauncher = new be.robinj.distrohopper.desktop.launcher.AppLauncher (this.getContext (), app);
-			appLauncher.setOnClickListener (new AppLauncherClickListener (this.getContext ()));
-			appLauncher.setOnLongClickListener (new AppLauncherLongClickListener (this.getContext ()));
-			appLauncher.setOnDragListener (new AppLauncherDragListener (this));
-
-			this.llLauncherPinnedApps.addView (appLauncher);
-		}
+		this.getBinder ().refreshPinnedView ();
 	}
 
 	public boolean remove (App app)
 	{
-		boolean modified = this.apps.remove (app);
-		this.unpin (app, false);
+		boolean modified = this.repository.remove (app);
 
-		ArrayAdapter adapter = (ArrayAdapter) this.gvDashHomeApps.getAdapter ();
-		if (adapter != null)
-			adapter.notifyDataSetChanged ();
+		// Uninstalled: drop it from every desktop, not just the current one //
+		this.repository.unpinFromAllDesktops (app);
+		this.getBinder ().removePinnedAppView (app);
+		this.savePinnedApps ();
+
+		// And remove its desktop pin, if any //
+		if (this.parent.getDesktopAppHost () != null)
+			this.parent.getDesktopAppHost ().unpinFromAllDesktops (app);
+
+		// And drop it from any desktop folder it lived in //
+		if (this.parent.getDesktopFolderHost () != null)
+			this.parent.getDesktopFolderHost ().unpinFromAllDesktops (app);
+
+		// Drop it from any dash / launcher folder / order slot it lived in //
+		this.dashLayout.reconcile ();
+		this.launcherLayout.reconcile ();
+
+		this.getBinder ().notifyDashAdapterChanged ();
 
 		return modified;
 	}
 
+	//# Per-desktop pinned apps #//
+
+	public void setCurrentDesktop (int desktop)
+	{
+		this.repository.setCurrentDesktop (desktop);
+	}
+
+	public int getCurrentDesktop ()
+	{
+		return this.repository.getCurrentDesktop ();
+	}
+
+	public boolean isPerDesktopPins ()
+	{
+		return this.repository.getPerDesktop ();
+	}
+
+	public List<App> pinnedOn (int desktop)
+	{
+		return this.repository.pinnedOn (desktop);
+	}
+
+	public boolean isPinnedOn (App app, int desktop)
+	{
+		return this.repository.isPinnedOn (app, desktop);
+	}
+
+	public int highestPinnedDesktop ()
+	{
+		return this.repository.highestPinnedDesktop ();
+	}
+
+	public void removePinnedDesktop (int desktop)
+	{
+		this.repository.removePinnedDesktop (desktop);
+	}
+
+	public void loadPinnedApps ()
+	{
+		this.repository.loadPinnedApps ();
+	}
+
+	public void onLauncherPageScroll (int fromPage, int toPage, float fraction)
+	{
+		this.getBinder ().onPageScroll (fromPage, toPage, fraction);
+	}
+
+	public void onLauncherPageSettled (int page)
+	{
+		this.getBinder ().showDesktop (page);
+	}
+
 	public void savePinnedApps ()
 	{
-		SharedPreferences prefs = Preferences.getSharedPreferences(this.getContext(), Preferences.PINNED_APPS);
-		SharedPreferences.Editor editor = prefs.edit ();
-
-		editor.clear ();
-
-		for (int i = 0; i < this.pinned.size (); i++)
-		{
-			App app = this.pinned.get (i);
-			StringBuilder packageAndActivityName = new StringBuilder (app.getPackageName ())
-				.append ("\n")
-				.append (app.getActivityName ());
-
-			editor.putString (Integer.toString (i), packageAndActivityName.toString ());
-		}
-
-		editor.apply ();
+		this.repository.savePinnedApps ();
 
 		this.parent.pinnedAppsChanged ();
 	}
@@ -384,89 +415,56 @@ public class AppManager implements Iterable<App>
 	 */
 	public List<App> search (String pattern, final int maxResults)
 	{
-		List<App> results;
-		int nResults = 0;
+		return this.repository.search (pattern, maxResults);
+	}
 
-		if (pattern.length () == 0)
-		{
-			results = new ArrayList<App> (this.apps);
-		}
-		else
-		{
-			results = new ArrayList<App> ();
+	/** Like search(), but restricted to one profile (null = the personal profile). */
+	public List<App> searchProfile (String pattern, final int maxResults, final UserHandle profile)
+	{
+		return this.repository.searchProfile (pattern, maxResults, profile);
+	}
 
-			SharedPreferences prefs = Preferences.getSharedPreferences(this.getContext(), Preferences.PREFERENCES);
-			boolean fullSearch = prefs.getBoolean (Preference.DASH_SEARCH_FULL.getName(), true);
-
-			pattern = pattern.toLowerCase ();
-
-			for (App app : this.apps)
-			{
-				if (app.getLabel ().toLowerCase ().startsWith (pattern)) {
-					results.add(app);
-
-					if (++nResults >= maxResults) {
-						return results;
-					}
-				}
-			}
-
-			if (fullSearch)
-			{
-				for (App app : this.apps)
-				{
-					if ((! results.contains (app)) && (app.getLabel ().toLowerCase ().contains (pattern))) {
-						results.add(app);
-
-						if (++nResults >= maxResults) {
-							return results;
-						}
-					}
-				}
-			}
-		}
-
-		return results;
+	/** The profiles the installed apps belong to; null = the personal profile. */
+	public List<UserHandle> getProfiles ()
+	{
+		return this.repository.profiles ();
 	}
 
 	public int size ()
 	{
-		return this.apps.size ();
+		return this.repository.size ();
 	}
 
 	public void sort ()
 	{
-		AppComparatorAlphabetical comparator = new AppComparatorAlphabetical ();
-		Collections.sort (this.apps, comparator);
+		this.repository.sort ();
+	}
+
+	/**
+	 * Re-sorts the dash for the usage-based orders ("most recently used" / "most
+	 * used") and refreshes the grid, so an app launched since the dash was last
+	 * built moves to its new position the next time the dash opens. A no-op for
+	 * the alphabetical order, whose result never changes between loads.
+	 */
+	public void refreshDashSortOrder ()
+	{
+		if (this.repository.isUsageBasedSortOrder ())
+		{
+			this.repository.sort ();
+			this.getBinder ().notifyDashAdapterChanged ();
+		}
 	}
 
 	public boolean unpin (int index)
 	{
-		return this.unpin (this.pinned.get (index));
+		return this.unpin (this.repository.getPinnedLive ().get (index));
 	}
 
 	public boolean unpin (App app)
 	{
-		return this.unpin (app, true);
-	}
+		boolean modified = this.repository.unpin (app);
 
-	public boolean unpin (App app, boolean showToast)
-	{
-		boolean modified = this.pinned.remove (app);
-
-		if (showToast)
-		{
-			String message;
-			if (modified)
-				message = " " + this.getContext ().getResources ().getString (R.string.unpinned);
-			else
-				message = " " + this.getContext ().getResources ().getString (R.string.notpinned);
-
-			Toast.makeText (this.getContext (), app.getLabel () + message, Toast.LENGTH_SHORT).show ();
-		}
-
-		be.robinj.distrohopper.desktop.launcher.AppLauncher appLauncher = this.llLauncherPinnedApps.findViewWithTag (app);
-		this.llLauncherPinnedApps.removeView (appLauncher);
+		this.getBinder ().removePinnedAppView (app);
 
 		this.savePinnedApps ();
 
@@ -476,40 +474,109 @@ public class AppManager implements Iterable<App>
 	/*# Event handlers #*/
 	public void startedDraggingPinnedApp ()
 	{
-		final AppLauncher lalBfb = this.parent.getViewFinder().get(this.llLauncher, R.id.lalBfb);
-		final AppLauncher lalPreferences = this.parent.getViewFinder().get(this.llLauncher, R.id.lalPreferences);
-		final AppLauncher lalTrash = this.parent.getViewFinder().get(this.llLauncher, R.id.lalTrash);
+		this.getBinder ().startedDraggingPinnedApp ();
+	}
 
-		if (this.parent.getResources().getBoolean(HomeActivity.theme.launcher_bfb_hide_while_dragging)) {
-			lalBfb.setVisibility(View.GONE);
-		}
-		lalPreferences.setVisibility (View.GONE);
-		lalTrash.setVisibility (View.VISIBLE);
-		this.parent.closeDash();
-		
-		this.llLauncherPinnedApps.setAlpha (0.9F);
+	public void startedDraggingPinnedApp (App app)
+	{
+		this.getBinder ().startedDraggingPinnedApp (app);
+	}
+
+	public void startedDraggingDashApp (App app)
+	{
+		this.getBinder ().startedDraggingDashApp (app);
+	}
+
+	/** Begins dragging an app pulled out of launcher folder [folderId], so it
+	 *  behaves like dragging the pin itself (reposition / fold / trash). */
+	public void startedDraggingLauncherFolderMember (String folderId, App app)
+	{
+		this.getBinder ().startedDraggingLauncherFolderMember (folderId, app);
+	}
+
+	public void draggedPinnedItemOver (android.view.View targetView)
+	{
+		this.getBinder ().draggedPinnedItemOver (targetView);
+	}
+
+	/** The drag is hovering [targetView]: preview the reorder and arm a dwell-fold. */
+	public void hoverPinnedItem (android.view.View targetView)
+	{
+		this.getBinder ().hoverPinnedItem (targetView);
+	}
+
+	/** Whether the dragged pinned item could fold onto [targetView]. */
+	public boolean canFoldOnto (android.view.View targetView)
+	{
+		return this.getBinder ().canFoldOnto (targetView);
+	}
+
+	/** Preview a reorder/pin insertion before/after [targetView] (null = end of bar). */
+	public void previewPinnedInsert (android.view.View targetView, boolean after)
+	{
+		this.getBinder ().previewPinnedInsert (targetView, after);
+	}
+
+	/** Preview a fold onto [targetView] (ring it, collapse the insertion gap). */
+	public void previewPinnedFold (android.view.View targetView)
+	{
+		this.getBinder ().previewPinnedFold (targetView);
+	}
+
+	/** Commits a dwell-armed fold if one is pending; @return whether it folded. */
+	public boolean dropPinnedFold ()
+	{
+		return this.getBinder ().dropPinnedFold ();
+	}
+
+	/** Cancels any pending dwell-fold. */
+	public void cancelPinnedFold ()
+	{
+		this.getBinder ().cancelPinnedFold ();
+	}
+
+	public void draggedPinnedAppOver (App app)
+	{
+		this.getBinder ().draggedPinnedAppOver (app);
+	}
+
+	/** Reorders the desktop's pins to match the launcher bar's flattened item order. */
+	public void reorderPinned (int desktop, java.util.List<String> orderedKeys)
+	{
+		this.repository.reorderPinned (desktop, orderedKeys);
+	}
+
+	/** @return whether the dragged app was folded onto the target (else reorder). */
+	public boolean foldDraggedOnto (android.view.View targetView)
+	{
+		return this.getBinder ().foldDraggedOnto (targetView);
+	}
+
+	public void startedDraggingFolder (String folderId)
+	{
+		this.getBinder ().startedDraggingFolder (folderId);
+	}
+
+	public void droppedPinnedApp ()
+	{
+		this.getBinder ().droppedPinnedApp ();
+	}
+
+	public void endedDraggingPinnedApp ()
+	{
+		this.getBinder ().endedDraggingPinnedApp ();
 	}
 
 	public void stoppedDraggingPinnedApp ()
 	{
-		final AppLauncher lalBfb = this.parent.getViewFinder().get(this.llLauncher, R.id.lalBfb);
-		final AppLauncher lalPreferences = this.parent.getViewFinder().get(this.llLauncher, R.id.lalPreferences);
-		final AppLauncher lalTrash = this.parent.getViewFinder().get(this.llLauncher, R.id.lalTrash);
-
-		final Context context = this.getContext();
-		final Location lalPreferences_location = HomeActivity.theme.lalPreferences_getLocation(context.getResources(), Preferences.getSharedPreferences(context));
-		lalBfb.setVisibility(View.VISIBLE);
-		lalPreferences.setVisibility (lalPreferences_location == Location.NONE ? View.GONE : View.VISIBLE);
-		lalTrash.setVisibility (View.GONE);
-		
-		this.llLauncherPinnedApps.setAlpha (1.0F);
+		this.getBinder ().stoppedDraggingPinnedApp ();
 	}
 
 	public void asyncLoadAppLabelsDone() {
-		this.gvDashHomeApps.invalidateViews();
+		this.getBinder ().invalidateDashViews ();
 	}
 
 	public void asyncLoadAppIconsDone() {
-		this.gvDashHomeApps.invalidateViews();
+		this.getBinder ().invalidateDashViews ();
 	}
 }

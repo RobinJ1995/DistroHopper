@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Darkens the wallpaper behind the wizard so its text stays readable. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+	<gradient
+		android:angle="270"
+		android:startColor="@color/transparentblack40"
+		android:endColor="@color/transparentblack20" />
+</shape>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The scrim sits on the root so it extends behind the system bars; only
+     llOnboardingRoot is padded clear of them (see OnboardingActivity). -->
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@drawable/onboarding_scrim">
+
+	<LinearLayout
+		android:id="@+id/llOnboardingRoot"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical">
+
+		<androidx.viewpager2.widget.ViewPager2
+			android:id="@+id/vpOnboarding"
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="1" />
+
+		<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="16dp">
+
+			<be.robinj.distrohopper.onboarding.OnboardingPageIndicator
+				android:id="@+id/opiOnboardingDots"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerInParent="true" />
+
+			<Button
+				android:id="@+id/btnOnboardingNext"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentEnd="true"
+				android:layout_centerVertical="true"
+				android:background="@drawable/onboarding_button_primary"
+				android:minWidth="88dp"
+				android:paddingStart="24dp"
+				android:paddingEnd="24dp"
+				android:stateListAnimator="@null"
+				android:text="@string/onboarding_button_next"
+				android:textColor="@android:color/white" />
+		</RelativeLayout>
+	</LinearLayout>
+</FrameLayout>

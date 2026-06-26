@@ -1,15 +1,12 @@
 package be.robinj.distrohopper;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +19,7 @@ public class AboutActivity extends AppCompatActivity
 	{
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_about);
+		InsetsHelper.applySystemBarsPadding (this);
 
 		try
 		{
@@ -32,8 +30,8 @@ public class AboutActivity extends AppCompatActivity
 			TextView tvVersion = (TextView) this.findViewById (R.id.tvVersion);
 			ImageView ivLogo = (ImageView) this.findViewById (R.id.ivLogo);
 
-			tvDevUrl.setText (Html.fromHtml ("<a href=\"http://robinj.be/\">RobinJ.be</a>"));
-			tvDevEmail.setText (Html.fromHtml ("<a href=\"mailto:distrohopper@robinj.be\">distrohopper@robinj.be</a>"));
+			tvDevUrl.setText (Html.fromHtml ("<a href=\"http://robinj.be/\">RobinJ.be</a>", Html.FROM_HTML_MODE_LEGACY));
+			tvDevEmail.setText (Html.fromHtml ("<a href=\"mailto:distrohopper@robinj.be\">distrohopper@robinj.be</a>", Html.FROM_HTML_MODE_LEGACY));
 			tvVersion.setText ("v" + pkgInfo.versionName);
 
 			tvDevUrl.setMovementMethod (LinkMovementMethod.getInstance ());
@@ -73,14 +71,6 @@ public class AboutActivity extends AppCompatActivity
 
 
 	@Override
-	public boolean onCreateOptionsMenu (Menu menu)
-	{
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater ().inflate (R.menu.about, menu);
-		return true;
-	}
-
-	@Override
 	protected void onStart ()
 	{
 		super.onStart ();
@@ -90,22 +80,5 @@ public class AboutActivity extends AppCompatActivity
 	protected void onStop ()
 	{
 		super.onStop ();
-	}
-
-	@Override
-	public boolean onOptionsItemSelected (MenuItem item)
-	{
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId ();
-
-		if (id == R.id.menuContribute)
-		{
-			Intent intent = new Intent (this, ContributeActivity.class);
-			this.startActivity (intent);
-		}
-
-		return super.onOptionsItemSelected (item);
 	}
 }

@@ -1,5 +1,25 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <ListPreference
+        android:key="app_sort_order"
+        android:title="@string/option_app_sort_order"
+        android:summary="@string/hint_app_sort_order"
+        android:entries="@array/app_sort_order_entries"
+        android:entryValues="@array/app_sort_order_values"
+        android:defaultValue="alphabetical" />
+
+    <SwitchPreferenceCompat
+        android:key="dummy_launcher_pin_per_desktop"
+        android:persistent="false"
+        android:title="@string/option_pin_per_desktop"
+        android:summary="@string/hint_pin_per_desktop" />
+
+    <SwitchPreferenceCompat
+        android:key="dashsearch_focus_on_open"
+        android:title="@string/option_dashsearch_focus_on_open"
+        android:summary="@string/hint_dashsearch_focus_on_open"
+        android:defaultValue="false" />
+
     <Preference
        android:title="@string/option_lenses"
        android:summary="@string/hint_lenses">
@@ -8,10 +28,10 @@
            android:targetClass="be.robinj.distrohopper.preferences.LensPreferencesActivity" />
    </Preference>
 
-    <CheckBoxPreference
-        android:key="dash_ready_show"
-        android:title="@string/option_dash_ready_show"
-        android:summary="@string/hint_dash_ready_show"
-        android:defaultValue="false" />
+    <Preference
+        android:key="dummy_set_default_launcher"
+        android:title="@string/option_set_default_launcher"
+        android:summary="@string/hint_set_default_launcher">
+    </Preference>
 
 </PreferenceScreen>

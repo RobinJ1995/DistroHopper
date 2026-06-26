@@ -1,24 +1,523 @@
 package be.robinj.distrohopper.widgets;
 
-import android.app.Service;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.widget.GridLayout;
-import android.widget.RelativeLayout;
+import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import be.robinj.distrohopper.R;
+import be.robinj.distrohopper.preferences.Preference;
+import be.robinj.distrohopper.preferences.Preferences;
 
 /**
- * Created by robin on 3/12/14.
+ * The widget area of the home screen. Positions its children on an invisible
+ * {@link WidgetGrid#COLS} x {@link WidgetGrid#ROWS} portrait grid spanning the
+ * part of the screen not covered by the launcher or panel.
+ *
+ * Widget positions are always stored in <em>portrait canonical coordinates</em>.
+ * In landscape, {@link WidgetGrid#portraitToDisplay} transforms them so that a
+ * widget pinned to the top edge in portrait occupies the left (ROTATION_90) or
+ * right (ROTATION_270) edge in landscape. Call {@link #setDisplayRotation} when
+ * the device rotates.
  */
-public class WidgetsContainer extends GridLayout
+public class WidgetsContainer extends ViewGroup
 {
+	private final Paint snapLinePaint = new Paint (Paint.ANTI_ALIAS_FLAG);
+	private final Paint moveTargetFillPaint = new Paint (Paint.ANTI_ALIAS_FLAG);
+	private final Paint moveTargetStrokePaint = new Paint (Paint.ANTI_ALIAS_FLAG);
+	private final Paint gridDotPaint = new Paint (Paint.ANTI_ALIAS_FLAG);
+	private final float gridDotRadius;
+
+	// Current display rotation; 0 (portrait) by default.
+	// Updated via setDisplayRotation() when the device rotates.
+	private int displayRotation = 0;
+
+	// When the developer option is on, dots are drawn at every grid intersection
+	// while a widget or app is being dragged or a widget is being resized //
+	private boolean gridOverlayVisible = false;
+
+	// While an edge is being dragged, the line shows where it will snap on release //
+	private boolean snapLineVisible = false;
+	private boolean snapLineVertical = false;
+	private float snapLinePos;
+	private float snapLineFrom;
+	private float snapLineTo;
+	private boolean moveTargetVisible = false;
+	// Move-target stored in portrait coords; transformed to display coords in dispatchDraw.
+	private int moveTargetCol;
+	private int moveTargetRow;
+	private int moveTargetColSpan;
+	private int moveTargetRowSpan;
+
 	public WidgetsContainer (Context context, AttributeSet attrs)
 	{
 		super (context, attrs);
 
-		LayoutInflater inflater = (LayoutInflater) context.getSystemService (Service.LAYOUT_INFLATER_SERVICE);
-		inflater.inflate (R.layout.widgets_container, this, true);
+		this.snapLinePaint.setColor (context.getColor (R.color.transparent50));
+		this.snapLinePaint.setStrokeWidth (TypedValue.applyDimension (
+			TypedValue.COMPLEX_UNIT_DIP, 2, context.getResources ().getDisplayMetrics ()));
+		this.snapLinePaint.setStrokeCap (Paint.Cap.ROUND);
+		this.moveTargetFillPaint.setColor (Color.argb (48, 255, 255, 255));
+		this.moveTargetStrokePaint.setColor (Color.argb (190, 255, 255, 255));
+		this.moveTargetStrokePaint.setStyle (Paint.Style.STROKE);
+		this.moveTargetStrokePaint.setStrokeWidth (TypedValue.applyDimension (
+				TypedValue.COMPLEX_UNIT_DIP, 2, context.getResources ().getDisplayMetrics ()));
+		this.gridDotPaint.setColor (Color.argb (190, 255, 255, 255));
+		this.gridDotPaint.setStyle (Paint.Style.FILL);
+		this.gridDotRadius = TypedValue.applyDimension (
+				TypedValue.COMPLEX_UNIT_DIP, 2.5f, context.getResources ().getDisplayMetrics ());
+	}
+
+	// ---- Orientation ---------------------------------------------------------
+
+	/** Sets the display rotation and triggers a re-layout with the new transform. */
+	public void setDisplayRotation (final int rotation)
+	{
+		this.displayRotation = rotation;
+		this.requestLayout ();
+		this.invalidate ();
+	}
+
+	public int getDisplayRotation () { return this.displayRotation; }
+
+	/** Columns visible in display space (ROWS when landscape, COLS when portrait). */
+	public int displayCols () { return WidgetGrid.displayCols (this.displayRotation); }
+
+	/** Rows visible in display space (COLS when landscape, ROWS when portrait). */
+	public int displayRows () { return WidgetGrid.displayRows (this.displayRotation); }
+
+	// ---- Grid overlay --------------------------------------------------------
+
+	/**
+	 * Shows the grid-intersection dot overlay, if the developer option is enabled.
+	 * No-op otherwise, so callers can fire it unconditionally on every drag/resize.
+	 */
+	public void showGridOverlay ()
+	{
+		if (this.gridOverlayVisible || ! this.isGridOverlayEnabled ())
+			return;
+
+		this.gridOverlayVisible = true;
+		this.invalidate ();
+	}
+
+	public void hideGridOverlay ()
+	{
+		if (! this.gridOverlayVisible)
+			return;
+
+		this.gridOverlayVisible = false;
+		this.invalidate ();
+	}
+
+	boolean isGridOverlayVisible ()
+	{
+		return this.gridOverlayVisible;
+	}
+
+	private boolean isGridOverlayEnabled ()
+	{
+		return Preferences.getSharedPreferences (this.getContext ())
+				.getBoolean (Preference.DEV_SHOW_GRID_ON_DRAG.getName (), false);
+	}
+
+	public void showMoveTarget (final int col, final int row, final int colSpan, final int rowSpan,
+			final boolean valid)
+	{
+		this.moveTargetVisible = true;
+		this.moveTargetCol = col;
+		this.moveTargetRow = row;
+		this.moveTargetColSpan = colSpan;
+		this.moveTargetRowSpan = rowSpan;
+		this.moveTargetFillPaint.setColor (valid
+				? Color.argb (48, 255, 255, 255)
+				: Color.argb (64, 255, 40, 40));
+		this.moveTargetStrokePaint.setColor (valid
+				? Color.argb (190, 255, 255, 255)
+				: Color.argb (220, 255, 40, 40));
+
+		this.invalidate ();
+	}
+
+	public void hideMoveTarget ()
+	{
+		if (! this.moveTargetVisible)
+			return;
+
+		this.moveTargetVisible = false;
+		this.invalidate ();
+	}
+
+	boolean isMoveTargetVisible ()
+	{
+		return this.moveTargetVisible;
+	}
+
+	int getMoveTargetCol ()
+	{
+		return this.moveTargetCol;
+	}
+
+	int getMoveTargetRow ()
+	{
+		return this.moveTargetRow;
+	}
+
+	public void showSnapLine (final boolean vertical, final float pos, final float from, final float to)
+	{
+		this.snapLineVisible = true;
+		this.snapLineVertical = vertical;
+		this.snapLinePos = pos;
+		this.snapLineFrom = from;
+		this.snapLineTo = to;
+
+		this.invalidate ();
+	}
+
+	public void hideSnapLine ()
+	{
+		if (! this.snapLineVisible)
+			return;
+
+		this.snapLineVisible = false;
+
+		this.invalidate ();
+	}
+
+	@Override
+	protected void dispatchDraw (final Canvas canvas)
+	{
+		super.dispatchDraw (canvas);
+
+		if (this.gridOverlayVisible)
+		{
+			final int cellWidth = this.getCellWidth ();
+			final int cellHeight = this.getCellHeight ();
+			final int dCols = this.displayCols ();
+			final int dRows = this.displayRows ();
+
+			for (int col = 0; col <= dCols; col++)
+			{
+				final float x = this.getPaddingLeft () + col * cellWidth;
+
+				for (int row = 0; row <= dRows; row++)
+				{
+					final float y = this.getPaddingTop () + row * cellHeight;
+					canvas.drawCircle (x, y, this.gridDotRadius, this.gridDotPaint);
+				}
+			}
+		}
+
+		if (this.moveTargetVisible)
+		{
+			final int cellWidth = this.getCellWidth ();
+			final int cellHeight = this.getCellHeight ();
+			final float radius = TypedValue.applyDimension (
+					TypedValue.COMPLEX_UNIT_DIP, 12, this.getResources ().getDisplayMetrics ());
+
+			// Move-target stored in portrait coords; transform to display space for drawing.
+			final WidgetLayout dt = WidgetGrid.portraitToDisplay (
+					this.moveTargetCol, this.moveTargetRow,
+					this.moveTargetColSpan, this.moveTargetRowSpan,
+					this.displayRotation);
+			final RectF target = new RectF (
+					this.getPaddingLeft () + dt.col * cellWidth,
+					this.getPaddingTop () + dt.row * cellHeight,
+					this.getPaddingLeft () + (dt.col + dt.colSpan) * cellWidth,
+					this.getPaddingTop () + (dt.row + dt.rowSpan) * cellHeight);
+
+			canvas.drawRoundRect (target, radius, radius, this.moveTargetFillPaint);
+			canvas.drawRoundRect (target, radius, radius, this.moveTargetStrokePaint);
+		}
+
+		// On top of the children, so the line stays visible over the dragged widget //
+		if (! this.snapLineVisible)
+			return;
+
+		if (this.snapLineVertical)
+			canvas.drawLine (this.snapLinePos, this.snapLineFrom, this.snapLinePos, this.snapLineTo, this.snapLinePaint);
+		else
+			canvas.drawLine (this.snapLineFrom, this.snapLinePos, this.snapLineTo, this.snapLinePos, this.snapLinePaint);
+	}
+
+	public int getCellWidth ()
+	{
+		return (this.getMeasuredWidth () - this.getPaddingLeft () - this.getPaddingRight ()) / this.displayCols ();
+	}
+
+	public int getCellHeight ()
+	{
+		return (this.getMeasuredHeight () - this.getPaddingTop () - this.getPaddingBottom ()) / this.displayRows ();
+	}
+
+	@Override
+	protected void onMeasure (final int widthMeasureSpec, final int heightMeasureSpec)
+	{
+		this.setMeasuredDimension (
+			getDefaultSize (this.getSuggestedMinimumWidth (), widthMeasureSpec),
+			getDefaultSize (this.getSuggestedMinimumHeight (), heightMeasureSpec));
+
+		final int cellWidth = this.getCellWidth ();
+		final int cellHeight = this.getCellHeight ();
+
+		for (int i = 0; i < this.getChildCount (); i++)
+		{
+			final View child = this.getChildAt (i);
+
+			if (child.getVisibility () == GONE)
+				continue;
+
+			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
+
+			// Measure using display-space span so the child gets the right physical size.
+			final WidgetLayout display = WidgetGrid.portraitToDisplay (
+					lp.col, lp.row, lp.colSpan, lp.rowSpan, this.displayRotation);
+			final int width = lp.previewWidthPx >= 0 ? lp.previewWidthPx : display.colSpan * cellWidth;
+			final int height = lp.previewHeightPx >= 0 ? lp.previewHeightPx : display.rowSpan * cellHeight;
+
+			child.measure (
+				MeasureSpec.makeMeasureSpec (width, MeasureSpec.EXACTLY),
+				MeasureSpec.makeMeasureSpec (height, MeasureSpec.EXACTLY));
+		}
+	}
+
+	@Override
+	protected void onLayout (final boolean changed, final int l, final int t, final int r, final int b)
+	{
+		final int cellWidth = this.getCellWidth ();
+		final int cellHeight = this.getCellHeight ();
+
+		for (int i = 0; i < this.getChildCount (); i++)
+		{
+			final View child = this.getChildAt (i);
+
+			if (child.getVisibility () == GONE)
+				continue;
+
+			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
+
+			// Compute display-space position from portrait canonical coords.
+			final WidgetLayout display = WidgetGrid.portraitToDisplay (
+					lp.col, lp.row, lp.colSpan, lp.rowSpan, this.displayRotation);
+			final int left = lp.previewLeftPx >= 0 ? lp.previewLeftPx
+					: this.getPaddingLeft () + display.col * cellWidth;
+			final int top = lp.previewTopPx >= 0 ? lp.previewTopPx
+					: this.getPaddingTop () + display.row * cellHeight;
+
+			child.layout (left, top, left + child.getMeasuredWidth (), top + child.getMeasuredHeight ());
+		}
+	}
+
+	/**
+	 * Grid placements of all child widgets, optionally excluding one (e.g. the one being moved).
+	 */
+	public List<WidgetLayout> collectLayouts (final View exclude)
+	{
+		final List<WidgetLayout> layouts = new ArrayList<> ();
+
+		for (int i = 0; i < this.getChildCount (); i++)
+		{
+			final View child = this.getChildAt (i);
+
+			if (child == exclude || ! (child instanceof WidgetContainer))
+				continue;
+
+			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
+
+			layouts.add (new WidgetLayout (
+				((WidgetContainer) child).getAppWidgetId (), lp.col, lp.row, lp.colSpan, lp.rowSpan));
+		}
+
+		return layouts;
+	}
+
+	/**
+	 * Grid cells occupied by the desktop-pinned apps (1x1 each), optionally
+	 * excluding one (e.g. the one being moved). The app world's counterpart to
+	 * {@link #collectLayouts(View)}; the returned {@link WidgetLayout}s carry no
+	 * widget id ({@link DesktopAppLayout#NO_WIDGET_ID}) — only their rectangle
+	 * matters for collision.
+	 */
+	public List<WidgetLayout> collectAppCells (final View exclude)
+	{
+		final List<WidgetLayout> layouts = new ArrayList<> ();
+
+		for (int i = 0; i < this.getChildCount (); i++)
+		{
+			final View child = this.getChildAt (i);
+
+			if (child == exclude || ! (child instanceof DesktopAppView))
+				continue;
+
+			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
+
+			layouts.add (new WidgetLayout (
+				DesktopAppLayout.NO_WIDGET_ID, lp.col, lp.row, lp.colSpan, lp.rowSpan));
+		}
+
+		return layouts;
+	}
+
+	/**
+	 * Grid cells occupied by the desktop folders (a {@link DesktopFolderLayout#SPAN}-
+	 * square each), optionally excluding one. Folded into {@link #collectOccupied}
+	 * so widgets and desktop apps can't overlap a folder.
+	 */
+	public List<WidgetLayout> collectFolderCells (final View exclude)
+	{
+		final List<WidgetLayout> layouts = new ArrayList<> ();
+
+		for (int i = 0; i < this.getChildCount (); i++)
+		{
+			final View child = this.getChildAt (i);
+
+			if (child == exclude || ! (child instanceof DesktopFolderView))
+				continue;
+
+			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
+
+			layouts.add (new WidgetLayout (
+				DesktopAppLayout.NO_WIDGET_ID, lp.col, lp.row, lp.colSpan, lp.rowSpan));
+		}
+
+		return layouts;
+	}
+
+	/** The desktop child (app, widget or folder) whose rectangle covers ([col], [row]), or null. */
+	public View findViewAtCell (final int col, final int row)
+	{
+		for (int i = 0; i < this.getChildCount (); i++)
+		{
+			final View child = this.getChildAt (i);
+
+			if (! (child instanceof WidgetContainer || child instanceof DesktopAppView
+					|| child instanceof DesktopFolderView))
+				continue;
+
+			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
+			if (col >= lp.col && col < lp.col + lp.colSpan
+					&& row >= lp.row && row < lp.row + lp.rowSpan)
+				return child;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Every occupied rectangle on this desktop — widgets, desktop apps <em>and</em>
+	 * folders — so collision checks keep the kinds from overlapping. Every
+	 * placement/move/resize path must validate against this, not the
+	 * widgets-only {@link #collectLayouts(View)}.
+	 */
+	public List<WidgetLayout> collectOccupied (final View exclude)
+	{
+		final List<WidgetLayout> layouts = this.collectLayouts (exclude);
+		layouts.addAll (this.collectAppCells (exclude));
+		layouts.addAll (this.collectFolderCells (exclude));
+
+		return layouts;
+	}
+
+	public void exitEditMode ()
+	{
+		for (int i = 0; i < this.getChildCount (); i++)
+		{
+			final View child = this.getChildAt (i);
+
+			if (child instanceof WidgetContainer && ((WidgetContainer) child).getEditMode ())
+				((WidgetContainer) child).setEditMode (false);
+		}
+	}
+
+	public boolean hasEditModeChild ()
+	{
+		for (int i = 0; i < this.getChildCount (); i++)
+		{
+			final View child = this.getChildAt (i);
+
+			if (child instanceof WidgetContainer && ((WidgetContainer) child).getEditMode ())
+				return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	protected ViewGroup.LayoutParams generateDefaultLayoutParams ()
+	{
+		return new LayoutParams (0, 0, 1, 1);
+	}
+
+	@Override
+	public ViewGroup.LayoutParams generateLayoutParams (final AttributeSet attrs)
+	{
+		return new LayoutParams (this.getContext (), attrs);
+	}
+
+	@Override
+	protected ViewGroup.LayoutParams generateLayoutParams (final ViewGroup.LayoutParams p)
+	{
+		return p instanceof LayoutParams ? p : this.generateDefaultLayoutParams ();
+	}
+
+	@Override
+	protected boolean checkLayoutParams (final ViewGroup.LayoutParams p)
+	{
+		return p instanceof LayoutParams;
+	}
+
+	public static class LayoutParams extends ViewGroup.MarginLayoutParams
+	{
+		public int col;
+		public int row;
+		public int colSpan;
+		public int rowSpan;
+
+		// Pixel overrides used while the widget is being dragged or resized; -1 means "use the grid cells" //
+		public int previewLeftPx = -1;
+		public int previewTopPx = -1;
+		public int previewWidthPx = -1;
+		public int previewHeightPx = -1;
+
+		public LayoutParams (final int col, final int row, final int colSpan, final int rowSpan)
+		{
+			super (MATCH_PARENT, MATCH_PARENT);
+
+			this.col = col;
+			this.row = row;
+			this.colSpan = colSpan;
+			this.rowSpan = rowSpan;
+		}
+
+		public LayoutParams (final WidgetLayout layout)
+		{
+			this (layout.col, layout.row, layout.colSpan, layout.rowSpan);
+		}
+
+		public LayoutParams (final Context context, final AttributeSet attrs)
+		{
+			super (context, attrs);
+
+			this.col = 0;
+			this.row = 0;
+			this.colSpan = 1;
+			this.rowSpan = 1;
+		}
+
+		public void clearPreview ()
+		{
+			this.previewLeftPx = -1;
+			this.previewTopPx = -1;
+			this.previewWidthPx = -1;
+			this.previewHeightPx = -1;
+		}
 	}
 }

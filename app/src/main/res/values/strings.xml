@@ -5,20 +5,22 @@
     <string name="dash_search_hint">Search</string>
     <string name="dash_lens_apps_title">Applications</string>
     <string name="dash_lens_other_title">Other</string>
+    <string name="profile_personal">Personal</string>
+    <string name="profile_work">Work</string>
+    <string name="profile_private">Private</string>
+    <string name="profile_clone">Clone</string>
+    <string name="profile_other">Profile</string>
+    <!-- Section title of a lens's results for one profile: lens name, profile name -->
+    <string name="lens_profile_section">%1$s (%2$s)</string>
     <string name="title_activity_preferences">Preferences</string>
+    <string name="shortcut_label_distrohopper_settings">DistroHopper Settings</string>
     <string name="title_activity_about">About</string>
     <string name="title_activity_lens_preferences">Search sources</string>
     <string name="title_activity_theme_preferences">Themes</string>
     <string name="title_activity_dev_logs">Logs</string>
-    <string name="pinned">has been pinned to the launcher</string>
-    <string name="unpinned">has been unpinned from the launcher</string>
-    <string name="notpinned">isn\'t pinned</string>
-    <string name="alreadypinned">is already pinned</string>
     <string name="developed_by">Developed by Robin Jacobs</string>
-    <string name="honourable_mentions">Honourable mentions</string>
     <string name="button_back">Back</string>
     <string name="button_about">About</string>
-    <string name="button_contribute">Contribute</string>
     <string name="button_apply">Apply</string>
 
     <string-array name="edges">
@@ -37,17 +39,26 @@
     <string name="pref_header_advanced">Advanced</string>
     <string name="pref_header_dev">Developer options</string>
     <string name="pref_header_functionality">Functionality</string>
+    <string name="pref_header_gestures">Gestures</string>
     <string name="pref_header_appearance">Appearance</string>
     <string name="option_launchericon_size">Pinned icon size</string>
     <string name="hint_launchericon_size">How large icons for pinned apps should be. The slider goes from 48dip to 120dip, with the default (right in the middle) being 84dip.</string>
-    <string name="option_dashicon_size">Dash icon size</string>
-    <string name="hint_dashicon_size">How large app icons and search results in the Dash should be.</string>
+    <string name="option_dash_grid_size">Dash grid size</string>
+    <string name="hint_dash_grid_size">How many app icons fit across the Dash. Fewer columns means larger icons; the layout flips automatically between portrait and landscape. Search results use the same grid.</string>
+    <string name="dash_grid_hint">%1$d × %2$d</string>
     <string name="option_panel_edge">Panel location</string>
     <string name="hint_panel_edge">To which screen edge the Panel should be attached.</string>
     <string name="option_launcher_edge">Launcher location</string>
     <string name="hint_launcher_edge">To which screen edge the Launcher should be attached.</string>
-    <string name="option_widgets_enabled">Widgets</string>
-    <string name="hint_widgets_enabled">Enable <b>experimental</b> (read: <b>broken</b>) widget support.\nThis is very experimental and not very usable in its current state.</string>
+    <string name="option_menu_button">Menu button</string>
+    <string name="hint_menu_button">Where the menu button sits in the Launcher. You can also open the Dash by swiping up.</string>
+    <string name="menu_button_none">Hide</string>
+    <string name="menu_button_start">At the start of the launcher</string>
+    <string name="menu_button_end">At the end of the launcher</string>
+    <string name="widget_picker_title">Add widget</string>
+    <string name="widget_no_room">There is no room left on the home screen for this widget.</string>
+    <string name="option_dashsearch_focus_on_open">Start search when Dash opened</string>
+    <string name="hint_dashsearch_focus_on_open">Focus the search box and show the keyboard when the dash is opened.</string>
     <string name="option_dev_log_toaster">Log toasts</string>
     <string name="hint_dev_log_toaster">Show log items in toast messages.</string>
     <string name="option_customise">Customise</string>
@@ -55,33 +66,121 @@
 
     <string name="option_wallpaper">Wallpaper</string>
     <string name="hint_wallpaper">Change wallpaper</string>
-    <string name="option_dash_ready_show">Open Dash by default</string>
-    <string name="hint_dash_ready_show">The Dash will automatically be opened.</string>
     <string name="option_lenses">Search sources</string>
     <string name="hint_lenses">Choose which source searches you want to use and in which order you want their results to appear in the Dash. When you do a search in the Dash, your query is sent to all enabled lenses and their results are shown.</string>
     <string name="option_theme">Theme</string>
     <string name="hint_theme">Choose which Linux distribution you want DistroHopper to look like.</string>
+    <string name="option_icon_pack">Icon pack</string>
+    <string name="hint_icon_pack">Choose a third-party icon pack to apply to app icons.</string>
+    <string name="option_icon_pack_none">None</string>
+    <string name="option_icon_shape">Icon shape</string>
+    <string name="hint_icon_shape">Mask adaptive icons to a consistent shape.</string>
+    <string name="icon_shape_system">System default</string>
+    <string name="icon_shape_circle">Circle</string>
+    <string name="icon_shape_squircle">Squircle</string>
+    <string name="icon_shape_rounded_square">Rounded square</string>
+    <string name="icon_shape_square">Square</string>
+    <string name="option_tinted_icons">Tinted icons</string>
+    <string name="hint_tinted_icons">Recolour app icons that provide a monochrome version to a single colour.</string>
+    <string name="option_icon_tint">Colour</string>
+    <string name="tint_wallpaper">Wallpaper</string>
+    <string name="tint_accent">Accent</string>
+    <string name="tint_theme">Theme</string>
+    <string name="option_icons">Icons</string>
+    <string name="hint_icons">Shape, icon pack and tint.</string>
+    <string name="title_activity_icon_preferences">Icons</string>
+    <string name="pref_section_adaptive_icons">Adaptive icons</string>
+    <string name="hint_adaptive_icons">These settings only affect apps that ship an adaptive icon; other icons are left unchanged.</string>
+    <string name="pref_section_icon_packs">Icon packs</string>
+    <string name="option_font">Font</string>
+    <string name="hint_font">Choose the font used for text throughout DistroHopper.</string>
+    <string name="font_system">System default</string>
+    <string name="font_opendyslexic">OpenDyslexic</string>
+    <string name="font_ubuntu">Ubuntu</string>
+    <string name="font_oxygen">Oxygen</string>
+    <string name="option_crash_reports">Send crash reports</string>
+    <string name="hint_crash_reports">Automatically send anonymous crash reports to help fix bugs. Reports go to a private server and are never shared with third parties.</string>
     <string name="option_dev">Developer mode</string>
     <string name="hint_dev">Access debug logs and other technical information. Enabling this will negatively impact performance and stability.</string>
     <string name="option_dev_logs">Logs</string>
-    <string name="hm_timvdstaaij_why">* Testing (If he doesn\'t manage to wreck it then it\'s probably safe for consumption by the rest of the world.)\n
-        * Help with the dominant colour calculation function.</string>
-    <string name="hm_todddavies_why">* I used his ProgressWheel component, since the default (round) Android ProgressBar component can\'t actually indicate progress.\n
-        https://github.com/Todd-Davies/ProgressWheel/</string>
-    <string name="hm_translators_name">The Translation Team</string>
-    <string name="hm_translators_why">* A couple of people devoted time and effort to make this app available in their respective languages. I am grateful towards all of these people for their contributions to the project.</string>
-    <string name="title_activity_contribute">How can I contribute?</string>
-    <string name="contribute_intro">A lot of time and hard work went into the development of this application. If you\'d like to help out, there are several ways in which you can do so.</string>
-    <string name="contribute_translate_title">Translate</string>
-    <string name="contribute_translate_description">DistroHopper is available in several languages. This is because volunteers provide the project with their translations. If DistroHopper has not been translated yet into your own language, and you understand English (and you have sufficient knowledge of the Linux desktop to understand some of the more Unity-related terms), then helping out with translations is a good way to help out.
-        \nTranslations for DistroHopper are managed on Transifex. All you need to do is request to join a translation team. After that I will approve your request and you are good to go.</string>
-    <string name="contribute_translate_go">Go to Transifex</string>
-    <string name="contribute_bugs_title">Report bugs</string>
-    <string name="contribute_bugs_description">If there is a bug in DistroHopper, that does not necessarily mean that I am aware of its existence. Developers are generally quite bad at testing their own applications as they will only use them in a way they are intended to be used. Some problems also only exist in certain specific circumstances (for example a certain device running a specific version of Android with some extra options enabled). So if you find a bug in DistroHopper (or if you have a feature request) you can help out by reporting it.
-        \nBug reports for DistroHopper are kept on GitHub. If GitHub is too technical for you, you can also just send an e-mail to android-dev@robinj.be. Just make sure it\'s in English or Dutch. Please provide as much (relevant) information as possible.</string>
-    <string name="contribute_bugs_go">Go to GitHub</string>
+    <string name="option_clear_cache">Clear cache</string>
+    <string name="toast_cache_cleared">Cache cleared</string>
+    <string name="option_full_restart">Full restart</string>
+    <string name="hint_full_restart">Kill and relaunch the app to fully re-initialise it.</string>
+    <string name="option_widget_resize_any">Allow unsupported widget dimensions</string>
+    <string name="hint_widget_resize_any">Allow widgets to be resized beyond their supported size constraints.</string>
+    <string name="option_show_grid_on_drag">Show desktop grid while dragging</string>
+    <string name="hint_show_grid_on_drag">Show a dot at each grid intersection while dragging or resizing widgets and apps.</string>
+    <string name="accessibility_service_notification_tray_description">Lets DistroHopper open the notification tray when you swipe down on the home screen. Only used to perform that one action; no screen content is read.</string>
 
+    <!-- Gestures preferences -->
+    <string name="option_gesture_swipe_sides">Swipe left or right</string>
+    <string name="hint_gesture_swipe_sides">Switches between desktops.</string>
+    <string name="option_gesture_swipe_up">Swipe up</string>
+    <string name="option_gesture_swipe_down">Swipe down</string>
+    <string name="gesture_action_none">Do nothing</string>
+    <string name="gesture_action_open_dash">Open dash</string>
+    <string name="gesture_action_open_dash_search">Open dash and start search</string>
+    <string name="gesture_action_notifications_tray">Open notifications tray</string>
+    <string name="option_enable_notification_gestures">Enable open notifications tray gestures</string>
+    <string name="hint_enable_notification_gestures">A system accessibility service needs to be enabled in order for this to work.</string>
+
+    <!-- Accessibility gesture setup wizard -->
+    <string name="title_activity_gesture_setup">Notification gestures</string>
+    <string name="gesture_setup_explain_title">Notification tray gesture setup</string>
+    <string name="gesture_setup_explain_body">Android doesn\'t give ordinary apps any way to open the notification tray. For a home screen like DistroHopper, the only mechanism available is an accessibility service.\n\nDistroHopper\'s accessibility service needs to be enabled for that reason alone. It only opens the notification tray. It does not read what\'s on your screen, collect any data, or perform any other action.</string>
+    <string name="gesture_setup_guide_title">Turn on the service</string>
+    <string name="gesture_setup_guide_body">Find DistroHopper in the accessibility settings list and switch it on, then come back here.</string>
+    <string name="gesture_setup_cancel">Cancel</string>
+    <string name="gesture_setup_proceed">I understand, proceed</string>
+    <string name="gesture_setup_open_settings">Open accessibility settings</string>
+    <string name="toast_gesture_setup_enabled">Notification tray gestures enabled</string>
+    <string name="option_rerun_onboarding">Run setup wizard again</string>
+    <string name="hint_rerun_onboarding">The first-run setup wizard will be shown the next time DistroHopper starts.</string>
+    <string name="toast_rerun_onboarding">Setup wizard will run on next start</string>
+    <string name="option_pin_default_apps">Pin default apps</string>
+    <string name="hint_pin_default_apps">Run the first-use app pinning again on next start.</string>
+    <string name="toast_pin_default_apps">Default apps will be pinned on next start</string>
+    <string name="option_set_default_launcher">Set as home screen</string>
+    <string name="hint_set_default_launcher">Make DistroHopper your default home screen, so that it appears whenever you press the home button.</string>
+    <string name="option_app_sort_order">App sorting order</string>
+    <string name="hint_app_sort_order">Choose how apps are ordered in the Dash.\nCurrent: %s</string>
+    <string name="option_app_sort_order_alphabetic">Alphabetic</string>
+    <string name="option_app_sort_order_recent">Most recently used</string>
+    <string name="option_app_sort_order_most_used">Most used</string>
+    <string name="option_app_sort_order_custom">Custom (drag to reorder)</string>
+    <string-array name="app_sort_order_entries">
+        <item>@string/option_app_sort_order_alphabetic</item>
+        <item>@string/option_app_sort_order_recent</item>
+        <item>@string/option_app_sort_order_most_used</item>
+        <item>@string/option_app_sort_order_custom</item>
+    </string-array>
+    <string name="folder_full">Folder is full</string>
+    <string name="option_pin_per_desktop">Per-desktop pinned apps</string>
+    <string name="hint_pin_per_desktop">Give each desktop its own pinned apps in the Launcher, instead of sharing the same ones across every desktop.</string>
     <string name="theme_elementary_res_panel_bfb_text">Applications</string>
+    <string name="theme_gnome_res_panel_bfb_text">Activities</string>
 
     <string name="toast_sending_crash_report">Sending crash report...</string>
+
+    <string name="title_activity_onboarding">Welcome</string>
+    <string name="onboarding_welcome_title">Welcome to DistroHopper</string>
+    <string name="onboarding_welcome_body">Your Android home screen, with the look and feel of your favourite Linux desktop.</string>
+    <string name="onboarding_theme_title">Pick your desktop environment</string>
+    <string name="onboarding_theme_body">Which Linux desktop do you want DistroHopper to look like? You can change this at any time in the preferences.</string>
+    <string name="onboarding_permission_title">Storage access</string>
+    <string name="onboarding_permission_body">Lets DistroHopper include files on your device in search results. Optional.</string>
+    <string name="onboarding_permission_granted">✓ Storage access granted</string>
+    <string name="onboarding_button_grant">Allow</string>
+    <string name="onboarding_default_launcher_title">Make it home</string>
+    <string name="onboarding_default_launcher_body">Set DistroHopper as your home screen, so that it appears whenever you press the home button.</string>
+    <string name="onboarding_default_launcher_already">✓ DistroHopper is your home screen</string>
+    <string name="onboarding_button_set_default">Set as home screen</string>
+    <string name="onboarding_button_next">Next</string>
+    <string name="onboarding_button_done">Finish</string>
+
+    <string name="bfb_widget_label">Menu button</string>
+    <string name="bfb_widget_description">The menu button in your current theme. Tap to open the dash.</string>
+    <string name="bfb_search_widget_label">Search</string>
+    <string name="bfb_search_widget_description">The menu button in your current theme. Tap to open the dash and start searching.</string>
 </resources>

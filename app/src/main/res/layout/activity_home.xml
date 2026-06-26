@@ -21,6 +21,8 @@
 			android:layout_height="match_parent"
 			android:scaleType="centerCrop" />
 
+		<include layout="@layout/activity_home_widgets" />
+
 		<FrameLayout
 			android:id="@+id/flWallpaperOverlayContainer"
 			android:layout_width="match_parent"
@@ -39,8 +41,6 @@
 				android:visibility="gone">
 			</FrameLayout>
 		</FrameLayout>
-
-		<include layout="@layout/activity_home_widgets" />
 
 		<LinearLayout
 			android:id="@+id/llStatusBar"
@@ -66,6 +66,16 @@
 			android:layout_below="@+id/llStatusBar"
 			android:background="@drawable/panel_background"
 			android:orientation="horizontal">
+
+			<!-- GNOME-style profile pill; populated and shown only while the
+			     dash is open with more than one profile -->
+			<FrameLayout
+				android:id="@+id/llPanelProfileIndicator"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:paddingLeft="8dp"
+				android:paddingRight="8dp"
+				android:visibility="gone" />
 
 			<TextView
 				android:id="@+id/tvPanelBfb"
@@ -162,13 +172,13 @@
 						android:layout_height="wrap_content"
 						android:orientation="vertical">
 
-						<LinearLayout
+						<be.robinj.distrohopper.desktop.launcher.PinnedAppsBar
 							android:id="@+id/llLauncherPinnedApps"
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
 							android:layout_gravity="top"
 							android:orientation="vertical">
-						</LinearLayout>
+						</be.robinj.distrohopper.desktop.launcher.PinnedAppsBar>
 
 						<LinearLayout
 							android:id="@+id/llLauncherRunningApps"
@@ -212,7 +222,7 @@
 			</LinearLayout>
 
 			<!-- Dash -->
-			<LinearLayout
+			<be.robinj.distrohopper.desktop.dash.SwipeToCloseLayout
 				android:id="@+id/llDash"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
@@ -292,14 +302,9 @@
 								android:layout_weight="2"
 								android:orientation="vertical">
 
-								<TextView
-									android:id="@+id/tvDashHomeTitle"
-									android:layout_width="wrap_content"
-									android:layout_height="wrap_content"
-									android:layout_gravity="center_horizontal"
-									android:text="@string/dash_lens_apps_title"
-									android:textAppearance="@style/textshadow_2px_black"
-									android:textColor="@android:color/white" />
+								<!-- The dash title (profile name, or "Applications" for a
+								     single profile) lives in each pager page so it swipes
+								     with the profile: widget_dash_profile_page.xml. -->
 
 								<!--<LinearLayout
 								    android:orientation="horizontal"
@@ -308,22 +313,16 @@
 								    android:id="@+id/llDashHomeApps">
 								</LinearLayout>-->
 
-								<LinearLayout
+								<!-- The dash app grid: always a ViewPager2 with one
+								     swipeable page per profile (a single page in the
+								     usual single-profile case). Each page's grid carries
+								     the gvDashHomeApps id so the genie animation and icon-
+								     width theming resolve the current page. -->
+								<androidx.viewpager2.widget.ViewPager2
+									android:id="@+id/vpDashProfiles"
 									android:layout_width="match_parent"
-									android:layout_height="wrap_content"
-									android:layout_gravity="center"
-									android:focusableInTouchMode="false"
-									android:orientation="vertical">
-
-									<GridView
-										android:id="@+id/gvDashHomeApps"
-										android:layout_width="match_parent"
-										android:layout_height="match_parent"
-										android:choiceMode="singleChoice"
-										android:columnWidth="@dimen/dash_applauncher_width"
-										android:gravity="center"
-										android:numColumns="auto_fit" />
-								</LinearLayout>
+									android:layout_height="0dp"
+									android:layout_weight="1" />
 							</LinearLayout>
 
 							<LinearLayout
@@ -397,6 +396,17 @@
 						android:src="@drawable/dash_ribbon_apps"
 						android:visibility="gone" />
 
+					<!-- Unity-style per-profile tab icons; populated and shown only
+					     when more than one profile exists -->
+					<LinearLayout
+						android:id="@+id/llDashRibbonProfiles"
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:layout_weight="0"
+						android:gravity="center"
+						android:orientation="horizontal"
+						android:visibility="gone" />
+
 					<LinearLayout
 						android:layout_width="wrap_content"
 						android:layout_height="match_parent"
@@ -405,7 +415,7 @@
 					</LinearLayout>
 
 				</LinearLayout>
-			</LinearLayout>
+			</be.robinj.distrohopper.desktop.dash.SwipeToCloseLayout>
 
 		</LinearLayout>
 

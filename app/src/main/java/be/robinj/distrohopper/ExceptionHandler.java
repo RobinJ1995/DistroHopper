@@ -2,11 +2,14 @@ package be.robinj.distrohopper;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.os.Looper;
 import android.text.Html;
 
 import org.acra.ACRA;
 
 import be.robinj.distrohopper.dev.Log;
+import be.robinj.distrohopper.desktop.FrostedGlass;
+import be.robinj.distrohopper.preferences.FontPreference;
 
 /**
  * Created by robin on 8/22/14.
@@ -28,7 +31,7 @@ public class ExceptionHandler {
 
 		message.append ("Oops! Something went wrong!\n")
 			.append ("If this happens a lot, then please send an e-mail to ")
-			.append (Html.fromHtml ("<a href=\"mailto:android-dev@robinj.be\">android-dev@robinj.be</a>"))
+			.append (Html.fromHtml ("<a href=\"mailto:android-dev@robinj.be\">android-dev@robinj.be</a>", Html.FROM_HTML_MODE_LEGACY))
 			.append (" with the contents of this dialog so I can get this problem fixed.\n\n")
 			.append ("Type: ")
 			.append (this.ex.getClass ().getSimpleName ())
@@ -41,24 +44,44 @@ public class ExceptionHandler {
 
 		if (context != null)
 		{
-			try
+			if (Looper.myLooper () == Looper.getMainLooper ())
 			{
-				AlertDialog.Builder dlg = new AlertDialog.Builder (context);
-				dlg.setTitle ("(╯°□°）╯︵ ┻━┻");
-				dlg.setMessage (message.toString ());
-				dlg.setCancelable (true);
-				dlg.setNeutralButton ("OK", null);
-
-				dlg.show ();
+				this.showDialog (context, message.toString ());
 			}
-			catch (Exception ex2)
+			else
 			{
-				Log.getInstance ().e (this.getClass ().getSimpleName (), "Couldn't show AlertDialog");
+				Utils.runOnUiThread (() -> this.showDialog (context, message.toString ()));
 			}
 		}
 		else
 		{
 			Log.getInstance ().w (this.getClass ().getSimpleName (), "User wasn't notified that there was a problem because context == NULL");
+		}
+	}
+
+	private void showDialog (final Context context, final String message)
+	{
+		try
+		{
+			AlertDialog.Builder dlg = new AlertDialog.Builder (context, R.style.ModernDialogTheme);
+			dlg.setTitle ("(╯°□°）╯︵ ┻━┻");
+			dlg.setMessage (message);
+			dlg.setCancelable (true);
+			dlg.setNeutralButton (android.R.string.ok, null);
+
+			final AlertDialog dialog = dlg.create ();
+			dialog.setOnShowListener (d -> {
+				// Keep the surface legible where cross-window blur isn't available (e.g. Samsung). //
+				FrostedGlass.INSTANCE.applyDialogFallback (dialog.getWindow ());
+				// Dialog chrome inflates through the dialog window's own inflater,
+				// which doesn't carry the activity's font factory. //
+				FontPreference.INSTANCE.applyTo (dialog);
+			});
+			dialog.show ();
+		}
+		catch (Exception ex2)
+		{
+			Log.getInstance ().e (this.getClass ().getSimpleName (), "Couldn't show AlertDialog: " + ex2.getMessage ());
 		}
 	}
 

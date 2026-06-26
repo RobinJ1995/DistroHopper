@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Full-screen over the wallpaper, like onboarding; the scrim keeps the copy
+     legible. Two steps swapped with a ViewFlipper. -->
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@drawable/onboarding_scrim">
+
+	<ViewFlipper
+		android:id="@+id/vfGestureSetup"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<!-- Step 1: explanation + cancel / proceed -->
+		<FrameLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:gravity="center_horizontal"
+				android:orientation="vertical"
+				android:padding="32dp">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:gravity="center"
+					android:text="@string/gesture_setup_explain_title"
+					android:textColor="@android:color/white"
+					android:textSize="28sp"
+					android:textStyle="bold" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="16dp"
+					android:gravity="center"
+					android:lineSpacingExtra="4dp"
+					android:text="@string/gesture_setup_explain_body"
+					android:textColor="@color/transparent30"
+					android:textSize="16sp" />
+
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="32dp"
+					android:gravity="center"
+					android:orientation="horizontal">
+
+					<Button
+						android:id="@+id/btnGestureSetupCancel"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginEnd="12dp"
+						android:background="@android:color/transparent"
+						android:stateListAnimator="@null"
+						android:text="@string/gesture_setup_cancel"
+						android:textColor="@android:color/white" />
+
+					<Button
+						android:id="@+id/btnGestureSetupProceed"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:background="@drawable/onboarding_button_primary"
+						android:minWidth="160dp"
+						android:paddingStart="32dp"
+						android:paddingEnd="32dp"
+						android:stateListAnimator="@null"
+						android:text="@string/gesture_setup_proceed"
+						android:textColor="@android:color/white" />
+				</LinearLayout>
+			</LinearLayout>
+		</FrameLayout>
+
+		<!-- Step 2: guide to the system toggle -->
+		<FrameLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:gravity="center_horizontal"
+				android:orientation="vertical"
+				android:padding="32dp">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:gravity="center"
+					android:text="@string/gesture_setup_guide_title"
+					android:textColor="@android:color/white"
+					android:textSize="28sp"
+					android:textStyle="bold" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="16dp"
+					android:gravity="center"
+					android:lineSpacingExtra="4dp"
+					android:text="@string/gesture_setup_guide_body"
+					android:textColor="@color/transparent30"
+					android:textSize="16sp" />
+
+				<Button
+					android:id="@+id/btnGestureSetupOpenSettings"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="32dp"
+					android:background="@drawable/onboarding_button_primary"
+					android:minWidth="160dp"
+					android:paddingStart="32dp"
+					android:paddingEnd="32dp"
+					android:stateListAnimator="@null"
+					android:text="@string/gesture_setup_open_settings"
+					android:textColor="@android:color/white" />
+			</LinearLayout>
+		</FrameLayout>
+	</ViewFlipper>
+</FrameLayout>

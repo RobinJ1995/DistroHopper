@@ -1,16 +1,10 @@
 package be.robinj.distrohopper;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
@@ -18,11 +12,11 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import be.robinj.distrohopper.desktop.AppIcon;
 
@@ -31,26 +25,13 @@ import be.robinj.distrohopper.desktop.AppIcon;
  */
 public class IconPackHelper
 {
-	private Context context;
-
-	private final String[] actions = new String[]
-	{
-		"org.adw.launcher.THEMES",
-		"com.gau.go.launcherex.theme"
-	};
-	private final String[] categories = new String[]
-	{
-		"com.fede.launcher.THEME_ICONPACK",
-		"com.anddoes.launcher.THEME",
-		"com.teslacoilsw.launcher.THEME"
-	};
-
+	private final Context context;
 	private String name;
 	private boolean iconPackLoaded = false;
-	private Map<String, String> resourceMap;
-	private Resources resources;
-	private float fallbackScale;
-	private List<String> fallback;
+
+	private Resources iconPackRes = null;
+	private final Map<String, String> componentToDrawable = new HashMap<>();
+	private final Map<String, String> packageToDrawable = new HashMap<>();
 
 	public IconPackHelper (Context context)
 	{
@@ -59,225 +40,156 @@ public class IconPackHelper
 
 	public Map<String, ResolveInfo> getIconPacks ()
 	{
-		PackageManager pacMan = this.context.getPackageManager ();
-		Intent intent = new Intent ();
+		final PackageManager pm = this.context.getPackageManager();
+		final Map<String, ResolveInfo> result = new LinkedHashMap<>();
 
-		Map<String, ResolveInfo> iconPacks = new HashMap<String, ResolveInfo> ();
+		final String[] actions = new String[] {
+			"org.adw.launcher.THEMES",
+			"com.gau.go.launcherex.theme",
+			"com.novalauncher.THEME",
+			"com.teslacoilsw.launcher.THEME",
+			"com.anddoes.launcher.THEME"
+		};
 
-		for (String action : this.actions)
-		{
-			intent.setAction (action);
-
-			for (ResolveInfo resInf : pacMan.queryIntentActivities (intent, 0))
-				iconPacks.put (resInf.activityInfo.packageName, resInf);
+		for (final String action : actions) {
+			final Intent intent = new Intent(action);
+			final List<ResolveInfo> infos = pm.queryIntentActivities(intent, 0);
+			if (infos == null) continue;
+			for (final ResolveInfo ri : infos) {
+				final String pkg = ri.activityInfo != null && ri.activityInfo.packageName != null
+						? ri.activityInfo.packageName
+						: (ri.resolvePackageName != null ? ri.resolvePackageName : null);
+				if (pkg != null && !result.containsKey(pkg)) {
+					result.put(pkg, ri);
+				}
+			}
 		}
 
-		intent.setAction (Intent.ACTION_MAIN);
-		for (String category : this.categories)
-		{
-			intent.addCategory (category);
-
-			for (ResolveInfo resInf : pacMan.queryIntentActivities (intent, 0))
-				iconPacks.put (resInf.activityInfo.packageName, resInf);
-
-			intent.removeCategory (category);
-		}
-
-		return iconPacks;
+		return result;
 	}
 
 	public void loadIconPack (String packageName) throws PackageManager.NameNotFoundException, IOException, XmlPullParserException
 	{
-		PackageManager pacMan = this.context.getPackageManager ();
-		Resources res = pacMan.getResourcesForApplication (packageName);
-
-		/*InputStream stream = res.getAssets ().open ("appfilter.xml");
-		XmlPullParser parser = XmlPullParserFactory.newInstance ().newPullParser ();
-		parser.setInput (stream, "UTF-8");*/
-
-		int resId = res.getIdentifier ("appfilter", "xml", packageName);
-		XmlPullParser parser = res.getXml (resId);
-
 		this.name = packageName;
-		this.iconPackLoaded = true;
-		this.resources = res;
+		this.iconPackLoaded = false;
+		this.componentToDrawable.clear();
+		this.packageToDrawable.clear();
 
-		this.parseXml (parser);
+		if (TextUtils.isEmpty(packageName)) {
+			this.iconPackRes = null;
+			return;
+		}
+
+		final PackageManager pm = this.context.getPackageManager();
+		this.iconPackRes = pm.getResourcesForApplication(packageName);
+
+		// Try res/xml/appfilter.xml first
+		int xmlId = this.iconPackRes.getIdentifier("appfilter", "xml", packageName);
+		XmlPullParser xpp = null;
+		InputStream assetStream = null;
+		try {
+			if (xmlId != 0) {
+				xpp = this.iconPackRes.getXml(xmlId);
+			} else {
+				// Fallback to assets/appfilter.xml
+				try {
+					assetStream = this.iconPackRes.getAssets().open("appfilter.xml");
+					xpp = android.util.Xml.newPullParser();
+					xpp.setInput(assetStream, "utf-8");
+				} catch (IOException ignore) { /* ignore */ }
+			}
+
+			if (xpp != null) {
+				parseAppFilter(xpp);
+			}
+		} finally {
+			if (assetStream != null) try { assetStream.close(); } catch (IOException ignore) {}
+		}
+
+		this.iconPackLoaded = this.iconPackRes != null && (!this.componentToDrawable.isEmpty() || !this.packageToDrawable.isEmpty());
+	}
+
+	private void parseAppFilter(XmlPullParser xpp) throws IOException, XmlPullParserException {
+		int eventType = xpp.getEventType();
+		while (eventType != XmlPullParser.END_DOCUMENT) {
+			if (eventType == XmlPullParser.START_TAG) {
+				final String tag = xpp.getName();
+				if ("item".equalsIgnoreCase(tag)) {
+					final String component = xpp.getAttributeValue(null, "component");
+					final String drawable = xpp.getAttributeValue(null, "drawable");
+					final String pkg = xpp.getAttributeValue(null, "package");
+
+					if (!TextUtils.isEmpty(drawable)) {
+						if (!TextUtils.isEmpty(component)) {
+							componentToDrawable.put(component.trim(), drawable.trim());
+						}
+						if (!TextUtils.isEmpty(pkg)) {
+							packageToDrawable.put(pkg.trim(), drawable.trim());
+						}
+					}
+				}
+			}
+			eventType = xpp.next();
+		}
 	}
 
 	public AppIcon getIconForApp (App app)
 	{
-		String iconName = this.resourceMap.get (app.getActivityName ());
-		if (iconName == null)
-			iconName = this.resourceMap.get (app.getPackageName ());
+		if (!this.iconPackLoaded || this.iconPackRes == null) return null;
 
-		if (iconName == null)
+		// First try full ComponentInfo key as used by most icon packs
+		final String pkg = app.getPackageName();
+		final String act = app.getActivityName();
+
+		final String compFull = "ComponentInfo{" + pkg + "/" + act + "}";
+		String drawableName = componentToDrawable.get(compFull);
+
+		if (drawableName == null) {
+			// Try with a shortened activity name (with leading dot) if applicable
+			String shortAct = act;
+			if (shortAct.startsWith(pkg)) {
+				shortAct = shortAct.substring(pkg.length());
+				if (!shortAct.startsWith(".")) shortAct = "." + shortAct;
+			}
+			final String compShort = "ComponentInfo{" + pkg + "/" + shortAct + "}";
+			drawableName = componentToDrawable.get(compShort);
+		}
+
+		if (drawableName == null) {
+			// As a last resort try package-only mapping
+			drawableName = packageToDrawable.get(pkg);
+		}
+
+		if (TextUtils.isEmpty(drawableName)) {
 			return null;
+		}
 
-		Drawable icon = this.getIcon (iconName);
+		final Drawable d = getIcon(drawableName);
+		if (d == null) return null;
 
-		if (icon == null)
-			return null;
-
-		return new AppIcon (icon);
+		return new AppIcon(d);
 	}
 
 	public AppIcon getFallbackIcon (Drawable appIcon)
 	{
-		Drawable icon = appIcon;
-
-		if (this.fallback != null && (! this.fallback.isEmpty ()))
-		{
-			Random random = new Random ();
-			int n = random.nextInt (this.fallback.size ());
-
-			String fallbackName = this.fallback.get (n);
-			Drawable fallback = this.getIcon (fallbackName);
-
-			if (fallback == null)
-				return null;
-
-			Bitmap bmIcon = ((BitmapDrawable) icon).getBitmap ();
-			Bitmap bmBackground = ((BitmapDrawable) fallback).getBitmap ();
-
-			Bitmap result = Bitmap.createBitmap (bmIcon.getWidth (), bmIcon.getHeight (), Bitmap.Config.ARGB_8888);
-			Canvas canvas = new Canvas (result);
-
-			Paint paint = new Paint ();
-			paint.setAntiAlias (true);
-			paint.setFilterBitmap (true);
-
-			float margin = (1.0F - this.fallbackScale) / 2.0F;
-
-			canvas.drawBitmap
-			(
-				bmBackground,
-				new Rect
-				(
-					0,
-					0,
-					bmBackground.getWidth (),
-					bmBackground.getHeight ()
-				),
-				new Rect
-				(
-					0,
-					0,
-					canvas.getWidth (),
-					canvas.getHeight ()
-				),
-				paint
-			);
-			canvas.drawBitmap
-			(
-				bmIcon,
-				new Rect
-				(
-					0,
-					0,
-					bmIcon.getWidth (),
-					bmIcon.getHeight ()
-				),
-				new Rect
-				(
-					Math.round ((float) canvas.getWidth () * margin),
-					Math.round ((float) canvas.getHeight () * margin),
-					Math.round ((float) canvas.getWidth () * (1.0F - margin)),
-					Math.round ((float) canvas.getHeight () * (1.0F - margin))
-				),
-				paint
-			);
-
-			icon = new BitmapDrawable (result);
-		}
-
-		return new AppIcon (icon);
+		// Minimal implementation: return the original app icon wrapped.
+		return new AppIcon(appIcon);
 	}
 
 	public Drawable getIcon (String iconName)
 	{
-		int resId = this.resources.getIdentifier (iconName, "drawable", this.name);
-		if (resId != 0)
-		{
-			Drawable icon = this.resources.getDrawable (resId);
+		if (this.iconPackRes == null || TextUtils.isEmpty(iconName)) return null;
 
-			return icon;
+		// Try drawable then mipmap
+		int id = this.iconPackRes.getIdentifier(iconName, "drawable", this.name);
+		if (id == 0) id = this.iconPackRes.getIdentifier(iconName, "mipmap", this.name);
+		if (id == 0) return null;
+
+		try {
+			return this.iconPackRes.getDrawable(id, null);
+		} catch (Resources.NotFoundException ex) {
+			return null;
 		}
-
-		return null;
-	}
-
-	private void parseXml (XmlPullParser parser) throws XmlPullParserException, IOException
-	{
-		Map<String, String> resourceMap = new HashMap<String, String> ();
-		List<String> fallback = new ArrayList<String> ();
-		float fallbackScale = 0.75F;
-
-		int event;
-
-		while ((event = parser.next ()) != XmlPullParser.END_DOCUMENT)
-		{
-			if (event == XmlPullParser.START_TAG)
-			{
-				String tag = parser.getName ();
-
-				if (tag.equalsIgnoreCase ("item"))
-				{
-					String component = parser.getAttributeValue (null, "component");
-					String drawable = parser.getAttributeValue (null, "drawable");
-
-					if
-						(
-						!(TextUtils.isEmpty (component) || TextUtils.isEmpty (drawable))
-							&& component.startsWith ("ComponentInfo{") && component.endsWith ("}") && component.length () >= 16
-						)
-					{
-						component = component.substring (14, component.length () - 1).toLowerCase ();
-
-						if (component.contains ("/"))
-						{
-							ComponentName compName = ComponentName.unflattenFromString (component);
-
-							if (compName != null)
-							{
-								resourceMap.put (compName.getPackageName (), drawable);
-								resourceMap.put (compName.getClassName (), drawable);
-							}
-						}
-						else
-						{
-							resourceMap.put (component, drawable);
-						}
-					}
-				}
-				else if (tag.equalsIgnoreCase ("iconback"))
-				{
-					int i = 1;
-					String img = parser.getAttributeValue (null, "img");
-
-					if (img != null)
-						fallback.add (img);
-
-					while ((img = parser.getAttributeValue (null, "img" + i)) != null)
-					{
-						fallback.add (img);
-
-						i++;
-					}
-				}
-				/*else if (tag.equalsIgnoreCase ("scale"))
-				{
-					String factor = parser.getAttributeValue (null, "factor");
-
-					if (factor != null)
-						fallbackScale = Float.parseFloat (factor);
-				}*/
-			}
-		}
-
-		this.resourceMap = resourceMap;
-		this.fallback = fallback;
-		this.fallbackScale = fallbackScale;
 	}
 
 	public boolean isIconPackLoaded ()

@@ -1,0 +1,52 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- A penguin (Tux-style) sample glyph, centred in the safe zone. -->
+
+    <!-- Black body + head. -->
+    <path
+        android:fillColor="#1B1F24"
+        android:pathData="M54,26
+            C45,26 40,33 39,41
+            C33,45 32,55 34,65
+            C36,77 43,86 54,86
+            C65,86 72,77 74,65
+            C76,55 75,45 69,41
+            C68,33 63,26 54,26 Z" />
+
+    <!-- White belly. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,44
+            C47,44 44,53 44,62
+            C44,73 48,81 54,81
+            C60,81 64,73 64,62
+            C64,53 61,44 54,44 Z" />
+
+    <!-- White eye patches. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M44,40 a5,6 0 1 0 10,0 a5,6 0 1 0 -10,0
+            M54,40 a5,6 0 1 0 10,0 a5,6 0 1 0 -10,0" />
+
+    <!-- Pupils. -->
+    <path
+        android:fillColor="#1B1F24"
+        android:pathData="M47,41 a2,2.4 0 1 0 4,0 a2,2.4 0 1 0 -4,0
+            M57,41 a2,2.4 0 1 0 4,0 a2,2.4 0 1 0 -4,0" />
+
+    <!-- Beak. -->
+    <path
+        android:fillColor="#F6A623"
+        android:pathData="M49,45 L59,45 L54,52 Z" />
+
+    <!-- Feet. -->
+    <path
+        android:fillColor="#F6A623"
+        android:pathData="M42,83 a6,3.5 0 1 0 12,0 a6,3.5 0 1 0 -12,0
+            M54,83 a6,3.5 0 1 0 12,0 a6,3.5 0 1 0 -12,0" />
+
+</vector>

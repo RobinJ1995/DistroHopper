@@ -17,7 +17,6 @@
   <string name="honourable_mentions">Особлива подяка</string>
   <string name="button_back">Назад</string>
   <string name="button_about">Про нас</string>
-  <string name="button_contribute">Допомогти проекту</string>
   <string name="button_apply">Застосувати</string>
   <string name="title_preferences">Уподобання</string>
   <string name="pref_header_general">Загальні</string>
@@ -45,14 +44,5 @@
 * Допомога з функцією розрахунку домінуючого кольору\n</string>
   <string name="hm_todddavies_why">* Я використав його компонент ProgressWheel, тому що стандартний компонент Android ProgressBar не працює правильно.\n
 https://github.com/Todd-Davies/ProgressWheel/</string>
-  <string name="title_activity_contribute">Як я можу допомогти?</string>
-  <string name="contribute_intro">На цей проект було витрачено багато сил, часу і фінансів. Якщо ви хочете допомогти подальшому розвитку проекту, зробіть це одним з нижчеперечислених способів.</string>
-  <string name="contribute_translate_go">Перейти на Transifex</string>
-  <string name="contribute_bugs_title">Повідомити про помилку</string>
-  <string name="contribute_bugs_description">Якщо в DistroHopper є помилка (баг), я не обов\'язково знаю про її існування. Розробникам, як правило, дуже важко дається тестування власних додатків, бо вони використовують їх тільки так, як було задумано. Деякі проблеми також існують тільки при певних умовах (наприклад, для конкретного пристрою, що працює на певній версії Android з деякими увімкненими опціями). Так що, якщо ви знайшли помилку в DistroHopper (або якщо ви просите про додання нової функції), ви можете допомогти, розказавши про неї.
-\nЗвіти про проблеми DistroHopper зберігаються на GitHub. Якщо GitHub занадто технічний для вас, ви також можете просто надіслати мені лист на android-dev@robinj.be. Переконайтеся, що лист англійською або голландською мовою. Будь ласка, надайте якомога більше детальної інформації.</string>
-  <string name="contribute_bugs_go">Перейти на GitHub</string>
-  <string name="contribute_donate_title">Зробити пожертву</string>
-  <string name="contribute_donate_description">Якщо ви бажаєте надати проекту фінансову допомогу, ви завжди можете зробити це за допомогою кнопки \"Зробити пожертву\" (через сервіс PayPal). \nПримітка: Надаючи фінансову допомогу, ви нічого не купуєте. Ми будемо дуже вдячні за надану вами фінансову підтримку, але ви не отримаєте додаткових функцій.</string>
   <string name="theme_elementary_res_panel_bfb_text">Додатки</string>
 </resources>

@@ -8,19 +8,49 @@
 			android:targetPackage="be.robinj.distrohopper" />
 	</Preference>
 
-	<CheckBoxPreference
+	<SwitchPreferenceCompat
 		android:key="dev_log_toaster"
 		android:dependency="dev"
 		android:title="@string/option_dev_log_toaster"
 		android:summary="@string/hint_dev_log_toaster"
 		android:defaultValue="false" />
 
-	<CheckBoxPreference
-		android:key="widgets_enabled"
+	<SwitchPreferenceCompat
+		android:key="dev_widget_resize_any"
 		android:dependency="dev"
-		android:title="@string/option_widgets_enabled"
-		android:summary="@string/hint_widgets_enabled"
+		android:title="@string/option_widget_resize_any"
+		android:summary="@string/hint_widget_resize_any"
 		android:defaultValue="false" />
+
+	<SwitchPreferenceCompat
+		android:key="dev_show_grid_on_drag"
+		android:dependency="dev"
+		android:title="@string/option_show_grid_on_drag"
+		android:summary="@string/hint_show_grid_on_drag"
+		android:defaultValue="false" />
+
+	<Preference
+		android:key="dummy_rerun_onboarding"
+		android:dependency="dev"
+		android:title="@string/option_rerun_onboarding"
+		android:summary="@string/hint_rerun_onboarding" />
+
+	<Preference
+		android:key="dummy_pin_default_apps"
+		android:dependency="dev"
+		android:title="@string/option_pin_default_apps"
+		android:summary="@string/hint_pin_default_apps" />
+
+	<Preference
+		android:key="dummy_clear_cache"
+		android:dependency="dev"
+		android:title="@string/option_clear_cache" />
+
+	<Preference
+		android:key="dummy_full_restart"
+		android:dependency="dev"
+		android:title="@string/option_full_restart"
+		android:summary="@string/hint_full_restart" />
 
 	<!--<CheckBoxPreference
 		android:key="launcher_running_show"
@@ -36,11 +66,6 @@
 		android:dependency="dev"
 		android:defaultValue="false" />
 
-	<CheckBoxPreference
-		android:key="widgets_enabled"
-		android:title="@string/option_widgets_enabled"
-		android:summary="@string/hint_widgets_enabled"
-		android:dependency="dev"
-		android:defaultValue="false" />-->
+	-->
 
 </PreferenceScreen>

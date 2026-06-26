@@ -17,7 +17,6 @@
   <string name="honourable_mentions">Onurlu isimler</string>
   <string name="button_back">Geri</string>
   <string name="button_about">Hakkında</string>
-  <string name="button_contribute">Katkı Yap</string>
   <string name="button_apply">Uygula</string>
   <string name="title_preferences">Tercihler</string>
   <string name="pref_header_general">Genel</string>
@@ -35,9 +34,4 @@
 * Baskın renk hesaplama fonksiyonunda yardım.</string>
   <string name="hm_todddavies_why">* Onun ProgressWheel bileşenini kullandım, çünkü Android\'in ilerleme çubuğu ilerlemeyi tam gösteremiyor.\n
         https://github.com/Todd-Davies/ProgressWheel/</string>
-  <string name="title_activity_contribute">Nasıl destek olabilirim?</string>
-  <string name="contribute_translate_go">Transifex\'e git</string>
-  <string name="contribute_bugs_title">Hata Raporla</string>
-  <string name="contribute_bugs_go">Github\'a git</string>
-  <string name="contribute_donate_title">Bağış Yap</string>
 </resources>

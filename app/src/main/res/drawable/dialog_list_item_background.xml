@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rounded ripple for tappable rows in the modern dialogs. -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/dialog_ripple">
+    <item android:id="@android:id/mask">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/dialog_accent" />
+            <corners android:radius="@dimen/dialog_item_corner_radius" />
+        </shape>
+    </item>
+</ripple>

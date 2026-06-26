@@ -31,7 +31,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:progress="36"
-            android:max="72" />
+            android:max="72"
+            android:saveEnabled="false" /><!--
+            saveEnabled=false: CustomiseModeUi.show() always sets this slider
+            from the stored preference on (re)creation, so restoring the saved
+            instance state would only overwrite that correct value with the
+            view's default and fire a spurious onProgressChanged. -->
 
     </LinearLayout>
 
@@ -64,18 +69,22 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/option_dashicon_size"
+            android:text="@string/option_dash_grid_size"
             style="@style/TextAppearance.AppCompat.Title" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/hint_dashicon_size" />
+            android:text="@string/hint_dash_grid_size" />
         <SeekBar
-            android:id="@+id/sbCustomiseDashIconSize"
+            android:id="@+id/sbCustomiseDashColumns"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:progress="24"
-            android:max="48" />
+            android:saveEnabled="false" /><!-- see sbCustomiseLauncherIconSize -->
+        <TextView
+            android:id="@+id/tvCustomiseDashGridHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end" />
 
     </LinearLayout>
 
@@ -98,6 +107,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/spiCustomisePanelEdge"></Spinner>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:id="@+id/llCustomiseMenuButton">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/option_menu_button"
+            style="@style/TextAppearance.AppCompat.Title" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hint_menu_button" />
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/spiCustomiseMenuButton"></Spinner>
 
     </LinearLayout>
 </LinearLayout>

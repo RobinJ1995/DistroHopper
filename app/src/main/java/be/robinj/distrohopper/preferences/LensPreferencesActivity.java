@@ -5,12 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.InsetsHelper;
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.desktop.dash.lens.Lens;
 import be.robinj.distrohopper.desktop.dash.lens.LensManager;
@@ -28,6 +30,7 @@ public class LensPreferencesActivity extends AppCompatActivity
 		{
 			super.onCreate (savedInstanceState);
 			setContentView (R.layout.activity_lens_preferences);
+			InsetsHelper.applySystemBarsPadding (this);
 
 			this.lensManager = new LensManager (this.getApplicationContext (), null, null, null, null);
 
@@ -43,8 +46,18 @@ public class LensPreferencesActivity extends AppCompatActivity
 			}
 
 			DragSortListView lvList = this.findViewById (R.id.lvList);
-			lvList.setAdapter (new LensPreferencesListViewAdapter (this.getApplicationContext (), this.lensManager, this.lenses));
+			lvList.setAdapter (new LensPreferencesListViewAdapter (this, this, this.lensManager, this.lenses));
 			lvList.setDropListener (new LensPreferencesListViewDropListener (lvList, this.lenses));
+
+			// Drag only via the row handles, so that the rest of the row scrolls //
+			final DragSortController dragController = new DragSortController (
+				lvList, R.id.ivDragHandle, DragSortController.ON_DOWN, 0);
+			dragController.setSortEnabled (true);
+			dragController.setRemoveEnabled (false);
+			dragController.setBackgroundColor (android.graphics.Color.TRANSPARENT);
+			lvList.setFloatViewManager (dragController);
+			lvList.setOnTouchListener (dragController);
+			lvList.setDragEnabled (true);
 		}
 		catch (Exception ex)
 		{
@@ -85,6 +98,12 @@ public class LensPreferencesActivity extends AppCompatActivity
 	{
 		try
 		{
+			if (this.lensManager == null) // onCreate failed; nothing to save //
+			{
+				super.onPause ();
+				return;
+			}
+
 			this.lensManager.sortEnabledLenses (this.lenses);
 			this.lensManager.saveEnabledLenses ();
 		}

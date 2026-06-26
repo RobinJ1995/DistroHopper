@@ -10,4 +10,11 @@
 
     <dimen name="dash_lenssearchresult_width">84dp</dimen>
     <dimen name="dash_lenssearchresult_height">96dp</dimen>
+
+    <dimen name="onboarding_blur_radius">20dp</dimen>
+    <dimen name="dialog_blur_radius">20dp</dimen>
+
+    <!-- Modern dialog metrics. -->
+    <dimen name="dialog_corner_radius">28dp</dimen>
+    <dimen name="dialog_item_corner_radius">16dp</dimen>
 </resources>

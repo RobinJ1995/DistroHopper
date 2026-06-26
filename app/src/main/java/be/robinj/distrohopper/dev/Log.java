@@ -9,7 +9,7 @@ public class Log extends Observed
 {
 	private StringBuilder log = new StringBuilder ();
 	private String last = null;
-	private boolean enabled = false;
+	private boolean enabled = true;
 
 	private static Log instance;
 

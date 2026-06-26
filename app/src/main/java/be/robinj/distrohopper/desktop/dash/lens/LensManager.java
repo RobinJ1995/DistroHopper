@@ -12,7 +12,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import be.robinj.distrohopper.AppManager;
+import be.robinj.distrohopper.Permission;
 import be.robinj.distrohopper.R;
+import be.robinj.distrohopper.home.SearchLoader;
 import be.robinj.distrohopper.preferences.Preference;
 import be.robinj.distrohopper.preferences.Preferences;
 import be.robinj.distrohopper.thirdparty.ProgressWheel;
@@ -25,7 +27,9 @@ public class LensManager
 	private Context context;
 	private LinkedHashMap<String, Lens> lenses = new LinkedHashMap<> ();
 	private List<Lens> enabled;
-	private AsyncSearch asyncSearch;
+	private SearchLoader searchLoader;
+	private final List<LensSearchResultCollection> results = new ArrayList<> ();
+	private CollectionGridAdapter adapter;
 
 	private int maxResultsPerLens = 10;
 
@@ -34,36 +38,28 @@ public class LensManager
 	private ListView lvDashHomeLensResults;
 	private ProgressWheel pwDashSearchProgress;
 
-	private final float displayDensity;
-	private final int dashIconWidth;
-
 	public LensManager (Context context, LinearLayout llDashHomeAppsContainer, LinearLayout llDashHomeLensesContainer, ProgressWheel pwDashSearchProgress, AppManager apps)
 	{
 		this.context = context;
 		this.enabled = new ArrayList<Lens> ();
 		this.llDashHomeAppsContainer = llDashHomeAppsContainer;
 		this.llDashHomeLensesContainer = llDashHomeLensesContainer;
-		if (llDashHomeAppsContainer != null)
+		if (llDashHomeLensesContainer != null)
 			this.lvDashHomeLensResults = (ListView) llDashHomeLensesContainer.findViewById (R.id.lvDashHomeLensResults);
 		this.pwDashSearchProgress = pwDashSearchProgress;
 
 		final SharedPreferences prefs = Preferences.getSharedPreferences(this.context, Preferences.PREFERENCES);
 		final SharedPreferences prefsLenses = this.getPrefsLenses();
-		this.displayDensity = this.getContext().getResources().getDisplayMetrics().density;
-		this.dashIconWidth = prefs.getInt(Preference.DASHICON_WIDTH.getName(), 80);
 
 		if (apps != null)
 			context = apps.getContext ();
 
-		this.lenses.put ("AskUbuntu", new AskUbuntu (context));
 		this.lenses.put ("DuckDuckGo", new DuckDuckGo (context));
+		this.lenses.put ("FDroid", new FDroid (context));
 		this.lenses.put ("GitHub", new GitHub (context));
+		this.lenses.put ("GooglePlayStore", new GooglePlayStore (context));
 		this.lenses.put ("InstalledApps", new InstalledApps (context, apps));
 		this.lenses.put ("LocalFiles", new LocalFiles (context)); // LocalFiles needs to show an AlertDialog in some cases, thus it needs the activity's Context (which AppsManager has) instead of the Application Context (this.context). //
-		this.lenses.put ("Reddit", new Reddit (context));
-		this.lenses.put ("ServerFault", new ServerFault (context));
-		this.lenses.put ("StackOverflow", new StackOverflow (context));
-		this.lenses.put ("SuperUser", new SuperUser (context));
 
 		List<String> defaultLenses = new ArrayList<String> ();
 		defaultLenses.add ("InstalledApps");
@@ -81,7 +77,15 @@ public class LensManager
 		}
 		else
 		{
-			enabledLenses.addAll (defaultLenses);
+			// Default lenses whose permissions haven't been granted (e.g. the
+			// wizard's storage prompt was declined) start out disabled; enabling
+			// them in the preferences re-requests the permissions //
+			for (String lensName : defaultLenses)
+			{
+				final Lens lens = this.lenses.get (lensName);
+				if (lens != null && Permission.missingPermissions (this.context, lens.requiredPermissions ()).length == 0)
+					enabledLenses.add (lensName);
+			}
 		}
 
 		for (String lensName : enabledLenses)
@@ -118,8 +122,9 @@ public class LensManager
 
 	public void enableLens (String name)
 	{
-		if (! this.isLensEnabled (name))
-			this.enabled.add (this.lenses.get (name));
+		final Lens lens = this.lenses.get(name);
+		if (lens != null && ! this.enabled.contains(lens))
+			this.enabled.add (lens);
 
 		this.saveEnabledLenses ();
 	}
@@ -201,16 +206,59 @@ public class LensManager
 		}
 	}
 
+	/**
+	 * Injected by HomeActivity once the activity exists (it owns the
+	 * lifecycleScope and dispatchers the loader runs on).
+	 */
+	public void setSearchLoader (SearchLoader searchLoader)
+	{
+		this.searchLoader = searchLoader;
+	}
+
+	/**
+	 * Activates the first available search result as if it had been tapped,
+	 * forwarding to the owning lens's onClick. Skips error sections (null
+	 * results) and empty sections, so it lands on the first real result of the
+	 * first lens that has one. Returns whether a result was activated.
+	 *
+	 * Called from the UI thread (the search box's Enter handler); the results
+	 * list is only ever read/mutated on the main thread, so no extra
+	 * synchronization is needed.
+	 */
+	public boolean activateFirstResult ()
+	{
+		for (LensSearchResultCollection coll : this.results)
+		{
+			List<LensSearchResult> res = coll.getResults ();
+			if (res != null && ! res.isEmpty ())
+			{
+				LensSearchResult result = res.get (0);
+				coll.getLens ().onClick (result.getUrl (), result.getObj ());
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public void startSearch (String pattern)
 	{
-		if (this.asyncSearch != null)
-			this.asyncSearch.cancel (true);
+		if (this.searchLoader != null)
+			this.searchLoader.cancel ();
 
 		if (! pattern.equals (""))
 		{
-			this.asyncSearch = new AsyncSearch(this, this.pwDashSearchProgress,
-					this.lvDashHomeLensResults, this.displayDensity, this.dashIconWidth);
-			this.asyncSearch.execute (pattern);
+			this.showLensesContainer ();
+
+			// Fresh adapter + backing list per query; the loader appends collections
+			// to this.results and notifies the adapter as lenses complete //
+			this.results.clear ();
+			this.adapter = new CollectionGridAdapter (this.getContext (), this.results);
+			this.lvDashHomeLensResults.setAdapter (this.adapter);
+
+			if (this.searchLoader != null)
+				this.searchLoader.start (pattern, this.enabled, this.maxResultsPerLens,
+						this.adapter, this.results, this.pwDashSearchProgress);
 		}
 		else
 		{

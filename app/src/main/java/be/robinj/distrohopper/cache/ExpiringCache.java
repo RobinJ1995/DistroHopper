@@ -7,14 +7,21 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.LongSupplier;
 
 public class ExpiringCache<T extends Object> implements ICache<T> {
-	private final ICache innerCache;
+	private final ICache<T> innerCache;
 	private final LongCache expiration;
 	private final long duration;
+	private final LongSupplier clock;
 
 	public ExpiringCache(final Context context, final ICache<T> innerCache,
 						 final long durationMillis) {
+		this(context, innerCache, durationMillis, System::currentTimeMillis);
+	}
+
+	ExpiringCache(final Context context, final ICache<T> innerCache,
+				  final long durationMillis, final LongSupplier clock) {
 		this.innerCache = innerCache;
 		/*
 		 * If I attach a debugger, then the expiration cache is always empty once it gets past the
@@ -28,18 +35,19 @@ public class ExpiringCache<T extends Object> implements ICache<T> {
 		 */
 		this.expiration = new LongCache(context, innerCache.getName() + "_expiration");
 		this.duration = durationMillis;
+		this.clock = clock;
 	}
 
 	synchronized void prune() {
 		for (final Map.Entry<String, Long> entry : this.expiration.entrySet()) {
-			if (entry.getValue() == null || entry.getValue() >= System.currentTimeMillis()) {
+			if (entry.getValue() == null || entry.getValue() <= this.clock.getAsLong()) {
 				this.remove(entry.getKey());
 			}
 		}
 	}
 
 	synchronized boolean pruneItem(final String key) {
-		if (this.expiration.get(key, 0L) <= System.currentTimeMillis()) {
+		if (this.expiration.get(key, 0L) <= this.clock.getAsLong()) {
 			this.remove(key);
 
 			return true;
@@ -80,28 +88,28 @@ public class ExpiringCache<T extends Object> implements ICache<T> {
 	public synchronized T get(final Object key) {
 		this.pruneItem(key.toString());
 
-		return (T) this.innerCache.get(key);
+		return this.innerCache.get(key);
 	}
 
 	@Override
-	public synchronized T put(final String key, final Object value) {
-		this.expiration.put(key, System.currentTimeMillis() + this.duration);
+	public synchronized T put(final String key, final T value) {
+		this.expiration.put(key, this.clock.getAsLong() + this.duration);
 
-		return (T) this.innerCache.put(key, value);
+		return this.innerCache.put(key, value);
 	}
 
 	@Override
 	public synchronized T remove(final Object key) {
 		this.expiration.remove(key);
 
-		return (T) this.innerCache.remove(key);
+		return this.innerCache.remove(key);
 	}
 
 	@Override
-	public synchronized void putAll(@NonNull final Map map) {
+	public synchronized void putAll(@NonNull final Map<? extends String, ? extends T> map) {
 		final HashMap<String, Long> expirationMap = new HashMap<>();
 		for (final Object key : map.keySet()) {
-			expirationMap.put(key.toString(), System.currentTimeMillis() + this.duration);
+			expirationMap.put(key.toString(), this.clock.getAsLong() + this.duration);
 		}
 
 		this.expiration.putAll(expirationMap);
@@ -116,7 +124,7 @@ public class ExpiringCache<T extends Object> implements ICache<T> {
 
 	@NonNull
 	@Override
-	public synchronized Set keySet() {
+	public synchronized Set<String> keySet() {
 		this.prune();
 
 		return this.innerCache.keySet();
@@ -124,7 +132,7 @@ public class ExpiringCache<T extends Object> implements ICache<T> {
 
 	@NonNull
 	@Override
-	public synchronized Collection values() {
+	public synchronized Collection<T> values() {
 		this.prune();
 
 		return this.innerCache.values();
