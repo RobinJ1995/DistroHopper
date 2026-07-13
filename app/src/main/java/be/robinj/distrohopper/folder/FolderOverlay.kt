@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
+import be.robinj.distrohopper.HomeActivity
 
 /**
  * Shared chrome for the three folder popovers (dash, launcher, desktop): a dim,
@@ -35,6 +36,8 @@ class FolderOverlay(private val activity: Activity) {
 	 * the panel calls [onOutsideTap] (typically dismiss).
 	 */
 	fun show(panel: View, width: Int, height: Int, anchor: View, onOutsideTap: () -> Unit) {
+		active?.takeIf { it !== this }?.dismiss()
+
 		val loc = anchorCentreInContent(anchor)
 		val margin = dp(8)
 		val left = (loc.first - width / 2)
@@ -69,6 +72,9 @@ class FolderOverlay(private val activity: Activity) {
 		panel.animate().scaleX(1f).scaleY(1f).alpha(1f)
 			.setDuration(DURATION).setInterpolator(DecelerateInterpolator()).start()
 		scrim.animate().alpha(1f).setDuration(DURATION).start()
+
+		active = this
+		this.notifyStateChanged()
 	}
 
 	/**
@@ -81,6 +87,9 @@ class FolderOverlay(private val activity: Activity) {
 		val panel = this.panel
 		this.scrim = null
 		this.panel = null
+		if (active === this)
+			active = null
+		this.notifyStateChanged()
 
 		panel?.animate()?.scaleX(START_SCALE)?.scaleY(START_SCALE)?.alpha(0f)
 			?.setDuration(DURATION)?.setInterpolator(AccelerateInterpolator())?.start()
@@ -108,10 +117,46 @@ class FolderOverlay(private val activity: Activity) {
 	private fun dp(value: Int): Int =
 		(value * this.activity.resources.displayMetrics.density).toInt()
 
+	/** Keeps HomeActivity's Back callback in sync with folder-open state. */
+	private fun notifyStateChanged() {
+		(this.activity as? HomeActivity)?.updateBackCallback()
+	}
+
 	companion object {
 		private const val BLUR_RADIUS = 5f
 		private const val START_SCALE = 0.7f
 		private const val DURATION = 160L
 		private val SCRIM_COLOR = Color.argb(140, 0, 0, 0)
+
+		// The currently open folder overlay, if any. Only one folder can be open
+		// at a time (the scrim covers the whole activity), and every popup type
+		// opens and dismisses through this class, so a single slot suffices. Lets
+		// HomeActivity close the folder on Back or Home without every click site
+		// having to retain the popup it created.
+		private var active: FolderOverlay? = null
+
+		/** Whether a folder overlay is currently open in [activity]. */
+		@JvmStatic
+		fun isShowingIn(activity: Activity): Boolean =
+			active?.let { it.activity === activity && it.isShowing } ?: false
+
+		/**
+		 * Dismisses the folder overlay open in [activity], if any. Returns whether
+		 * there was one — i.e. whether this press was consumed by a folder.
+		 */
+		@JvmStatic
+		fun dismissActive(activity: Activity): Boolean {
+			val open = isShowingIn(activity)
+			if (open)
+				active?.dismiss()
+			return open
+		}
+
+		/** Drops the [active] reference so a destroyed [activity] is not retained. */
+		@JvmStatic
+		fun clearFor(activity: Activity) {
+			if (active?.activity === activity)
+				active = null
+		}
 	}
 }
