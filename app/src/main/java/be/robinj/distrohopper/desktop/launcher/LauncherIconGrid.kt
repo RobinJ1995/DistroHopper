@@ -35,8 +35,9 @@ import kotlin.math.roundToInt
  * CURRENT theme ([launcherInteriorPx] subtracts the theme's launcher margins and its
  * launcher-background 9-patch insets), so no icon is cut off and no sliver of an extra one
  * shows. There is deliberately no separate size clamp: clamping the COUNT to
- * `[minCount, maxCount]` already keeps the size within `[MIN_ICON_DP, MAX_ICON_DP]` dp while
- * preserving the exact division.
+ * `[minCount, maxCount]` already keeps the size within `[MIN_ICON_DP, MAX_ICON_DP]` dp for the
+ * bare screen edge (a theme's margins/insets can shave a few dp more) while preserving the
+ * exact division.
  */
 object LauncherIconGrid {
 	/** Target physical icon size (dp) used to pick the device's default slot count. */
@@ -112,13 +113,22 @@ object LauncherIconGrid {
 
 	/** Slot count for the current screen + stored preset (the whole number that must fit). */
 	@JvmStatic
-	fun count(context: Context): Int =
-		countForPreset(context.resources.configuration.smallestScreenWidthDp, preset(context))
+	fun count(context: Context): Int = countForPreset(context, preset(context))
 
 	/** Slot count for the current screen and a specific [presetIndex] (for the customise hint). */
 	@JvmStatic
 	fun countForPreset(context: Context, presetIndex: Int): Int =
 		countForPreset(context.resources.configuration.smallestScreenWidthDp, presetIndex)
+
+	/**
+	 * Memoises the resolved interior: the resolution below inflates the theme's launcher
+	 * background (a 9-patch bitmap) and two TypedArrays, and it is called from the clipping
+	 * viewports' onMeasure — which runs per FRAME during the per-desktop swipe morph
+	 * ([PinnedAppsBar] requests layout on every morph update). The key captures everything the
+	 * result depends on; UI-thread only, like all view sizing.
+	 */
+	private var interiorCacheKey: Triple<String, Int, Int>? = null
+	private var interiorCachePx = 0
 
 	/**
 	 * The usable along-edge length (px) of the launcher placed on the screen's SHORTEST edge:
@@ -135,11 +145,16 @@ object LauncherIconGrid {
 		val shortEdgePx = min(dm.widthPixels, dm.heightPixels)
 		val theme = DependencyContainer.of(context).themeManager.current
 
-		// Theme launcher_margin: 4-item array [top, right, bottom, left]; horizontal bar => the
-		// two horizontal ends. Every theme uses symmetric margins, but sum both ends regardless.
+		val cacheKey = Triple(theme.getName(), shortEdgePx, dm.densityDpi)
+		if (cacheKey == this.interiorCacheKey) {
+			return this.interiorCachePx
+		}
+
+		// Theme launcher_margin: 4-item array [top, right, bottom, left]; a horizontal bar
+		// loses the two horizontal ends (indices 1 and 3, matching LauncherEdgeController's
+		// convention). Every theme uses symmetric margins, but sum both ends regardless.
 		val margins = res.obtainTypedArray(theme.launcher_margin)
-		val marginPx = margins.getDimensionPixelSize(Location.RIGHT.n - 1, 0) +
-			margins.getDimensionPixelSize(Location.LEFT.n - 1, 0)
+		val marginPx = margins.getDimensionPixelSize(1, 0) + margins.getDimensionPixelSize(3, 0)
 		margins.recycle()
 
 		// Launcher background 9-patch insets. Dynamic (solid-colour) backgrounds have none.
@@ -155,7 +170,11 @@ object LauncherIconGrid {
 			}
 		}
 
-		return (shortEdgePx - marginPx - paddingPx).coerceAtLeast(0)
+		val interior = (shortEdgePx - marginPx - paddingPx).coerceAtLeast(0)
+		this.interiorCacheKey = cacheKey
+		this.interiorCachePx = interior
+
+		return interior
 	}
 
 	/** The per-slot icon size (px) for the current screen, theme and stored preset. */

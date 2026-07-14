@@ -30,9 +30,9 @@
             android:id="@+id/sbCustomiseLauncherIconSize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:progress="2"
-            android:max="4"
             android:saveEnabled="false" /><!--
+            max and progress are set by CustomiseModeUi.show() from
+            LauncherIconGrid (like the dash-columns seekbar below).
             saveEnabled=false: CustomiseModeUi.show() always sets this slider
             from the stored preference on (re)creation, so restoring the saved
             instance state would only overwrite that correct value with the

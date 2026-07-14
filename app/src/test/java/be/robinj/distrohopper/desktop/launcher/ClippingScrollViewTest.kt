@@ -80,4 +80,30 @@ class ClippingScrollViewTest {
 		view.measure(this.exactly(slot - 1), this.exactly(slot))
 		assertEquals(0, view.measuredWidth)
 	}
+
+	/**
+	 * While the content FITS, the measure is left untouched even when it is not a whole slot
+	 * multiple: no partial icon is possible without overflow, and PinnedAppsBar's per-desktop
+	 * morph measures the bar to a fractional length — flooring it would snap the smooth
+	 * auto-sizing resize (GNOME) in whole-icon steps.
+	 */
+	@Test fun contentThatFitsIsNotClipped() {
+		this.setPreset(LauncherIconGrid.DEFAULT_PRESET)
+		val slot = LauncherIconGrid.iconSizePx(this.context)
+		val fractional = slot * 2 + slot / 3 // mid-morph bar length: 2⅓ slots
+
+		val horizontal = ClippingHorizontalScrollView(this.context)
+		val hChild = LinearLayout(this.context)
+		hChild.layoutParams = ViewGroup.LayoutParams(fractional, slot)
+		horizontal.addView(hChild)
+		horizontal.measure(this.exactly(slot * 5), this.exactly(slot * 2))
+		assertEquals("viewport untouched when content fits", slot * 5, horizontal.measuredWidth)
+
+		val vertical = ClippingScrollView(this.context)
+		val vChild = LinearLayout(this.context)
+		vChild.layoutParams = ViewGroup.LayoutParams(slot, fractional)
+		vertical.addView(vChild)
+		vertical.measure(this.exactly(slot * 2), this.exactly(slot * 5))
+		assertEquals("viewport untouched when content fits", slot * 5, vertical.measuredHeight)
+	}
 }

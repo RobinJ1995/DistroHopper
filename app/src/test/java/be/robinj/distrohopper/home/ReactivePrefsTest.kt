@@ -12,6 +12,7 @@ import be.robinj.distrohopper.desktop.launcher.LauncherIconGrid
 import be.robinj.distrohopper.preferences.Preference
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,8 +45,11 @@ class ReactivePrefsTest {
 	}
 
 	@Test fun launcherIconPresetResizesThePanelCloseButton() {
+		var widthBefore = 0
 		this.scenario.onActivity { activity ->
-			// "Huge" (0) differs from the default preset, so the size must change.
+			widthBefore = activity.findViewById<ImageButton>(R.id.ibPanelDashClose).layoutParams.width
+			// "Huge" (0) resolves to a different slot count than the default on the
+			// test screen (see the precondition below), so the width must change.
 			DependencyContainer.of(activity).prefs.edit {
 				putInt(Preference.LAUNCHER_ICON_PRESET.getName(), 0)
 			}
@@ -53,8 +57,15 @@ class ReactivePrefsTest {
 		ActivityTestSupport.drainTasks()
 
 		this.scenario.onActivity { activity ->
-			assertEquals(LauncherIconGrid.iconSizePx(activity),
-				activity.findViewById<ImageButton>(R.id.ibPanelDashClose).layoutParams.width)
+			val sw = activity.resources.configuration.smallestScreenWidthDp
+			assertNotEquals("test screen must distinguish Huge from Default",
+				LauncherIconGrid.countForPreset(sw, 0),
+				LauncherIconGrid.countForPreset(sw, LauncherIconGrid.DEFAULT_PRESET))
+
+			val width = activity.findViewById<ImageButton>(R.id.ibPanelDashClose).layoutParams.width
+			assertEquals(LauncherIconGrid.iconSizePx(activity), width)
+			// Guards against the startup sizing masking a dead reactive path.
+			assertNotEquals(widthBefore, width)
 		}
 	}
 

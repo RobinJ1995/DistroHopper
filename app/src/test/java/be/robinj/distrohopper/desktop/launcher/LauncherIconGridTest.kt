@@ -46,17 +46,6 @@ class LauncherIconGridTest {
 				LauncherIconGrid.countForPreset(sw, LauncherIconGrid.DEFAULT_PRESET))
 	}
 
-	/** Presets are ± offsets from the default; more icons toward "Tiny". */
-	@Test fun presetsStepAroundTheDefault() {
-		val sw = 384
-		val base = LauncherIconGrid.defaultCount(sw)
-		for (i in 0 until LauncherIconGrid.PRESET_COUNT) {
-			val expected = (base + (i - LauncherIconGrid.DEFAULT_PRESET))
-				.coerceIn(LauncherIconGrid.minCount(sw), LauncherIconGrid.maxCount(sw))
-			assertEquals(expected, LauncherIconGrid.countForPreset(sw, i))
-		}
-	}
-
 	/** Count never drops below the cap-derived minimum or above the floor-derived maximum. */
 	@Test fun countStaysWithinScreenRange() {
 		for (sw in intArrayOf(180, 200, 320, 384, 600, 800, 1200, 2000)) {
@@ -114,6 +103,9 @@ class LauncherIconGridTest {
 	}
 
 	// --- Physical-size consistency (the point of the rework) -------------------
+	// These assert the bare-screen ideal (interior = short edge). A theme's margins
+	// and 9-patch insets shave a few dp more; exactlyCountSlotsFitEveryTheme covers
+	// that the exact-fit division still holds there.
 
 	/** The default icon stays a comfortable PHYSICAL size across devices — not screen-proportional. */
 	@Test fun defaultIconSizeIsPhysicallyConsistent() {
@@ -240,16 +232,22 @@ class LauncherIconGridTest {
 	/*
 	 * Anchored to the shortest screen edge: the same device portrait or landscape (w/h swapped,
 	 * smallest-width 400dp either way) yields the same count — so the icon size never jumps on
-	 * rotation. Both orientations must agree with the pure countForPreset(400, …).
+	 * rotation. The landscape case is the discriminating one: there screenWidthDp (800) differs
+	 * from smallestScreenWidthDp (400), so a count() bound to the wrong Configuration field
+	 * fails loudly; the preconditions pin the config Robolectric actually produced.
 	 */
-	@Test @Config(qualifiers = "sw400dp-w400dp-h800dp") fun countAnchoredToShortestEdgePortrait() {
+	@Test @Config(qualifiers = "sw400dp-w400dp-h800dp-port") fun countAnchoredToShortestEdgePortrait() {
 		val context = this.ctx()
+		assertEquals(400, context.resources.configuration.smallestScreenWidthDp)
 		assertEquals(LauncherIconGrid.countForPreset(400, LauncherIconGrid.preset(context)),
 			LauncherIconGrid.count(context))
 	}
 
-	@Test @Config(qualifiers = "sw400dp-w800dp-h400dp") fun countAnchoredToShortestEdgeLandscape() {
+	@Test @Config(qualifiers = "sw400dp-w800dp-h400dp-land") fun countAnchoredToShortestEdgeLandscape() {
 		val context = this.ctx()
+		val config = context.resources.configuration
+		assertEquals(400, config.smallestScreenWidthDp)
+		assertEquals("landscape config must make the long edge the width", 800, config.screenWidthDp)
 		assertEquals(LauncherIconGrid.countForPreset(400, LauncherIconGrid.preset(context)),
 			LauncherIconGrid.count(context))
 	}

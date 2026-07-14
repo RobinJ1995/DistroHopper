@@ -44,7 +44,8 @@ public class AppLauncher extends be.robinj.distrohopper.desktop.AppLauncher
 	public void init ()
 	{
 		int width = LauncherIconGrid.iconSizePx (this.getContext ());
-		int height = LauncherIconGrid.iconHeightPx (this.getContext ());
+		int height = LauncherIconGrid.iconHeightPx (width,
+				this.getResources ().getDisplayMetrics ().density);
 
 		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams (width, height);
 
