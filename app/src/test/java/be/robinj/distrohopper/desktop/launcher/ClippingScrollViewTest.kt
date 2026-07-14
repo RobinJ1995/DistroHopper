@@ -27,10 +27,16 @@ class ClippingScrollViewTest {
 		}
 	}
 
-	private fun child(): LinearLayout {
-		// One oversized child so the viewport — not the content — is the limiting dimension.
+	/*
+	 * Scroll views measure their child with an UNSPECIFIED spec along the scroll axis, which
+	 * ignores LayoutParams sizes — in the real launcher the content length comes from summing
+	 * the icon children. Minimum sizes ARE honoured under UNSPECIFIED, so the fakes use those.
+	 */
+	private fun child(width: Int = 5000, height: Int = 5000): LinearLayout {
 		val child = LinearLayout(this.context)
-		child.layoutParams = ViewGroup.LayoutParams(5000, 5000)
+		child.layoutParams = ViewGroup.LayoutParams(width, height)
+		child.minimumWidth = width
+		child.minimumHeight = height
 		return child
 	}
 
@@ -42,10 +48,12 @@ class ClippingScrollViewTest {
 		assertTrue("precondition: positive slot", slot > 0)
 
 		val view = ClippingHorizontalScrollView(this.context)
-		view.addView(this.child())
+		val content = this.child()
+		view.addView(content)
 
 		for (avail in intArrayOf(slot - 1, slot, slot * 3, slot * 4 + slot / 2, 2000)) {
 			view.measure(this.exactly(avail), this.exactly(slot * 2))
+			assertEquals("precondition: content must overflow", 5000, content.measuredWidth)
 			val w = view.measuredWidth
 			assertTrue("clip must not exceed available ($w <= $avail)", w <= avail)
 			assertEquals("clip must be a whole multiple of the slot", 0, w % slot)
@@ -59,10 +67,12 @@ class ClippingScrollViewTest {
 		assertTrue("precondition: positive slot", slot > 0)
 
 		val view = ClippingScrollView(this.context)
-		view.addView(this.child())
+		val content = this.child()
+		view.addView(content)
 
 		for (avail in intArrayOf(slot, slot * 5 - 1, slot * 6, 1777)) {
 			view.measure(this.exactly(slot * 2), this.exactly(avail))
+			assertEquals("precondition: content must overflow", 5000, content.measuredHeight)
 			val h = view.measuredHeight
 			assertTrue("clip must not exceed available ($h <= $avail)", h <= avail)
 			assertEquals("clip must be a whole multiple of the slot", 0, h % slot)
@@ -93,17 +103,17 @@ class ClippingScrollViewTest {
 		val fractional = slot * 2 + slot / 3 // mid-morph bar length: 2⅓ slots
 
 		val horizontal = ClippingHorizontalScrollView(this.context)
-		val hChild = LinearLayout(this.context)
-		hChild.layoutParams = ViewGroup.LayoutParams(fractional, slot)
+		val hChild = this.child(width = fractional, height = slot)
 		horizontal.addView(hChild)
 		horizontal.measure(this.exactly(slot * 5), this.exactly(slot * 2))
+		assertEquals("content must really measure fractional", fractional, hChild.measuredWidth)
 		assertEquals("viewport untouched when content fits", slot * 5, horizontal.measuredWidth)
 
 		val vertical = ClippingScrollView(this.context)
-		val vChild = LinearLayout(this.context)
-		vChild.layoutParams = ViewGroup.LayoutParams(slot, fractional)
+		val vChild = this.child(width = slot, height = fractional)
 		vertical.addView(vChild)
 		vertical.measure(this.exactly(slot * 2), this.exactly(slot * 5))
+		assertEquals("content must really measure fractional", fractional, vChild.measuredHeight)
 		assertEquals("viewport untouched when content fits", slot * 5, vertical.measuredHeight)
 	}
 }
