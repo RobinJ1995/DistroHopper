@@ -9,7 +9,6 @@ import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.theme.Location
 import kotlin.math.ceil
 import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
@@ -137,12 +136,18 @@ object LauncherIconGrid {
 	 * take the left+right insets of the theme's bottom launcher background; computing from this
 	 * fixed hypothetical (never the live container) keeps the icon size stable across rotation
 	 * and identical wherever the launcher is actually docked.
+	 *
+	 * The edge is smallestScreenWidthDp × density — the same stable anchor the slot count uses —
+	 * rather than raw display metrics, whose min(width, height) can drift under configuration
+	 * changes the activity handles without recreating (rotation with 3-button nav, a long-axis
+	 * multi-window resize). Everything this px value depends on (smallestScreenSize, density,
+	 * theme) forces a recreate when it changes, so a computed size can never go stale.
 	 */
 	@JvmStatic
 	fun launcherInteriorPx(context: Context): Int {
 		val res = context.resources
 		val dm = res.displayMetrics
-		val shortEdgePx = min(dm.widthPixels, dm.heightPixels)
+		val shortEdgePx = (res.configuration.smallestScreenWidthDp * dm.density).toInt()
 		val theme = DependencyContainer.of(context).themeManager.current
 
 		val cacheKey = Triple(theme.getName(), shortEdgePx, dm.densityDpi)

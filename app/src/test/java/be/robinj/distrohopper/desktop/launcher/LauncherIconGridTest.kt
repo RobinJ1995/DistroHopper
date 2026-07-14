@@ -229,6 +229,20 @@ class LauncherIconGridTest {
 			LauncherIconGrid.iconHeightPx(context))
 	}
 
+	/**
+	 * The interior derives from smallestScreenWidthDp × density — the same stable anchor the
+	 * count uses — not raw window metrics: every configuration input the size depends on
+	 * (smallestScreenSize, density, theme) recreates the activity when it changes (they are not
+	 * in the manifest's configChanges), so a computed size can never go stale under a handled
+	 * screenSize change.
+	 */
+	@Test @Config(qualifiers = "sw400dp-w400dp-h800dp") fun interiorAnchoredToSmallestWidth() {
+		val context = this.ctx()
+		this.setTheme(context, "default") // no margins, dynamic background: interior == bare edge
+		val density = context.resources.displayMetrics.density
+		assertEquals((400 * density).toInt(), LauncherIconGrid.launcherInteriorPx(context))
+	}
+
 	/*
 	 * Anchored to the shortest screen edge: the same device portrait or landscape (w/h swapped,
 	 * smallest-width 400dp either way) yields the same count — so the icon size never jumps on
