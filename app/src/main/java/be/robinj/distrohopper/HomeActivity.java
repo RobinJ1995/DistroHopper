@@ -235,12 +235,11 @@ public class HomeActivity extends AppCompatActivity
 
 						// An open folder floats above everything else, so Back closes
 						// just the folder — the dash it may have been opened from (or
-						// the widget edit mode behind it) stays as it was. //
+						// the widget edit mode behind it) stays as it was. Dismissing
+						// it already re-synced the Back callback (FolderOverlay
+						// notifies on every show/dismiss), so nothing more to do. //
 						if (FolderOverlay.dismissActive (HomeActivity.this))
-						{
-							HomeActivity.this.updateBackCallback ();
 							return;
-						}
 
 						if (vgWidgets.hasEditModeChild ())
 							vgWidgets.exitEditMode ();
