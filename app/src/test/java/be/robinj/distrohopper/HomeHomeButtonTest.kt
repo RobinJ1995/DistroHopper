@@ -4,8 +4,6 @@ import android.app.Application
 import android.content.Intent
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
-import be.robinj.distrohopper.desktop.dash.DashItem
-import be.robinj.distrohopper.desktop.dash.FolderPopup
 import be.robinj.distrohopper.folder.FolderOverlay
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
@@ -74,12 +72,7 @@ class HomeHomeButtonTest {
     @Test fun pressingHomeWhileFolderOpenClosesFolderAndDash() {
         val activity = this.controller.get()
         activity.openDash()
-
-        val layout = activity.appManager.dashLayout
-        val apps = layout.dashItems(null).filterIsInstance<DashItem.AppItem>()
-        layout.createFolder(apps[0].app, apps[1].app)
-        val folder = layout.dashItems(null).filterIsInstance<DashItem.FolderItem>().first()
-        FolderPopup(activity, folder.folder.id, folder.apps).showAt(this.llDash())
+        ActivityTestSupport.openDashFolder(activity)
         assertTrue(FolderOverlay.isShowingIn(activity))
 
         this.controller.newIntent(this.homeIntent())
@@ -87,6 +80,30 @@ class HomeHomeButtonTest {
 
         assertFalse(FolderOverlay.isShowingIn(activity))
         assertEquals(View.GONE, this.llDash().visibility)
+    }
+
+    /* Home also dismisses the launcher-bar folder popover. */
+    @Test fun pressingHomeWhileLauncherFolderOpenClosesIt() {
+        val activity = this.controller.get()
+        ActivityTestSupport.openLauncherFolder(activity)
+        assertTrue(FolderOverlay.isShowingIn(activity))
+
+        this.controller.newIntent(this.homeIntent())
+        ActivityTestSupport.drainTasks()
+
+        assertFalse(FolderOverlay.isShowingIn(activity))
+    }
+
+    /* Home also dismisses the desktop folder popover. */
+    @Test fun pressingHomeWhileDesktopFolderOpenClosesIt() {
+        val activity = this.controller.get()
+        ActivityTestSupport.openDesktopFolder(activity)
+        assertTrue(FolderOverlay.isShowingIn(activity))
+
+        this.controller.newIntent(this.homeIntent())
+        ActivityTestSupport.drainTasks()
+
+        assertFalse(FolderOverlay.isShowingIn(activity))
     }
 
     @Test fun pressingHomeWithDashClosedLeavesItClosed() {

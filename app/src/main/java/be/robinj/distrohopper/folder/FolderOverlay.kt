@@ -87,8 +87,9 @@ class FolderOverlay(private val activity: Activity) {
 		val panel = this.panel
 		this.scrim = null
 		this.panel = null
-		if (active === this)
+		if (active === this) {
 			active = null
+		}
 		this.notifyStateChanged()
 
 		panel?.animate()?.scaleX(START_SCALE)?.scaleY(START_SCALE)?.alpha(0f)
@@ -147,16 +148,18 @@ class FolderOverlay(private val activity: Activity) {
 		@JvmStatic
 		fun dismissActive(activity: Activity): Boolean {
 			val open = isShowingIn(activity)
-			if (open)
+			if (open) {
 				active?.dismiss()
+			}
 			return open
 		}
 
 		/** Drops the [active] reference so a destroyed [activity] is not retained. */
 		@JvmStatic
 		fun clearFor(activity: Activity) {
-			if (active?.activity === activity)
+			if (active?.activity === activity) {
 				active = null
+			}
 		}
 	}
 }

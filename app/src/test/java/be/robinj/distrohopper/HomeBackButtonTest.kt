@@ -6,8 +6,6 @@ import android.content.IntentFilter
 import android.view.View
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.pressBack
-import be.robinj.distrohopper.desktop.dash.DashItem
-import be.robinj.distrohopper.desktop.dash.FolderPopup
 import be.robinj.distrohopper.folder.FolderOverlay
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -46,15 +44,6 @@ class HomeBackButtonTest {
     }
 
     private fun llDash(activity: HomeActivity) = activity.findViewById<View>(R.id.llDash)
-
-    /** Folds the first two dash apps into a folder and opens its popup. */
-    private fun openFolder(activity: HomeActivity) {
-        val layout = activity.appManager.dashLayout
-        val apps = layout.dashItems(null).filterIsInstance<DashItem.AppItem>()
-        layout.createFolder(apps[0].app, apps[1].app)
-        val folder = layout.dashItems(null).filterIsInstance<DashItem.FolderItem>().first()
-        FolderPopup(activity, folder.folder.id, folder.apps).showAt(this.llDash(activity))
-    }
 
     /*
      * Default launcher, nothing open: Back must be consumed (so the system does
@@ -114,7 +103,7 @@ class HomeBackButtonTest {
     @Test fun backClosesAnOpenFolderButKeepsTheDashOpen() {
         this.scenario.onActivity { activity ->
             activity.openDash()
-            this.openFolder(activity)
+            ActivityTestSupport.openDashFolder(activity)
             assertTrue(FolderOverlay.isShowingIn(activity))
         }
 
@@ -145,7 +134,7 @@ class HomeBackButtonTest {
             activity.updateBackCallback()
             assertFalse(activity.onBackPressedDispatcher.hasEnabledCallbacks())
 
-            this.openFolder(activity)
+            ActivityTestSupport.openDashFolder(activity)
             assertTrue(activity.onBackPressedDispatcher.hasEnabledCallbacks())
         }
 
@@ -156,6 +145,41 @@ class HomeBackButtonTest {
             assertFalse(FolderOverlay.isShowingIn(activity))
             // Not the default launcher and nothing open: stop consuming Back //
             assertFalse(activity.onBackPressedDispatcher.hasEnabledCallbacks())
+        }
+    }
+
+    /*
+     * The launcher-bar folder popover goes through the same shared overlay as
+     * the dash folder; Back must close it too (and capture Back while open).
+     */
+    @Test fun backClosesAnOpenLauncherFolder() {
+        this.scenario.onActivity { activity ->
+            ActivityTestSupport.openLauncherFolder(activity)
+            assertTrue(FolderOverlay.isShowingIn(activity))
+            assertTrue(activity.onBackPressedDispatcher.hasEnabledCallbacks())
+        }
+
+        pressBack()
+        ActivityTestSupport.drainTasks()
+
+        this.scenario.onActivity { activity ->
+            assertFalse(FolderOverlay.isShowingIn(activity))
+        }
+    }
+
+    /* Same for the desktop folder popover. */
+    @Test fun backClosesAnOpenDesktopFolder() {
+        this.scenario.onActivity { activity ->
+            ActivityTestSupport.openDesktopFolder(activity)
+            assertTrue(FolderOverlay.isShowingIn(activity))
+            assertTrue(activity.onBackPressedDispatcher.hasEnabledCallbacks())
+        }
+
+        pressBack()
+        ActivityTestSupport.drainTasks()
+
+        this.scenario.onActivity { activity ->
+            assertFalse(FolderOverlay.isShowingIn(activity))
         }
     }
 

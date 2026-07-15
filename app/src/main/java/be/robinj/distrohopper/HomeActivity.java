@@ -237,8 +237,12 @@ public class HomeActivity extends AppCompatActivity
 						// just the folder — the dash it may have been opened from (or
 						// the widget edit mode behind it) stays as it was. //
 						if (FolderOverlay.dismissActive (HomeActivity.this))
-							;
-						else if (vgWidgets.hasEditModeChild ())
+						{
+							HomeActivity.this.updateBackCallback ();
+							return;
+						}
+
+						if (vgWidgets.hasEditModeChild ())
 							vgWidgets.exitEditMode ();
 						else if (HomeActivity.this.dash.isOpen ())
 							HomeActivity.this.closeDash ();

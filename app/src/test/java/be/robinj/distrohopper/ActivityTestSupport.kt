@@ -16,8 +16,15 @@ import android.widget.GridView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.viewpager2.widget.ViewPager2
+import be.robinj.distrohopper.desktop.dash.DashItem
+import be.robinj.distrohopper.desktop.dash.FolderPopup
+import be.robinj.distrohopper.desktop.launcher.LauncherDragPayload
+import be.robinj.distrohopper.desktop.launcher.LauncherItem
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
+import be.robinj.distrohopper.widgets.DesktopFolderLayout
+import be.robinj.distrohopper.widgets.DesktopFolderOverlay
+import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import org.robolectric.Robolectric
 import org.robolectric.Shadows
@@ -191,6 +198,52 @@ internal object ActivityTestSupport {
     /** The dash apps grid of the pager's current page (after [layoutDashApps]). */
     fun dashGrid(activity: HomeActivity): GridView? =
         activity.findViewById(R.id.gvDashHomeApps)
+
+    /**
+     * Folds the first two dash apps into a dash folder and opens its popup,
+     * the way AppLauncherClickListener does when a dash folder icon is tapped.
+     */
+    fun openDashFolder(activity: HomeActivity) {
+        val layout = activity.appManager.dashLayout
+        val apps = layout.dashItems(null).filterIsInstance<DashItem.AppItem>()
+        layout.createFolder(apps[0].app, apps[1].app)
+        val folder = layout.dashItems(null).filterIsInstance<DashItem.FolderItem>().first()
+        FolderPopup(activity, folder.folder.id, folder.apps)
+            .showAt(activity.findViewById(R.id.llDash))
+    }
+
+    /**
+     * Pins the first two dash apps, groups them into a launcher-bar folder and
+     * opens its popup with the same arguments LauncherBarBinder's click site uses.
+     */
+    fun openLauncherFolder(activity: HomeActivity) {
+        val appManager = activity.appManager
+        val desktop = appManager.currentDesktop
+        val apps = appManager.dashLayout.dashItems(null).filterIsInstance<DashItem.AppItem>()
+        appManager.repository.pin(apps[0].app, desktop)
+        appManager.repository.pin(apps[1].app, desktop)
+        appManager.launcherLayout.createFolder(desktop, apps[0].app, apps[1].app)
+        val folder = appManager.launcherLayout.launcherItems(desktop)
+            .filterIsInstance<LauncherItem.LauncherFolder>().first()
+        FolderPopup(activity, folder.folder.id, folder.apps,
+            clipLabel = "launcherFolderMember",
+            memberPayload = { app -> LauncherDragPayload.FolderMemberDrag(folder.folder.id, app) })
+            .showAt(activity.findViewById(R.id.llDash))
+    }
+
+    /**
+     * Builds a two-app desktop folder layout and opens its overlay, the way
+     * DesktopFolderHost does when a desktop folder icon is tapped.
+     */
+    fun openDesktopFolder(activity: HomeActivity) {
+        val appMap = activity.appManager.repository.installedAppsMap()
+        val apps = appMap.values.toList()
+        val layout = DesktopFolderLayout(UUID.randomUUID().toString(), 0, 0, 0)
+            .withApp(apps[0].profileScopedKey)!!
+            .withApp(apps[1].profileScopedKey)!!
+        DesktopFolderOverlay(activity, layout, appMap)
+            .show(activity.findViewById(R.id.llDash))
+    }
 
     fun drainTasks() {
         // The background scheduler only exists under the LEGACY looper; animator-driven
