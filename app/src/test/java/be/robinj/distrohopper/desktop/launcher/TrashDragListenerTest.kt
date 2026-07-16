@@ -9,7 +9,7 @@ import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.DragEvents
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
-import be.robinj.distrohopper.widgets.WidgetPersistence
+import be.robinj.distrohopper.widgets.DesktopLayoutTestStore
 import be.robinj.distrohopper.widgets.WidgetTestSupport
 import be.robinj.distrohopper.widgets.WidgetsPager
 import org.junit.After
@@ -89,14 +89,14 @@ class TrashDragListenerTest {
 			val host = WidgetTestSupport.host(activity)
 			val container = WidgetTestSupport.addWidget(activity, host, grid, 42, 0, 0, 2, 2)
 			host.persist()
-			assertEquals(1, WidgetPersistence(activity.applicationContext).load().size)
+			assertEquals(1, DesktopLayoutTestStore.widgets(activity.applicationContext).size)
 			val listener = TrashDragListener(activity)
 
 			listener.onDrag(activity.findViewById<AppLauncher>(R.id.lalTrash),
 				DragEvents.obtain(DragEvent.ACTION_DROP, localState = container))
 
 			assertEquals(0, grid.childCount)
-			assertEquals(0, WidgetPersistence(activity.applicationContext).load().size)
+			assertEquals(0, DesktopLayoutTestStore.widgets(activity.applicationContext).size)
 		}
 	}
 

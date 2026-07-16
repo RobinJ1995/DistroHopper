@@ -6,6 +6,7 @@ import be.robinj.distrohopper.AppRepository
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.dev.Log
 import be.robinj.distrohopper.folder.FolderMember
+import be.robinj.distrohopper.preferences.Preferences
 
 /**
  * Owns the folders pinned to the desktops — the folder-world counterpart of
@@ -22,7 +23,8 @@ class DesktopFolderHost(
 	private val repository: AppRepository,
 	private val desktopAppHost: DesktopAppHost,
 ) {
-	private val persistence = DesktopFolderPersistence(parent.applicationContext)
+	private fun desktopPrefs() =
+		Preferences.getSharedPreferences(this.parent.applicationContext, Preferences.DESKTOP_LAYOUT)
 
 	// --- Restore / persist -------------------------------------------------
 
@@ -31,7 +33,7 @@ class DesktopFolderHost(
 		val appMap = this.repository.installedAppsMap()
 		var changed = false
 
-		for (saved in this.persistence.load()) {
+		for (saved in DesktopLayoutStorage.readFolders(this.desktopPrefs())) {
 			val keptCells = saved.cells.filter { cell ->
 				when (val member = cell.member) {
 					// Enforce the desktop's one-copy invariant: drop an app that is also
@@ -87,7 +89,7 @@ class DesktopFolderHost(
 			}
 		}
 
-		this.persistence.save(layouts)
+		DesktopLayoutStorage.writeFolders(this.desktopPrefs(), layouts)
 	}
 
 	// --- Mutations ---------------------------------------------------------

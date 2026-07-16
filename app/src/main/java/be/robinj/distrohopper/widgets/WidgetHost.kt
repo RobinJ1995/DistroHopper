@@ -25,7 +25,8 @@ class WidgetHost(
 	private val widgetManager: AppWidgetManager,
 	private val vgWidgets: WidgetsPager,
 ) : AppWidgetHost(parent.applicationContext, HOST_ID) {
-	private val persistence = WidgetPersistence(parent.applicationContext)
+	private fun desktopPrefs() =
+		Preferences.getSharedPreferences(this.parent.applicationContext, Preferences.DESKTOP_LAYOUT)
 
 	private var pendingAppWidgetId = -1
 	private var pendingInfo: AppWidgetProviderInfo? = null
@@ -39,7 +40,7 @@ class WidgetHost(
 	fun restoreWidgets() {
 		var pruned = false
 
-		for (layout in this.persistence.load()) {
+		for (layout in DesktopLayoutStorage.readWidgets(this.desktopPrefs())) {
 			if (this.widgetManager.getAppWidgetInfo(layout.appWidgetId) == null) {
 				this.deleteAppWidgetId(layout.appWidgetId)
 				pruned = true
@@ -216,7 +217,7 @@ class WidgetHost(
 			this.widgetsOf(this.vgWidgets.pageAt(page)).isNotEmpty()
 
 	fun persist() {
-		this.persistence.save(this.vgWidgets.collectLayouts(null))
+		DesktopLayoutStorage.writeWidgets(this.desktopPrefs(), this.vgWidgets.collectLayouts(null))
 	}
 
 	fun showPicker() {

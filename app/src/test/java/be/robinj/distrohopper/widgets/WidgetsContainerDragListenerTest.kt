@@ -98,7 +98,7 @@ class WidgetsContainerDragListenerTest {
 			assertEquals(5, lp(fixture.container).col)
 			assertEquals(4, lp(fixture.container).row)
 			assertFalse(fixture.grid.isMoveTargetVisible)
-			val persisted = WidgetPersistence(activity.applicationContext).load().single()
+			val persisted = DesktopLayoutTestStore.widgets(activity.applicationContext).single()
 			assertEquals(5, persisted.col)
 			assertEquals(4, persisted.row)
 		}

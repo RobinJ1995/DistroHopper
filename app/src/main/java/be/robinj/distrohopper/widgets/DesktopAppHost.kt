@@ -4,6 +4,7 @@ import be.robinj.distrohopper.App
 import be.robinj.distrohopper.AppRepository
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.dev.Log
+import be.robinj.distrohopper.preferences.Preferences
 
 /**
  * Owns the apps pinned to the desktops — the app-world counterpart of
@@ -24,7 +25,8 @@ class DesktopAppHost(
 	private val vgWidgets: WidgetsPager,
 	private val repository: AppRepository,
 ) {
-	private val persistence = DesktopAppPersistence(parent.applicationContext)
+	private fun desktopPrefs() =
+		Preferences.getSharedPreferences(this.parent.applicationContext, Preferences.DESKTOP_LAYOUT)
 
 	/**
 	 * Recreates the views for every persisted desktop app, resolving each against
@@ -38,7 +40,7 @@ class DesktopAppHost(
 		val seen = HashSet<String>()
 		var changed = false
 
-		for (layout in this.persistence.load()) {
+		for (layout in DesktopLayoutStorage.readApps(this.desktopPrefs())) {
 			val app = appMap[layout.key]
 			if (app == null) {
 				changed = true // Pruned: the app is no longer installed //
@@ -219,7 +221,7 @@ class DesktopAppHost(
 			}
 		}
 
-		this.persistence.save(layouts)
+		DesktopLayoutStorage.writeApps(this.desktopPrefs(), layouts)
 	}
 
 	private fun addAppView(app: App, layout: DesktopAppLayout) {

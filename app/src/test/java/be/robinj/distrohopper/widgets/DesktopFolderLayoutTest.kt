@@ -10,8 +10,8 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 /**
- * The desktop folder's 3x3 app packing (apps as 1x1) and its JSON persistence
- * round-trip.
+ * The desktop folder's 3x3 app packing (apps as 1x1). Its JSON persistence is
+ * covered by [DesktopLayoutStorageTest].
  */
 @RunWith(RobolectricTestRunner::class)
 class DesktopFolderLayoutTest {
@@ -40,13 +40,5 @@ class DesktopFolderLayoutTest {
 
 		val pruned = layout.without(FolderMember.AppMember("b\nB"))
 		assertEquals(listOf("a\nA", "c\nC"), pruned.appKeys)
-	}
-
-	@Test fun jsonRoundTripPreservesPlacementAndContents() {
-		val layout = this.folder("a\nA", "b\nB").copy(col = 4, row = 6, page = 2)
-
-		val restored = DesktopFolderLayout.fromJson(layout.toJson())
-
-		assertEquals(layout, restored)
 	}
 }

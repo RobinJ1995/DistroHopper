@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 /**
  * Typed, observable access to the main "prefs" file. The pinned-apps, lenses,
  * and widgets preference files are not covered here; they belong to their
- * respective owners (AppManager, LensManager, WidgetPersistence).
+ * respective owners (AppManager, LensManager, DesktopLayoutStorage).
  */
 class PreferencesRepository(context: Context) {
 	private val prefs: SharedPreferences = Preferences.getSharedPreferences(context)
