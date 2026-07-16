@@ -118,7 +118,7 @@ class WidgetsPagerTest {
 
 		host.persist()
 
-		val persisted = WidgetPersistence(activity.applicationContext).load()
+		val persisted = DesktopLayoutTestStore.widgets(activity.applicationContext)
 		assertEquals(listOf(
 			WidgetLayout(42, 0, 0, 2, 2, 0),
 			WidgetLayout(43, 4, 3, 4, 1, 2),
@@ -171,19 +171,6 @@ class WidgetsPagerTest {
 		pager.panBy(WidgetTestSupport.GRID_SIZE * 0.6F)
 
 		assertEquals(0, pager.scrollX)
-	}
-
-	@Test fun preDesktopsSavesLoadOntoTheFirstDesktop() {
-		this.onActivity { activity ->
-			activity.getSharedPreferences(
-				be.robinj.distrohopper.preferences.Preferences.WIDGETS, 0).edit()
-				.putString("widgets", """[{"id":1,"col":0,"row":0,"colSpan":2,"rowSpan":2}]""")
-				.commit()
-
-			val loaded = WidgetPersistence(activity.applicationContext).load().single()
-
-			assertEquals(0, loaded.page)
-		}
 	}
 
 	@Test fun interceptsHorizontalSwipesOverWidgets() = this.onActivity { activity ->

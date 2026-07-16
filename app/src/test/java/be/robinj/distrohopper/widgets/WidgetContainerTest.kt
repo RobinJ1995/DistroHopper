@@ -203,7 +203,7 @@ class WidgetContainerTest {
 			assertEquals(-1, lp(container).previewWidthPx)
 
 			// The new span is persisted
-			val persisted = WidgetPersistence(activity.applicationContext).load().single()
+			val persisted = DesktopLayoutTestStore.widgets(activity.applicationContext).single()
 			assertEquals(3, persisted.colSpan)
 		}
 	}
@@ -352,7 +352,7 @@ class WidgetContainerTest {
 			assertEquals(5, lp(container).col)
 			assertEquals(6, lp(container).row)
 			assertTrue(container.parent.isLayoutRequested)
-			val persisted = WidgetPersistence(activity.applicationContext).load().single()
+			val persisted = DesktopLayoutTestStore.widgets(activity.applicationContext).single()
 			assertEquals(5, persisted.col)
 			assertEquals(6, persisted.row)
 		}

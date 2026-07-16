@@ -1,8 +1,5 @@
 package be.robinj.distrohopper.widgets
 
-import org.json.JSONException
-import org.json.JSONObject
-
 /**
  * Position of an app pinned to the home screen grid, plus which desktop (page)
  * it lives on. A desktop app always occupies a fixed [SPAN]x[SPAN] block of
@@ -26,14 +23,6 @@ data class DesktopAppLayout @JvmOverloads constructor(
 	 */
 	fun toGridRect(): WidgetLayout = WidgetLayout(NO_WIDGET_ID, this.col, this.row, SPAN, SPAN, this.page)
 
-	@Throws(JSONException::class)
-	fun toJson(): JSONObject = JSONObject().apply {
-		put("key", key)
-		put("col", col)
-		put("row", row)
-		put("page", page)
-	}
-
 	companion object {
 		/** The [WidgetLayout.appWidgetId] used for a desktop app's grid rectangle. */
 		const val NO_WIDGET_ID = -1
@@ -43,14 +32,5 @@ data class DesktopAppLayout @JvmOverloads constructor(
 		 * of a dash icon (~2 of the ~48dp widget cells ≈ a ~96dp tap target).
 		 */
 		const val SPAN = 2
-
-		@JvmStatic
-		@Throws(JSONException::class)
-		fun fromJson(json: JSONObject): DesktopAppLayout = DesktopAppLayout(
-			json.getString("key"),
-			json.getInt("col"),
-			json.getInt("row"),
-			json.optInt("page", 0),
-		)
 	}
 }

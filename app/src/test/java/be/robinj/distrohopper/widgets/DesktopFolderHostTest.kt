@@ -80,7 +80,7 @@ class DesktopFolderHostTest {
 		this.scenario.onActivity { activity ->
 			val f = this.fixture(activity)
 			val alpha = WidgetTestSupport.app(activity, "com.example.alpha")
-			DesktopFolderPersistence(activity.applicationContext).save(listOf(
+			DesktopLayoutTestStore.saveFolders(activity.applicationContext, listOf(
 				DesktopFolderLayout("folder-1", 0, 0, 0)
 					.withApp(alpha.profileScopedKey)!!
 					.withApp("com.example.gone\nGone")!!))
@@ -216,7 +216,7 @@ class DesktopFolderHostTest {
 			val beta = WidgetTestSupport.app(activity, "com.example.beta")
 			// alpha is BOTH loose on the desktop and persisted inside a folder.
 			f.appHost.pinAt(alpha, 0, 0, 0)
-			DesktopFolderPersistence(activity.applicationContext).save(listOf(
+			DesktopLayoutTestStore.saveFolders(activity.applicationContext, listOf(
 				DesktopFolderLayout("folder-1", 3, 3, 0)
 					.withApp(alpha.profileScopedKey)!!
 					.withApp(beta.profileScopedKey)!!))

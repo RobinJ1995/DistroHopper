@@ -2,7 +2,6 @@ package be.robinj.distrohopper.widgets
 
 import be.robinj.distrohopper.folder.FolderGrid
 import be.robinj.distrohopper.folder.FolderMember
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -47,36 +46,9 @@ data class DesktopFolderLayout(
 	fun without(member: FolderMember): DesktopFolderLayout =
 		this.copy(cells = this.cells.filterNot { it.member == member })
 
-	@Throws(JSONException::class)
-	fun toJson(): JSONObject = JSONObject().apply {
-		put("id", folderId)
-		put("col", col)
-		put("row", row)
-		put("page", page)
-		put("cells", JSONArray().also { array -> cells.forEach { array.put(it.toJson()) } })
-	}
-
 	companion object {
 		/** Cells a desktop folder spans on each axis (same as a desktop app icon). */
 		const val SPAN = DesktopAppLayout.SPAN
-
-		@JvmStatic
-		@Throws(JSONException::class)
-		fun fromJson(json: JSONObject): DesktopFolderLayout {
-			val cellsArray = json.optJSONArray("cells") ?: JSONArray()
-			val cells = ArrayList<DesktopFolderCell>(cellsArray.length())
-			for (i in 0 until cellsArray.length()) {
-				DesktopFolderCell.fromJson(cellsArray.getJSONObject(i))?.let { cells.add(it) }
-			}
-
-			return DesktopFolderLayout(
-				json.getString("id"),
-				json.getInt("col"),
-				json.getInt("row"),
-				json.optInt("page", 0),
-				cells,
-			)
-		}
 	}
 }
 

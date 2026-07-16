@@ -27,7 +27,7 @@ class DesktopAppHostTest {
 	@After fun tearDown() { this.scenario.close() }
 
 	private fun writeStored(activity: HomeActivity, vararg layouts: DesktopAppLayout) {
-		DesktopAppPersistence(activity.applicationContext).save(layouts.toList())
+		DesktopLayoutTestStore.saveApps(activity.applicationContext, layouts.toList())
 	}
 
 	private fun keysOf(grid: WidgetsContainer): List<String> =
@@ -46,7 +46,7 @@ class DesktopAppHostTest {
 
 			assertEquals(listOf(alpha.profileScopedKey), this.keysOf(grid))
 			// The pruned entry is dropped from persistence too //
-			assertEquals(1, DesktopAppPersistence(activity.applicationContext).load().size)
+			assertEquals(1, DesktopLayoutTestStore.apps(activity.applicationContext).size)
 		}
 	}
 
@@ -65,7 +65,7 @@ class DesktopAppHostTest {
 			// Only the first placement survives, on page 0 //
 			assertEquals(listOf(alpha.profileScopedKey), this.keysOf(pager.pageAt(0)))
 			assertEquals(emptyList<String>(), this.keysOf(pager.pageAt(1)))
-			assertEquals(1, DesktopAppPersistence(activity.applicationContext).load().size)
+			assertEquals(1, DesktopLayoutTestStore.apps(activity.applicationContext).size)
 		}
 	}
 
@@ -103,7 +103,7 @@ class DesktopAppHostTest {
 			// Exactly one pin, relocated to desktop 1 //
 			assertEquals(emptyList<String>(), this.keysOf(pager.pageAt(0)))
 			assertEquals(listOf(alpha.profileScopedKey), this.keysOf(pager.pageAt(1)))
-			assertEquals(1, DesktopAppPersistence(activity.applicationContext).load().size)
+			assertEquals(1, DesktopLayoutTestStore.apps(activity.applicationContext).size)
 		}
 	}
 
@@ -196,7 +196,7 @@ class DesktopAppHostTest {
 			val lp = view.layoutParams as WidgetsContainer.LayoutParams
 			assertEquals(5, lp.col)
 			assertEquals(6, lp.row)
-			val persisted = DesktopAppPersistence(activity.applicationContext).load().single()
+			val persisted = DesktopLayoutTestStore.apps(activity.applicationContext).single()
 			assertEquals(5, persisted.col)
 			assertEquals(6, persisted.row)
 		}
@@ -232,7 +232,7 @@ class DesktopAppHostTest {
 
 			assertEquals(0, WidgetTestSupport.desktopAppsOn(grid).size)
 			assertFalse(host.isPinnedOnDesktop(alpha))
-			assertTrue(DesktopAppPersistence(activity.applicationContext).load().isEmpty())
+			assertTrue(DesktopLayoutTestStore.apps(activity.applicationContext).isEmpty())
 		}
 	}
 
