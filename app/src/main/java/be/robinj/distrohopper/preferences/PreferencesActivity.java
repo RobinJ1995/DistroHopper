@@ -362,7 +362,10 @@ public class PreferencesActivity extends AppCompatActivity
 			final SwitchPreferenceCompat pref = this.findPreference (
 				be.robinj.distrohopper.preferences.Preference.DEV.getName ());
 			if (pref == null)
+			{
+				this.applyDeveloperModeVisibility (false);
 				return;
+			}
 
 			this.applyDeveloperModeVisibility (pref.isChecked ());
 
@@ -482,6 +485,50 @@ public class PreferencesActivity extends AppCompatActivity
 
 			if (! enabled)
 				this.clearChildPreferences (be.robinj.distrohopper.preferences.Preference.DEV);
+
+			this.applyAppSortOrderChoices (enabled);
+		}
+
+		// The custom (drag to reorder) sort order still needs more testing before
+		// general availability, so it is only offered while developer mode is on;
+		// a stored custom choice falls back to the alphabetical default when the
+		// option goes away. //
+		private void applyAppSortOrderChoices (final boolean devEnabled)
+		{
+			final ListPreference sortPref = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.APP_SORT_ORDER.getName ());
+			if (sortPref == null)
+				return;
+
+			final CharSequence[] entries =
+				this.getResources ().getTextArray (R.array.app_sort_order_entries);
+			final CharSequence[] values =
+				this.getResources ().getTextArray (R.array.app_sort_order_values);
+
+			if (devEnabled)
+			{
+				sortPref.setEntries (entries);
+				sortPref.setEntryValues (values);
+
+				return;
+			}
+
+			final List<CharSequence> filteredEntries = new ArrayList<> ();
+			final List<CharSequence> filteredValues = new ArrayList<> ();
+			for (int i = 0; i < values.length; i++)
+			{
+				if (AppSortOrder.CUSTOM.getValue ().contentEquals (values[i]))
+					continue;
+
+				filteredEntries.add (entries[i]);
+				filteredValues.add (values[i]);
+			}
+
+			sortPref.setEntries (filteredEntries.toArray (new CharSequence[0]));
+			sortPref.setEntryValues (filteredValues.toArray (new CharSequence[0]));
+
+			if (AppSortOrder.CUSTOM.getValue ().equals (sortPref.getValue ()))
+				sortPref.setValue (AppSortOrder.ALPHABETICAL.getValue ());
 		}
 
 		private void clearChildPreferences (final be.robinj.distrohopper.preferences.Preference parent)

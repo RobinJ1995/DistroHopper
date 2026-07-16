@@ -11,6 +11,7 @@ public class Mate extends Theme
 	{
 		this.name = "MATE";
 		this.description = "MATE desktop environment";
+		this.dev_only = true; // Needs more polish before general availability //
 		this.card_colour = R.color.theme_mate_card_colour;
 		this.card_logo = R.drawable.theme_mate_card_logo;
 

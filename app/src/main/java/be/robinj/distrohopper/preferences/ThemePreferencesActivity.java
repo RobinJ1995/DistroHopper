@@ -35,11 +35,10 @@ public class ThemePreferencesActivity extends AppCompatActivity
 
 		if (! prefs.getBoolean (Preference.DEV.getName(), false))
 		{
-			for (int i = 0; i < themes.size (); i++)
-			{
-				if (themes.get (i).dev_only)
-					themes.remove (i);
-			}
+			// removeIf, not an index loop: removing by index while advancing skips
+			// the element that shifts into the freed slot, so consecutive dev-only
+			// themes would leak through //
+			themes.removeIf (theme -> theme.dev_only);
 		}
 
 		final LinearLayout llThemeCards = this.findViewById (R.id.llThemeCards);
