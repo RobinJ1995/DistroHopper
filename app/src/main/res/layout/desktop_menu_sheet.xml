@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The long-press-on-empty-desktop bottom sheet (see home/DesktopMenuOverlay):
+     a frosted rounded surface with the desktop-level actions. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="@drawable/desktop_menu_sheet_background"
+	android:orientation="vertical"
+	android:paddingLeft="12dp"
+	android:paddingTop="8dp"
+	android:paddingRight="12dp"
+	android:paddingBottom="16dp">
+
+	<View
+		android:layout_width="36dp"
+		android:layout_height="4dp"
+		android:layout_gravity="center_horizontal"
+		android:layout_marginBottom="12dp"
+		android:background="@drawable/desktop_menu_handle" />
+
+	<LinearLayout
+		android:id="@+id/rowDesktopMenuAddWidget"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@drawable/dialog_list_item_background"
+		android:gravity="center_vertical"
+		android:minHeight="64dp"
+		android:orientation="horizontal"
+		android:paddingLeft="12dp"
+		android:paddingTop="8dp"
+		android:paddingRight="12dp"
+		android:paddingBottom="8dp">
+
+		<FrameLayout
+			android:layout_width="40dp"
+			android:layout_height="40dp"
+			android:background="@drawable/desktop_menu_icon_background">
+
+			<ImageView
+				android:layout_width="22dp"
+				android:layout_height="22dp"
+				android:layout_gravity="center"
+				android:importantForAccessibility="no"
+				android:src="@drawable/ic_desktop_menu_widgets"
+				android:tint="@color/dialog_on_surface" />
+		</FrameLayout>
+
+		<LinearLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="16dp"
+			android:layout_weight="1"
+			android:orientation="vertical">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:fontFamily="sans-serif-medium"
+				android:text="@string/desktop_menu_add_widget"
+				android:textColor="@color/dialog_on_surface"
+				android:textSize="16sp" />
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="1dp"
+				android:text="@string/desktop_menu_add_widget_hint"
+				android:textColor="@color/dialog_on_surface_variant"
+				android:textSize="13sp" />
+		</LinearLayout>
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/rowDesktopMenuSettings"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@drawable/dialog_list_item_background"
+		android:gravity="center_vertical"
+		android:minHeight="64dp"
+		android:orientation="horizontal"
+		android:paddingLeft="12dp"
+		android:paddingTop="8dp"
+		android:paddingRight="12dp"
+		android:paddingBottom="8dp">
+
+		<FrameLayout
+			android:layout_width="40dp"
+			android:layout_height="40dp"
+			android:background="@drawable/desktop_menu_icon_background">
+
+			<ImageView
+				android:layout_width="22dp"
+				android:layout_height="22dp"
+				android:layout_gravity="center"
+				android:importantForAccessibility="no"
+				android:src="@drawable/ic_desktop_menu_settings"
+				android:tint="@color/dialog_on_surface" />
+		</FrameLayout>
+
+		<LinearLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="16dp"
+			android:layout_weight="1"
+			android:orientation="vertical">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:fontFamily="sans-serif-medium"
+				android:text="@string/desktop_menu_settings"
+				android:textColor="@color/dialog_on_surface"
+				android:textSize="16sp" />
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="1dp"
+				android:text="@string/desktop_menu_settings_hint"
+				android:textColor="@color/dialog_on_surface_variant"
+				android:textSize="13sp" />
+		</LinearLayout>
+	</LinearLayout>
+</LinearLayout>
