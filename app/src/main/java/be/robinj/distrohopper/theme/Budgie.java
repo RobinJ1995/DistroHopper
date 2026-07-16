@@ -8,7 +8,7 @@ public class Budgie extends Theme
 	{
 		this.name = "Budgie";
 		this.description = "Solus' Budgie desktop";
-		this.dev_only = true; // Needs more polish before general availability //
+		this.dev_only = true;
 		this.card_colour = R.color.theme_budgie_card_colour;
 		this.card_logo = R.drawable.theme_budgie_card_logo;
 
