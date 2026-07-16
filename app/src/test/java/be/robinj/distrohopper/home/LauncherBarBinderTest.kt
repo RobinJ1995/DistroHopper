@@ -143,6 +143,26 @@ class LauncherBarBinderTest {
 		}
 	}
 
+	@Test fun draggingADashAppIconShowsAppInfoInsteadOfTheTrash() {
+		scenario.onActivity { activity ->
+			val binder = LauncherBarBinder(activity.appManager)
+
+			LauncherBarBinder.dragStartedFromDashApp()
+			binder.startedDraggingPinnedApp()
+
+			assertEquals(View.GONE, activity.findViewById<View>(R.id.lalTrash).visibility)
+			assertEquals(View.VISIBLE, activity.findViewById<View>(R.id.lalAppInfo).visibility)
+
+			// Stopping the drag clears the flag: the next drag shows the trash again.
+			binder.stoppedDraggingPinnedApp()
+			assertEquals(View.GONE, activity.findViewById<View>(R.id.lalAppInfo).visibility)
+			binder.startedDraggingPinnedApp()
+			assertEquals(View.VISIBLE, activity.findViewById<View>(R.id.lalTrash).visibility)
+			assertEquals(View.GONE, activity.findViewById<View>(R.id.lalAppInfo).visibility)
+			binder.stoppedDraggingPinnedApp()
+		}
+	}
+
 	@Test fun stoppingADragRestoresTheLauncherBar() {
 		scenario.onActivity { activity ->
 			val binder = LauncherBarBinder(activity.appManager)

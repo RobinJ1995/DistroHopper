@@ -110,6 +110,7 @@ object HomeStateBinder {
 			(llLauncherRunningApps.getChildAt(i) as AppLauncher).init()
 
 		viewFinder.get<AppLauncher>(R.id.lalTrash).init()
+		viewFinder.get<AppLauncher>(R.id.lalAppInfo).init()
 		viewFinder.get<AppLauncher>(R.id.lalPreferences).init()
 
 		// The slot size changed, so the whole-slot scroll clip must re-measure.
