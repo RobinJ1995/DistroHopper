@@ -141,17 +141,12 @@ class FolderOverlay(private val activity: Activity) {
 		fun isShowingIn(activity: Activity): Boolean =
 			active?.let { it.activity === activity && it.isShowing } ?: false
 
-		/**
-		 * Dismisses the folder overlay open in [activity], if any. Returns whether
-		 * there was one — i.e. whether this press was consumed by a folder.
-		 */
+		/** Dismisses the folder overlay open in [activity], if any. */
 		@JvmStatic
-		fun dismissActive(activity: Activity): Boolean {
-			val open = isShowingIn(activity)
-			if (open) {
+		fun dismissActive(activity: Activity) {
+			if (isShowingIn(activity)) {
 				active?.dismiss()
 			}
-			return open
 		}
 
 		/** Drops the [active] reference so a destroyed [activity] is not retained. */
