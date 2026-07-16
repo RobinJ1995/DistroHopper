@@ -25,10 +25,17 @@ codebase — older Java alongside newer Kotlin.
   activities/views without a device).
 - Instrumented tests live under `app/src/androidTest/` (require a
   device/emulator; rarely the right place for new tests — prefer Robolectric).
-- Release workflow: pushing a `v*` tag builds signed release artifacts and
-  attaches them to a GitHub Release. Tags whose version ends in a letter (for
-  example `v3.0.0d`) are marked as GitHub pre-releases and are not promoted to
-  latest; plain numeric versions (for example `v3.0.0`) remain full releases.
+- Tagged CI releases build the normal signed APK/AAB plus a best-effort
+  signed `-paranoia` APK (`./gradlew clean assembleRelease
+  -PparanoiaBuild=true`): it appends `-paranoia` to `versionName`, forces
+  `BuildConfig.ACRA_CONFIGURED` off even if credentials exist, and omits AGP
+  dependency-info metadata from APKs. It deliberately does not remove
+  dependencies/classes; it is a privacy-conscious courtesy sideload artifact,
+  not a separately supported product line.
+- Release workflow: pushing a `v*` tag attaches the signed artifacts to a
+  GitHub Release. Tags whose version ends in a letter (for example `v3.0.0d`)
+  are marked as GitHub pre-releases and are not promoted to latest; plain
+  numeric versions (for example `v3.0.0`) remain full releases.
 
 ## Repository layout
 

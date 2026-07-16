@@ -107,13 +107,41 @@ jobs:
           "$APKSIGNER" verify --print-certs \
             app/build/outputs/apk/release/app-release.apk
 
+      - name: Stage release APK and AAB
+        run: |
+          mkdir -p "$RUNNER_TEMP/release-artifacts"
+          cp app/build/outputs/apk/release/app-release.apk \
+            "$RUNNER_TEMP/release-artifacts/app-release.apk"
+          cp app/build/outputs/bundle/release/app-release.aab \
+            "$RUNNER_TEMP/release-artifacts/app-release.aab"
+
+      - name: Disable ACRA credentials for paranoia build
+        run: |
+          echo "acra_username=" > secret.properties
+          echo "acra_password=" >> secret.properties
+
+      - name: Build signed paranoia APK
+        run: ./gradlew clean assembleRelease -PparanoiaBuild=true
+
+      - name: Verify paranoia APK is release-signed
+        run: |
+          APKSIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
+          "$APKSIGNER" verify --print-certs \
+            app/build/outputs/apk/release/app-release.apk
+
+      - name: Stage paranoia APK
+        run: |
+          cp app/build/outputs/apk/release/app-release.apk \
+            "$RUNNER_TEMP/release-artifacts/app-release-paranoia.apk"
+
       - name: Upload release artifacts
         uses: actions/upload-artifact@v5
         with:
           name: distrohopper-release-android
           path: |
-            app/build/outputs/apk/release/app-release.apk
-            app/build/outputs/bundle/release/app-release.aab
+            ${{ runner.temp }}/release-artifacts/app-release.apk
+            ${{ runner.temp }}/release-artifacts/app-release.aab
+            ${{ runner.temp }}/release-artifacts/app-release-paranoia.apk
 
       - name: Detect release type
         id: release_metadata
@@ -129,9 +157,16 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           prerelease: ${{ steps.release_metadata.outputs.prerelease }}
+          append_body: true
+          body: |
+            ### Privacy-conscious APK
+            `app-release-paranoia.apk` is a signed, APK-only sideload build for privacy-conscious users.
+            It disables ACRA crash reporting at build time and omits AGP dependency-info metadata from the APK.
+            This version is provided on a best-effort basis only, with no guarantee of continued support or future releases.
           files: |
-            app/build/outputs/apk/release/app-release.apk
-            app/build/outputs/bundle/release/app-release.aab
+            ${{ runner.temp }}/release-artifacts/app-release.apk
+            ${{ runner.temp }}/release-artifacts/app-release.aab
+            ${{ runner.temp }}/release-artifacts/app-release-paranoia.apk
 
       - name: Clean up secrets
         if: always()
