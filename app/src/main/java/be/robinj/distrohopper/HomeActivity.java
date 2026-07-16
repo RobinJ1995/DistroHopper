@@ -61,6 +61,7 @@ import be.robinj.distrohopper.home.StartupLoader;
 import be.robinj.distrohopper.home.ThemeApplier;
 import be.robinj.distrohopper.home.WallpaperColourApplier;
 import be.robinj.distrohopper.dev.LogToaster;
+import be.robinj.distrohopper.folder.FolderOverlay;
 import be.robinj.distrohopper.onboarding.OnboardingActivity;
 import be.robinj.distrohopper.onboarding.OnboardingGate;
 import be.robinj.distrohopper.icons.IconConfig;
@@ -232,10 +233,21 @@ public class HomeActivity extends AppCompatActivity
 					{
 						final WidgetsPager vgWidgets = HomeActivity.this.viewFinder.get (R.id.vgWidgets);
 
-						if (vgWidgets.hasEditModeChild ())
+						// An open folder floats above everything else, so Back closes
+						// just the folder — the dash it may have been opened from (or
+						// the widget edit mode behind it) stays as it was. //
+						if (FolderOverlay.isShowingIn (HomeActivity.this))
+						{
+							FolderOverlay.dismissActive (HomeActivity.this);
+						}
+						else if (vgWidgets.hasEditModeChild ())
+						{
 							vgWidgets.exitEditMode ();
+						}
 						else if (HomeActivity.this.dash.isOpen ())
+						{
 							HomeActivity.this.closeDash ();
+						}
 						// Default launcher, nothing open: swallow Back so the home screen
 						// stays put instead of the system replaying the home intent. //
 					}
@@ -541,13 +553,16 @@ public class HomeActivity extends AppCompatActivity
 		}
 
 		// Pressing home (or the home navigation gesture) while the launcher is
-		// already running lands here; exit widget edit mode, close the dash if
-		// it's open and return to the first desktop. Exiting edit mode matters
+		// already running lands here; close any open folder popup, exit widget
+		// edit mode, close the dash if it's open and return to the first
+		// desktop. Exiting edit mode matters
 		// because swipe gestures are suppressed while a widget is being edited:
 		// without this the user could land back on the first desktop still in
 		// edit mode and be unable to swipe away. //
 		if (Intent.ACTION_MAIN.equals(intent.getAction())
 				&& intent.hasCategory(Intent.CATEGORY_HOME)) {
+			FolderOverlay.dismissActive(this);
+
 			if (this.viewFinder != null) {
 				this.viewFinder.<WidgetsPager>get(R.id.vgWidgets).exitEditMode();
 				this.updateBackCallback();
@@ -598,11 +613,12 @@ public class HomeActivity extends AppCompatActivity
 
 	/**
 	 * Keeps the Back callback enabled exactly when the launcher needs to
-	 * intercept Back: while a widget is in edit mode, while the dash is open, or
-	 * whenever we are the default launcher (Back must never exit the home
-	 * screen). When DistroHopper runs as an ordinary app with nothing open the
-	 * callback is disabled, letting the system handle Back to leave the app.
-	 * Driven from onResume() and the dash-open state (see HomeStateBinder).
+	 * intercept Back: while a widget is in edit mode, while the dash is open,
+	 * while a folder popup is open, or whenever we are the default launcher
+	 * (Back must never exit the home screen). When DistroHopper runs as an
+	 * ordinary app with nothing open the callback is disabled, letting the
+	 * system handle Back to leave the app. Driven from onResume(), the
+	 * dash-open state (see HomeStateBinder) and FolderOverlay's show/dismiss.
 	 */
 	public void updateBackCallback ()
 	{
@@ -612,8 +628,9 @@ public class HomeActivity extends AppCompatActivity
 		final boolean editMode = this.viewFinder != null
 				&& this.viewFinder.<WidgetsPager>get (R.id.vgWidgets).hasEditModeChild ();
 		final boolean dashOpen = this.dash != null && this.dash.isOpen ();
+		final boolean folderOpen = FolderOverlay.isShowingIn (this);
 
-		this.backCallback.setEnabled (editMode || dashOpen || this.isDefaultLauncher ());
+		this.backCallback.setEnabled (editMode || dashOpen || folderOpen || this.isDefaultLauncher ());
 	}
 
 	/**
@@ -776,6 +793,8 @@ public class HomeActivity extends AppCompatActivity
 	@Override
 	public void onDestroy ()
 	{
+		FolderOverlay.clearFor (this);
+
 		if (this.dash != null)
 			this.getWindowManager ().removeCrossWindowBlurEnabledListener (this.dash.getCrossWindowBlurListener ());
 
