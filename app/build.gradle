@@ -17,6 +17,13 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
+def paranoiaBuild = providers.gradleProperty("paranoiaBuild")
+        .map { it.toBoolean() }
+        .orElse(false)
+        .get()
+def appVersionCode = 106
+def baseVersionName = "3.0.0d"
+
 android {
     namespace "be.robinj.distrohopper"
     compileSdk 36
@@ -24,12 +31,13 @@ android {
         applicationId "be.robinj.distrohopper"
         minSdk 31
         targetSdk 36
-        versionCode 106
-        versionName "3.0.0d"
+        versionCode appVersionCode
+        versionName paranoiaBuild ? "${baseVersionName}-paranoia" : baseVersionName
         buildConfigField "String", "ACRA_USERNAME", "\"" + (properties['acra_username'] ?: "") + "\""
         buildConfigField "String", "ACRA_PASSWORD", "\"" + (properties['acra_password'] ?: "") + "\""
-        def acraConfigured = ((properties['acra_username'] ?: "") != "") && ((properties['acra_password'] ?: "") != "")
+        def acraConfigured = !paranoiaBuild && ((properties['acra_username'] ?: "") != "") && ((properties['acra_password'] ?: "") != "")
         buildConfigField "boolean", "ACRA_CONFIGURED", acraConfigured.toString()
+        buildConfigField "boolean", "PARANOIA_BUILD", paranoiaBuild.toString()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
@@ -54,6 +62,10 @@ android {
     }
     buildFeatures {
         buildConfig true
+    }
+    dependenciesInfo {
+        includeInApk = !paranoiaBuild
+        includeInBundle = true
     }
     testOptions {
         unitTests {
