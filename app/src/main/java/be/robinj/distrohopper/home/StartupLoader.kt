@@ -3,6 +3,7 @@ package be.robinj.distrohopper.home
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.lifecycle.lifecycleScope
+import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.DispatcherProvider
 import be.robinj.distrohopper.ExceptionHandler
 import be.robinj.distrohopper.HomeActivity
@@ -10,6 +11,7 @@ import be.robinj.distrohopper.cache.ICache
 import be.robinj.distrohopper.desktop.Wallpaper
 import be.robinj.distrohopper.desktop.launcher.AppLauncher
 import be.robinj.distrohopper.desktop.launcher.SpinnerAppLauncher
+import be.robinj.distrohopper.preferences.Preferences
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -70,7 +72,17 @@ class StartupLoader(
 				}
 
 				lalSpinner.visibility = View.GONE
-				lalBfb.visibility = View.VISIBLE
+
+				// Only reveal the BFB when it is meant to be shown: a theme
+				// without one — or the user hiding it — keeps it (and the shared
+				// wrapper, which ThemeApplier left up for the spinner) collapsed //
+				val bfbVisible = DependencyContainer.of(this@StartupLoader.activity)
+					.themeManager.current.launcherBfbVisible(
+						this@StartupLoader.activity.resources,
+						Preferences.getSharedPreferences(this@StartupLoader.activity))
+				lalBfb.visibility = if (bfbVisible) View.VISIBLE else View.GONE
+				if (!bfbVisible)
+					(lalBfb.parent as? View)?.visibility = View.GONE
 
 				appManager.refreshPinnedView()
 

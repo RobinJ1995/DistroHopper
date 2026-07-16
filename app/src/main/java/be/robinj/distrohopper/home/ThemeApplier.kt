@@ -91,8 +91,17 @@ class ThemeApplier(
 		// the user has hidden it on a theme that lets them; its resolved location
 		// also picks which end of the launcher it sits at (see Theme).
 		when (this.theme.launcherBfbLocationResolved(res, prefs)) {
-			Location.NONE ->
-				llBfbSpinnerWrapper.visibility = View.GONE
+			Location.NONE -> {
+				// The loading spinner shares the wrapper with the BFB: while
+				// startup loading still has it spinning, keep the wrapper up (only
+				// the BFB itself stays hidden) so a hidden BFB doesn't take the
+				// spinner down with it. StartupLoader collapses the wrapper once
+				// loading finishes.
+				val lalSpinner = this.viewFinder.get<View>(llBfbSpinnerWrapper, R.id.lalSpinner)
+				lalBfb.visibility = View.GONE
+				llBfbSpinnerWrapper.visibility =
+					if (lalSpinner.visibility == View.VISIBLE) View.VISIBLE else View.GONE
+			}
 			Location.TOP, Location.LEFT ->
 				llBfbSpinnerWrapper.visibility = View.VISIBLE
 			Location.RIGHT, Location.BOTTOM -> {

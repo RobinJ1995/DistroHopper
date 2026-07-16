@@ -11,6 +11,7 @@ public class Cosmic extends Theme
 	{
 		this.name = "Cosmic";
 		this.description = "Pop_OS' Cosmic desktop";
+		this.dev_only = true;
 		this.card_colour = R.color.theme_cosmic_card_colour;
 		this.card_logo = R.drawable.theme_cosmic_card_logo;
 
