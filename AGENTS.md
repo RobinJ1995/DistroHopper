@@ -25,6 +25,10 @@ codebase — older Java alongside newer Kotlin.
   activities/views without a device).
 - Instrumented tests live under `app/src/androidTest/` (require a
   device/emulator; rarely the right place for new tests — prefer Robolectric).
+- Release workflow: pushing a `v*` tag builds signed release artifacts and
+  attaches them to a GitHub Release. Tags whose version ends in a letter (for
+  example `v3.0.0d`) are marked as GitHub pre-releases and are not promoted to
+  latest; plain numeric versions (for example `v3.0.0`) remain full releases.
 
 ## Repository layout
 
