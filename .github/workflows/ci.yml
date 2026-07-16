@@ -143,10 +143,20 @@ jobs:
             ${{ runner.temp }}/release-artifacts/app-release.aab
             ${{ runner.temp }}/release-artifacts/app-release-paranoia.apk
 
+      - name: Detect release type
+        id: release_metadata
+        run: |
+          if [[ "$GITHUB_REF_NAME" =~ [[:alpha:]]$ ]]; then
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Attach to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
+          prerelease: ${{ steps.release_metadata.outputs.prerelease }}
           append_body: true
           body: |
             ### Privacy-conscious APK
