@@ -34,10 +34,10 @@ class DesktopMenuOverlay(private val activity: Activity) {
 	val isShowing: Boolean get() = this.scrim != null
 
 	/**
-	 * Shows the menu. [onAddWidget]/[onSettings] run once the corresponding row
-	 * is tapped (the overlay dismisses itself first).
+	 * Shows the menu. [onAddWidget]/[onCustomise]/[onSettings] run once the
+	 * corresponding row is tapped (the overlay dismisses itself first).
 	 */
-	fun show(onAddWidget: () -> Unit, onSettings: () -> Unit) {
+	fun show(onAddWidget: () -> Unit, onCustomise: () -> Unit, onSettings: () -> Unit) {
 		if (this.isShowing) {
 			return
 		}
@@ -66,6 +66,10 @@ class DesktopMenuOverlay(private val activity: Activity) {
 		sheet.findViewById<View>(R.id.rowDesktopMenuAddWidget).setOnClickListener {
 			this.dismiss()
 			onAddWidget()
+		}
+		sheet.findViewById<View>(R.id.rowDesktopMenuCustomise).setOnClickListener {
+			this.dismiss()
+			onCustomise()
 		}
 		sheet.findViewById<View>(R.id.rowDesktopMenuSettings).setOnClickListener {
 			this.dismiss()

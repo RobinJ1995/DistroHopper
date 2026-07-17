@@ -49,6 +49,7 @@ class DesktopMenuOverlayTest {
 
             assertTrue(DesktopMenuOverlay.isShowingIn(activity))
             assertNotNull(activity.findViewById<View>(R.id.rowDesktopMenuAddWidget))
+            assertNotNull(activity.findViewById<View>(R.id.rowDesktopMenuCustomise))
             assertNotNull(activity.findViewById<View>(R.id.rowDesktopMenuSettings))
             assertTrue(activity.onBackPressedDispatcher.hasEnabledCallbacks())
         }
@@ -117,6 +118,21 @@ class DesktopMenuOverlayTest {
             val dialog = ShadowDialog.getLatestDialog()
             assertNotNull(dialog)
             assertTrue(dialog.isShowing)
+        }
+    }
+
+    /* The "Customise" row dismisses the menu and relaunches into the customise
+     * UI, the same path as the Preferences screen's "Customise" entry: the
+     * activity recreates with a customise=true intent (which onCreate() reads). */
+    @Test fun customiseRowEntersCustomiseMode() {
+        this.scenario.onActivity { activity ->
+            this.longPressDesktop(activity)
+            ActivityTestSupport.drainTasks()
+
+            activity.findViewById<View>(R.id.rowDesktopMenuCustomise).performClick()
+
+            assertFalse(DesktopMenuOverlay.isShowingIn(activity))
+            assertTrue(activity.intent.getBooleanExtra("customise", false))
         }
     }
 

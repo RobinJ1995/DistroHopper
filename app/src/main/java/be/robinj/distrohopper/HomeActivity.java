@@ -1106,9 +1106,34 @@ public class HomeActivity extends AppCompatActivity
 	}
 
 	/**
+	 * Enters the customise UI: the same ViewModel-preserving relaunch the
+	 * Preferences screen's "Customise" entry triggers through
+	 * onActivityResult()'s result code 4.
+	 */
+	public void openCustomiseMode ()
+	{
+		try
+		{
+			// Fresh intent rather than mutating getIntent(); the old intent may
+			// still carry stale extras from a previous relaunch //
+			final Intent intent = new Intent (this, HomeActivity.class);
+			intent.putExtra ("customise", true);
+
+			this.viewModel.closeDash (); // clear preserved dash state before the recreate() //
+			this.setIntent (intent);     // onCreate() re-reads getIntent() for the customise flag //
+			this.recreate ();
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
+		}
+	}
+
+	/**
 	 * The long-press-on-empty-desktop menu: the home screen zooms out and
-	 * darkens while a sheet with the desktop-level actions (add a widget, open
-	 * the settings) slides up from the bottom of the screen.
+	 * darkens while a sheet with the desktop-level actions (add a widget,
+	 * customise, open the settings) slides up from the bottom of the screen.
 	 */
 	public void showDesktopMenu ()
 	{
@@ -1118,6 +1143,11 @@ public class HomeActivity extends AppCompatActivity
 					() ->
 					{
 						this.widgetHost.showPicker ();
+						return kotlin.Unit.INSTANCE;
+					},
+					() ->
+					{
+						this.openCustomiseMode ();
 						return kotlin.Unit.INSTANCE;
 					},
 					() ->

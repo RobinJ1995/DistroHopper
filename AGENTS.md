@@ -250,7 +250,9 @@ etc/                                        — design assets (SVG/XCF sources, 
     `widgets/WidgetsPager_LongClickListener`, which still exits widget edit
     mode first if a widget is being edited): the home screen zooms out and
     darkens behind a scrim while a bottom sheet (`desktop_menu_sheet.xml`)
-    slides up offering "Add widget" (the widget picker) and "Settings"
+    slides up offering "Add widget" (the widget picker), "Customise"
+    (`HomeActivity.openCustomiseMode`, the same customise-UI relaunch the
+    Preferences screen's entry triggers via result code 4) and "Settings"
     (`HomeActivity.openPreferences`). Like `folder/FolderOverlay` it is an
     in-activity overlay on `android.R.id.content` with the same static
     active-slot pattern (`isShowingIn`/`dismissActive`/`clearFor`), so Back
