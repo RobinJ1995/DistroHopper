@@ -94,8 +94,8 @@
   <string name="hint_icon_shape">Geef adaptieve pictogrammen een consistente vorm met een masker.</string>
   <string name="icon_shape_system">Standaard</string>
   <string name="icon_shape_circle">Cirkel</string>
-  <string name="icon_shape_squircle">Afgerond vierkant</string>
-  <string name="icon_shape_rounded_square">Afgeronde hoeken</string>
+  <string name="icon_shape_squircle">Squircle</string>
+  <string name="icon_shape_rounded_square">Afgerond</string>
   <string name="icon_shape_square">Vierkant</string>
   <string name="option_tinted_icons">Getinte pictogrammen</string>
   <string name="hint_tinted_icons">Geef app-pictogrammen met een monochrome versie één kleur.</string>
@@ -123,10 +123,10 @@
   <string name="option_show_grid_on_drag">Bureaubladraster tonen tijdens slepen</string>
   <string name="hint_show_grid_on_drag">Toon een punt op elke kruising van het raster tijdens het slepen of aanpassen van widgets en apps.</string>
   <string name="accessibility_service_notification_tray_description">Hiermee kan DistroHopper het meldingenpaneel openen wanneer u op het startscherm omlaag veegt. De service wordt alleen voor die actie gebruikt en leest geen scherminhoud.</string>
-  <string name="option_gesture_swipe_sides">Naar links of rechts vegen</string>
+  <string name="option_gesture_swipe_sides">Links of rechts vegen</string>
   <string name="hint_gesture_swipe_sides">Wisselt tussen werkbladen.</string>
-  <string name="option_gesture_swipe_up">Naar boven vegen</string>
-  <string name="option_gesture_swipe_down">Naar beneden vegen</string>
+  <string name="option_gesture_swipe_up">Omhoog vegen</string>
+  <string name="option_gesture_swipe_down">Omlaag vegen</string>
   <string name="gesture_action_none">Niets doen</string>
   <string name="gesture_action_open_dash">Dash openen</string>
   <string name="gesture_action_open_dash_search">Dash openen en zoeken starten</string>
@@ -136,7 +136,7 @@
   <string name="title_activity_gesture_setup">Gebaren voor meldingen</string>
   <string name="gesture_setup_explain_title">Gebaren voor meldingen instellen</string>
   <string name="gesture_setup_explain_body">Android biedt gewone apps geen mogelijkheid om het meldingenpaneel te openen. Voor een startscherm als DistroHopper is een toegankelijkheidsservice het enige beschikbare mechanisme.\n\nDe toegankelijkheidsservice van DistroHopper moet uitsluitend daarom worden ingeschakeld. Deze opent alleen het meldingenpaneel. De service leest niet wat er op uw scherm staat, verzamelt geen gegevens en voert geen andere handelingen uit.</string>
-  <string name="gesture_setup_guide_title">De service inschakelen</string>
+  <string name="gesture_setup_guide_title">Service inschakelen</string>
   <string name="gesture_setup_guide_body">Zoek DistroHopper in de lijst met toegankelijkheidsinstellingen, schakel de service in en kom vervolgens hier terug.</string>
   <string name="gesture_setup_cancel">Annuleren</string>
   <string name="gesture_setup_proceed">Begrepen, doorgaan</string>
