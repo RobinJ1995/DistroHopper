@@ -30,6 +30,8 @@ class DesktopMenuOverlay(private val activity: Activity) {
 	private val content = activity.findViewById<ViewGroup>(android.R.id.content)
 	private var scrim: FrameLayout? = null
 	private var sheet: View? = null
+	// The sheet's own layout padding, before the navigation inset is added //
+	private var sheetBasePaddingBottom = 0
 
 	val isShowing: Boolean get() = this.scrim != null
 
@@ -55,13 +57,8 @@ class DesktopMenuOverlay(private val activity: Activity) {
 		val sheet = LayoutInflater.from(this.activity)
 			.inflate(R.layout.desktop_menu_sheet, scrim, false)
 		sheet.isClickable = true // taps on the sheet must not fall through to the scrim //
-
-		// Keep the actions clear of the navigation bar; the overlay spans the
-		// whole window, unlike the inset-padded launcher/dash container. //
-		val navInset = ViewCompat.getRootWindowInsets(this.content)
-			?.getInsets(WindowInsetsCompat.Type.tappableElement())?.bottom ?: 0
-		sheet.setPadding(sheet.paddingLeft, sheet.paddingTop,
-			sheet.paddingRight, sheet.paddingBottom + navInset)
+		this.sheetBasePaddingBottom = sheet.paddingBottom
+		this.applyNavigationInset(sheet)
 
 		sheet.findViewById<View>(R.id.rowDesktopMenuAddWidget).setOnClickListener {
 			this.dismiss()
@@ -76,18 +73,22 @@ class DesktopMenuOverlay(private val activity: Activity) {
 			onSettings()
 		}
 
-		// Full-width on phones, capped and centred on wide screens //
-		val maxWidth = this.dp(MAX_SHEET_WIDTH_DP)
-		val sheetWidth =
-			if (this.content.width in 1 until maxWidth) FrameLayout.LayoutParams.MATCH_PARENT
-			else maxWidth
 		scrim.addView(sheet, FrameLayout.LayoutParams(
-			sheetWidth, FrameLayout.LayoutParams.WRAP_CONTENT,
+			this.sheetWidth(this.content.width), FrameLayout.LayoutParams.WRAP_CONTENT,
 			Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL))
 		this.content.addView(scrim, FrameLayout.LayoutParams(
 			FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
 		this.scrim = scrim
 		this.sheet = sheet
+
+		// HomeActivity is not recreated on rotation (configChanges), so the
+		// open menu survives it: re-derive the width cap, the inset padding and
+		// the zoom pivot whenever the overlay's size actually changes. //
+		scrim.addOnLayoutChangeListener { _, l, t, r, b, oldL, oldT, oldR, oldB ->
+			if (r - l != oldR - oldL || b - t != oldB - oldT) {
+				this.onHostResized(r - l)
+			}
+		}
 
 		scrim.animate().alpha(1f).setDuration(duration).start()
 
@@ -136,6 +137,45 @@ class DesktopMenuOverlay(private val activity: Activity) {
 		scrim.animate().alpha(0f).setDuration(duration).withEndAction {
 			this.content.removeView(scrim)
 		}.start()
+	}
+
+	/** Full-width on phones, capped (and centred) on wide screens. */
+	private fun sheetWidth(hostWidth: Int): Int {
+		val maxWidth = this.dp(MAX_SHEET_WIDTH_DP)
+
+		return if (hostWidth in 1 until maxWidth) FrameLayout.LayoutParams.MATCH_PARENT
+			else maxWidth
+	}
+
+	/**
+	 * Keeps the actions clear of the navigation bar; the overlay spans the
+	 * whole window, unlike the inset-padded launcher/dash container.
+	 */
+	private fun applyNavigationInset(sheet: View) {
+		val navInset = ViewCompat.getRootWindowInsets(this.content)
+			?.getInsets(WindowInsetsCompat.Type.tappableElement())?.bottom ?: 0
+		sheet.setPadding(sheet.paddingLeft, sheet.paddingTop,
+			sheet.paddingRight, this.sheetBasePaddingBottom + navInset)
+	}
+
+	/** The overlay changed size (rotation): re-fit the sheet and the zoom pivot. */
+	private fun onHostResized(hostWidth: Int) {
+		val sheet = this.sheet ?: return
+
+		this.applyNavigationInset(sheet)
+
+		val width = this.sheetWidth(hostWidth)
+		(sheet.layoutParams as? FrameLayout.LayoutParams)
+			?.takeIf { it.width != width }
+			?.let {
+				it.width = width
+				sheet.layoutParams = it
+			}
+
+		this.backdrop()?.let { backdrop ->
+			backdrop.pivotX = backdrop.width / 2f
+			backdrop.pivotY = backdrop.height / 2f
+		}
 	}
 
 	/** The view to zoom out — the activity's main content (child 0). */

@@ -1,6 +1,7 @@
 package be.robinj.distrohopper.home
 
 import android.view.View
+import android.widget.FrameLayout
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.pressBack
 import be.robinj.distrohopper.ActivityTestSupport
@@ -69,6 +70,27 @@ class DesktopMenuOverlayTest {
             DesktopMenuOverlay.dismissActive(activity)
             ActivityTestSupport.drainTasks()
             assertEquals(1f, backdrop.scaleX, 0.001f)
+        }
+    }
+
+    /* HomeActivity is not recreated on rotation, so an open menu survives it:
+     * the sheet's width cap must be re-derived when the overlay resizes (a
+     * 480dp-capped landscape sheet must widen to full width on a narrow
+     * portrait screen, and vice versa). */
+    @Test fun sheetWidthIsRecomputedWhenTheOverlayResizes() {
+        this.scenario.onActivity { activity ->
+            this.longPressDesktop(activity)
+            ActivityTestSupport.drainTasks()
+
+            val sheet = activity.findViewById<View>(R.id.rowDesktopMenuAddWidget).parent as View
+            val scrim = sheet.parent as View
+            val cap = (480 * activity.resources.displayMetrics.density).toInt()
+
+            scrim.layout(0, 0, cap + 1000, 1000) // wide (landscape/tablet): capped //
+            assertEquals(cap, sheet.layoutParams.width)
+
+            scrim.layout(0, 0, cap - 100, 800) // narrow (portrait phone): full width //
+            assertEquals(FrameLayout.LayoutParams.MATCH_PARENT, sheet.layoutParams.width)
         }
     }
 
