@@ -42,6 +42,17 @@ object FontPreference {
 		return ResourcesCompat.getFont(context, fontRes)
 	}
 
+	/**
+	 * The [Typeface] for a given font preference [value], or null when [value] is
+	 * System / unknown (i.e. the system font should be used). Unlike [typeface]
+	 * this ignores the stored preference and resolves whatever value is passed,
+	 * so the picker can render each option in its own font.
+	 */
+	fun typefaceFor(context: Context, value: String?): Typeface? {
+		val fontRes = this.fontResFor(value) ?: return null
+		return ResourcesCompat.getFont(context, fontRes)
+	}
+
 	private fun current(context: Context): String =
 		Preferences.getSharedPreferences(context)
 			.getString(Preference.FONT.getName(), SYSTEM) ?: SYSTEM
