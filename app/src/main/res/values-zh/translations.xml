@@ -39,7 +39,6 @@
   <string name="option_theme">主题</string>
   <string name="hint_theme">请选择你希望DistroHopper看起来像哪一个Linux发行版。</string>
   <string name="option_dev">开发者模式</string>
-  <string name="hint_dev">你可以访问调试日志和其他技术信息。 启用此选项将对性能和稳定性产生负面影响。</string>
   <string name="option_dev_logs">日志</string>
   <string name="hm_timvdstaaij_why">*帮助测试（如果他最终并没有破坏这个程序那么就代表其他人都可以放心使用了）
 *帮助开发主色计算功能</string>

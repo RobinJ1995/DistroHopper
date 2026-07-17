@@ -49,7 +49,6 @@
   <string name="option_theme">Tema </string>
   <string name="hint_theme">Elija que distribución de Linux desea que DistroHopper se vea.</string>
   <string name="option_dev">Modo de desarrollador </string>
-  <string name="hint_dev">Acceder a registros de depuración y otra información técnica. Habilitando esto impactara negativamente sobre el rendimiento y estabilidad. </string>
   <string name="option_dev_logs">Registros </string>
   <string name="hm_timvdstaaij_why">* Pruebas (Si no logra destruirlo, entonces es probable que sea seguro para el consumo por el resto del mundo.)\n
 * Funcion para ayudar el cálculo del color dominante.</string>
