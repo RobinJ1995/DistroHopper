@@ -1,2 +1,3 @@
 <p><i>DistroHopper</i> is a home screen replacement for Android that can resemble a number of different Linux desktops, including Ubuntu’s Unity desktop, elementary OS’s Pantheon desktop and the Gnome desktop.</p>
 <p>Features include a couple of different themes, a search feature which allows you to search from a multitude of different search sources (both local and remote), and customisation options.</p>
+<p>An optional gesture lets you swipe to open your notification tray. If you choose to enable this feature, DistroHopper uses an Android Accessibility Service to open the tray for you — the only way a home screen app can do so. The Accessibility Service is only used to open the notification tray. It doesn't read any screen content or perform any other actions.</p>
