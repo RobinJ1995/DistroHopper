@@ -1,10 +1,12 @@
 [main]
 host = https://www.transifex.com
-type = android
 
-[distrohopper.stringsxml]
-file_filter = app/src/main/res/values-<lang>/translations.xml
-lang_map = cs_CZ:cs, en_US:en-rUS, hi_IN:hi-rIN, zh_TW:zh-rTW
-source_lang = en_GB
-type = ANDROID
+[o:distrohopper:p:distrohopper:r:stringsxml]
+file_filter            = app/src/main/res/values-<lang>/translations.xml
+source_file            = app/src/main/res/values-en_GB/translations.xml
+source_lang            = en_GB
+type                   = ANDROID
+lang_map               = cs_CZ: cs, en_US: en-rUS, hi_IN: hi-rIN, zh_TW: zh-rTW
+replace_edited_strings = false
+keep_translations      = false
 
