@@ -30,6 +30,17 @@ object FontPreference {
 
 	const val SYSTEM = "system"
 
+	/**
+	 * OpenDyslexic ships very wide glyph advances and tall line metrics "by
+	 * design". In a UI whose containers are sized for normal fonts that means
+	 * text no longer fits, so we claw the spacing back to something usable with a
+	 * negative [FontStyle.letterSpacing] (em units) and a sub-1
+	 * [FontStyle.lineSpacingMultiplier]. These only tighten OpenDyslexic; every
+	 * other font keeps the neutral defaults below, which are no-ops.
+	 */
+	private const val OPENDYSLEXIC_LETTER_SPACING = -0.05f
+	private const val OPENDYSLEXIC_LINE_SPACING_MULTIPLIER = 0.8f
+
 	/** Bundled font resource for [value], or null for System / unknown values. */
 	@FontRes
 	fun fontResFor(value: String?): Int? = when (value) {
@@ -93,6 +104,26 @@ object FontPreference {
 		}
 	}
 
+	/**
+	 * The selected font together with any per-font metric tweaks, or null when
+	 * the system font should be used. This is what actually gets forced onto
+	 * TextViews (see [FontStyle.applyTo]); prefer it over [typeface] so the
+	 * spacing corrections travel with the typeface.
+	 */
+	fun fontStyle(context: Context): FontStyle? {
+		val value = this.current(context)
+		val typeface = this.typeface(context) ?: return null
+		return if (value == "opendyslexic") {
+			FontStyle(
+				typeface,
+				OPENDYSLEXIC_LETTER_SPACING,
+				OPENDYSLEXIC_LINE_SPACING_MULTIPLIER,
+			)
+		} else {
+			FontStyle(typeface)
+		}
+	}
+
 	private fun current(context: Context): String =
 		Preferences.getSharedPreferences(context)
 			.getString(Preference.FONT.getName(), SYSTEM) ?: SYSTEM
@@ -105,7 +136,7 @@ object FontPreference {
 	 */
 	fun applyTo(activity: Activity) {
 		if (activity !is AppCompatActivity) return
-		val typeface = this.typeface(activity) ?: return
+		val fontStyle = this.fontStyle(activity) ?: return
 
 		// We run before AppCompat installs its own factory, so the inflater
 		// should be untouched; guard like AppCompat does to never clobber an
@@ -115,7 +146,7 @@ object FontPreference {
 
 		LayoutInflaterCompat.setFactory2(
 			inflater,
-			FontInflaterFactory(activity.delegate, typeface),
+			FontInflaterFactory(activity.delegate, fontStyle),
 		)
 	}
 
@@ -128,19 +159,39 @@ object FontPreference {
 	 * Attach via [Dialog.setOnShowListener] so the views exist when this runs.
 	 */
 	fun applyTo(dialog: Dialog) {
-		val typeface = this.typeface(dialog.context) ?: return
+		val fontStyle = this.fontStyle(dialog.context) ?: return
 		val root = dialog.window?.decorView ?: return
 
-		this.applyTypeface(root, typeface)
+		this.applyFontStyle(root, fontStyle)
 	}
 
-	private fun applyTypeface(view: View, typeface: Typeface) {
+	private fun applyFontStyle(view: View, fontStyle: FontStyle) {
 		when (view) {
 			is ViewGroup -> for (i in 0 until view.childCount) {
-				this.applyTypeface(view.getChildAt(i), typeface)
+				this.applyFontStyle(view.getChildAt(i), fontStyle)
 			}
-			// Keep each view's own style (bold/italic) while swapping the family.
-			is TextView -> view.setTypeface(typeface, view.typeface?.style ?: Typeface.NORMAL)
+			is TextView -> fontStyle.applyTo(view)
 		}
+	}
+}
+
+/**
+ * A chosen [typeface] plus the per-font metric corrections that must travel with
+ * it: [letterSpacing] (em units, negative to tighten) and
+ * [lineSpacingMultiplier] (< 1 to pull lines closer). The defaults are neutral,
+ * so fonts that need no correction get an identity transform.
+ */
+class FontStyle(
+	val typeface: Typeface,
+	val letterSpacing: Float = 0f,
+	val lineSpacingMultiplier: Float = 1f,
+) {
+
+	/** Forces this font (and its spacing) onto [view], keeping its bold/italic. */
+	fun applyTo(view: TextView) {
+		// Keep each view's own style (bold/italic) while swapping the family.
+		view.setTypeface(this.typeface, view.typeface?.style ?: Typeface.NORMAL)
+		view.letterSpacing = this.letterSpacing
+		view.setLineSpacing(0f, this.lineSpacingMultiplier)
 	}
 }

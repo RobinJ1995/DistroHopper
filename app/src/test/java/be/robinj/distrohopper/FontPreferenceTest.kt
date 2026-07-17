@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.preferences.FontInflaterFactory
 import be.robinj.distrohopper.preferences.FontPreference
+import be.robinj.distrohopper.preferences.FontStyle
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import org.junit.Assert.assertEquals
@@ -62,12 +63,38 @@ class FontPreferenceTest {
 		this.setFont("system")
 		val activity = Robolectric.buildActivity(FontTestActivity::class.java).create().get()
 
-		val factory = FontInflaterFactory(activity.delegate, Typeface.MONOSPACE)
+		val factory = FontInflaterFactory(activity.delegate, FontStyle(Typeface.MONOSPACE))
 		val attrs = Robolectric.buildAttributeSet().build()
 		val view = factory.onCreateView(null, "TextView", activity, attrs)
 
 		assertTrue(view is TextView)
 		assertEquals(Typeface.MONOSPACE, (view as TextView).typeface)
+	}
+
+	/** OpenDyslexic's baked-in spacing is clawed back: negative letter spacing
+	 *  and a sub-1 line-spacing multiplier so text fits its containers. */
+	@Test fun openDyslexicTightensSpacing() {
+		this.setFont("opendyslexic")
+		val style = FontPreference.fontStyle(this.context)
+
+		assertNotNull(style)
+		assertTrue("letter spacing should be negative", style!!.letterSpacing < 0f)
+		assertTrue("line spacing multiplier should be < 1", style.lineSpacingMultiplier < 1f)
+
+		val tv = TextView(this.context)
+		style.applyTo(tv)
+		assertEquals(style.letterSpacing, tv.letterSpacing, 0f)
+		assertEquals(style.lineSpacingMultiplier, tv.lineSpacingMultiplier, 0f)
+	}
+
+	/** Other bundled fonts get neutral (identity) spacing, so they're unchanged. */
+	@Test fun otherFontsKeepNeutralSpacing() {
+		this.setFont("ubuntu")
+		val style = FontPreference.fontStyle(this.context)
+
+		assertNotNull(style)
+		assertEquals(0f, style!!.letterSpacing, 0f)
+		assertEquals(1f, style.lineSpacingMultiplier, 0f)
 	}
 
 	/** applyTo is a harmless no-op when the system font is selected. */
