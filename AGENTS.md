@@ -29,6 +29,9 @@ codebase — older Java alongside newer Kotlin.
   attaches them to a GitHub Release. Tags whose version ends in a letter (for
   example `v3.0.0d`) are marked as GitHub pre-releases and are not promoted to
   latest; plain numeric versions (for example `v3.0.0`) remain full releases.
+  Release attachments are named `DistroHopper-<version>.apk`,
+  `DistroHopper-<version>.aab`, and `DistroHopper-<version>-paranoia.apk`,
+  where `<version>` is the full version tag, including its leading `v`.
 - Tagged CI releases build the normal signed APK/AAB plus a best-effort
   signed `-paranoia` APK (`./gradlew clean assembleRelease -PparanoiaBuild=true`):
   it appends `-paranoia` to `versionName`, forces `BuildConfig.ACRA_CONFIGURED`
