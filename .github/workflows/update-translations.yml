@@ -1,0 +1,39 @@
+name: Update translations
+
+on:
+  schedule:
+    - cron: '0 0 * * 3'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  pull-translations:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the default branch
+        uses: actions/checkout@v5
+        with:
+          ref: master
+
+      - name: Install the Transifex CLI
+        run: python -m pip install --user transifex-client
+
+      - name: Pull translations from Transifex
+        env:
+          TX_TOKEN: ${{ secrets.TRANSIFEX_TOKEN }}
+        run: $HOME/.local/bin/tx pull -a
+
+      - name: Open a pull request for updated translations
+        uses: peter-evans/create-pull-request@v7
+        with:
+          add-paths: app/src/main/res
+          branch: automation/update-translations
+          delete-branch: true
+          commit-message: "Update translations from Transifex"
+          title: "Update translations from Transifex"
+          body: |
+            Automated translation update pulled from Transifex.
