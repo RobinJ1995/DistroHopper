@@ -1,8 +1,10 @@
 package be.robinj.distrohopper;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.Html;
@@ -36,7 +38,34 @@ public class AboutActivity extends AppCompatActivity
 
 			tvDevUrl.setMovementMethod (LinkMovementMethod.getInstance ());
 			tvDevEmail.setMovementMethod (LinkMovementMethod.getInstance ());
-			
+
+			View linkGithub = this.findViewById (R.id.linkGithub);
+			View linkTransifex = this.findViewById (R.id.linkTransifex);
+
+			linkGithub.setOnClickListener
+			(
+				new View.OnClickListener ()
+				{
+					@Override
+					public void onClick (View view)
+					{
+						AboutActivity.this.openUrl (AboutActivity.this.getString (R.string.about_github_url));
+					}
+				}
+			);
+
+			linkTransifex.setOnClickListener
+			(
+				new View.OnClickListener ()
+				{
+					@Override
+					public void onClick (View view)
+					{
+						AboutActivity.this.openUrl (AboutActivity.this.getString (R.string.about_transifex_url));
+					}
+				}
+			);
+
 			final Context context = this.getBaseContext ();
 			
 			ivLogo.setOnClickListener
@@ -61,6 +90,20 @@ public class AboutActivity extends AppCompatActivity
 					}
 				}
 			);
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
+		}
+	}
+
+
+	private void openUrl (String url)
+	{
+		try
+		{
+			this.startActivity (new Intent (Intent.ACTION_VIEW, Uri.parse (url)));
 		}
 		catch (Exception ex)
 		{
