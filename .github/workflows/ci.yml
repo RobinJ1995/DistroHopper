@@ -151,8 +151,15 @@ jobs:
         run: |
           if [[ "$GITHUB_REF_NAME" =~ [[:alpha:]]$ ]]; then
             echo "prerelease=true" >> "$GITHUB_OUTPUT"
+            {
+              echo "body<<RELEASE_BODY"
+              echo "> [!WARNING]"
+              echo "> Test version, not a stable release"
+              echo "RELEASE_BODY"
+            } >> "$GITHUB_OUTPUT"
           else
             echo "prerelease=false" >> "$GITHUB_OUTPUT"
+            echo "body=" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Attach to GitHub Release
@@ -161,16 +168,7 @@ jobs:
         with:
           prerelease: ${{ steps.release_metadata.outputs.prerelease }}
           append_body: true
-          body: |
-            ### Privacy-conscious APK
-
-            `DistroHopper-${{ env.RELEASE_VERSION }}-paranoia.apk` is a signed,
-            APK-only sideload build for
-            privacy-conscious users. It disables ACRA crash reporting at build
-            time and omits AGP dependency-info metadata from the APK.
-
-            This version is provided on a best-effort basis only, with no
-            guarantee of continued support or future releases.
+          body: ${{ steps.release_metadata.outputs.body }}
           files: |
             ${{ runner.temp }}/release-artifacts/DistroHopper-${{ env.RELEASE_VERSION }}.apk
             ${{ runner.temp }}/release-artifacts/DistroHopper-${{ env.RELEASE_VERSION }}.aab
