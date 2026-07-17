@@ -34,12 +34,14 @@ object FontPreference {
 	 * OpenDyslexic ships very wide glyph advances and tall line metrics "by
 	 * design". In a UI whose containers are sized for normal fonts that means
 	 * text no longer fits, so we claw the spacing back to something usable with a
-	 * negative [FontStyle.letterSpacing] (em units) and a sub-1
-	 * [FontStyle.lineSpacingMultiplier]. These only tighten OpenDyslexic; every
-	 * other font keeps the neutral defaults below, which are no-ops.
+	 * negative [FontStyle.letterSpacingDelta] (em units) and a sub-1
+	 * [FontStyle.lineSpacingFactor]. Both are applied *relative* to each view's
+	 * own spacing (see [FontStyle.applyTo]), so intentional tracking set in
+	 * layouts/styles is tightened, not discarded. These only touch OpenDyslexic;
+	 * every other font keeps the neutral defaults below, which are exact no-ops.
 	 */
-	private const val OPENDYSLEXIC_LETTER_SPACING = -0.05f
-	private const val OPENDYSLEXIC_LINE_SPACING_MULTIPLIER = 0.8f
+	private const val OPENDYSLEXIC_LETTER_SPACING_DELTA = -0.05f
+	private const val OPENDYSLEXIC_LINE_SPACING_FACTOR = 0.8f
 
 	/** Bundled font resource for [value], or null for System / unknown values. */
 	@FontRes
@@ -116,8 +118,8 @@ object FontPreference {
 		return if (value == "opendyslexic") {
 			FontStyle(
 				typeface,
-				OPENDYSLEXIC_LETTER_SPACING,
-				OPENDYSLEXIC_LINE_SPACING_MULTIPLIER,
+				OPENDYSLEXIC_LETTER_SPACING_DELTA,
+				OPENDYSLEXIC_LINE_SPACING_FACTOR,
 			)
 		} else {
 			FontStyle(typeface)
@@ -177,21 +179,37 @@ object FontPreference {
 
 /**
  * A chosen [typeface] plus the per-font metric corrections that must travel with
- * it: [letterSpacing] (em units, negative to tighten) and
- * [lineSpacingMultiplier] (< 1 to pull lines closer). The defaults are neutral,
- * so fonts that need no correction get an identity transform.
+ * it, expressed *relative* to whatever spacing each view already has:
+ * [letterSpacingDelta] (em units, added — negative to tighten) and
+ * [lineSpacingFactor] (multiplies the view's line-spacing multiplier — < 1 to
+ * pull lines closer). Applying relatively means a view's intentional tracking
+ * (e.g. a style's `letterSpacing="0.04"`) is preserved and shifted, not wiped.
+ *
+ * The defaults (delta 0, factor 1) are an exact identity: for fonts that need no
+ * correction, [applyTo] touches only the typeface and leaves spacing untouched.
  */
 class FontStyle(
 	val typeface: Typeface,
-	val letterSpacing: Float = 0f,
-	val lineSpacingMultiplier: Float = 1f,
+	val letterSpacingDelta: Float = 0f,
+	val lineSpacingFactor: Float = 1f,
 ) {
 
 	/** Forces this font (and its spacing) onto [view], keeping its bold/italic. */
 	fun applyTo(view: TextView) {
 		// Keep each view's own style (bold/italic) while swapping the family.
 		view.setTypeface(this.typeface, view.typeface?.style ?: Typeface.NORMAL)
-		view.letterSpacing = this.letterSpacing
-		view.setLineSpacing(0f, this.lineSpacingMultiplier)
+
+		// Adjust relative to the view's own spacing so explicit tracking/leading
+		// set in layouts and styles survives; a zero delta / unit factor is a
+		// no-op, so neutral fonts leave these properties exactly as they were.
+		if (this.letterSpacingDelta != 0f) {
+			view.letterSpacing = view.letterSpacing + this.letterSpacingDelta
+		}
+		if (this.lineSpacingFactor != 1f) {
+			view.setLineSpacing(
+				view.lineSpacingExtra,
+				view.lineSpacingMultiplier * this.lineSpacingFactor,
+			)
+		}
 	}
 }

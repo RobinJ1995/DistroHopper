@@ -71,30 +71,39 @@ class FontPreferenceTest {
 		assertEquals(Typeface.MONOSPACE, (view as TextView).typeface)
 	}
 
-	/** OpenDyslexic's baked-in spacing is clawed back: negative letter spacing
-	 *  and a sub-1 line-spacing multiplier so text fits its containers. */
+	/** OpenDyslexic's baked-in spacing is clawed back: a negative letter-spacing
+	 *  delta and a sub-1 line-spacing factor so text fits its containers. */
 	@Test fun openDyslexicTightensSpacing() {
 		this.setFont("opendyslexic")
 		val style = FontPreference.fontStyle(this.context)
 
 		assertNotNull(style)
-		assertTrue("letter spacing should be negative", style!!.letterSpacing < 0f)
-		assertTrue("line spacing multiplier should be < 1", style.lineSpacingMultiplier < 1f)
+		assertTrue("letter spacing delta should be negative", style!!.letterSpacingDelta < 0f)
+		assertTrue("line spacing factor should be < 1", style.lineSpacingFactor < 1f)
 
-		val tv = TextView(this.context)
+		val tv = TextView(this.context).apply {
+			this.letterSpacing = 0.04f // explicit tracking, e.g. from a style
+			this.setLineSpacing(0f, 1f)
+		}
 		style.applyTo(tv)
-		assertEquals(style.letterSpacing, tv.letterSpacing, 0f)
-		assertEquals(style.lineSpacingMultiplier, tv.lineSpacingMultiplier, 0f)
+		// Correction is relative: existing 0.04 tracking is tightened, not wiped.
+		assertEquals(0.04f + style.letterSpacingDelta, tv.letterSpacing, 1e-6f)
+		assertEquals(style.lineSpacingFactor, tv.lineSpacingMultiplier, 1e-6f)
 	}
 
-	/** Other bundled fonts get neutral (identity) spacing, so they're unchanged. */
-	@Test fun otherFontsKeepNeutralSpacing() {
+	/** Other bundled fonts get an identity transform: existing letter spacing set
+	 *  by a style/layout is preserved, not clobbered to 0. */
+	@Test fun otherFontsPreserveExistingSpacing() {
 		this.setFont("ubuntu")
 		val style = FontPreference.fontStyle(this.context)
 
 		assertNotNull(style)
-		assertEquals(0f, style!!.letterSpacing, 0f)
-		assertEquals(1f, style.lineSpacingMultiplier, 0f)
+		assertEquals(0f, style!!.letterSpacingDelta, 0f)
+		assertEquals(1f, style.lineSpacingFactor, 0f)
+
+		val tv = TextView(this.context).apply { this.letterSpacing = 0.04f }
+		style.applyTo(tv)
+		assertEquals("neutral font must not touch letter spacing", 0.04f, tv.letterSpacing, 0f)
 	}
 
 	/** applyTo is a harmless no-op when the system font is selected. */
