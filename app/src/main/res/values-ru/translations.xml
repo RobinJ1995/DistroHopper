@@ -55,7 +55,6 @@
   <string name="option_theme">Тема</string>
   <string name="hint_theme">Выберете дистрибутив Линукса внешний вид которого вы хотите использовать.</string>
   <string name="option_dev">Режим разработчика</string>
-  <string name="hint_dev">Доступ к отладочным логам и к другой технической информации. При включении стабильность и производительность может ухудшиться.</string>
   <string name="option_dev_logs">Логи</string>
   <string name="hm_timvdstaaij_why">* Тестирование\n * Помощь с функцией расчета доминирующего цвета\n</string>
   <string name="hm_todddavies_why">* Я использовал его компонент ProgressWheel, потому что стандартный компонент Android ProgressBar не хорошо работает.\n

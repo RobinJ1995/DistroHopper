@@ -38,7 +38,6 @@
   <string name="option_theme">Тема</string>
   <string name="hint_theme">Виберіть дистрибутив Linux-а, на який повинен бути схожим DistroHopper.</string>
   <string name="option_dev">Режим розробника</string>
-  <string name="hint_dev">Отримайте доступ до логів та іншої технічної інформації. Увімкнення цієї функції негативно вплине на швидкість та стабільність роботи додатка.</string>
   <string name="option_dev_logs">Логи</string>
   <string name="hm_timvdstaaij_why">* Тестування\n 
 * Допомога з функцією розрахунку домінуючого кольору\n</string>

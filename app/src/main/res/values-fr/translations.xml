@@ -46,7 +46,6 @@
   <string name="option_theme">Theme</string>
   <string name="hint_theme">Choisissez la distribution Linux à laquelle vous souhaitez que DistroHopper ressemble.</string>
   <string name="option_dev">Mode développeur</string>
-  <string name="hint_dev">Accédez aux journaux de débogage et à d\'autres informations techniques. En activant cela, cela aura un impact négatif sur les performances et la stabilité.</string>
   <string name="option_dev_logs">Journaux</string>
   <string name="hm_timvdstaaij_why">* Testing (If he doesn\'t manage to wreck it then it\'s probably safe for consumption by the rest of the world.)\n
         * Help with the dominant colour calculation function.</string>

@@ -46,7 +46,6 @@
   <string name="option_theme">Thema</string>
   <string name="hint_theme">Wähle, nach welcher Linux Distributation DistroHopper aussehen soll.</string>
   <string name="option_dev">Entwicklermodus</string>
-  <string name="hint_dev">Greife auf Debuglogs und andere technische Informationen zu. Aktivierung wird sich negativ auf Performance und stabilität auswirken.</string>
   <string name="option_dev_logs">Logs</string>
   <string name="hm_timvdstaaij_why">*Tester (Wenn er es nicht zum Absturz bringen konnte ist es für den Rest der Welt benutzbar).\n
 *Hilfe bei der Farbberechnungsfunktion.</string>
