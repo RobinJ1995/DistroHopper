@@ -106,6 +106,16 @@ class DashGridDragListenerTest {
             val row = position / COLS
             return (col * CELL + CELL - 5f) to (row * CELL + CELL / 2f)
         }
+
+        /** Screen point in the empty area below the last laid-out cell (a genuine append). */
+        fun belowLastCell(): Pair<Float, Float> {
+            val count = this.items()?.count ?: 0
+            val lastRow = if (count == 0) 0 else (count - 1) / COLS
+            return 5f to ((lastRow + 1) * CELL + 5f)
+        }
+
+        /** An invalid point that is NOT below the content (like the reserved title padding). */
+        fun invalidNearTop(): Pair<Float, Float> = (COLS * CELL + 5f) to 5f
     }
 
     private fun appItems(layout: DashLayoutRepository): List<DashItem.AppItem> =
@@ -253,6 +263,45 @@ class DashGridDragListenerTest {
             listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED, localState = zeta))
             listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_LOCATION, x, y, zeta))
             listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, x, y, zeta))
+
+            assertEquals(before, this.labels(layout))
+        }
+    }
+
+    @Test fun draggingBelowTheLastCellAppendsToTheEndInCustomOrder() {
+        scenario.onActivity { activity ->
+            val appManager = activity.appManager
+            val layout = appManager.dashLayout
+            this.setCustomOrder(activity)
+            val alpha = this.app(layout, "Alpha") // alphabetically first
+            val grid = GeoGrid(activity, layout.dashItems(null))
+            val (x, y) = grid.belowLastCell()
+            val listener = DashGridDragListener(activity, appManager, null)
+
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED, localState = alpha))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_LOCATION, x, y, alpha))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, x, y, alpha))
+
+            assertEquals("Alpha", (layout.dashItems(null).last() as DashItem.AppItem).app.label)
+        }
+    }
+
+    @Test fun draggingIntoInvalidPaddingAboveTheGridDoesNotAppendToTheEnd() {
+        scenario.onActivity { activity ->
+            val appManager = activity.appManager
+            val layout = appManager.dashLayout
+            this.setCustomOrder(activity)
+            val before = this.labels(layout)
+            val alpha = this.app(layout, "Alpha")
+            val grid = GeoGrid(activity, layout.dashItems(null))
+            // An invalid point that isn't below the last cell (the profile-title
+            // padding above the first row) must not move the item to the end.
+            val (x, y) = grid.invalidNearTop()
+            val listener = DashGridDragListener(activity, appManager, null)
+
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED, localState = alpha))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_LOCATION, x, y, alpha))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, x, y, alpha))
 
             assertEquals(before, this.labels(layout))
         }

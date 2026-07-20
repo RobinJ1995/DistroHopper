@@ -162,9 +162,13 @@ class DashGridDragListener(
 		val position = grid.pointToPosition(x, event.y.toInt())
 
 		if (position == AdapterView.INVALID_POSITION) {
-			// Past the last icon / empty area: preview an append (custom order only).
+			// No cell under the pointer. Only the empty area *below* the last
+			// laid-out cell is a genuine append; other invalid spots — the profile
+			// title padding reserved above the first row, or the gaps beside cells —
+			// must NOT move the gap, or a hover/drop there would jump the item to
+			// the end and corrupt the manual order.
 			this.setFold(grid, null)
-			if (custom) {
+			if (custom && this.isBelowLastCell(grid, event.y.toInt())) {
 				this.previewInsertAt(grid, this.baseItems.size)
 			}
 			return
@@ -391,6 +395,12 @@ class DashGridDragListener(
 		}
 
 		return grid.adapter?.getItem(position) as? DashItem
+	}
+
+	/** Whether [y] (grid-relative) is past the bottom of the last laid-out cell. */
+	private fun isBelowLastCell(grid: GridView, y: Int): Boolean {
+		val last = grid.getChildAt(grid.childCount - 1) ?: return false
+		return y > last.bottom
 	}
 
 	/** The drag's horizontal position within the cell at [position] (0..1); 0.5 if unknown. */
