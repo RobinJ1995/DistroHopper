@@ -39,6 +39,10 @@ codebase — older Java alongside newer Kotlin.
   APKs. It deliberately does not remove dependencies/classes; it is a
   privacy-conscious courtesy sideload artifact, not a separately supported
   product line.
+- Translation updates run weekly through `.github/workflows/update-translations.yml`:
+  it runs at 00:00 UTC each Wednesday, uses the official Transifex CLI action
+  to run `tx pull -a` with the `TRANSIFEX_TOKEN` repository secret, and opens
+  or updates a pull request with changed Android resource translations.
 
 ## Repository layout
 
