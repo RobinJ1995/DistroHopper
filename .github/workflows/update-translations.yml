@@ -20,12 +20,12 @@ jobs:
           ref: master
 
       - name: Install the Transifex CLI
-        run: python -m pip install --user transifex-client
+        run: curl -o- https://raw.githubusercontent.com/transifex/cli/master/install.sh | bash
 
       - name: Pull translations from Transifex
         env:
           TX_TOKEN: ${{ secrets.TRANSIFEX_TOKEN }}
-        run: $HOME/.local/bin/tx pull -a
+        run: ./tx pull -a --force
 
       - name: Open a pull request for updated translations
         uses: peter-evans/create-pull-request@v7
