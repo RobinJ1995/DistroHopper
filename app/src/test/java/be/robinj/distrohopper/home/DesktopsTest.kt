@@ -4,6 +4,7 @@ import androidx.test.core.app.ActivityScenario
 import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.widgets.WidgetContainer
 import be.robinj.distrohopper.widgets.WidgetTestSupport
 import be.robinj.distrohopper.widgets.WidgetsPager
@@ -27,7 +28,13 @@ import org.robolectric.annotation.LooperMode
 class DesktopsTest {
 	private lateinit var scenario: ActivityScenario<HomeActivity>
 
-	@Before fun setUp() { this.scenario = ActivityTestSupport.launchHome() } // per-desktop default //
+	@Before fun setUp() {
+		// This suite exercises the desktop-explicit pin API, so force DESKTOP
+		// mode regardless of the app's own default //
+		this.scenario = ActivityTestSupport.launchHome {
+			it.putString(Preference.LAUNCHER_APP_PIN_MODE.getName(), "desktop")
+		}
+	}
 
 	@After fun tearDown() { this.scenario.close() }
 
