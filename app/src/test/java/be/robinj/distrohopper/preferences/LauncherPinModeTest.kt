@@ -22,17 +22,17 @@ class LauncherPinModeTest {
 		assertEquals(LauncherPinMode.GLOBAL, LauncherPinMode.of(""))
 	}
 
-	@Test fun currentDefaultsToDesktopWhenUnset() {
+	@Test fun currentDefaultsToGlobalWhenUnset() {
 		val prefs = Preferences.getSharedPreferences(this.context)
 		prefs.edit().remove(Preference.LAUNCHER_APP_PIN_MODE.getName()).commit()
 
-		assertEquals(LauncherPinMode.DESKTOP, LauncherPinMode.current(prefs))
+		assertEquals(LauncherPinMode.GLOBAL, LauncherPinMode.current(prefs))
 	}
 
-	@Test fun currentReadsAnExplicitGlobalValue() {
+	@Test fun currentReadsAnExplicitDesktopValue() {
 		val prefs = Preferences.getSharedPreferences(this.context)
-		prefs.edit().putString(Preference.LAUNCHER_APP_PIN_MODE.getName(), "global").commit()
+		prefs.edit().putString(Preference.LAUNCHER_APP_PIN_MODE.getName(), "desktop").commit()
 
-		assertEquals(LauncherPinMode.GLOBAL, LauncherPinMode.current(prefs))
+		assertEquals(LauncherPinMode.DESKTOP, LauncherPinMode.current(prefs))
 	}
 }

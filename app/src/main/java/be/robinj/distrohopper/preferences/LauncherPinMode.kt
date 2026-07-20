@@ -7,9 +7,9 @@ import android.content.SharedPreferences
  * ([GLOBAL]) or kept separately per desktop ([DESKTOP]).
  *
  * Stored as the string [Preference.LAUNCHER_APP_PIN_MODE] (`global`/`desktop`).
- * The default is per-desktop, so an unset preference resolves to [DESKTOP]
- * (reads pass `"desktop"` as the SharedPreferences default); any other value,
- * including an unrecognised one, resolves to [GLOBAL] as a safe fallback.
+ * The default is global, so an unset preference resolves to [GLOBAL] (reads
+ * pass `"global"` as the SharedPreferences default); any other value,
+ * including an unrecognised one, also resolves to [GLOBAL] as a safe fallback.
  */
 enum class LauncherPinMode(val value: String) {
 	GLOBAL("global"),

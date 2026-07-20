@@ -71,7 +71,7 @@ etc/                                        — design assets (SVG/XCF sources, 
     in new model-level code.
     Pinned apps are **per widget desktop**: `AppRepository` holds a list per
     desktop and a `perDesktop` flag from `preferences/LauncherPinMode`
-    (`LAUNCHER_APP_PIN_MODE` = `global`|`desktop`, default `desktop`; unknown
+    (`LAUNCHER_APP_PIN_MODE` = `global`|`desktop`, default `global`; unknown
     → global). In global mode every desktop maps onto desktop 0, so it is
     exactly the old single shared list. The no-desktop ops (`pin`/`unpin`/…)
     act on `currentDesktop` (set as the pager settles); desktop-explicit

@@ -21,7 +21,7 @@ enum class Preference(
 	/** Whether running (unpinned) apps are shown in the launcher. */
 	LAUNCHER_SHOW_RUNNING_APPS("launcher_running_show"),
 	/** Whether pinned launcher apps are shared globally or kept per desktop. */
-	LAUNCHER_APP_PIN_MODE("launcher_app_pin_mode", "desktop"),
+	LAUNCHER_APP_PIN_MODE("launcher_app_pin_mode", "global"),
 	/** Launcher icon size (the customise-mode slider value). */
 	LAUNCHERICON_WIDTH("launchericon_width"),
 	/** Whether the accessibility-based launcher service is enabled. */
