@@ -3,9 +3,7 @@ package be.robinj.distrohopper.desktop.dash
 import android.content.Context
 import android.view.DragEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.BaseAdapter
 import android.widget.GridView
 import androidx.test.core.app.ActivityScenario
 import be.robinj.distrohopper.ActivityTestSupport
@@ -23,16 +21,19 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.LooperMode
-import org.robolectric.shadows.ShadowLooper
 
 /**
- * The dash grid's drag listener: the folder-create-on-dwell, drop-into-folder,
- * custom-order reposition and folder-member-extraction state machine. The folder
- * model itself is covered by [be.robinj.distrohopper.DashLayoutRepositoryTest];
- * this verifies the listener glue drives it correctly from DragEvents.
+ * The dash grid's drag listener: the spatial reorder-preview / fold-on-centre
+ * state machine for loose apps and folders, plus the folder-member-extraction
+ * gesture. The folder + custom-order model itself is covered by
+ * [be.robinj.distrohopper.DashLayoutRepositoryTest]; this verifies the listener
+ * glue drives it correctly from DragEvents.
  *
- * The grid is a [FixedGrid] whose `pointToPosition` is pinned to a known cell so
- * the coordinate-driven branches are deterministic without Robolectric layout.
+ * The grid is a [GeoGrid] with a real [GridAdapter] and a deterministic cell
+ * geometry (fixed column width / row height), so a drag can be aimed at a cell's
+ * centre (a fold) or its edge (a reorder gap) without relying on Robolectric to
+ * lay a GridView out. A drag is delivered as the real event sequence — STARTED
+ * (which arms the preview), LOCATION (which resolves fold vs reorder), then DROP.
  */
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.LEGACY)
@@ -42,23 +43,65 @@ class DashGridDragListenerTest {
     @Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
     @After fun tearDown() { scenario.close() }
 
-    /** A grid whose adapter serves a known item list and whose hit-test is fixed. */
-    private class FixedGrid(
-        context: Context,
-        private val items: List<DashItem>,
-        private val pos: Int,
-    ) : GridView(context) {
-        init {
-            adapter = object : BaseAdapter() {
-                override fun getCount() = items.size
-                override fun getItem(position: Int): Any = items[position]
-                override fun getItemId(position: Int) = position.toLong()
-                override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View =
-                    convertView ?: View(context)
+    private companion object {
+        const val COLS = 3
+        const val CELL = 100
+    }
+
+    /**
+     * A grid with a real [GridAdapter] and a fixed COLS-wide layout of CELL-sized
+     * cells, so `pointToPosition` and each child's bounds are known: a point can
+     * be aimed at a cell's centre or edge to pick the fold / reorder branch. The
+     * children are stubbed on demand (positioned from the adapter's current order)
+     * since Robolectric doesn't lay a GridView out.
+     */
+    private class GeoGrid(context: Context, items: List<DashItem>) : GridView(context) {
+        val gridAdapter = GridAdapter(context, ArrayList(items))
+
+        init { adapter = this.gridAdapter }
+
+        override fun getChildCount(): Int = this.gridAdapter.count
+        override fun getFirstVisiblePosition(): Int = 0
+
+        override fun getChildAt(index: Int): View? {
+            if (index < 0 || index >= this.gridAdapter.count) return null
+            val col = index % COLS
+            val row = index / COLS
+            return View(context).apply {
+                layout(col * CELL, row * CELL, col * CELL + CELL, row * CELL + CELL)
+                tag = this@GeoGrid.gridAdapter.getItem(index)
             }
         }
 
-        override fun pointToPosition(x: Int, y: Int): Int = this.pos
+        override fun pointToPosition(x: Int, y: Int): Int {
+            if (x < 0 || y < 0) return AdapterView.INVALID_POSITION
+            val col = x / CELL
+            val row = y / CELL
+            if (col >= COLS) return AdapterView.INVALID_POSITION
+            val pos = row * COLS + col
+            return if (pos < this.gridAdapter.count) pos else AdapterView.INVALID_POSITION
+        }
+
+        /** Screen point at the centre of the cell currently showing [position] (a fold). */
+        fun centreOf(position: Int): Pair<Float, Float> {
+            val col = position % COLS
+            val row = position / COLS
+            return (col * CELL + CELL / 2f) to (row * CELL + CELL / 2f)
+        }
+
+        /** Screen point near the left edge of [position]'s cell (a reorder gap before it). */
+        fun leftEdgeOf(position: Int): Pair<Float, Float> {
+            val col = position % COLS
+            val row = position / COLS
+            return (col * CELL + 5f) to (row * CELL + CELL / 2f)
+        }
+
+        /** Screen point near the right edge of [position]'s cell (a reorder gap after it). */
+        fun rightEdgeOf(position: Int): Pair<Float, Float> {
+            val col = position % COLS
+            val row = position / COLS
+            return (col * CELL + CELL - 5f) to (row * CELL + CELL / 2f)
+        }
     }
 
     private fun appItems(layout: DashLayoutRepository): List<DashItem.AppItem> =
@@ -78,14 +121,18 @@ class DashGridDragListenerTest {
     private fun setCustomOrder(activity: HomeActivity) =
         Preferences.getSharedPreferences(activity).edit().putString("app_sort_order", "custom").commit()
 
-    private fun drainDelayed() = ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+    private fun indexOf(layout: DashLayoutRepository, label: String): Int =
+        layout.dashItems(null).indexOfFirst { it is DashItem.AppItem && it.app.label == label }
+
+    private fun folderIndex(layout: DashLayoutRepository): Int =
+        layout.dashItems(null).indexOfFirst { it is DashItem.FolderItem }
 
     // --- ACTION_DRAG_STARTED: which drags this listener claims ---
 
     @Test fun dragStartedClaimsLooseAppAndFolderPayloadDrags() {
         scenario.onActivity { activity ->
             val listener = DashGridDragListener(activity, activity.appManager, null)
-            val grid = FixedGrid(activity, emptyList(), AdapterView.INVALID_POSITION)
+            val grid = GeoGrid(activity, activity.appManager.dashLayout.dashItems(null))
             val anApp = this.app(activity.appManager.dashLayout, "Alpha")
 
             assertTrue("a loose app drag is claimed",
@@ -100,7 +147,7 @@ class DashGridDragListenerTest {
     @Test fun dragStartedIgnoresForeignDrags() {
         scenario.onActivity { activity ->
             val listener = DashGridDragListener(activity, activity.appManager, null)
-            val grid = FixedGrid(activity, emptyList(), AdapterView.INVALID_POSITION)
+            val grid = GeoGrid(activity, activity.appManager.dashLayout.dashItems(null))
 
             assertFalse("no local state (e.g. a widget drag) is left to other listeners",
                 listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED, localState = null)))
@@ -109,21 +156,20 @@ class DashGridDragListenerTest {
         }
     }
 
-    // --- Folder create / add ---
+    // --- Folder create / add (drop over a cell's centre) ---
 
-    @Test fun dwellingOverAnotherAppAndDroppingCreatesAFolder() {
+    @Test fun droppingOverAnotherAppsCentreCreatesAFolder() {
         scenario.onActivity { activity ->
             val appManager = activity.appManager
             val layout = appManager.dashLayout
-            val items = layout.dashItems(null)
             val alpha = this.app(layout, "Alpha")
-            val betaIndex = items.indexOfFirst { it is DashItem.AppItem && it.app.label == "Beta" }
-            val grid = FixedGrid(activity, items, betaIndex)
+            val grid = GeoGrid(activity, layout.dashItems(null))
+            val (x, y) = grid.centreOf(this.indexOf(layout, "Beta"))
             val listener = DashGridDragListener(activity, appManager, null)
 
-            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_LOCATION, 10f, 10f, alpha))
-            this.drainDelayed() // fire the dwell timer that arms the fold
-            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, 10f, 10f, alpha))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED, localState = alpha))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_LOCATION, x, y, alpha))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, x, y, alpha))
 
             val folders = layout.dashItems(null).filterIsInstance<DashItem.FolderItem>()
             assertEquals(1, folders.size)
@@ -131,54 +177,78 @@ class DashGridDragListenerTest {
         }
     }
 
-    @Test fun droppingOnAFolderAfterDwellAddsTheAppToIt() {
+    @Test fun droppingOverAFoldersCentreAddsTheAppToIt() {
         scenario.onActivity { activity ->
             val appManager = activity.appManager
             val layout = appManager.dashLayout
             layout.createFolder(this.app(layout, "Alpha"), this.app(layout, "Beta"))
             val gamma = this.app(layout, "Gamma")
-            val items = layout.dashItems(null)
-            val folderIndex = items.indexOfFirst { it is DashItem.FolderItem }
-            val grid = FixedGrid(activity, items, folderIndex)
+            val grid = GeoGrid(activity, layout.dashItems(null))
+            val (x, y) = grid.centreOf(this.folderIndex(layout))
             val listener = DashGridDragListener(activity, appManager, null)
 
-            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_LOCATION, 10f, 10f, gamma))
-            this.drainDelayed()
-            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, 10f, 10f, gamma))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED, localState = gamma))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_LOCATION, x, y, gamma))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, x, y, gamma))
 
             val folder = layout.dashItems(null).filterIsInstance<DashItem.FolderItem>().single()
             assertTrue(folder.apps.map { it.label }.containsAll(listOf("Alpha", "Beta", "Gamma")))
         }
     }
 
-    // --- Reorder (custom order only) ---
-
-    @Test fun droppingALooseAppReordersItInCustomOrder() {
+    @Test fun draggingOverAnAppsEdgeDoesNotFoldButReorders() {
         scenario.onActivity { activity ->
             val appManager = activity.appManager
             val layout = appManager.dashLayout
             this.setCustomOrder(activity)
             val settings = this.app(layout, "Settings")
-            val grid = FixedGrid(activity, layout.dashItems(null), 0) // drop at the front
+            val grid = GeoGrid(activity, layout.dashItems(null))
+            val (x, y) = grid.leftEdgeOf(0) // the front cell's edge is a reorder gap, not a fold
             val listener = DashGridDragListener(activity, appManager, null)
 
-            // No dwell, so this is a reorder rather than a fold.
-            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, 10f, 10f, settings))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED, localState = settings))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_LOCATION, x, y, settings))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, x, y, settings))
+
+            assertTrue("no folder is created by an edge drop",
+                layout.dashItems(null).none { it is DashItem.FolderItem })
+            assertEquals("Settings", (layout.dashItems(null).first() as DashItem.AppItem).app.label)
+        }
+    }
+
+    // --- Reorder (custom order only) ---
+
+    @Test fun draggingToACellsEdgeReordersInCustomOrder() {
+        scenario.onActivity { activity ->
+            val appManager = activity.appManager
+            val layout = appManager.dashLayout
+            this.setCustomOrder(activity)
+            val settings = this.app(layout, "Settings")
+            val grid = GeoGrid(activity, layout.dashItems(null))
+            val (x, y) = grid.leftEdgeOf(0) // open a gap before the first cell
+            val listener = DashGridDragListener(activity, appManager, null)
+
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED, localState = settings))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_LOCATION, x, y, settings))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, x, y, settings))
 
             assertEquals("Settings", (layout.dashItems(null).first() as DashItem.AppItem).app.label)
         }
     }
 
-    @Test fun droppingALooseAppDoesNotReorderWhenNotInCustomOrder() {
+    @Test fun draggingToACellsEdgeDoesNotReorderWhenNotInCustomOrder() {
         scenario.onActivity { activity ->
             val appManager = activity.appManager
             val layout = appManager.dashLayout // default alphabetical order
             val before = this.labels(layout)
             val zeta = this.app(layout, "Zeta")
-            val grid = FixedGrid(activity, layout.dashItems(null), 0)
+            val grid = GeoGrid(activity, layout.dashItems(null))
+            val (x, y) = grid.leftEdgeOf(0)
             val listener = DashGridDragListener(activity, appManager, null)
 
-            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, 10f, 10f, zeta))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED, localState = zeta))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_LOCATION, x, y, zeta))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, x, y, zeta))
 
             assertEquals(before, this.labels(layout))
         }
@@ -193,10 +263,10 @@ class DashGridDragListenerTest {
             val alpha = this.app(layout, "Alpha")
             val folderId = layout.createFolder(alpha, this.app(layout, "Beta"))!!
             // Drop onto empty space (no cell under the pointer): a plain extraction.
-            val grid = FixedGrid(activity, layout.dashItems(null), AdapterView.INVALID_POSITION)
+            val grid = GeoGrid(activity, layout.dashItems(null))
             val listener = DashGridDragListener(activity, appManager, null)
 
-            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP,
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, -1f, -1f,
                 localState = DashDragPayload.FolderMemberDrag(folderId, alpha)))
 
             // Removing a member down to one dissolves the folder: both apps loose.
@@ -213,15 +283,19 @@ class DashGridDragListenerTest {
             val layout = appManager.dashLayout
             this.setCustomOrder(activity)
             val folderId = layout.createFolder(this.app(layout, "Alpha"), this.app(layout, "Beta"))!!
-            val items = layout.dashItems(null)
-            val targetPos = items.size - 1 // send the folder to the end
-            val grid = FixedGrid(activity, items, targetPos)
+            val targetPos = layout.dashItems(null).size - 1 // send the folder to the end
+            val grid = GeoGrid(activity, layout.dashItems(null))
+            val (x, y) = grid.rightEdgeOf(targetPos) // a gap after the last cell
             val listener = DashGridDragListener(activity, appManager, null)
 
-            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP,
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED,
+                localState = DashDragPayload.FolderDrag(folderId)))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_LOCATION, x, y,
+                localState = DashDragPayload.FolderDrag(folderId)))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, x, y,
                 localState = DashDragPayload.FolderDrag(folderId)))
 
-            assertEquals(targetPos, layout.dashItems(null).indexOfFirst { it is DashItem.FolderItem })
+            assertEquals(targetPos, this.folderIndex(layout))
         }
     }
 
@@ -230,14 +304,20 @@ class DashGridDragListenerTest {
             val appManager = activity.appManager
             val layout = appManager.dashLayout // alphabetical: folder sorts first
             val folderId = layout.createFolder(this.app(layout, "Alpha"), this.app(layout, "Beta"))!!
-            val before = layout.dashItems(null).indexOfFirst { it is DashItem.FolderItem }
-            val grid = FixedGrid(activity, layout.dashItems(null), layout.dashItems(null).size - 1)
+            val before = this.folderIndex(layout)
+            val targetPos = layout.dashItems(null).size - 1
+            val grid = GeoGrid(activity, layout.dashItems(null))
+            val (x, y) = grid.rightEdgeOf(targetPos)
             val listener = DashGridDragListener(activity, appManager, null)
 
-            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP,
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED,
+                localState = DashDragPayload.FolderDrag(folderId)))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_LOCATION, x, y,
+                localState = DashDragPayload.FolderDrag(folderId)))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, x, y,
                 localState = DashDragPayload.FolderDrag(folderId)))
 
-            assertEquals(before, layout.dashItems(null).indexOfFirst { it is DashItem.FolderItem })
+            assertEquals(before, this.folderIndex(layout))
         }
     }
 

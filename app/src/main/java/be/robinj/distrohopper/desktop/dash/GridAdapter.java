@@ -32,8 +32,35 @@ import be.robinj.distrohopper.R;
  * Created by robin on 8/21/14.
  */
 public class GridAdapter extends ArrayAdapter<DashItem> {
+	/**
+	 * The stable key ({@code DashItem.stableKey}) of the item being dragged, or
+	 * null when no drag is in progress. Its cell is rendered as an empty
+	 * placeholder (INVISIBLE) so it reads as the gap the drop will land in —
+	 * mirroring the launcher bar's invisible-placeholder reorder preview.
+	 */
+	private String hiddenKey = null;
+
 	public GridAdapter(final Context context, final List<DashItem> items) {
 		super (context, R.layout.widget_dash_applauncher, items);
+	}
+
+	/** Marks (or, with null, unmarks) the dragged item's cell as an empty gap. */
+	public void setHiddenKey (final String key)
+	{
+		if ((this.hiddenKey == null) ? (key == null) : this.hiddenKey.equals (key))
+			return;
+
+		this.hiddenKey = key;
+		this.notifyDataSetChanged ();
+	}
+
+	/** Replaces the display order in place, e.g. to preview a drag-reorder. */
+	public void setItems (final List<DashItem> items)
+	{
+		this.setNotifyOnChange (false);
+		this.clear ();
+		this.addAll (items);
+		this.notifyDataSetChanged ();
 	}
 
 	@Override
@@ -77,6 +104,12 @@ public class GridAdapter extends ArrayAdapter<DashItem> {
 		view.setTranslationY (0);
 		view.setScaleX (1);
 		view.setScaleY (1);
+
+		// The dragged item's cell shows as an empty gap (the drop target preview);
+		// every other cell is visible (a recycled view may still be hidden) //
+		view.setVisibility (
+			(this.hiddenKey != null && this.hiddenKey.equals (DashItemKt.getStableKey (item)))
+				? View.INVISIBLE : View.VISIBLE);
 
 		view.setTag (item);
 
