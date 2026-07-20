@@ -4,17 +4,13 @@
   <string name="dash_search_hint">Cerca</string>
   <string name="dash_lens_apps_title">Applicazioni</string>
   <string name="dash_lens_other_title">Altro</string>
+  <!--Section title of a lens's results for one profile: lens name, profile name-->
   <string name="title_activity_preferences">Preferenze</string>
   <string name="title_activity_about">Informazioni</string>
   <string name="title_activity_lens_preferences">Cerca sorgenti</string>
   <string name="title_activity_theme_preferences">Temi</string>
   <string name="title_activity_dev_logs">Logs</string>
-  <string name="pinned">è stato fissato sul launcher</string>
-  <string name="unpinned">è stato rimosso dal launcher</string>
-  <string name="notpinned">non è presente sul pannello</string>
-  <string name="alreadypinned">è già fissato</string>
   <string name="developed_by">Sviluppato da Robin Jacobs</string>
-  <string name="honourable_mentions">Menzioni d\'onore</string>
   <string name="button_back">Indietro</string>
   <string name="button_about">Informazioni</string>
   <string name="button_apply">Applica</string>
@@ -32,9 +28,7 @@
   <string name="hint_wallpaper">Cambia sfondo</string>
   <string name="option_lenses">Cerca sorgenti</string>
   <string name="option_dev_logs">Logs</string>
-  <string name="hm_timvdstaaij_why">* Testing (se non riesce a romperlo probabilmente è sicuro per tutto il resto del mondo)\n
-* Aiuto con la funzione di calcolo del colore dominante</string>
-  <string name="hm_todddavies_why">* Ho utilizzato il suo componente ProgressWheel dato che il componente ProgressBar di default su Android (round) non visualizza correttamente l\'avanzamento.\n
-https://github.com/Todd-Davies/ProgressWheel/</string>
+  <!--Gestures preferences-->
+  <!--Accessibility gesture setup wizard-->
   <string name="theme_elementary_res_panel_bfb_text">Applicazioni</string>
 </resources>

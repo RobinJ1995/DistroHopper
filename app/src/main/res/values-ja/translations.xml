@@ -2,11 +2,10 @@
 <resources>
   <string name="action_settings">設定</string>
   <string name="dash_lens_apps_title">アプリ</string>
+  <!--Section title of a lens's results for one profile: lens name, profile name-->
   <string name="title_activity_preferences">設定</string>
   <string name="title_activity_about">このアプリについて</string>
-  <string name="notpinned">というアプリはランチャーに留めていません</string>
   <string name="developed_by">Robin Jacobsが開発したアプリです。</string>
-  <string name="honourable_mentions">謝辞</string>
   <string name="button_back">戻る</string>
   <string name="button_about">このアプリについて</string>
   <string name="title_preferences">設定</string>
@@ -18,10 +17,6 @@
   <string name="hint_launcher_edge">ランチャーは画面のどちら側に表示されている</string>
   <string name="option_wallpaper">壁紙</string>
   <string name="hint_wallpaper">壁紙を変える</string>
-  <string name="option_dash_ready_show">デフォルトでダッシュを表示する</string>
-  <string name="hm_timvdstaaij_why">＊ βテスト（彼がアプリを破壊できないなら絶対無理だと思います）\n
-＊ 支配色の算定方式での手伝い\n
-＊ 日本語版</string>
-  <string name="hm_todddavies_why">＊ 彼が開発したProgressWheelというコンポーネントを利用しました。\n
-        https://github.com/Todd-Davies/ProgressWheel/</string>
+  <!--Gestures preferences-->
+  <!--Accessibility gesture setup wizard-->
 </resources>
