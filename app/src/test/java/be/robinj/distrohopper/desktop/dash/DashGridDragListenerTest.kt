@@ -56,30 +56,34 @@ class DashGridDragListenerTest {
      * since Robolectric doesn't lay a GridView out.
      */
     private class GeoGrid(context: Context, items: List<DashItem>) : GridView(context) {
-        val gridAdapter = GridAdapter(context, ArrayList(items))
+        init { adapter = GridAdapter(context, ArrayList(items)) }
 
-        init { adapter = this.gridAdapter }
+        // Read through getAdapter() (null-safe): the GridView super-constructor
+        // calls the overrides below before any field of this subclass is set.
+        private fun items(): GridAdapter? = this.adapter as? GridAdapter
 
-        override fun getChildCount(): Int = this.gridAdapter.count
+        override fun getChildCount(): Int = this.items()?.count ?: 0
         override fun getFirstVisiblePosition(): Int = 0
 
         override fun getChildAt(index: Int): View? {
-            if (index < 0 || index >= this.gridAdapter.count) return null
+            val adapter = this.items() ?: return null
+            if (index < 0 || index >= adapter.count) return null
             val col = index % COLS
             val row = index / COLS
             return View(context).apply {
                 layout(col * CELL, row * CELL, col * CELL + CELL, row * CELL + CELL)
-                tag = this@GeoGrid.gridAdapter.getItem(index)
+                tag = adapter.getItem(index)
             }
         }
 
         override fun pointToPosition(x: Int, y: Int): Int {
+            val adapter = this.items() ?: return AdapterView.INVALID_POSITION
             if (x < 0 || y < 0) return AdapterView.INVALID_POSITION
             val col = x / CELL
             val row = y / CELL
             if (col >= COLS) return AdapterView.INVALID_POSITION
             val pos = row * COLS + col
-            return if (pos < this.gridAdapter.count) pos else AdapterView.INVALID_POSITION
+            return if (pos < adapter.count) pos else AdapterView.INVALID_POSITION
         }
 
         /** Screen point at the centre of the cell currently showing [position] (a fold). */
