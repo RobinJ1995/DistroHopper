@@ -4,17 +4,13 @@
   <string name="dash_search_hint">Buscar </string>
   <string name="dash_lens_apps_title">Aplicaciones</string>
   <string name="dash_lens_other_title">Otro </string>
+  <!--Section title of a lens's results for one profile: lens name, profile name-->
   <string name="title_activity_preferences">Preferencias</string>
   <string name="title_activity_about">Acerca de</string>
   <string name="title_activity_lens_preferences">Buscar orígenes</string>
   <string name="title_activity_theme_preferences">Temas </string>
   <string name="title_activity_dev_logs">Registros </string>
-  <string name="pinned">ha sido anclado al lanzador</string>
-  <string name="unpinned">ha sido des anclado del lanzador</string>
-  <string name="notpinned">no está anclado</string>
-  <string name="alreadypinned">ya esta anclado</string>
   <string name="developed_by">Desarrollado por Robin Jacobs</string>
-  <string name="honourable_mentions">Menciones honorificas</string>
   <string name="button_back">Volver</string>
   <string name="button_about">Acerca de</string>
   <string name="button_apply">Aplicar </string>
@@ -40,21 +36,14 @@
   <string name="hint_panel_edge">Borde de la pantalla al cual estará ligado el Panel.</string>
   <string name="option_launcher_edge">Ubicación del Lanzador</string>
   <string name="hint_launcher_edge">Borde de la pantalla al cual estará ligado el Panel.</string>
-  <string name="option_widgets_enabled">miniaplicación</string>
-  <string name="hint_widgets_enabled">Habilitar <b>Experimental</b> (lectura: <b>Interrumpida</b>)  soporte de miniaplicación. Es experimental y no muy usable en su estado actual.</string>
   <string name="option_wallpaper">Fondo de pantalla</string>
   <string name="hint_wallpaper">Cambiar fondo de pantalla</string>
-  <string name="option_dash_ready_show">Abrir Tablero por defecto</string>
   <string name="option_lenses">Buscar orígenes </string>
   <string name="option_theme">Tema </string>
   <string name="hint_theme">Elija que distribución de Linux desea que DistroHopper se vea.</string>
   <string name="option_dev">Modo de desarrollador </string>
   <string name="option_dev_logs">Registros </string>
-  <string name="hm_timvdstaaij_why">* Pruebas (Si no logra destruirlo, entonces es probable que sea seguro para el consumo por el resto del mundo.)\n
-* Funcion para ayudar el cálculo del color dominante.</string>
-  <string name="hm_todddavies_why">* He utilizado su componente ProgressWheel, ya que por defecto (round) el componente ProgressBar de Android no puede realmente indicar el progreso.\n
-https://github.com/Todd-Davies/ProgressWheel/</string>
-  <string name="hm_translators_name">El equipo de traducción</string>
-  <string name="hm_translators_why">Un grupo de personas han dedicado su tiempo y esfuerzo para hacer que esta aplicación este disponible en su idioma. Estoy agradecido con todos ellos por sus contribuciones con este proyecto.</string>
+  <!--Gestures preferences-->
+  <!--Accessibility gesture setup wizard-->
   <string name="theme_elementary_res_panel_bfb_text">Aplicaciones</string>
 </resources>

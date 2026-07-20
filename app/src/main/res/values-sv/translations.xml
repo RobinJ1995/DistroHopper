@@ -4,16 +4,13 @@
   <string name="dash_search_hint">Sök</string>
   <string name="dash_lens_apps_title">Applikationer</string>
   <string name="dash_lens_other_title">Annat</string>
+  <!--Section title of a lens's results for one profile: lens name, profile name-->
   <string name="title_activity_preferences">Egenskaper</string>
   <string name="title_activity_about">Om</string>
   <string name="title_activity_lens_preferences">Sök efter källor</string>
   <string name="title_activity_theme_preferences">Teman</string>
   <string name="title_activity_dev_logs">Loggar</string>
-  <string name="pinned">har nålats fast i launchern</string>
-  <string name="notpinned">är inte fastnålad</string>
-  <string name="alreadypinned">är redan fastnålad</string>
   <string name="developed_by">Utvecklad av Robin Jacobs</string>
-  <string name="honourable_mentions">Hedersomnämningar</string>
   <string name="button_back">Tillbaka</string>
   <string name="button_about">Om</string>
   <string name="button_apply">Verkställ</string>
@@ -26,15 +23,14 @@
   <string name="pref_header_dev">Utvecklingsalternativ</string>
   <string name="pref_header_functionality">Funktionalitet</string>
   <string name="pref_header_appearance">Sken</string>
-  <string name="option_widgets_enabled">Gränssnittskomponent</string>
   <string name="option_wallpaper">Skrivbordsbakgrund</string>
   <string name="hint_wallpaper">Ändra skrivbordsbakgrund</string>
-  <string name="option_dash_ready_show">Öppna Dash som standard</string>
   <string name="option_lenses">Sök efter källor</string>
   <string name="option_theme">Tema</string>
   <string name="hint_theme">Välj vilken Linux-distribution som du vill att DistroHopper ska efterlikna.</string>
   <string name="option_dev">Utvecklingsläge</string>
   <string name="option_dev_logs">Loggar</string>
-  <string name="hm_translators_name">Översättningsteamet</string>
+  <!--Gestures preferences-->
+  <!--Accessibility gesture setup wizard-->
   <string name="theme_elementary_res_panel_bfb_text">Applikationer</string>
 </resources>

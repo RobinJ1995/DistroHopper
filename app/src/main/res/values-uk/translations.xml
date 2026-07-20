@@ -4,17 +4,13 @@
   <string name="dash_search_hint">Пошук</string>
   <string name="dash_lens_apps_title">Додатки</string>
   <string name="dash_lens_other_title">Інші</string>
+  <!--Section title of a lens's results for one profile: lens name, profile name-->
   <string name="title_activity_preferences">Уподобання</string>
   <string name="title_activity_about">Про нас</string>
   <string name="title_activity_lens_preferences">Джерела пошуку</string>
   <string name="title_activity_theme_preferences">Теми</string>
   <string name="title_activity_dev_logs">Логи</string>
-  <string name="pinned">був прикріплений до Лаунчера</string>
-  <string name="unpinned">був відкріплений від Лаунчера</string>
-  <string name="notpinned">не прикріплений</string>
-  <string name="alreadypinned">вже прикріплений</string>
   <string name="developed_by">Розробник: Робін Джейкобс</string>
-  <string name="honourable_mentions">Особлива подяка</string>
   <string name="button_back">Назад</string>
   <string name="button_about">Про нас</string>
   <string name="button_apply">Застосувати</string>
@@ -32,16 +28,13 @@
   <string name="hint_launcher_edge">До якої сторони екрану буде прикріплений Лаунчер.</string>
   <string name="option_wallpaper">Шпалери</string>
   <string name="hint_wallpaper">Змінити шпалери</string>
-  <string name="option_dash_ready_show">Відкривати Деш за замовчуванням</string>
   <string name="option_lenses">Джерела пошуку</string>
   <string name="hint_lenses">Виберіть, які джерела пошуку ви хочете використовувати, і в якому порядку їх результати будуть з\'являтися у Панелі. Коли ви використовуєте Панель для пошуку, ваш запит відправляється до усіх включених джерел і відображаються їхні результати.</string>
   <string name="option_theme">Тема</string>
   <string name="hint_theme">Виберіть дистрибутив Linux-а, на який повинен бути схожим DistroHopper.</string>
   <string name="option_dev">Режим розробника</string>
   <string name="option_dev_logs">Логи</string>
-  <string name="hm_timvdstaaij_why">* Тестування\n 
-* Допомога з функцією розрахунку домінуючого кольору\n</string>
-  <string name="hm_todddavies_why">* Я використав його компонент ProgressWheel, тому що стандартний компонент Android ProgressBar не працює правильно.\n
-https://github.com/Todd-Davies/ProgressWheel/</string>
+  <!--Gestures preferences-->
+  <!--Accessibility gesture setup wizard-->
   <string name="theme_elementary_res_panel_bfb_text">Додатки</string>
 </resources>

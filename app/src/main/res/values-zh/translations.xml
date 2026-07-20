@@ -4,17 +4,13 @@
   <string name="dash_search_hint">搜索</string>
   <string name="dash_lens_apps_title">应用</string>
   <string name="dash_lens_other_title">其他</string>
+  <!--Section title of a lens's results for one profile: lens name, profile name-->
   <string name="title_activity_preferences">偏好</string>
   <string name="title_activity_about">关于</string>
   <string name="title_activity_lens_preferences">搜索资源</string>
   <string name="title_activity_theme_preferences">主题</string>
   <string name="title_activity_dev_logs">日志</string>
-  <string name="pinned">已绑定到启动器</string>
-  <string name="unpinned">已从启动器取消绑定</string>
-  <string name="notpinned">未绑定</string>
-  <string name="alreadypinned">已绑定</string>
   <string name="developed_by">由Robin Jacobs开发</string>
-  <string name="honourable_mentions">荣誉提名</string>
   <string name="button_back">返回</string>
   <string name="button_about">关于</string>
   <string name="button_apply">应用</string>
@@ -30,21 +26,15 @@
   <string name="option_launchericon_size">已绑定的图标尺寸</string>
   <string name="hint_launchericon_size">使用以下滑块来设置已绑定图标的大小。可选大小为48至120设备独立像素。默认大小为84设备独立像素。</string>
   <string name="hint_launcher_edge">选择启动器要依附在屏幕上的哪一端</string>
-  <string name="option_widgets_enabled">窗口小部件</string>
   <string name="option_wallpaper">壁纸</string>
   <string name="hint_wallpaper">更换壁纸</string>
-  <string name="option_dash_ready_show">默认启动Dash功能</string>
   <string name="option_lenses">搜索资源</string>
   <string name="hint_lenses">选择搜索来源和它们的显示顺序。被勾选的搜索源将会显示在搜索结果内。</string>
   <string name="option_theme">主题</string>
   <string name="hint_theme">请选择你希望DistroHopper看起来像哪一个Linux发行版。</string>
   <string name="option_dev">开发者模式</string>
   <string name="option_dev_logs">日志</string>
-  <string name="hm_timvdstaaij_why">*帮助测试（如果他最终并没有破坏这个程序那么就代表其他人都可以放心使用了）
-*帮助开发主色计算功能</string>
-  <string name="hm_todddavies_why">*我使用了他的进度环部件（因为安卓默认的进度环并不会显示进度） \n
-https://github.com/Todd-Davies/ProgressWheel/</string>
-  <string name="hm_translators_name">翻译团队</string>
-  <string name="hm_translators_why">有一群人贡献了他们的时间和精力来翻译这个应用。我非常感激他们的贡献！</string>
+  <!--Gestures preferences-->
+  <!--Accessibility gesture setup wizard-->
   <string name="theme_elementary_res_panel_bfb_text">应用</string>
 </resources>

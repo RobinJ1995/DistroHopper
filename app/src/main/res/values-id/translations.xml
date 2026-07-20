@@ -3,11 +3,10 @@
   <string name="action_settings">Pengaturan</string>
   <string name="dash_lens_apps_title">Aplikasi</string>
   <string name="dash_lens_other_title">Lainnya</string>
+  <!--Section title of a lens's results for one profile: lens name, profile name-->
   <string name="title_activity_preferences">Preferensi</string>
   <string name="title_activity_about">Tentang</string>
-  <string name="notpinned">tidak disematkan</string>
   <string name="developed_by">Dikembangkan oleh Robin Jacobs</string>
-  <string name="honourable_mentions">Yang dihormati disebutkan</string>
   <string name="button_back">Kembali</string>
   <string name="button_about">Tentang</string>
   <string name="title_preferences">Preferensi</string>
@@ -19,10 +18,7 @@
   <string name="hint_launcher_edge">Untuk memilih tepi layar Peluncur yang harus dilampirkan.</string>
   <string name="option_wallpaper">Kertas Dinding</string>
   <string name="hint_wallpaper">Ubah kertas dinding</string>
-  <string name="option_dash_ready_show">Buka Dasbor secara standar</string>
-  <string name="hm_timvdstaaij_why">* Pengujian (Jika ia tidak berhasil menghancurkannya maka mungkin aman untuk dikonsumsi oleh seluruh dunia.)\n
-* Bantuan dengan fungsi perhitungan warna dominan.</string>
-  <string name="hm_todddavies_why">* Saya menggunakan komponen ProgressWheel nya, karena komponen standar (round) Android ProgressBar tidak benar-benar menunjukkan kemajuan.\n
-https://github.com/Todd-Davies/ProgressWheel/</string>
+  <!--Gestures preferences-->
+  <!--Accessibility gesture setup wizard-->
   <string name="theme_elementary_res_panel_bfb_text">Aplikasi</string>
 </resources>

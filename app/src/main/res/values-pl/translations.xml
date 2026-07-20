@@ -2,17 +2,15 @@
 <resources>
   <string name="action_settings">Ustawienia</string>
   <string name="dash_lens_apps_title">Aplikacje</string>
+  <!--Section title of a lens's results for one profile: lens name, profile name-->
   <string name="title_activity_preferences">Ustawienia</string>
   <string name="title_activity_about">O programie</string>
-  <string name="notpinned">nie jest przypięte</string>
   <string name="developed_by">Stworzone przez Robin Jacobs</string>
-  <string name="honourable_mentions">Specjalne podziękowania</string>
   <string name="button_back">Wstecz</string>
   <string name="button_about">O programie</string>
   <string name="title_preferences">Ustawienia</string>
   <string name="option_wallpaper">Tapeta</string>
   <string name="hint_wallpaper">Zmień tapetę</string>
-  <string name="hm_todddavies_why">* Użyłem jego komponentu ProgressWheel, ponieważ domyślny (zaokrąglony) komponent ProgressBar w
-        zasadzie nie pokazuje stopnia postępu.\n
-        https://github.com/Todd-Davies/ProgressWheel/</string>
+  <!--Gestures preferences-->
+  <!--Accessibility gesture setup wizard-->
 </resources>

@@ -4,20 +4,23 @@
   <string name="dash_search_hint">Arama</string>
   <string name="dash_lens_apps_title">Uygulamalar</string>
   <string name="dash_lens_other_title">Diğer</string>
+  <!--Section title of a lens's results for one profile: lens name, profile name-->
   <string name="title_activity_preferences">Tercihler</string>
   <string name="title_activity_about">Hakkında</string>
   <string name="title_activity_lens_preferences">Kaynakları ara</string>
   <string name="title_activity_theme_preferences">Temalar</string>
   <string name="title_activity_dev_logs">Kayıtlar</string>
-  <string name="pinned">Başlatıcıya eklendi</string>
-  <string name="unpinned">Başlatıcıdan kaldırıldı</string>
-  <string name="notpinned">eklenmedi</string>
-  <string name="alreadypinned">zaten ekli</string>
   <string name="developed_by">Robin Jacobs Tarafından Geliştirildi</string>
-  <string name="honourable_mentions">Onurlu isimler</string>
   <string name="button_back">Geri</string>
   <string name="button_about">Hakkında</string>
   <string name="button_apply">Uygula</string>
+  <string-array name="edges">
+    <item>Gizle</item>
+    <item>Üst</item>
+    <item>Sağ</item>
+    <item>Alt</item>
+    <item>Sol</item>
+  </string-array>
   <string name="title_preferences">Tercihler</string>
   <string name="pref_header_general">Genel</string>
   <string name="pref_header_launcher">Başlatıcı</string>
@@ -25,13 +28,26 @@
   <string name="pref_header_panel">Panel</string>
   <string name="pref_header_advanced">Gelişmiş</string>
   <string name="pref_header_dev">Geliştirici seçenekleri</string>
+  <string name="pref_header_functionality">İşlevsellik</string>
   <string name="pref_header_appearance">Görünüm</string>
+  <string name="option_launchericon_size">Sabitlenmiş simge boyutu</string>
+  <string name="hint_launchericon_size">Pinned uygulamalar için simgelerin ne kadar büyük olması gerektiği. Kaydırıcı 48dip ile 120dip arasında hareket eder ve varsayılan (tam ortada) 84dip\'tir.</string>
+  <string name="option_panel_edge">Panel konumu</string>
+  <string name="hint_panel_edge">Panel hangi ekran kenarına bağlanmalıdır.</string>
+  <string name="option_launcher_edge">Başlatıcı konumu</string>
   <string name="hint_launcher_edge">Başlatıcının ekranın hangi kenarına tutunacağını belirtin.</string>
+  <string name="option_customise">Özelleştir</string>
+  <string name="hint_customise">Görünümü özelleştirin.</string>
   <string name="option_wallpaper">Duvar Kağıdı</string>
   <string name="hint_wallpaper">Duvar kağıdını değiştir</string>
-  <string name="option_dash_ready_show">Pano\'yu varsayılan olarak aç</string>
-  <string name="hm_timvdstaaij_why">* Test (Eğer yanlış bir şeyler yapmadıysa kullanmak dünyanın geri kalanı için güvenlidir.)\n
-* Baskın renk hesaplama fonksiyonunda yardım.</string>
-  <string name="hm_todddavies_why">* Onun ProgressWheel bileşenini kullandım, çünkü Android\'in ilerleme çubuğu ilerlemeyi tam gösteremiyor.\n
-        https://github.com/Todd-Davies/ProgressWheel/</string>
+  <string name="option_lenses">Arama kaynakları</string>
+  <string name="hint_lenses">Dash\'ta hangi kaynak aramalarını kullanmak istediğinizi ve sonuçlarının hangi sırayla görüntüleneceğini seçin. Dash\'ta bir arama yaptığınızda, sorgunuz tüm etkin lenslere gönderilir ve sonuçları gösterilir.</string>
+  <string name="option_theme">Tema</string>
+  <string name="hint_theme">DistroHopper\'ın hangi Linux dağıtımına benzemesini istediğinizi seçin.</string>
+  <string name="option_dev">Geliştirici modu</string>
+  <string name="option_dev_logs">Günlükler</string>
+  <!--Gestures preferences-->
+  <!--Accessibility gesture setup wizard-->
+  <string name="theme_elementary_res_panel_bfb_text">Uygulamalar</string>
+  <string name="toast_sending_crash_report">Çökme raporu gönderiliyor...</string>
 </resources>

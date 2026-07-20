@@ -4,17 +4,13 @@
   <string name="dash_search_hint">البحث</string>
   <string name="dash_lens_apps_title">التطبيقات</string>
   <string name="dash_lens_other_title">أخرى</string>
+  <!--Section title of a lens's results for one profile: lens name, profile name-->
   <string name="title_activity_preferences">التفضيلات</string>
   <string name="title_activity_about">عن التطبيق</string>
   <string name="title_activity_lens_preferences">ابحث فى المصادر</string>
   <string name="title_activity_theme_preferences">السمات</string>
   <string name="title_activity_dev_logs">السجلات</string>
-  <string name="pinned">قد ثبت فى مطلق البرامج</string>
-  <string name="unpinned">تم الغاء تثبيته فى مطلق البرامج</string>
-  <string name="notpinned">ليس مثبت</string>
-  <string name="alreadypinned">هو مثبت مسبقا</string>
   <string name="developed_by">تم تطويره من قبل روبن جَيكوبس</string>
-  <string name="honourable_mentions">يشرفنا أن نذكرهم</string>
   <string name="button_back">رجوع</string>
   <string name="button_about">عن التطبيق</string>
   <string name="button_apply">طَبق</string>
@@ -30,4 +26,6 @@
   <string name="option_launchericon_size">حجم الايقونات المثبتة</string>
   <string name="hint_launchericon_size">كم حجم ايقونات التطبيقات المثبتة. المنزلق يذهب من 48 dip إلى 120 dip، مع الافتراضى (فى المنتصف) يكون 84 dip.</string>
   <string name="option_lenses">مصادر البحث</string>
+  <!--Gestures preferences-->
+  <!--Accessibility gesture setup wizard-->
 </resources>

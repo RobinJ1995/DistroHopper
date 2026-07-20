@@ -4,17 +4,13 @@
   <string name="dash_search_hint">Chercher</string>
   <string name="dash_lens_apps_title">Applications</string>
   <string name="dash_lens_other_title">Autre</string>
+  <!--Section title of a lens's results for one profile: lens name, profile name-->
   <string name="title_activity_preferences">Préférences</string>
   <string name="title_activity_about">À propos</string>
   <string name="title_activity_lens_preferences">Rechercher des sources</string>
   <string name="title_activity_theme_preferences">Themes</string>
   <string name="title_activity_dev_logs">Journaux</string>
-  <string name="pinned">a été attaché au Launcher</string>
-  <string name="unpinned">a été détaché du Launcher</string>
-  <string name="notpinned">n\'est pas attaché</string>
-  <string name="alreadypinned">est déjà fixé</string>
   <string name="developed_by">Développé par Robin Jacobs</string>
-  <string name="honourable_mentions">Mentions honorables</string>
   <string name="button_back">Retour</string>
   <string name="button_about">À propos</string>
   <string name="button_apply">Appliquer</string>
@@ -37,21 +33,15 @@
   <string name="option_launchericon_size">Taille d\'icone fixé</string>
   <string name="hint_launchericon_size">La taille des icônes pour les applications épinglées devrait être. Le curseur passe de 48dip à 120 dip, avec la valeur par défaut (droite dans le milieu) a été de 84 dip.</string>
   <string name="hint_launcher_edge">Le côté de l\'écran auquel le Launcher sera attaché.</string>
-  <string name="option_widgets_enabled">Widgets</string>
   <string name="option_wallpaper">Fond d\'écran</string>
   <string name="hint_wallpaper">Changer le fond d\'écran</string>
-  <string name="option_dash_ready_show">Ouvrir le Dash par défaut</string>
   <string name="option_lenses">Recherches des sources</string>
   <string name="hint_lenses">Choisir les lentilles que vous voulez utiliser et leur ordre dans le Dash. Lorsque vous ferez une recherche dans le Dash, vous obtiendrez des résultats de toutes les lentilles activées.</string>
   <string name="option_theme">Theme</string>
   <string name="hint_theme">Choisissez la distribution Linux à laquelle vous souhaitez que DistroHopper ressemble.</string>
   <string name="option_dev">Mode développeur</string>
   <string name="option_dev_logs">Journaux</string>
-  <string name="hm_timvdstaaij_why">* Testing (If he doesn\'t manage to wreck it then it\'s probably safe for consumption by the rest of the world.)\n
-        * Help with the dominant colour calculation function.</string>
-  <string name="hm_todddavies_why">* I used his ProgressWheel component, since the default (round) Android ProgressBar component can\'t actually indicate progress.\n
-        https://github.com/Todd-Davies/ProgressWheel/</string>
-  <string name="hm_translators_name">L\'équipe de traduction</string>
-  <string name="hm_translators_why">* Quelques personnes ont consacré du temps et des efforts pour rendre cette application disponible dans leurs langues respectives. Je suis reconnaissant à toutes ces personnes pour leur contribution au projet.</string>
+  <!--Gestures preferences-->
+  <!--Accessibility gesture setup wizard-->
   <string name="theme_elementary_res_panel_bfb_text">Applications</string>
 </resources>
