@@ -25,7 +25,7 @@ jobs:
       - name: Pull translations from Transifex
         env:
           TX_TOKEN: ${{ secrets.TRANSIFEX_TOKEN }}
-        run: ./tx pull -a --force
+        run: ./tx pull -a --minimum-perc 1 --force
 
       - name: Open a pull request for updated translations
         uses: peter-evans/create-pull-request@v7
