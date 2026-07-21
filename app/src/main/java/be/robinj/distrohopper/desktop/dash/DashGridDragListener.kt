@@ -51,6 +51,8 @@ class DashGridDragListener(
 	// --- Folder-member extraction (pause-to-fold, no reorder preview) ---
 	private var hoverPosition = AdapterView.INVALID_POSITION
 	private var armedPosition = AdapterView.INVALID_POSITION
+	/** The extracted member being dragged, so an auto-scroll can re-resolve its hover. */
+	private var memberApp: App? = null
 
 	// --- Loose app / folder reorder preview ---
 	/** The dragged item's [stableKey], or null when this drag isn't previewed. */
@@ -74,6 +76,7 @@ class DashGridDragListener(
 				val claim = this.draggedApp(event) != null || event.localState is DashDragPayload
 				if (claim) {
 					this.resetPreview() // never carry state over from a previous drag //
+					this.memberApp = (event.localState as? DashDragPayload.FolderMemberDrag)?.app
 					this.setupPreview(grid, event)
 				}
 				return claim
@@ -84,7 +87,7 @@ class DashGridDragListener(
 				this.lastY = event.y
 				this.edgeScrollerFor(grid).onDrag(event.y)
 				if (this.isMemberDrag(event)) {
-					this.onMemberLocation(grid, event)
+					this.onMemberLocation(grid, event.x, event.y)
 				} else {
 					this.resolveAndPreview(grid, event.x, event.y)
 				}
@@ -138,13 +141,16 @@ class DashGridDragListener(
 	/** The lazily-created edge scroller for this page's grid. */
 	private fun edgeScrollerFor(grid: GridView): DashEdgeScroller =
 		this.edgeScroller ?: DashEdgeScroller(grid) {
-			// A row scrolled under a still finger: re-resolve the reorder/fold
-			// preview at the last pointer position, so a release without further
-			// movement commits the cell now under the finger — not the pre-scroll
-			// one. Only the cached loose/folder preview needs this; a member drop
-			// recomputes its target from the drop point (see onMemberDrop).
+			// A row scrolled under a still finger: re-resolve at the last pointer
+			// position so a release without further movement acts on the cell now
+			// under the finger, not the pre-scroll one. Both paths need this — the
+			// loose/folder preview caches previewIndex/foldTargetKey, and the member
+			// gesture caches its armed hover/highlight (onMemberDrop recomputes the
+			// target cell, but the fold only fires when armedPosition still matches).
 			if (this.draggedKey != null) {
 				this.resolveAndPreview(grid, this.lastX, this.lastY)
+			} else if (this.memberApp != null) {
+				this.onMemberLocation(grid, this.lastX, this.lastY)
 			}
 		}.also { this.edgeScroller = it }
 
@@ -313,6 +319,7 @@ class DashGridDragListener(
 		this.baseItems = emptyList()
 		this.previewIndex = 0
 		this.foldTargetKey = null
+		this.memberApp = null
 	}
 
 	// --- Reflow animation -------------------------------------------------------
@@ -364,8 +371,8 @@ class DashGridDragListener(
 
 	// --- Folder-member extraction (unchanged pause-to-fold gesture) -------------
 
-	private fun onMemberLocation(grid: GridView, event: DragEvent) {
-		val position = grid.pointToPosition(event.x.toInt(), event.y.toInt())
+	private fun onMemberLocation(grid: GridView, x: Float, y: Float) {
+		val position = grid.pointToPosition(x.toInt(), y.toInt())
 		if (position == this.hoverPosition) {
 			return
 		}
@@ -375,7 +382,7 @@ class DashGridDragListener(
 		this.clearHighlight()
 		this.armedPosition = AdapterView.INVALID_POSITION
 
-		val dragged = this.draggedApp(event) ?: return
+		val dragged = this.memberApp ?: return
 		val target = this.itemAt(grid, position) ?: return
 
 		val canFold = when (target) {
