@@ -44,6 +44,9 @@ class DashGridDragListener(
 
 	/** Auto-scrolls the grid when a drag lingers near its top/bottom edge. */
 	private var edgeScroller: DashEdgeScroller? = null
+	/** The last drag position, so an auto-scroll can re-resolve the target there. */
+	private var lastX = 0f
+	private var lastY = 0f
 
 	// --- Folder-member extraction (pause-to-fold, no reorder preview) ---
 	private var hoverPosition = AdapterView.INVALID_POSITION
@@ -77,11 +80,13 @@ class DashGridDragListener(
 			}
 
 			DragEvent.ACTION_DRAG_LOCATION -> {
+				this.lastX = event.x
+				this.lastY = event.y
 				this.edgeScrollerFor(grid).onDrag(event.y)
 				if (this.isMemberDrag(event)) {
 					this.onMemberLocation(grid, event)
 				} else {
-					this.resolveAndPreview(grid, event)
+					this.resolveAndPreview(grid, event.x, event.y)
 				}
 			}
 
@@ -132,7 +137,16 @@ class DashGridDragListener(
 
 	/** The lazily-created edge scroller for this page's grid. */
 	private fun edgeScrollerFor(grid: GridView): DashEdgeScroller =
-		this.edgeScroller ?: DashEdgeScroller(grid).also { this.edgeScroller = it }
+		this.edgeScroller ?: DashEdgeScroller(grid) {
+			// A row scrolled under a still finger: re-resolve the reorder/fold
+			// preview at the last pointer position, so a release without further
+			// movement commits the cell now under the finger — not the pre-scroll
+			// one. Only the cached loose/folder preview needs this; a member drop
+			// recomputes its target from the drop point (see onMemberDrop).
+			if (this.draggedKey != null) {
+				this.resolveAndPreview(grid, this.lastX, this.lastY)
+			}
+		}.also { this.edgeScroller = it }
 
 	/**
 	 * Sets up the reorder preview for a loose app or a whole folder: the dragged
@@ -167,13 +181,14 @@ class DashGridDragListener(
 	 * Resolves the drag over the grid into a fold (over a cell's centre) or a
 	 * reorder gap (over an edge / between cells) and previews it.
 	 */
-	private fun resolveAndPreview(grid: GridView, event: DragEvent) {
+	private fun resolveAndPreview(grid: GridView, x: Float, y: Float) {
 		if (this.draggedKey == null) {
 			return
 		}
 		val custom = FolderPopup.customOrderingEnabled(this.activity)
-		val x = event.x.toInt()
-		val position = grid.pointToPosition(x, event.y.toInt())
+		val px = x.toInt()
+		val py = y.toInt()
+		val position = grid.pointToPosition(px, py)
 
 		if (position == AdapterView.INVALID_POSITION) {
 			// No cell under the pointer. Only the empty area *below* the last
@@ -182,14 +197,14 @@ class DashGridDragListener(
 			// must NOT move the gap, or a hover/drop there would jump the item to
 			// the end and corrupt the manual order.
 			this.setFold(grid, null)
-			if (custom && this.isBelowLastCell(grid, event.y.toInt())) {
+			if (custom && this.isBelowLastCell(grid, py)) {
 				this.previewInsertAt(grid, this.baseItems.size)
 			}
 			return
 		}
 
 		val over = this.itemAt(grid, position)
-		val frac = this.horizontalFraction(grid, position, x)
+		val frac = this.horizontalFraction(grid, position, px)
 		val draggedIsApp = this.draggedItem is DashItem.AppItem
 		val foldable = draggedIsApp && over != null && over.stableKey != this.draggedKey &&
 			(over is DashItem.FolderItem || over is DashItem.AppItem)

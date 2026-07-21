@@ -17,8 +17,17 @@ import android.widget.GridView
  * stationary finger in the edge zone gets no more events. Hence the ticking
  * runnable: [onDrag] just sets the current velocity from the pointer position;
  * the tick does the scrolling frame by frame until [stop].
+ *
+ * That same "no event while still" property means the drop target would go
+ * stale: the cell under a stationary finger changes as rows scroll past it. So
+ * after each scroll step the tick calls [onScrolled], letting the owner
+ * re-resolve the target against the newly-revealed rows — otherwise a release
+ * without further movement would land on the pre-scroll target.
  */
-class DashEdgeScroller(private val grid: GridView) {
+class DashEdgeScroller(
+	private val grid: GridView,
+	private val onScrolled: () -> Unit,
+) {
 	private val handler = Handler(Looper.getMainLooper())
 
 	/** Signed pixels to scroll per frame: <0 up (toward the start), >0 down. */
@@ -34,6 +43,7 @@ class DashEdgeScroller(private val grid: GridView) {
 				return
 			}
 			this@DashEdgeScroller.grid.scrollListBy(v)
+			this@DashEdgeScroller.onScrolled()
 			this@DashEdgeScroller.handler.postDelayed(this, FRAME_MS)
 		}
 	}
