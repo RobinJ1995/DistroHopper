@@ -1,7 +1,9 @@
 package be.robinj.distrohopper.desktop.dash;
 
 import android.content.ClipData;
+import android.content.Context;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 
 import be.robinj.distrohopper.App;
@@ -55,6 +57,10 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 	 */
 	private void startFolderDrag (View view, String folderId)
 	{
+		// The dash search field may hold the keyboard open; a drag means the user
+		// is done typing, so get it out of the way of the drop targets. //
+		hideKeyboard (this.parent);
+
 		View source = view.isAttachedToWindow ()
 			? view
 			: this.parent.getWindow ().getDecorView ();
@@ -73,6 +79,11 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 	public static void startAppDrag (View view, App app)
 	{
 		AppManager appManager = app.getAppManager ();
+
+		// The dash search field may hold the keyboard open (e.g. dragging a
+		// search result); a drag means the user is done typing, so lower it so
+		// it doesn't cover the launcher bar or the lower dash rows. //
+		hideKeyboard (appManager.getContext ());
 
 		// The pressed view may have been detached by the time the long press
 		// fires — lens results are re-rendered as the slower lenses stream
@@ -113,5 +124,15 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 			if (source.startDragAndDrop (data, new View.DragShadowBuilder (view), app, 0))
 				appManager.startedDraggingDashApp (app);
 		}
+	}
+
+	/** Lowers the soft keyboard (raised by the dash search field), if it is up. */
+	private static void hideKeyboard (final HomeActivity activity)
+	{
+		final InputMethodManager imm =
+			(InputMethodManager) activity.getSystemService (Context.INPUT_METHOD_SERVICE);
+		if (imm != null)
+			imm.hideSoftInputFromWindow (
+				activity.getWindow ().getDecorView ().getWindowToken (), 0);
 	}
 }

@@ -42,6 +42,9 @@ class DashGridDragListener(
 	private val handler = Handler(Looper.getMainLooper())
 	private val reflowInterpolator = DecelerateInterpolator()
 
+	/** Auto-scrolls the grid when a drag lingers near its top/bottom edge. */
+	private var edgeScroller: DashEdgeScroller? = null
+
 	// --- Folder-member extraction (pause-to-fold, no reorder preview) ---
 	private var hoverPosition = AdapterView.INVALID_POSITION
 	private var armedPosition = AdapterView.INVALID_POSITION
@@ -73,28 +76,35 @@ class DashGridDragListener(
 				return claim
 			}
 
-			DragEvent.ACTION_DRAG_LOCATION ->
+			DragEvent.ACTION_DRAG_LOCATION -> {
+				this.edgeScrollerFor(grid).onDrag(event.y)
 				if (this.isMemberDrag(event)) {
 					this.onMemberLocation(grid, event)
 				} else {
 					this.resolveAndPreview(grid, event)
 				}
+			}
 
-			DragEvent.ACTION_DROP ->
+			DragEvent.ACTION_DROP -> {
+				this.edgeScroller?.stop()
 				if (this.isMemberDrag(event)) {
 					this.onMemberDrop(grid, event)
 				} else {
 					this.onPreviewDrop(event)
 				}
+			}
 
-			DragEvent.ACTION_DRAG_EXITED ->
+			DragEvent.ACTION_DRAG_EXITED -> {
+				this.edgeScroller?.stop()
 				if (this.isMemberDrag(event)) {
 					this.clearHover()
 				} else {
 					this.setFold(grid, null) // keep the gap; only drop the fold ring //
 				}
+			}
 
 			DragEvent.ACTION_DRAG_ENDED -> {
+				this.edgeScroller?.stop()
 				this.clearHover()
 				val hadPreview = this.draggedKey != null
 				val adapter = grid.adapter as? GridAdapter
@@ -119,6 +129,10 @@ class DashGridDragListener(
 
 	private fun isMemberDrag(event: DragEvent): Boolean =
 		event.localState is DashDragPayload.FolderMemberDrag
+
+	/** The lazily-created edge scroller for this page's grid. */
+	private fun edgeScrollerFor(grid: GridView): DashEdgeScroller =
+		this.edgeScroller ?: DashEdgeScroller(grid).also { this.edgeScroller = it }
 
 	/**
 	 * Sets up the reorder preview for a loose app or a whole folder: the dragged
