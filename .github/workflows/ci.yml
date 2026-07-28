@@ -60,6 +60,25 @@ jobs:
             echo "::error::'$TAG' is not a valid version. Expected vMAJOR.MINOR.PATCH, optionally with one trailing lowercase letter for a beta — e.g. v3.0.1 or v3.0.1a."
             exit 1
           fi
+          # Refuse if a GitHub Release already exists for this version, whether or
+          # not its tag does. A release outlives a deleted tag, and either path
+          # would then hand it to action-gh-release, which overwrites by default
+          # and would replace already-published artefacts with a fresh build.
+          # Only 404 proves absence; anything inconclusive refuses.
+          release_state="$(curl -sS -o /dev/null -w '%{http_code}' \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/releases/tags/$TAG" || echo 000)"
+          case "$release_state" in
+            404) ;;
+            200)
+              echo "::error::A GitHub Release already exists for $TAG. Delete it (and the tag, if you want to re-cut the same version) before re-running, or choose a version that has not been released."
+              exit 1 ;;
+            *)
+              echo "::error::Could not determine whether $TAG already has a published release (HTTP $release_state). Refusing rather than risk overwriting published artefacts."
+              exit 1 ;;
+          esac
+
           # An existing tag means a previous run bumped and pushed but failed
           # later on; that is resumable. Judge it by what the tag *contains*,
           # not by where master is now — master may have moved on since, and
@@ -79,7 +98,7 @@ jobs:
                       --format='%(refname:strip=2)' 'refs/tags/v*' \
                       | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+[a-z]?$' | head -1)"
             if [ "$newest" != "$TAG" ]; then
-              echo "::error::Tag $TAG is not the most recently cut release ($newest) — only the latest release can be resumed. Delete the tag and re-dispatch, or cut a new version."
+              echo "::error::Tag $TAG is not the most recently cut release ($newest) — only the latest release can be resumed. Delete the tag and its GitHub Release, then re-dispatch, or cut a new version."
               exit 1
             fi
             if ! git show "$TAG:app/build.gradle" 2>/dev/null \
@@ -87,23 +106,6 @@ jobs:
               echo "::error::Tag $TAG already exists but its commit does not set baseVersionName to ${TAG#v} — pick a version that has not been released."
               exit 1
             fi
-            # A resume is for a run that failed *before* publishing. If the release
-            # is already out, rebuilding would silently replace its published
-            # artefacts (softprops/action-gh-release overwrites by default) with a
-            # build that need not be identical. Make the operator delete it first.
-            release_state="$(curl -sS -o /dev/null -w '%{http_code}' \
-              -H "Authorization: Bearer $GITHUB_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/releases/tags/$TAG" || echo 000)"
-            case "$release_state" in
-              404) ;;   # no release for this tag — the resumable case
-              200)
-                echo "::error::Tag $TAG already has a published GitHub Release. Resuming would overwrite its artefacts — delete the release (keeping the tag) and re-run, or cut a new version."
-                exit 1 ;;
-              *)
-                echo "::error::Could not determine whether $TAG already has a published release (HTTP $release_state). Refusing to resume rather than risk overwriting published artefacts."
-                exit 1 ;;
-            esac
             echo "::notice::Tag $TAG already exists and carries version ${TAG#v}; resuming a previous release run without re-tagging."
             echo "RELEASE_RESUME=true" >> "$GITHUB_ENV"
           else
