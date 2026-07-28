@@ -59,15 +59,17 @@ jobs:
             echo "::error::'$TAG' is not a valid version. Expected vMAJOR.MINOR.PATCH, optionally with one trailing lowercase letter for a beta — e.g. v3.0.1 or v3.0.1a."
             exit 1
           fi
-          # An existing tag on this exact commit means a previous run already
-          # bumped and pushed but failed later on; that is resumable. A tag
-          # pointing anywhere else is a genuine collision.
+          # An existing tag means a previous run bumped and pushed but failed
+          # later on; that is resumable. Judge it by what the tag *contains*,
+          # not by where master is now — master may have moved on since, and
+          # the release job checks out the tag rather than the branch anyway.
           if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
-            if [ "$(git rev-parse "refs/tags/$TAG^{commit}")" != "$(git rev-parse HEAD)" ]; then
-              echo "::error::Tag $TAG already exists and points at a different commit than master's tip — pick a version that has not been released."
+            if ! git show "$TAG:app/build.gradle" 2>/dev/null \
+                 | grep -qE "^def baseVersionName = \"${TAG#v}\"\$"; then
+              echo "::error::Tag $TAG already exists but its commit does not set baseVersionName to ${TAG#v} — pick a version that has not been released."
               exit 1
             fi
-            echo "::notice::Tag $TAG already points at master's tip; resuming a previous release run without re-tagging."
+            echo "::notice::Tag $TAG already exists and carries version ${TAG#v}; resuming a previous release run without re-tagging."
             echo "RELEASE_RESUME=true" >> "$GITHUB_ENV"
           else
             echo "RELEASE_RESUME=false" >> "$GITHUB_ENV"
