@@ -13,14 +13,6 @@ on:
         required: true
         type: string
 
-# Release runs share a single group so a dispatch (whose ref is a branch) and a
-# tag-triggered release cannot interleave — otherwise the newest-tag check is only
-# a snapshot, and a tag pushed just after it lets the older run finish last.
-# Everything else gets a per-run group, so no other run is serialised or cancelled.
-concurrency:
-  group: ${{ (github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')) && format('{0}-release', github.workflow) || format('{0}-{1}', github.workflow, github.run_id) }}
-  cancel-in-progress: false
-
 jobs:
   # Single source of truth for "is this a release, and which version is it".
   #
