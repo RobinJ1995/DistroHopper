@@ -64,6 +64,21 @@ jobs:
           # not by where master is now — master may have moved on since, and
           # the release job checks out the tag rather than the branch anyway.
           if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            # A tag can be created from anywhere. Releases come off master, and
+            # resuming skips the tests, so an unreachable tag would publish a commit
+            # that was never on master and was never tested.
+            if ! git merge-base --is-ancestor "refs/tags/$TAG^{commit}" HEAD; then
+              echo "::error::Tag $TAG is not reachable from master — releases must come from master."
+              exit 1
+            fi
+            # Only the newest release is resumable. Re-running an older one would
+            # reuse the current appVersionCode and drag the release attachments
+            # back to a superseded build.
+            newest="$(git tag -l 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+[a-z]?$' | sort -V | tail -1)"
+            if [ "$newest" != "$TAG" ]; then
+              echo "::error::Tag $TAG is superseded by $newest — only the most recent release can be resumed. Cut a new version instead."
+              exit 1
+            fi
             if ! git show "$TAG:app/build.gradle" 2>/dev/null \
                  | grep -qE "^def baseVersionName = \"${TAG#v}\"\$"; then
               echo "::error::Tag $TAG already exists but its commit does not set baseVersionName to ${TAG#v} — pick a version that has not been released."
