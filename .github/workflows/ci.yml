@@ -6,9 +6,105 @@ on:
     tags: [ 'v*' ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release, e.g. v3.0.1 — a single trailing letter (v3.0.1a) publishes a pre-release'
+        required: true
+        type: string
 
 jobs:
+  # Single source of truth for "is this a release, and which version is it".
+  #
+  # On workflow_dispatch this also bumps app/build.gradle, commits it to master
+  # and tags that commit, so the release jobs below build the tagged bump commit
+  # within this same run. It has to happen in one run: a tag pushed with
+  # GITHUB_TOKEN cannot start a new workflow run, so there is no second,
+  # tag-triggered run to fall back on. Manually pushing a v* tag still works
+  # exactly as before, tests and all.
+  release-context:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write        # push the version bump commit and the release tag
+    outputs:
+      release: ${{ steps.context.outputs.release }}
+      tag: ${{ steps.context.outputs.tag }}
+      run_tests: ${{ steps.context.outputs.run_tests }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          # A dispatch can be started from any ref, but releases always come off
+          # master. fetch-tags so the "already released?" check below can see them.
+          ref: ${{ github.event_name == 'workflow_dispatch' && 'master' || github.ref }}
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Validate requested version
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          TAG: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+[a-z]?$ ]]; then
+            echo "::error::'$TAG' is not a valid version. Expected vMAJOR.MINOR.PATCH, optionally with one trailing lowercase letter for a beta — e.g. v3.0.1 or v3.0.1a."
+            exit 1
+          fi
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "::error::Tag $TAG already exists — pick a version that has not been released."
+            exit 1
+          fi
+
+      - name: Bump version, commit and tag
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          TAG: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          version="${TAG#v}"
+
+          # versionCode must increase monotonically or Android refuses the upgrade.
+          current_code="$(grep -oP '^def appVersionCode = \K[0-9]+' app/build.gradle)"
+          sed -i -E "s/^def appVersionCode = [0-9]+$/def appVersionCode = $((current_code + 1))/" app/build.gradle
+          sed -i -E "s/^def baseVersionName = \".*\"$/def baseVersionName = \"${version}\"/" app/build.gradle
+
+          # Fail loudly rather than releasing an unbumped build.
+          grep -qE "^def baseVersionName = \"${version}\"\$" app/build.gradle || {
+            echo "::error::Failed to set baseVersionName to ${version} in app/build.gradle."
+            exit 1
+          }
+          grep -E '^def (appVersionCode|baseVersionName) ' app/build.gradle
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app/build.gradle
+          # Re-releasing a version already present in the file is a no-op commit-wise;
+          # the tag still needs to land on master's tip.
+          git diff --cached --quiet || git commit -m "$TAG"
+          git tag -a "$TAG" -m "$TAG"
+          git push origin HEAD:master
+          git push origin "refs/tags/$TAG"
+
+      - name: Resolve release context
+        id: context
+        env:
+          TAG: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            # Nothing about the code changed, so the tests that already passed on
+            # master still hold — go straight to building the release.
+            printf 'release=true\ntag=%s\nrun_tests=false\n' "$TAG" >> "$GITHUB_OUTPUT"
+          elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            printf 'release=true\ntag=%s\nrun_tests=true\n' "$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
+          else
+            printf 'release=false\ntag=\nrun_tests=true\n' >> "$GITHUB_OUTPUT"
+          fi
+
   unit-tests:
+    needs: release-context
+    if: needs.release-context.outputs.run_tests == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -44,10 +140,15 @@ jobs:
           name: unit-test-coverage
           path: app/build/reports/jacoco/jacocoTestReport/
 
-  # Build signed APK + AAB on version tags (v*), gated on the unit tests.
+  # Build signed APK + AAB for a release, gated on the unit tests.
+  #
+  # The status functions matter: on a dispatch run unit-tests is *skipped*, and a
+  # skipped dependency would skip this job too under the implicit success().
+  # !cancelled() && !failure() drops that implicit check while still refusing to
+  # release if unit-tests actually ran and failed.
   release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: unit-tests
+    if: ${{ !cancelled() && !failure() && needs.release-context.outputs.release == 'true' }}
+    needs: [ release-context, unit-tests ]
     runs-on: ubuntu-latest
     permissions:
       contents: write        # create/attach the GitHub Release on tags
@@ -55,6 +156,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          # On a dispatch the triggering SHA predates the version bump, so build
+          # the tag release-context just created rather than the default checkout.
+          ref: ${{ needs.release-context.outputs.tag }}
 
       - name: Set up JDK 21
         uses: actions/setup-java@v5
@@ -99,7 +204,9 @@ jobs:
           echo "acra_password=${ACRA_PASSWORD}" >> secret.properties
 
       - name: Set release artifact version
-        run: echo "RELEASE_VERSION=$GITHUB_REF_NAME" >> "$GITHUB_ENV"
+        env:
+          TAG: ${{ needs.release-context.outputs.tag }}
+        run: echo "RELEASE_VERSION=$TAG" >> "$GITHUB_ENV"
 
       - name: Build signed APK and AAB
         run: ./gradlew assembleRelease bundleRelease
@@ -149,7 +256,7 @@ jobs:
       - name: Detect release type
         id: release_metadata
         run: |
-          if [[ "$GITHUB_REF_NAME" =~ [[:alpha:]]$ ]]; then
+          if [[ "$RELEASE_VERSION" =~ [[:alpha:]]$ ]]; then
             echo "prerelease=true" >> "$GITHUB_OUTPUT"
             {
               echo "body<<RELEASE_BODY"
@@ -163,9 +270,11 @@ jobs:
           fi
 
       - name: Attach to GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
+          # Explicit: on a dispatch run github.ref is a branch, so the tag cannot
+          # be inferred from it.
+          tag_name: ${{ needs.release-context.outputs.tag }}
           prerelease: ${{ steps.release_metadata.outputs.prerelease }}
           append_body: true
           body: ${{ steps.release_metadata.outputs.body }}
