@@ -29,20 +29,23 @@ codebase — older Java alongside newer Kotlin.
   attaches them to a GitHub Release. Tags whose version ends in a letter (for
   example `v3.0.0d`) are marked as GitHub pre-releases and are not promoted to
   latest; plain numeric versions (for example `v3.0.0`) remain full releases.
+  Release attachments are named `DistroHopper-<version>.apk`,
+  `DistroHopper-<version>.aab`, and `DistroHopper-<version>-paranoia.apk`,
+  where `<version>` is the full version tag, including its leading `v`.
 - Releases can also be cut from GitHub: run the **CI** workflow manually
   (Actions → CI → Run workflow) and give it a version such as `v3.0.1` or
   `v3.0.1a`. The `release-context` job validates the format, refuses a version
   that is already tagged, bumps `baseVersionName` and increments
   `appVersionCode` in `app/build.gradle`, commits that to `master`, tags the
-  commit, and the release job builds from that tag in the same run. Unit tests
+  commit (authored as `Robin Jacobs <RobinJ1995@users.noreply.github.com>`, the
+  same identity as hand-made commits here — note the *push* is still
+  authenticated by `GITHUB_TOKEN`, so the pusher remains `github-actions[bot]`),
+  and the release job builds from that tag in the same run. Unit tests
   are skipped on this path — the code being released is master's already-tested
   tip, and the bump commit touches only the version constants. Pushing a tag by
   hand still runs the tests first, unchanged. Note that if branch protection is
   ever enabled on `master`, `github-actions[bot]` needs a bypass entry or the
   bump commit cannot be pushed.
-  Release attachments are named `DistroHopper-<version>.apk`,
-  `DistroHopper-<version>.aab`, and `DistroHopper-<version>-paranoia.apk`,
-  where `<version>` is the full version tag, including its leading `v`.
 - Tagged CI releases build the normal signed APK/AAB plus a best-effort
   signed `-paranoia` APK (`./gradlew clean assembleRelease -PparanoiaBuild=true`):
   it appends `-paranoia` to `versionName`, forces `BuildConfig.ACRA_CONFIGURED`
