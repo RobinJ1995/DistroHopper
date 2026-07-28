@@ -35,10 +35,12 @@ codebase — older Java alongside newer Kotlin.
 - Releases can also be cut from GitHub: run the **CI** workflow manually
   (Actions → CI → Run workflow) and give it a version such as `v3.0.1` or
   `v3.0.1a`. The `release-context` job validates the format, refuses a version
-  whose tag already exists and points somewhere other than `master`'s tip
-  (a tag already on that tip is treated as a previous run that pushed but
-  failed later, and the release resumes from it), bumps `baseVersionName`
-  and increments
+  whose tag already exists but does not carry that version (a tag whose commit
+  already sets `baseVersionName` to it is a previous run that pushed but failed
+  later, and the release resumes from it — judged by what the tag holds, so a
+  resume still works once `master` has moved on past it, and the release builds
+  the tagged commit rather than the branch tip), bumps `baseVersionName` and
+  increments
   `appVersionCode` in `app/build.gradle`, commits that to `master`, tags the
   commit (authored as `Robin Jacobs <RobinJ1995@users.noreply.github.com>` — the
   same identity as hand-made commits here, and `git config user.*` sets author,
