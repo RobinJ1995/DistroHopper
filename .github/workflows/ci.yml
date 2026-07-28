@@ -47,7 +47,15 @@ jobs:
           TAG: ${{ inputs.version }}
         run: |
           set -euo pipefail
-          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+[a-z]?$ ]]; then
+          # The checkout below swaps in master's *contents*, but GitHub already
+          # picked this workflow's definition from the ref chosen in the Run
+          # workflow UI. Releasing from anywhere else would run that ref's
+          # release logic — with contents:write — against master's code.
+          if [ "$GITHUB_REF" != "refs/heads/master" ]; then
+            echo "::error::Releases must be dispatched from master, not ${GITHUB_REF#refs/heads/}."
+            exit 1
+          fi
+          if [[ ! "$TAG" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)[a-z]?$ ]]; then
             echo "::error::'$TAG' is not a valid version. Expected vMAJOR.MINOR.PATCH, optionally with one trailing lowercase letter for a beta — e.g. v3.0.1 or v3.0.1a."
             exit 1
           fi
@@ -72,6 +80,10 @@ jobs:
           # Fail loudly rather than releasing an unbumped build.
           grep -qE "^def baseVersionName = \"${version}\"\$" app/build.gradle || {
             echo "::error::Failed to set baseVersionName to ${version} in app/build.gradle."
+            exit 1
+          }
+          grep -qE "^def appVersionCode = $((current_code + 1))\$" app/build.gradle || {
+            echo "::error::Failed to increment appVersionCode to $((current_code + 1)) in app/build.gradle."
             exit 1
           }
           grep -E '^def (appVersionCode|baseVersionName) ' app/build.gradle
@@ -163,7 +175,7 @@ jobs:
         with:
           # On a dispatch the triggering SHA predates the version bump, so build
           # the tag release-context just created rather than the default checkout.
-          ref: ${{ needs.release-context.outputs.tag }}
+          ref: refs/tags/${{ needs.release-context.outputs.tag }}
 
       - name: Set up JDK 21
         uses: actions/setup-java@v5
