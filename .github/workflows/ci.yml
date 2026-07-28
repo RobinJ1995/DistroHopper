@@ -85,8 +85,10 @@ jobs:
           # the tag still needs to land on master's tip.
           git diff --cached --quiet || git commit -m "$TAG"
           git tag -a "$TAG" -m "$TAG"
-          git push origin HEAD:master
-          git push origin "refs/tags/$TAG"
+          # --atomic: either both refs land or neither does. A half-push would
+          # leave master bumped but unreleased, and the GITHUB_TOKEN branch push
+          # starts no CI run that would make that visible.
+          git push --atomic origin HEAD:master "refs/tags/$TAG"
 
       - name: Resolve release context
         id: context

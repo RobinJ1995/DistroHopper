@@ -37,11 +37,12 @@ codebase — older Java alongside newer Kotlin.
   `v3.0.1a`. The `release-context` job validates the format, refuses a version
   that is already tagged, bumps `baseVersionName` and increments
   `appVersionCode` in `app/build.gradle`, commits that to `master`, tags the
-  commit (authored as `Robin Jacobs <RobinJ1995@users.noreply.github.com>`, the
-  same identity as hand-made commits here — note the *push* is still
-  authenticated by `GITHUB_TOKEN`, so the pusher remains `github-actions[bot]`),
-  and the release job builds from that tag in the same run. Unit tests
-  are skipped on this path — the code being released is master's already-tested
+  commit (authored as `Robin Jacobs <RobinJ1995@users.noreply.github.com>` — the
+  same identity as hand-made commits here, and `git config user.*` sets author,
+  committer and tagger alike; the *push* is still authenticated by
+  `GITHUB_TOKEN`, so the pusher remains `github-actions[bot]` and the commit is
+  unsigned), and the release job builds from that tag in the same run. Unit
+  tests are skipped on this path — the code being released is master's already-tested
   tip, and the bump commit touches only the version constants. Pushing a tag by
   hand still runs the tests first, unchanged. Note that if branch protection is
   ever enabled on `master`, `github-actions[bot]` needs a bypass entry or the
