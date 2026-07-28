@@ -13,6 +13,14 @@ on:
         required: true
         type: string
 
+# Release runs share a single group so a dispatch (whose ref is a branch) and a
+# tag-triggered release cannot interleave — otherwise the newest-tag check is only
+# a snapshot, and a tag pushed just after it lets the older run finish last.
+# Everything else gets a per-run group, so no other run is serialised or cancelled.
+concurrency:
+  group: ${{ (github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')) && format('{0}-release', github.workflow) || format('{0}-{1}', github.workflow, github.run_id) }}
+  cancel-in-progress: false
+
 jobs:
   # Single source of truth for "is this a release, and which version is it".
   #
@@ -45,6 +53,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         env:
           TAG: ${{ inputs.version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           # The checkout below swaps in master's *contents*, but GitHub already
@@ -74,7 +83,9 @@ jobs:
             # Only the newest release is resumable. Re-running an older one would
             # reuse the current appVersionCode and drag the release attachments
             # back to a superseded build.
-            newest="$(git tag -l 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+[a-z]?$' | sort -V | tail -1)"
+            newest="$(git tag -l 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+[a-z]?$' \
+                      | sed -E 's/^(v[0-9]+\.[0-9]+\.[0-9]+)$/\1{/' \
+                      | sort -V | tail -1 | sed 's/{$//')"
             if [ "$newest" != "$TAG" ]; then
               echo "::error::Tag $TAG is superseded by $newest — only the most recent release can be resumed. Cut a new version instead."
               exit 1
@@ -82,6 +93,18 @@ jobs:
             if ! git show "$TAG:app/build.gradle" 2>/dev/null \
                  | grep -qE "^def baseVersionName = \"${TAG#v}\"\$"; then
               echo "::error::Tag $TAG already exists but its commit does not set baseVersionName to ${TAG#v} — pick a version that has not been released."
+              exit 1
+            fi
+            # A resume is for a run that failed *before* publishing. If the release
+            # is already out, rebuilding would silently replace its published
+            # artefacts (softprops/action-gh-release overwrites by default) with a
+            # build that need not be identical. Make the operator delete it first.
+            release_state="$(curl -sS -o /dev/null -w '%{http_code}' \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/releases/tags/$TAG" || echo 000)"
+            if [ "$release_state" = "200" ]; then
+              echo "::error::Tag $TAG already has a published GitHub Release. Resuming would overwrite its artefacts — delete the release (keeping the tag) and re-run, or cut a new version."
               exit 1
             fi
             echo "::notice::Tag $TAG already exists and carries version ${TAG#v}; resuming a previous release run without re-tagging."
