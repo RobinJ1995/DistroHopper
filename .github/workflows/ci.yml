@@ -83,15 +83,15 @@ jobs:
             # Only the newest release is resumable. Re-running an older one would
             # reuse the current appVersionCode and drag the release attachments
             # back to a superseded build.
-            newest="$(git tag -l --merged HEAD 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+[a-z]?$' \
-                      | sed -E 's/^(v[0-9]+\.[0-9]+\.[0-9]+)$/\1{/' \
-                      | sort -V | tail -1 | sed 's/{$//')"
+            newest="$(git for-each-ref --merged HEAD --sort=-creatordate \
+                      --format='%(refname:strip=2)' 'refs/tags/v*' \
+                      | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+[a-z]?$' | head -1)"
             if [ "$newest" != "$TAG" ]; then
-              echo "::error::Tag $TAG is superseded by $newest — only the most recent release can be resumed. Cut a new version instead."
+              echo "::error::Tag $TAG is not the most recently cut release ($newest) — only the latest release can be resumed. Delete the tag and re-dispatch, or cut a new version."
               exit 1
             fi
             if ! git show "$TAG:app/build.gradle" 2>/dev/null \
-                 | grep -qE "^def baseVersionName = \"${TAG#v}\"\$"; then
+                 | grep -qxF "def baseVersionName = \"${TAG#v}\""; then
               echo "::error::Tag $TAG already exists but its commit does not set baseVersionName to ${TAG#v} — pick a version that has not been released."
               exit 1
             fi
