@@ -83,7 +83,7 @@ jobs:
             # Only the newest release is resumable. Re-running an older one would
             # reuse the current appVersionCode and drag the release attachments
             # back to a superseded build.
-            newest="$(git tag -l 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+[a-z]?$' \
+            newest="$(git tag -l --merged HEAD 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+[a-z]?$' \
                       | sed -E 's/^(v[0-9]+\.[0-9]+\.[0-9]+)$/\1{/' \
                       | sort -V | tail -1 | sed 's/{$//')"
             if [ "$newest" != "$TAG" ]; then
@@ -103,10 +103,15 @@ jobs:
               -H "Authorization: Bearer $GITHUB_TOKEN" \
               -H "Accept: application/vnd.github+json" \
               "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/releases/tags/$TAG" || echo 000)"
-            if [ "$release_state" = "200" ]; then
-              echo "::error::Tag $TAG already has a published GitHub Release. Resuming would overwrite its artefacts — delete the release (keeping the tag) and re-run, or cut a new version."
-              exit 1
-            fi
+            case "$release_state" in
+              404) ;;   # no release for this tag — the resumable case
+              200)
+                echo "::error::Tag $TAG already has a published GitHub Release. Resuming would overwrite its artefacts — delete the release (keeping the tag) and re-run, or cut a new version."
+                exit 1 ;;
+              *)
+                echo "::error::Could not determine whether $TAG already has a published release (HTTP $release_state). Refusing to resume rather than risk overwriting published artefacts."
+                exit 1 ;;
+            esac
             echo "::notice::Tag $TAG already exists and carries version ${TAG#v}; resuming a previous release run without re-tagging."
             echo "RELEASE_RESUME=true" >> "$GITHUB_ENV"
           else
