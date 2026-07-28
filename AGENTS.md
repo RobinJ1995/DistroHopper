@@ -41,7 +41,9 @@ codebase — older Java alongside newer Kotlin.
   resume still works once `master` has moved on past it, and the release builds
   the tagged commit rather than the branch tip; the tag must also be reachable
   from `master` and be the newest release, so a resume cannot reuse a superseded
-  build's `appVersionCode`), bumps `baseVersionName` and
+  build's `appVersionCode`; and no GitHub Release may exist for the tag yet — a
+  release that outlived a failed run, or its deleted tag, must be deleted before
+  retrying, since the release action overwrites its attachments by default), bumps `baseVersionName` and
   increments
   `appVersionCode` in `app/build.gradle`, commits that to `master`, tags the
   commit (authored as `Robin Jacobs <RobinJ1995@users.noreply.github.com>` — the
