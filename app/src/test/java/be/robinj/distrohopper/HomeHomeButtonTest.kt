@@ -5,6 +5,7 @@ import android.content.Intent
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.folder.FolderOverlay
+import be.robinj.distrohopper.home.DesktopMenuOverlay
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import org.junit.After
@@ -104,6 +105,19 @@ class HomeHomeButtonTest {
         ActivityTestSupport.drainTasks()
 
         assertFalse(FolderOverlay.isShowingIn(activity))
+    }
+
+    /* Home also dismisses the long-press desktop menu. */
+    @Test fun pressingHomeWhileDesktopMenuOpenClosesIt() {
+        val activity = this.controller.get()
+        activity.showDesktopMenu()
+        ActivityTestSupport.drainTasks()
+        assertTrue(DesktopMenuOverlay.isShowingIn(activity))
+
+        this.controller.newIntent(this.homeIntent())
+        ActivityTestSupport.drainTasks()
+
+        assertFalse(DesktopMenuOverlay.isShowingIn(activity))
     }
 
     @Test fun pressingHomeWithDashClosedLeavesItClosed() {

@@ -49,6 +49,7 @@ import be.robinj.distrohopper.cache.ICache;
 import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.home.CustomiseModeUi;
 import be.robinj.distrohopper.home.DashController;
+import be.robinj.distrohopper.home.DesktopMenuOverlay;
 import be.robinj.distrohopper.home.Desktops;
 import be.robinj.distrohopper.home.GestureAction;
 import be.robinj.distrohopper.home.HomeGestureController;
@@ -88,7 +89,7 @@ import be.robinj.distrohopper.widgets.DesktopAppHost;
 import be.robinj.distrohopper.widgets.DesktopFolderHost;
 import be.robinj.distrohopper.widgets.WidgetGrid;
 import be.robinj.distrohopper.widgets.WidgetHost;
-import be.robinj.distrohopper.widgets.WidgetHost_LongClickListener;
+import be.robinj.distrohopper.widgets.WidgetsPager_LongClickListener;
 import be.robinj.distrohopper.widgets.WidgetsContainer_DragListener;
 import be.robinj.distrohopper.widgets.WidgetsPager;
 
@@ -234,10 +235,14 @@ public class HomeActivity extends AppCompatActivity
 					{
 						final WidgetsPager vgWidgets = HomeActivity.this.viewFinder.get (R.id.vgWidgets);
 
-						// An open folder floats above everything else, so Back closes
-						// just the folder — the dash it may have been opened from (or
+						// The overlays float above everything else, so Back closes
+						// just the overlay — the dash it may have been opened from (or
 						// the widget edit mode behind it) stays as it was. //
-						if (FolderOverlay.isShowingIn (HomeActivity.this))
+						if (DesktopMenuOverlay.isShowingIn (HomeActivity.this))
+						{
+							DesktopMenuOverlay.dismissActive (HomeActivity.this);
+						}
+						else if (FolderOverlay.isShowingIn (HomeActivity.this))
 						{
 							FolderOverlay.dismissActive (HomeActivity.this);
 						}
@@ -374,7 +379,7 @@ public class HomeActivity extends AppCompatActivity
 			final View tvPanelBfb = this.viewFinder.get (llPanel, R.id.tvPanelBfb);
 			tvPanelBfb.setOnDragListener (new DashEdgeDragListener (this, true));
 
-			vgWidgets.setOnLongClickListener (new WidgetHost_LongClickListener (this.widgetHost));
+			vgWidgets.setOnLongClickListener (new WidgetsPager_LongClickListener (this));
 			llLauncherAndDashContainer.setOnDragListener (
 					new WidgetsContainer_DragListener (this, vgWidgets));
 			vgWidgets.setOnClickListener (new View.OnClickListener ()
@@ -562,6 +567,7 @@ public class HomeActivity extends AppCompatActivity
 		if (Intent.ACTION_MAIN.equals(intent.getAction())
 				&& intent.hasCategory(Intent.CATEGORY_HOME)) {
 			FolderOverlay.dismissActive(this);
+			DesktopMenuOverlay.dismissActive(this);
 
 			if (this.viewFinder != null) {
 				this.viewFinder.<WidgetsPager>get(R.id.vgWidgets).exitEditMode();
@@ -629,8 +635,10 @@ public class HomeActivity extends AppCompatActivity
 				&& this.viewFinder.<WidgetsPager>get (R.id.vgWidgets).hasEditModeChild ();
 		final boolean dashOpen = this.dash != null && this.dash.isOpen ();
 		final boolean folderOpen = FolderOverlay.isShowingIn (this);
+		final boolean desktopMenuOpen = DesktopMenuOverlay.isShowingIn (this);
 
-		this.backCallback.setEnabled (editMode || dashOpen || folderOpen || this.isDefaultLauncher ());
+		this.backCallback.setEnabled (
+				editMode || dashOpen || folderOpen || desktopMenuOpen || this.isDefaultLauncher ());
 	}
 
 	/**
@@ -794,6 +802,7 @@ public class HomeActivity extends AppCompatActivity
 	public void onDestroy ()
 	{
 		FolderOverlay.clearFor (this);
+		DesktopMenuOverlay.clearFor (this);
 
 		if (this.dash != null)
 			this.getWindowManager ().removeCrossWindowBlurEnabledListener (this.dash.getCrossWindowBlurListener ());
@@ -1071,6 +1080,16 @@ public class HomeActivity extends AppCompatActivity
 
 	public void lalPreferences_clicked (View view)
 	{
+		this.openPreferences ();
+	}
+
+	/**
+	 * Opens the settings screen; started for a result so onActivityResult() can
+	 * handle the Customise UI relaunch. Shared by the panel cog, the launcher's
+	 * preferences icon and the desktop menu.
+	 */
+	public void openPreferences ()
+	{
 		try
 		{
 			if (this.startupLoader != null)
@@ -1078,6 +1097,64 @@ public class HomeActivity extends AppCompatActivity
 
 			Intent intent = new Intent (this, PreferencesActivity.class);
 			this.startActivityForResult (intent, RequestCode.ACTIVITY_PREFERENCES);
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
+		}
+	}
+
+	/**
+	 * Enters the customise UI: the same ViewModel-preserving relaunch the
+	 * Preferences screen's "Customise" entry triggers through
+	 * onActivityResult()'s result code 4.
+	 */
+	public void openCustomiseMode ()
+	{
+		try
+		{
+			// Fresh intent rather than mutating getIntent(); the old intent may
+			// still carry stale extras from a previous relaunch //
+			final Intent intent = new Intent (this, HomeActivity.class);
+			intent.putExtra ("customise", true);
+
+			this.viewModel.closeDash (); // clear preserved dash state before the recreate() //
+			this.setIntent (intent);     // onCreate() re-reads getIntent() for the customise flag //
+			this.recreate ();
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler exh = new ExceptionHandler (ex);
+			exh.show (this);
+		}
+	}
+
+	/**
+	 * The long-press-on-empty-desktop menu: the home screen zooms out and
+	 * darkens while a sheet with the desktop-level actions (add a widget,
+	 * customise, open the settings) slides up from the bottom of the screen.
+	 */
+	public void showDesktopMenu ()
+	{
+		try
+		{
+			new DesktopMenuOverlay (this).show (
+					() ->
+					{
+						this.widgetHost.showPicker ();
+						return kotlin.Unit.INSTANCE;
+					},
+					() ->
+					{
+						this.openCustomiseMode ();
+						return kotlin.Unit.INSTANCE;
+					},
+					() ->
+					{
+						this.openPreferences ();
+						return kotlin.Unit.INSTANCE;
+					});
 		}
 		catch (Exception ex)
 		{
