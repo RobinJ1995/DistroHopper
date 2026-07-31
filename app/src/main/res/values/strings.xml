@@ -67,6 +67,9 @@
     <string name="customise_option_dash_grid_size">Grid size</string>
     <string name="customise_hint_dash_grid_size">Larger grid means smaller icons.</string>
     <string name="dash_grid_hint">%1$d × %2$d</string>
+    <string name="pref_header_desktop">Desktop</string>
+    <string name="customise_option_desktop_grid_size">Grid size</string>
+    <string name="customise_hint_desktop_grid_size">Larger grid means smaller cells. Changing it rearranges items that no longer fit.</string>
     <!-- Which screen edge the launcher or panel is attached to; the group it
          sits under names the one it applies to. -->
     <string name="customise_option_screen_edge">Screen edge</string>

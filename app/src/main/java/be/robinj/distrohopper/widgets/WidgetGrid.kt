@@ -2,6 +2,8 @@ package be.robinj.distrohopper.widgets
 
 import android.content.Context
 import android.view.Surface
+import be.robinj.distrohopper.preferences.Preference
+import be.robinj.distrohopper.preferences.Preferences
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -38,31 +40,122 @@ object WidgetGrid {
 	@JvmField
 	var ROWS = 8
 
+	/** Fewest columns offered on a screen [shortEdgeDp] dp wide (cells capped at [MAX_CELL_DP]). */
+	@JvmStatic
+	fun minColumns(shortEdgeDp: Int): Int = max(2, ceil(shortEdgeDp.toDouble() / MAX_CELL_DP).toInt())
+
+	/** Most columns offered on a screen [shortEdgeDp] dp wide (cells floored at [MIN_CELL_DP]). */
+	@JvmStatic
+	fun maxColumns(shortEdgeDp: Int): Int = max(minColumns(shortEdgeDp), shortEdgeDp / MIN_CELL_DP)
+
+	/** The adaptive default column count for a screen [shortEdgeDp] dp wide. */
+	@JvmStatic
+	fun defaultColumns(shortEdgeDp: Int): Int =
+		(shortEdgeDp.toDouble() / TARGET_CELL_DP).roundToInt()
+			.coerceIn(minColumns(shortEdgeDp), maxColumns(shortEdgeDp))
+
 	/**
 	 * Computes sensible (cols, rows) for a screen with the given dp dimensions.
 	 * Cells are approximately [TARGET_CELL_DP] dp square, clamped to
 	 * [[MIN_CELL_DP], [MAX_CELL_DP]] and proportional to the screen aspect ratio.
 	 */
 	@JvmStatic
-	fun calculate(shortEdgeDp: Int, longEdgeDp: Int): Pair<Int, Int> {
-		val minCols = max(2, ceil(shortEdgeDp.toDouble() / MAX_CELL_DP).toInt())
-		val maxCols = max(minCols, shortEdgeDp / MIN_CELL_DP)
-		val cols = (shortEdgeDp.toDouble() / TARGET_CELL_DP).roundToInt().coerceIn(minCols, maxCols)
-		val rows = max(cols, (longEdgeDp.toDouble() / TARGET_CELL_DP).roundToInt())
-		return cols to rows
+	fun calculate(shortEdgeDp: Int, longEdgeDp: Int): Pair<Int, Int> =
+		calculate(shortEdgeDp, longEdgeDp, defaultColumns(shortEdgeDp))
+
+	/**
+	 * The (cols, rows) grid for a user-chosen [cols] count. At the adaptive
+	 * default the row count keeps the EXACT legacy formula (rows from
+	 * [TARGET_CELL_DP]), so existing desktops keep the grid their stored
+	 * coordinates were written against; a non-default choice derives the rows
+	 * from the screen's aspect ratio so cells stay roughly square.
+	 */
+	@JvmStatic
+	fun calculate(shortEdgeDp: Int, longEdgeDp: Int, cols: Int): Pair<Int, Int> {
+		val chosen = cols.coerceIn(minColumns(shortEdgeDp), maxColumns(shortEdgeDp))
+		val rows = if (chosen == defaultColumns(shortEdgeDp) || shortEdgeDp <= 0) {
+			(longEdgeDp.toDouble() / TARGET_CELL_DP).roundToInt()
+		} else {
+			(longEdgeDp.toDouble() * chosen / shortEdgeDp).roundToInt()
+		}
+		return chosen to max(chosen, rows)
 	}
 
 	/**
-	 * Initialises [COLS] and [ROWS] from the device's screen configuration.
-	 * Call once from [be.robinj.distrohopper.HomeActivity.onCreate] before
-	 * the first layout pass.
+	 * Corrects a dp length back to the device's STABLE density, so the grid is
+	 * immune to the system "Display size" setting: that setting rescales dp
+	 * (pixels stay fixed), and a grid derived from live dp would change its
+	 * COLS×ROWS underneath the absolute col/row coordinates persisted in
+	 * [DesktopLayoutStorage] — scattering items on load. Corrected back to the
+	 * stable density, every input the grid depends on is fixed for the device.
+	 *
+	 * When [stableDensityDpi] is unset or implausibly far from the current
+	 * density (the Display-size setting only ranges ~0.85×–1.5×), the value is
+	 * treated as unreliable and the live [edgeDp] is used unchanged — this also
+	 * keeps test environments (Robolectric reports a bogus stable density) on
+	 * the geometry their qualifiers declare.
+	 */
+	@JvmStatic
+	fun stableEdgeDp(edgeDp: Int, currentDensityDpi: Int, stableDensityDpi: Int): Int {
+		if (stableDensityDpi <= 0 || currentDensityDpi <= 0) {
+			return edgeDp
+		}
+
+		val factor = currentDensityDpi.toDouble() / stableDensityDpi
+		if (factor < 0.5 || factor > 2.0) {
+			return edgeDp
+		}
+
+		return (edgeDp * factor).roundToInt()
+	}
+
+	/** The stable-density (short, long) screen edges in dp; see [stableEdgeDp]. */
+	@JvmStatic
+	fun stableEdgesDp(context: Context): Pair<Int, Int> {
+		val config = context.resources.configuration
+		val currentDpi = context.resources.displayMetrics.densityDpi
+		val stableDpi = android.util.DisplayMetrics.DENSITY_DEVICE_STABLE
+
+		return stableEdgeDp(config.smallestScreenWidthDp, currentDpi, stableDpi) to
+			stableEdgeDp(max(config.screenWidthDp, config.screenHeightDp), currentDpi, stableDpi)
+	}
+
+	/** The valid column counts for this device (the customise slider's range). */
+	@JvmStatic
+	fun columnsRange(context: Context): IntRange {
+		val (shortEdgeDp, _) = stableEdgesDp(context)
+		return minColumns(shortEdgeDp)..maxColumns(shortEdgeDp)
+	}
+
+	/** The stored column count, clamped to the device's range; adaptive default when unset. */
+	@JvmStatic
+	fun columns(context: Context): Int {
+		val (shortEdgeDp, _) = stableEdgesDp(context)
+		val cols = Preferences.getSharedPreferences(context)
+			.getInt(Preference.DESKTOP_GRID_COLUMNS.getName(), defaultColumns(shortEdgeDp))
+
+		return cols.coerceIn(minColumns(shortEdgeDp), maxColumns(shortEdgeDp))
+	}
+
+	/** The (cols, rows) the grid would have for [cols] on this device (the customise hint). */
+	@JvmStatic
+	fun dimensionsFor(context: Context, cols: Int): Pair<Int, Int> {
+		val (shortEdgeDp, longEdgeDp) = stableEdgesDp(context)
+		return calculate(shortEdgeDp, longEdgeDp, cols)
+	}
+
+	/**
+	 * Initialises [COLS] and [ROWS] from the device's screen configuration —
+	 * anchored to the stable density ([stableEdgeDp]) — and the user's desktop
+	 * grid preference. Call once from
+	 * [be.robinj.distrohopper.HomeActivity.onCreate] before the first layout
+	 * pass; a preference change re-applies by relaunching home (the stored
+	 * desktop layout is reloaded against the new grid).
 	 */
 	@JvmStatic
 	fun init(context: Context) {
-		val config = context.resources.configuration
-		val shortEdgeDp = config.smallestScreenWidthDp
-		val longEdgeDp = max(config.screenWidthDp, config.screenHeightDp)
-		val (cols, rows) = calculate(shortEdgeDp, longEdgeDp)
+		val (shortEdgeDp, longEdgeDp) = stableEdgesDp(context)
+		val (cols, rows) = calculate(shortEdgeDp, longEdgeDp, columns(context))
 		COLS = cols
 		ROWS = rows
 	}

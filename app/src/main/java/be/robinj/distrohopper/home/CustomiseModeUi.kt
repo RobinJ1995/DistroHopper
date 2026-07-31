@@ -10,6 +10,7 @@ import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.ViewFinder
 import be.robinj.distrohopper.desktop.dash.DashGrid
+import be.robinj.distrohopper.widgets.WidgetGrid
 import be.robinj.distrohopper.desktop.launcher.LauncherIconGrid
 import be.robinj.distrohopper.preferences.BfbLocation
 import be.robinj.distrohopper.preferences.Preference
@@ -107,6 +108,37 @@ class CustomiseModeUi(
 					prefsEdit.putInt(Preference.DASH_GRID_COLUMNS.getName(), value)
 					prefsEdit.commit()
 					this@CustomiseModeUi.updateDashGridHint(dashGridHint)
+				}
+			})
+
+		// Desktop Grid Size // The user picks how many cells span the short screen
+		// edge; the rows derive from that (see WidgetGrid). Unlike the dash, the
+		// desktop persists absolute positions against the grid, so the change is
+		// committed on release and applied by relaunching home (like the edge
+		// spinners): the stored layout reloads against the new grid //
+		val desktopRange = WidgetGrid.columnsRange(this.activity)
+		val desktopGridHint = this.viewFinder.get<TextView>(R.id.tvCustomiseDesktopGridHint)
+		val sbCustomiseDesktopColumns = this.viewFinder.get<SeekBar>(R.id.sbCustomiseDesktopColumns)
+		sbCustomiseDesktopColumns.min = desktopRange.first
+		sbCustomiseDesktopColumns.max = desktopRange.last
+		sbCustomiseDesktopColumns.progress = WidgetGrid.columns(this.activity)
+		this.updateDesktopGridHint(desktopGridHint, sbCustomiseDesktopColumns.progress)
+		sbCustomiseDesktopColumns.setOnSeekBarChangeListener(
+			object : SeekBar.OnSeekBarChangeListener {
+				override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+					this@CustomiseModeUi.updateDesktopGridHint(desktopGridHint, i)
+				}
+
+				override fun onStartTrackingTouch(seekBar: SeekBar) {}
+
+				override fun onStopTrackingTouch(seekBar: SeekBar) {
+					if (seekBar.progress == WidgetGrid.columns(this@CustomiseModeUi.activity)) {
+						return
+					}
+
+					prefsEdit.putInt(Preference.DESKTOP_GRID_COLUMNS.getName(), seekBar.progress)
+					prefsEdit.commit()
+					this@CustomiseModeUi.relaunchInCustomiseMode.run()
 				}
 			})
 
@@ -246,6 +278,12 @@ class CustomiseModeUi(
 		val label = labels.getOrElse(presetIndex.coerceIn(0, labels.size - 1)) { "" }
 		val count = LauncherIconGrid.visibleCountForPreset(this.activity, presetIndex)
 		hint.text = this.activity.getString(R.string.launcher_icon_hint, label, count)
+	}
+
+	/** Updates the desktop grid "cols × rows" hint for a candidate column count. */
+	private fun updateDesktopGridHint(hint: TextView, cols: Int) {
+		val (c, r) = WidgetGrid.dimensionsFor(this.activity, cols)
+		hint.text = this.activity.getString(R.string.dash_grid_hint, c, r)
 	}
 
 	/** Re-renders the grid-size hint; called on rotation while customising. */

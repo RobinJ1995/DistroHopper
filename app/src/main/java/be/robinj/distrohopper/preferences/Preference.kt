@@ -41,6 +41,14 @@ enum class Preference(
 	DASH_SEARCH_LENSES_MAX_RESULTS("dashsearch_lenses_maxresults"),
 	/** Number of icon columns across the dash app grid. */
 	DASH_GRID_COLUMNS("dash_grid_columns"),
+	/**
+	 * Number of columns across the desktop (widget) grid; unset means the
+	 * adaptive default. Resolved against the device's STABLE density (see
+	 * [be.robinj.distrohopper.widgets.WidgetGrid]) so the grid — and the
+	 * absolute col/row coordinates persisted against it — survives the system
+	 * "Display size" setting unchanged.
+	 */
+	DESKTOP_GRID_COLUMNS("desktop_grid_columns"),
 	/** How dash apps are ordered (alphabetical, usage, custom, …). */
 	APP_SORT_ORDER("app_sort_order", "alphabetical"),
 	/** Whether opt-in crash reporting is enabled. */
