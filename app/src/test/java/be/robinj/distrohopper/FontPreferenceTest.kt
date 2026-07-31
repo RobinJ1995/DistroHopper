@@ -6,9 +6,11 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spanned
 import android.text.style.TypefaceSpan
+import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.LayoutInflaterCompat
 import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.preferences.FontInflaterFactory
 import be.robinj.distrohopper.preferences.FontPreference
@@ -101,9 +103,88 @@ class FontPreferenceTest {
 		assertEquals(0f, style!!.letterSpacingDelta, 0f)
 		assertEquals(1f, style.lineSpacingFactor, 0f)
 
-		val tv = TextView(this.context).apply { this.letterSpacing = 0.04f }
+		val tv = TextView(this.context).apply {
+			this.letterSpacing = 0.04f
+			this.setLineSpacing(8f, 1.1f)
+		}
 		style.applyTo(tv)
 		assertEquals("neutral font must not touch letter spacing", 0.04f, tv.letterSpacing, 0f)
+		assertEquals("neutral font must not touch line spacing", 8f, tv.lineSpacingExtra, 0f)
+		assertEquals("neutral font must not touch line spacing", 1.1f, tv.lineSpacingMultiplier, 0f)
+	}
+
+	/** A view can be reached by both the inflater factory and the dialog decor
+	 *  sweep (and swept again on every show), so corrections must be computed
+	 *  from the view's designed spacing and never compound. */
+	@Test fun spacingCorrectionIsIdempotent() {
+		this.setFont("opendyslexic")
+		val style = FontPreference.fontStyle(this.context)!!
+
+		val tv = TextView(this.context).apply {
+			this.letterSpacing = 0.04f
+			this.setLineSpacing(0f, 1f)
+		}
+
+		style.applyTo(tv)
+		val letterSpacingAfterOnce = tv.letterSpacing
+		val lineSpacingAfterOnce = tv.lineSpacingMultiplier
+
+		style.applyTo(tv)
+		style.applyTo(tv)
+
+		assertEquals(letterSpacingAfterOnce, tv.letterSpacing, 1e-6f)
+		assertEquals(lineSpacingAfterOnce, tv.lineSpacingMultiplier, 1e-6f)
+		// Explicitly: the third application must not have drifted to 0.04 - 0.15.
+		assertEquals(0.04f + style.letterSpacingDelta, tv.letterSpacing, 1e-6f)
+	}
+
+	/** The real compounding path: WidgetPickerDialog's adapter inflates rows with
+	 *  an inflater that carries the font factory, and those same rows are then
+	 *  caught by the dialog decor sweep. They must be corrected exactly once. */
+	@Test fun factoryThenDialogSweepDoesNotCompound() {
+		this.setFont("opendyslexic")
+		val style = FontPreference.fontStyle(this.context)!!
+		val activity = Robolectric.buildActivity(FontTestActivity::class.java).create().get()
+
+		val inflater = LayoutInflater.from(activity).cloneInContext(activity)
+		LayoutInflaterCompat.setFactory2(inflater, FontInflaterFactory(activity.delegate, style))
+		val row = inflater.inflate(R.layout.widget_picker_header, null)
+		val tvName = row.findViewById<TextView>(R.id.tvName)
+
+		// The layout declares letterSpacing="0.04"; tighten it exactly once.
+		val expected = 0.04f + style.letterSpacingDelta
+		assertEquals(expected, tvName.letterSpacing, 1e-6f)
+
+		// Now the dialog decor sweep reaches the very same row.
+		val dialog = Dialog(activity)
+		dialog.setContentView(row)
+		FontPreference.applyTo(dialog)
+
+		assertEquals(expected, tvName.letterSpacing, 1e-6f)
+	}
+
+	/** Line spacing is scaled from the view's own multiplier, and its extra
+	 *  leading (set in dp by several layouts) is carried through untouched. */
+	@Test fun openDyslexicScalesLineSpacingFromTheViewsOwnValues() {
+		this.setFont("opendyslexic")
+		val style = FontPreference.fontStyle(this.context)!!
+
+		val tv = TextView(this.context).apply { this.setLineSpacing(4f, 1.1f) }
+		style.applyTo(tv)
+
+		assertEquals(1.1f * style.lineSpacingFactor, tv.lineSpacingMultiplier, 1e-6f)
+		assertEquals("extra leading must be preserved", 4f, tv.lineSpacingExtra, 1e-6f)
+	}
+
+	/** Swapping the family must keep each view's own bold/italic styling. */
+	@Test fun applyToPreservesBoldStyle() {
+		this.setFont("opendyslexic")
+		val style = FontPreference.fontStyle(this.context)!!
+
+		val tv = TextView(this.context).apply { this.setTypeface(null, Typeface.BOLD) }
+		style.applyTo(tv)
+
+		assertTrue("bold must survive the family swap", tv.typeface.isBold)
 	}
 
 	/** applyTo is a harmless no-op when the system font is selected. */

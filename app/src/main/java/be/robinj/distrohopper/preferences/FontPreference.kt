@@ -179,11 +179,17 @@ object FontPreference {
 
 /**
  * A chosen [typeface] plus the per-font metric corrections that must travel with
- * it, expressed *relative* to whatever spacing each view already has:
+ * it, expressed *relative* to each view's designed spacing:
  * [letterSpacingDelta] (em units, added — negative to tighten) and
- * [lineSpacingFactor] (multiplies the view's line-spacing multiplier — < 1 to
- * pull lines closer). Applying relatively means a view's intentional tracking
- * (e.g. a style's `letterSpacing="0.04"`) is preserved and shifted, not wiped.
+ * [lineSpacingFactor] (multiplies the line-spacing multiplier — < 1 to pull
+ * lines closer). Applying relatively means a view's intentional tracking (e.g. a
+ * style's `letterSpacing="0.04"`) is preserved and shifted, not wiped.
+ *
+ * "Designed spacing" is the view's spacing the first time it is seen, captured
+ * and remembered in a tag. Corrections are always recomputed from that baseline,
+ * never from the current value, so [applyTo] is idempotent: a view reached by
+ * both the [FontInflaterFactory] and the dialog decor sweep — or swept again on
+ * every [Dialog] show — lands on the same spacing instead of compounding.
  *
  * The defaults (delta 0, factor 1) are an exact identity: for fonts that need no
  * correction, [applyTo] touches only the typeface and leaves spacing untouched.
@@ -194,22 +200,40 @@ class FontStyle(
 	val lineSpacingFactor: Float = 1f,
 ) {
 
+	/** True when this style leaves text spacing exactly as the view declared it. */
+	private val spacingIsNeutral: Boolean
+		get() = this.letterSpacingDelta == 0f && this.lineSpacingFactor == 1f
+
 	/** Forces this font (and its spacing) onto [view], keeping its bold/italic. */
 	fun applyTo(view: TextView) {
 		// Keep each view's own style (bold/italic) while swapping the family.
 		view.setTypeface(this.typeface, view.typeface?.style ?: Typeface.NORMAL)
 
-		// Adjust relative to the view's own spacing so explicit tracking/leading
-		// set in layouts and styles survives; a zero delta / unit factor is a
-		// no-op, so neutral fonts leave these properties exactly as they were.
-		if (this.letterSpacingDelta != 0f) {
-			view.letterSpacing = view.letterSpacing + this.letterSpacingDelta
-		}
-		if (this.lineSpacingFactor != 1f) {
-			view.setLineSpacing(
-				view.lineSpacingExtra,
-				view.lineSpacingMultiplier * this.lineSpacingFactor,
-			)
-		}
+		// Never touch spacing when there is no correction to make, so fonts that
+		// need none leave every view exactly as its layout/style declared it.
+		if (this.spacingIsNeutral) return
+
+		val baseline = this.baselineOf(view)
+		view.letterSpacing = baseline.letterSpacing + this.letterSpacingDelta
+		view.setLineSpacing(
+			baseline.lineSpacingExtra,
+			baseline.lineSpacingMultiplier * this.lineSpacingFactor,
+		)
 	}
+
+	/** The view's designed spacing, captured on first sight and reused after. */
+	private fun baselineOf(view: TextView): SpacingBaseline =
+		view.getTag(R.id.font_spacing_baseline) as? SpacingBaseline
+			?: SpacingBaseline(
+				view.letterSpacing,
+				view.lineSpacingExtra,
+				view.lineSpacingMultiplier,
+			).also { view.setTag(R.id.font_spacing_baseline, it) }
+
+	/** A view's text spacing as its layout/style declared it, before correction. */
+	private class SpacingBaseline(
+		val letterSpacing: Float,
+		val lineSpacingExtra: Float,
+		val lineSpacingMultiplier: Float,
+	)
 }
