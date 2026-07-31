@@ -1,9 +1,9 @@
 package be.robinj.distrohopper.desktop.dash
 
 import android.content.Context
+import be.robinj.distrohopper.AdaptiveCells
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
-import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -37,16 +37,16 @@ object DashGrid {
 
 	/** Fewest columns offered on a screen [swDp] dp wide (cells capped at [MAX_CELL_DP]). */
 	@JvmStatic
-	fun minColumns(swDp: Int): Int = max(2, ceil(swDp.toDouble() / MAX_CELL_DP).toInt())
+	fun minColumns(swDp: Int): Int = AdaptiveCells.minCount(swDp, MAX_CELL_DP)
 
 	/** Most columns offered on a screen [swDp] dp wide (cells floored at [MIN_CELL_DP]). */
 	@JvmStatic
-	fun maxColumns(swDp: Int): Int = max(minColumns(swDp), swDp / MIN_CELL_DP)
+	fun maxColumns(swDp: Int): Int = AdaptiveCells.maxCount(swDp, MIN_CELL_DP, MAX_CELL_DP)
 
 	/** The adaptive default short-edge column count for a screen [swDp] dp wide. */
 	@JvmStatic
 	fun defaultColumns(swDp: Int): Int =
-		(swDp.toDouble() / TARGET_CELL_DP).roundToInt().coerceIn(minColumns(swDp), maxColumns(swDp))
+		AdaptiveCells.defaultCount(swDp, TARGET_CELL_DP, MIN_CELL_DP, MAX_CELL_DP)
 
 	/**
 	 * The number of columns to show for the current orientation. [n] is the

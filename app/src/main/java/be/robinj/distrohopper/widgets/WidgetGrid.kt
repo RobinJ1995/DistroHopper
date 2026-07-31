@@ -2,9 +2,9 @@ package be.robinj.distrohopper.widgets
 
 import android.content.Context
 import android.view.Surface
+import be.robinj.distrohopper.AdaptiveCells
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
-import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -42,17 +42,17 @@ object WidgetGrid {
 
 	/** Fewest columns offered on a screen [shortEdgeDp] dp wide (cells capped at [MAX_CELL_DP]). */
 	@JvmStatic
-	fun minColumns(shortEdgeDp: Int): Int = max(2, ceil(shortEdgeDp.toDouble() / MAX_CELL_DP).toInt())
+	fun minColumns(shortEdgeDp: Int): Int = AdaptiveCells.minCount(shortEdgeDp, MAX_CELL_DP)
 
 	/** Most columns offered on a screen [shortEdgeDp] dp wide (cells floored at [MIN_CELL_DP]). */
 	@JvmStatic
-	fun maxColumns(shortEdgeDp: Int): Int = max(minColumns(shortEdgeDp), shortEdgeDp / MIN_CELL_DP)
+	fun maxColumns(shortEdgeDp: Int): Int =
+		AdaptiveCells.maxCount(shortEdgeDp, MIN_CELL_DP, MAX_CELL_DP)
 
 	/** The adaptive default column count for a screen [shortEdgeDp] dp wide. */
 	@JvmStatic
 	fun defaultColumns(shortEdgeDp: Int): Int =
-		(shortEdgeDp.toDouble() / TARGET_CELL_DP).roundToInt()
-			.coerceIn(minColumns(shortEdgeDp), maxColumns(shortEdgeDp))
+		AdaptiveCells.defaultCount(shortEdgeDp, TARGET_CELL_DP, MIN_CELL_DP, MAX_CELL_DP)
 
 	/**
 	 * Computes sensible (cols, rows) for a screen with the given dp dimensions.
