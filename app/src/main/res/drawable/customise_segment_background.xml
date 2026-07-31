@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One option in a customise-mode segmented row; the selected one is filled. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:state_selected="true">
+		<shape>
+			<corners android:radius="10dp" />
+			<solid android:color="@android:color/white" />
+		</shape>
+	</item>
+	<item>
+		<shape>
+			<corners android:radius="10dp" />
+			<solid android:color="@color/transparent90" />
+		</shape>
+	</item>
+</selector>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One option of a customise-mode segmented row, inflated per option by
+     CustomiseModeUi.initSegments(). -->
+<TextView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	style="@style/CustomiseSegment" />

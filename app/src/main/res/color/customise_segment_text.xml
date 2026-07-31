@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dark on the selected (filled) segment, muted white on the rest. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+	<item
+		android:color="@color/transparentblack10"
+		android:state_selected="true" />
+	<item android:color="@color/transparent30" />
+</selector>

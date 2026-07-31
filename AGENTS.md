@@ -303,7 +303,27 @@ etc/                                        — design assets (SVG/XCF sources, 
     launcher/dash for chameleonic themes (via the permissionless
     `WallpaperManager.getWallpaperColors` API; the storage permission only
     matters for the local-files lens).
-  - `CustomiseModeUi` — the customise-mode seekbars/spinners inside the dash.
+  - `CustomiseModeUi` — the customise-mode seekbars and segmented rows inside
+    the dash, plus their live value readouts and the header's Done button
+    (which leaves customise mode through `HomeActivity.closeDash()`;
+    swipe-to-close is disabled there, so it is the only on-screen way out).
+    The edges and the menu button are **segmented rows**, not dropdowns
+    (`initSegments` inflates one `widget_customise_segment` per option): each
+    setting is a short list of positions, and unlike a `Spinner` nothing fires
+    for the selection the row starts on, so the callers need no "did it
+    actually change" guard. Their labels are deliberately terse — the group
+    label above the card says which of the launcher/panel an `Edge` applies
+    to, so the setting itself need not repeat it.
+    `activity_home_customise.xml` groups the settings onto opaque cards
+    (`customise_card_background`) by what they affect, so only the header and
+    the group labels sit on the bare dash — `ThemeApplier` gives just those the
+    theme's `dash_customise_text_colour`/`_text_shadow_colour`, which some
+    themes need because their dash is light. Card text is white throughout.
+    The settings' type weight comes from `android:textStyle`, never a
+    `fontFamily`: `FontInflaterFactory` replaces the family on every TextView
+    to honour the font preference and keeps only the typeface style, so a
+    `fontFamily` set in the layout would apply on "System" and silently vanish
+    on the bundled fonts.
   - `DesktopMenuOverlay` — the long-press-on-empty-desktop menu (wired via
     `widgets/WidgetsPager_LongClickListener`, which still exits widget edit
     mode first if a widget is being edited): the desktop zooms out and darkens

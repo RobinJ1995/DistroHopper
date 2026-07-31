@@ -42,7 +42,7 @@
     <string name="pref_header_gestures">Gestures</string>
     <string name="pref_header_appearance">Appearance</string>
     <string name="option_launchericon_size">Pinned icon size</string>
-    <string name="hint_launchericon_size">How large pinned app icons are. Number of icons that fit without scrolling are counted along the screen\'s shortest edge.</string>
+    <string name="customise_hint_icon_size">Larger icons mean fewer fit without scrolling.</string>
     <string name="launcher_icon_hint">%1$s · %2$d icons</string>
     <string-array name="launcher_icon_presets">
         <item>Tiny</item>
@@ -51,18 +51,18 @@
         <item>Large</item>
         <item>Huge</item>
     </string-array>
-    <string name="option_dash_grid_size">Dash grid size</string>
-    <string name="hint_dash_grid_size">How many app icons fit across the Dash. Fewer columns means larger icons; the layout flips automatically between portrait and landscape. Search results use the same grid.</string>
+    <string name="customise_option_grid_size">Grid size</string>
+    <string name="customise_hint_grid_size">Fewer columns, larger icons.</string>
     <string name="dash_grid_hint">%1$d × %2$d</string>
-    <string name="option_panel_edge">Panel location</string>
-    <string name="hint_panel_edge">To which screen edge the Panel should be attached.</string>
-    <string name="option_launcher_edge">Launcher location</string>
-    <string name="hint_launcher_edge">To which screen edge the Launcher should be attached.</string>
+    <!-- Which screen edge the launcher or panel is attached to; the group it
+         sits under names the one it applies to. -->
+    <string name="customise_option_edge">Edge</string>
     <string name="option_menu_button">Menu button</string>
-    <string name="hint_menu_button">Where the menu button sits in the Launcher. You can also open the Dash by swiping up.</string>
-    <string name="menu_button_none">Hide</string>
-    <string name="menu_button_start">At the start of the launcher</string>
-    <string name="menu_button_end">At the end of the launcher</string>
+    <string name="customise_hint_menu_button">Or swipe up to open the Dash.</string>
+    <string name="customise_menu_button_hide">Hide</string>
+    <!-- The menu button's position: the launcher's leading and trailing end. -->
+    <string name="customise_menu_button_start">Start</string>
+    <string name="customise_menu_button_end">End</string>
     <string name="widget_picker_title">Add widget</string>
     <string name="widget_no_room">There is no room left on the home screen for this widget.</string>
     <string name="desktop_menu_widgets">Widgets</string>
@@ -73,6 +73,7 @@
     <string name="hint_dev_log_toaster">Show log items in toast messages.</string>
     <string name="option_customise">Customise</string>
     <string name="hint_customise">Customise the look and feel.</string>
+    <string name="customise_done">Done</string>
 
     <string name="option_wallpaper">Wallpaper</string>
     <string name="hint_wallpaper">Change wallpaper</string>

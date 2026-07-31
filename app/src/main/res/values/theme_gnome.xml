@@ -87,7 +87,6 @@
     <color name="theme_gnome_dash_applauncher_text_shadow_colour">@android:color/transparent</color>
     <color name="theme_gnome_dash_customise_text_colour">@android:color/white</color>
     <color name="theme_gnome_dash_customise_text_shadow_colour">@android:color/transparent</color>
-    <color name="theme_gnome_dash_customise_spinner_text_colour">@android:color/primary_text_dark</color>
     <dimen name="theme_gnome_dash_search_width">0dp</dimen>
     <drawable name="theme_gnome_dash_search_background">@drawable/theme_gnome_res_dash_search_background</drawable>
     <color name="theme_gnome_dash_search_text_colour">@android:color/white</color>

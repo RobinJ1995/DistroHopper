@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The surface each customise-mode setting group sits on. Opaque enough for
+     white text over any wallpaper, so the settings need neither the per-theme
+     text colour nor the drop shadow the bare dash used to require. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+	<corners android:radius="16dp" />
+	<solid android:color="@color/transparentblack30" />
+</shape>
