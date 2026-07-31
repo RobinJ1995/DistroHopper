@@ -176,15 +176,16 @@ class FontPreferenceTest {
 		assertEquals("extra leading must be preserved", 4f, tv.lineSpacingExtra, 1e-6f)
 	}
 
-	/** Swapping the family must keep each view's own bold/italic styling. */
+	/** Swapping the family must keep each view's own bold/italic styling. Uses a
+	 *  built-in family so this pins our style pass-through rather than how
+	 *  faithfully the test runtime derives weights from a bundled OTF. */
 	@Test fun applyToPreservesBoldStyle() {
-		this.setFont("opendyslexic")
-		val style = FontPreference.fontStyle(this.context)!!
+		val style = FontStyle(Typeface.MONOSPACE, letterSpacingDelta = -0.05f)
 
 		val tv = TextView(this.context).apply { this.setTypeface(null, Typeface.BOLD) }
 		style.applyTo(tv)
 
-		assertTrue("bold must survive the family swap", tv.typeface.isBold)
+		assertEquals("bold must survive the family swap", Typeface.BOLD, tv.typeface.style)
 	}
 
 	/** applyTo is a harmless no-op when the system font is selected. */
