@@ -1,7 +1,6 @@
 package be.robinj.distrohopper.desktop.launcher;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -15,8 +14,6 @@ import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.DependencyContainer;
 import be.robinj.distrohopper.theme.Theme;
 import be.robinj.distrohopper.R;
-import be.robinj.distrohopper.preferences.Preference;
-import be.robinj.distrohopper.preferences.Preferences;
 
 /**
  * Created by robin on 8/20/14.
@@ -46,11 +43,9 @@ public class AppLauncher extends be.robinj.distrohopper.desktop.AppLauncher
 	@Override
 	public void init ()
 	{
-		float density = this.getResources ().getDisplayMetrics ().density;
-
-		SharedPreferences prefs = Preferences.getSharedPreferences(this.getContext(), Preferences.PREFERENCES);
-		int width = (int) ((float) (48 + prefs.getInt (Preference.LAUNCHERICON_WIDTH.getName(), 36)) * density);
-		int height = width - (int) (4F * density);
+		int width = LauncherIconGrid.iconSizePx (this.getContext ());
+		int height = LauncherIconGrid.iconHeightPx (width,
+				this.getResources ().getDisplayMetrics ().density);
 
 		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams (width, height);
 

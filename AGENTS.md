@@ -171,6 +171,19 @@ etc/                                        — design assets (SVG/XCF sources, 
     the apps grid's last laid-out viewport (`LauncherBarBinder.dashGridViewport`,
     captured while the grid is visible, since it is GONE while customising) so
     the row count reflects the real theme/orientation, not the full screen.
+    Pinned-icon sizing is the launcher counterpart, owned by
+    `desktop/launcher/LauncherIconGrid`: the user picks one of five presets
+    (`LAUNCHER_ICON_PRESET`, Huge…Tiny, middle = adaptive default), which maps
+    to a whole slot count derived from `smallestScreenWidthDp` alone (so the
+    count is identical on every theme; the BFB counts as a slot), and the icon
+    size is computed at runtime so exactly that many slots tile the launcher's
+    usable interior on the screen's shortest edge (theme `launcher_margin` and
+    the launcher background's 9-patch insets subtracted; nothing but the preset
+    index is stored). `AppLauncher.init()` reads it; when pinned/running apps
+    overflow, `ClippingScrollView`/`ClippingHorizontalScrollView` floor the
+    scroll viewport to whole slots so no partial icon peeks (they leave the
+    measure alone while everything fits, preserving `PinnedAppsBar`'s
+    fractional morph measure).
     The tab indicator is chosen per theme via the `profile_indicator`
     integer (`theme/ProfileIndicatorStyle`, like `dash_animation`):
     `UNITY_RIBBON` (Unity/Default) puts per-profile glyphs in the always-
@@ -220,10 +233,10 @@ etc/                                        — design assets (SVG/XCF sources, 
     state of record. Customise mode lives as a `MutableStateFlow` on the
     `DependencyContainer` (not the ViewModel) because `App.launch()` checks
     it with only a Context. The ViewModel also exposes preference flows
-    that apply live without recreating the activity (panel opacity,
-    launcher/dash icon widths, show-running-apps) — the customise-mode
-    seekbars only write the preference and the binder applies it. Theme and
-    launcher/panel edge changes still recreate the
+    that apply live without recreating the activity (panel opacity, the
+    pinned-icon size preset, dash grid columns, show-running-apps) — the
+    customise-mode seekbars only write the preference and the binder
+    applies it. Theme and launcher/panel edge changes still recreate the
     activity (wholesale view-tree surgery). Widgets are always enabled (the
     old opt-out preference is gone).
   - `ThemeApplier` — applies the active theme's resources to the views.

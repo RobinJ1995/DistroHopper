@@ -15,6 +15,7 @@ import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.ViewFinder
 import be.robinj.distrohopper.desktop.dash.DashGrid
+import be.robinj.distrohopper.desktop.launcher.LauncherIconGrid
 import be.robinj.distrohopper.preferences.BfbLocation
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
@@ -48,13 +49,20 @@ class CustomiseModeUi(
 		llDashContent.visibility = View.GONE
 		llDashCustomise.visibility = View.VISIBLE
 
-		// Launcher Icon Size // Writing the preference is enough: HomeStateBinder
-		// observes it and re-initialises the launcher icons //
+		// Pinned Icon Size // Five presets (Huge…Tiny); the actual pixel size is
+		// computed at runtime by LauncherIconGrid so the chosen number of slots
+		// fits the launcher on the screen's shortest edge. Writing the preference
+		// is enough: HomeStateBinder observes it and re-inits the launcher icons //
+		val launcherIconLabels = res.getStringArray(R.array.launcher_icon_presets)
+		val launcherIconHint = this.viewFinder.get<TextView>(R.id.tvCustomiseLauncherIconHint)
 		val sbCustomiseLauncherIconSize = this.viewFinder.get<SeekBar>(R.id.sbCustomiseLauncherIconSize)
-		sbCustomiseLauncherIconSize.progress = prefs.getInt(Preference.LAUNCHERICON_WIDTH.getName(), 36)
+		sbCustomiseLauncherIconSize.max = LauncherIconGrid.PRESET_COUNT - 1
+		sbCustomiseLauncherIconSize.progress = LauncherIconGrid.preset(this.activity)
+		this.updateLauncherIconHint(launcherIconHint, launcherIconLabels, sbCustomiseLauncherIconSize.progress)
 		sbCustomiseLauncherIconSize.setOnSeekBarChangeListener(
 			object : SeekBar.OnSeekBarChangeListener {
 				override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+					this@CustomiseModeUi.updateLauncherIconHint(launcherIconHint, launcherIconLabels, i)
 					if (b) this.update(i)  // see onStopTrackingTouch: ignore non-user (state-restore) changes
 				}
 
@@ -65,7 +73,7 @@ class CustomiseModeUi(
 				}
 
 				private fun update(value: Int) {
-					prefsEdit.putInt(Preference.LAUNCHERICON_WIDTH.getName(), value)
+					prefsEdit.putInt(Preference.LAUNCHER_ICON_PRESET.getName(), value)
 					prefsEdit.commit()
 				}
 			})
@@ -205,6 +213,13 @@ class CustomiseModeUi(
 				return view
 			}
 		}
+
+	/** Updates the pinned-icon preset hint: the preset's label and how many slots it fits. */
+	private fun updateLauncherIconHint(hint: TextView, labels: Array<String>, presetIndex: Int) {
+		val label = labels.getOrElse(presetIndex.coerceIn(0, labels.size - 1)) { "" }
+		val count = LauncherIconGrid.countForPreset(this.activity, presetIndex)
+		hint.text = this.activity.getString(R.string.launcher_icon_hint, label, count)
+	}
 
 	/** Re-renders the grid-size hint; called on rotation while customising. */
 	fun refreshDashGridHint() {

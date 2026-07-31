@@ -1,5 +1,7 @@
 package be.robinj.distrohopper.preferences
 
+import be.robinj.distrohopper.desktop.launcher.LauncherIconGrid
+
 /**
  * Every persisted setting, paired with its SharedPreferences key (and, where it
  * has one, a default value and a parent toggle that gates it). The key is what's
@@ -22,8 +24,13 @@ enum class Preference(
 	LAUNCHER_SHOW_RUNNING_APPS("launcher_running_show"),
 	/** Whether pinned launcher apps are shared globally or kept per desktop. */
 	LAUNCHER_APP_PIN_MODE("launcher_app_pin_mode", "global"),
-	/** Launcher icon size (the customise-mode slider value). */
-	LAUNCHERICON_WIDTH("launchericon_width"),
+	/**
+	 * Pinned-icon size preset (index 0 = Huge … 4 = Tiny, defaulting to the middle, "Default").
+	 * The pixel size is computed at runtime from this; see
+	 * [be.robinj.distrohopper.desktop.launcher.LauncherIconGrid]. A new key (the old
+	 * `launchericon_width` raw-dp value is intentionally not migrated).
+	 */
+	LAUNCHER_ICON_PRESET("launcher_icon_preset", LauncherIconGrid.DEFAULT_PRESET),
 	/** Whether the accessibility-based launcher service is enabled. */
 	LAUNCHERSERVICE_ENABLED("launcherservice_enabled"),
 	/** Whether dash search also queries the (slower) full set of lenses. */

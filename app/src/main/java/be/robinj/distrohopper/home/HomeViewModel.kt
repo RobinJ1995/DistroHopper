@@ -3,6 +3,7 @@ package be.robinj.distrohopper.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import be.robinj.distrohopper.DependencyContainer
+import be.robinj.distrohopper.desktop.launcher.LauncherIconGrid
 import be.robinj.distrohopper.preferences.Preference
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,9 +25,12 @@ class HomeViewModel(
 	 * Preferences that apply live, without recreating the activity. Theme and
 	 * edge changes still recreate: they do wholesale view-tree surgery.
 	 */
-	val launcherIconWidth: Flow<Int> = container.prefs
-		.valueFlow(Preference.LAUNCHERICON_WIDTH) {
-			it.getInt(Preference.LAUNCHERICON_WIDTH.getName(), 36)
+	// Emits whenever the pinned-icon size preset changes; the actual pixel size is recomputed
+	// from the screen and theme by LauncherIconGrid at apply time, so the emitted value is only
+	// a change trigger.
+	val launcherIconPreset: Flow<Int> = container.prefs
+		.valueFlow(Preference.LAUNCHER_ICON_PRESET) {
+			it.getInt(Preference.LAUNCHER_ICON_PRESET.getName(), LauncherIconGrid.DEFAULT_PRESET)
 		}
 	// Emits whenever the dash grid column preference changes; the actual count
 	// is recomputed from the screen by DashGrid at apply time, so the emitted
