@@ -39,7 +39,6 @@
   <string name="pref_header_gestures">Gebaren</string>
   <string name="pref_header_appearance">Uiterlijk</string>
   <string name="option_launchericon_size">Grootte van de Launcher</string>
-  <string name="hint_launchericon_size">Hoe groot de pictogrammen moeten zijn van apps die vastgemaakt zijn aan de launcher. De slider gaat van 48dip tot 120dip, met 84dip als de standaardgrootte (precies in het midden).</string>
   <string name="option_dash_grid_size">Rastergrootte van de Dash</string>
   <string name="hint_dash_grid_size">Hoeveel app-pictogrammen naast elkaar in de Dash passen. Minder kolommen betekent grotere pictogrammen; de indeling wisselt automatisch tussen staand en liggend. Zoekresultaten gebruiken hetzelfde raster.</string>
   <string name="dash_grid_hint">%1$d × %2$d</string>
