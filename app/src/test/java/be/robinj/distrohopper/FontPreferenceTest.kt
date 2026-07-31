@@ -4,6 +4,8 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spanned
+import android.text.style.TypefaceSpan
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -74,6 +76,47 @@ class FontPreferenceTest {
 		val activity = Robolectric.buildActivity(FontTestActivity::class.java).create().get()
 
 		FontPreference.applyTo(activity) // must not throw
+	}
+
+	/** Each picker entry is drawn in the font it names, so the user previews it. */
+	@Test fun styledEntriesApplyEachOptionsOwnFont() {
+		val entries = this.context.resources.getTextArray(R.array.font_entries)
+		val values = this.context.resources.getTextArray(R.array.font_values)
+
+		val styled = FontPreference.styledEntries(this.context, entries, values)
+
+		assertEquals(entries.size, styled.size)
+		for (i in entries.indices) {
+			// The label itself must survive the styling.
+			assertEquals(entries[i].toString(), styled[i].toString())
+
+			val spans = (styled[i] as? Spanned)
+				?.getSpans(0, styled[i].length, TypefaceSpan::class.java)
+				?: emptyArray()
+
+			if (values[i] == FontPreference.SYSTEM) {
+				assertTrue("System must stay unstyled", spans.isEmpty())
+			} else {
+				assertEquals("${values[i]} must be styled", 1, spans.size)
+				assertEquals(
+					FontPreference.typefaceFor(this.context, values[i].toString()),
+					spans[0].typeface,
+				)
+			}
+		}
+	}
+
+	/** Every bundled option gets a distinct typeface — a shared one would mean
+	 *  the picker is really drawing them all in the same font. */
+	@Test fun styledEntriesUseDistinctTypefacesPerFont() {
+		val values = this.context.resources.getTextArray(R.array.font_values)
+		val typefaces = values
+			.filter { it != FontPreference.SYSTEM }
+			.map { FontPreference.typefaceFor(this.context, it.toString()) }
+
+		assertTrue("no bundled fonts resolved", typefaces.isNotEmpty())
+		typefaces.forEach { assertNotNull(it) }
+		assertEquals("typefaces are not distinct", typefaces.size, typefaces.toSet().size)
 	}
 
 	/** The Dialog overload sweeps the decor view, reaching nested TextViews

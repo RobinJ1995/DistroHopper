@@ -4,6 +4,9 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Typeface
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.TypefaceSpan
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -51,6 +54,43 @@ object FontPreference {
 	fun typefaceFor(context: Context, value: String?): Typeface? {
 		val fontRes = this.fontResFor(value) ?: return null
 		return ResourcesCompat.getFont(context, fontRes)
+	}
+
+	/**
+	 * The picker's [entries], each span-styled in the font it names, so the user
+	 * previews a font while choosing it ("Ubuntu" drawn in Ubuntu, "Oxygen" in
+	 * Oxygen, …). [values] are the matching entry values; the System entry (and
+	 * any value without a bundled font) is returned unchanged, keeping the device
+	 * font.
+	 *
+	 * A span is used rather than a custom dialog because it travels with the text:
+	 * the stock list-preference dialog renders it, and so does the summary on the
+	 * settings screen. Spans also win over the view-wide typeface that
+	 * [FontInflaterFactory] applies, so the preview survives the app-wide font.
+	 */
+	fun styledEntries(
+		context: Context,
+		entries: Array<out CharSequence>,
+		values: Array<out CharSequence>,
+	): Array<CharSequence> = Array(entries.size) { i ->
+		val typeface = if (i < values.size) {
+			this.typefaceFor(context, values[i].toString())
+		} else {
+			null
+		}
+
+		if (typeface == null) {
+			entries[i]
+		} else {
+			SpannableString(entries[i]).apply {
+				this.setSpan(
+					TypefaceSpan(typeface),
+					0,
+					this.length,
+					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+				)
+			}
+		}
 	}
 
 	private fun current(context: Context): String =

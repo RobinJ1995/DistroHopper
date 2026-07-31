@@ -322,13 +322,8 @@ public class PreferencesActivity extends AppCompatActivity
 
 			if (preference instanceof ListPreference)
 			{
-				// The font picker previews each option in its own font; every other
-				// list preference uses the plain frosted dialog. //
 				final DialogFragment fragment =
-					be.robinj.distrohopper.preferences.Preference.FONT.getName ()
-						.equals (preference.getKey ())
-						? FontListPreferenceDialogFragment.newInstance (preference.getKey ())
-						: FrostedListPreferenceDialogFragment.newInstance (preference.getKey ());
+					FrostedListPreferenceDialogFragment.newInstance (preference.getKey ());
 				fragment.setTargetFragment (this, 0);
 				fragment.show (this.getParentFragmentManager (), DIALOG_FRAGMENT_TAG);
 			}
@@ -641,6 +636,14 @@ public class PreferencesActivity extends AppCompatActivity
 				be.robinj.distrohopper.preferences.Preference.FONT.getName ());
 			if (fontPref == null)
 				return;
+
+			// Draw every option's label in the font it names, so the picker (and
+			// the summary showing the current choice) previews each font. //
+			if (fontPref.getEntries () != null && fontPref.getEntryValues () != null)
+			{
+				fontPref.setEntries (FontPreference.INSTANCE.styledEntries (
+					this.requireContext (), fontPref.getEntries (), fontPref.getEntryValues ()));
+			}
 
 			// Show the chosen font as the summary; recreate so the new font is
 			// applied to this screen immediately. Other activities pick it up
