@@ -173,8 +173,9 @@ etc/                                        — design assets (SVG/XCF sources, 
     the row count reflects the real theme/orientation, not the full screen.
     Pinned-icon sizing is the launcher counterpart, owned by
     `desktop/launcher/LauncherIconGrid`: the user picks one of five presets
-    (`LAUNCHER_ICON_PRESET`, Huge…Tiny, middle = adaptive default), which maps
-    to a whole slot count derived from `smallestScreenWidthDp` alone (so the
+    (`LAUNCHER_ICON_PRESET`, Tiny…Huge ascending so the customise slider grows
+    icons to the right, middle = adaptive default), which maps to a whole slot
+    count derived from `smallestScreenWidthDp` alone (so the
     count is identical on every theme; the BFB counts as a slot), and the icon
     size is computed at runtime so exactly that many slots tile the launcher's
     usable interior on the screen's shortest edge (theme `launcher_margin` and
@@ -183,7 +184,14 @@ etc/                                        — design assets (SVG/XCF sources, 
     overflow, `ClippingScrollView`/`ClippingHorizontalScrollView` floor the
     scroll viewport to whole slots so no partial icon peeks (they leave the
     measure alone while everything fits, preserving `PinnedAppsBar`'s
-    fractional morph measure).
+    fractional morph measure). `llLauncher` is a `desktop/launcher/LauncherBar`
+    so a *floating* dock (a theme whose launcher wraps its contents, e.g. GNOME)
+    stays tight around what it shows: LinearLayout sizes itself from an earlier
+    measurement of the weighted viewport, so once that viewport settles on a
+    shorter whole-slot height the parent would otherwise keep the difference
+    reserved as dead space, making the dock look stretched along the edge.
+    LauncherBar re-wraps to its measured children; an expanded launcher keeps
+    its full length (there the leftover is inherent to the edge).
     The tab indicator is chosen per theme via the `profile_indicator`
     integer (`theme/ProfileIndicatorStyle`, like `dash_animation`):
     `UNITY_RIBBON` (Unity/Default) puts per-profile glyphs in the always-

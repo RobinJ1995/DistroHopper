@@ -45,7 +45,7 @@ object LauncherIconGrid {
 	const val MIN_ICON_DP = 48
 	/** Icons never get larger than this (lets "Huge" be large) — sets the MIN slot count. */
 	const val MAX_ICON_DP = 160
-	/** Number of presets: Huge · Large · Default · Small · Tiny. */
+	/** Number of presets: Tiny · Small · Default · Large · Huge (ascending, like the slider). */
 	const val PRESET_COUNT = 5
 	/** Preset index of the device default ("Default", the middle of [PRESET_COUNT]). */
 	const val DEFAULT_PRESET = 2
@@ -68,12 +68,14 @@ object LauncherIconGrid {
 			.coerceIn(minCount(shortEdgeDp), maxCount(shortEdgeDp))
 
 	/**
-	 * The slot count for [presetIndex] (0 = Huge … [PRESET_COUNT]-1 = Tiny): an offset from the
-	 * device default, clamped to the screen's `[minCount, maxCount]`. Fewer slots = bigger icons.
+	 * The slot count for [presetIndex] (0 = Tiny … [PRESET_COUNT]-1 = Huge): an offset from the
+	 * device default, clamped to the screen's `[minCount, maxCount]`. The index runs the same way
+	 * round as the customise slider — dragging right makes icons BIGGER, so a higher index means
+	 * fewer, larger slots.
 	 */
 	@JvmStatic
 	fun countForPreset(shortEdgeDp: Int, presetIndex: Int): Int {
-		val offset = presetIndex.coerceIn(0, PRESET_COUNT - 1) - DEFAULT_PRESET
+		val offset = DEFAULT_PRESET - presetIndex.coerceIn(0, PRESET_COUNT - 1)
 		return (defaultCount(shortEdgeDp) + offset)
 			.coerceIn(minCount(shortEdgeDp), maxCount(shortEdgeDp))
 	}

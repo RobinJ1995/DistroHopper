@@ -127,7 +127,7 @@
 			android:orientation="horizontal">
 
 			<!-- Launcher -->
-			<LinearLayout
+			<be.robinj.distrohopper.desktop.launcher.LauncherBar
 				android:id="@+id/llLauncher"
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
@@ -219,7 +219,7 @@
 					custom:applauncher_special="false"
 					custom:icon="@drawable/launcher_trash" />
 
-			</LinearLayout>
+			</be.robinj.distrohopper.desktop.launcher.LauncherBar>
 
 			<!-- Dash -->
 			<be.robinj.distrohopper.desktop.dash.SwipeToCloseLayout

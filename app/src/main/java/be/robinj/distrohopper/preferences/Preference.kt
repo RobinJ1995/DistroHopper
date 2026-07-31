@@ -25,7 +25,7 @@ enum class Preference(
 	/** Whether pinned launcher apps are shared globally or kept per desktop. */
 	LAUNCHER_APP_PIN_MODE("launcher_app_pin_mode", "global"),
 	/**
-	 * Pinned-icon size preset (index 0 = Huge … 4 = Tiny, defaulting to the middle, "Default").
+	 * Pinned-icon size preset (index 0 = Tiny … 4 = Huge, defaulting to the middle, "Default").
 	 * The pixel size is computed at runtime from this; see
 	 * [be.robinj.distrohopper.desktop.launcher.LauncherIconGrid]. A new key (the old
 	 * `launchericon_width` raw-dp value is intentionally not migrated).

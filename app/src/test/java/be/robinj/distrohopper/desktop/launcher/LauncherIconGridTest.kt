@@ -22,12 +22,15 @@ class LauncherIconGridTest {
 
 	// --- Device-adaptive count -------------------------------------------------
 
-	/** The S24-class screen the default was tuned on reproduces the hand-picked 3·4·5·6·7. */
-	@Test fun s24ClassYieldsDefaultFiveAndPresetsThreeToSeven() {
+	/**
+	 * The S24-class screen the default was tuned on reproduces the hand-picked 3·4·5·6·7 — in
+	 * slider order, so Tiny (index 0) packs the most icons and Huge (index 4) the fewest.
+	 */
+	@Test fun s24ClassYieldsDefaultFiveAndPresetsSevenToThree() {
 		val sw = 384
 		assertEquals(5, LauncherIconGrid.defaultCount(sw))
 		assertEquals(
-			listOf(3, 4, 5, 6, 7),
+			listOf(7, 6, 5, 4, 3),
 			(0 until LauncherIconGrid.PRESET_COUNT).map { LauncherIconGrid.countForPreset(sw, it) })
 	}
 
@@ -63,7 +66,7 @@ class LauncherIconGridTest {
 		assertEquals(2, LauncherIconGrid.minCount(sw))
 		assertEquals(4, LauncherIconGrid.maxCount(sw))
 		val counts = (0 until LauncherIconGrid.PRESET_COUNT).map { LauncherIconGrid.countForPreset(sw, it) }
-		assertEquals(listOf(2, 2, 2, 3, 4), counts)
+		assertEquals(listOf(4, 3, 2, 2, 2), counts)
 	}
 
 	/** Out-of-range preset indices are clamped, not thrown. */
@@ -93,13 +96,16 @@ class LauncherIconGridTest {
 		assertEquals(0, LauncherIconGrid.iconSizePx(-50, 5))
 	}
 
-	/** Fewer slots (toward "Huge") never give a smaller icon than more slots (toward "Tiny"). */
-	@Test fun fewerSlotsMeanBiggerIcons() {
+	/**
+	 * Dragging the slider right makes icons bigger: the size never decreases as the preset index
+	 * rises (Tiny → Huge), which is what stops the control feeling inverted.
+	 */
+	@Test fun higherPresetsMeanBiggerIcons() {
 		val interior = 1080
 		val sizes = (0 until LauncherIconGrid.PRESET_COUNT).map {
 			LauncherIconGrid.iconSizePx(interior, LauncherIconGrid.countForPreset(384, it))
 		}
-		for (i in 1 until sizes.size) assertTrue(sizes[i] <= sizes[i - 1])
+		for (i in 1 until sizes.size) assertTrue(sizes[i] >= sizes[i - 1])
 	}
 
 	// --- Physical-size consistency (the point of the rework) -------------------
