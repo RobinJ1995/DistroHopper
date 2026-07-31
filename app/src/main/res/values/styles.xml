@@ -74,6 +74,31 @@
         <item name="android:letterSpacing">0.01</item>
     </style>
 
+    <!-- The desktop menu's bottom sheet (home/DesktopMenuOverlay). It is a window of
+         its own, not a view in the home screen, purely so the inherited blur-behind
+         covers *only* what the sheet covers: cross-window blur is clipped to the
+         window's bounds and its background's alpha, which no in-activity view can do
+         (a view's RenderEffect blurs its own content, and never the wallpaper, which
+         lives in a separate system window). Only the top corners are rounded — the
+         bottom edge sits on the screen edge. -->
+    <style name="DesktopMenuSheetTheme" parent="ModernDialogTheme">
+        <item name="android:windowBackground">@drawable/desktop_menu_sheet_background</item>
+        <item name="android:windowAnimationStyle">@style/DesktopMenuSheetAnimation</item>
+        <!-- The two blur attributes are NOT interchangeable. windowBlurBehindRadius
+             (FLAG_BLUR_BEHIND, what ModernDialogTheme uses) blurs the whole screen
+             behind the window; windowBackgroundBlurRadius blurs only within the
+             window's own bounds, clipped by the window background's alpha — i.e.
+             this sheet's rounded shape. Turn the inherited one off and use the
+             within-bounds one, otherwise the entire home screen frosts over. -->
+        <item name="android:windowBlurBehindEnabled">false</item>
+        <item name="android:windowBackgroundBlurRadius">@dimen/dialog_blur_radius</item>
+    </style>
+
+    <style name="DesktopMenuSheetAnimation">
+        <item name="android:windowEnterAnimation">@anim/desktop_menu_sheet_in</item>
+        <item name="android:windowExitAnimation">@anim/desktop_menu_sheet_out</item>
+    </style>
+
     <style name="AboutTheme" parent="DialogTheme">
     </style>
 

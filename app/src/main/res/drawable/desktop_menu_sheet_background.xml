@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- The desktop menu sheet's surface: the modern dialogs' dark translucent
-     colour with rounded top corners (the bottom edge sits on the screen edge). -->
+     colour, rounded. The radius is deliberately *uniform*: the window's
+     background blur is clipped to this drawable's outline, and GradientDrawable
+     only reports a rounded-rect outline for a single radius — give it per-corner
+     radii and the blur falls back to the bare rectangle and halos past the
+     curve. DesktopMenuOverlay pushes the bottom corners off the screen instead,
+     so the sheet still reads as flush with the bottom edge. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
 	android:shape="rectangle">
 	<solid android:color="@color/dialog_surface" />
-	<corners
-		android:topLeftRadius="28dp"
-		android:topRightRadius="28dp" />
+	<corners android:radius="@dimen/dialog_corner_radius" />
 </shape>

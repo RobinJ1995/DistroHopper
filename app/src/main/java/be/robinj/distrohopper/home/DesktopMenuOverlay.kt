@@ -1,43 +1,53 @@
 package be.robinj.distrohopper.home
 
 import android.app.Activity
-import android.graphics.Color
+import android.app.Dialog
 import android.os.PowerManager
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import android.widget.FrameLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.desktop.FrostedGlass
 
 /**
- * The long-press-on-empty-desktop menu: the home screen zooms out slightly and
- * darkens behind a scrim while a rounded sheet slides up from the bottom of the
- * screen, offering the desktop-level actions (add a widget, open the settings).
+ * The long-press-on-empty-desktop menu: the desktop zooms out and darkens while a
+ * rounded sheet slides up from the bottom of the screen, offering the desktop-level
+ * actions (add a widget, customise, open the settings).
  *
- * Like [be.robinj.distrohopper.folder.FolderOverlay] this is an **in-activity
- * overlay** added to `android.R.id.content` rather than a dialog/PopupWindow:
- * the zoom-out is a plain scale on the activity's content (the wallpaper lives
- * in its own system window and stays put behind it), and Back/Home dismissal is
- * wired through HomeActivity the same way as the folder popovers.
+ * The sheet is a **window of its own** (`DesktopMenuSheetTheme`, a
+ * `ModernDialogTheme` pinned to the bottom edge) rather than a view in the home
+ * screen, and that is the whole reason it is a Dialog: cross-window blur is clipped
+ * to a window's bounds and its background's alpha, so the sheet blurs exactly what it
+ * covers — wallpaper included. No in-activity view can do that. A view's
+ * [android.graphics.RenderEffect] blurs the view's *own* content, all of it, and can
+ * never reach the wallpaper, which lives in its own system window behind the
+ * (translucent) activity. `FrostedGlass.applyBottomSheetFallback` covers the devices
+ * where cross-window blur is switched off, exactly as the pop-up dialogs do.
+ *
+ * The zoom-out stays in the activity (see [zoomTargets]), so the two halves are
+ * animated separately but in step. Back and outside taps are the Dialog's own; Home
+ * dismisses through HomeActivity via the static active-slot pattern
+ * ([isShowingIn]/[dismissActive]/[clearFor]), mirroring
+ * [be.robinj.distrohopper.folder.FolderOverlay].
  */
 class DesktopMenuOverlay(private val activity: Activity) {
 	private val content = activity.findViewById<ViewGroup>(android.R.id.content)
-	private var scrim: FrameLayout? = null
+	private var dialog: Dialog? = null
 	private var sheet: View? = null
 	// The sheet's own layout padding, before the navigation inset is added //
 	private var sheetBasePaddingBottom = 0
 
-	val isShowing: Boolean get() = this.scrim != null
+	val isShowing: Boolean get() = this.dialog?.isShowing == true
 
 	/**
 	 * Shows the menu. [onAddWidget]/[onCustomise]/[onSettings] run once the
-	 * corresponding row is tapped (the overlay dismisses itself first).
+	 * corresponding action is tapped (the overlay dismisses itself first).
 	 */
 	fun show(onAddWidget: () -> Unit, onCustomise: () -> Unit, onSettings: () -> Unit) {
 		if (this.isShowing) {
@@ -45,20 +55,14 @@ class DesktopMenuOverlay(private val activity: Activity) {
 		}
 		active?.takeIf { it !== this }?.dismiss()
 
-		val duration = this.duration()
+		val dialog = Dialog(this.activity, R.style.DesktopMenuSheetTheme)
+		dialog.setContentView(R.layout.desktop_menu_sheet)
+		dialog.setCanceledOnTouchOutside(true)
 
-		val scrim = FrameLayout(this.activity).apply {
-			setBackgroundColor(SCRIM_COLOUR)
-			isClickable = true
-			setOnClickListener { this@DesktopMenuOverlay.dismiss() }
-			alpha = 0f
-		}
-
-		val sheet = LayoutInflater.from(this.activity)
-			.inflate(R.layout.desktop_menu_sheet, scrim, false)
-		sheet.isClickable = true // taps on the sheet must not fall through to the scrim //
+		val sheet = dialog.findViewById<View>(R.id.desktopMenuSheet)
 		this.sheetBasePaddingBottom = sheet.paddingBottom
-		this.applyNavigationInset(sheet)
+		this.dialog = dialog
+		this.sheet = sheet
 
 		sheet.findViewById<View>(R.id.rowDesktopMenuAddWidget).setOnClickListener {
 			this.dismiss()
@@ -73,114 +77,140 @@ class DesktopMenuOverlay(private val activity: Activity) {
 			onSettings()
 		}
 
-		scrim.addView(sheet, FrameLayout.LayoutParams(
-			this.sheetWidth(this.content.width), FrameLayout.LayoutParams.WRAP_CONTENT,
-			Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL))
-		this.content.addView(scrim, FrameLayout.LayoutParams(
-			FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
-		this.scrim = scrim
-		this.sheet = sheet
+		val window = dialog.window
+		window?.setGravity(Gravity.BOTTOM)
+		// Let the window run under the system bars, so the sheet's square bottom
+		// corners actually meet the screen edge (and its blur covers the strip
+		// behind the navigation bar) instead of stopping above them. It has to be
+		// fitInsetsTypes: BOTTOM gravity resolves against the window's *parent
+		// frame*, which is inset by the system bars until this says otherwise —
+		// FLAG_LAYOUT_NO_LIMITS only frees the display bounds and leaves that
+		// parent frame (and so the sheet) stopping short. [refit] pads the actions
+		// clear of the bar itself. //
+		// ...and hang the bottom of the window off the bottom of the screen by one
+		// corner radius. The surface has to be rounded uniformly for the blur to
+		// follow it (see desktop_menu_sheet_background), so the bottom corners are
+		// simply moved out of sight rather than squared off; [refit] adds the same
+		// amount back as padding so nothing rides off with them. //
+		window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+		window?.let {
+			it.attributes = it.attributes.apply {
+				fitInsetsTypes = 0
+				y = -this@DesktopMenuOverlay.dp(CORNER_RADIUS_DP)
+			}
+		}
+		if (this.duration() == 0L) {
+			window?.setWindowAnimations(0) // battery saver: settle immediately //
+		}
+		// The blur comes from the theme; this is the no-blur fallback. The sheet's
+		// surface is the same rounded card as the pop-up dialogs', so the plain
+		// dialog fallback matches it exactly. //
+		window?.let { FrostedGlass.applyDialogFallback(it) }
 
-		// HomeActivity is not recreated on rotation (configChanges), so the
-		// open menu survives it: re-derive the width cap, the inset padding and
-		// the zoom pivot whenever the overlay's size actually changes. //
-		scrim.addOnLayoutChangeListener { _, l, t, r, b, oldL, oldT, oldR, oldB ->
+		this.refit()
+
+		// HomeActivity is not recreated on rotation (configChanges), so the open menu
+		// survives it: re-derive the width cap, the inset padding and the zoom pivots
+		// whenever the sheet's window actually changes size. //
+		window?.decorView?.addOnLayoutChangeListener { _, l, t, r, b, oldL, oldT, oldR, oldB ->
 			if (r - l != oldR - oldL || b - t != oldB - oldT) {
-				this.onHostResized(r - l)
+				this.refit()
+				this.applyZoomPivots()
 			}
 		}
 
-		scrim.animate().alpha(1f).setDuration(duration).start()
+		// Covers every close path — our own dismiss(), Back, and a tap outside //
+		dialog.setOnDismissListener { this.onDismissed() }
 
-		this.backdrop()?.let { backdrop ->
-			backdrop.pivotX = backdrop.width / 2f
-			backdrop.pivotY = backdrop.height / 2f
-			backdrop.animate().scaleX(ZOOM_SCALE).scaleY(ZOOM_SCALE)
-				.setDuration(duration).setInterpolator(DecelerateInterpolator()).start()
-		}
+		dialog.show()
 
-		// The slide-in needs the sheet's height, which only exists after a
-		// layout pass; start it hidden and animate once laid out. //
-		sheet.visibility = View.INVISIBLE
-		sheet.post {
-			if (this.sheet !== sheet) {
-				return@post // dismissed before the first layout //
-			}
-
-			sheet.translationY = sheet.height.toFloat()
-			sheet.visibility = View.VISIBLE
-			sheet.animate().translationY(0f)
-				.setDuration(duration).setInterpolator(DecelerateInterpolator()).start()
+		this.applyZoomPivots()
+		for (target in this.zoomTargets()) {
+			target.animate().scaleX(ZOOM_SCALE).scaleY(ZOOM_SCALE)
+				.setDuration(this.duration()).setInterpolator(DecelerateInterpolator()).start()
 		}
 
 		active = this
 		this.notifyStateChanged()
 	}
 
-	/** Animates the overlay closed: sheet down, backdrop back to full size. */
+	/** Closes the menu: the sheet slides back down and the desktop zooms back in. */
 	fun dismiss() {
-		val scrim = this.scrim ?: return
-		val sheet = this.sheet
-		this.scrim = null
+		this.dialog?.dismiss() // [onDismissed] does the rest //
+	}
+
+	/** The sheet's window is gone: drop it and zoom the desktop back in. */
+	private fun onDismissed() {
+		this.dialog = null
 		this.sheet = null
 		if (active === this) {
 			active = null
 		}
+
+		for (target in this.zoomTargets()) {
+			target.animate().scaleX(1f).scaleY(1f)
+				.setDuration(this.duration()).setInterpolator(AccelerateInterpolator()).start()
+		}
+
 		this.notifyStateChanged()
+	}
 
-		val duration = this.duration()
+	/** Re-fits the sheet's window to the screen: width cap and navigation inset. */
+	private fun refit() {
+		val window = this.dialog?.window ?: return
+		val sheet = this.sheet ?: return
 
-		this.backdrop()?.animate()?.scaleX(1f)?.scaleY(1f)
-			?.setDuration(duration)?.setInterpolator(AccelerateInterpolator())?.start()
-		sheet?.animate()?.translationY(sheet.height.toFloat())
-			?.setDuration(duration)?.setInterpolator(AccelerateInterpolator())?.start()
-		scrim.animate().alpha(0f).setDuration(duration).withEndAction {
-			this.content.removeView(scrim)
-		}.start()
+		// The overlay spans the whole window, unlike the inset-padded
+		// launcher/dash container, so it keeps the actions clear of the
+		// navigation bar itself. //
+		val navInset = ViewCompat.getRootWindowInsets(this.content)
+			?.getInsets(WindowInsetsCompat.Type.tappableElement())?.bottom ?: 0
+		// The window hangs one corner radius below the screen (see [show]), so that
+		// much padding is added back to keep the actions on-screen. //
+		sheet.setPadding(sheet.paddingLeft, sheet.paddingTop, sheet.paddingRight,
+			this.sheetBasePaddingBottom + navInset + this.dp(CORNER_RADIUS_DP))
+
+		val width = this.sheetWidth(this.content.width)
+		if (window.attributes?.width != width) {
+			window.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT)
+		}
 	}
 
 	/** Full-width on phones, capped (and centred) on wide screens. */
 	private fun sheetWidth(hostWidth: Int): Int {
 		val maxWidth = this.dp(MAX_SHEET_WIDTH_DP)
 
-		return if (hostWidth in 1 until maxWidth) FrameLayout.LayoutParams.MATCH_PARENT
+		return if (hostWidth in 1 until maxWidth) WindowManager.LayoutParams.MATCH_PARENT
 			else maxWidth
 	}
 
 	/**
-	 * Keeps the actions clear of the navigation bar; the overlay spans the
-	 * whole window, unlike the inset-padded launcher/dash container.
+	 * The views that zoom out: the desktop and the launcher/dash, i.e. what the
+	 * menu is *about*. The panel and the status bar are deliberately left alone —
+	 * shrinking them away from the screen edge reads as a glitch rather than a
+	 * zoom — and so is the wallpaper (`wpWallpaper` / the overlay tint above it),
+	 * which stands in for the system wallpaper behind the window and should sit
+	 * still exactly like the real one does.
 	 */
-	private fun applyNavigationInset(sheet: View) {
-		val navInset = ViewCompat.getRootWindowInsets(this.content)
-			?.getInsets(WindowInsetsCompat.Type.tappableElement())?.bottom ?: 0
-		sheet.setPadding(sheet.paddingLeft, sheet.paddingTop,
-			sheet.paddingRight, this.sheetBasePaddingBottom + navInset)
-	}
+	private fun zoomTargets(): List<View> =
+		listOfNotNull(
+			this.activity.findViewById(R.id.vgWidgets),
+			this.activity.findViewById(R.id.llLauncherAndDashContainer),
+		)
 
-	/** The overlay changed size (rotation): re-fit the sheet and the zoom pivot. */
-	private fun onHostResized(hostWidth: Int) {
-		val sheet = this.sheet ?: return
-
-		this.applyNavigationInset(sheet)
-
-		val width = this.sheetWidth(hostWidth)
-		(sheet.layoutParams as? FrameLayout.LayoutParams)
-			?.takeIf { it.width != width }
-			?.let {
-				it.width = width
-				sheet.layoutParams = it
-			}
-
-		this.backdrop()?.let { backdrop ->
-			backdrop.pivotX = backdrop.width / 2f
-			backdrop.pivotY = backdrop.height / 2f
+	/**
+	 * Points every target at the *same* screen pixel — the centre of their shared
+	 * parent — so scaling them individually is geometrically identical to scaling
+	 * that parent, and they zoom as one piece instead of each toward its own
+	 * middle. Re-derived whenever the sheet resizes (rotation).
+	 */
+	private fun applyZoomPivots() {
+		for (target in this.zoomTargets()) {
+			val parent = target.parent as? View ?: continue
+			target.pivotX = parent.width / 2f - target.left
+			target.pivotY = parent.height / 2f - target.top
 		}
 	}
-
-	/** The view to zoom out — the activity's main content (child 0). */
-	private fun backdrop(): View? =
-		this.content.getChildAt(0)?.takeIf { it !== this.scrim }
 
 	/** Transitions settle immediately in battery saver, like the dash's. */
 	private fun duration(): Long =
@@ -199,11 +229,12 @@ class DesktopMenuOverlay(private val activity: Activity) {
 		private const val DURATION = 220L
 		private const val ZOOM_SCALE = 0.92f
 		private const val MAX_SHEET_WIDTH_DP = 480
-		private val SCRIM_COLOUR = Color.argb(150, 0, 0, 0)
+		// Must match desktop_menu_sheet_background / R.dimen.dialog_corner_radius //
+		private const val CORNER_RADIUS_DP = 28
 
-		// The currently open menu, if any: the scrim covers the whole activity,
-		// so a single slot suffices — mirrors FolderOverlay's active tracking so
-		// HomeActivity can close it on Back or Home. //
+		// The currently open menu, if any: the sheet is modal, so a single slot
+		// suffices — mirrors FolderOverlay's active tracking so HomeActivity can
+		// close it on Home. //
 		private var active: DesktopMenuOverlay? = null
 
 		/** Whether a desktop menu is currently open in [activity]. */
@@ -219,12 +250,24 @@ class DesktopMenuOverlay(private val activity: Activity) {
 			}
 		}
 
-		/** Drops the [active] reference so a destroyed [activity] is not retained. */
+		/**
+		 * Tears the menu down with [activity]: unlike an in-activity overlay, a
+		 * leftover Dialog window would outlive it (and be reported leaked), so the
+		 * window is closed here — silently, since the views it would animate are
+		 * going away too.
+		 */
 		@JvmStatic
 		fun clearFor(activity: Activity) {
-			if (active?.activity === activity) {
-				active = null
+			val overlay = active ?: return
+			if (overlay.activity !== activity) {
+				return
 			}
+
+			active = null
+			overlay.dialog?.setOnDismissListener(null)
+			overlay.dialog?.dismiss()
+			overlay.dialog = null
+			overlay.sheet = null
 		}
 	}
 }

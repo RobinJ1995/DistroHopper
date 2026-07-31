@@ -306,17 +306,61 @@ etc/                                        — design assets (SVG/XCF sources, 
   - `CustomiseModeUi` — the customise-mode seekbars/spinners inside the dash.
   - `DesktopMenuOverlay` — the long-press-on-empty-desktop menu (wired via
     `widgets/WidgetsPager_LongClickListener`, which still exits widget edit
-    mode first if a widget is being edited): the home screen zooms out and
-    darkens behind a scrim while a bottom sheet (`desktop_menu_sheet.xml`)
-    slides up offering "Add widget" (the widget picker), "Customise"
-    (`HomeActivity.openCustomiseMode`, the same customise-UI relaunch the
-    Preferences screen's entry triggers via result code 4) and "Settings"
-    (`HomeActivity.openPreferences`). Like `folder/FolderOverlay` it is an
-    in-activity overlay on `android.R.id.content` with the same static
-    active-slot pattern (`isShowingIn`/`dismissActive`/`clearFor`), so Back
-    and Home dismiss it through HomeActivity; the zoom-out is a plain scale
-    on the activity content (the wallpaper lives in its own system window and
-    stays put), and all transitions settle immediately in battery saver.
+    mode first if a widget is being edited): the desktop zooms out and darkens
+    while a bottom sheet (`desktop_menu_sheet.xml`) slides up offering
+    "Widgets" (the widget picker), "Customise" (`HomeActivity.openCustomiseMode`,
+    the same customise-UI relaunch the Preferences screen's entry triggers via
+    result code 4) and "Settings" (`HomeActivity.openPreferences`). The three
+    actions sit **side by side**, each an icon over its label — no
+    descriptions, the labels carry it.
+    Unlike the folder popovers this is **not** an in-activity overlay: the
+    sheet is a `Dialog` in a window of its own (`DesktopMenuSheetTheme`, a
+    bottom-pinned `ModernDialogTheme`, with `desktop_menu_sheet_{in,out}`
+    window animations). That is the *only* way to blur just what the sheet
+    covers, and the two blur attributes are **not** interchangeable:
+    `windowBlurBehindRadius` (`FLAG_BLUR_BEHIND`, what `ModernDialogTheme`
+    itself uses) blurs the whole screen behind the window, while
+    `windowBackgroundBlurRadius` blurs only *within the window's bounds*,
+    clipped by the window background's alpha — the sheet's rounded shape. The
+    sheet theme therefore turns the inherited blur-behind **off** and sets the
+    within-bounds one; getting this backwards frosts the entire home screen.
+    No view can do it either: a `RenderEffect` blurs the view's own content,
+    all of it, and never reaches the wallpaper (a separate system window behind
+    the translucent activity).
+    `FrostedGlass.applyDialogFallback` covers devices with cross-window blur
+    switched off, the sheet's surface being the same rounded card as the pop-up
+    dialogs'. That window background *is* the surface, so the layout root must
+    **not** set one (it would double the translucent fill).
+    Two geometry details keep the sheet flush with the bottom edge, and both
+    are load-bearing. `fitInsetsTypes = 0`: without it the window's BOTTOM
+    gravity resolves against a parent frame still inset by the system bars, so
+    the sheet stops a navigation bar short of the edge with a strip of
+    *unblurred* wallpaper below it (`FLAG_LAYOUT_NO_LIMITS` does **not** fix
+    that — it frees the display bounds, not the parent frame). And the corner
+    radius is **uniform**, with the window offset one radius *below* the screen
+    (`y = -CORNER_RADIUS_DP`, `refit` padding the same amount back): the blur is
+    clipped to the background drawable's outline, and `GradientDrawable` only
+    reports a rounded-rect outline for a single radius — per-corner radii make
+    it fall back to the bare rectangle, so the blur halos past the curve in the
+    top corners. Hiding the bottom corners off-screen buys the top ones a shape
+    the blur can actually follow. `refit` also pads the actions clear of the
+    navigation bar. Back and
+    outside taps are the Dialog's own; the static active-slot pattern
+    (`isShowingIn`/`dismissActive`/`clearFor`) remains so Home dismisses it
+    through HomeActivity, and `clearFor` must actually close the window or it
+    outlives the activity as a leak. All transitions settle immediately in
+    battery saver.
+    The zoom-out stays in the activity and scales only `vgWidgets` +
+    `llLauncherAndDashContainer` (`DesktopMenuOverlay.zoomTargets`), **not**
+    the whole activity content: the panel and status bar shrinking away from
+    the screen edge reads as a glitch rather than a zoom, and the wallpaper
+    views stand in for the system wallpaper behind the window, which does not
+    move either. Both targets are given the *same* pivot — the centre of their
+    shared `rlContainer` mapped into each one's local coordinates
+    (`applyZoomPivots`) — so scaling them separately is geometrically
+    identical to scaling that parent and they zoom as one piece; the pivots
+    are re-derived when the sheet resizes, since HomeActivity survives
+    rotation.
   - `LauncherBarBinder` — keeps the launcher bar's pinned/running icons and
     the dash grid in sync with `AppRepository` (via the `AppManager` facade).
     Also owns the drag-to-reorder preview: while a pinned icon is dragged its
