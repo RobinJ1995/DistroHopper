@@ -40,6 +40,7 @@ class ThemeApplier(
 		val lalBfb = this.viewFinder.get<AppLauncher>(llBfbSpinnerWrapper, R.id.lalBfb)
 		val lalPreferences = this.viewFinder.get<AppLauncher>(llLauncher, R.id.lalPreferences)
 		val lalTrash = this.viewFinder.get<AppLauncher>(llLauncher, R.id.lalTrash)
+		val lalAppInfo = this.viewFinder.get<AppLauncher>(llLauncher, R.id.lalAppInfo)
 		val llDash = this.viewFinder.get<LinearLayout>(R.id.llDash)
 		val llDashCustomise = this.viewFinder.get<LinearLayout>(llDash, R.id.llDashCustomise)
 		val imgDashBackgroundGradient = this.viewFinder.get<ImageView>(llDash, R.id.imgDashBackgroundGradient)
@@ -59,6 +60,7 @@ class ThemeApplier(
 		imgDashBackgroundGradient.setImageResource(this.theme.dash_background_gradient)
 		lalPreferences.setIcon(res.getDrawable(this.theme.launcher_preferences_image, null))
 		lalTrash.setIcon(res.getDrawable(this.theme.launcher_trash_image, null))
+		lalAppInfo.setIcon(res.getDrawable(this.theme.launcher_appinfo_image, null))
 
 		val llPanel_layoutParams = llPanel.layoutParams as RelativeLayout.LayoutParams
 		llPanel_layoutParams.height = res.getDimension(this.theme.panel_height).toInt()

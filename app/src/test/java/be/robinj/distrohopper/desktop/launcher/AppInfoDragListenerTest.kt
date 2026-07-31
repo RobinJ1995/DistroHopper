@@ -11,6 +11,7 @@ import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
@@ -26,6 +27,19 @@ class AppInfoDragListenerTest {
 
 	@Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
 	@After fun tearDown() { scenario.close() }
+
+	@Test fun theAppInfoTargetGetsItsThemedIcon() {
+		// The icon is applied by ThemeApplier from the theme's launcher_appinfo_image
+		// (a layout-level custom:icon attribute is dead — see AppLauncher's styleable);
+		// regression test for the target rendering as a blank tile.
+		scenario.onActivity { activity ->
+			val lalAppInfo = activity.findViewById<AppLauncher>(R.id.lalAppInfo)
+
+			assertNotNull(lalAppInfo.icon)
+			assertNotNull(lalAppInfo
+				.findViewById<android.widget.ImageView>(R.id.imgIcon).drawable)
+		}
+	}
 
 	@Test fun enteringTheAppInfoTargetHighlightsItAndExitingRestoresIt() {
 		scenario.onActivity { activity ->
