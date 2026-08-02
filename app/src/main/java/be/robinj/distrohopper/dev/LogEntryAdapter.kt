@@ -3,6 +3,7 @@ package be.robinj.distrohopper.dev
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Typeface
+import android.os.Looper
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
@@ -72,16 +73,16 @@ class LogEntryAdapter : RecyclerView.Adapter<LogEntryAdapter.EntryViewHolder>() 
 		meta.append("  ").append(entry.tag)
 
 		// The thread only earns a mention when it isn't the one everything else is on,
-		// so the common case doesn't repeat "main" down the whole list. //
-		if (entry.threadName != MAIN_THREAD)
+		// so the common case doesn't repeat "main" down the whole list. Asking the
+		// looper rather than comparing to "main": the name isn't the same everywhere,
+		// and under Robolectric it isn't "main" at all. //
+		if (entry.threadName != Looper.getMainLooper().thread.name)
 			meta.append("  ·  ").append(entry.threadName)
 
 		return meta
 	}
 
 	companion object {
-		private const val MAIN_THREAD = "main"
-
 		// One shared formatter: allocating a date format per bind would be the most
 		// expensive thing in an otherwise trivial row. //
 		private val TIME_FORMATTER: DateTimeFormatter =

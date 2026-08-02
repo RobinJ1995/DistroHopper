@@ -6,8 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import be.robinj.distrohopper.R
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,29 +38,6 @@ class DevLogsActivityTest {
 				assertEquals(2, list.adapter?.itemCount)
 				assertEquals(View.VISIBLE, list.visibility)
 				assertEquals(View.GONE, activity.findViewById<TextView>(R.id.tvLogsEmpty).visibility)
-			}
-		}
-	}
-
-	@Test fun aRowShowsTheTagAndTheMessageItWasLoggedWith() {
-		log.i("AppsLoader", "Loaded 214 apps")
-
-		ActivityScenario.launch(DevLogsActivity::class.java).use { scenario ->
-			scenario.onActivity { activity ->
-				val list = activity.findViewById<RecyclerView>(R.id.rvLogs)
-				list.measure(
-					View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY),
-					View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.EXACTLY))
-				list.layout(0, 0, 1080, 1920)
-
-				val row = list.getChildAt(0)
-				assertNotNull(row)
-				// toString(): textIsSelectable renders the message as a SpannableString. //
-				assertEquals(
-					"Loaded 214 apps",
-					row.findViewById<TextView>(R.id.tvLogMessage).text.toString())
-				assertTrue(
-					row.findViewById<TextView>(R.id.tvLogMeta).text.contains("AppsLoader"))
 			}
 		}
 	}

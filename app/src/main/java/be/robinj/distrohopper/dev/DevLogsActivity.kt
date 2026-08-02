@@ -31,9 +31,10 @@ class DevLogsActivity : AppCompatActivity(), IObserver {
 		this.rvLogs = this.findViewById(R.id.rvLogs)
 		this.tvLogsEmpty = this.findViewById(R.id.tvLogsEmpty)
 
-		// stackFromEnd so a log too short to fill the screen sits at the bottom and
-		// grows upwards, the way a terminal does. //
-		this.rvLogs.layoutManager = LinearLayoutManager(this).apply { stackFromEnd = true }
+		// Top-aligned rather than stackFromEnd: a terminal's bottom-anchored log would
+		// leave a screen-high void above the first few entries, and refresh() already
+		// keeps the newest entry in view once there are enough to scroll. //
+		this.rvLogs.layoutManager = LinearLayoutManager(this)
 		this.rvLogs.adapter = this.entryAdapter
 
 		this.refresh()
