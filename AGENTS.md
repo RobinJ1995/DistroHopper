@@ -638,6 +638,27 @@ etc/                                        — design assets (SVG/XCF sources, 
   cover the personal profile, so `WorkProfileAppsCallback` (a
   `LauncherApps.Callback` registered alongside the receiver) does the same
   for other profiles.
+- **`icons/`** — how app icons are drawn. `IconRenderer` composites an
+  `AdaptiveIconDrawable` the way a launcher should (background then foreground
+  at the spec's 18/108 per-edge bleed, clipped to the user's chosen
+  `IconShape` mask via `IconMask`); anything that is not adaptive — legacy
+  icons, icon-pack art — is returned untouched. With tinted icons on it instead
+  fills the canvas with the tint background and draws the icon's `monochrome`
+  layer recoloured to the tint foreground, falling back to normal compositing
+  for icons that have no monochrome layer. `IconConfig` carries the settings
+  (shape, size, tint) and owns the light/dark tonal pair derived from the tint
+  colour; `IconTint` resolves the colour itself (wallpaper, system accent,
+  active theme, or a preset). `IconShapePreference`/`IconTintPreference` are
+  the settings strips, both previewing on the penguin sample
+  `res/drawable/ic_icon_sample_foreground.xml`.
+  DistroHopper's **own** launcher icon carries a monochrome layer too, so it
+  tints along with everything else: `res/drawable/ic_launcher_monochrome.xml`,
+  referenced from both `mipmap-anydpi-v26` adaptive icons. It is generated —
+  do not hand-edit it — by `etc/generate_launcher_monochrome.py`, which derives
+  the swirl and the face from measurements of the colour icon's own PNGs and
+  documents the geometry; the script needs only the standard library, and its
+  `--report`/`--preview` modes check the clearances and render the tinted
+  result offline. The colour icon itself is unchanged by any of this.
 - **`cache/`** — `AppIconCache`.
 - **`dev/`** — in-app debug logging (`Log`, `LogToaster`,
   `DevLogsActivity`).
