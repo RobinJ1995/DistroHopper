@@ -31,7 +31,6 @@
   <string name="pref_header_functionality">Funktionalität</string>
   <string name="pref_header_appearance">Aussehen</string>
   <string name="option_launchericon_size">Größe angepinnter Icons</string>
-  <string name="hint_launcher_edge">Auf welcher Seite des Bildschirms der Launcher angezeigt werden.</string>
   <string name="option_wallpaper">Hintergrundbild</string>
   <string name="hint_wallpaper">Hintergrundbild ändern</string>
   <string name="option_lenses">Lenses</string>

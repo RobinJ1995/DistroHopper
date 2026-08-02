@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pure spacing between the options in a segmented row. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+	<size
+		android:width="6dp"
+		android:height="6dp" />
+	<solid android:color="@color/transparent" />
+</shape>

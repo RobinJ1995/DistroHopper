@@ -162,16 +162,19 @@ class ThemeApplier(
 		this.viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened)
 			.setBackgroundResource(this.theme.wallpaper_overlay_when_dash_opened)
 
-		// I don't like this, but it's just too much of a pain to do it properly.
-		for (i in 0 until llDashCustomise.childCount) {
-			val container = llDashCustomise.getChildAt(i) as? LinearLayout ?: continue
+		/*
+		 * Customise mode's settings live on opaque cards and are white there
+		 * whatever the theme; only its header and group labels sit on the bare
+		 * dash, which is light on some themes (elementary, MATE) and dark on
+		 * others, so those still take the theme's colour and shadow.
+		 */
+		val customiseTextColour = res.getColor(this.theme.dash_customise_text_colour, null)
+		val customiseShadowColour = res.getColor(this.theme.dash_customise_text_shadow_colour, null)
+		for (id in CUSTOMISE_TEXT_ON_DASH) {
+			val textView = this.viewFinder.get<TextView>(llDashCustomise, id)
 
-			for (j in 0 until container.childCount) {
-				val textView = container.getChildAt(j) as? TextView ?: continue
-
-				textView.setTextColor(res.getColor(this.theme.dash_customise_text_colour, null))
-				textView.setShadowLayer(5F, 2F, 2F, res.getColor(this.theme.dash_customise_text_shadow_colour, null))
-			}
+			textView.setTextColor(customiseTextColour)
+			textView.setShadowLayer(5F, 2F, 2F, customiseShadowColour)
 		}
 	}
 
@@ -185,5 +188,16 @@ class ThemeApplier(
 	 */
 	fun applyDashColumns() {
 		this.activity.findViewById<GridView>(R.id.gvDashHomeApps)?.let { DashGridSizer.apply(it) }
+	}
+
+	private companion object {
+		/** Customise mode's text that sits on the dash itself rather than on a card. */
+		val CUSTOMISE_TEXT_ON_DASH = intArrayOf(
+			R.id.tvCustomiseTitle,
+			R.id.tvCustomiseDone,
+			R.id.tvCustomiseGroupLauncher,
+			R.id.tvCustomiseGroupDash,
+			R.id.tvCustomiseGroupPanel,
+		)
 	}
 }

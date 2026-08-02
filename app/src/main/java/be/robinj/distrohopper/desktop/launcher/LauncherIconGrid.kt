@@ -184,6 +184,85 @@ object LauncherIconGrid {
 		return interior
 	}
 
+	/** The launcher's docked edge, honouring the user's choice over the theme's default. */
+	@JvmStatic
+	fun launcherEdge(context: Context): Location {
+		val res = context.resources
+		val theme = DependencyContainer.of(context).themeManager.current
+
+		return Location.of(Preferences.getSharedPreferences(context)
+			.getInt(Preference.LAUNCHER_EDGE.getName(), res.getInteger(theme.launcher_location)))
+	}
+
+	/**
+	 * The usable along-edge length (px) of the launcher where it is ACTUALLY docked:
+	 * [launcherInteriorPx] for a horizontal (top/bottom) one, and the long screen edge for a
+	 * vertical one — less the same theme margins and background insets, and less the panel,
+	 * which a side launcher runs below.
+	 *
+	 * The long edge is max(screenWidthDp, screenHeightDp) so that, like every other length
+	 * here, it does not flip on rotation.
+	 */
+	@JvmStatic
+	fun alongEdgeInteriorPx(context: Context): Int {
+		val edge = launcherEdge(context)
+		if (edge != Location.LEFT && edge != Location.RIGHT) {
+			return launcherInteriorPx(context)
+		}
+
+		val res = context.resources
+		val dm = res.displayMetrics
+		val config = res.configuration
+		val theme = DependencyContainer.of(context).themeManager.current
+
+		val longEdgePx = (max(config.screenWidthDp, config.screenHeightDp) * dm.density).toInt()
+
+		// A vertical bar loses the two vertical ends of launcher_margin
+		// ([top, right, bottom, left]) instead of the horizontal pair.
+		val margins = res.obtainTypedArray(theme.launcher_margin)
+		val marginPx = margins.getDimensionPixelSize(0, 0) + margins.getDimensionPixelSize(2, 0)
+		margins.recycle()
+
+		var paddingPx = 0
+		if (! res.getBoolean(theme.launcher_background_dynamic)) {
+			val backgrounds = res.obtainTypedArray(theme.launcher_background)
+			val drawableRes = backgrounds.getResourceId(edge.n, 0)
+			backgrounds.recycle()
+			if (drawableRes != 0) {
+				val rect = Rect()
+				if (ContextCompat.getDrawable(context, drawableRes)?.getPadding(rect) == true)
+					paddingPx = rect.top + rect.bottom
+			}
+		}
+
+		val panelEdge = Location.of(Preferences.getSharedPreferences(context)
+			.getInt(Preference.PANEL_EDGE.getName(), res.getInteger(theme.panel_location)))
+		val panelPx =
+			if (panelEdge == Location.NONE) 0 else res.getDimensionPixelSize(theme.panel_height)
+
+		return (longEdgePx - marginPx - paddingPx - panelPx).coerceAtLeast(0)
+	}
+
+	/**
+	 * How many icons the launcher actually shows for [presetIndex], along the edge it is
+	 * docked on — what the customise hint reports.
+	 *
+	 * This is not [countForPreset]. That count is the number of slots the icon SIZE is derived
+	 * from, always measured across the screen's shortest edge so the size stays put whatever
+	 * the theme, the edge or the rotation (see [launcherInteriorPx]). A launcher docked on a
+	 * side runs along the LONG edge, so it shows proportionally more icons than that — and the
+	 * short-edge count is then a number nowhere on screen.
+	 *
+	 * Approximate by construction: the launcher also spends slots on the menu button,
+	 * preferences and trash icons, which this does not try to model.
+	 */
+	@JvmStatic
+	fun visibleCountForPreset(context: Context, presetIndex: Int): Int {
+		val sizePx = iconSizePx(launcherInteriorPx(context), countForPreset(context, presetIndex))
+
+		return if (sizePx <= 0) 0 else max(1, alongEdgeInteriorPx(context) / sizePx)
+	}
+
 	/** The per-slot icon size (px) for the current screen, theme and stored preset. */
 	@JvmStatic
 	fun iconSizePx(context: Context): Int =

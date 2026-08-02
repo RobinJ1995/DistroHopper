@@ -31,10 +31,6 @@
   <string name="pref_header_functionality">Funcionalidad </string>
   <string name="pref_header_appearance">Apariencia </string>
   <string name="option_launchericon_size">Tamaño de Icono Anclado</string>
-  <string name="option_panel_edge">Ubicación del Panel</string>
-  <string name="hint_panel_edge">Borde de la pantalla al cual estará ligado el Panel.</string>
-  <string name="option_launcher_edge">Ubicación del Lanzador</string>
-  <string name="hint_launcher_edge">Borde de la pantalla al cual estará ligado el Panel.</string>
   <string name="option_wallpaper">Fondo de pantalla</string>
   <string name="hint_wallpaper">Cambiar fondo de pantalla</string>
   <string name="option_lenses">Buscar orígenes </string>

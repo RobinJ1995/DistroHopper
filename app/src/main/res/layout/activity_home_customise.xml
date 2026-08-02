@@ -1,140 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+	Customise mode, shown inside the dash in place of llDashContent.
+
+	The settings sit on opaque cards (customise_card_background) grouped by what
+	they affect, so their text needs no per-theme colour and no drop shadow. Only
+	the header and the group labels sit on the bare dash; ThemeApplier gives
+	those the theme's customise text colour, since some dashes are light.
+
+	Type weight is expressed with android:textStyle rather than a fontFamily:
+	FontInflaterFactory swaps the family on every TextView to honour the font
+	preference and keeps only the typeface style, so a fontFamily set here would
+	apply on "System" and silently vanish on Ubuntu/Oxygen/OpenDyslexic.
+-->
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/llDashCustomise"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_weight="1"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:orientation="vertical"
-    android:visibility="gone"
-    tools:showIn="@layout/activity_home">
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/llDashCustomise"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_weight="1"
+	android:focusable="true"
+	android:focusableInTouchMode="true"
+	android:orientation="vertical"
+	android:visibility="gone"
+	tools:showIn="@layout/activity_home">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+	<!-- Names the mode and offers the only on-screen way out of it:
+	     swipe-to-close is disabled while customising. -->
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:baselineAligned="true"
+		android:orientation="horizontal"
+		android:paddingStart="20dp"
+		android:paddingTop="16dp"
+		android:paddingEnd="12dp"
+		android:paddingBottom="10dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/option_launchericon_size"
-            style="@style/TextAppearance.AppCompat.Title" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/hint_launchericon_size" />
-        <SeekBar
-            android:id="@+id/sbCustomiseLauncherIconSize"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:saveEnabled="false" /><!--
-            max and progress are set by CustomiseModeUi.show() from
-            LauncherIconGrid (like the dash-columns seekbar below).
-            saveEnabled=false: CustomiseModeUi.show() always sets this slider
-            from the stored preference on (re)creation, so restoring the saved
-            instance state would only overwrite that correct value with the
-            view's default and fire a spurious onProgressChanged. -->
-        <TextView
-            android:id="@+id/tvCustomiseLauncherIconHint"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end" />
+		<TextView
+			android:id="@+id/tvCustomiseTitle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/option_customise"
+			android:textSize="22sp"
+			android:textStyle="bold" />
 
-    </LinearLayout>
+		<TextView
+			android:id="@+id/tvCustomiseDone"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="?android:attr/selectableItemBackgroundBorderless"
+			android:clickable="true"
+			android:focusable="true"
+			android:paddingStart="12dp"
+			android:paddingTop="6dp"
+			android:paddingEnd="12dp"
+			android:paddingBottom="6dp"
+			android:text="@string/customise_done"
+			android:textSize="15sp"
+			android:textStyle="bold" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+	</LinearLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/option_launcher_edge"
-            style="@style/TextAppearance.AppCompat.Title" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/hint_launcher_edge" />
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/spiCustomiseLauncherEdge"></Spinner>
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:clipToPadding="false"
+		android:paddingStart="16dp"
+		android:paddingEnd="16dp"
+		android:paddingBottom="20dp"
+		android:scrollbars="none">
 
-    </LinearLayout>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+			<!-- Launcher -->
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/option_dash_grid_size"
-            style="@style/TextAppearance.AppCompat.Title" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/hint_dash_grid_size" />
-        <SeekBar
-            android:id="@+id/sbCustomiseDashColumns"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:saveEnabled="false" /><!-- see sbCustomiseLauncherIconSize -->
-        <TextView
-            android:id="@+id/tvCustomiseDashGridHint"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end" />
+			<TextView
+				android:id="@+id/tvCustomiseGroupLauncher"
+				style="@style/CustomiseGroupLabel"
+				android:text="@string/pref_header_launcher" />
 
-    </LinearLayout>
+			<LinearLayout style="@style/CustomiseCard">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/llCustomisePanelEdge">
+				<LinearLayout style="@style/CustomiseSetting">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/option_panel_edge"
-            style="@style/TextAppearance.AppCompat.Title" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/hint_panel_edge" />
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/spiCustomisePanelEdge"></Spinner>
+					<TextView
+						style="@style/CustomiseSettingTitle"
+						android:text="@string/option_launchericon_size" />
 
-    </LinearLayout>
+					<TextView
+						style="@style/CustomiseSettingHint"
+						android:text="@string/customise_hint_icon_size" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:id="@+id/llCustomiseMenuButton">
+					<SeekBar
+						android:id="@+id/sbCustomiseLauncherIconSize"
+						style="@style/CustomiseSeekBar"
+						android:saveEnabled="false" /><!--
+						max and progress are set by CustomiseModeUi.show() from
+						LauncherIconGrid (like the dash-columns seekbar below).
+						saveEnabled=false: CustomiseModeUi.show() always sets this slider
+						from the stored preference on (re)creation, so restoring the saved
+						instance state would only overwrite that correct value with the
+						view's default and fire a spurious onProgressChanged. -->
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/option_menu_button"
-            style="@style/TextAppearance.AppCompat.Title" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/hint_menu_button" />
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/spiCustomiseMenuButton"></Spinner>
+					<!-- The live preset readout ("Default · 6 icons"); see
+					     CustomiseModeUi.updateLauncherIconHint(). -->
+					<TextView
+						android:id="@+id/tvCustomiseLauncherIconHint"
+						style="@style/CustomiseSettingValue" />
 
-    </LinearLayout>
+				</LinearLayout>
+
+				<LinearLayout style="@style/CustomiseSetting">
+
+					<TextView
+						style="@style/CustomiseSettingTitle"
+						android:text="@string/customise_option_edge" />
+
+					<LinearLayout
+						android:id="@+id/llCustomiseLauncherEdgeSegments"
+						style="@style/CustomiseSegments" />
+
+				</LinearLayout>
+
+				<LinearLayout
+					android:id="@+id/llCustomiseMenuButton"
+					style="@style/CustomiseSetting"
+					android:visibility="gone">
+
+					<TextView
+						style="@style/CustomiseSettingTitle"
+						android:text="@string/option_menu_button" />
+
+					<LinearLayout
+						android:id="@+id/llCustomiseMenuButtonSegments"
+						style="@style/CustomiseSegments" />
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+			<!-- Dash -->
+
+			<TextView
+				android:id="@+id/tvCustomiseGroupDash"
+				style="@style/CustomiseGroupLabel"
+				android:text="@string/pref_header_dash" />
+
+			<LinearLayout style="@style/CustomiseCard">
+
+				<LinearLayout style="@style/CustomiseSetting">
+
+					<TextView
+						style="@style/CustomiseSettingTitle"
+						android:text="@string/customise_option_grid_size" />
+
+					<TextView
+						style="@style/CustomiseSettingHint"
+						android:text="@string/customise_hint_grid_size" />
+
+					<SeekBar
+						android:id="@+id/sbCustomiseDashColumns"
+						style="@style/CustomiseSeekBar"
+						android:saveEnabled="false" /><!-- see sbCustomiseLauncherIconSize -->
+
+					<!-- The live "columns × rows" readout; see
+					     CustomiseModeUi.updateDashGridHint(). -->
+					<TextView
+						android:id="@+id/tvCustomiseDashGridHint"
+						style="@style/CustomiseSettingValue" />
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+			<!-- Panel: the whole group goes when the theme doesn't let the
+			     panel move (CustomiseModeUi.show()). -->
+
+			<LinearLayout
+				android:id="@+id/llCustomisePanelEdge"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical">
+
+				<TextView
+					android:id="@+id/tvCustomiseGroupPanel"
+					style="@style/CustomiseGroupLabel"
+					android:text="@string/pref_header_panel" />
+
+				<LinearLayout style="@style/CustomiseCard">
+
+					<LinearLayout style="@style/CustomiseSetting">
+
+						<TextView
+							style="@style/CustomiseSettingTitle"
+							android:text="@string/customise_option_edge" />
+
+						<LinearLayout
+							android:id="@+id/llCustomisePanelEdgeSegments"
+							style="@style/CustomiseSegments" />
+
+					</LinearLayout>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</ScrollView>
+
 </LinearLayout>

@@ -78,7 +78,6 @@ public class Budgie extends Theme
 		this.dash_applauncher_text_shadow_colour = R.color.theme_budgie_dash_applauncher_text_shadow_colour;
 		this.dash_customise_text_colour = R.color.theme_budgie_dash_customise_text_colour;
 		this.dash_customise_text_shadow_colour = R.color.theme_budgie_dash_customise_text_shadow_colour;
-		this.dash_customise_spinner_text_colour = R.color.theme_budgie_dash_customise_spinner_text_colour;
 		this.dash_search_background = R.drawable.theme_budgie_dash_search_background;
 		this.dash_search_width = R.dimen.theme_budgie_dash_search_width;
 		this.dash_search_text_colour = R.color.theme_budgie_dash_search_text_colour;

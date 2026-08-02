@@ -157,4 +157,107 @@
         <item name="android:textSize">17sp</item>
     </style>
 
+    <!-- Customise mode (activity_home_customise.xml). Weight is set with
+         android:textStyle rather than a fontFamily so the font preference wins;
+         see the layout's comment. -->
+
+    <style name="CustomiseGroupLabel">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">6dp</item>
+        <item name="android:paddingStart">6dp</item>
+        <item name="android:letterSpacing">0.08</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CustomiseCard">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/customise_card_background</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">16dp</item>
+        <!-- Spacing between settings as a divider rather than a margin: a
+             hidden setting (the menu button on themes without one) then takes
+             its gap with it. -->
+        <item name="android:divider">@drawable/customise_setting_divider</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+
+    <style name="CustomiseSetting">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="CustomiseSettingTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- A slider's live value ("Default · 6 icons", "5 × 4"), trailing its
+         control. Beside the setting's name it would wrap the name instead:
+         the dash is narrow, and these read long in most languages. -->
+    <style name="CustomiseSettingValue">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:gravity">end</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="CustomiseSettingHint">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:lineSpacingExtra">1dp</item>
+        <item name="android:textColor">@color/transparent30</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="CustomiseSeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <!-- The track spans the card's padding instead of the widget's own. -->
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+        <item name="android:progressTint">@android:color/white</item>
+        <item name="android:progressBackgroundTint">@color/transparent60</item>
+        <item name="android:thumbTint">@android:color/white</item>
+        <item name="android:splitTrack">false</item>
+    </style>
+
+    <!-- The row a setting's options sit in, one segment each. -->
+    <style name="CustomiseSegments">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:divider">@drawable/customise_segment_divider</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+
+    <style name="CustomiseSegment">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/customise_segment_background</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">9dp</item>
+        <item name="android:paddingBottom">9dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/customise_segment_text</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
 </resources>
