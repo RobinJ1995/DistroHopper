@@ -752,6 +752,24 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		 * with just the activity.
 		 */
 
+		/**
+		 * Whether the current drag shows the "app info" target in the trash's
+		 * place. Set (by the dash's long-click listener) when an app icon is
+		 * picked up from the dash — the dash always shows every installed app,
+		 * so the trash would have nothing to delete there; opening the system's
+		 * App info screen is the useful drop instead. Dash *folders* keep the
+		 * trash (dropping one there deletes the folder). Sticky for the drag's
+		 * lifetime — mid-drag [startedDragging] refreshers (e.g. hovering the
+		 * launcher bar) re-apply it — and cleared by [stoppedDragging].
+		 */
+		private var dragShowsAppInfo = false
+
+		/** Marks the drag that is starting as a dash app-icon drag (see [dragShowsAppInfo]). */
+		@JvmStatic
+		fun dragStartedFromDashApp() {
+			dragShowsAppInfo = true
+		}
+
 		@JvmStatic
 		fun startedDragging(activity: HomeActivity) {
 			val viewFinder = activity.viewFinder
@@ -759,6 +777,7 @@ class LauncherBarBinder(private val appManager: AppManager) {
 			val lalBfb = viewFinder.get<AppLauncher>(llLauncher, R.id.lalBfb)
 			val lalPreferences = viewFinder.get<AppLauncher>(llLauncher, R.id.lalPreferences)
 			val lalTrash = viewFinder.get<AppLauncher>(llLauncher, R.id.lalTrash)
+			val lalAppInfo = viewFinder.get<AppLauncher>(llLauncher, R.id.lalAppInfo)
 
 			// The BFB stays visible during the drag: it is the "re-open the dash"
 			// target for the cross-surface drag (hover it to bring the dash back),
@@ -768,7 +787,8 @@ class LauncherBarBinder(private val appManager: AppManager) {
 			// the dash to reveal the desktop — see Bfb/Launcher drag listeners.
 			lalBfb.visibility = View.VISIBLE
 			lalPreferences.visibility = View.GONE
-			lalTrash.visibility = View.VISIBLE
+			lalTrash.visibility = if (dragShowsAppInfo) View.GONE else View.VISIBLE
+			lalAppInfo.visibility = if (dragShowsAppInfo) View.VISIBLE else View.GONE
 
 			viewFinder.get<LinearLayout>(llLauncher, R.id.llLauncherPinnedApps).alpha = 0.9F
 
@@ -777,11 +797,14 @@ class LauncherBarBinder(private val appManager: AppManager) {
 
 		@JvmStatic
 		fun stoppedDragging(activity: HomeActivity) {
+			dragShowsAppInfo = false
+
 			val viewFinder = activity.viewFinder
 			val llLauncher = viewFinder.get<LinearLayout>(R.id.llLauncher)
 			val lalBfb = viewFinder.get<AppLauncher>(llLauncher, R.id.lalBfb)
 			val lalPreferences = viewFinder.get<AppLauncher>(llLauncher, R.id.lalPreferences)
 			val lalTrash = viewFinder.get<AppLauncher>(llLauncher, R.id.lalTrash)
+			val lalAppInfo = viewFinder.get<AppLauncher>(llLauncher, R.id.lalAppInfo)
 
 			val theme = DependencyContainer.of(activity).themeManager.current
 			val lalPreferences_location = theme.lalPreferences_getLocation(
@@ -790,6 +813,7 @@ class LauncherBarBinder(private val appManager: AppManager) {
 			lalPreferences.visibility =
 				if (lalPreferences_location == Location.NONE) View.GONE else View.VISIBLE
 			lalTrash.visibility = View.GONE
+			lalAppInfo.visibility = View.GONE
 
 			viewFinder.get<LinearLayout>(llLauncher, R.id.llLauncherPinnedApps).alpha = 1.0F
 

@@ -42,6 +42,7 @@
     <drawable name="theme_cosmic_launcher_preferences_image">@drawable/theme_cosmic_res_launcher_preferences</drawable>
     <integer name="theme_cosmic_launcher_preferences_location_when_panel_hidden">@integer/position_none</integer>
     <drawable name="theme_cosmic_launcher_trash_image">@drawable/launcher_trash</drawable>
+    <drawable name="theme_cosmic_launcher_appinfo_image">@drawable/launcher_appinfo</drawable>
     <bool name="theme_cosmic_launcher_applauncher_backgroundcolour_dynamic">false</bool>
     <color name="theme_cosmic_launcher_applauncher_backgroundcolour">@android:color/transparent</color>
     <integer name="theme_cosmic_launcher_applauncher_backgroundcolour_opacity">204</integer>

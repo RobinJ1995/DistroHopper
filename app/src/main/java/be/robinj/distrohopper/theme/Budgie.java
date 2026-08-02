@@ -35,6 +35,7 @@ public class Budgie extends Theme
 		this.launcher_preferences_image = R.drawable.theme_budgie_launcher_preferences_image;
 		this.launcher_preferences_location_when_panel_hidden = R.integer.theme_budgie_launcher_preferences_location_when_panel_hidden;
 		this.launcher_trash_image = R.drawable.theme_budgie_launcher_trash_image;
+		this.launcher_appinfo_image = R.drawable.theme_budgie_launcher_appinfo_image;
 		this.launcher_applauncher_backgroundcolour_dynamic = R.bool.theme_budgie_launcher_applauncher_backgroundcolour_dynamic;
 		this.launcher_applauncher_backgroundcolour = R.color.theme_budgie_launcher_applauncher_backgroundcolour;
 		this.launcher_applauncher_backgroundcolour_opacity = R.integer.theme_budgie_launcher_applauncher_backgroundcolour_opacity;

@@ -44,6 +44,7 @@ class WallpaperColourApplier(
 			this.viewFinder.get<AppLauncher>(R.id.lalPreferences).colour = colour
 			this.viewFinder.get<AppLauncher>(R.id.lalSpinner).colour = colour
 			this.viewFinder.get<AppLauncher>(R.id.lalTrash).colour = colour
+			this.viewFinder.get<AppLauncher>(R.id.lalAppInfo).colour = colour
 		}
 
 		val launcherBackgroundResources = res.obtainTypedArray(this.theme.launcher_background)

@@ -219,6 +219,17 @@
 					custom:applauncher_special="false"
 					custom:icon="@drawable/launcher_trash" />
 
+				<!-- Icon set by ThemeApplier from the theme's launcher_appinfo_image
+				     (like the preferences/trash icons; a `custom:icon` attribute here
+				     would be dead — AppLauncher only reads `applauncher_icon`). -->
+				<be.robinj.distrohopper.desktop.launcher.AppLauncher
+					android:id="@+id/lalAppInfo"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="4dp"
+					android:visibility="gone"
+					custom:applauncher_special="false" />
+
 			</be.robinj.distrohopper.desktop.launcher.LauncherBar>
 
 			<!-- Dash -->

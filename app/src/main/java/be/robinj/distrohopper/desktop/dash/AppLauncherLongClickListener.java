@@ -101,7 +101,13 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 			// without an active drag would leave the bar stuck, as no
 			// ACTION_DRAG_ENDED will ever restore it //
 			if (source.startDragAndDrop (data, new View.DragShadowBuilder (view), payload, 0))
+			{
+				// A dash app icon: the bar shows the "app info" drop target in
+				// the trash's place (there is nothing to delete — the dash
+				// always shows every installed app) //
+				LauncherBarBinder.dragStartedFromDashApp ();
 				appManager.startedDraggingPinnedApp (app);
+			}
 		}
 		else
 		{
@@ -111,7 +117,10 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 			ClipData data = ClipData.newPlainText ("dash", "dash");
 
 			if (source.startDragAndDrop (data, new View.DragShadowBuilder (view), app, 0))
+			{
+				LauncherBarBinder.dragStartedFromDashApp ();
 				appManager.startedDraggingDashApp (app);
+			}
 		}
 	}
 }

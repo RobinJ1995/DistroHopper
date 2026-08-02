@@ -192,6 +192,7 @@ public class HomeActivity extends AppCompatActivity
 			final be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb = this.viewFinder.get(llBfbSpinnerWrapper, R.id.lalBfb);
 			final be.robinj.distrohopper.desktop.launcher.AppLauncher lalPreferences = this.viewFinder.get(llLauncher, R.id.lalPreferences);
 			final be.robinj.distrohopper.desktop.launcher.AppLauncher lalTrash = this.viewFinder.get(llLauncher, R.id.lalTrash);
+			final be.robinj.distrohopper.desktop.launcher.AppLauncher lalAppInfo = this.viewFinder.get(llLauncher, R.id.lalAppInfo);
 			this.llDash = this.viewFinder.get(llLauncherAndDashContainer, R.id.llDash);
 			final Wallpaper wpWallpaper = this.viewFinder.get(R.id.wpWallpaper);
 			final LinearLayout llPanel = this.viewFinder.get(R.id.llPanel);
@@ -295,6 +296,7 @@ public class HomeActivity extends AppCompatActivity
 			lalSpinner.init ();
 			lalPreferences.init ();
 			lalTrash.init ();
+			lalAppInfo.init ();
 
 			// Process panel user preferences // Themes should probably handle this? //
 			final Resources res = this.getResources ();
@@ -365,6 +367,9 @@ public class HomeActivity extends AppCompatActivity
 			// Attached here rather than once apps are loaded: widgets are draggable
 			// (and droppable on the trash) as soon as they are restored below //
 			lalTrash.setOnDragListener (new TrashDragListener (this));
+			// Shown in the trash's place while an app icon is dragged from the dash:
+			// dropping it there opens the system's App info screen for it //
+			lalAppInfo.setOnDragListener (new be.robinj.distrohopper.desktop.launcher.AppInfoDragListener (this));
 
 			// Cross-surface drag: hovering the launcher or panel closes the dash to
 			// reveal the desktop, while hovering either BFB (the launcher's, or the

@@ -218,6 +218,36 @@ public class App implements Parcelable
 		}
 	}
 
+	/**
+	 * Opens the system's App info screen for this app. Apps in another profile
+	 * need LauncherApps (a regular Settings intent would show the personal
+	 * profile's copy); personal-profile apps use the plain details intent so
+	 * this also works for packages without a launcher activity entry.
+	 */
+	public void openAppInfo ()
+	{
+		try {
+			if (this.user != null) {
+				final LauncherApps launcherApps =
+						(LauncherApps) this.context.getSystemService (Context.LAUNCHER_APPS_SERVICE);
+				launcherApps.startAppDetailsActivity (
+						new ComponentName (this.packageName, this.activityName),
+						this.user, null, null);
+			} else {
+				final Intent intent = new Intent (
+						android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+						android.net.Uri.fromParts ("package", this.packageName, null));
+				intent.addFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
+				this.context.startActivity (intent);
+			}
+		} catch (final Exception ex) {
+			final String errorMessage = format ("Failed to open app info for %s: %s.",
+					this.packageName, ex.getClass ().getSimpleName ());
+			Log.getInstance ().e ("App", errorMessage);
+			Toast.makeText (this.context, errorMessage, Toast.LENGTH_SHORT).show ();
+		}
+	}
+
 	// Track app launches for the usage-based dash sort orders, recorded only
 	// after the start call is accepted so a failed launch (e.g. a stale package
 	// entry, a disabled activity, or a locked work profile) can't push a
