@@ -13,17 +13,17 @@ readable:
   eye ovals      opaque        pupils                transparent (punched out)
   beak           opaque        halo around the face  transparent
 
-Alpha is not limited to those two extremes, which is what lets the swirl fade
-out at the rim. `setTint` is a SRC_IN filter, and `VectorDrawable` rasterises
-the whole vector — gradients and partial alpha included — before applying it,
-so for an opaque tint colour C over a rasterised pixel D:
+Alpha is not limited to those two extremes, which is what lets a blade keep the
+soft trailing edge it has in the colour icon. `setTint` is a SRC_IN filter, and
+`VectorDrawable` rasterises the whole vector — partial alpha included — before
+applying it, so for an opaque tint colour C over a rasterised pixel D:
 
   result.rgb = C.rgb                  the tint replaces the colour
   result.a   = C.a * D.a = D.a        per-pixel alpha passes through untouched
 
 A pixel at alpha `a` therefore lands at lerp(tintBackground, tintForeground, a).
-The corollary shapes the gradient below: it may vary only **alpha**, never
-colour, because the tint overwrites the colour regardless.
+The corollary: only **alpha** is worth varying, never colour, because the tint
+overwrites the colour regardless.
 
 Everything below is measured off the real artwork rather than redrawn by eye —
 `drawable-xxxhdpi/ic_launcher_background.png` for the swirl and
@@ -42,9 +42,19 @@ blade) its midpoint advances +53 degrees from r=18 to r=50, which fits a
 *logarithmic* spiral, theta = PHASE + TWIST * ln(r / PHASE_R), at 52 degrees
 per ln unit. Logarithmic matters: it front-loads the twist, so a blade turns
 most of a 30 degree pitch across the visible band and reads as a swirl rather
-than as spokes. The measured orange occupies 65-87% of each pitch; the stencil
-narrows that to about half, because at two tones an 80% duty cycle is a disc
-with slits rather than a pinwheel.
+than as spokes.
+
+A blade is not a flat stripe. Profiling one pitch angularly (0 = white,
+150 = full orange at r=36) shows a sawtooth, not a plateau:
+
+  offset from core centre  -16   -12    -8    -4     0    +4    +7   +10
+  orangeness                 8    37    82   124   141   142   141     9
+
+so each blade has a *hard* edge on one side, roughly 14 degrees of full
+strength, and then a ~12 degree ramp trailing off the other side before the
+next blade begins. That asymmetry is what reads as spin; a blade with two hard
+edges is a stripe, and twelve of them are circus stripes. Both the core and the
+tail widen with radius, as the source's do.
 
 Face, from connected components of the foreground (light = eye, dark = pupil,
 yellow = beak):
@@ -94,20 +104,16 @@ CX = CY = 54.0
 # --- swirl ---------------------------------------------------------------- #
 BLADES = 12
 PITCH = 360.0 / BLADES
-PHASE = 3.8          # blade centreline angle at PHASE_R, measured //
+PHASE = 6.8          # centre of a blade's full-alpha core at PHASE_R, measured //
 PHASE_R = 36.0
 TWIST = 52.0         # degrees of centreline rotation per ln(r), measured //
-HALF_IN = 6.6        # blade angular half-width where it leaves the halo //
-HALF_OUT = 8.6       # blade angular half-width at R_OUT //
+CORE = 6.0           # full-alpha half-width of a blade, degrees //
+TAIL = 11.0          # soft trailing ramp beyond the core, degrees //
+WIDEN = 1.35         # how much both grow between the halo and R_OUT //
+BANDS = 9            # steps the tail's ramp is drawn in //
 R_OUT = 78.0         # past the canvas corner (76.37), so the swirl bleeds out //
-SAMPLES = 18         # polyline samples per blade edge, uniform in ln(r) //
+SAMPLES = 8          # polyline samples per wedge edge, uniform in ln(r) //
 HALO = 2.4           # transparent gap between the face and the blades //
-# The blades still reach the bleed edge, but fade out on the way: flat opacity  #
-# all the way to the rim turns the alternating stripes into circus stripes. The #
-# fade is radial, so it clears the rim of a circular mask and the corners of a  #
-# square one alike.                                                             #
-FADE_FULL = 27.0     # opaque out to here //
-FADE_ZERO = 38.0     # and gone by here (the circle mask's rim is 36) //
 
 # --- face ----------------------------------------------------------------- #
 # Ellipses are (cx, cy, rx, ry, rotation); the beak is a hand-fitted outline.  #
@@ -252,24 +258,47 @@ def blade_angle(index, r):
 	return PHASE + index * PITCH + TWIST * math.log(r / PHASE_R)
 
 
-def blade_half_width(r, r_start):
+def blade_widening(r, r_start):
+	"""Blades widen outward, as they do in the source art."""
 	f = math.log(r / r_start) / math.log(R_OUT / r_start)
-	return HALF_IN + (HALF_OUT - HALF_IN) * f
+	return 1.0 + (WIDEN - 1.0) * f
 
 
-def blade_polygon(index):
+def blade_polygon(index, lo, hi):
+	"""One wedge of a blade, between two signed angular offsets from its
+	centreline. `hi` is the hard edge; `lo` runs off into the soft tail."""
 	r_start = halo_radius()
 	radii = [math.exp(math.log(r_start) + (math.log(R_OUT) - math.log(r_start)) * i / SAMPLES)
 		for i in range(SAMPLES + 1)]
 
-	def edge(sign):
+	def edge(offset):
 		out = []
 		for r in radii:
-			t = math.radians(blade_angle(index, r) + sign * blade_half_width(r, r_start))
+			t = math.radians(blade_angle(index, r) + offset * blade_widening(r, r_start))
 			out.append((CX + r * math.cos(t), CY + r * math.sin(t)))
 		return out
 
-	return edge(+1) + list(reversed(edge(-1)))
+	return edge(hi) + list(reversed(edge(lo)))
+
+
+def tail_bands():
+	"""The tail's ramp as a stack of nested wedges, widest and faintest first.
+
+	Each wedge shares the blade's hard edge and reaches further into the tail, so
+	a point deep in the tail is painted by one wedge and a point at the core by
+	all of them. Returns (lo, hi, fillAlpha) per wedge, where fillAlpha is solved
+	so that the *composited* result matches the intended ramp: for a strip
+	covered by wedges k..BANDS, 1 - prod(1 - alpha_i) has to come out at the
+	target, which gives alpha_k = 1 - (1 - T_k) / (1 - T_k+1)."""
+	target = [1.0] + [1.0 - (k - 0.5) / BANDS for k in range(1, BANDS + 1)]
+
+	out = []
+	for k in range(BANDS, -1, -1):
+		above = target[k + 1] if k + 1 < len(target) else 0.0
+		alpha = 1.0 - (1.0 - target[k]) / (1.0 - above)
+		out.append((-(CORE + TAIL * k / BANDS), CORE, alpha))
+
+	return out
 
 
 def polygon_path(poly):
@@ -278,9 +307,16 @@ def polygon_path(poly):
 
 # --- emit ------------------------------------------------------------------ #
 def build():
-	blades = [blade_polygon(i) for i in range(BLADES)]
+	bands = []
+	for lo, hi, alpha in tail_bands():
+		wedges = "\n            ".join(
+			polygon_path(blade_polygon(i, lo, hi)) for i in range(BLADES))
+		bands.append(f"""    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="{num(alpha)}"
+        android:pathData="{wedges}" />""")
+	swirl = "\n\n".join(bands)
 
-	swirl = "\n            ".join(polygon_path(p) for p in blades)
 	eyes = "\n            ".join([
 		ellipse_path(scaled_ellipse(LEFT_EYE)),
 		ellipse_path(scaled_ellipse(RIGHT_EYE)),
@@ -291,33 +327,25 @@ def build():
 	return f"""<?xml version="1.0" encoding="utf-8"?>
 <!-- Generated by etc/generate_launcher_monochrome.py — do not edit by hand. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- The swirl: {BLADES} tapered logarithmic-spiral blades, standing in for the
-         orange wedges of the colour icon's background, running from the halo
-         around the face out past the canvas corner so they bleed to every edge.
+    <!-- The swirl: {BLADES} logarithmic-spiral blades, standing in for the orange
+         wedges of the colour icon's background, running from the halo around the
+         face out past the canvas corner so they bleed to every edge.
 
-         The gradient fades them out before the rim. It varies alpha only — the
-         tint replaces the colour anyway — and alpha survives the SRC_IN tint,
-         so each blade dissolves into the tint background instead of ending in a
-         hard stripe at the icon's edge. -->
-    <path android:pathData="{swirl}">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:type="radial"
-                android:centerX="{num(CX)}"
-                android:centerY="{num(CY)}"
-                android:gradientRadius="{num(FADE_ZERO)}">
-                <item android:offset="0" android:color="#FFFFFFFF" />
-                <item android:offset="{num(FADE_FULL / FADE_ZERO)}" android:color="#FFFFFFFF" />
-                <item android:offset="1" android:color="#00FFFFFF" />
-            </gradient>
-        </aapt:attr>
-    </path>
+         Each blade is a sawtooth, the way the source art's are: a hard edge on
+         one side, a full-alpha core, then a soft ramp trailing off the other
+         side. That trailing fade is what reads as spin — a blade with two hard
+         edges is a stripe, not a swirl. The ramp is drawn as {BANDS} nested wedges
+         sharing the hard edge, each fainter and reaching further into the tail,
+         because a gradient cannot follow a spiral: linear and radial fills are
+         straight, and a sweep fill is fixed in angle while the blade twists a
+         full pitch on its way out. Alpha survives the SRC_IN tint untouched, so
+         the ramp arrives intact. -->
+{swirl}
 
     <!-- The eyes, with the pupils punched out as holes (evenOdd, so the hole
          subpaths need no reversed winding). -->
@@ -378,10 +406,17 @@ def report():
 		f"beak to right eye             {gap(f['beak'], f['right_eye']):.2f}",
 	]
 
+	bands = tail_bands()
+	lines.append("band alphas (widest first)    "
+		+ " ".join(f"{a:.2f}" for _, _, a in bands))
+	lines.append(f"mean opacity over a pitch     {(2 * CORE + TAIL / 2) / PITCH:.0%}")
+
 	for r in (26.0, 30.0, 36.0):
-		half = blade_half_width(r, start) if r > start else HALF_IN
-		arc = 2 * math.radians(half) * r
-		lines.append(f"at r={r:<4.0f} blade {arc:5.2f} wide, gap {math.radians(PITCH) * r - arc:5.2f}")
+		grow = blade_widening(r, start)
+		core = 2 * math.radians(CORE * grow) * r
+		tail = math.radians(TAIL * grow) * r
+		clear = math.radians(PITCH) * r - core - tail
+		lines.append(f"at r={r:<4.0f} core {core:5.2f} wide, tail {tail:5.2f}, clear {clear:5.2f}")
 
 	print("\n".join(lines))
 
@@ -402,38 +437,20 @@ def tint_pair(rgb, night):
 	return background, foreground
 
 
-def blade_alpha(r):
-	"""The swirl gradient's alpha ramp, in viewport units."""
-	if r <= FADE_FULL:
-		return 1.0
-	if r >= FADE_ZERO:
-		return 0.0
-	return (FADE_ZERO - r) / (FADE_ZERO - FADE_FULL)
-
-
 def preview(directory):
 	from PIL import Image, ImageChops, ImageDraw
 
-	blades = [blade_polygon(i) for i in range(BLADES)]
+	bands = [(alpha, [blade_polygon(i, lo, hi) for i in range(BLADES)])
+		for lo, hi, alpha in tail_bands()]
 	f = face_polygons()
 	face = [f["left_eye"], f["right_eye"], f["beak"]]
 	holes = [f["left_pupil"], f["right_pupil"]]
 
-	def ramp(cells=256):
-		"""The blade gradient sampled in viewport space, to be scaled onto the
-		canvas alongside the geometry."""
-		img = Image.new("L", (cells, cells))
-		img.putdata([
-			int(round(255 * blade_alpha(math.hypot(
-				(i + 0.5) * VIEWPORT / cells - CX, (j + 0.5) * VIEWPORT / cells - CY))))
-			for j in range(cells) for i in range(cells)])
-		return img
-
-	gradient = ramp()
-
 	def stencil(size, ss=4):
 		"""The monochrome layer alpha, mapped the way IconRenderer.drawLayer does:
-		a 1/4 extra inset each side, so viewport 18..90 fills the icon."""
+		a 1/4 extra inset each side, so viewport 18..90 fills the icon. The bands
+		are composited source-over in file order, exactly as the drawable's paths
+		are, so the tail's stepped ramp comes out at its intended strength."""
 		n = size * ss
 		inset = n // 4
 		scale = 1.5 * n / VIEWPORT
@@ -441,27 +458,24 @@ def preview(directory):
 		def to_px(poly):
 			return [(x * scale - inset, y * scale - inset) for x, y in poly]
 
-		# Blades first, multiplied by the gradient, exactly as the vector's //
-		# gradient fill does. //
-		swirl = Image.new("L", (n, n), 0)
-		draw = ImageDraw.Draw(swirl)
-		for poly in blades:
-			draw.polygon(to_px(poly), fill=255)
-
-		scaled_ramp = Image.new("L", (n, n), 0)
-		scaled_ramp.paste(gradient.resize((int(round(VIEWPORT * scale)),) * 2, Image.BICUBIC),
-			(-inset, -inset))
-		swirl = ImageChops.multiply(swirl, scaled_ramp)
+		img = Image.new("L", (n, n), 0)
+		for alpha, wedges in bands:
+			layer = Image.new("L", (n, n), 0)
+			ld = ImageDraw.Draw(layer)
+			for poly in wedges:
+				ld.polygon(to_px(poly), fill=int(round(255 * alpha)))
+			# Source-over on the alpha channel is a screen blend: //
+			# out = dst + src * (1 - dst). //
+			img = ImageChops.screen(img, layer)
 
 		# The face is flat opaque, and the pupils punch through it. //
-		img = Image.new("L", (n, n), 0)
 		draw = ImageDraw.Draw(img)
 		for poly in face:
 			draw.polygon(to_px(poly), fill=255)
 		for poly in holes:
 			draw.polygon(to_px(poly), fill=0)
 
-		return ImageChops.lighter(img, swirl).resize((size, size), Image.LANCZOS)
+		return img.resize((size, size), Image.LANCZOS)
 
 	def mask(size, shape, ss=4):
 		n = size * ss
@@ -530,10 +544,12 @@ def preview(directory):
 
 	full = size / VIEWPORT  # the whole 108 canvas, matching the source PNG //
 	coverage = Image.new("L", (size, size), 0)
-	draw = ImageDraw.Draw(coverage)
-	for poly in blades:
-		draw.polygon([(x * full, y * full) for x, y in poly], fill=255)
-	coverage = ImageChops.multiply(coverage, gradient.resize((size, size), Image.BICUBIC))
+	for alpha, wedges in bands:
+		layer = Image.new("L", (size, size), 0)
+		ld = ImageDraw.Draw(layer)
+		for poly in wedges:
+			ld.polygon([(x * full, y * full) for x, y in poly], fill=int(round(255 * alpha)))
+		coverage = ImageChops.screen(coverage, layer)
 
 	bare = Image.new("RGBA", (size, size), (255, 255, 255, 255))
 	bare.paste(Image.new("RGBA", (size, size), (230, 130, 60, 255)), (0, 0), coverage)
