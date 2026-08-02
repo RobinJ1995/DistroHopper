@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.preferences.Preference
+import be.robinj.distrohopper.theme.Location
 import be.robinj.distrohopper.theme.ThemeRegistry
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -270,5 +271,66 @@ class LauncherIconGridTest {
 		assertEquals("landscape config must make the long edge the width", 800, config.screenWidthDp)
 		assertEquals(LauncherIconGrid.countForPreset(400, LauncherIconGrid.preset(context)),
 			LauncherIconGrid.count(context))
+	}
+
+	// --- The visible count, which follows the docked edge ------------------------
+
+	private fun setLauncherEdge(context: Context, edge: Location) {
+		DependencyContainer.of(context).prefs.edit {
+			putInt(Preference.LAUNCHER_EDGE.getName(), edge.n)
+		}
+	}
+
+	/**
+	 * A horizontal launcher spans the same short edge the slot count is derived from, so what
+	 * the customise hint reports is exactly that count — the two must not drift apart.
+	 */
+	@Test @Config(qualifiers = "sw400dp-w400dp-h800dp") fun visibleCountMatchesSlotCountOnABottomLauncher() {
+		val context = this.ctx()
+		this.setTheme(context, "default")
+		this.setLauncherEdge(context, Location.BOTTOM)
+
+		for (i in 0 until LauncherIconGrid.PRESET_COUNT)
+			assertEquals(LauncherIconGrid.countForPreset(context, i),
+				LauncherIconGrid.visibleCountForPreset(context, i))
+	}
+
+	/**
+	 * A side launcher runs along the LONG edge at the very same icon size, so it shows more
+	 * icons than the short-edge slot count — reporting that count would name a number the user
+	 * cannot find anywhere on screen.
+	 */
+	@Test @Config(qualifiers = "sw400dp-w400dp-h800dp") fun visibleCountFollowsALongEdgeLauncher() {
+		val context = this.ctx()
+		this.setTheme(context, "default")
+
+		this.setLauncherEdge(context, Location.BOTTOM)
+		val acrossTheShortEdge = LauncherIconGrid.visibleCountForPreset(context, 2)
+
+		this.setLauncherEdge(context, Location.LEFT)
+		val downTheLongEdge = LauncherIconGrid.visibleCountForPreset(context, 2)
+
+		assertTrue("a 400×800 screen fits more icons down its side than across its bottom",
+			downTheLongEdge > acrossTheShortEdge)
+	}
+
+	/** Rotating does not change how many icons the side launcher shows. */
+	@Test fun visibleCountSurvivesRotation() {
+		val context = this.ctx()
+		this.setTheme(context, "default")
+		this.setLauncherEdge(context, Location.LEFT)
+
+		val config = context.resources.configuration
+		val portrait = LauncherIconGrid.visibleCountForPreset(context, 2)
+
+		val (w, h) = config.screenWidthDp to config.screenHeightDp
+		config.screenWidthDp = h
+		config.screenHeightDp = w
+		try {
+			assertEquals(portrait, LauncherIconGrid.visibleCountForPreset(context, 2))
+		} finally {
+			config.screenWidthDp = w
+			config.screenHeightDp = h
+		}
 	}
 }

@@ -137,10 +137,6 @@
 						style="@style/CustomiseSettingTitle"
 						android:text="@string/option_menu_button" />
 
-					<TextView
-						style="@style/CustomiseSettingHint"
-						android:text="@string/customise_hint_menu_button" />
-
 					<LinearLayout
 						android:id="@+id/llCustomiseMenuButtonSegments"
 						style="@style/CustomiseSegments" />

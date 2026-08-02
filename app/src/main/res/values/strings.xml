@@ -52,13 +52,12 @@
         <item>Huge</item>
     </string-array>
     <string name="customise_option_grid_size">Grid size</string>
-    <string name="customise_hint_grid_size">Fewer columns, larger icons.</string>
+    <string name="customise_hint_grid_size">Larger grid means smaller icons.</string>
     <string name="dash_grid_hint">%1$d × %2$d</string>
     <!-- Which screen edge the launcher or panel is attached to; the group it
          sits under names the one it applies to. -->
     <string name="customise_option_edge">Edge</string>
     <string name="option_menu_button">Menu button</string>
-    <string name="customise_hint_menu_button">Or swipe up to open the Dash.</string>
     <string name="customise_menu_button_hide">Hide</string>
     <!-- The menu button's position: the launcher's leading and trailing end. -->
     <string name="customise_menu_button_start">Start</string>

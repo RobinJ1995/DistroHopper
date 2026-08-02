@@ -180,7 +180,13 @@ etc/                                        — design assets (SVG/XCF sources, 
     size is computed at runtime so exactly that many slots tile the launcher's
     usable interior on the screen's shortest edge (theme `launcher_margin` and
     the launcher background's 9-patch insets subtracted; nothing but the preset
-    index is stored). `AppLauncher.init()` reads it; when pinned/running apps
+    index is stored). That slot count is a sizing input, **not** what the user
+    sees: a launcher docked on a side runs along the *long* edge at the very
+    same icon size, so it shows proportionally more. `visibleCountForPreset`
+    (over `alongEdgeInteriorPx`, which measures the docked edge and drops the
+    panel a side launcher runs below) is the count the customise hint reports,
+    and the only one that matches what can be counted off the screen.
+    `AppLauncher.init()` reads it; when pinned/running apps
     overflow, `ClippingScrollView`/`ClippingHorizontalScrollView` floor the
     scroll viewport to whole slots so no partial icon peeks (they leave the
     measure alone while everything fits, preserving `PinnedAppsBar`'s

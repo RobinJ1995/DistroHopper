@@ -233,10 +233,16 @@ class CustomiseModeUi(
 		}
 	}
 
-	/** Updates the pinned-icon preset hint: the preset's label and how many slots it fits. */
+	/**
+	 * Updates the pinned-icon preset hint: the preset's label and how many icons it shows.
+	 *
+	 * The count is the one for the launcher's actual edge, not the short-edge slot count the
+	 * size is derived from — on a side launcher those differ, and only the former is a number
+	 * the user can count off the screen. See [LauncherIconGrid.visibleCountForPreset].
+	 */
 	private fun updateLauncherIconHint(hint: TextView, labels: Array<String>, presetIndex: Int) {
 		val label = labels.getOrElse(presetIndex.coerceIn(0, labels.size - 1)) { "" }
-		val count = LauncherIconGrid.countForPreset(this.activity, presetIndex)
+		val count = LauncherIconGrid.visibleCountForPreset(this.activity, presetIndex)
 		hint.text = this.activity.getString(R.string.launcher_icon_hint, label, count)
 	}
 
