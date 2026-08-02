@@ -686,8 +686,14 @@ etc/                                        — design assets (SVG/XCF sources, 
   `LauncherApps.Callback` registered alongside the receiver) does the same
   for other profiles.
 - **`cache/`** — `AppIconCache`.
-- **`dev/`** — in-app debug logging (`Log`, `LogToaster`,
-  `DevLogsActivity`).
+- **`dev/`** — in-app debug logging. `Log` is a singleton that mirrors every
+  call to `android.util.Log` and, while dev mode has it enabled, also keeps it
+  as a `LogEntry` (level, tag, message, timestamp, thread) in a buffer capped
+  at `Log.CAPACITY`, oldest dropped first. `LogEntry.format()` reproduces the
+  historical `"[W] Tag: message"` line and is a compatibility contract:
+  `LogToaster` toasts it and `getLog()` joins it. `DevLogsActivity` renders
+  the entries via `LogEntryAdapter`, coalescing observer nudges onto the main
+  thread since the app loaders log from background ones.
 - **`thirdparty/`** — vendored third-party views/helpers; avoid editing
   unless necessary.
 
