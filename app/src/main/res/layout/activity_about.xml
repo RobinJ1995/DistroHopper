@@ -117,98 +117,137 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:padding="16dp"
-                android:background="@drawable/about_card_background"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/dialog_on_surface"
-                android:lineSpacingMultiplier="1.15"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="14sp"
+                android:textColor="@color/dialog_on_surface_variant"
+                android:lineSpacingMultiplier="1.4"
                 android:text="@string/about_description" />
 
             <!-- Get involved -->
-            <LinearLayout
-                android:id="@+id/linkGithub"
-                android:orientation="horizontal"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:padding="16dp"
-                android:gravity="center_vertical"
-                android:background="@drawable/about_card_background"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground">
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:textSize="11sp"
+                android:textColor="@color/dialog_on_surface_dim"
+                android:textAllCaps="true"
+                android:letterSpacing="0.12"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/about_get_involved" />
 
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginEnd="16dp"
-                    android:src="@drawable/ic_about_github"
-                    android:contentDescription="@string/about_github_title" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/about_card_background"
+                android:clipToOutline="true">
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
+                    android:id="@+id/linkGithub"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:padding="14dp"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="@color/dialog_on_surface"
-                        android:text="@string/about_github_title" />
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="14dp"
+                        android:src="@drawable/ic_about_github"
+                        android:contentDescription="@string/about_github_title" />
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textColor="@color/dialog_on_surface_variant"
-                        android:text="@string/about_github_subtitle" />
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="15sp"
+                            android:textColor="@color/dialog_on_surface"
+                            android:text="@string/about_github_title" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:textSize="12sp"
+                            android:textColor="@color/dialog_on_surface_dim"
+                            android:text="@string/about_github_subtitle" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="8dp"
+                        android:src="@drawable/ic_about_chevron"
+                        android:contentDescription="@null" />
+
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linkTransifex"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:padding="16dp"
-                android:gravity="center_vertical"
-                android:background="@drawable/about_card_background"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground">
-
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginEnd="16dp"
-                    android:src="@drawable/ic_about_translate"
-                    android:contentDescription="@string/about_transifex_title" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/dialog_divider" />
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
+                    android:id="@+id/linkTransifex"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:padding="14dp"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="@color/dialog_on_surface"
-                        android:text="@string/about_transifex_title" />
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="14dp"
+                        android:src="@drawable/ic_about_translate"
+                        android:contentDescription="@string/about_transifex_title" />
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textColor="@color/dialog_on_surface_variant"
-                        android:text="@string/about_transifex_subtitle" />
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="15sp"
+                            android:textColor="@color/dialog_on_surface"
+                            android:text="@string/about_transifex_title" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:textSize="12sp"
+                            android:textColor="@color/dialog_on_surface_dim"
+                            android:text="@string/about_transifex_subtitle" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="8dp"
+                        android:src="@drawable/ic_about_chevron"
+                        android:contentDescription="@null" />
+
                 </LinearLayout>
 
             </LinearLayout>
