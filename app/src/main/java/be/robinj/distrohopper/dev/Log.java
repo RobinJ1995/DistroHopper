@@ -1,5 +1,10 @@
 package be.robinj.distrohopper.dev;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+
 import be.robinj.distrohopper.Observed;
 
 /**
@@ -7,13 +12,24 @@ import be.robinj.distrohopper.Observed;
  */
 public class Log extends Observed
 {
-	private StringBuilder log = new StringBuilder ();
-	private String last = null;
-	private boolean enabled = true;
+	/**
+	 * How many entries to keep in memory. The launcher process lives for days, so the
+	 * log has to be bounded; at capacity the oldest entry is dropped. //
+	 */
+	static final int CAPACITY = 2000;
+
+	private final Deque<LogEntry> entries = new ArrayDeque<LogEntry> ();
+	private final Object lock = new Object ();
+
+	// Off unless dev mode turns it on; see HomeActivity.onCreate. //
+	private boolean enabled = false;
 
 	private static Log instance;
 
-	public static Log getInstance ()
+	// Synchronized because background threads (AppsLoader, WorkProfileAppsCallback,
+	// DrawableCache) log too: an unguarded lazy init can hand out two instances, and an
+	// observer attached to the losing one never hears anything again. //
+	public static synchronized Log getInstance ()
 	{
 		if (Log.instance == null)
 			Log.instance = new Log ();
@@ -29,67 +45,112 @@ public class Log extends Observed
 	{
 		android.util.Log.v (tag, message);
 
-		this.appendToDevLog ("v", tag, message);
+		this.appendToDevLog (LogLevel.VERBOSE, tag, message);
 	}
 
 	public void d (String tag, String message)
 	{
 		android.util.Log.d (tag, message);
 
-		this.appendToDevLog ("d", tag, message);
+		this.appendToDevLog (LogLevel.DEBUG, tag, message);
 	}
 
 	public void i (String tag, String message)
 	{
 		android.util.Log.i (tag, message);
 
-		this.appendToDevLog ("i", tag, message);
+		this.appendToDevLog (LogLevel.INFO, tag, message);
 	}
 
 	public void w (String tag, String message)
 	{
 		android.util.Log.w (tag, message);
 
-		this.appendToDevLog ("w", tag, message);
+		this.appendToDevLog (LogLevel.WARN, tag, message);
 	}
 
 	public void e (String tag, String message)
 	{
 		android.util.Log.e (tag, message);
 
-		this.appendToDevLog ("e", tag, message);
+		this.appendToDevLog (LogLevel.ERROR, tag, message);
 	}
 
+	/**
+	 * The whole log as one string, in the historical one-entry-per-line format.
+	 *
+	 * O(n) now that entries are kept as records rather than pre-joined text. Nothing on
+	 * a hot path calls this — the viewer renders {@link #getEntries()} instead. //
+	 */
 	public String getLog ()
 	{
-		return this.log.toString ();
+		final StringBuilder sb = new StringBuilder ();
+
+		for (final LogEntry entry : this.getEntries ())
+			sb.append (entry.format ()).append ("\n");
+
+		return sb.toString ();
 	}
 
-	public String getLastEntry() {
-		return this.last;
+	public String getLastEntry ()
+	{
+		synchronized (this.lock)
+		{
+			return this.entries.isEmpty () ? null : this.entries.getLast ().format ();
+		}
+	}
+
+	/** A snapshot, safe to iterate without holding the lock. Oldest entry first. */
+	public List<LogEntry> getEntries ()
+	{
+		synchronized (this.lock)
+		{
+			return new ArrayList<LogEntry> (this.entries);
+		}
+	}
+
+	public void clear ()
+	{
+		synchronized (this.lock)
+		{
+			this.entries.clear ();
+		}
+
+		this.nudgeObservers ();
+	}
+
+	public boolean isEnabled ()
+	{
+		synchronized (this.lock)
+		{
+			return this.enabled;
+		}
 	}
 
 	public void setEnabled (boolean enabled)
 	{
-		this.enabled = enabled;
+		synchronized (this.lock)
+		{
+			this.enabled = enabled;
+		}
 	}
 
-	private void appendToDevLog (String type, String tag, String message)
+	private void appendToDevLog (LogLevel level, String tag, String message)
 	{
-		if (this.enabled)
+		synchronized (this.lock)
 		{
-			final StringBuilder entry = new StringBuilder()
-				.append ("[")
-				.append (type.toUpperCase ())
-				.append ("] ")
-				.append (tag)
-				.append (": ")
-				.append (message);
-			this.log.append(entry)
-				.append ("\n");;
-			this.last = entry.toString();
+			if (!this.enabled)
+				return;
 
-			this.nudgeObservers ();
+			if (this.entries.size () >= Log.CAPACITY)
+				this.entries.removeFirst ();
+
+			this.entries.addLast (new LogEntry (level, tag, message,
+				System.currentTimeMillis (), Thread.currentThread ().getName ()));
 		}
+
+		// Outside the lock: observers touch the UI, and holding the log lock across that
+		// would let a logging background thread block on the main thread. //
+		this.nudgeObservers ();
 	}
 }
