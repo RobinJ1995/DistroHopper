@@ -239,7 +239,8 @@ etc/                                        — design assets (SVG/XCF sources, 
     `DependencyContainer.override`.
   - `DispatcherProvider` — indirection over coroutine dispatchers so tests
     can inject deterministic ones.
-  - `AboutActivity` — informational screen.
+  - `AboutActivity` — informational screen: version, developer links, and a
+    "Get involved" list linking out to the GitHub repo and Transifex.
 - **`home/`** — Kotlin controller/applier classes extracted from
   HomeActivity, each owning one concern of the home screen and constructed
   in `onCreate` with the `ViewFinder` plus what they need from the

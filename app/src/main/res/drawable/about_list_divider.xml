@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The hairline between the rows on the About screen's "Get involved" card.
+     Drawn as a LinearLayout divider rather than a <View> so rows carry their
+     own separator: adding or hiding a link needs no matching spacer edit. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+	<size android:height="1dp" />
+	<solid android:color="@color/dialog_divider" />
+</shape>

@@ -19,6 +19,14 @@
     <string name="title_activity_theme_preferences">Themes</string>
     <string name="title_activity_dev_logs">Logs</string>
     <string name="developed_by">Developed by Robin Jacobs</string>
+    <string name="about_description">I started DistroHopper back in high school as a (far too) young Linux enthusiast who wanted something resembling the Linux desktop on his first smartphone. I hope 15+ years later of on-and-off development you still enjoy what I started back then :)</string>
+    <string name="about_get_involved">Get involved</string>
+    <string name="about_github_title">Contribute on GitHub</string>
+    <string name="about_github_subtitle">Browse the code, report issues, and collaborate</string>
+    <string name="about_transifex_title">Help translate</string>
+    <string name="about_transifex_subtitle">Help translate DistroHopper into your language</string>
+    <string name="about_github_url" translatable="false">https://github.com/RobinJ1995/DistroHopper</string>
+    <string name="about_transifex_url" translatable="false">https://explore.transifex.com/distrohopper/</string>
     <string name="button_back">Back</string>
     <string name="button_about">About</string>
     <string name="button_apply">Apply</string>

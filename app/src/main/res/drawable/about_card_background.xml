@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Frosted-glass card surface for the About screen sections, matching the
+     rounded, translucent look of the app's modern dialogs.
+
+     Deliberately not customise_card_background: that one sits on the bare
+     wallpaper and so has to stay opaque enough for white text over anything,
+     while this sits on the already-dark, blurred DialogTheme surface and can
+     stay lighter. The hairline stroke separates it from that surface, which a
+     solid fill alone does not at this alpha. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+	<corners android:radius="@dimen/dialog_item_corner_radius" />
+	<solid android:color="@color/transparentblack60" />
+	<stroke
+		android:width="1dp"
+		android:color="@color/transparentblack70" />
+</shape>

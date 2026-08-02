@@ -30,6 +30,9 @@
     <color name="dialog_surface">#CC1C1C1E</color>
     <color name="dialog_on_surface">#FFFFFFFF</color>
     <color name="dialog_on_surface_variant">#B3FFFFFF</color>
+    <!-- A dimmer on-surface tone for eyebrows, subtitles and hairline dividers. -->
+    <color name="dialog_on_surface_dim">#80FFFFFF</color>
+    <color name="dialog_divider">#14FFFFFF</color>
     <!-- The device's system primary colour (Material You, API 31+); the lighter
          200 tone reads well on the dark surface. -->
     <color name="dialog_accent">@android:color/system_accent1_200</color>
