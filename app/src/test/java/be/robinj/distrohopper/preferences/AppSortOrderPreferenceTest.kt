@@ -51,13 +51,13 @@ class AppSortOrderPreferenceTest {
 
 		assertTrue(summary, summary.contains("Choose how apps are ordered"))
 		assertTrue(summary, summary.contains(
-			this.application.getString(R.string.option_app_sort_order_most_used)))
+			this.application.getString(R.string.option_dash_app_sort_order_most_used)))
 	}
 
 	@Test fun summaryReflectsTheDefaultOrderWhenUnset() {
 		val summary = this.sortOrderSummary()
 
 		assertTrue(summary, summary.contains(
-			this.application.getString(R.string.option_app_sort_order_alphabetic)))
+			this.application.getString(R.string.option_dash_app_sort_order_alphabetic)))
 	}
 }

@@ -501,9 +501,9 @@ public class PreferencesActivity extends AppCompatActivity
 				return;
 
 			final CharSequence[] entries =
-				this.getResources ().getTextArray (R.array.app_sort_order_entries);
+				this.getResources ().getTextArray (R.array.dash_app_sort_order_entries);
 			final CharSequence[] values =
-				this.getResources ().getTextArray (R.array.app_sort_order_values);
+				this.getResources ().getTextArray (R.array.dash_app_sort_order_values);
 
 			if (devEnabled)
 			{

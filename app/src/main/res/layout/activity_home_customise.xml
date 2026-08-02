@@ -135,7 +135,7 @@
 
 					<TextView
 						style="@style/CustomiseSettingTitle"
-						android:text="@string/option_menu_button" />
+						android:text="@string/option_launcher_menu_button" />
 
 					<LinearLayout
 						android:id="@+id/llCustomiseMenuButtonSegments"

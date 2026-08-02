@@ -2,10 +2,10 @@
 
     <ListPreference
         android:key="app_sort_order"
-        android:title="@string/option_app_sort_order"
-        android:summary="@string/hint_app_sort_order"
-        android:entries="@array/app_sort_order_entries"
-        android:entryValues="@array/app_sort_order_values"
+        android:title="@string/option_dash_app_sort_order"
+        android:summary="@string/hint_dash_app_sort_order"
+        android:entries="@array/dash_app_sort_order_entries"
+        android:entryValues="@array/dash_app_sort_order_values"
         android:defaultValue="alphabetical" />
 
     <SwitchPreferenceCompat

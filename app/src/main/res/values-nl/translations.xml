@@ -40,7 +40,7 @@
   <string name="pref_header_appearance">Uiterlijk</string>
   <string name="option_launchericon_size">Grootte van de Launcher</string>
   <string name="dash_grid_hint">%1$d × %2$d</string>
-  <string name="option_menu_button">Menuknop</string>
+  <string name="option_launcher_menu_button">Menuknop</string>
   <string name="widget_picker_title">Widget toevoegen</string>
   <string name="widget_no_room">Er is geen ruimte meer op het startscherm voor deze widget.</string>
   <string name="option_dashsearch_focus_on_open">Zoeken bij openen van Dash</string>
@@ -91,8 +91,8 @@
   <string name="hint_full_restart">Sluit de app af en start deze opnieuw om alles volledig opnieuw te initialiseren.</string>
   <string name="option_widget_resize_any">Niet-ondersteunde widgetafmetingen toestaan</string>
   <string name="hint_widget_resize_any">Sta toe dat widgets buiten hun ondersteunde afmetingsbeperkingen worden vergroot of verkleind.</string>
-  <string name="option_show_grid_on_drag">Bureaubladraster tonen tijdens slepen</string>
-  <string name="hint_show_grid_on_drag">Toon een punt op elke kruising van het raster tijdens het slepen of aanpassen van widgets en apps.</string>
+  <string name="option_desktop_show_grid_on_drag">Bureaubladraster tonen tijdens slepen</string>
+  <string name="hint_desktop_show_grid_on_drag">Toon een punt op elke kruising van het raster tijdens het slepen of aanpassen van widgets en apps.</string>
   <string name="accessibility_service_notification_tray_description">Hiermee kan DistroHopper het meldingenpaneel openen wanneer u op het startscherm omlaag veegt. De service wordt alleen voor die actie gebruikt en leest geen scherminhoud.</string>
   <!--Gestures preferences-->
   <string name="option_gesture_swipe_sides">Links of rechts vegen</string>
@@ -118,17 +118,17 @@
   <string name="option_rerun_onboarding">Installatiewizard opnieuw uitvoeren</string>
   <string name="hint_rerun_onboarding">De installatiewizard wordt de volgende keer dat DistroHopper start getoond.</string>
   <string name="toast_rerun_onboarding">Installatiewizard wordt bij de volgende start uitgevoerd</string>
-  <string name="option_pin_default_apps">Standaardapps vastmaken</string>
-  <string name="hint_pin_default_apps">Voer het vastmaken van apps voor het eerste gebruik opnieuw uit bij de volgende start.</string>
+  <string name="option_launcher_pin_default_apps">Standaardapps vastmaken</string>
+  <string name="hint_launcher_pin_default_apps">Voer het vastmaken van apps voor het eerste gebruik opnieuw uit bij de volgende start.</string>
   <string name="toast_pin_default_apps">Standaardapps worden bij de volgende start vastgemaakt</string>
   <string name="option_set_default_launcher">Instellen als startscherm</string>
   <string name="hint_set_default_launcher">Maak DistroHopper uw standaardstartscherm, zodat het verschijnt wanneer u op de startknop drukt.</string>
-  <string name="option_app_sort_order">Sorteervolgorde van apps</string>
-  <string name="hint_app_sort_order">Kies hoe apps in de Dash worden gesorteerd.\nHuidig: %s</string>
-  <string name="option_app_sort_order_alphabetic">Alfabetisch</string>
-  <string name="option_app_sort_order_recent">Meest recent gebruikt</string>
-  <string name="option_app_sort_order_most_used">Meest gebruikt</string>
-  <string name="option_app_sort_order_custom">Aangepast (sleep om te herschikken)</string>
+  <string name="option_dash_app_sort_order">Sorteervolgorde van apps</string>
+  <string name="hint_dash_app_sort_order">Kies hoe apps in de Dash worden gesorteerd.\nHuidig: %s</string>
+  <string name="option_dash_app_sort_order_alphabetic">Alfabetisch</string>
+  <string name="option_dash_app_sort_order_recent">Meest recent gebruikt</string>
+  <string name="option_dash_app_sort_order_most_used">Meest gebruikt</string>
+  <string name="option_dash_app_sort_order_custom">Aangepast (sleep om te herschikken)</string>
   <string name="folder_full">Map is vol</string>
   <string name="option_pin_per_desktop">Vastgemaakte apps per werkblad</string>
   <string name="hint_pin_per_desktop">Geef elk werkblad zijn eigen vastgemaakte apps in de Launcher, in plaats van dezelfde apps op alle werkbladen te delen.</string>

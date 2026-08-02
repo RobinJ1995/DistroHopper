@@ -25,8 +25,8 @@
 	<SwitchPreferenceCompat
 		android:key="dev_show_grid_on_drag"
 		android:dependency="dev"
-		android:title="@string/option_show_grid_on_drag"
-		android:summary="@string/hint_show_grid_on_drag"
+		android:title="@string/option_desktop_show_grid_on_drag"
+		android:summary="@string/hint_desktop_show_grid_on_drag"
 		android:defaultValue="false" />
 
 	<Preference
@@ -38,8 +38,8 @@
 	<Preference
 		android:key="dummy_pin_default_apps"
 		android:dependency="dev"
-		android:title="@string/option_pin_default_apps"
-		android:summary="@string/hint_pin_default_apps" />
+		android:title="@string/option_launcher_pin_default_apps"
+		android:summary="@string/hint_launcher_pin_default_apps" />
 
 	<Preference
 		android:key="dummy_clear_cache"

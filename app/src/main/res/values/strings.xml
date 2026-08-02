@@ -57,7 +57,7 @@
     <!-- Which screen edge the launcher or panel is attached to; the group it
          sits under names the one it applies to. -->
     <string name="customise_option_screen_edge">Screen edge</string>
-    <string name="option_menu_button">Menu button</string>
+    <string name="option_launcher_menu_button">Menu button</string>
     <string name="customise_menu_button_hide">Hide</string>
     <!-- The menu button's position: the launcher's leading and trailing end. -->
     <string name="customise_menu_button_start">Start</string>
@@ -119,8 +119,8 @@
     <string name="hint_full_restart">Kill and relaunch the app to fully re-initialise it.</string>
     <string name="option_widget_resize_any">Allow unsupported widget dimensions</string>
     <string name="hint_widget_resize_any">Allow widgets to be resized beyond their supported size constraints.</string>
-    <string name="option_show_grid_on_drag">Show desktop grid while dragging</string>
-    <string name="hint_show_grid_on_drag">Show a dot at each grid intersection while dragging or resizing widgets and apps.</string>
+    <string name="option_desktop_show_grid_on_drag">Show desktop grid while dragging</string>
+    <string name="hint_desktop_show_grid_on_drag">Show a dot at each grid intersection while dragging or resizing widgets and apps.</string>
     <string name="accessibility_service_notification_tray_description">Lets DistroHopper open the notification tray when you swipe down on the home screen. Only used to perform that one action; no screen content is read.</string>
 
     <!-- Gestures preferences -->
@@ -148,22 +148,22 @@
     <string name="option_rerun_onboarding">Run setup wizard again</string>
     <string name="hint_rerun_onboarding">The first-run setup wizard will be shown the next time DistroHopper starts.</string>
     <string name="toast_rerun_onboarding">Setup wizard will run on next start</string>
-    <string name="option_pin_default_apps">Pin default apps</string>
-    <string name="hint_pin_default_apps">Run the first-use app pinning again on next start.</string>
+    <string name="option_launcher_pin_default_apps">Pin default apps</string>
+    <string name="hint_launcher_pin_default_apps">Run the first-use app pinning again on next start.</string>
     <string name="toast_pin_default_apps">Default apps will be pinned on next start</string>
     <string name="option_set_default_launcher">Set as home screen</string>
     <string name="hint_set_default_launcher">Make DistroHopper your default home screen, so that it appears whenever you press the home button.</string>
-    <string name="option_app_sort_order">App sorting order</string>
-    <string name="hint_app_sort_order">Choose how apps are ordered in the Dash.\nCurrent: %s</string>
-    <string name="option_app_sort_order_alphabetic">Alphabetic</string>
-    <string name="option_app_sort_order_recent">Most recently used</string>
-    <string name="option_app_sort_order_most_used">Most used</string>
-    <string name="option_app_sort_order_custom">Custom (drag to reorder)</string>
-    <string-array name="app_sort_order_entries">
-        <item>@string/option_app_sort_order_alphabetic</item>
-        <item>@string/option_app_sort_order_recent</item>
-        <item>@string/option_app_sort_order_most_used</item>
-        <item>@string/option_app_sort_order_custom</item>
+    <string name="option_dash_app_sort_order">App sorting order</string>
+    <string name="hint_dash_app_sort_order">Choose how apps are ordered in the Dash.\nCurrent: %s</string>
+    <string name="option_dash_app_sort_order_alphabetic">Alphabetic</string>
+    <string name="option_dash_app_sort_order_recent">Most recently used</string>
+    <string name="option_dash_app_sort_order_most_used">Most used</string>
+    <string name="option_dash_app_sort_order_custom">Custom (drag to reorder)</string>
+    <string-array name="dash_app_sort_order_entries">
+        <item>@string/option_dash_app_sort_order_alphabetic</item>
+        <item>@string/option_dash_app_sort_order_recent</item>
+        <item>@string/option_dash_app_sort_order_most_used</item>
+        <item>@string/option_dash_app_sort_order_custom</item>
     </string-array>
     <string name="folder_full">Folder is full</string>
     <string name="option_pin_per_desktop">Per-desktop pinned apps</string>
