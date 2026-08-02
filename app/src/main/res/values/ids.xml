@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Tag key used by FontStyle to remember a TextView's designed text spacing
+         before any font correction is applied, so re-applying the font (a view
+         can be reached both by the inflater factory and by the dialog decor
+         sweep) recomputes from that baseline instead of compounding. -->
+    <item name="font_spacing_baseline" type="id" />
+
+</resources>
