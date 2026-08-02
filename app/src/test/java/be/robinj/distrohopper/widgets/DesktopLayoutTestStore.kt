@@ -5,9 +5,9 @@ import be.robinj.distrohopper.preferences.Preferences
 
 /**
  * Terse test access to the unified desktop layout store, so the widget/desktop
- * host tests can seed and read one kind at a time (the old per-kind
- * `WidgetPersistence`/`DesktopAppPersistence`/`DesktopFolderPersistence`
- * replacement).
+ * host tests can seed and read one kind at a time. This store replaced the old
+ * per-kind `WidgetPersistence`/`DesktopAppPersistence`/`DesktopFolderPersistence`
+ * classes.
  */
 object DesktopLayoutTestStore {
 	private fun prefs(context: Context) =
