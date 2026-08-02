@@ -21,8 +21,8 @@ def paranoiaBuild = providers.gradleProperty("paranoiaBuild")
         .map { it.toBoolean() }
         .orElse(false)
         .get()
-def appVersionCode = 108
-def baseVersionName = "3.0.0f"
+def appVersionCode = 109
+def baseVersionName = "3.0.0g"
 
 android {
     namespace "be.robinj.distrohopper"
