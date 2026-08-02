@@ -9,7 +9,7 @@ draws this layer tinted with the tint foreground, so the mark has to survive
 being reduced to two tones. The three signature elements all have to stay
 readable:
 
-  swirl blades   opaque        gaps between blades   transparent
+  swirl blades   opaque core, trailing off through a soft tail to a clear gap
   eye ovals      opaque        pupils                transparent (punched out)
   beak           opaque        outline around them   transparent
 
