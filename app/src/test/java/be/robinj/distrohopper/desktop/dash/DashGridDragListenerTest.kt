@@ -11,6 +11,7 @@ import be.robinj.distrohopper.App
 import be.robinj.distrohopper.DashLayoutRepository
 import be.robinj.distrohopper.DragEvents
 import be.robinj.distrohopper.HomeActivity
+import be.robinj.distrohopper.desktop.launcher.LauncherDragPayload
 import be.robinj.distrohopper.preferences.Preferences
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -304,6 +305,64 @@ class DashGridDragListenerTest {
             listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, x, y, alpha))
 
             assertEquals(before, this.labels(layout))
+        }
+    }
+
+    // --- Launcher-pinned apps dragged from the dash ---
+    //
+    // A dash icon whose app is also pinned to the launcher bar is dragged with a
+    // LauncherDragPayload.PinnedAppDrag (so a drop on the desktop pins a separate
+    // copy rather than unpinning the bar icon). Only the dash's long-click
+    // listener creates one, so within the dash it must behave like any other app
+    // icon — the regression was that the grid ignored the payload entirely, and a
+    // docked app could not be reordered or foldered at all.
+
+    @Test fun aLauncherPinnedAppDraggedFromTheDashIsClaimedByTheGrid() {
+        scenario.onActivity { activity ->
+            val listener = DashGridDragListener(activity, activity.appManager, null)
+            val grid = GeoGrid(activity, activity.appManager.dashLayout.dashItems(null))
+            val pinned = LauncherDragPayload.PinnedAppDrag(this.app(activity.appManager.dashLayout, "Alpha"))
+
+            assertTrue("a pinned app picked up from the dash is claimed",
+                listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED, localState = pinned)))
+        }
+    }
+
+    @Test fun aLauncherPinnedAppReordersWithinTheDashInCustomOrder() {
+        scenario.onActivity { activity ->
+            val appManager = activity.appManager
+            val layout = appManager.dashLayout
+            this.setCustomOrder(activity)
+            val pinned = LauncherDragPayload.PinnedAppDrag(this.app(layout, "Alpha"))
+            val targetPos = layout.dashItems(null).size - 1
+            val grid = GeoGrid(activity, layout.dashItems(null))
+            val (x, y) = grid.rightEdgeOf(targetPos) // a gap after the last cell
+            val listener = DashGridDragListener(activity, appManager, null)
+
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED, localState = pinned))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_LOCATION, x, y, pinned))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, x, y, pinned))
+
+            assertEquals(targetPos, this.indexOf(layout, "Alpha"))
+        }
+    }
+
+    @Test fun aLauncherPinnedAppFoldsOntoAnotherAppFromTheDash() {
+        scenario.onActivity { activity ->
+            val appManager = activity.appManager
+            val layout = appManager.dashLayout
+            val pinned = LauncherDragPayload.PinnedAppDrag(this.app(layout, "Alpha"))
+            val grid = GeoGrid(activity, layout.dashItems(null))
+            val (x, y) = grid.centreOf(this.indexOf(layout, "Beta"))
+            val listener = DashGridDragListener(activity, appManager, null)
+
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED, localState = pinned))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DRAG_LOCATION, x, y, pinned))
+            listener.onDrag(grid, DragEvents.obtain(DragEvent.ACTION_DROP, x, y, pinned))
+
+            val folders = layout.dashItems(null).filterIsInstance<DashItem.FolderItem>()
+            assertEquals(1, folders.size)
+            assertEquals(setOf("Alpha", "Beta"), folders[0].apps.map { it.label }.toSet())
         }
     }
 

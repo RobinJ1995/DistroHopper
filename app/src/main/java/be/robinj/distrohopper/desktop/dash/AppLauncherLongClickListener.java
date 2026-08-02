@@ -100,10 +100,11 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 			// PinnedAppDrag (a dash pin-by-drop), NOT the pinned index. So dropping
 			// on the desktop pins a *separate* desktop copy and leaves the launcher
 			// pin intact (the bug otherwise: the desktop saw the index, took it for
-			// a launcher-pin drag, and unpinned the bar icon). The dash grid ignores
-			// this payload, so it still falls through to the desktop like the index
-			// clip did. Reorder within the bar still works — the bar's bookkeeping
-			// keys off startedDraggingPinnedApp, not the local state //
+			// a launcher-pin drag, and unpinned the bar icon). Only this listener
+			// makes one, so the dash grid also reads it as "a dash icon started
+			// moving" and reorders/folds it in place. Reorder within the bar still
+			// works — the bar's bookkeeping keys off startedDraggingPinnedApp, not
+			// the local state //
 			LauncherDragPayload.PinnedAppDrag payload =
 				new LauncherDragPayload.PinnedAppDrag (app);
 			ClipData data = ClipData.newPlainText ("dash", "dash");

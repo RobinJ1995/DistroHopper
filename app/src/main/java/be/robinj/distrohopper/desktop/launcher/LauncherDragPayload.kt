@@ -18,9 +18,13 @@ sealed interface LauncherDragPayload {
 	 * so to every other surface this is a dash pin-by-drop — dropping it on the
 	 * desktop pins a separate desktop copy and leaves the launcher pin intact (it
 	 * is NOT the pinned-index reorder clip, which the desktop unpins off the bar).
-	 * The dash grid ignores it (not a [DashDragPayload]/[App]), so it falls through
-	 * to the desktop just like the old index clip did. The launcher bar's own
-	 * reorder still works — its bookkeeping keys off the dragged pin, not this.
+	 * Only the dash's long-click listener creates one, so it doubles as "this drag
+	 * started in the dash": `DashGridDragListener` treats it as a dash app icon, so
+	 * a docked app reorders/folds within the dash like any other (it would
+	 * otherwise be the one icon in the drawer that could not be rearranged). The
+	 * launcher bar's own reorder still works — its bookkeeping keys off the dragged
+	 * pin, not this — and a bar-origin drag carries the pinned-index clip instead,
+	 * so dropping *that* into the dash still unpins as before.
 	 */
 	data class PinnedAppDrag(val app: App) : LauncherDragPayload
 }

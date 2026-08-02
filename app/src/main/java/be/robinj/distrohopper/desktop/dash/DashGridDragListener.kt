@@ -14,6 +14,7 @@ import be.robinj.distrohopper.App
 import be.robinj.distrohopper.AppManager
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.desktop.launcher.LauncherDragPayload
 import be.robinj.distrohopper.home.LauncherBarBinder
 
 /**
@@ -179,6 +180,7 @@ class DashGridDragListener(
 	/** The [stableKey] of the item a preview-capable drag is carrying, else null. */
 	private fun draggedKeyOf(event: DragEvent): String? = when (val state = event.localState) {
 		is App -> DashItem.AppItem(state).stableKey
+		is LauncherDragPayload.PinnedAppDrag -> DashItem.AppItem(state.app).stableKey
 		is DashDragPayload.FolderDrag -> "folder:" + state.folderId
 		else -> null
 	}
@@ -259,12 +261,11 @@ class DashGridDragListener(
 		val custom = FolderPopup.customOrderingEnabled(this.activity)
 
 		when (val state = event.localState) {
-			is App ->
-				if (fold != null) {
-					this.foldOnto(state, fold)
-				} else if (custom) {
-					this.commitMove(DashItem.AppItem(state).stableKey)
-				}
+			is App -> this.dropApp(state, fold, custom)
+
+			// A launcher-pinned app picked up from the dash rearranges the dash like
+			// any other icon; its launcher pin is untouched either way. //
+			is LauncherDragPayload.PinnedAppDrag -> this.dropApp(state.app, fold, custom)
 
 			is DashDragPayload.FolderDrag ->
 				// Folders only reposition (custom order); they never enter folders. //
@@ -274,6 +275,15 @@ class DashGridDragListener(
 		}
 
 		this.appManager.dashLayoutChanged()
+	}
+
+	/** Commits an app drop: fold it onto the ringed target, else reorder it there. */
+	private fun dropApp(app: App, foldTargetKey: String?, custom: Boolean) {
+		if (foldTargetKey != null) {
+			this.foldOnto(app, foldTargetKey)
+		} else if (custom) {
+			this.commitMove(DashItem.AppItem(app).stableKey)
+		}
 	}
 
 	/** Commits the previewed reorder: move the item to where its placeholder rests. */
@@ -416,9 +426,15 @@ class DashGridDragListener(
 		this.appManager.dashLayoutChanged()
 	}
 
-	/** The dragged loose/extracted app, or null when the drag is a whole folder. */
+	/**
+	 * The dragged loose/extracted app, or null when the drag is a whole folder.
+	 * A [LauncherDragPayload.PinnedAppDrag] counts: it is a launcher-pinned app
+	 * picked up *from the dash* (only the dash's long-click listener creates one),
+	 * so within the dash it rearranges exactly like any other app icon.
+	 */
 	private fun draggedApp(event: DragEvent): App? = when (val state = event.localState) {
 		is App -> state
+		is LauncherDragPayload.PinnedAppDrag -> state.app
 		is DashDragPayload.FolderMemberDrag -> state.app
 		else -> null
 	}
