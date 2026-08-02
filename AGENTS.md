@@ -184,8 +184,14 @@ etc/                                        — design assets (SVG/XCF sources, 
     sees: a launcher docked on a side runs along the *long* edge at the very
     same icon size, so it shows proportionally more. `visibleCountForPreset`
     (over `alongEdgeInteriorPx`, which measures the docked edge and drops the
-    panel a side launcher runs below) is the count the customise hint reports,
-    and the only one that matches what can be counted off the screen.
+    panel a side launcher runs below plus the status-bar strip and the bottom
+    tappable-element inset — window insets, not
+    `status_bar_height`/`navigation_bar_height`, so gesture navigation reserves
+    nothing) is the count the customise hint reports, and the only one that
+    matches what can be counted off the screen. It divides by the pitch of the
+    axis in question: an icon view is a square minus 4dp of *height*, so a
+    stacked launcher fits them by that reduced height while a horizontal one
+    runs by width.
     `AppLauncher.init()` reads it; when pinned/running apps
     overflow, `ClippingScrollView`/`ClippingHorizontalScrollView` floor the
     scroll viewport to whole slots so no partial icon peeks (they leave the

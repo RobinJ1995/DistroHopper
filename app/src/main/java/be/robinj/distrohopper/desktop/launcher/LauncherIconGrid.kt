@@ -1,7 +1,10 @@
 package be.robinj.distrohopper.desktop.launcher
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
+import android.view.WindowInsets
+import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.preferences.Preference
@@ -197,8 +200,8 @@ object LauncherIconGrid {
 	/**
 	 * The usable along-edge length (px) of the launcher where it is ACTUALLY docked:
 	 * [launcherInteriorPx] for a horizontal (top/bottom) one, and the long screen edge for a
-	 * vertical one — less the same theme margins and background insets, and less the panel,
-	 * which a side launcher runs below.
+	 * vertical one — less the same theme margins and background insets, the panel a side
+	 * launcher runs below, and the system bars ([verticalSystemBarPx]).
 	 *
 	 * The long edge is max(screenWidthDp, screenHeightDp) so that, like every other length
 	 * here, it does not flip on rotation.
@@ -240,7 +243,30 @@ object LauncherIconGrid {
 		val panelPx =
 			if (panelEdge == Location.NONE) 0 else res.getDimensionPixelSize(theme.panel_height)
 
-		return (longEdgePx - marginPx - paddingPx - panelPx).coerceAtLeast(0)
+		return (longEdgePx - marginPx - paddingPx - panelPx - verticalSystemBarPx(context))
+			.coerceAtLeast(0)
+	}
+
+	/**
+	 * The vertical space the system bars take from a side launcher: the status bar strip
+	 * HomeActivity reserves above the panel (`llStatusBar`), and the bottom inset it pads
+	 * `llLauncherAndDashContainer` by.
+	 *
+	 * Both come from the window rather than from `status_bar_height`/`navigation_bar_height`,
+	 * for the same reason HomeActivity uses tappableElement insets: under gesture navigation
+	 * the bottom inset is zero and the launcher really does extend behind the pill, which the
+	 * dimension resource would wrongly reserve anyway. Needs a visual context and yields 0
+	 * without one — only the customise hint calls this, always with the activity.
+	 */
+	private fun verticalSystemBarPx(context: Context): Int {
+		if (context !is Activity) return 0
+
+		val insets = context.getSystemService(WindowManager::class.java)
+			?.currentWindowMetrics?.windowInsets ?: return 0
+		val bars = insets.getInsets(
+			WindowInsets.Type.statusBars() or WindowInsets.Type.tappableElement())
+
+		return bars.top + bars.bottom
 	}
 
 	/**
@@ -253,14 +279,27 @@ object LauncherIconGrid {
 	 * side runs along the LONG edge, so it shows proportionally more icons than that — and the
 	 * short-edge count is then a number nowhere on screen.
 	 *
-	 * Approximate by construction: the launcher also spends slots on the menu button,
-	 * preferences and trash icons, which this does not try to model.
+	 * It counts icon slots, so the menu button and the preferences icon are among them (they
+	 * are icons the user can see and count); the trash and app-info targets only appear during
+	 * a drag and are not on screen while this is read.
 	 */
 	@JvmStatic
 	fun visibleCountForPreset(context: Context, presetIndex: Int): Int {
 		val sizePx = iconSizePx(launcherInteriorPx(context), countForPreset(context, presetIndex))
+		val edge = launcherEdge(context)
 
-		return if (sizePx <= 0) 0 else max(1, alongEdgeInteriorPx(context) / sizePx)
+		/*
+		 * An icon is laid out square-minus-4dp TALL (AppLauncher.init), so the two axes do not
+		 * pitch alike: a vertical launcher stacks by that reduced height and fits an icon or
+		 * two more than the width alone would suggest, while a horizontal one runs by width.
+		 */
+		val pitchPx = if (edge == Location.LEFT || edge == Location.RIGHT) {
+			iconHeightPx(sizePx, context.resources.displayMetrics.density)
+		} else {
+			sizePx
+		}
+
+		return if (pitchPx <= 0) 0 else max(1, alongEdgeInteriorPx(context) / pitchPx)
 	}
 
 	/** The per-slot icon size (px) for the current screen, theme and stored preset. */

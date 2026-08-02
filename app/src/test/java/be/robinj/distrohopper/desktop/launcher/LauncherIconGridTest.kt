@@ -314,6 +314,31 @@ class LauncherIconGridTest {
 			downTheLongEdge > acrossTheShortEdge)
 	}
 
+	/**
+	 * The two axes do not pitch alike. An icon view is a square minus 4dp of HEIGHT
+	 * (`AppLauncher.init`), so a stacked launcher fits them by that reduced height — dividing
+	 * the side by the icon's width instead reports one too few on a tall screen.
+	 */
+	@Test @Config(qualifiers = "sw400dp-w400dp-h800dp") fun visibleCountStacksByIconHeightNotWidth() {
+		val context = this.ctx()
+		this.setTheme(context, "default")
+		this.setLauncherEdge(context, Location.LEFT)
+		val density = context.resources.displayMetrics.density
+
+		for (i in 0 until LauncherIconGrid.PRESET_COUNT) {
+			val sizePx = LauncherIconGrid.iconSizePx(
+				LauncherIconGrid.launcherInteriorPx(context),
+				LauncherIconGrid.countForPreset(context, i))
+			val along = LauncherIconGrid.alongEdgeInteriorPx(context)
+
+			assertEquals("preset $i stacks by icon height",
+				along / LauncherIconGrid.iconHeightPx(sizePx, density),
+				LauncherIconGrid.visibleCountForPreset(context, i))
+			assertTrue("preset $i must not under-report by pitching on width",
+				LauncherIconGrid.visibleCountForPreset(context, i) >= along / sizePx)
+		}
+	}
+
 	/** Rotating does not change how many icons the side launcher shows. */
 	@Test fun visibleCountSurvivesRotation() {
 		val context = this.ctx()
