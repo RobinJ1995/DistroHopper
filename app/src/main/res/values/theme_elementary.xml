@@ -33,8 +33,8 @@
     <drawable name="theme_elementary_launcher_bfb_image_vertical">@drawable/theme_elementary_res_launcher_bfb</drawable>
     <bool name="theme_elementary_launcher_bfb_hide_while_dragging">false</bool>
     <array name="theme_elementary_launcher_bfb_location_supported">
-        <item>@integer/position_none</item>
         <item>@integer/position_left</item>
+        <item>@integer/position_none</item>
     </array>
     <bool name="theme_elementary_launcher_bfb_visible_by_default">false</bool>
     <integer name="theme_elementary_launcher_preferences_location">@integer/position_none</integer>

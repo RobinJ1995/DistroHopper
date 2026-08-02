@@ -164,10 +164,12 @@ class CustomiseModeUi(
 	/*
 	 * The menu-button (BFB) position, on themes that offer more than one. The
 	 * options come straight from the theme's launcher_bfb_location_supported
-	 * array (mapped to none/start/end sides), so a theme only ever exposes the
-	 * positions it declares (Pantheon/COSMIC: Hide or Start; GNOME: Hide, Start
-	 * or End). The choice is stored as a named string ([BfbLocation]) and
-	 * applied on relaunch.
+	 * array (mapped to none/start/end sides), in the order it lists them — so a
+	 * theme only ever exposes the positions it declares (Pantheon/COSMIC: Start
+	 * or Hide; GNOME: Start, End or Hide), and every array ends with
+	 * position_none, hiding being the absence of a position rather than one of
+	 * them. The choice is stored as a named string ([BfbLocation]) and applied
+	 * on relaunch.
 	 */
 	private fun initMenuButtonSegments(segments: LinearLayout) {
 		val res = this.activity.resources

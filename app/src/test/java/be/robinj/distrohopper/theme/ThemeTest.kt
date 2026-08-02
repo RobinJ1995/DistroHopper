@@ -103,18 +103,19 @@ class ThemeTest {
         assertFalse(Budgie().launcherBfbToggleable(context.resources))
     }
 
-    @Test fun gnomeOffersHideStartAndEndMenuButtonPositions() {
+    @Test fun gnomeOffersStartEndAndHideMenuButtonPositions() {
         val gnome = Gnome()
         val offered = context.resources.getIntArray(gnome.launcher_bfb_location_supported)
             .map { gnome.bfbSide(Location.of(it)) }
-        assertEquals(listOf(BfbLocation.NONE, BfbLocation.START, BfbLocation.END), offered)
+        // Hide comes last: it is the absence of a position, not one of them.
+        assertEquals(listOf(BfbLocation.START, BfbLocation.END, BfbLocation.NONE), offered)
     }
 
-    @Test fun cosmicAndPantheonStillOfferOnlyHideAndStart() {
+    @Test fun cosmicAndPantheonStillOfferOnlyStartAndHide() {
         listOf(Cosmic(), Elementary()).forEach { theme ->
             val offered = context.resources.getIntArray(theme.launcher_bfb_location_supported)
                 .map { theme.bfbSide(Location.of(it)) }
-            assertEquals(listOf(BfbLocation.NONE, BfbLocation.START), offered)
+            assertEquals(listOf(BfbLocation.START, BfbLocation.NONE), offered)
         }
     }
 
