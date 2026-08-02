@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spanned
 import android.text.style.TypefaceSpan
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -73,14 +74,16 @@ class FontPreferenceTest {
 		assertEquals(Typeface.MONOSPACE, (view as TextView).typeface)
 	}
 
-	/** OpenDyslexic's baked-in spacing is clawed back: a negative letter-spacing
-	 *  delta and a sub-1 line-spacing factor so text fits its containers. */
+	/** OpenDyslexic's baked-in metrics are clawed back: a sub-1 text-size factor
+	 *  (the lever that actually makes runs fit), a negative letter-spacing delta
+	 *  and a sub-1 line-spacing factor. */
 	@Test fun openDyslexicTightensSpacing() {
 		this.setFont("opendyslexic")
 		val style = FontPreference.fontStyle(this.context)
 
 		assertNotNull(style)
-		assertTrue("letter spacing delta should be negative", style!!.letterSpacingDelta < 0f)
+		assertTrue("text size factor should be < 1", style!!.textSizeFactor < 1f)
+		assertTrue("letter spacing delta should be negative", style.letterSpacingDelta < 0f)
 		assertTrue("line spacing factor should be < 1", style.lineSpacingFactor < 1f)
 
 		val tv = TextView(this.context).apply {
@@ -102,15 +105,37 @@ class FontPreferenceTest {
 		assertNotNull(style)
 		assertEquals(0f, style!!.letterSpacingDelta, 0f)
 		assertEquals(1f, style.lineSpacingFactor, 0f)
+		assertEquals(1f, style.textSizeFactor, 0f)
 
 		val tv = TextView(this.context).apply {
 			this.letterSpacing = 0.04f
 			this.setLineSpacing(8f, 1.1f)
+			this.setTextSize(TypedValue.COMPLEX_UNIT_PX, 42f)
 		}
 		style.applyTo(tv)
 		assertEquals("neutral font must not touch letter spacing", 0.04f, tv.letterSpacing, 0f)
 		assertEquals("neutral font must not touch line spacing", 8f, tv.lineSpacingExtra, 0f)
 		assertEquals("neutral font must not touch line spacing", 1.1f, tv.lineSpacingMultiplier, 0f)
+		assertEquals("neutral font must not touch text size", 42f, tv.textSize, 0f)
+	}
+
+	/** Text size is scaled from the view's own size, so a heading stays bigger
+	 *  than body text instead of every view collapsing to one size. */
+	@Test fun textSizeIsScaledFromTheViewsOwnSize() {
+		this.setFont("opendyslexic")
+		val style = FontPreference.fontStyle(this.context)!!
+
+		val heading = TextView(this.context)
+			.apply { this.setTextSize(TypedValue.COMPLEX_UNIT_PX, 60f) }
+		val body = TextView(this.context)
+			.apply { this.setTextSize(TypedValue.COMPLEX_UNIT_PX, 40f) }
+
+		style.applyTo(heading)
+		style.applyTo(body)
+
+		assertEquals(60f * style.textSizeFactor, heading.textSize, 1e-3f)
+		assertEquals(40f * style.textSizeFactor, body.textSize, 1e-3f)
+		assertTrue("the heading must stay larger than the body", heading.textSize > body.textSize)
 	}
 
 	/** A view can be reached by both the inflater factory and the dialog decor
@@ -123,19 +148,24 @@ class FontPreferenceTest {
 		val tv = TextView(this.context).apply {
 			this.letterSpacing = 0.04f
 			this.setLineSpacing(0f, 1f)
+			this.setTextSize(TypedValue.COMPLEX_UNIT_PX, 40f)
 		}
 
 		style.applyTo(tv)
 		val letterSpacingAfterOnce = tv.letterSpacing
 		val lineSpacingAfterOnce = tv.lineSpacingMultiplier
+		val textSizeAfterOnce = tv.textSize
 
 		style.applyTo(tv)
 		style.applyTo(tv)
 
 		assertEquals(letterSpacingAfterOnce, tv.letterSpacing, 1e-6f)
 		assertEquals(lineSpacingAfterOnce, tv.lineSpacingMultiplier, 1e-6f)
-		// Explicitly: the third application must not have drifted to 0.04 - 0.15.
+		assertEquals(textSizeAfterOnce, tv.textSize, 1e-3f)
+		// Explicitly: the third application must not have drifted to 0.04 - 0.15,
+		// nor the text size to 40 * factor^3 (which would be a drastic shrink).
 		assertEquals(0.04f + style.letterSpacingDelta, tv.letterSpacing, 1e-6f)
+		assertEquals(40f * style.textSizeFactor, tv.textSize, 1e-3f)
 	}
 
 	/** The real compounding path: WidgetPickerDialog's adapter inflates rows with

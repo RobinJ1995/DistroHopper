@@ -336,7 +336,15 @@ etc/                                        — design assets (SVG/XCF sources, 
     `fontFamily`: `FontInflaterFactory` replaces the family on every TextView
     to honour the font preference and keeps only the typeface style, so a
     `fontFamily` set in the layout would apply on "System" and silently vanish
-    on the bundled fonts.
+    on the bundled fonts. The factory applies a whole `FontStyle`, not just a
+    typeface: OpenDyslexic draws optically larger than the system font, so it
+    also gets its text size, letter spacing and line spacing corrected or
+    labels like "Settings" wrap inside containers sized for a normal font.
+    Those corrections are *relative* to whatever each view declares, computed
+    from a baseline captured in a tag on first sight — so a layout's own
+    `textSize`/`letterSpacing`/`lineSpacing` is scaled rather than replaced,
+    and reaching the same view twice (the factory plus the decor sweep
+    `FontPreference.applyTo(dialog)` does on every show) never compounds.
   - `DesktopMenuOverlay` — the long-press-on-empty-desktop menu (wired via
     `widgets/WidgetsPager_LongClickListener`, which still exits widget edit
     mode first if a widget is being edited): the desktop zooms out and darkens

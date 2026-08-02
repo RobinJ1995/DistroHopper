@@ -7,6 +7,7 @@ import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.TypefaceSpan
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -33,15 +34,24 @@ object FontPreference {
 	/**
 	 * OpenDyslexic ships very wide glyph advances and tall line metrics "by
 	 * design". In a UI whose containers are sized for normal fonts that means
-	 * text no longer fits, so we claw the spacing back to something usable with a
-	 * negative [FontStyle.letterSpacingDelta] (em units) and a sub-1
-	 * [FontStyle.lineSpacingFactor]. Both are applied *relative* to each view's
-	 * own spacing (see [FontStyle.applyTo]), so intentional tracking set in
-	 * layouts/styles is tightened, not discarded. These only touch OpenDyslexic;
+	 * text no longer fits, so we claw it back to something usable.
+	 *
+	 * [FontStyle.textSizeFactor] does the heavy lifting: OpenDyslexic's glyphs are
+	 * optically larger than the system font at the same nominal sp, so labels
+	 * overflow (or wrap) no matter how tight the tracking — the glyphs themselves,
+	 * not the gaps, are what does not fit. Scaling the size down brings the run
+	 * width back into the range the layouts were designed for. The negative
+	 * [FontStyle.letterSpacingDelta] and sub-1 [FontStyle.lineSpacingFactor] then
+	 * recover the font's extra tracking and leading on top of that.
+	 *
+	 * All three are applied *relative* to each view's own metrics (see
+	 * [FontStyle.applyTo]), so intentional sizing and tracking set in
+	 * layouts/styles is scaled, not discarded. These only touch OpenDyslexic;
 	 * every other font keeps the neutral defaults below, which are exact no-ops.
 	 */
 	private const val OPENDYSLEXIC_LETTER_SPACING_DELTA = -0.05f
 	private const val OPENDYSLEXIC_LINE_SPACING_FACTOR = 0.8f
+	private const val OPENDYSLEXIC_TEXT_SIZE_FACTOR = 0.85f
 
 	/** Bundled font resource for [value], or null for System / unknown values. */
 	@FontRes
@@ -120,6 +130,7 @@ object FontPreference {
 				typeface,
 				OPENDYSLEXIC_LETTER_SPACING_DELTA,
 				OPENDYSLEXIC_LINE_SPACING_FACTOR,
+				OPENDYSLEXIC_TEXT_SIZE_FACTOR,
 			)
 		} else {
 			FontStyle(typeface)
@@ -179,41 +190,53 @@ object FontPreference {
 
 /**
  * A chosen [typeface] plus the per-font metric corrections that must travel with
- * it, expressed *relative* to each view's designed spacing:
- * [letterSpacingDelta] (em units, added — negative to tighten) and
- * [lineSpacingFactor] (multiplies the line-spacing multiplier — < 1 to pull
- * lines closer). Applying relatively means a view's intentional tracking (e.g. a
- * style's `letterSpacing="0.04"`) is preserved and shifted, not wiped.
+ * it, expressed *relative* to each view's designed text metrics:
+ * [textSizeFactor] (scales the text size — < 1 to shrink), [letterSpacingDelta]
+ * (em units, added — negative to tighten) and [lineSpacingFactor] (multiplies the
+ * line-spacing multiplier — < 1 to pull lines closer). Applying relatively means
+ * a view's intentional sizing and tracking (e.g. a style's `letterSpacing="0.04"`
+ * or a 20sp heading) is preserved and shifted, not wiped.
  *
- * "Designed spacing" is the view's spacing the first time it is seen, captured
+ * [textSizeFactor] is the lever that actually makes text fit: a font whose glyphs
+ * are optically larger than the system font at the same nominal sp overflows
+ * containers no amount of tracking can rescue, because the glyphs themselves —
+ * not the gaps — are too wide. Tracking and leading then fine-tune the result.
+ *
+ * "Designed metrics" are the view's values the first time it is seen, captured
  * and remembered in a tag. Corrections are always recomputed from that baseline,
  * never from the current value, so [applyTo] is idempotent: a view reached by
  * both the [FontInflaterFactory] and the dialog decor sweep — or swept again on
- * every [Dialog] show — lands on the same spacing instead of compounding.
+ * every [Dialog] show — lands on the same metrics instead of compounding.
  *
- * The defaults (delta 0, factor 1) are an exact identity: for fonts that need no
- * correction, [applyTo] touches only the typeface and leaves spacing untouched.
+ * The defaults (all identity) touch nothing: for fonts that need no correction,
+ * [applyTo] swaps only the typeface and leaves every metric untouched.
  */
 class FontStyle(
 	val typeface: Typeface,
 	val letterSpacingDelta: Float = 0f,
 	val lineSpacingFactor: Float = 1f,
+	val textSizeFactor: Float = 1f,
 ) {
 
-	/** True when this style leaves text spacing exactly as the view declared it. */
-	private val spacingIsNeutral: Boolean
-		get() = this.letterSpacingDelta == 0f && this.lineSpacingFactor == 1f
+	/** True when this style leaves text metrics exactly as the view declared them. */
+	private val metricsAreNeutral: Boolean
+		get() = this.letterSpacingDelta == 0f &&
+			this.lineSpacingFactor == 1f &&
+			this.textSizeFactor == 1f
 
-	/** Forces this font (and its spacing) onto [view], keeping its bold/italic. */
+	/** Forces this font (and its metrics) onto [view], keeping its bold/italic. */
 	fun applyTo(view: TextView) {
 		// Keep each view's own style (bold/italic) while swapping the family.
 		view.setTypeface(this.typeface, view.typeface?.style ?: Typeface.NORMAL)
 
-		// Never touch spacing when there is no correction to make, so fonts that
+		// Never touch metrics when there is no correction to make, so fonts that
 		// need none leave every view exactly as its layout/style declared it.
-		if (this.spacingIsNeutral) return
+		if (this.metricsAreNeutral) return
 
 		val baseline = this.baselineOf(view)
+		// The baseline is in px, so set px back: the SP unit the setter defaults
+		// to would re-apply font scaling that getTextSize() has already resolved.
+		view.setTextSize(TypedValue.COMPLEX_UNIT_PX, baseline.textSize * this.textSizeFactor)
 		view.letterSpacing = baseline.letterSpacing + this.letterSpacingDelta
 		view.setLineSpacing(
 			baseline.lineSpacingExtra,
@@ -221,17 +244,19 @@ class FontStyle(
 		)
 	}
 
-	/** The view's designed spacing, captured on first sight and reused after. */
-	private fun baselineOf(view: TextView): SpacingBaseline =
-		view.getTag(R.id.font_spacing_baseline) as? SpacingBaseline
-			?: SpacingBaseline(
+	/** The view's designed metrics, captured on first sight and reused after. */
+	private fun baselineOf(view: TextView): MetricsBaseline =
+		view.getTag(R.id.font_spacing_baseline) as? MetricsBaseline
+			?: MetricsBaseline(
+				view.textSize,
 				view.letterSpacing,
 				view.lineSpacingExtra,
 				view.lineSpacingMultiplier,
 			).also { view.setTag(R.id.font_spacing_baseline, it) }
 
-	/** A view's text spacing as its layout/style declared it, before correction. */
-	private class SpacingBaseline(
+	/** A view's text metrics as its layout/style declared them, before correction. */
+	private class MetricsBaseline(
+		val textSize: Float,
 		val letterSpacing: Float,
 		val lineSpacingExtra: Float,
 		val lineSpacingMultiplier: Float,
