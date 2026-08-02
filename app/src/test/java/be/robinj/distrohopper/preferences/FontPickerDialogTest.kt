@@ -1,6 +1,7 @@
 package be.robinj.distrohopper.preferences
 
 import android.app.Application
+import android.graphics.Typeface
 import android.text.Spanned
 import android.text.style.TypefaceSpan
 import android.widget.TextView
@@ -85,7 +86,14 @@ class FontPickerDialogTest {
 				?: emptyArray()
 
 			if (values[i] == FontPreference.SYSTEM) {
-				assertTrue("System must keep the device font", spans.isEmpty())
+				// Pinned rather than unstyled: an unstyled row would inherit the
+				// app-wide font and preview the selected font, not the device one.
+				assertEquals("System row is not pinned to the device font", 1, spans.size)
+				assertEquals(
+					"System row uses the wrong typeface",
+					Typeface.DEFAULT,
+					spans[0].typeface,
+				)
 			} else {
 				assertEquals("${values[i]} row is not styled", 1, spans.size)
 				assertEquals(
@@ -105,12 +113,21 @@ class FontPickerDialogTest {
 
 		val rows = this.pickerRowText()
 
-		val styled = rows.indices.count { i ->
-			values[i] != FontPreference.SYSTEM &&
-				(rows[i] as? Spanned)
-					?.getSpans(0, rows[i].length, TypefaceSpan::class.java)
-					?.size == 1
+		for (i in rows.indices) {
+			val spans = (rows[i] as? Spanned)
+				?.getSpans(0, rows[i].length, TypefaceSpan::class.java)
+				?: emptyArray()
+
+			assertEquals("${values[i]} row is not styled", 1, spans.size)
+			// System included: with Ubuntu active it must still show the device
+			// font, not the selected one.
+			val expected = FontPreference.typefaceFor(this.application, values[i].toString())
+				?: Typeface.DEFAULT
+			assertEquals(
+				"${values[i]} row uses the wrong typeface",
+				expected,
+				spans[0].typeface,
+			)
 		}
-		assertEquals(values.count { it != FontPreference.SYSTEM }, styled)
 	}
 }

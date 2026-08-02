@@ -243,7 +243,11 @@ class FontPreferenceTest {
 				?: emptyArray()
 
 			if (values[i] == FontPreference.SYSTEM) {
-				assertTrue("System must stay unstyled", spans.isEmpty())
+				// Explicitly pinned, not left unstyled: an unstyled row inherits the
+				// app-wide font, so "System default" would preview in whichever font
+				// is currently selected.
+				assertEquals("System must be pinned to the device font", 1, spans.size)
+				assertEquals(Typeface.DEFAULT, spans[0].typeface)
 			} else {
 				assertEquals("${values[i]} must be styled", 1, spans.size)
 				assertEquals(
