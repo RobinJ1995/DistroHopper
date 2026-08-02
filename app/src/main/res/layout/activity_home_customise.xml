@@ -95,7 +95,7 @@
 
 					<TextView
 						style="@style/CustomiseSettingHint"
-						android:text="@string/customise_hint_icon_size" />
+						android:text="@string/customise_hint_launcher_icon_size" />
 
 					<SeekBar
 						android:id="@+id/sbCustomiseLauncherIconSize"
@@ -120,7 +120,7 @@
 
 					<TextView
 						style="@style/CustomiseSettingTitle"
-						android:text="@string/customise_option_edge" />
+						android:text="@string/customise_option_screen_edge" />
 
 					<LinearLayout
 						android:id="@+id/llCustomiseLauncherEdgeSegments"
@@ -158,11 +158,11 @@
 
 					<TextView
 						style="@style/CustomiseSettingTitle"
-						android:text="@string/customise_option_grid_size" />
+						android:text="@string/customise_option_dash_grid_size" />
 
 					<TextView
 						style="@style/CustomiseSettingHint"
-						android:text="@string/customise_hint_grid_size" />
+						android:text="@string/customise_hint_dash_grid_size" />
 
 					<SeekBar
 						android:id="@+id/sbCustomiseDashColumns"
@@ -199,7 +199,7 @@
 
 						<TextView
 							style="@style/CustomiseSettingTitle"
-							android:text="@string/customise_option_edge" />
+							android:text="@string/customise_option_screen_edge" />
 
 						<LinearLayout
 							android:id="@+id/llCustomisePanelEdgeSegments"

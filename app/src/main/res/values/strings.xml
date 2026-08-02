@@ -42,8 +42,8 @@
     <string name="pref_header_gestures">Gestures</string>
     <string name="pref_header_appearance">Appearance</string>
     <string name="option_launchericon_size">Pinned icon size</string>
-    <string name="customise_hint_icon_size">Larger icons mean fewer fit without scrolling.</string>
-    <string name="launcher_icon_hint">%1$s · %2$d icons</string>
+    <string name="customise_hint_launcher_icon_size">Larger icons mean fewer fit without scrolling.</string>
+    <string name="launcher_icon_hint">%1$s · %2$d icons fit</string>
     <string-array name="launcher_icon_presets">
         <item>Tiny</item>
         <item>Small</item>
@@ -51,12 +51,12 @@
         <item>Large</item>
         <item>Huge</item>
     </string-array>
-    <string name="customise_option_grid_size">Grid size</string>
-    <string name="customise_hint_grid_size">Larger grid means smaller icons.</string>
+    <string name="customise_option_dash_grid_size">Grid size</string>
+    <string name="customise_hint_dash_grid_size">Larger grid means smaller icons.</string>
     <string name="dash_grid_hint">%1$d × %2$d</string>
     <!-- Which screen edge the launcher or panel is attached to; the group it
          sits under names the one it applies to. -->
-    <string name="customise_option_edge">Edge</string>
+    <string name="customise_option_screen_edge">Screen edge</string>
     <string name="option_menu_button">Menu button</string>
     <string name="customise_menu_button_hide">Hide</string>
     <!-- The menu button's position: the launcher's leading and trailing end. -->
