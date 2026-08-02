@@ -296,6 +296,60 @@ class FontPreferenceTest {
 
 		assertEquals(before, tvLabel.typeface)
 	}
+
+	/** The View overload reaches text the inflater factory never sees, because it
+	 *  was built in code rather than inflated (icon-strip labels) or by the
+	 *  framework itself (an ActionBar's title). */
+	@Test fun applyToViewTreeReachesProgrammaticTextViews() {
+		this.setFont("opendyslexic")
+		val style = FontPreference.fontStyle(this.context)!!
+
+		val label = TextView(this.context)
+			.apply { this.setTextSize(TypedValue.COMPLEX_UNIT_PX, 40f) }
+		val root = LinearLayout(this.context).apply { this.addView(label) }
+
+		FontPreference.applyTo(root)
+
+		assertEquals(style.typeface, label.typeface)
+		assertEquals(40f * style.textSizeFactor, label.textSize, 1e-3f)
+		assertEquals(style.letterSpacingDelta, label.letterSpacing, 1e-6f)
+	}
+
+	/** Sweeping a tree the factory already styled must not correct it twice — the
+	 *  Application sweeps every activity's decor for the ActionBar title. */
+	@Test fun applyToViewTreeDoesNotCompoundOnAlreadyStyledText() {
+		this.setFont("opendyslexic")
+		val style = FontPreference.fontStyle(this.context)!!
+
+		val label = TextView(this.context)
+			.apply { this.setTextSize(TypedValue.COMPLEX_UNIT_PX, 40f) }
+		val root = LinearLayout(this.context).apply { this.addView(label) }
+
+		style.applyTo(label) // as the inflater factory would have
+		FontPreference.applyTo(root) // then the decor sweep
+		FontPreference.applyTo(root)
+
+		assertEquals(40f * style.textSizeFactor, label.textSize, 1e-3f)
+		assertEquals(style.letterSpacingDelta, label.letterSpacing, 1e-6f)
+	}
+
+	/** The View overload leaves everything alone when System is selected. */
+	@Test fun applyToViewTreeIsNoOpForSystem() {
+		this.setFont("system")
+
+		val label = TextView(this.context).apply {
+			this.setTextSize(TypedValue.COMPLEX_UNIT_PX, 40f)
+			this.letterSpacing = 0.04f
+		}
+		val before = label.typeface
+		val root = LinearLayout(this.context).apply { this.addView(label) }
+
+		FontPreference.applyTo(root)
+
+		assertEquals(before, label.typeface)
+		assertEquals(40f, label.textSize, 0f)
+		assertEquals(0.04f, label.letterSpacing, 0f)
+	}
 }
 
 /** Minimal AppCompat host so we can obtain a real delegate in tests. */

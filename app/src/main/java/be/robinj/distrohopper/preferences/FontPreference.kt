@@ -172,10 +172,26 @@ object FontPreference {
 	 * Attach via [Dialog.setOnShowListener] so the views exist when this runs.
 	 */
 	fun applyTo(dialog: Dialog) {
-		val fontStyle = this.fontStyle(dialog.context) ?: return
 		val root = dialog.window?.decorView ?: return
 
-		this.applyFontStyle(root, fontStyle)
+		this.applyTo(root)
+	}
+
+	/**
+	 * Applies the chosen font to [view] and every TextView beneath it — for text
+	 * the [FontInflaterFactory] never sees, because it is not inflated at all:
+	 * views built in code (see `IconStripPreference`) and the framework's own
+	 * chrome (an ActionBar creates its title TextView internally rather than from
+	 * a layout, so it escapes the factory the way dialog chrome does).
+	 *
+	 * Safe to call on a tree that is already styled: every correction is anchored
+	 * to the view's captured baseline, so re-applying lands on the same metrics
+	 * instead of compounding. No-op for System.
+	 */
+	fun applyTo(view: View) {
+		val fontStyle = this.fontStyle(view.context) ?: return
+
+		this.applyFontStyle(view, fontStyle)
 	}
 
 	private fun applyFontStyle(view: View, fontStyle: FontStyle) {

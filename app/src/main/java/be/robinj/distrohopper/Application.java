@@ -3,6 +3,7 @@ package be.robinj.distrohopper;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Window;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -45,6 +46,20 @@ public class Application extends android.app.Application
 			public void onActivityPreCreated(@NonNull final Activity activity,
 					@Nullable final Bundle savedInstanceState) {
 				FontPreference.INSTANCE.applyTo(activity);
+			}
+
+			@Override
+			public void onActivityPostCreated(@NonNull final Activity activity,
+					@Nullable final Bundle savedInstanceState) {
+				// The factory above only sees inflated views, so it misses the
+				// ActionBar title: a Toolbar builds that TextView itself instead of
+				// inflating it. Sweep the decor once the activity has created its
+				// chrome. Re-styling the views the factory already handled is
+				// harmless, as the corrections are anchored to a per-view baseline. //
+				final Window window = activity.getWindow();
+				if (window != null) {
+					FontPreference.INSTANCE.applyTo(window.getDecorView());
+				}
 			}
 
 			@Override public void onActivityCreated(@NonNull final Activity activity,

@@ -15,6 +15,7 @@ import androidx.preference.PreferenceViewHolder;
 
 import be.robinj.distrohopper.R;
 import be.robinj.distrohopper.cache.AppIconCache;
+import be.robinj.distrohopper.preferences.FontPreference;
 
 /**
  * Base for the custom icon preferences whose row is a title/summary header above
@@ -87,6 +88,9 @@ public abstract class IconStripPreference extends Preference {
 				frameSize, ViewGroup.LayoutParams.WRAP_CONTENT);
 			textParams.topMargin = this.dp(6);
 			text.setLayoutParams(textParams);
+			// Built in code rather than inflated, so the font factory never sees
+			// it; apply the chosen font (and its metrics) by hand. //
+			FontPreference.INSTANCE.applyTo(text);
 			option.addView(text);
 		}
 

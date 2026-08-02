@@ -343,8 +343,14 @@ etc/                                        — design assets (SVG/XCF sources, 
     Those corrections are *relative* to whatever each view declares, computed
     from a baseline captured in a tag on first sight — so a layout's own
     `textSize`/`letterSpacing`/`lineSpacing` is scaled rather than replaced,
-    and reaching the same view twice (the factory plus the decor sweep
-    `FontPreference.applyTo(dialog)` does on every show) never compounds.
+    and reaching the same view twice never compounds. That idempotence is what
+    lets the font be applied by several overlapping routes: the factory covers
+    everything **inflated**, `FontPreference.applyTo(View)` covers what is not,
+    and `applyTo(Dialog)` sweeps dialog chrome on every show. Text built in
+    code (`IconStripPreference`'s labels) must call `applyTo(View)` itself, and
+    `Application` sweeps each activity's decor in `onActivityPostCreated`
+    because an ActionBar builds its title TextView internally instead of
+    inflating it — without that sweep, screen titles keep the device font.
   - `DesktopMenuOverlay` — the long-press-on-empty-desktop menu (wired via
     `widgets/WidgetsPager_LongClickListener`, which still exits widget edit
     mode first if a widget is being edited): the desktop zooms out and darkens
