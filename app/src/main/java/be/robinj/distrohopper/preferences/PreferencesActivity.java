@@ -637,6 +637,14 @@ public class PreferencesActivity extends AppCompatActivity
 			if (fontPref == null)
 				return;
 
+			// Draw every option's label in the font it names, so the picker (and
+			// the summary showing the current choice) previews each font. //
+			if (fontPref.getEntries () != null && fontPref.getEntryValues () != null)
+			{
+				fontPref.setEntries (FontPreference.INSTANCE.styledEntries (
+					this.requireContext (), fontPref.getEntries (), fontPref.getEntryValues ()));
+			}
+
 			// Show the chosen font as the summary; recreate so the new font is
 			// applied to this screen immediately. Other activities pick it up
 			// the next time they are created. //
