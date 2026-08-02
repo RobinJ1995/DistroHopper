@@ -658,7 +658,13 @@ etc/                                        — design assets (SVG/XCF sources, 
   the swirl and the face from measurements of the colour icon's own PNGs and
   documents the geometry; the script needs only the standard library, and its
   `--report`/`--preview` modes check the clearances and render the tinted
-  result offline. The colour icon itself is unchanged by any of this.
+  result offline. The swirl fades out before the rim via an inline radial
+  gradient, since blades at flat opacity all the way to the edge read as circus
+  stripes. A monochrome layer can only usefully vary **alpha**, never colour:
+  `setTint` is a SRC_IN filter, so it replaces the hue but passes per-pixel
+  alpha through, which is exactly why the gradient works and why its stops run
+  `#FFFFFFFF` to `#00FFFFFF`. The colour icon itself is unchanged by any of
+  this.
 - **`cache/`** — `AppIconCache`.
 - **`dev/`** — in-app debug logging (`Log`, `LogToaster`,
   `DevLogsActivity`).
