@@ -658,10 +658,14 @@ etc/                                        — design assets (SVG/XCF sources, 
   the swirl and the face from measurements of the colour icon's own PNGs and
   documents the geometry; the script needs only the standard library, and its
   `--report`/`--preview` modes check the clearances and render the tinted
-  result offline. Each blade is a sawtooth like the colour icon's — a hard edge
-  one side, a soft ramp trailing off the other — since blades with two hard
-  edges read as circus stripes rather than as spin. That ramp is drawn as a
-  stack of nested wedges at descending `fillAlpha`, not as a gradient fill: a
+  result offline. The swirl runs all the way to the middle with the face
+  sitting on top of it, parted only by a thin clear outline that follows the
+  eyes and the beak — clearing a whole disc in the middle instead is easier to
+  compute but reads as a wheel of fortune. Each blade is a sawtooth like the
+  colour icon's — a hard edge one side, a soft ramp trailing off the other —
+  since blades with two hard edges read as circus stripes rather than as spin.
+  That ramp is drawn as a stack of nested wedges at descending `fillAlpha`,
+  not as a gradient fill: a
   gradient cannot follow a spiral (linear and radial fills are straight, and a
   sweep fill is fixed in angle while the blade twists a full pitch on its way
   out). A monochrome layer can only usefully vary **alpha**, never colour:

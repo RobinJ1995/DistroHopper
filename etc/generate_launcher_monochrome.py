@@ -11,7 +11,7 @@ readable:
 
   swirl blades   opaque        gaps between blades   transparent
   eye ovals      opaque        pupils                transparent (punched out)
-  beak           opaque        halo around the face  transparent
+  beak           opaque        outline around them   transparent
 
 Alpha is not limited to those two extremes, which is what lets a blade keep the
 soft trailing edge it has in the colour icon. `setTint` is a SRC_IN filter, and
@@ -72,10 +72,15 @@ viewport is drawn 1.5x oversized and only viewport 18..90 — the 72dp safe
 square — lands on the icon. A circular mask then keeps just r <= 36 about the
 centre.
 
+The swirl runs all the way in and the face sits on top of it, parted from it by
+nothing more than OUTLINE of clear space. It is tempting to clear a disc in the
+middle instead — much simpler to compute — but a bladed ring around an empty
+hub is a wheel of fortune, not a mark.
+
 Two deliberate departures from those measurements, both forced by the stencil:
 
   * The face is scaled by FACE_SCALE about the icon centre. At full size it
-    reaches r=24.9 of that 36, which would leave no room for a swirl at all.
+    reaches r=24.9 of that 36, crowding the swirl out of the visible area.
   * The pupils are pulled back off the eyes' inner edges and the eyes pushed
     very slightly apart. In the colour icon the pupils sit hard against the
     edge and the eyes nearly touch, which works when the parts differ in
@@ -109,11 +114,13 @@ PHASE_R = 36.0
 TWIST = 52.0         # degrees of centreline rotation per ln(r), measured //
 CORE = 6.0           # full-alpha half-width of a blade, degrees //
 TAIL = 11.0          # soft trailing ramp beyond the core, degrees //
-WIDEN = 1.35         # how much both grow between the halo and R_OUT //
-BANDS = 9            # steps the tail's ramp is drawn in //
+WIDEN = 1.35         # how much both grow between WIDEN_REF and R_OUT //
+BANDS = 8            # steps the tail's ramp is drawn in //
 R_OUT = 78.0         # past the canvas corner (76.37), so the swirl bleeds out //
-SAMPLES = 8          # polyline samples per wedge edge, uniform in ln(r) //
-HALO = 2.4           # transparent gap between the face and the blades //
+WIDEN_REF = 18.0     # radius the widening is measured from //
+SAMPLES = 7          # polyline samples per wedge edge, uniform in ln(r) //
+CAP_SAMPLES = 10     # samples tracing a wedge's inner end along the clear gap //
+OUTLINE = 2.2        # the clear gap drawn around the eyes and the beak //
 
 # --- face ----------------------------------------------------------------- #
 # Ellipses are (cx, cy, rx, ry, rotation); the beak is a hand-fitted outline.  #
@@ -226,7 +233,7 @@ def beak_polygon(steps=28):
 	return poly
 
 
-# --- face extent and halo --------------------------------------------------- #
+# --- face extent and its outline -------------------------------------------- #
 def face_polygons():
 	"""Every face outline, as polygons in final (scaled) coordinates."""
 	return {
@@ -245,12 +252,38 @@ def face_radius():
 		for key in ("left_eye", "right_eye", "beak") for x, y in f[key])
 
 
-def halo_radius():
-	"""Where the blades start. A circle rather than an outline-hugging dilation:
-	the face is wider than it is tall, so a shape-following clear zone starts each
-	blade at a different radius and the tips read as ragged. A round clearing
-	costs a little swirl area above and below the face and looks deliberate."""
-	return face_radius() + HALO
+def face_boundary():
+	"""The face's outer outline in polar form: (angle, radius) about the centre."""
+	f = face_polygons()
+	return [(math.atan2(y - CY, x - CX), math.hypot(x - CX, y - CY))
+		for key in ("left_eye", "right_eye", "beak") for x, y in f[key]]
+
+
+def clearance(deg, boundary=None):
+	"""How far out along `deg` the swirl has to hold off to leave an OUTLINE-wide
+	clear gap around the eyes and the beak.
+
+	This is a dilation of the face by OUTLINE, read as a radius per angle: for
+	each point of the face it asks how far along `deg` one can go and still be
+	OUTLINE clear of that point, and takes the furthest. Taking the max makes it
+	single-valued by construction, which is what keeps the blades' inner ends
+	traceable — and it quietly fills the notches between the eyes and the beak,
+	which is right anyway: those gaps are narrower than two outlines, so nothing
+	could show through them."""
+	boundary = face_boundary() if boundary is None else boundary
+	t = math.radians(deg)
+	best = 0.0
+
+	for angle, r in boundary:
+		d = t - angle
+		along, across = r * math.cos(d), abs(r * math.sin(d))
+		if across >= OUTLINE:
+			continue
+		reach = along + math.sqrt(OUTLINE * OUTLINE - across * across)
+		if reach > best:
+			best = reach
+
+	return best
 
 
 # --- swirl ----------------------------------------------------------------- #
@@ -258,27 +291,80 @@ def blade_angle(index, r):
 	return PHASE + index * PITCH + TWIST * math.log(r / PHASE_R)
 
 
-def blade_widening(r, r_start):
-	"""Blades widen outward, as they do in the source art."""
-	f = math.log(r / r_start) / math.log(R_OUT / r_start)
-	return 1.0 + (WIDEN - 1.0) * f
+def blade_widening(r):
+	"""Blades widen outward, as they do in the source art. Measured from a fixed
+	reference rather than from each wedge's own start, so every blade widens
+	identically however far in its inner end reaches."""
+	f = math.log(r / WIDEN_REF) / math.log(R_OUT / WIDEN_REF)
+	return 1.0 + (WIDEN - 1.0) * max(0.0, f)
 
 
-def blade_polygon(index, lo, hi):
+def blade_edge_angle(index, offset, r):
+	return blade_angle(index, r) + offset * blade_widening(r)
+
+
+def edge_start(index, offset, boundary):
+	"""Where one edge of a wedge meets the clear gap around the face.
+
+	The edge spirals, so its angle moves as the radius does, and the naive
+	fixed-point iteration r <- clearance(angle(r)) does not converge where the
+	clearance curve is steep — down the V between the eyes it overshoots and the
+	wedge ends up footed off the curve, cutting a visible chord across the
+	outline. So: bracket the outermost sign change of r - clearance(angle(r)) by
+	scanning inward, then bisect it."""
+	def excess(r):
+		return r - clearance(blade_edge_angle(index, offset, r), boundary)
+
+	outer = max(r for _, r in boundary) + OUTLINE + 1.0
+	step = 0.25
+	hi, r = outer, outer - step
+	while r > step:
+		if excess(r) < 0.0:
+			break
+		hi, r = r, r - step
+	lo = max(r, 1e-3)
+
+	for _ in range(40):
+		mid = (lo + hi) / 2
+		if excess(mid) < 0.0:
+			lo = mid
+		else:
+			hi = mid
+
+	return (lo + hi) / 2
+
+
+def blade_polygon(index, lo, hi, boundary=None):
 	"""One wedge of a blade, between two signed angular offsets from its
-	centreline. `hi` is the hard edge; `lo` runs off into the soft tail."""
-	r_start = halo_radius()
-	radii = [math.exp(math.log(r_start) + (math.log(R_OUT) - math.log(r_start)) * i / SAMPLES)
-		for i in range(SAMPLES + 1)]
+	centreline. `hi` is the hard edge; `lo` runs off into the soft tail.
+
+	The inner end is not a chord across the wedge but a traced arc of the
+	clearance curve, so the blade stops in a line parallel to the face rather
+	than in a ragged step."""
+	boundary = face_boundary() if boundary is None else boundary
+	starts = {offset: edge_start(index, offset, boundary) for offset in (lo, hi)}
 
 	def edge(offset):
+		r0 = starts[offset]
 		out = []
-		for r in radii:
-			t = math.radians(blade_angle(index, r) + offset * blade_widening(r, r_start))
+		for i in range(SAMPLES + 1):
+			r = math.exp(math.log(r0) + (math.log(R_OUT) - math.log(r0)) * i / SAMPLES)
+			t = math.radians(blade_edge_angle(index, offset, r))
 			out.append((CX + r * math.cos(t), CY + r * math.sin(t)))
 		return out
 
-	return edge(hi) + list(reversed(edge(lo)))
+	# The inner cap, traced along the clearance curve from the low edge's //
+	# footing round to the high edge's. //
+	a_lo = blade_edge_angle(index, lo, starts[lo])
+	a_hi = blade_edge_angle(index, hi, starts[hi])
+	cap = []
+	for i in range(1, CAP_SAMPLES):
+		deg = a_lo + (a_hi - a_lo) * i / CAP_SAMPLES
+		r = clearance(deg, boundary)
+		t = math.radians(deg)
+		cap.append((CX + r * math.cos(t), CY + r * math.sin(t)))
+
+	return edge(hi) + list(reversed(edge(lo))) + cap
 
 
 def tail_bands():
@@ -307,10 +393,11 @@ def polygon_path(poly):
 
 # --- emit ------------------------------------------------------------------ #
 def build():
+	boundary = face_boundary()
 	bands = []
 	for lo, hi, alpha in tail_bands():
 		wedges = "\n            ".join(
-			polygon_path(blade_polygon(i, lo, hi)) for i in range(BLADES))
+			polygon_path(blade_polygon(i, lo, hi, boundary)) for i in range(BLADES))
 		bands.append(f"""    <path
         android:fillColor="#FFFFFF"
         android:fillAlpha="{num(alpha)}"
@@ -333,8 +420,9 @@ def build():
     android:viewportHeight="108">
 
     <!-- The swirl: {BLADES} logarithmic-spiral blades, standing in for the orange
-         wedges of the colour icon's background, running from the halo around the
-         face out past the canvas corner so they bleed to every edge.
+         wedges of the colour icon's background, running from the outline around
+         the eyes and beak out past the canvas corner so they bleed to every
+         edge.
 
          Each blade is a sawtooth, the way the source art's are: a hard edge on
          one side, a full-alpha core, then a soft ramp trailing off the other
@@ -391,13 +479,15 @@ def rim(hole, shell):
 def report():
 	f = face_polygons()
 	rmax = face_radius()
-	start = halo_radius()
+	boundary = face_boundary()
+	reach = [clearance(d, boundary) for d in range(0, 360, 2)]
 
 	lines = [
 		f"face scale                    {FACE_SCALE}",
 		f"face outer radius             {rmax:.2f}   (visible under a circle mask: 36)",
-		f"blade start radius            {start:.2f}",
-		f"swirl band                    {36 - start:.2f}  of the 36 visible radius",
+		f"clear gap around the face     {OUTLINE:.2f}",
+		f"swirl reaches in to           {min(reach):.2f} .. {max(reach):.2f}",
+		f"narrowest swirl band          {36 - max(reach):.2f}  of the 36 visible radius",
 		f"eye-to-eye seam               {gap(f['left_eye'], f['right_eye']):.2f}",
 		f"left pupil rim                {rim(f['left_pupil'], f['left_eye']):.2f}",
 		f"right pupil rim               {rim(f['right_pupil'], f['right_eye']):.2f}",
@@ -412,7 +502,7 @@ def report():
 	lines.append(f"mean opacity over a pitch     {(2 * CORE + TAIL / 2) / PITCH:.0%}")
 
 	for r in (26.0, 30.0, 36.0):
-		grow = blade_widening(r, start)
+		grow = blade_widening(r)
 		core = 2 * math.radians(CORE * grow) * r
 		tail = math.radians(TAIL * grow) * r
 		clear = math.radians(PITCH) * r - core - tail
@@ -440,7 +530,8 @@ def tint_pair(rgb, night):
 def preview(directory):
 	from PIL import Image, ImageChops, ImageDraw
 
-	bands = [(alpha, [blade_polygon(i, lo, hi) for i in range(BLADES)])
+	boundary = face_boundary()
+	bands = [(alpha, [blade_polygon(i, lo, hi, boundary) for i in range(BLADES)])
 		for lo, hi, alpha in tail_bands()]
 	f = face_polygons()
 	face = [f["left_eye"], f["right_eye"], f["beak"]]
@@ -496,7 +587,7 @@ def preview(directory):
 
 	os.makedirs(directory, exist_ok=True)
 
-	# 1. The bare stencil, with the mask/halo guides drawn over it. //
+	# 1. The bare stencil, with the mask and outline guides drawn over it. //
 	size = 640
 	guide = Image.new("RGBA", (size, size), (255, 255, 255, 255))
 	guide.paste(Image.new("RGBA", (size, size), (0, 0, 0, 255)), (0, 0), stencil(size))
@@ -508,7 +599,9 @@ def preview(directory):
 			(CX + r - 18) * scale, (CY + r - 18) * scale), outline=colour, width=3)
 
 	ring(36, (220, 40, 40, 255))
-	ring(halo_radius(), (40, 120, 220, 255))
+	gap = [(CX + clearance(d, boundary) * math.cos(math.radians(d)),
+		CY + clearance(d, boundary) * math.sin(math.radians(d))) for d in range(0, 361, 2)]
+	d.line([((x - 18) * scale, (y - 18) * scale) for x, y in gap], fill=(40, 120, 220, 255), width=3)
 	guide.save(f"{directory}/mono_stencil.png")
 
 	# 2. A contact sheet: the tint presets, light and dark, both mask shapes. //
