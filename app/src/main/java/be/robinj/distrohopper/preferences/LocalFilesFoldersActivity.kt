@@ -12,10 +12,15 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import be.robinj.distrohopper.ExceptionHandler
 import be.robinj.distrohopper.InsetsHelper
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.desktop.dash.lens.localfiles.SearchFolderStore
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Manages the folders the Local files lens searches. Reached from that lens's
@@ -27,6 +32,7 @@ import be.robinj.distrohopper.desktop.dash.lens.localfiles.SearchFolderStore
 class LocalFilesFoldersActivity : AppCompatActivity() {
 	private lateinit var store: SearchFolderStore
 	private val folders = ArrayList<Uri>()
+	private val names = HashMap<Uri, String>()
 	private lateinit var adapter: FolderAdapter
 
 	private val pickFolder = this.registerForActivityResult(
@@ -79,6 +85,31 @@ class LocalFilesFoldersActivity : AppCompatActivity() {
 		this.folders.clear()
 		this.folders.addAll(this.store.folders())
 		this.adapter.notifyDataSetChanged()
+
+		this.resolveNames()
+	}
+
+	/**
+	 * Folder names come from the provider, which for a cloud or removable-storage
+	 * one can be slow — and `getView` runs on every layout and scroll, so asking
+	 * it there would freeze the screen. Rows show the URI's own last segment
+	 * until the real name arrives.
+	 */
+	private fun resolveNames() {
+		val pending = this.folders.filterNot { this.names.containsKey(it) }
+
+		if (pending.isEmpty()) {
+			return
+		}
+
+		this.lifecycleScope.launch {
+			val resolved = withContext(ioDispatcher) {
+				pending.associateWith { this@LocalFilesFoldersActivity.store.displayName(it) }
+			}
+
+			this@LocalFilesFoldersActivity.names.putAll(resolved)
+			this@LocalFilesFoldersActivity.adapter.notifyDataSetChanged()
+		}
 	}
 
 	private inner class FolderAdapter : ArrayAdapter<Uri>(
@@ -91,7 +122,9 @@ class LocalFilesFoldersActivity : AppCompatActivity() {
 			val treeUri = this.getItem(position)!!
 
 			view.findViewById<TextView>(R.id.tvFolderName).text =
-				this@LocalFilesFoldersActivity.store.displayName(treeUri)
+				this@LocalFilesFoldersActivity.names[treeUri]
+					?: treeUri.lastPathSegment
+					?: treeUri.toString()
 
 			view.findViewById<ImageView>(R.id.ivRemoveFolder).setOnClickListener {
 				try {
@@ -104,5 +137,10 @@ class LocalFilesFoldersActivity : AppCompatActivity() {
 
 			return view
 		}
+	}
+
+	companion object {
+		/** Seam for tests, which need name resolution to finish inline. */
+		internal var ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 	}
 }

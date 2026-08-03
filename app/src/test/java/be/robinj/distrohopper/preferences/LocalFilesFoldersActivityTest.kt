@@ -18,6 +18,10 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.desktop.dash.lens.localfiles.SearchFolderStore
+import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -37,6 +41,12 @@ class LocalFilesFoldersActivityTest {
         PreferencesRepository(application)
             .putStringSet(Preference.LENS_LOCALFILES_V2_FOLDERS, emptySet())
         ShadowContentResolver.registerProviderInternal(AUTHORITY, NamingProvider())
+        // Names resolve off the main thread in production; run that inline here //
+        LocalFilesFoldersActivity.ioDispatcher = Dispatchers.Unconfined
+    }
+
+    @After fun tearDown() {
+        LocalFilesFoldersActivity.ioDispatcher = Dispatchers.IO
     }
 
     private fun treeUri(documentId: String): Uri =
@@ -69,6 +79,33 @@ class LocalFilesFoldersActivityTest {
                     adapter.getView(0, null, list(activity))
                         .findViewById<TextView>(R.id.tvFolderName).text,
                 )
+            }
+        }
+    }
+
+    /**
+     * getView must never query the provider — a slow cloud one would freeze the
+     * screen on every layout and scroll. It shows a placeholder until the name
+     * has been resolved off the main thread.
+     */
+    @Test fun rowsRenderWithoutQueryingTheProvider() {
+        SearchFolderStore(application).add(treeUri("documents"))
+        NamingProvider.queries = 0
+        // A dispatcher that never runs anything, so no name can arrive and the
+        // placeholder path is the only one under test //
+        LocalFilesFoldersActivity.ioDispatcher = object : CoroutineDispatcher() {
+            override fun dispatch(context: CoroutineContext, block: Runnable) = Unit
+        }
+
+        ActivityScenario.launch(LocalFilesFoldersActivity::class.java).use { scenario ->
+            scenario.onActivity { activity ->
+                val listView = list(activity)
+
+                val label = listView.adapter.getView(0, null, listView)
+                    .findViewById<TextView>(R.id.tvFolderName).text.toString()
+
+                assertEquals(0, NamingProvider.queries)
+                assertTrue(label.isNotEmpty())
             }
         }
     }
@@ -146,12 +183,17 @@ class LocalFilesFoldersActivityTest {
     }
 
     private class NamingProvider : ContentProvider() {
+        companion object { var queries = 0 }
+
         override fun onCreate() = true
 
         override fun query(uri: Uri, projection: Array<out String>?, selection: String?,
-                           selectionArgs: Array<out String>?, sortOrder: String?): Cursor =
-            MatrixCursor(arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME))
+                           selectionArgs: Array<out String>?, sortOrder: String?): Cursor {
+            queries++
+
+            return MatrixCursor(arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME))
                 .apply { addRow(arrayOf(DocumentsContract.getDocumentId(uri).replaceFirstChar { it.uppercase() })) }
+        }
 
         override fun getType(uri: Uri): String? = null
         override fun insert(uri: Uri, values: ContentValues?) = null

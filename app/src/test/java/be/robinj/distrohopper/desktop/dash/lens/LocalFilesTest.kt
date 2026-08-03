@@ -165,6 +165,37 @@ class LocalFilesTest {
     }
 
     /**
+     * Rows are handled as they come off the cursor, so a big directory neither
+     * delays the first match nor gets read past the cap.
+     */
+    @Test fun stopsReadingADirectoryOnceTheCapIsReached() {
+        val many = (1..50).map { file("match-$it.txt", "text/plain") }.toTypedArray()
+        provider.contents("root", *many)
+        grantFolder("root")
+
+        assertEquals(2, lens.collect("match", 2).results.size)
+        assertTrue((provider.lastCursor?.rowsRead ?: 0) < 10)
+    }
+
+    /** Likewise, a cancelled keystroke must stop mid-directory, not drain it. */
+    @Test fun stopsReadingADirectoryWhenCancelledPartWayThrough() {
+        val many = (1..50).map { file("match-$it.txt", "text/plain") }.toTypedArray()
+        provider.contents("root", *many)
+        grantFolder("root")
+
+        val recorded = mutableListOf<LensSearchResult>()
+
+        runBlocking {
+            launch(Dispatchers.Unconfined) {
+                lens.search("match", 50, CancelAfterFirstResult(recorded))
+            }.join()
+        }
+
+        assertEquals(1, recorded.size)
+        assertTrue((provider.lastCursor?.rowsRead ?: 0) < 10)
+    }
+
+    /**
      * The runner cancels this job on every keystroke, so a half-finished walk
      * must abandon the rest of the tree rather than run it out.
      */
@@ -199,6 +230,62 @@ class LocalFilesTest {
             setOf("holiday-photo.jpg", "holiday-booking.pdf"),
             results.map { it.name }.toSet(),
         )
+    }
+
+    /**
+     * Depth is compared across folders, not just within one: a direct child of
+     * the second folder beats something buried in the first.
+     */
+    @Test fun emitsShallowMatchesBeforeDeepOnesAcrossFolders() {
+        provider.contents("first", folder("nested"))
+        provider.contents("nested", folder("deeper"))
+        provider.contents("deeper", file("match-buried.txt", "text/plain"))
+        provider.contents("second", file("match-shallow.txt", "text/plain"))
+        grantFolder("first")
+        grantFolder("second")
+
+        val results = lens.collect("match", 10).results
+
+        assertEquals(
+            listOf("match-shallow.txt", "match-buried.txt"),
+            results.map { it.name },
+        )
+    }
+
+    /** A deep first folder must not spend the whole allowance before the rest is queried. */
+    @Test fun aDeepFolderDoesNotStarveTheOthersOfTheResultAllowance() {
+        provider.contents("first", folder("nested"))
+        provider.contents("nested",
+            file("match-a.txt", "text/plain"), file("match-b.txt", "text/plain"))
+        provider.contents("second", file("match-shallow.txt", "text/plain"))
+        grantFolder("first")
+        grantFolder("second")
+
+        val results = lens.collect("match", 1).results
+
+        assertEquals(listOf("match-shallow.txt"), results.map { it.name })
+    }
+
+    /** Granting a folder and one of its own ancestors must not double every file. */
+    @Test fun aFileReachableThroughTwoGrantsIsEmittedOnce() {
+        provider.contents("parent", folder("child"))
+        provider.contents("child", file("notes.txt", "text/plain"))
+        grantFolder("parent")
+        grantFolder("child")
+
+        assertEquals(listOf("notes.txt"), lens.collect("notes", 10).results.map { it.name })
+    }
+
+    /** A provider listing one directory under two parents must not double it either. */
+    @Test fun aDirectoryReachableThroughTwoParentsIsWalkedOnce() {
+        provider.contents("root", folder("a"), folder("b"))
+        provider.contents("a", folder("shared"))
+        provider.contents("b", folder("shared"))
+        provider.contents("shared", file("notes.txt", "text/plain"))
+        grantFolder("root")
+
+        assertEquals(listOf("notes.txt"), lens.collect("notes", 10).results.map { it.name })
+        assertEquals(1, provider.queriedParents.count { it == "shared" })
     }
 
     @Test fun emitsNothingWhenNoFoldersAreConfigured() {
@@ -347,6 +434,7 @@ class LocalFilesTest {
         var typeToReturn: String? = null
         var returnNullCursor = false
         var throwOnQuery: RuntimeException? = null
+        var lastCursor: CountingCursor? = null
 
         fun contents(documentId: String, vararg entries: Entry) {
             this.children[documentId] = entries.toList()
@@ -365,7 +453,7 @@ class LocalFilesTest {
             val parent = DocumentsContract.getDocumentId(uri)
             this.queriedParents.add(parent)
 
-            val cursor = MatrixCursor(arrayOf(
+            val cursor = CountingCursor(arrayOf(
                 DocumentsContract.Document.COLUMN_DOCUMENT_ID,
                 DocumentsContract.Document.COLUMN_DISPLAY_NAME,
                 DocumentsContract.Document.COLUMN_MIME_TYPE,
@@ -373,8 +461,24 @@ class LocalFilesTest {
             this.children[parent].orEmpty().forEach {
                 cursor.addRow(arrayOf(it.documentId, it.name, it.mimeType))
             }
+            this.lastCursor = cursor
 
             return cursor
+        }
+
+        /**
+         * Tracks how far into the rows the reader actually got, so a test can
+         * tell streaming from buffering the lot up front. (`moveToNext` is final
+         * on `AbstractCursor`; `onMove` is the overridable hook it runs through.)
+         */
+        class CountingCursor(columns: Array<String>) : MatrixCursor(columns) {
+            var rowsRead = 0
+
+            override fun onMove(oldPosition: Int, newPosition: Int): Boolean {
+                this.rowsRead = maxOf(this.rowsRead, newPosition + 1)
+
+                return super.onMove(oldPosition, newPosition)
+            }
         }
 
         override fun getType(uri: Uri) = this.typeToReturn

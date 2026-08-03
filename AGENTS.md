@@ -519,10 +519,16 @@ etc/                                        — design assets (SVG/XCF sources, 
     while `IO` (`LocalFiles`) and `NETWORK` lenses run only after a short
     debounce so bursts of typing don't hit them.
     `LocalFiles` searches the folders the user has granted through the system
-    directory picker (`ACTION_OPEN_DOCUMENT_TREE`), breadth-first through each
-    document tree with `DocumentsContract` so shallow matches surface first,
-    honouring cancellation per directory and per row (the runner cancels on
-    every keystroke). `localfiles/SearchFolderStore` holds the granted trees as
+    directory picker (`ACTION_OPEN_DOCUMENT_TREE`) with `DocumentsContract`.
+    One breadth-first queue is seeded with **every** granted root, not one walk
+    per folder, so depth is compared across folders too — otherwise a deep match
+    in the first folder would outrank a direct child of the second and could eat
+    the whole result allowance before the second was queried. Documents are
+    de-duplicated per provider (`authority` + document id), since a folder and
+    its own ancestor can both be granted. Rows are handled as they come off the
+    cursor rather than collected first, so a cancelled keystroke stops
+    mid-directory; cancellation is checked per directory and per row (the runner
+    cancels on every keystroke). `localfiles/SearchFolderStore` holds the granted trees as
     persisted URI permissions under `Preference.LENS_LOCALFILES_V2_FOLDERS`,
     pruning any whose grant the system took back;
     `preferences/LocalFilesFoldersActivity` is its settings screen. It
