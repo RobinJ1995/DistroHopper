@@ -27,6 +27,8 @@ open class GooglePlayStore(context: Context) : AppStoreLens(context) {
 
     private val lensIcon: Drawable = context.resources.getDrawable(R.drawable.dash_search_lens_googleplay, null)
 
+    override val key = "GooglePlayStore"
+
     override fun getIcon(): Drawable = lensIcon
 
     override fun getName(): String = "Google Play Store"

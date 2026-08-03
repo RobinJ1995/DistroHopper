@@ -118,6 +118,7 @@ class LensNetworkTest {
                 override fun getInputStream(): InputStream = stream!!
             }
 
+        override val key = "FakeConnectionLens"
         override val type = LensType.NETWORK
         override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {}
         override fun getName() = "FakeConnection"

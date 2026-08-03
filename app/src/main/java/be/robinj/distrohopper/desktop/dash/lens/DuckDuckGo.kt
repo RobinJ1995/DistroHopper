@@ -18,6 +18,8 @@ open class DuckDuckGo(context: Context) : Lens(context) {
         this.icon = context.resources.getDrawable(R.drawable.dash_search_lens_duckduckgo, null)
     }
 
+    override val key = "DuckDuckGo"
+
     override val type = LensType.NETWORK
 
     override fun getName() = "DuckDuckGo"

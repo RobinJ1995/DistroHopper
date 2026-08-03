@@ -15,7 +15,6 @@ import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.HomeRole
 import be.robinj.distrohopper.InsetsHelper
-import be.robinj.distrohopper.Permission
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.theme.Theme
@@ -24,10 +23,10 @@ import be.robinj.distrohopper.theme.ThemeRegistry
 import java.util.function.Consumer
 
 /**
- * First-run wizard: theme choice, permission prompts, and the option to set
- * DistroHopper as the default home screen. Shown by HomeActivity (gated by
- * [OnboardingGate]) before anything else is initialised; Finish marks setup
- * complete and relaunches HomeActivity so it comes up in the chosen theme.
+ * First-run wizard: theme choice and the option to set DistroHopper as the
+ * default home screen. Shown by HomeActivity (gated by [OnboardingGate]) before
+ * anything else is initialised; Finish marks setup complete and relaunches
+ * HomeActivity so it comes up in the chosen theme.
  */
 class OnboardingActivity : AppCompatActivity() {
 	private lateinit var container: DependencyContainer
@@ -37,17 +36,7 @@ class OnboardingActivity : AppCompatActivity() {
 	private lateinit var adapter: OnboardingPagerAdapter
 	private lateinit var themeCards: ThemeCards
 
-	/** The runtime permissions the wizard asks for; extend as the app gains new ones. */
-	private val wizardPermissions = Permission.storagePermissions()
-
-	/** The permission page is dropped when there is nothing grantable to ask for. */
-	private val pages = OnboardingPage.entries.filter {
-		it != OnboardingPage.PERMISSION || this.wizardPermissions.isNotEmpty()
-	}
-
-	private val permissionRequest = this.registerForActivityResult(
-		ActivityResultContracts.RequestMultiplePermissions()
-	) { this.adapter.rebind(OnboardingPage.PERMISSION) }
+	private val pages = OnboardingPage.entries
 
 	private val roleRequest = this.registerForActivityResult(
 		ActivityResultContracts.StartActivityForResult()
@@ -150,8 +139,7 @@ class OnboardingActivity : AppCompatActivity() {
 	override fun onResume() {
 		super.onResume()
 
-		// The user may have granted either from system Settings in the meantime //
-		this.adapter.rebind(OnboardingPage.PERMISSION)
+		// The user may have set us as default from system Settings in the meantime //
 		this.adapter.rebind(OnboardingPage.DEFAULT_LAUNCHER)
 	}
 
@@ -160,23 +148,8 @@ class OnboardingActivity : AppCompatActivity() {
 			OnboardingPage.WELCOME -> Unit
 			OnboardingPage.THEME ->
 				this.themeCards.bind(view.findViewById<LinearLayout>(R.id.llOnboardingThemeCards))
-			OnboardingPage.PERMISSION -> this.bindPermissionPage(view)
 			OnboardingPage.DEFAULT_LAUNCHER -> this.bindDefaultLauncherPage(view)
 		}
-	}
-
-	private fun bindPermissionPage(view: View) {
-		val granted = this.missingPermissions().isEmpty()
-
-		view.findViewById<Button>(R.id.btnOnboardingGrantPermission).apply {
-			this.visibility = if (granted) View.GONE else View.VISIBLE
-			this.setOnClickListener {
-				this@OnboardingActivity.permissionRequest
-					.launch(this@OnboardingActivity.missingPermissions())
-			}
-		}
-		view.findViewById<TextView>(R.id.tvOnboardingPermissionGranted)
-			.visibility = if (granted) View.VISIBLE else View.GONE
 	}
 
 	private fun bindDefaultLauncherPage(view: View) {
@@ -197,9 +170,6 @@ class OnboardingActivity : AppCompatActivity() {
 		view.findViewById<TextView>(R.id.tvOnboardingAlreadyDefault)
 			.visibility = if (isDefault) View.VISIBLE else View.GONE
 	}
-
-	private fun missingPermissions(): Array<String> =
-		Permission.missingPermissions(this, this.wizardPermissions)
 
 	private fun themes(): List<Theme> {
 		val dev = this.container.prefs.getBoolean(Preference.DEV, false)

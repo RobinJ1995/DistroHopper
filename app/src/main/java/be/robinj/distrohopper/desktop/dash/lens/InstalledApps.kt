@@ -18,6 +18,8 @@ class InstalledApps(context: Context, private val apps: AppManager?) : Lens(cont
         this.icon = context.resources.getDrawable(R.mipmap.ic_launcher, null)
     }
 
+    override val key = "InstalledApps"
+
     // In-memory scan over the loaded app list — effectively instant //
     override val type = LensType.LOCAL
 

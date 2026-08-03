@@ -1,11 +1,9 @@
 package be.robinj.distrohopper.desktop.dash.lens
 
-import android.app.Application
 import android.content.Context
 import android.widget.LinearLayout
 import android.widget.ListView
 import androidx.test.core.app.ApplicationProvider
-import be.robinj.distrohopper.Permission
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
@@ -14,7 +12,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows
 
 @RunWith(RobolectricTestRunner::class)
 class LensManagerTest {
@@ -24,22 +21,19 @@ class LensManagerTest {
         context = ApplicationProvider.getApplicationContext()
         Preferences.getSharedPreferences(context, Preferences.PREFERENCES).edit().clear().commit()
         Preferences.getSharedPreferences(context, Preferences.LENSES).edit().clear().commit()
-        // The historical defaults assume storage access; the permissionless
-        // default behaviour is covered by LensManagerDefaultsTest //
-        Shadows.shadowOf(context as Application).grantPermissions(*Permission.storagePermissions())
     }
 
     private fun manager() = LensManager(context, null, null, null, null)
 
     @Test fun exposesAllBuiltInLenses() {
         assertEquals(
-            setOf("DuckDuckGo", "FDroid", "GitHub", "GooglePlayStore", "InstalledApps", "LocalFiles"),
+            setOf("DuckDuckGo", "FDroid", "GitHub", "GooglePlayStore", "InstalledApps", "LocalFiles_v2"),
             manager().availableLenses.keys,
         )
     }
 
-    @Test fun defaultsToInstalledAppsAndLocalFiles() {
-        assertEquals(listOf("InstalledApps", "LocalFiles"), manager().enabledLenses.map { it.javaClass.simpleName })
+    @Test fun defaultsToInstalledAppsAlone() {
+        assertEquals(listOf("InstalledApps"), manager().enabledLenses.map { it.key })
     }
 
     @Test fun defaultMaxResultsIsTen() = assertEquals(10, manager().maxResultsPerLens)
@@ -52,7 +46,7 @@ class LensManagerTest {
 
     @Test fun enablingLensAddsItOnce() {
         val manager = manager(); manager.enableLens("GitHub"); manager.enableLens("GitHub")
-        assertEquals(1, manager.enabledLenses.count { it.javaClass.simpleName == "GitHub" })
+        assertEquals(1, manager.enabledLenses.count { it.key == "GitHub" })
     }
 
     @Test fun enablingUnknownLensIsIgnored() {
@@ -66,24 +60,26 @@ class LensManagerTest {
     }
 
     @Test fun enabledLensesPersistAcrossManagers() {
-        manager().apply { disableLens("LocalFiles"); enableLens("GitHub") }
-        assertEquals(listOf("InstalledApps", "GitHub"), manager().enabledLenses.map { it.javaClass.simpleName })
+        manager().apply { enableLens("LocalFiles_v2"); enableLens("GitHub") }
+        assertEquals(
+            listOf("InstalledApps", "LocalFiles_v2", "GitHub"),
+            manager().enabledLenses.map { it.key },
+        )
     }
 
     @Test fun sortEnabledLensesUsesReferenceOrderAndDropsMissingItems() {
         val manager = manager(); manager.enableLens("GitHub")
         val reference = listOf(manager.availableLenses["GitHub"]!!, manager.availableLenses["InstalledApps"]!!)
         manager.sortEnabledLenses(reference)
-        assertEquals(listOf("GitHub", "InstalledApps"), manager.enabledLenses.map { it.javaClass.simpleName })
+        assertEquals(listOf("GitHub", "InstalledApps"), manager.enabledLenses.map { it.key })
     }
 
     @Test fun saveEnabledLensesWritesContiguousIndexes() {
         val manager = manager(); manager.enableLens("GitHub"); manager.saveEnabledLenses()
         val prefs = Preferences.getSharedPreferences(context, Preferences.LENSES)
         assertEquals("InstalledApps", prefs.getString("0", null))
-        assertEquals("LocalFiles", prefs.getString("1", null))
-        assertEquals("GitHub", prefs.getString("2", null))
-        assertNull(prefs.getString("3", null))
+        assertEquals("GitHub", prefs.getString("1", null))
+        assertNull(prefs.getString("2", null))
     }
 
     @Test fun constructionToleratesMissingLensesContainer() {
@@ -139,6 +135,7 @@ class LensManagerTest {
         var clickedUrl: String? = null
         var clickedObj: Any? = null
 
+        override val key = "Recording"
         override val type = LensType.LOCAL
         override fun getName() = "Recording"
         override fun getDescription() = "Records onClick for tests"

@@ -1,10 +1,8 @@
 package be.robinj.distrohopper;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import static java.lang.String.format;
@@ -21,28 +19,6 @@ public class Permission {
 
 	private final Context context;
 	private final String permission;
-
-	// READ_EXTERNAL_STORAGE grants nothing on API >= 33; the granular READ_MEDIA_* permissions replace it
-	private final static String[] STORAGE_PERMISSIONS =
-			Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-					? new String[] {
-							Manifest.permission.READ_MEDIA_IMAGES,
-							Manifest.permission.READ_MEDIA_VIDEO,
-							Manifest.permission.READ_MEDIA_AUDIO
-					}
-					: new String[] {
-							Manifest.permission.READ_EXTERNAL_STORAGE
-					};
-
-	/**
-	 * Storage access as grantable on this Android version (wallpaper colours,
-	 * local file search). Requested by the first-run wizard and when enabling
-	 * a lens that needs it; INTERNET/ACCESS_NETWORK_STATE are normal
-	 * permissions and never need a runtime prompt.
-	 */
-	public static String[] storagePermissions() {
-		return STORAGE_PERMISSIONS.clone();
-	}
 
 	public static String[] missingPermissions(final Context context, final String[] permissions) {
 		final List<String> missing = new ArrayList<>();

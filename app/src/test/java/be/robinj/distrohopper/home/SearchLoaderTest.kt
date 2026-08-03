@@ -145,6 +145,7 @@ class SearchLoaderTest {
 
     /** Instant, in-memory LOCAL lens emitting a single result. */
     private class LocalLens(context: Context) : Lens(context) {
+        override val key = "LocalLens"
         override fun getName() = "Local"
         override fun getDescription() = "local"
         override val type = LensType.LOCAL
@@ -155,6 +156,7 @@ class SearchLoaderTest {
 
     /** NETWORK lens that records when it was searched. */
     private class FlagNetworkLens(context: Context) : Lens(context) {
+        override val key = "FlagNetworkLens"
         var searched = false
         override fun getName() = "Flag"
         override fun getDescription() = "flag"
@@ -167,6 +169,7 @@ class SearchLoaderTest {
 
     /** NETWORK lens that starts then hangs, keeping the search running. */
     private class SuspendingNetworkLens(context: Context) : Lens(context) {
+        override val key = "SuspendingNetworkLens"
         @Volatile var started = false
         override fun getName() = "Net"
         override fun getDescription() = "net"

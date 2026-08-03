@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Outer wrapper because ListView rows can't carry margins. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/lens_row_background"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/tvFolderName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/ivRemoveFolder"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:alpha="0.6"
+            android:contentDescription="@string/local_files_folders_remove"
+            android:src="@drawable/ic_remove" />
+    </LinearLayout>
+</FrameLayout>

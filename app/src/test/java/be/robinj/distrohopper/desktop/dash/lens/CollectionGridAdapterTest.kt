@@ -33,6 +33,7 @@ class CollectionGridAdapterTest {
 	@After fun tearDown() { scenario.close() }
 
 	private class StubLens(context: Context) : Lens(context) {
+		override val key = "StubLens"
 		override val type = LensType.NETWORK
 		override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {}
 		override fun getName() = "Stub lens"

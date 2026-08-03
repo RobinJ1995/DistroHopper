@@ -27,6 +27,8 @@ class AppStoreLensTest {
 
     /** Minimal concrete store lens exposing the protected install check. */
     private class ProbeStore(context: Context) : AppStoreLens(context) {
+        override val key = "ProbeStore"
+
         fun probe(packageName: String) = isInstalled(packageName)
         override fun getName() = "ProbeStore"
         override fun getDescription() = "Test store lens"

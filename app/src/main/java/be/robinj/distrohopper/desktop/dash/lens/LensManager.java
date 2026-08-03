@@ -54,16 +54,17 @@ public class LensManager
 		if (apps != null)
 			context = apps.getContext ();
 
-		this.lenses.put ("DuckDuckGo", new DuckDuckGo (context));
-		this.lenses.put ("FDroid", new FDroid (context));
-		this.lenses.put ("GitHub", new GitHub (context));
-		this.lenses.put ("GooglePlayStore", new GooglePlayStore (context));
-		this.lenses.put ("InstalledApps", new InstalledApps (context, apps));
-		this.lenses.put ("LocalFiles", new LocalFiles (context)); // LocalFiles needs to show an AlertDialog in some cases, thus it needs the activity's Context (which AppsManager has) instead of the Application Context (this.context). //
+		this.register (new DuckDuckGo (context));
+		this.register (new FDroid (context));
+		this.register (new GitHub (context));
+		this.register (new GooglePlayStore (context));
+		this.register (new InstalledApps (context, apps));
+		this.register (new LocalFiles (context)); // LocalFiles needs to show an AlertDialog in some cases, thus it needs the activity's Context (which AppsManager has) instead of the Application Context (this.context). //
 
+		// LocalFiles is deliberately absent: it finds nothing until the user has
+		// granted it folders, so it is opt-in rather than enabled-but-empty. //
 		List<String> defaultLenses = new ArrayList<String> ();
 		defaultLenses.add ("InstalledApps");
-		defaultLenses.add ("LocalFiles");
 
 		List<String> enabledLenses = new ArrayList<>();
 		if (prefsLenses.getAll().size() > 0)
@@ -77,9 +78,8 @@ public class LensManager
 		}
 		else
 		{
-			// Default lenses whose permissions haven't been granted (e.g. the
-			// wizard's storage prompt was declined) start out disabled; enabling
-			// them in the preferences re-requests the permissions //
+			// Default lenses whose permissions haven't been granted start out
+			// disabled; enabling them in the preferences re-requests them //
 			for (String lensName : defaultLenses)
 			{
 				final Lens lens = this.lenses.get (lensName);
@@ -103,9 +103,18 @@ public class LensManager
 		return Preferences.getSharedPreferences(this.context, Preferences.LENSES);
 	}
 
+	/**
+	 * Registers a lens under its own {@link Lens#getKey() key}, so the map key and
+	 * the key written to disk can never drift apart.
+	 */
+	private void register (Lens lens)
+	{
+		this.lenses.put (lens.getKey (), lens);
+	}
+
 	public void disableLens (Lens lens)
 	{
-		this.disableLens (lens.getClass ().getSimpleName ());
+		this.disableLens (lens.getKey ());
 	}
 
 	public void disableLens (String name)
@@ -117,7 +126,7 @@ public class LensManager
 
 	public void enableLens (Lens lens)
 	{
-		this.enableLens (lens.getClass ().getSimpleName ());
+		this.enableLens (lens.getKey ());
 	}
 
 	public void enableLens (String name)
@@ -151,7 +160,7 @@ public class LensManager
 
 	public boolean isLensEnabled (Lens lens)
 	{
-		return this.isLensEnabled (lens.getClass ().getSimpleName ());
+		return this.isLensEnabled (lens.getKey ());
 	}
 
 	public boolean isLensEnabled (String name)
@@ -169,7 +178,7 @@ public class LensManager
 		editor.clear();
 
 		for (int i = 0; i < this.enabled.size (); i++) {
-			editor.putString(Integer.toString(i), this.enabled.get(i).getClass().getSimpleName());
+			editor.putString(Integer.toString(i), this.enabled.get(i).getKey());
 		}
 
 		editor.apply();
