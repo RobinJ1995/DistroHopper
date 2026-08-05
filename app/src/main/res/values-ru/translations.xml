@@ -31,6 +31,9 @@
   <string name="pref_header_functionality">Функциональность</string>
   <string name="pref_header_appearance">Внешний вид</string>
   <string name="option_launchericon_size">Размер прикрепленной иконки</string>
+  <!--Which screen edge the launcher or panel is attached to; the group it
+         sits under names the one it applies to.-->
+  <!--The menu button's position: the launcher's leading and trailing end.-->
   <string name="option_dev_log_toaster">Всплывающие логи</string>
   <string name="hint_dev_log_toaster">Показывать логи в виде всплывающих сообщений</string>
   <string name="option_customise">Внешний вид</string>

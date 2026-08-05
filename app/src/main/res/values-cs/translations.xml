@@ -18,6 +18,9 @@
   <string name="pref_header_dash">Dash</string>
   <string name="pref_header_panel">Panel</string>
   <string name="pref_header_advanced">Pokročilý</string>
+  <!--Which screen edge the launcher or panel is attached to; the group it
+         sits under names the one it applies to.-->
+  <!--The menu button's position: the launcher's leading and trailing end.-->
   <string name="option_wallpaper">Tapeta</string>
   <string name="hint_wallpaper">Změnit tapetu</string>
   <string name="option_theme">Motiv</string>

@@ -14,6 +14,9 @@
   <string name="pref_header_dash">ダッシュ</string>
   <string name="pref_header_panel">パネル</string>
   <string name="pref_header_advanced">詳細</string>
+  <!--Which screen edge the launcher or panel is attached to; the group it
+         sits under names the one it applies to.-->
+  <!--The menu button's position: the launcher's leading and trailing end.-->
   <string name="option_wallpaper">壁紙</string>
   <string name="hint_wallpaper">壁紙を変える</string>
   <!--Gestures preferences-->

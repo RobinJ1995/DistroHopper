@@ -31,6 +31,9 @@
   <string name="pref_header_functionality">İşlevsellik</string>
   <string name="pref_header_appearance">Görünüm</string>
   <string name="option_launchericon_size">Sabitlenmiş simge boyutu</string>
+  <!--Which screen edge the launcher or panel is attached to; the group it
+         sits under names the one it applies to.-->
+  <!--The menu button's position: the launcher's leading and trailing end.-->
   <string name="option_customise">Özelleştir</string>
   <string name="hint_customise">Görünümü özelleştirin.</string>
   <string name="option_wallpaper">Duvar Kağıdı</string>
