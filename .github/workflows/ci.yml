@@ -2,7 +2,11 @@ name: CI
 
 on:
   push:
-    branches: [ master, 'claude/**' ]
+    # Deliberately master and tags only. Every other branch here exists to
+    # become a pull request, and pull_request already covers those — listing
+    # them again would run the whole workflow twice for every push to an open
+    # PR's head branch.
+    branches: [ master ]
     tags: [ 'v*' ]
   pull_request:
     branches: [ master ]
@@ -12,6 +16,13 @@ on:
         description: 'Version to release, e.g. v3.0.1 — a single trailing letter (v3.0.1a) publishes a pre-release'
         required: true
         type: string
+
+# A new push to a PR makes the in-flight run for its previous head pointless.
+# master and tag runs are grouped too, but never cancelled: they cut releases,
+# and a half-finished release job is worse than a redundant one.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   # Single source of truth for "is this a release, and which version is it".
