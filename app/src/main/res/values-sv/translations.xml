@@ -23,6 +23,9 @@
   <string name="pref_header_dev">Utvecklingsalternativ</string>
   <string name="pref_header_functionality">Funktionalitet</string>
   <string name="pref_header_appearance">Sken</string>
+  <!--Which screen edge the launcher or panel is attached to; the group it
+         sits under names the one it applies to.-->
+  <!--The menu button's position: the launcher's leading and trailing end.-->
   <string name="option_wallpaper">Skrivbordsbakgrund</string>
   <string name="hint_wallpaper">Ändra skrivbordsbakgrund</string>
   <string name="option_lenses">Sök efter källor</string>

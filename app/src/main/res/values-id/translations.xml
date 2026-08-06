@@ -15,6 +15,9 @@
   <string name="pref_header_dash">Dasbor</string>
   <string name="pref_header_panel">Panel</string>
   <string name="pref_header_advanced">Tingkat Lanjut</string>
+  <!--Which screen edge the launcher or panel is attached to; the group it
+         sits under names the one it applies to.-->
+  <!--The menu button's position: the launcher's leading and trailing end.-->
   <string name="option_wallpaper">Kertas Dinding</string>
   <string name="hint_wallpaper">Ubah kertas dinding</string>
   <!--Gestures preferences-->

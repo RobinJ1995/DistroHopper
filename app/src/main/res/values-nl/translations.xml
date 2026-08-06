@@ -18,6 +18,11 @@
   <string name="title_activity_theme_preferences">Thema\'s</string>
   <string name="title_activity_dev_logs">Logs</string>
   <string name="developed_by">Ontwikkeld door Robin Jacobs</string>
+  <string name="about_get_involved">Help mee</string>
+  <string name="about_github_title">Bijdragen op GitHub</string>
+  <string name="about_github_subtitle">Bekijk de code, meld problemen, en ontwikkel mee</string>
+  <string name="about_transifex_title">Help met vertalen</string>
+  <string name="about_transifex_subtitle">Help DistroHopper te vertalen naar uw taal</string>
   <string name="button_back">Terug</string>
   <string name="button_about">Over</string>
   <string name="button_apply">Toepassen</string>
@@ -39,16 +44,37 @@
   <string name="pref_header_gestures">Gebaren</string>
   <string name="pref_header_appearance">Uiterlijk</string>
   <string name="option_launchericon_size">Grootte van de Launcher</string>
+  <string name="customise_hint_launcher_icon_size">Grotere pictogrammen betekent dat er minder passen zonder te scrollen.</string>
+  <string name="launcher_icon_hint">%1$s · %2$d pictogrammen passen</string>
+  <string-array name="launcher_icon_presets">
+    <item>Kleiner</item>
+    <item>Klein</item>
+    <item>Standaard</item>
+    <item>Groot</item>
+    <item>Groter</item>
+  </string-array>
+  <string name="customise_option_dash_grid_size">Rastergrootte</string>
+  <string name="customise_hint_dash_grid_size">Groter raster betekent kleinere pictogrammen.</string>
   <string name="dash_grid_hint">%1$d × %2$d</string>
+  <!--Which screen edge the launcher or panel is attached to; the group it
+         sits under names the one it applies to.-->
+  <string name="customise_option_screen_edge">Schermrand</string>
   <string name="option_launcher_menu_button">Menuknop</string>
+  <string name="customise_menu_button_hide">Verbergen</string>
+  <!--The menu button's position: the launcher's leading and trailing end.-->
+  <string name="customise_menu_button_start">Begin</string>
+  <string name="customise_menu_button_end">Einde</string>
   <string name="widget_picker_title">Widget toevoegen</string>
   <string name="widget_no_room">Er is geen ruimte meer op het startscherm voor deze widget.</string>
+  <string name="desktop_menu_widgets">Widgets</string>
+  <string name="desktop_menu_settings">Instellingen</string>
   <string name="option_dashsearch_focus_on_open">Zoeken bij openen van Dash</string>
   <string name="hint_dashsearch_focus_on_open">Focus het zoekvak en toon het toetsenbord wanneer de Dash wordt geopend.</string>
   <string name="option_dev_log_toaster">Meldingen voor logberichten</string>
   <string name="hint_dev_log_toaster">Toon logberichten in toast-notificaties.</string>
   <string name="option_customise">Aanpassen</string>
   <string name="hint_customise">Pas het uiterlijk aan.</string>
+  <string name="customise_done">Klaar</string>
   <string name="option_wallpaper">Achtergrond</string>
   <string name="hint_wallpaper">Andere achtergrond kiezen</string>
   <string name="option_lenses">Zoekbronnen</string>
