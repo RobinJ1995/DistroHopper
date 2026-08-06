@@ -31,6 +31,9 @@
   <string name="pref_header_functionality">Fonctionnalité</string>
   <string name="pref_header_appearance">Apparence</string>
   <string name="option_launchericon_size">Taille d\'icone fixé</string>
+  <!--Which screen edge the launcher or panel is attached to; the group it
+         sits under names the one it applies to.-->
+  <!--The menu button's position: the launcher's leading and trailing end.-->
   <string name="option_wallpaper">Fond d\'écran</string>
   <string name="hint_wallpaper">Changer le fond d\'écran</string>
   <string name="option_lenses">Recherches des sources</string>
