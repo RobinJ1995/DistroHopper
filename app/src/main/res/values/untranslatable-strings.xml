@@ -2,6 +2,15 @@
 <resources>
     <string name="app_name">DistroHopper</string>
 
+    <!-- Not translatable: the items are references; the strings they point
+         at carry the translations. -->
+    <string-array name="dash_app_sort_order_entries" translatable="false">
+        <item>@string/option_dash_app_sort_order_alphabetic</item>
+        <item>@string/option_dash_app_sort_order_recent</item>
+        <item>@string/option_dash_app_sort_order_most_used</item>
+        <item>@string/option_dash_app_sort_order_custom</item>
+    </string-array>
+
     <!-- Must mirror the AppSortOrder enum values, in the same order as
          dash_app_sort_order_entries. Not translatable: persisted preference keys. -->
     <string-array name="dash_app_sort_order_values" translatable="false">
