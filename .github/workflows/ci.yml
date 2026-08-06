@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ master, 'claude/**' ]
+    branches: [ master ]
     tags: [ 'v*' ]
   pull_request:
     branches: [ master ]
@@ -12,6 +12,13 @@ on:
         description: 'Version to release, e.g. v3.0.1 — a single trailing letter (v3.0.1a) publishes a pre-release'
         required: true
         type: string
+
+# A new push to a PR makes the in-flight run for its previous head pointless.
+# master and tag runs are grouped too, but never cancelled: they cut releases,
+# and a half-finished release job is worse than a redundant one.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   # Single source of truth for "is this a release, and which version is it".
