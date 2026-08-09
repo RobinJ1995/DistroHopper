@@ -55,6 +55,19 @@
                 android:textSize="13sp" />
         </LinearLayout>
 
+        <!-- Only lenses with their own settings screen show this; the drag
+             controller is bound to ivDragHandle alone, so tapping here doesn't
+             start a reorder. -->
+        <ImageView
+            android:id="@+id/ivSettings"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="12dp"
+            android:alpha="0.6"
+            android:contentDescription="@string/lens_preferences_settings"
+            android:src="@drawable/ic_desktop_menu_settings"
+            android:visibility="gone" />
+
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/cbEnabled"
             android:layout_width="wrap_content"

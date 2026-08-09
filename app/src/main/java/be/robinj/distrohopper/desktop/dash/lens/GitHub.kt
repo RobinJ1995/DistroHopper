@@ -14,6 +14,8 @@ class GitHub(context: Context) : Lens(context) {
         this.icon = context.resources.getDrawable(R.drawable.dash_search_lens_github, null)
     }
 
+    override val key = "GitHub"
+
     override val type = LensType.NETWORK
 
     override fun getName() = "GitHub"

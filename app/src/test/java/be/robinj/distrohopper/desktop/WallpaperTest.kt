@@ -1,11 +1,8 @@
 package be.robinj.distrohopper.desktop
 
-import android.Manifest
-import android.app.Application
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
@@ -18,7 +15,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows
 import org.robolectric.annotation.LooperMode
 
 @RunWith(RobolectricTestRunner::class)
@@ -128,7 +124,7 @@ class WallpaperTest {
 		}
 	}
 
-	@Test fun initWithoutStoragePermissionLeavesNoLiveWallpaper() {
+	@Test fun initLeavesNoLiveWallpaper() {
 		scenario.onActivity { activity ->
 			val wallpaper = activity.findViewById<Wallpaper>(R.id.wpWallpaper)
 
@@ -147,18 +143,4 @@ class WallpaperTest {
 		}
 	}
 
-	@Test fun initWithStoragePermissionToleratesTheMissingWallpaper() {
-		// Robolectric's WallpaperManager cannot serve a wallpaper drawable, so
-		// this covers the permission-granted branch tolerating a null result.
-		val application = ApplicationProvider.getApplicationContext<Application>()
-		Shadows.shadowOf(application)
-			.grantPermissions(Manifest.permission.READ_EXTERNAL_STORAGE)
-
-		scenario.onActivity { activity ->
-			val wallpaper = activity.findViewById<Wallpaper>(R.id.wpWallpaper)
-			wallpaper.init()
-
-			assertEquals(Color.rgb(180, 60, 18), wallpaper.getAverageColour(200))
-		}
-	}
 }

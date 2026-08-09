@@ -2,6 +2,7 @@ package be.robinj.distrohopper.preferences;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,12 +44,18 @@ public class LensPreferencesListViewAdapter extends ArrayAdapter<Lens>
 		TextView tvName = view.findViewById (R.id.tvName);
 		TextView tvDescription = view.findViewById (R.id.tvDescription);
 		ImageView imgIcon = view.findViewById (R.id.imgIcon);
+		ImageView ivSettings = view.findViewById (R.id.ivSettings);
 		CompoundButton cbEnabled = view.findViewById (R.id.cbEnabled);
 
 		tvName.setText (lens.getName ());
 		tvDescription.setText (lens.getDescription ());
 		imgIcon.setImageDrawable (lens.getIcon ());
 		cbEnabled.setChecked (this.lensManager.isLensEnabled (lens));
+
+		final Class<? extends Activity> settings = lens.settingsActivity ();
+		ivSettings.setVisibility (settings == null ? View.GONE : View.VISIBLE);
+		ivSettings.setOnClickListener (settings == null ? null : v ->
+			this.parent.startActivity (new Intent (this.parent, settings)));
 
 		LensPreferencesItemClickListener clickListener = new LensPreferencesItemClickListener (this.parent, this.lensManager, lens, cbEnabled);
 		imgIcon.setOnClickListener (clickListener);

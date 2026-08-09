@@ -26,6 +26,8 @@ open class FDroid(context: Context) : AppStoreLens(context) {
 
     private val lensIcon: Drawable = context.resources.getDrawable(R.drawable.dash_search_lens_fdroid, null)
 
+    override val key = "FDroid"
+
     override fun getIcon(): Drawable = lensIcon
 
     override fun getName(): String = "F-Droid"

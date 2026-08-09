@@ -167,10 +167,6 @@
   <string name="onboarding_welcome_body">Your Android home screen, with the look and feel of your favorite Linux desktop.</string>
   <string name="onboarding_theme_title">Pick your desktop environment</string>
   <string name="onboarding_theme_body">Which Linux desktop do you want DistroHopper to look like? You can change this at any time in the preferences.</string>
-  <string name="onboarding_permission_title">Storage access</string>
-  <string name="onboarding_permission_body">Lets DistroHopper include files on your device in search results. Optional.</string>
-  <string name="onboarding_permission_granted">✓ Storage access granted</string>
-  <string name="onboarding_button_grant">Allow</string>
   <string name="onboarding_default_launcher_title">Make it home</string>
   <string name="onboarding_default_launcher_body">Set DistroHopper as your home screen, so that it appears whenever you press the home button.</string>
   <string name="onboarding_default_launcher_already">✓ DistroHopper is your home screen</string>

@@ -314,8 +314,9 @@ etc/                                        — design assets (SVG/XCF sources, 
     relaunches the activity).
   - `WallpaperColourApplier` — applies the wallpaper's primary colour to
     launcher/dash for chameleonic themes (via the permissionless
-    `WallpaperManager.getWallpaperColors` API; the storage permission only
-    matters for the local-files lens).
+    `WallpaperManager.getWallpaperColors` API — reading the wallpaper bitmap
+    itself stopped being possible on Android 13, and no storage permission has
+    ever been involved).
   - `CustomiseModeUi` — the customise-mode seekbars and segmented rows inside
     the dash, plus their live value readouts and the header's Done button
     (which leaves customise mode through `HomeActivity.closeDash()`;
@@ -492,7 +493,16 @@ etc/                                        — design assets (SVG/XCF sources, 
     `AsyncSearch` AsyncTask). `Lens` is a Kotlin abstract class. A lens can
     declare `requiredPermissions()`; lenses missing any of them are left out of
     the default-enabled set, and enabling one in the preferences re-requests
-    them.
+    them (no lens currently declares any).
+    Every lens also declares a `key`: the **stable identifier it is persisted
+    under**, and the map key `LensManager.register` files it under. It is
+    frozen once shipped — changing a lens's key drops that lens from every
+    user's enabled list, which is how a lens is deliberately retired (see
+    `LocalFiles_v2`). It is deliberately independent of the class name and of
+    `getName()`: `FDroid` displays as "F-Droid" but persists as `FDroid`.
+    `LensKeyTest` pins the whole set so a rename can't move one by accident.
+    A lens may also return a `settingsActivity()`, which puts a cog on its row
+    in the lens preferences (only `LocalFiles` has one).
     Every lens streams its results progressively: `suspend search(query,
     maxResults, emitter)` pushes each `LensSearchResult` through a
     `LensResultEmitter` the moment it is fully ready (icon and all — no
@@ -508,6 +518,28 @@ etc/                                        — design assets (SVG/XCF sources, 
     (`InstalledApps`) run on every keystroke so installed apps appear instantly,
     while `IO` (`LocalFiles`) and `NETWORK` lenses run only after a short
     debounce so bursts of typing don't hit them.
+    `LocalFiles` searches the folders the user has granted through the system
+    directory picker (`ACTION_OPEN_DOCUMENT_TREE`) with `DocumentsContract`.
+    One breadth-first queue is seeded with **every** granted root, not one walk
+    per folder, so depth is compared across folders too — otherwise a deep match
+    in the first folder would outrank a direct child of the second and could eat
+    the whole result allowance before the second was queried. Documents are
+    de-duplicated per provider (`authority` + document id), since a folder and
+    its own ancestor can both be granted. Rows are handled as they come off the
+    cursor rather than collected first, so a cancelled keystroke stops
+    mid-directory; cancellation is checked per directory and per row (the runner
+    cancels on every keystroke). `localfiles/SearchFolderStore` holds the granted trees as
+    persisted URI permissions under `Preference.LENS_LOCALFILES_V2_FOLDERS`,
+    pruning any whose grant the system took back;
+    `preferences/LocalFilesFoldersActivity` is its settings screen. It
+    deliberately holds **no storage permission** — a granted tree is the
+    permission — which is why it finds nothing until a folder is added, and why
+    it is not a default-enabled lens. It replaced a `MediaStore` query that
+    needed `READ_MEDIA_IMAGES`/`READ_MEDIA_VIDEO` (rejected by Google Play's
+    photo-picker policy) and that, under scoped storage, could never see PDFs
+    or documents anyway. Note Android 11+ refuses to grant the `Download`
+    directory, the internal-storage root, and SD-card roots; sub-folders of
+    `Download` and `Android/media/*` are fine.
     Click handling lives within each lens: `Lens.onClick` does nothing by
     default and lenses override it to launch an app (`InstalledApps`), open a
     file (`LocalFiles`), a store page (`FDroid`/`GooglePlayStore`), or a web link
@@ -515,8 +547,8 @@ etc/                                        — design assets (SVG/XCF sources, 
     rendered by `CollectionGridAdapter` as a synthetic error tile that shows the
     failure dialog (`Lens.showError`) when tapped.
 - **`onboarding/`** — the first-run wizard. `OnboardingActivity` is a
-  full-screen ViewPager2 pager (theme choice, runtime permission prompts,
-  set-as-default-home via `RoleManager.ROLE_HOME`) shown over the wallpaper
+  full-screen ViewPager2 pager (theme choice, set-as-default-home via
+  `RoleManager.ROLE_HOME`) shown over the wallpaper
   (cross-window-blurred, like the dash). `HomeActivity.onCreate` checks
   `OnboardingGate.shouldShow` before any initialisation and redirects
   (finishing itself) on first run; Finish sets the `SETUP_COMPLETED`
@@ -532,10 +564,10 @@ etc/                                        — design assets (SVG/XCF sources, 
   before the wizard existed are marked completed silently — the wizard writes
   `SETUP_STARTED` on launch so its own theme write (made as soon as a card
   is tapped) doesn't trip that grandfathering when a run is interrupted.
-  The wizard's permission page is the app's only storage permission prompt
-  (`Permission.storagePermissions()` — READ_EXTERNAL_STORAGE up to Android
-  12, the READ_MEDIA_* set from 13); HomeActivity no longer requests
-  permissions at startup.
+  The wizard has no permission page: the app declares no dangerous
+  permissions at all (the `Permission` helper and `Lens.requiredPermissions()`
+  remain for any future lens that needs one). The page was dropped along with
+  the storage permissions when the local-files lens moved to SAF.
   Tests that launch `HomeActivity` with fresh prefs must seed
   `SETUP_COMPLETED` (done by `ActivityTestSupport.launchHome()`) or they
   will be redirected to the wizard.

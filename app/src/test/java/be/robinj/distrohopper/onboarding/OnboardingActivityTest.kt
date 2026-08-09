@@ -8,7 +8,6 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.viewpager2.widget.ViewPager2
 import be.robinj.distrohopper.HomeActivity
-import be.robinj.distrohopper.Permission
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
@@ -108,24 +107,12 @@ class OnboardingActivityTest {
         }
     }
 
-    @Test fun permissionPageShowsGrantedStateWhenAlreadyGranted() {
-        Shadows.shadowOf(application).grantPermissions(*Permission.storagePermissions())
-
+    @Test fun everyPageIsShown() {
         launch().use { scenario ->
             scenario.onActivity { activity ->
                 val pager = activity.findViewById<ViewPager2>(R.id.vpOnboarding)
-                assertEquals(OnboardingPage.entries.size, pager.adapter!!.itemCount)
-                pager.setCurrentItem(OnboardingPage.PERMISSION.ordinal, false)
-                ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
 
-                assertEquals(
-                    android.view.View.VISIBLE,
-                    activity.findViewById<android.view.View>(R.id.tvOnboardingPermissionGranted).visibility,
-                )
-                assertEquals(
-                    android.view.View.GONE,
-                    activity.findViewById<android.view.View>(R.id.btnOnboardingGrantPermission).visibility,
-                )
+                assertEquals(OnboardingPage.entries.size, pager.adapter!!.itemCount)
             }
         }
     }

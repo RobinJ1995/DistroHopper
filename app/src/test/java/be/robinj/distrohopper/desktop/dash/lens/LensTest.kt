@@ -62,6 +62,7 @@ class LensTest {
 
     private class RecordingLens(context: android.content.Context) : Lens(context) {
         var lastMaxResults = -1
+        override val key = "RecordingLens"
         override val type = LensType.NETWORK
         override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {
             lastMaxResults = maxResults

@@ -1,5 +1,6 @@
 package be.robinj.distrohopper.desktop.dash.lens
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -35,6 +36,15 @@ abstract class Lens(protected val context: Context) {
     @JvmField protected var icon: Drawable? = null
 
     /**
+     * Stable identifier this lens is persisted under (see LensManager). Frozen
+     * once shipped: changing it drops the lens from every user's enabled list,
+     * which is how a lens is deliberately retired. Deliberately not derived from
+     * the class name or [getName], so neither a refactor nor a retitling can
+     * move it by accident.
+     */
+    abstract val key: String
+
+    /**
      * How expensive this lens is to search, which drives scheduling in
      * SearchLoader (LOCAL lenses run on every keystroke; IO and NETWORK lenses
      * are debounced).
@@ -66,6 +76,12 @@ abstract class Lens(protected val context: Context) {
      * any of these are disabled by default; enabling one re-requests them.
      */
     open fun requiredPermissions(): Array<String> = emptyArray()
+
+    /**
+     * A screen for this lens's own settings, offered from its row in the lens
+     * preferences. Null (the default) means the lens has nothing to configure.
+     */
+    open fun settingsActivity(): Class<out Activity>? = null
 
     // Click handling lives within each lens: the base does nothing by default,
     // and lenses override to launch an app, open a file, a store page, or a web

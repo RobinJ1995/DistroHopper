@@ -166,10 +166,6 @@
   <string name="onboarding_welcome_body">Uw Android-startscherm, met de uitstraling en bediening van uw favoriete Linux-desktopomgeving.</string>
   <string name="onboarding_theme_title">Kies uw desktopomgeving</string>
   <string name="onboarding_theme_body">Op welke Linux-desktopomgeving moet DistroHopper lijken? U kunt dit op elk moment wijzigen in de voorkeuren.</string>
-  <string name="onboarding_permission_title">Toegang tot opslag</string>
-  <string name="onboarding_permission_body">Hiermee kan DistroHopper bestanden op uw apparaat opnemen in de zoekresultaten. Optioneel.</string>
-  <string name="onboarding_permission_granted">✓ Toegang tot opslag verleend</string>
-  <string name="onboarding_button_grant">Toestaan</string>
   <string name="onboarding_default_launcher_title">Maak het uw startscherm</string>
   <string name="onboarding_default_launcher_body">Stel DistroHopper in als uw startscherm, zodat het verschijnt wanneer u op de startknop drukt.</string>
   <string name="onboarding_default_launcher_already">✓ DistroHopper is uw startscherm</string>

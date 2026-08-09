@@ -5,11 +5,9 @@
 
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-		android:maxSdkVersion="32" />
-	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-	<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
-	<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+	<!-- No storage permissions: the Local files lens searches only folders the
+	     user has granted through the system directory picker (SAF), which needs
+	     none. -->
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<!-- Lets LauncherApps also surface hidden profiles (private space, Android 15+);
 	     only granted by the system while DistroHopper holds the HOME role -->
@@ -143,6 +141,16 @@
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="be.robinj.distrohopper.preferences.PreferencesActivity" />
+		</activity>
+		<activity
+			android:name="be.robinj.distrohopper.preferences.LocalFilesFoldersActivity"
+			android:label="@string/title_activity_local_files_folders"
+			android:parentActivityName="be.robinj.distrohopper.preferences.LensPreferencesActivity"
+			android:theme="@style/LensPreferencesTheme"
+			android:exported="false">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="be.robinj.distrohopper.preferences.LensPreferencesActivity" />
 		</activity>
 		<activity
 			android:name="be.robinj.distrohopper.preferences.ThemePreferencesActivity"

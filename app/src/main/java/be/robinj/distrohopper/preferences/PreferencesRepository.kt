@@ -24,6 +24,16 @@ class PreferencesRepository(context: Context) {
 	fun getString(pref: Preference, default: String?): String? =
 		this.prefs.getString(pref.getName(), default)
 
+	/**
+	 * A copy of the stored set — SharedPreferences forbids mutating the instance
+	 * it hands back, and callers here build modified sets to write again.
+	 */
+	fun getStringSet(pref: Preference): Set<String> =
+		this.prefs.getStringSet(pref.getName(), emptySet())?.toSet() ?: emptySet()
+
+	fun putStringSet(pref: Preference, values: Set<String>) =
+		this.edit { putStringSet(pref.getName(), values) }
+
 	fun edit(block: SharedPreferences.Editor.() -> Unit) {
 		this.prefs.edit().apply(block).apply()
 	}
