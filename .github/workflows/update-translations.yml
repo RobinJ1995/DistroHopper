@@ -27,6 +27,11 @@ jobs:
           TX_TOKEN: ${{ secrets.TRANSIFEX_TOKEN }}
         run: ./tx pull -a --minimum-perc 1 --force
 
+      - name: Regenerate the qualified British English strings
+        # values-b+en+001 is a copy of the en_GB source strings, not a Transifex
+        # language, so nothing above refreshes it — see the script's docstring.
+        run: ./etc/generate_en_001_strings.py
+
       - name: Open a pull request for updated translations
         uses: peter-evans/create-pull-request@v7
         with:
