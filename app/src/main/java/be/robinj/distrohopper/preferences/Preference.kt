@@ -41,6 +41,21 @@ enum class Preference(
 	DASH_SEARCH_LENSES_MAX_RESULTS("dashsearch_lenses_maxresults"),
 	/** Number of icon columns across the dash app grid. */
 	DASH_GRID_COLUMNS("dash_grid_columns"),
+	/**
+	 * The desktop (widget) grid's five size options as "colsxrows" entries,
+	 * comma-separated — snapshotted from the stable screen size on first launch
+	 * and read back verbatim forever, so later calculation changes can never
+	 * alter a user's options. See [be.robinj.distrohopper.widgets.WidgetGrid].
+	 */
+	DESKTOP_GRID_PRESETS("desktop_grid_presets"),
+	/**
+	 * The desktop grid's ACTUAL size as "colsxrows" — snapshotted to the middle
+	 * preset on first launch, changed only by the customise slider. Persisting
+	 * the resolved size (not a count or an index) keeps the grid — and the
+	 * absolute col/row coordinates stored against it — stable across
+	 * orientation, density/Display-size and future formula changes.
+	 */
+	DESKTOP_GRID_SIZE("desktop_grid_size"),
 	/** How dash apps are ordered (alphabetical, usage, custom, …). */
 	APP_SORT_ORDER("app_sort_order", "alphabetical"),
 	/** Whether opt-in crash reporting is enabled. */

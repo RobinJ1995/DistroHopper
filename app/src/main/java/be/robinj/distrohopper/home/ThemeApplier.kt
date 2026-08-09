@@ -197,6 +197,7 @@ class ThemeApplier(
 			R.id.tvCustomiseDone,
 			R.id.tvCustomiseGroupLauncher,
 			R.id.tvCustomiseGroupDash,
+			R.id.tvCustomiseGroupDesktop,
 			R.id.tvCustomiseGroupPanel,
 		)
 	}

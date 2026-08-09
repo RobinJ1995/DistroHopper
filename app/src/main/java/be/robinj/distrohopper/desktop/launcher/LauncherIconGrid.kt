@@ -9,10 +9,9 @@ import androidx.core.content.ContextCompat
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
+import be.robinj.distrohopper.AdaptiveCells
 import be.robinj.distrohopper.theme.Location
-import kotlin.math.ceil
 import kotlin.math.max
-import kotlin.math.roundToInt
 
 /**
  * Pure maths (plus thin runtime resolvers) for the launcher's pinned-icon size — the
@@ -57,18 +56,17 @@ object LauncherIconGrid {
 
 	/** Fewest slots offered on a screen [shortEdgeDp] dp wide (icons capped at [MAX_ICON_DP]). */
 	@JvmStatic
-	fun minCount(shortEdgeDp: Int): Int =
-		max(2, ceil(shortEdgeDp.toDouble() / MAX_ICON_DP).toInt())
+	fun minCount(shortEdgeDp: Int): Int = AdaptiveCells.minCount(shortEdgeDp, MAX_ICON_DP)
 
 	/** Most slots offered on a screen [shortEdgeDp] dp wide (icons floored at [MIN_ICON_DP]). */
 	@JvmStatic
-	fun maxCount(shortEdgeDp: Int): Int = max(minCount(shortEdgeDp), shortEdgeDp / MIN_ICON_DP)
+	fun maxCount(shortEdgeDp: Int): Int =
+		AdaptiveCells.maxCount(shortEdgeDp, MIN_ICON_DP, MAX_ICON_DP)
 
 	/** The device-adaptive default slot count (the middle preset) for [shortEdgeDp]. */
 	@JvmStatic
 	fun defaultCount(shortEdgeDp: Int): Int =
-		(shortEdgeDp.toDouble() / TARGET_ICON_DP).roundToInt()
-			.coerceIn(minCount(shortEdgeDp), maxCount(shortEdgeDp))
+		AdaptiveCells.defaultCount(shortEdgeDp, TARGET_ICON_DP, MIN_ICON_DP, MAX_ICON_DP)
 
 	/**
 	 * The slot count for [presetIndex] (0 = Tiny … [PRESET_COUNT]-1 = Huge): an offset from the

@@ -44,6 +44,102 @@ class WidgetGridTest {
         assertTrue(cols >= 2)
     }
 
+    // ---- user-chosen column count ------------------------------------------
+
+    @Test fun columnRangeAndDefaultForTypicalPhone() {
+        assertEquals(5, WidgetGrid.minColumns(360))  // ceil(360/72)
+        assertEquals(10, WidgetGrid.maxColumns(360)) // 360/36
+        assertEquals(8, WidgetGrid.defaultColumns(360))
+    }
+
+    /**
+     * At the adaptive default the rows keep the EXACT legacy formula, so
+     * existing desktops keep the grid their stored coordinates were written
+     * against across the update that introduced the column setting.
+     */
+    @Test fun defaultColumnsKeepLegacyRows() {
+        assertEquals(WidgetGrid.calculate(360, 800),
+            WidgetGrid.calculate(360, 800, WidgetGrid.defaultColumns(360)))
+        assertEquals(8 to 17, WidgetGrid.calculate(360, 800, 8))
+    }
+
+    @Test fun chosenColumnsDeriveRowsFromAspectRatio() {
+        // 10 cols on 360×800: rows = round(800 * 10 / 360) = 22
+        assertEquals(10 to 22, WidgetGrid.calculate(360, 800, 10))
+        // 5 cols: rows = round(800 * 5 / 360) = 11
+        assertEquals(5 to 11, WidgetGrid.calculate(360, 800, 5))
+    }
+
+    @Test fun chosenColumnsAreClampedToRange() {
+        assertEquals(WidgetGrid.maxColumns(360), WidgetGrid.calculate(360, 800, 99).first)
+        assertEquals(WidgetGrid.minColumns(360), WidgetGrid.calculate(360, 800, 1).first)
+    }
+
+    @Test fun chosenColumnsRowsNeverBelowCols() {
+        for (cols in WidgetGrid.minColumns(360)..WidgetGrid.maxColumns(360)) {
+            val (c, r) = WidgetGrid.calculate(360, 360, cols)
+            assertTrue(r >= c)
+        }
+    }
+
+    // ---- preset ladder + serialisation -------------------------------------
+
+    @Test fun presetLadderStepsAroundTheDefault() {
+        val presets = WidgetGrid.generatePresets(360, 800)
+        assertEquals(WidgetGrid.PRESET_COUNT, presets.size)
+        assertEquals("middle preset is the exact adaptive default (legacy rows)",
+            WidgetGrid.calculate(360, 800), presets[WidgetGrid.DEFAULT_PRESET])
+        assertEquals(listOf(6, 7, 8, 9, 10), presets.map { it.first })
+    }
+
+    @Test fun presetLadderCollapsesAtTheRangeEnds() {
+        // sw 200: columns range 3..5 around a default of 4 — the ±2 steps clamp.
+        val presets = WidgetGrid.generatePresets(200, 400)
+        assertEquals(listOf(3, 3, 4, 5, 5), presets.map { it.first })
+    }
+
+    @Test fun sizeSerialisationRoundTrips() {
+        assertEquals(8 to 17, WidgetGrid.parseSize(WidgetGrid.formatSize(8 to 17)))
+        assertEquals("8x17", WidgetGrid.formatSize(8 to 17))
+    }
+
+    @Test fun parseSizeRejectsMalformedInput() {
+        assertNull(WidgetGrid.parseSize(null))
+        assertNull(WidgetGrid.parseSize(""))
+        assertNull(WidgetGrid.parseSize("8"))
+        assertNull(WidgetGrid.parseSize("8x"))
+        assertNull(WidgetGrid.parseSize("x17"))
+        assertNull(WidgetGrid.parseSize("8x17x2"))
+        assertNull(WidgetGrid.parseSize("0x5"))
+        assertNull(WidgetGrid.parseSize("-1x5"))
+        assertNull(WidgetGrid.parseSize("axb"))
+    }
+
+    // ---- stable-density anchor ---------------------------------------------
+
+    /**
+     * The system "Display size" setting rescales dp while pixels stay fixed;
+     * correcting the live dp back to the stable density must recover the same
+     * edge regardless of the chosen display size, so the grid (and the
+     * absolute coordinates stored against it) never changes underneath.
+     */
+    @Test fun stableEdgeDpIsInvariantAcrossDisplaySizes() {
+        // A 411 dp at 420 dpi device: px = 411 * 420/160.
+        // Larger display size (480dpi): live dp = round(px / 3.0) = 360.
+        assertEquals(411, WidgetGrid.stableEdgeDp(360, 480, 420))
+        // Smaller display size (356dpi): live dp ≈ 485.
+        assertEquals(411, WidgetGrid.stableEdgeDp(485, 356, 420))
+        // Default display size: identity.
+        assertEquals(411, WidgetGrid.stableEdgeDp(411, 420, 420))
+    }
+
+    @Test fun stableEdgeDpFallsBackWhenStableDensityIsUnreliable() {
+        assertEquals(360, WidgetGrid.stableEdgeDp(360, 480, 0))    // unset
+        assertEquals(360, WidgetGrid.stableEdgeDp(360, 0, 420))    // bogus current
+        assertEquals(360, WidgetGrid.stableEdgeDp(360, 480, 160))  // 3× — outside any real display-size range
+        assertEquals(360, WidgetGrid.stableEdgeDp(360, 160, 480))  // ⅓× likewise
+    }
+
     // ---- rotation transforms -----------------------------------------------
 
     private fun portraitToDisplay(col: Int, row: Int, colSpan: Int, rowSpan: Int, rotation: Int) =

@@ -656,9 +656,20 @@ etc/                                        — design assets (SVG/XCF sources, 
   swiping and fades out after settling.
   The per-page grid maths stay inside `WidgetsContainer` (page insets are
   applied as padding per page, not on the pager), which lays widgets out on
-  an invisible 8×8 grid (`WidgetGrid` holds the pure grid maths — snapping,
-  span clamping, overlap checks, and the initial span for new/restored
-  widgets). Widget sizing reads the provider's hints — `targetCellWidth/Height`
+  an invisible COLS×ROWS grid (`WidgetGrid` holds the pure grid maths —
+  snapping, span clamping, overlap checks, and the initial span for
+  new/restored widgets). Because the desktop persists ABSOLUTE col/row
+  coordinates (`DesktopLayoutStorage`), the grid dimensions are Launcher3-style
+  snapshot state, not a runtime formula: on first launch `WidgetGrid`
+  computes five preset sizes from the stable-density screen edges
+  (`stableEdgeDp`; the middle is the adaptive default, ±2 coarser/finer
+  steps around it) and persists both the ladder (`DESKTOP_GRID_PRESETS`)
+  and the ACTUAL grid in use (`DESKTOP_GRID_SIZE`, "colsxrows"). From then
+  on the stored size is applied verbatim — orientation, density/Display-size
+  changes, and future retuning of the calculation constants can never move
+  the grid underneath the stored layout. The customise-mode slider picks
+  among the five persisted presets; changing it relaunches home, since the
+  stored layout reloads against the new grid. Widget sizing reads the provider's hints — `targetCellWidth/Height`
   (API 33), else `minResizeWidth/Height`, else `minWidth/Height` — and clamps
   to `maxResize*`; `clampSpan` uses nearest rounding for both bounds so the
   coarse grid keeps a real resize range instead of collapsing to one span.

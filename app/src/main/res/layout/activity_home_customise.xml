@@ -179,6 +179,40 @@
 
 			</LinearLayout>
 
+			<!-- Desktop -->
+
+			<TextView
+				android:id="@+id/tvCustomiseGroupDesktop"
+				style="@style/CustomiseGroupLabel"
+				android:text="@string/pref_header_desktop" />
+
+			<LinearLayout style="@style/CustomiseCard">
+
+				<LinearLayout style="@style/CustomiseSetting">
+
+					<TextView
+						style="@style/CustomiseSettingTitle"
+						android:text="@string/customise_option_desktop_grid_size" />
+
+					<TextView
+						style="@style/CustomiseSettingHint"
+						android:text="@string/customise_hint_desktop_grid_size" />
+
+					<SeekBar
+						android:id="@+id/sbCustomiseDesktopColumns"
+						style="@style/CustomiseSeekBar"
+						android:saveEnabled="false" /><!-- see sbCustomiseLauncherIconSize -->
+
+					<!-- The live "columns × rows" readout; see
+					     CustomiseModeUi.updateDesktopGridHint(). -->
+					<TextView
+						android:id="@+id/tvCustomiseDesktopGridHint"
+						style="@style/CustomiseSettingValue" />
+
+				</LinearLayout>
+
+			</LinearLayout>
+
 			<!-- Panel: the whole group goes when the theme doesn't let the
 			     panel move (CustomiseModeUi.show()). -->
 
