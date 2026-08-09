@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <string name="unsupported_android_version">DistroHopper ondersteunt deze versie van Android niet.</string>
   <string name="action_settings">Instellingen</string>
   <string name="dash_search_hint">Zoeken</string>
   <string name="dash_lens_apps_title">Toepassingen</string>
@@ -15,14 +16,32 @@
   <string name="shortcut_label_distrohopper_settings">DistroHopper Instellingen</string>
   <string name="title_activity_about">Over</string>
   <string name="title_activity_lens_preferences">Zoekbronnen</string>
+  <string name="title_activity_local_files_folders">Mappen om te doorzoeken</string>
   <string name="title_activity_theme_preferences">Thema\'s</string>
   <string name="title_activity_dev_logs">Logs</string>
+  <string name="lens_preferences_settings">Instellingen voor zoekbron</string>
+  <string name="local_files_folders_add">Map toevoegen</string>
+  <string name="local_files_folders_empty">Voeg een map toe om de inhoud ervan te kunnen doorzoeken.</string>
+  <string name="local_files_folders_remove">Map verwijderen</string>
   <string name="developed_by">Ontwikkeld door Robin Jacobs</string>
   <string name="about_get_involved">Help mee</string>
   <string name="about_github_title">Bijdragen op GitHub</string>
   <string name="about_github_subtitle">Bekijk de code, meld problemen, en ontwikkel mee</string>
   <string name="about_transifex_title">Help met vertalen</string>
   <string name="about_transifex_subtitle">Help DistroHopper te vertalen naar uw taal</string>
+  <string name="about_legal">Juridisch</string>
+  <string name="about_licenses_title">Opensourcelicenties</string>
+  <string name="about_licenses_subtitle">Licenties van de lettertypen en code waarop DistroHopper is gebouwd</string>
+  <string name="about_privacy_title">Privacybeleid</string>
+  <string name="about_privacy_subtitle">Wat DistroHopper verzamelt, en wat niet</string>
+  <!--Shown at the bottom of the About screen. %1$s is the current year.-->
+  <string name="about_copyright">Copyright © 2012–%1$s Robin Jacobs</string>
+  <string name="about_gpl_notice">DistroHopper is vrije software: u mag het verspreiden en/of wijzigen onder de voorwaarden van de GNU General Public License zoals gepubliceerd door de Free Software Foundation, ofwel versie 3 van de licentie, ofwel (naar uw keuze) een latere versie. Het wordt geleverd ZONDER ENIGE GARANTIE. De broncode is beschikbaar op GitHub.</string>
+  <string name="title_activity_licenses">Opensourcelicenties</string>
+  <string name="licenses_intro">DistroHopper zelf valt onder de GNU General Public License v3. Daarnaast bundelt het de hieronder vermelde lettertypen en code, elk onder een eigen licentie. Tik op een item om de volledige licentietekst te lezen.</string>
+  <!--Accompanies a licence entry: which licence the component is under-->
+  <string name="licenses_entry_license">Gelicentieerd onder %1$s</string>
+  <string name="licenses_read_error">De licentietekst kon niet worden geladen. Je kan hem lezen in de broncoderepository op GitHub.</string>
   <string name="button_back">Terug</string>
   <string name="button_about">Over</string>
   <string name="button_apply">Toepassen</string>
@@ -56,6 +75,9 @@
   <string name="customise_option_dash_grid_size">Rastergrootte</string>
   <string name="customise_hint_dash_grid_size">Groter raster betekent kleinere pictogrammen.</string>
   <string name="dash_grid_hint">%1$d × %2$d</string>
+  <string name="pref_header_desktop">Bureaublad</string>
+  <string name="customise_option_desktop_grid_size">Rastergrootte</string>
+  <string name="customise_hint_desktop_grid_size">Groter raster betekent kleinere cellen. Wijzigen herschikt items die niet meer passen.</string>
   <!--Which screen edge the launcher or panel is attached to; the group it
          sits under names the one it applies to.-->
   <string name="customise_option_screen_edge">Schermrand</string>
@@ -111,6 +133,7 @@
   <string name="option_dev">Ontwikkelaarsmodus</string>
   <string name="hint_dev">Toegang tot debuglogs en andere technische informatie, en experimentele functionaliteit. Het inschakelen van deze optie zal een negatieve impact hebben op de prestaties en stabiliteit van de app.</string>
   <string name="option_dev_logs">Logs</string>
+  <string name="dev_logs_empty">Er zijn nog geen logs.</string>
   <string name="option_clear_cache">Cache wissen</string>
   <string name="toast_cache_cleared">Cache gewist</string>
   <string name="option_full_restart">Volledig herstarten</string>

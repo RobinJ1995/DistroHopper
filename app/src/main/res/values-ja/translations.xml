@@ -6,6 +6,8 @@
   <string name="title_activity_preferences">設定</string>
   <string name="title_activity_about">このアプリについて</string>
   <string name="developed_by">Robin Jacobsが開発したアプリです。</string>
+  <!--Shown at the bottom of the About screen. %1$s is the current year.-->
+  <!--Accompanies a licence entry: which licence the component is under-->
   <string name="button_back">戻る</string>
   <string name="button_about">このアプリについて</string>
   <string name="title_preferences">設定</string>
