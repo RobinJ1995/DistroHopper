@@ -279,6 +279,55 @@
                 android:showDividers="middle">
 
                 <LinearLayout
+                    android:id="@+id/linkPrivacy"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="14dp"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="14dp"
+                        android:src="@drawable/ic_about_privacy"
+                        android:contentDescription="@string/about_privacy_title" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="15sp"
+                            android:textColor="@color/dialog_on_surface"
+                            android:text="@string/about_privacy_title" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:textSize="12sp"
+                            android:textColor="@color/dialog_on_surface_dim"
+                            android:text="@string/about_privacy_subtitle" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="8dp"
+                        android:src="@drawable/ic_about_chevron"
+                        android:contentDescription="@null" />
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/linkLicenses"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"

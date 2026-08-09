@@ -36,6 +36,9 @@
     <string name="about_legal">Legal</string>
     <string name="about_licenses_title">Open source licences</string>
     <string name="about_licenses_subtitle">Licences of the fonts and code DistroHopper is built on</string>
+    <string name="about_privacy_title">Privacy policy</string>
+    <string name="about_privacy_subtitle">What DistroHopper collects, and what it doesn\'t</string>
+    <string name="about_privacy_url" translatable="false">https://github.com/RobinJ1995/DistroHopper/blob/master/PRIVACY.md</string>
     <!-- Shown at the bottom of the About screen. %1$s is the current year. -->
     <string name="about_copyright">Copyright © 2012–%1$s Robin Jacobs</string>
     <string name="about_gpl_notice">DistroHopper is free software: you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation, either version 3 of the Licence, or (at your option) any later version. It comes with ABSOLUTELY NO WARRANTY. The source code is available on GitHub.</string>

@@ -39,6 +39,9 @@ class AboutActivity : AppCompatActivity() {
 			this.findViewById<View>(R.id.linkTransifex).setOnClickListener {
 				this.openUrl(this.getString(R.string.about_transifex_url))
 			}
+			this.findViewById<View>(R.id.linkPrivacy).setOnClickListener {
+				this.openUrl(this.getString(R.string.about_privacy_url))
+			}
 			this.findViewById<View>(R.id.linkLicenses).setOnClickListener {
 				this.startActivity(Intent(this, LicensesActivity::class.java))
 			}

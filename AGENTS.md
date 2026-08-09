@@ -77,6 +77,9 @@ app/src/main/res/                           — layouts, drawables, strings
 app/src/test/java/be/robinj/distrohopper/   — Robolectric unit tests (Kotlin)
 app/src/androidTest/                        — instrumented tests
 etc/                                        — design assets (SVG/XCF sources, screenshots)
+licenses/                                   — full licence texts of everything the
+                                              app bundles; staged into the APK's
+                                              assets by the copyLicenseAssets task
 ```
 
 ## Package structure (`be.robinj.distrohopper`)
@@ -239,8 +242,21 @@ etc/                                        — design assets (SVG/XCF sources, 
     `DependencyContainer.override`.
   - `DispatcherProvider` — indirection over coroutine dispatchers so tests
     can inject deterministic ones.
-  - `AboutActivity` — informational screen: version, developer links, and a
-    "Get involved" list linking out to the GitHub repo and Transifex.
+  - `AboutActivity` — informational screen: version, developer links, a
+    "Get involved" list linking out to the GitHub repo and Transifex, and a
+    "Legal" list linking to the privacy policy and the licences screen. The
+    copyright and no-warranty line below it is there because GPLv3 asks an
+    interactive program to display one — don't drop it.
+  - `LicensesActivity` / `LicenseTextActivity` — the list of everything the
+    app bundles under a licence of its own, and the full text of one such
+    licence. The texts are **assets**, not string resources: the SIL OFL and
+    the Ubuntu Font Licence require the licence to be distributed with the
+    fonts, so a copy that only exists in the repository doesn't satisfy them.
+    `copyLicenseAssets` (app/build.gradle) stages `licenses/` plus the root
+    `LICENSE` into `assets/licenses/`, so each text is version-controlled
+    exactly once. **Bundling a new font, vendored source file or dependency
+    means adding its licence text there and an entry to
+    `LicensesActivity.ENTRIES`.**
 - **`home/`** — Kotlin controller/applier classes extracted from
   HomeActivity, each owning one concern of the home screen and constructed
   in `onCreate` with the `ViewFinder` plus what they need from the
