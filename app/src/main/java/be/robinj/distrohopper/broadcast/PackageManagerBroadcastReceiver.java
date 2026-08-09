@@ -75,7 +75,7 @@ public class PackageManagerBroadcastReceiver extends BroadcastReceiver
 					friendlyAction = "being replaced";
 				}
 
-				Log.getInstance ().v (this.getClass ().getSimpleName (), "Package " + friendlyAction + ": " + packageName);
+				Log.getInstance ().v (this.getClass ().getSimpleName (), "Package " + friendlyAction);
 			}
 		}
 		catch (Exception ex)

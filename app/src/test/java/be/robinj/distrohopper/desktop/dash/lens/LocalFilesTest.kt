@@ -11,8 +11,6 @@ import android.provider.DocumentsContract
 import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.desktop.dash.lens.localfiles.SearchFolderStore
-import be.robinj.distrohopper.preferences.Preference
-import be.robinj.distrohopper.preferences.PreferencesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.currentCoroutineContext
@@ -34,8 +32,8 @@ class LocalFilesTest {
 
     @Before fun setUp() {
         application = ApplicationProvider.getApplicationContext()
-        PreferencesRepository(application)
-            .putStringSet(Preference.LENS_LOCALFILES_V2_FOLDERS, emptySet())
+        SearchFolderStore.preferences(application).edit()
+            .putStringSet(SearchFolderStore.KEY_FOLDERS, emptySet()).commit()
 
         provider = FakeDocumentsProvider()
         ShadowContentResolver.registerProviderInternal(AUTHORITY, provider)
@@ -303,10 +301,10 @@ class LocalFilesTest {
         grantFolder("papers")
 
         // Recorded but never granted, so the store never returns it //
-        PreferencesRepository(application).putStringSet(
-            Preference.LENS_LOCALFILES_V2_FOLDERS,
+        SearchFolderStore.preferences(application).edit().putStringSet(
+            SearchFolderStore.KEY_FOLDERS,
             setOf(treeUriFor("papers").toString(), treeUriFor("gone").toString()),
-        )
+        ).commit()
 
         assertEquals(listOf("notes.txt"), lens.collect("notes", 10).results.map { it.name })
     }
@@ -328,8 +326,8 @@ class LocalFilesTest {
     }
 
     @Test fun survivesAFolderThatIsNotADocumentTree() {
-        PreferencesRepository(application).putStringSet(
-            Preference.LENS_LOCALFILES_V2_FOLDERS, setOf("content://$AUTHORITY/nonsense"))
+        SearchFolderStore.preferences(application).edit().putStringSet(
+            SearchFolderStore.KEY_FOLDERS, setOf("content://$AUTHORITY/nonsense")).commit()
         application.contentResolver.takePersistableUriPermission(
             Uri.parse("content://$AUTHORITY/nonsense"), Intent.FLAG_GRANT_READ_URI_PERMISSION)
 

@@ -529,8 +529,13 @@ etc/                                        — design assets (SVG/XCF sources, 
     cursor rather than collected first, so a cancelled keystroke stops
     mid-directory; cancellation is checked per directory and per row (the runner
     cancels on every keystroke). `localfiles/SearchFolderStore` holds the granted trees as
-    persisted URI permissions under `Preference.LENS_LOCALFILES_V2_FOLDERS`,
-    pruning any whose grant the system took back;
+    persisted URI permissions in the lens's **own** preferences file — under
+    `folders` in `Preferences.forLens(LocalFiles.KEY)`, i.e.
+    `lens_LocalFiles_v2_prefs` — pruning any whose grant the system took back.
+    A tree URI spells out the folder's name and path, and the main `"prefs"`
+    file is in the crash-report allowlist (see `Application`), so this is
+    deliberately not a `Preference` enum entry; give any future lens that
+    persists user-specific state its own `forLens` file for the same reason.
     `preferences/LocalFilesFoldersActivity` is its settings screen. It
     deliberately holds **no storage permission** — a granted tree is the
     permission — which is why it finds nothing until a folder is added, and why

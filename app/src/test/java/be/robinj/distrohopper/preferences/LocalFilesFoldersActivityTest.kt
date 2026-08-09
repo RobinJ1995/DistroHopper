@@ -38,8 +38,8 @@ class LocalFilesFoldersActivityTest {
 
     @Before fun setUp() {
         application = ApplicationProvider.getApplicationContext()
-        PreferencesRepository(application)
-            .putStringSet(Preference.LENS_LOCALFILES_V2_FOLDERS, emptySet())
+        SearchFolderStore.preferences(application).edit()
+            .putStringSet(SearchFolderStore.KEY_FOLDERS, emptySet()).commit()
         ShadowContentResolver.registerProviderInternal(AUTHORITY, NamingProvider())
         // Names resolve off the main thread in production; run that inline here //
         LocalFilesFoldersActivity.ioDispatcher = Dispatchers.Unconfined

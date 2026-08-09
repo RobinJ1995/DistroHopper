@@ -33,7 +33,7 @@ class WorkProfileAppsCallback(private val parent: HomeActivity) : LauncherApps.C
 			}
 
 			Log.getInstance().v(this.javaClass.simpleName,
-				"Package added in other profile: $packageName")
+				"Package added in other profile")
 		}
 	}
 
@@ -44,7 +44,7 @@ class WorkProfileAppsCallback(private val parent: HomeActivity) : LauncherApps.C
 				.forEach { appManager.remove(it) }
 
 			Log.getInstance().v(this.javaClass.simpleName,
-				"Package removed in other profile: $packageName")
+				"Package removed in other profile")
 		}
 	}
 

@@ -45,7 +45,8 @@ class DesktopAppHost(
 			if (app == null) {
 				changed = true // Pruned: the app is no longer installed //
 
-				Log.getInstance().w(this.javaClass.simpleName, "Pruned stale desktop app: ${layout.key}")
+				Log.getInstance().w(this.javaClass.simpleName,
+					"Pruned stale desktop app at ${layout.page}:${layout.col},${layout.row}")
 
 				continue
 			}
@@ -71,7 +72,7 @@ class DesktopAppHost(
 
 				if (free == null) {
 					Log.getInstance().w(this.javaClass.simpleName,
-						"No room for desktop app on page $page: ${layout.key}")
+						"No room for desktop app on page $page (from ${layout.col},${layout.row})")
 
 					continue
 				}
