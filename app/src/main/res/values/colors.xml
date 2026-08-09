@@ -38,4 +38,13 @@
     <color name="dialog_accent">@android:color/system_accent1_200</color>
     <color name="dialog_preview_background">#1AFFFFFF</color>
     <color name="dialog_ripple">#26FFFFFF</color>
+
+    <!-- Severity accents for the developer log rows. Tuned so warnings and errors
+         carry on the dark dialog surface while the routine levels stay quiet: the
+         point of the colour is to let the two that matter be found by scanning. -->
+    <color name="log_level_verbose">#66FFFFFF</color>
+    <color name="log_level_debug">#8C9AA6</color>
+    <color name="log_level_info">#7FB8E6</color>
+    <color name="log_level_warn">#E8B44A</color>
+    <color name="log_level_error">#E86A5E</color>
 </resources>

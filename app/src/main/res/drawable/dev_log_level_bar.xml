@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The severity stripe down the leading edge of a developer log row. Drawn white
+     and tinted per level in LogEntryAdapter, so one drawable covers all five. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+	<corners android:radius="2dp" />
+	<solid android:color="@android:color/white" />
+</shape>

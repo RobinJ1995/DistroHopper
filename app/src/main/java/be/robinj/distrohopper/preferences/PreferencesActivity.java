@@ -36,6 +36,7 @@ import be.robinj.distrohopper.AppRestart;
 import be.robinj.distrohopper.BuildConfig;
 import be.robinj.distrohopper.DependencyContainer;
 import be.robinj.distrohopper.ExceptionHandler;
+import be.robinj.distrohopper.dev.Log;
 import be.robinj.distrohopper.HomeRole;
 import be.robinj.distrohopper.accessibility.AccessibilityGestureSetupActivity;
 import be.robinj.distrohopper.accessibility.NotificationAccessibilityService;
@@ -369,9 +370,14 @@ public class PreferencesActivity extends AppCompatActivity
 
 			this.applyDeveloperModeVisibility (pref.isChecked ());
 
+			// HomeActivity only reads the preference once, at startup, so without this
+			// the dev log would not start recording until the launcher was recreated. //
+			Log.getInstance ().setEnabled (pref.isChecked ());
+
 			pref.setOnPreferenceChangeListener ((preference, newValue) ->
 			{
 				this.applyDeveloperModeVisibility (Boolean.TRUE.equals (newValue));
+				Log.getInstance ().setEnabled (Boolean.TRUE.equals (newValue));
 
 				return true;
 			});
