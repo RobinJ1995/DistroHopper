@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import java.util.Calendar
 
 class AboutActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +39,13 @@ class AboutActivity : AppCompatActivity() {
 			this.findViewById<View>(R.id.linkTransifex).setOnClickListener {
 				this.openUrl(this.getString(R.string.about_transifex_url))
 			}
+			this.findViewById<View>(R.id.linkLicenses).setOnClickListener {
+				this.startActivity(Intent(this, LicensesActivity::class.java))
+			}
+
+			this.findViewById<TextView>(R.id.tvCopyright).text = this.getString(
+				R.string.about_copyright,
+				Calendar.getInstance().get(Calendar.YEAR).toString())
 
 			val context = this.baseContext
 

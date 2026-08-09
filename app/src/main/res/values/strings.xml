@@ -33,6 +33,17 @@
     <string name="about_transifex_subtitle">Help translate DistroHopper into your language</string>
     <string name="about_github_url" translatable="false">https://github.com/RobinJ1995/DistroHopper</string>
     <string name="about_transifex_url" translatable="false">https://explore.transifex.com/distrohopper/</string>
+    <string name="about_legal">Legal</string>
+    <string name="about_licenses_title">Open source licences</string>
+    <string name="about_licenses_subtitle">Licences of the fonts and code DistroHopper is built on</string>
+    <!-- Shown at the bottom of the About screen. %1$s is the current year. -->
+    <string name="about_copyright">Copyright © 2012–%1$s Robin Jacobs</string>
+    <string name="about_gpl_notice">DistroHopper is free software: you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation, either version 3 of the Licence, or (at your option) any later version. It comes with ABSOLUTELY NO WARRANTY. The source code is available on GitHub.</string>
+    <string name="title_activity_licenses">Open source licences</string>
+    <string name="licenses_intro">DistroHopper itself is licensed under the GNU General Public Licence v3. It also bundles the fonts and code listed below, each under its own licence. Tap an entry to read the full licence text.</string>
+    <!-- Accompanies a licence entry: which licence the component is under -->
+    <string name="licenses_entry_license">Licensed under %1$s</string>
+    <string name="licenses_read_error">The licence text could not be loaded. You can also read it in the source repository on GitHub.</string>
     <string name="button_back">Back</string>
     <string name="button_about">About</string>
     <string name="button_apply">Apply</string>

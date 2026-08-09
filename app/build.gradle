@@ -85,7 +85,34 @@ android {
     lint {
         disable 'MissingTranslation', 'ExtraTranslation'
     }
+    sourceSets {
+        main {
+            // The licence texts are shipped inside the APK, not just kept in the
+            // repository: the SIL OFL and the Ubuntu Font Licence both require the
+            // licence to travel with the fonts, and whoever installs a build from
+            // the Play Store never sees the repository. Staged into a generated
+            // folder by copyLicenseAssets below so there is exactly one copy of
+            // each text under version control.
+            assets.srcDirs += "$buildDir/generated/licenseAssets"
+        }
+    }
 }
+
+// Stages the repository's licence texts (plus the app's own GPLv3) where the
+// asset merger can pick them up, under assets/licenses/. LicensesActivity reads
+// them back out by those paths.
+def copyLicenseAssets = tasks.register('copyLicenseAssets', Copy) {
+    into "$buildDir/generated/licenseAssets/licenses"
+
+    from(rootProject.file('licenses'))
+    from(rootProject.file('LICENSE')) {
+        rename '.*', 'gpl-3.0.txt'
+    }
+}
+
+// preBuild rather than the merge*Assets tasks: it is a stable, public task name
+// that every variant already depends on.
+tasks.named('preBuild') { dependsOn copyLicenseAssets }
 
 repositories {
     maven {

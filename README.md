@@ -14,3 +14,17 @@ If you want to help out and translate the project into a language that isn't lis
 
 If you are a developer and want to implement a new feature or fix a bug, you may feel free to give it a go and open a pull request. Before you go there, you may just want to be aware that this is a project I started in high school back in 2012, and some of the code quality very much shows this :-)
 
+
+## Licence
+
+DistroHopper is free software, licensed under the [GNU General Public Licence v3](LICENSE). It comes with absolutely no warranty.
+
+It bundles a few works under licences of their own, whose full texts live in [`licenses/`](licenses) and are shipped inside the APK (About → Open source licences):
+
+| Bundled work | Licence |
+| --- | --- |
+| [Ubuntu font](https://design.ubuntu.com/font) | Ubuntu Font Licence 1.0 |
+| [Oxygen font](https://github.com/vernnobile/oxygenFont) | SIL Open Font Licence 1.1 |
+| [OpenDyslexic font](https://opendyslexic.org/) | SIL Open Font Licence 1.1 |
+| [ProgressWheel](https://github.com/Todd-Davies/ProgressWheel/) by Todd Davies | MIT |
+| AndroidX, Kotlin, kotlinx.coroutines, ACRA, DragSortListView | Apache Licence 2.0 |

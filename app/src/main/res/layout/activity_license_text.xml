@@ -1,0 +1,35 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:paddingLeft="@dimen/activity_horizontal_margin"
+             android:paddingRight="@dimen/activity_horizontal_margin"
+             android:paddingTop="@dimen/activity_vertical_margin"
+             android:paddingBottom="@dimen/activity_vertical_margin"
+             tools:context="be.robinj.distrohopper.LicenseTextActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/about_card_background"
+        android:clipToOutline="true">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="14dp"
+            android:scrollbars="vertical">
+
+            <TextView
+                android:id="@+id/tvLicenseText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textIsSelectable="true"
+                android:textColor="@color/dialog_on_surface_variant" />
+
+        </ScrollView>
+
+    </LinearLayout>
+</FrameLayout>
