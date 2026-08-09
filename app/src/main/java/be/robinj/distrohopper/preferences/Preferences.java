@@ -13,6 +13,17 @@ public class Preferences {
 	// The desktop's widgets, pinned apps and folders share one file (see DesktopLayoutStorage).
 	public static final String DESKTOP_LAYOUT = "desktop_layout";
 
+	/**
+	 * The preferences file belonging to one lens, named after its
+	 * {@code Lens.getKey()}. Each lens owns its own file rather than sharing the
+	 * main "prefs" one, so a lens can persist user-specific state (the folders
+	 * the Local files lens may search, for instance) without it landing in
+	 * anything scoped to "prefs" — crash reports included.
+	 */
+	public static String forLens(final String lensKey) {
+		return "lens_" + lensKey + "_prefs";
+	}
+
 	public static SharedPreferences getSharedPreferences(final Context context) {
 		return Preferences.getSharedPreferences(context, Preferences.PREFERENCES);
 	}

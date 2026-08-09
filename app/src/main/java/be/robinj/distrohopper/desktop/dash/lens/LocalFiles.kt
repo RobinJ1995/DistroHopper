@@ -34,7 +34,7 @@ class LocalFiles(context: Context) : Lens(context) {
 	// Bumped from "LocalFiles" when this lens moved from a MediaStore query to
 	// user-granted SAF folders: a different feature, so the old one retires
 	// rather than silently becoming an empty version of the new one. //
-	override val key = "LocalFiles_v2"
+	override val key = KEY
 
 	override fun getName() = "Local files"
 
@@ -207,6 +207,9 @@ class LocalFiles(context: Context) : Lens(context) {
 	}
 
 	companion object {
+		/** This lens's stable identifier; also names its preferences file. */
+		const val KEY = "LocalFiles_v2"
+
 		private const val TAG = "LocalFiles"
 		private val LOG: Log = Log.getInstance()
 

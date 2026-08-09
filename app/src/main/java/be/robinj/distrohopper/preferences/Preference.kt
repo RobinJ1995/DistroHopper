@@ -78,9 +78,7 @@ enum class Preference(
 	/** What the home-screen swipe-up gesture does (a GestureAction value). */
 	GESTURE_SWIPE_UP("gesture_swipe_up", "open_dash"),
 	/** What the home-screen swipe-down gesture does (a GestureAction value). */
-	GESTURE_SWIPE_DOWN("gesture_swipe_down", "none"),
-	/** SAF tree URIs the Local files lens is allowed to search, as strings. */
-	LENS_LOCALFILES_V2_FOLDERS("lens_localfiles_v2_folders");
+	GESTURE_SWIPE_DOWN("gesture_swipe_down", "none");
 
 	fun getName(): String = this.key
 

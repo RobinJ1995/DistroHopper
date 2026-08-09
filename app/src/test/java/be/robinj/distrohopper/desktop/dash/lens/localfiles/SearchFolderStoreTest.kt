@@ -8,8 +8,6 @@ import android.database.MatrixCursor
 import android.net.Uri
 import android.provider.DocumentsContract
 import androidx.test.core.app.ApplicationProvider
-import be.robinj.distrohopper.preferences.Preference
-import be.robinj.distrohopper.preferences.PreferencesRepository
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -21,13 +19,13 @@ import org.robolectric.shadows.ShadowContentResolver
 @RunWith(RobolectricTestRunner::class)
 class SearchFolderStoreTest {
     private lateinit var application: Application
-    private lateinit var prefs: PreferencesRepository
+    private lateinit var prefs: android.content.SharedPreferences
     private lateinit var store: SearchFolderStore
 
     @Before fun setUp() {
         application = ApplicationProvider.getApplicationContext()
-        prefs = PreferencesRepository(application)
-        prefs.putStringSet(Preference.LENS_LOCALFILES_V2_FOLDERS, emptySet())
+        prefs = SearchFolderStore.preferences(application)
+        put(emptySet())
 
         ShadowContentResolver.registerProviderInternal(AUTHORITY, NamingProvider())
 
@@ -38,7 +36,11 @@ class SearchFolderStoreTest {
         DocumentsContract.buildTreeDocumentUri(AUTHORITY, documentId)
 
     private fun stored(): Set<String> =
-        prefs.getStringSet(Preference.LENS_LOCALFILES_V2_FOLDERS)
+        prefs.getStringSet(SearchFolderStore.KEY_FOLDERS, emptySet())!!.toSet()
+
+    private fun put(values: Set<String>) {
+        prefs.edit().putStringSet(SearchFolderStore.KEY_FOLDERS, values).commit()
+    }
 
     @Test fun startsEmpty() {
         assertTrue(store.folders().isEmpty())
@@ -106,17 +108,13 @@ class SearchFolderStoreTest {
     /** A grant can vanish while the app is away: the folder must not linger. */
     @Test fun aFolderWhoseGrantIsGoneIsDropped() {
         store.add(treeUri("documents"))
-        prefs.putStringSet(
-            Preference.LENS_LOCALFILES_V2_FOLDERS,
-            stored() + treeUri("unmounted-sd-card").toString(),
-        )
+        put(stored() + treeUri("unmounted-sd-card").toString())
 
         assertEquals(listOf(treeUri("documents")), store.folders())
     }
 
     @Test fun droppedFoldersArePrunedFromStorageNotJustHidden() {
-        prefs.putStringSet(
-            Preference.LENS_LOCALFILES_V2_FOLDERS, setOf(treeUri("gone").toString()))
+        put(setOf(treeUri("gone").toString()))
 
         store.folders()
 

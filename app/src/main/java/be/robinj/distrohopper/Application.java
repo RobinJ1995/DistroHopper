@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.acra.ACRA;
+import org.acra.ReportField;
 import org.acra.config.CoreConfigurationBuilder;
 import org.acra.config.HttpSenderConfigurationBuilder;
 import org.acra.config.ToastConfigurationBuilder;
@@ -86,6 +87,53 @@ public class Application extends android.app.Application
 
 		ACRA.init(this, new CoreConfigurationBuilder()
 				.withReportFormat(StringFormat.JSON)
+				// Diagnostic-only report content (GDPR data minimisation). Anything
+				// not listed is NOT collected — notably DEVICE_FEATURES, ENVIRONMENT,
+				// DUMPSYS_MEMINFO and BUILD_CONFIG, all of which ACRA collects by
+				// DEFAULT. BUILD_CONFIG especially: it reflects over every
+				// BuildConfig constant, which here includes ACRA_USERNAME and
+				// ACRA_PASSWORD. Never add it back.
+				//
+				// LOGCAT is kept deliberately: a stack trace says where the app died,
+				// not what led there, and the lifecycle/widget-host/binder failures
+				// worth debugging show up only in the log. ACRA reads it with
+				// logcatFilterByPid=true, so it is this process's last 100 lines, not
+				// the device log.
+				//
+				// Caveat: logcat is sent verbatim and cannot be filtered here, so
+				// whatever the app logs ends up in the report. PRIVACY.md describes
+				// what a report contains. //
+				.withReportContent(
+						ReportField.REPORT_ID,
+						ReportField.PACKAGE_NAME,
+						ReportField.APP_VERSION_CODE,
+						ReportField.APP_VERSION_NAME,
+						ReportField.ANDROID_VERSION,
+						ReportField.PHONE_MODEL,
+						ReportField.BRAND,
+						ReportField.PRODUCT,
+						ReportField.STACK_TRACE,
+						ReportField.LOGCAT,
+						ReportField.IS_SILENT,
+						ReportField.CRASH_CONFIGURATION,
+						ReportField.DISPLAY,
+						ReportField.THREAD_DETAILS,
+						ReportField.TOTAL_MEM_SIZE,
+						ReportField.AVAILABLE_MEM_SIZE,
+						ReportField.SHARED_PREFERENCES,
+						ReportField.USER_APP_START_DATE,
+						ReportField.USER_CRASH_DATE,
+						ReportField.INSTALLATION_ID)
+				// SHARED_PREFERENCES is scoped to an ALLOWLIST: the launcher's own
+				// settings ("prefs") and the enabled-search-sources list ("lenses").
+				// Every other prefs file is excluded by omission — including those
+				// describing the user's app inventory / home-screen layout / usage
+				// history ("pinned", "app_usage", "dash_layout", "launcher_layout",
+				// "desktop_layout"), the "cache_app_*" caches, and each lens's own
+				// file (Preferences.forLens, e.g. the folders the Local files lens
+				// may search). An allowlist keeps any future prefs file private by
+				// default. //
+				.withAdditionalSharedPreferences("prefs", "lenses")
 				.withPluginConfigurations(
 						new HttpSenderConfigurationBuilder()
 								.withUri("https://acra.robinj.be/report")
