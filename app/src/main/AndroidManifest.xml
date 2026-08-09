@@ -5,10 +5,6 @@
 
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<!-- No storage permissions: the Local files lens searches only folders the
-	     user has granted through the system directory picker (SAF), which needs
-	     none. -->
-	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<!-- Lets LauncherApps also surface hidden profiles (private space, Android 15+);
 	     only granted by the system while DistroHopper holds the HOME role -->
 	<uses-permission android:name="android.permission.ACCESS_HIDDEN_PROFILES" />
