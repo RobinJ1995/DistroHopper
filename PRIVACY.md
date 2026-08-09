@@ -71,12 +71,15 @@ a fault has aged out, the summary is deleted with it.
 
 ## Search
 
-The search sources enabled by default — your installed apps and files on your
-device — run entirely on your device and send nothing anywhere.
+Out of the box, search only looks at your installed apps, entirely on your
+device. Searching the files on your device is optional: you turn it on yourself
+and choose which folders it may look in, and it too runs entirely on your
+device. Neither sends anything anywhere.
 
-You can additionally enable DuckDuckGo, F-Droid, GitHub or Google Play as search
-sources. If you do, **what you type in the search box is sent to that provider**
-so it can return results, and their own privacy policy applies
+You can also enable remote search sources — currently DuckDuckGo, F-Droid,
+GitHub and Google Play; the full list is in the app's search settings. If you
+do, **what you type in the search box is sent to that provider** so it can
+return results, and their own privacy policy applies
 ([DuckDuckGo](https://duckduckgo.com/privacy),
 [F-Droid](https://f-droid.org/docs/Privacy_Policy/),
 [GitHub](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement),
@@ -127,4 +130,4 @@ or to the supervisory authority where you live.
 ## Changes
 
 If this policy changes, the updated version will be published here with a new
-date. Significant changes will be noted in the app's release notes.
+date.
