@@ -27,6 +27,22 @@ jobs:
           TX_TOKEN: ${{ secrets.TRANSIFEX_TOKEN }}
         run: ./tx pull -a --minimum-perc 1 --force
 
+      - name: Copy the British source strings under a locale qualifier
+        # values/strings.xml is the en_GB source but carries no locale
+        # qualifier, so Android cannot tell it apart from "the last resort": an
+        # en-IE/en-GB/en-AU device matches no values-en* dir, falls back to "any
+        # resources with the same language", and lands on the American
+        # values-en-rUS. en-001 is the CLDR parent of those locales, so the same
+        # strings under values-b+en+001 are matched by all of them, while en-US
+        # still matches values-en-rUS.
+        #
+        # It lives here rather than in .tx/config because Transifex cannot
+        # produce it: tx pull skips the source language before the --languages
+        # filter applies, and --source writes back to source_file.
+        run: |
+          mkdir -p 'app/src/main/res/values-b+en+001'
+          cp app/src/main/res/values/strings.xml 'app/src/main/res/values-b+en+001/translations.xml'
+
       - name: Open a pull request for updated translations
         uses: peter-evans/create-pull-request@v7
         with:
