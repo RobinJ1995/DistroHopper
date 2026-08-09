@@ -253,6 +253,105 @@
 
             </LinearLayout>
 
+            <!-- Legal. Same styling caveat as "Get involved" above: weight via
+                 android:textStyle, never android:fontFamily. -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:textSize="11sp"
+                android:textColor="@color/dialog_on_surface_dim"
+                android:textAllCaps="true"
+                android:letterSpacing="0.12"
+                android:textStyle="bold"
+                android:text="@string/about_legal" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/about_card_background"
+                android:clipToOutline="true"
+                android:divider="@drawable/about_list_divider"
+                android:showDividers="middle">
+
+                <LinearLayout
+                    android:id="@+id/linkLicenses"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="14dp"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="14dp"
+                        android:src="@drawable/ic_about_licenses"
+                        android:contentDescription="@string/about_licenses_title" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="15sp"
+                            android:textColor="@color/dialog_on_surface"
+                            android:text="@string/about_licenses_title" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:textSize="12sp"
+                            android:textColor="@color/dialog_on_surface_dim"
+                            android:text="@string/about_licenses_subtitle" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="8dp"
+                        android:src="@drawable/ic_about_chevron"
+                        android:contentDescription="@null" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- GPLv3 asks that an interactive program display a copyright and
+                 no-warranty notice; this is DistroHopper's. -->
+            <TextView
+                android:id="@+id/tvCopyright"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:textSize="12sp"
+                android:textColor="@color/dialog_on_surface_variant" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:textSize="12sp"
+                android:lineSpacingMultiplier="1.3"
+                android:textColor="@color/dialog_on_surface_dim"
+                android:text="@string/about_gpl_notice" />
 
         </LinearLayout>
     </ScrollView>

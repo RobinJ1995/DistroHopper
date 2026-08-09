@@ -69,6 +69,26 @@
 				android:value="be.robinj.distrohopper.preferences.PreferencesActivity" />
 		</activity>
 		<activity
+			android:name="be.robinj.distrohopper.LicensesActivity"
+			android:label="@string/title_activity_licenses"
+			android:parentActivityName="be.robinj.distrohopper.AboutActivity"
+			android:theme="@style/AboutTheme"
+			android:exported="false">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="be.robinj.distrohopper.AboutActivity" />
+		</activity>
+		<activity
+			android:name="be.robinj.distrohopper.LicenseTextActivity"
+			android:label="@string/title_activity_licenses"
+			android:parentActivityName="be.robinj.distrohopper.LicensesActivity"
+			android:theme="@style/AboutTheme"
+			android:exported="false">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="be.robinj.distrohopper.LicensesActivity" />
+		</activity>
+		<activity
 			android:name="be.robinj.distrohopper.preferences.PreferencesActivity"
 			android:label="@string/title_activity_preferences"
 			android:parentActivityName="be.robinj.distrohopper.HomeActivity"
