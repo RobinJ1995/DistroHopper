@@ -805,6 +805,19 @@ licenses/                                   — full licence texts of everything
 - User-facing strings belong in `res/values/strings.xml`; translations are
   managed externally on Transifex, so never hand-edit the `values-*`
   locale files.
+- The default `res/values/strings.xml` is written in **British English**
+  (Transifex's `source_lang` is `en_GB`), while American English is a
+  translation like any other, in `values-en-rUS`. Because the default
+  resources carry no locale qualifier, Android cannot tell they are already
+  English: a device set to en-IE/en-GB/en-AU/… finds no matching `values-en*`
+  dir, falls back to "any resources with the same language", and picks
+  `values-en-rUS`. `res/xml/locales_config.xml` (wired up via
+  `android:localeConfig`) declares `android:defaultLocale="en-GB"` to correct
+  that, and doubles as the per-app language list in system settings — keep its
+  `<locale>` entries in step with the `values-*` dirs when Transifex adds a
+  language. Note `android:defaultLocale` is API 35+, so Android 12–14 still
+  resolves to en-rUS; shipping the British strings under `values-b+en+001`
+  would fix it for every version.
 - Do not commit `local.properties` or `secret.properties`.
 
 ## Note for Claude

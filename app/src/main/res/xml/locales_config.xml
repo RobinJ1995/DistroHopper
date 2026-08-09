@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	The locales DistroHopper ships strings for, and the locale the *default*
+	(unqualified) resources are written in.
+
+	res/values/strings.xml is British English, but carries no locale qualifier,
+	so Android cannot tell it apart from "the last resort". Without
+	android:defaultLocale, a device set to any English other than en-US (say
+	en-IE) walks its parent chain (en-IE -> en-001 -> en), finds none of them,
+	falls back to "any resources with the same language", and lands on
+	values-en-rUS — American spellings on an Irish phone. Declaring the default
+	locale here tells the system the unqualified resources *are* en-GB, and also
+	populates the per-app language picker in system settings.
+
+	android:defaultLocale only landed in API 35, and minSdk is 31, so devices on
+	Android 12–14 keep resolving as before; the version-independent fix is to
+	ship British English under a real locale qualifier (values-b+en+001, the
+	parent of en-IE/en-GB/en-AU/en-IN/en-ZA) rather than only unqualified.
+
+	Keep this list in step with res/values-* when Transifex adds a language;
+	locales listed here but not shipped (or shipped but not listed) only confuse
+	the picker.
+-->
+<locale-config
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:defaultLocale="en-GB"
+	tools:targetApi="35">
+
+	<locale android:name="en-GB" />
+	<locale android:name="ar" />
+	<locale android:name="bn" />
+	<locale android:name="cs" />
+	<locale android:name="de" />
+	<locale android:name="el" />
+	<locale android:name="en-US" />
+	<locale android:name="es" />
+	<locale android:name="fr" />
+	<locale android:name="hi-IN" />
+	<locale android:name="hu" />
+	<locale android:name="id" />
+	<locale android:name="it" />
+	<locale android:name="ja" />
+	<locale android:name="ka" />
+	<locale android:name="ko" />
+	<locale android:name="nl" />
+	<locale android:name="pam" />
+	<locale android:name="pl" />
+	<locale android:name="pt" />
+	<locale android:name="ru" />
+	<locale android:name="sr" />
+	<locale android:name="sv" />
+	<locale android:name="tr" />
+	<locale android:name="uk" />
+	<locale android:name="ur" />
+	<locale android:name="zh" />
+	<locale android:name="zh-TW" />
+</locale-config>
