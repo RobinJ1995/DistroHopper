@@ -101,7 +101,13 @@ android {
 // Stages the repository's licence texts (plus the app's own GPLv3) where the
 // asset merger can pick them up, under assets/licenses/. LicensesActivity reads
 // them back out by those paths.
-def copyLicenseAssets = tasks.register('copyLicenseAssets', Copy) {
+//
+// Sync rather than Copy: Sync deletes anything in the destination that no
+// longer has a source, so a licence text that gets deleted or renamed stops
+// being packaged on the next incremental build instead of lingering until
+// someone happens to run a clean build. Its own generated directory, so
+// there is nothing else there to delete.
+def copyLicenseAssets = tasks.register('copyLicenseAssets', Sync) {
     into "$buildDir/generated/licenseAssets/licenses"
 
     from(rootProject.file('licenses'))
