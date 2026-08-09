@@ -12,6 +12,7 @@ import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.broadcast.AppUpgradeReceiver
+import be.robinj.distrohopper.theme.Theme
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -73,7 +74,10 @@ class OnboardingActivityTest {
 
                 val cards = activity.findViewById<LinearLayout>(R.id.llOnboardingThemeCards)
                 assertNotNull("theme page should be bound", cards)
-                cards.getChildAt(1).performClick() // Gnome //
+                // Locate GNOME by its card's theme tag; the picker's order can change //
+                val gnome = (0 until cards.childCount).map { cards.getChildAt(it) }
+                    .first { (it.tag as Theme).getName() == "gnome" }
+                gnome.performClick()
 
                 val prefs = application.getSharedPreferences(Preferences.PREFERENCES, 0)
                 assertEquals("gnome", prefs.getString(Preference.THEME.getName(), null))
