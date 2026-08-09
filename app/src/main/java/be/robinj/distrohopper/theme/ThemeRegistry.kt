@@ -9,8 +9,8 @@ object ThemeRegistry {
 	const val DEFAULT = "default"
 
 	val themes: Map<String, () -> Theme> = linkedMapOf(
-		DEFAULT to ::Default,
 		"gnome" to ::Gnome,
+		DEFAULT to ::Default,
 		"elementary" to ::Elementary,
 		"cinnamon" to ::Cinnamon,
 		"plasma" to ::Plasma,
