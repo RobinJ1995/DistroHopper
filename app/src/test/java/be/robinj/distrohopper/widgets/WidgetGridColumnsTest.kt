@@ -6,11 +6,14 @@ import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.preferences.Preference
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
 
 /**
  * The desktop grid's persisted presets and size: snapshotted on first launch
@@ -113,5 +116,66 @@ class WidgetGridColumnsTest {
 
 		assertEquals(finest, WidgetGrid.COLS to WidgetGrid.ROWS)
 		assertEquals(WidgetGrid.PRESET_COUNT - 1, WidgetGrid.selectedPreset(this.context))
+	}
+
+	// ---- configuration changes ----------------------------------------------
+	// True cross-config checks: snapshot under one configuration, change it
+	// in-process (RuntimeEnvironment.setQualifiers updates the same application,
+	// so SharedPreferences persist — like a real device would), re-init, and
+	// assert the grid, ladder and selection did not move.
+
+	private fun snapshotThenReinitUnder(qualifiers: String): Triple<Pair<Int, Int>, List<Pair<Int, Int>>, Int> {
+		WidgetGrid.init(this.context)
+		val grid = WidgetGrid.COLS to WidgetGrid.ROWS
+		val presets = WidgetGrid.presets(this.context)
+		val selected = WidgetGrid.selectedPreset(this.context)
+
+		RuntimeEnvironment.setQualifiers(qualifiers)
+		WidgetGrid.init(this.context)
+
+		assertEquals("grid must not move", grid, WidgetGrid.COLS to WidgetGrid.ROWS)
+		assertEquals("ladder must not regenerate", presets, WidgetGrid.presets(this.context))
+		assertEquals("selection must not move", selected, WidgetGrid.selectedPreset(this.context))
+		return Triple(grid, presets, selected)
+	}
+
+	@Test @Config(qualifiers = "w360dp-h800dp-xxhdpi")
+	fun gridSurvivesOrientationChange() {
+		this.snapshotThenReinitUnder("+land")
+	}
+
+	@Test @Config(qualifiers = "w360dp-h800dp-480dpi")
+	fun gridSurvivesDisplaySizeChange() {
+		// The same 1080×2400 px panel at a smaller "Display size" setting: dp
+		// grow, density drops. Precondition: a fresh snapshot HERE would yield a
+		// different ladder — proving the assertion discriminates.
+		WidgetGrid.init(this.context)
+		assertNotEquals("precondition: the new config must disagree with the stored ladder",
+			WidgetGrid.presets(this.context), WidgetGrid.generatePresets(432, 960))
+
+		this.snapshotThenReinitUnder("w432dp-h960dp-400dpi")
+	}
+
+	@Test @Config(qualifiers = "w360dp-h800dp-xxhdpi")
+	fun gridSurvivesScreenSizeChange() {
+		// A foldable unfolding to a tablet-sized inner display: everything —
+		// width, height, smallest width, density — changes at once.
+		WidgetGrid.init(this.context)
+		assertNotEquals("precondition: the new config must disagree with the stored ladder",
+			WidgetGrid.presets(this.context), WidgetGrid.generatePresets(800, 1280))
+
+		this.snapshotThenReinitUnder("w800dp-h1280dp-xhdpi")
+	}
+
+	@Test @Config(qualifiers = "w360dp-h800dp-xxhdpi")
+	fun nonDefaultSelectionSurvivesConfigurationChanges() {
+		// The stability contract must hold for a user-chosen preset too, across
+		// a rotation and a display-size change back to back.
+		WidgetGrid.setSize(this.context, WidgetGrid.presets(this.context).first())
+
+		this.snapshotThenReinitUnder("+land")
+		this.snapshotThenReinitUnder("w432dp-h960dp-400dpi")
+
+		assertEquals(0, WidgetGrid.selectedPreset(this.context))
 	}
 }
