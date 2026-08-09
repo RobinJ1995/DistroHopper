@@ -815,7 +815,10 @@ licenses/                                   — full licence texts of everything
   `android:localeConfig`) declares `android:defaultLocale="en-GB"` to correct
   that, and doubles as the per-app language list in system settings — keep its
   `<locale>` entries in step with the `values-*` dirs when Transifex adds a
-  language. Note `android:defaultLocale` is API 35+, so Android 12–14 still
+  language — but list only locales that actually have translated strings, since
+  several `values-*` dirs are empty or hold nothing but a commented-out obsolete
+  string, and offering those in the picker gives the user a language that cannot
+  change a single label. Note `android:defaultLocale` is API 35+, so Android 12–14 still
   resolves to en-rUS; shipping the British strings under `values-b+en+001`
   would fix it for every version.
 - Do not commit `local.properties` or `secret.properties`.

@@ -19,7 +19,12 @@
 
 	Keep this list in step with res/values-* when Transifex adds a language;
 	locales listed here but not shipped (or shipped but not listed) only confuse
-	the picker.
+	the picker. Only locales that actually carry translated strings belong here
+	— several values-* dirs exist but are empty or hold nothing but a
+	commented-out obsolete string (bn, el, hi-rIN, ka, ko, pam, sr, ur,
+	zh-rTW at the time of writing), and listing those would offer the user a
+	language that cannot change a single label. Add them once Transifex has
+	real content for them.
 -->
 <locale-config
 	xmlns:android="http://schemas.android.com/apk/res/android"
@@ -29,30 +34,21 @@
 
 	<locale android:name="en-GB" />
 	<locale android:name="ar" />
-	<locale android:name="bn" />
 	<locale android:name="cs" />
 	<locale android:name="de" />
-	<locale android:name="el" />
 	<locale android:name="en-US" />
 	<locale android:name="es" />
 	<locale android:name="fr" />
-	<locale android:name="hi-IN" />
 	<locale android:name="hu" />
 	<locale android:name="id" />
 	<locale android:name="it" />
 	<locale android:name="ja" />
-	<locale android:name="ka" />
-	<locale android:name="ko" />
 	<locale android:name="nl" />
-	<locale android:name="pam" />
 	<locale android:name="pl" />
 	<locale android:name="pt" />
 	<locale android:name="ru" />
-	<locale android:name="sr" />
 	<locale android:name="sv" />
 	<locale android:name="tr" />
 	<locale android:name="uk" />
-	<locale android:name="ur" />
 	<locale android:name="zh" />
-	<locale android:name="zh-TW" />
 </locale-config>
