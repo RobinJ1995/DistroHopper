@@ -1,7 +1,7 @@
 This is Ubuntu's GNOME audio theme.
 
-Copyright (C) 2004 Canonical Ltd. 
-Sounds composed and recorded by Nathaniel McCallum 
+Copyright (C) 2004 Canonical Ltd. <http://www.canonical.com>
+Sounds composed and recorded by Nathaniel McCallum <npmccallum@canonical.com>
 
 This work is licensed under the Creative Commons Attribution-ShareAlike License.
 
@@ -222,29 +222,3 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
       appear in any communication from You. This License may not be modified 
       without the mutual written agreement of the Licensor and You.
 
-
-
-Files: Ekiga
-       - Damien Sandras under GPLv2
-       Pidgin/Purple
-       - The Pidgin developers under GPLv2
-
-License: GPL-2
-
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License as
-    published by the Free Software Foundation; either version 2 of the
-    License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-    02110-1301, USA
-
-    On Debian systems, the complete text of the GNU General Public
-    License 2 can be found in: `/usr/share/common-licenses/GPL-2'
