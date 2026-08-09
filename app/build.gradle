@@ -85,6 +85,24 @@ android {
     lint {
         disable 'MissingTranslation', 'ExtraTranslation'
     }
+    bundle {
+        language {
+            // Keep every language in the base APK instead of splitting them out.
+            //
+            // Play normally delivers only the splits matching the device's own
+            // languages, which is fine when the app follows the system language
+            // but breaks the per-app language picker that
+            // res/xml/locales_config.xml exposes: picking a language whose split
+            // was never installed silently falls back to English. It also matters
+            // for the generated values-b+en+001 resources, which have to be
+            // present for an en-IE/en-GB device to resolve British English rather
+            // than the American values-en-rUS.
+            //
+            // The cost is small — the translations are a few dozen short strings
+            // per locale, several of which are only partly translated anyway.
+            enableSplit = false
+        }
+    }
     sourceSets {
         main {
             // The licence texts are shipped inside the APK, not just kept in the

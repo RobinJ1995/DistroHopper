@@ -824,7 +824,10 @@ licenses/                                   — full licence texts of everything
   language — but list only locales that actually have translated strings, since
   several `values-*` dirs are empty or hold nothing but a commented-out obsolete
   string, and offering those in the picker gives the user a language that cannot
-  change a single label.
+  change a single label. `android.bundle.language.enableSplit = false` keeps
+  every language in the base APK: Play otherwise ships only the splits matching
+  the device's own languages, and a picker entry whose split was never installed
+  falls back to English instead of switching.
 - Do not commit `local.properties` or `secret.properties`.
 
 ## Note for Claude
