@@ -805,6 +805,32 @@ licenses/                                   — full licence texts of everything
 - User-facing strings belong in `res/values/strings.xml`; translations are
   managed externally on Transifex, so never hand-edit the `values-*`
   locale files.
+- The default `res/values/strings.xml` is written in **British English**
+  (Transifex's `source_lang` is `en_GB`), while American English is a
+  translation like any other, in `values-en-rUS`. Because the default
+  resources carry no locale qualifier, Android cannot tell they are already
+  English: a device set to en-IE/en-GB/en-AU/… finds no matching `values-en*`
+  dir, falls back to "any resources with the same language", and picks
+  `values-en-rUS`. Two things correct that. `values-b+en+001/translations.xml` is
+  a copy of `values/strings.xml` under a real locale qualifier (en-001 is the
+  CLDR parent of en-IE/en-GB/en-AU/en-IN/en-ZA, so they all match it, while
+  en-US still matches `values-en-rUS`); the weekly translations workflow copies
+  it, so treat it as generated — do not hand-edit it, and do not translate it on
+  Transifex. Between a `strings.xml` change and the next run it can lag by a
+  string or a reworded one; either way the worst case is British English that is
+  a week out of date, never another language. On top of that,
+  `res/xml/locales_config.xml` (wired
+  up via `android:localeConfig`) declares `android:defaultLocale="en-GB"`, which
+  names the locale of the unqualified default resources on API 35+, and doubles
+  as the per-app language list in system settings — keep its
+  `<locale>` entries in step with the `values-*` dirs when Transifex adds a
+  language — but list only locales that actually have translated strings, since
+  several `values-*` dirs are empty or hold nothing but a commented-out obsolete
+  string, and offering those in the picker gives the user a language that cannot
+  change a single label. `android.bundle.language.enableSplit = false` keeps
+  every language in the base APK: Play otherwise ships only the splits matching
+  the device's own languages, and a picker entry whose split was never installed
+  falls back to English instead of switching.
 - Do not commit `local.properties` or `secret.properties`.
 
 ## Note for Claude
