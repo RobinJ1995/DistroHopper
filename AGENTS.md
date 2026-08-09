@@ -811,15 +811,12 @@ licenses/                                   — full licence texts of everything
   resources carry no locale qualifier, Android cannot tell they are already
   English: a device set to en-IE/en-GB/en-AU/… finds no matching `values-en*`
   dir, falls back to "any resources with the same language", and picks
-  `values-en-rUS`. Two things correct that. `values-b+en+001/translations.xml`
-  holds the same British strings under a real locale qualifier (en-001 is the
-  CLDR parent of en-IE/en-GB/en-AU/en-IN/en-ZA, so they all match it, while
-  en-US still matches `values-en-rUS`) — it is **generated** from
-  `values/strings.xml` by `etc/generate_en_001_strings.py`, so do not hand-edit
-  it and do not translate it on Transifex; the weekly translation workflow
-  re-runs the script, and you should too after changing `strings.xml`. A stale
-  copy is harmless — a missing string falls back to `values/strings.xml`, which
-  is the same British text. On top of that, `res/xml/locales_config.xml` (wired
+  `values-en-rUS`. Two things correct that. The `copyEnWorldStrings` Gradle task
+  stages a copy of `values/strings.xml` into a generated
+  `values-b+en+001` resource dir at build time (en-001 is the CLDR parent of
+  en-IE/en-GB/en-AU/en-IN/en-ZA, so they all match it, while en-US still matches
+  `values-en-rUS`) — nothing to commit, nothing to keep in sync, and Transifex
+  never sees it. On top of that, `res/xml/locales_config.xml` (wired
   up via `android:localeConfig`) declares `android:defaultLocale="en-GB"`, which
   names the locale of the unqualified default resources on API 35+, and doubles
   as the per-app language list in system settings — keep its

@@ -15,10 +15,11 @@
 	android:defaultLocale only landed in API 35, and minSdk is 31, so it does
 	nothing on Android 12–14. What fixes those versions is values-b+en+001 —
 	the same British strings under a real locale qualifier, en-001 being the
-	CLDR parent of en-IE/en-GB/en-AU/en-IN/en-ZA — generated from
-	values/strings.xml by etc/generate_en_001_strings.py. The two work
-	together: the qualified resources do the resolving, this file names the
-	locale of the unqualified default and populates the picker.
+	CLDR parent of en-IE/en-GB/en-AU/en-IN/en-ZA — staged into a generated
+	resource dir at build time by the copyEnWorldStrings task in
+	app/build.gradle. The two work together: the qualified resources do the
+	resolving, this file names the locale of the unqualified default and
+	populates the picker.
 
 	Keep this list in step with res/values-* when Transifex adds a language;
 	locales listed here but not shipped (or shipped but not listed) only confuse

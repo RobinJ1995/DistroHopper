@@ -94,6 +94,10 @@ android {
             // folder by copyLicenseAssets below so there is exactly one copy of
             // each text under version control.
             assets.srcDirs += "$buildDir/generated/licenseAssets"
+
+            // British English under a locale qualifier, staged by
+            // copyEnWorldStrings below.
+            res.srcDirs += "$buildDir/generated/enWorldRes"
         }
     }
 }
@@ -116,9 +120,37 @@ def copyLicenseAssets = tasks.register('copyLicenseAssets', Sync) {
     }
 }
 
-// preBuild rather than the merge*Assets tasks: it is a stable, public task name
-// that every variant already depends on.
-tasks.named('preBuild') { dependsOn copyLicenseAssets }
+// The same British strings the app already ships, under a locale qualifier.
+//
+// res/values/strings.xml is written in British English -- it is Transifex's
+// en_GB source -- but carries no locale qualifier, so Android cannot tell it
+// apart from "the last resort". American English is a translation like any
+// other, in values-en-rUS. A device set to English (Ireland) therefore resolves
+// en-IE -> en-001 -> en, matches none of them, falls back to "any resources
+// with the same language", and lands on the American set: "Customize" and
+// "Color" on an Irish phone. en-001 ("world English") is the CLDR parent of
+// en-IE/en-GB/en-AU/en-IN/en-ZA, so the same strings under values-b+en+001 are
+// matched by all of them, while en-US keeps matching values-en-rUS.
+//
+// res/xml/locales_config.xml says the same thing declaratively via
+// android:defaultLocale, but that attribute is API 35+ and minSdk is 31, so it
+// covers Android 15 and up only. This covers every supported version.
+//
+// Generated rather than committed because it is a byte-for-byte copy of the
+// source strings, and a duplicate maintained by hand drifts. Transifex cannot
+// maintain it either: tx pull skips the source language before the --languages
+// filter applies, and --source writes back to source_file.
+def copyEnWorldStrings = tasks.register('copyEnWorldStrings', Sync) {
+    into "$buildDir/generated/enWorldRes/values-b+en+001"
+
+    from(file('src/main/res/values/strings.xml')) {
+        rename '.*', 'translations.xml'
+    }
+}
+
+// preBuild rather than the merge*Assets/merge*Resources tasks: it is a stable,
+// public task name that every variant already depends on.
+tasks.named('preBuild') { dependsOn copyLicenseAssets, copyEnWorldStrings }
 
 repositories {
     maven {
