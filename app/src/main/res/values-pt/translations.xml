@@ -9,6 +9,8 @@
   <string name="title_activity_about">Sobre</string>
   <string name="title_activity_theme_preferences">Temas</string>
   <string name="developed_by">Desenvolvido por Robin Jacobs</string>
+  <!--Shown at the bottom of the About screen. %1$s is the current year.-->
+  <!--Accompanies a licence entry: which licence the component is under-->
   <string name="button_back">Voltar</string>
   <string name="button_about">Sobre</string>
   <string name="button_apply">Aplicar</string>

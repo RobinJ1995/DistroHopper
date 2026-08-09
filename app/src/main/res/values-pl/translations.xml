@@ -6,6 +6,8 @@
   <string name="title_activity_preferences">Ustawienia</string>
   <string name="title_activity_about">O programie</string>
   <string name="developed_by">Stworzone przez Robin Jacobs</string>
+  <!--Shown at the bottom of the About screen. %1$s is the current year.-->
+  <!--Accompanies a licence entry: which licence the component is under-->
   <string name="button_back">Wstecz</string>
   <string name="button_about">O programie</string>
   <string name="title_preferences">Ustawienia</string>

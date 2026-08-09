@@ -11,6 +11,8 @@
   <string name="title_activity_theme_preferences">主题</string>
   <string name="title_activity_dev_logs">日志</string>
   <string name="developed_by">由Robin Jacobs开发</string>
+  <!--Shown at the bottom of the About screen. %1$s is the current year.-->
+  <!--Accompanies a licence entry: which licence the component is under-->
   <string name="button_back">返回</string>
   <string name="button_about">关于</string>
   <string name="button_apply">应用</string>
