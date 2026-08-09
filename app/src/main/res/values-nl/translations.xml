@@ -19,12 +19,11 @@
   <string name="title_activity_local_files_folders">Mappen om te doorzoeken</string>
   <string name="title_activity_theme_preferences">Thema\'s</string>
   <string name="title_activity_dev_logs">Logs</string>
-  <string name="lens_preferences_settings">Instellingen van zoekbron</string>
+  <string name="lens_preferences_settings">Instellingen voor zoekbron</string>
   <string name="local_files_folders_add">Map toevoegen</string>
   <string name="local_files_folders_empty">Voeg een map toe om de inhoud ervan te kunnen doorzoeken.</string>
   <string name="local_files_folders_remove">Map verwijderen</string>
   <string name="developed_by">Ontwikkeld door Robin Jacobs</string>
-  <string name="about_description">Ik ben DistroHopper begonnen op de middelbare school als een (veel te) jonge Linux-liefhebber die iets wilde dat leek op de Linux-desktop op zijn eerste smartphone. Ik hoop dat u, ruim 15 jaar met tussenpozen ontwikkelen later, nog steeds geniet van wat ik toen begonnen ben :)</string>
   <string name="about_get_involved">Help mee</string>
   <string name="about_github_title">Bijdragen op GitHub</string>
   <string name="about_github_subtitle">Bekijk de code, meld problemen, en ontwikkel mee</string>
@@ -37,12 +36,12 @@
   <string name="about_privacy_subtitle">Wat DistroHopper verzamelt, en wat niet</string>
   <!--Shown at the bottom of the About screen. %1$s is the current year.-->
   <string name="about_copyright">Copyright © 2012–%1$s Robin Jacobs</string>
-  <string name="about_gpl_notice">DistroHopper is vrije software: u mag het verspreiden en/of wijzigen onder de voorwaarden van de GNU General Public License zoals gepubliceerd door de Free Software Foundation, ofwel versie 3 van de licentie, ofwel (naar uw keuze) een latere versie. Het wordt geleverd ZONDER ENIGE GARANTIE. De broncode is beschikbaar op GitHub.</string>
+  <string name="about_gpl_notice">DistroHopper is vrije software: je mag het verspreiden en/of wijzigen onder de voorwaarden van de GNU General Public License zoals gepubliceerd door de Free Software Foundation, ofwel versie 3 van de licentie, ofwel (naar jouw keuze) een latere versie. Het wordt geleverd ZONDER ENIGE GARANTIE. De broncode is beschikbaar op GitHub.</string>
   <string name="title_activity_licenses">Opensourcelicenties</string>
   <string name="licenses_intro">DistroHopper zelf valt onder de GNU General Public License v3. Daarnaast bundelt het de hieronder vermelde lettertypen en code, elk onder een eigen licentie. Tik op een item om de volledige licentietekst te lezen.</string>
   <!--Accompanies a licence entry: which licence the component is under-->
   <string name="licenses_entry_license">Gelicentieerd onder %1$s</string>
-  <string name="licenses_read_error">De licentietekst kon niet worden geladen. U kunt deze ook lezen in de broncoderepository op GitHub.</string>
+  <string name="licenses_read_error">De licentietekst kon niet worden geladen. Je kunt deze ook lezen in de broncoderepository op GitHub.</string>
   <string name="button_back">Terug</string>
   <string name="button_about">Over</string>
   <string name="button_apply">Toepassen</string>
