@@ -11,6 +11,7 @@ import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -36,6 +37,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,6 +142,16 @@ public class HomeActivity extends AppCompatActivity
 	protected void onCreate (Bundle savedInstanceState)
 	{
 		super.onCreate (savedInstanceState);
+
+		// An install can be forced past minSdk. Nothing here runs on a framework
+		// that old, so say so and get out rather than crash on a missing API //
+		if (Build.VERSION.SDK_INT < this.getApplicationInfo ().minSdkVersion)
+		{
+			Toast.makeText (this, R.string.unsupported_android_version, Toast.LENGTH_LONG).show ();
+			this.finish ();
+
+			return;
+		}
 
 		// First run: hand over to the setup wizard before initialising anything //
 		if (OnboardingGate.shouldShow (DependencyContainer.of (this).getPrefs ()))
