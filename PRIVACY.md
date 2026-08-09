@@ -1,6 +1,6 @@
 # Privacy Policy — DistroHopper
 
-_Last updated: 2026-08-02_
+_Last updated: 2026-08-09_
 
 DistroHopper (`be.robinj.distrohopper`) is a free, open-source Android home
 screen. It contains **no advertising, no analytics, and no tracking SDKs**, and
