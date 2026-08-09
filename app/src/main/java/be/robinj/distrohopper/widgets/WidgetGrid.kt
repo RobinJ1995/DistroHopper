@@ -120,42 +120,118 @@ object WidgetGrid {
 			stableEdgeDp(max(config.screenWidthDp, config.screenHeightDp), currentDpi, stableDpi)
 	}
 
-	/** The valid column counts for this device (the customise slider's range). */
-	@JvmStatic
-	fun columnsRange(context: Context): IntRange {
-		val (shortEdgeDp, _) = stableEdgesDp(context)
-		return minColumns(shortEdgeDp)..maxColumns(shortEdgeDp)
-	}
+	// ---- Persisted presets and grid size ------------------------------------
 
-	/** The stored column count, clamped to the device's range; adaptive default when unset. */
-	@JvmStatic
-	fun columns(context: Context): Int {
-		val (shortEdgeDp, _) = stableEdgesDp(context)
-		val cols = Preferences.getSharedPreferences(context)
-			.getInt(Preference.DESKTOP_GRID_COLUMNS.getName(), defaultColumns(shortEdgeDp))
+	/** Number of grid-size presets offered; [DEFAULT_PRESET] is the middle one. */
+	const val PRESET_COUNT = 5
 
-		return cols.coerceIn(minColumns(shortEdgeDp), maxColumns(shortEdgeDp))
-	}
+	/** Index of the default (device-derived) preset — the middle of the ladder. */
+	const val DEFAULT_PRESET = 2
 
-	/** The (cols, rows) the grid would have for [cols] on this device (the customise hint). */
+	/** The on-disk form of one grid size: "8x17". */
 	@JvmStatic
-	fun dimensionsFor(context: Context, cols: Int): Pair<Int, Int> {
-		val (shortEdgeDp, longEdgeDp) = stableEdgesDp(context)
-		return calculate(shortEdgeDp, longEdgeDp, cols)
+	fun formatSize(size: Pair<Int, Int>): String = "${size.first}x${size.second}"
+
+	/** Parses [formatSize]'s form; null when malformed or non-positive. */
+	@JvmStatic
+	fun parseSize(raw: String?): Pair<Int, Int>? {
+		val parts = raw?.split('x') ?: return null
+		if (parts.size != 2) {
+			return null
+		}
+
+		val cols = parts[0].toIntOrNull() ?: return null
+		val rows = parts[1].toIntOrNull() ?: return null
+		return if (cols > 0 && rows > 0) cols to rows else null
 	}
 
 	/**
-	 * Initialises [COLS] and [ROWS] from the device's screen configuration —
-	 * anchored to the stable density ([stableEdgeDp]) — and the user's desktop
-	 * grid preference. Call once from
+	 * The five (cols, rows) preset options for a screen: the adaptive default in
+	 * the middle, two steps larger-celled below it and two steps finer above,
+	 * clamped to the device's column range (ends may collapse on small screens).
+	 * Generated ONCE per install and persisted (see [presets]); this function
+	 * never runs against a live screen again afterwards.
+	 */
+	@JvmStatic
+	fun generatePresets(shortEdgeDp: Int, longEdgeDp: Int): List<Pair<Int, Int>> {
+		val default = defaultColumns(shortEdgeDp)
+		return (-DEFAULT_PRESET..DEFAULT_PRESET).map { offset ->
+			calculate(shortEdgeDp, longEdgeDp, default + offset)
+		}
+	}
+
+	/**
+	 * The persisted preset ladder, snapshotted from the stable screen edges on
+	 * first launch. Once written it is read back verbatim forever: neither
+	 * density/Display-size/orientation changes nor future retuning of the
+	 * calculation constants can move a user's options from under their layout.
+	 */
+	@JvmStatic
+	fun presets(context: Context): List<Pair<Int, Int>> {
+		val prefs = Preferences.getSharedPreferences(context)
+		val stored = prefs.getString(Preference.DESKTOP_GRID_PRESETS.getName(), null)
+			?.split(',')?.mapNotNull { parseSize(it) }
+		if (stored != null && stored.size == PRESET_COUNT) {
+			return stored
+		}
+
+		val (shortEdgeDp, longEdgeDp) = stableEdgesDp(context)
+		val generated = generatePresets(shortEdgeDp, longEdgeDp)
+		prefs.edit()
+			.putString(Preference.DESKTOP_GRID_PRESETS.getName(),
+				generated.joinToString(",") { formatSize(it) })
+			.apply()
+
+		return generated
+	}
+
+	/**
+	 * The ACTUAL persisted grid size in use. Snapshotted to the middle preset on
+	 * first launch and only ever changed by the customise slider, so the grid —
+	 * and the absolute col/row coordinates [DesktopLayoutStorage] holds against
+	 * it — is stable by construction.
+	 */
+	@JvmStatic
+	fun size(context: Context): Pair<Int, Int> {
+		val prefs = Preferences.getSharedPreferences(context)
+		val stored = parseSize(prefs.getString(Preference.DESKTOP_GRID_SIZE.getName(), null))
+		if (stored != null) {
+			return stored
+		}
+
+		val middle = presets(context)[DEFAULT_PRESET]
+		prefs.edit()
+			.putString(Preference.DESKTOP_GRID_SIZE.getName(), formatSize(middle))
+			.apply()
+
+		return middle
+	}
+
+	/** Persists [size] as the grid to use; applied by relaunching home. */
+	@JvmStatic
+	fun setSize(context: Context, size: Pair<Int, Int>) {
+		Preferences.getSharedPreferences(context).edit()
+			.putString(Preference.DESKTOP_GRID_SIZE.getName(), formatSize(size))
+			.commit()
+	}
+
+	/** The preset index matching the current [size]; the middle when it matches none. */
+	@JvmStatic
+	fun selectedPreset(context: Context): Int {
+		val index = presets(context).indexOf(size(context))
+		return if (index >= 0) index else DEFAULT_PRESET
+	}
+
+	/**
+	 * Initialises [COLS] and [ROWS] from the persisted grid size (snapshotting
+	 * the presets and the default size on first launch). Call once from
 	 * [be.robinj.distrohopper.HomeActivity.onCreate] before the first layout
-	 * pass; a preference change re-applies by relaunching home (the stored
-	 * desktop layout is reloaded against the new grid).
+	 * pass; a preset change re-applies by relaunching home (the stored desktop
+	 * layout is reloaded against the new grid).
 	 */
 	@JvmStatic
 	fun init(context: Context) {
-		val (shortEdgeDp, longEdgeDp) = stableEdgesDp(context)
-		val (cols, rows) = calculate(shortEdgeDp, longEdgeDp, columns(context))
+		val (cols, rows) = size(context)
 		COLS = cols
 		ROWS = rows
 	}

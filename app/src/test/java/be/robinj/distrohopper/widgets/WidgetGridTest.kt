@@ -82,6 +82,39 @@ class WidgetGridTest {
         }
     }
 
+    // ---- preset ladder + serialisation -------------------------------------
+
+    @Test fun presetLadderStepsAroundTheDefault() {
+        val presets = WidgetGrid.generatePresets(360, 800)
+        assertEquals(WidgetGrid.PRESET_COUNT, presets.size)
+        assertEquals("middle preset is the exact adaptive default (legacy rows)",
+            WidgetGrid.calculate(360, 800), presets[WidgetGrid.DEFAULT_PRESET])
+        assertEquals(listOf(6, 7, 8, 9, 10), presets.map { it.first })
+    }
+
+    @Test fun presetLadderCollapsesAtTheRangeEnds() {
+        // sw 200: columns range 3..5 around a default of 4 — the ±2 steps clamp.
+        val presets = WidgetGrid.generatePresets(200, 400)
+        assertEquals(listOf(3, 3, 4, 5, 5), presets.map { it.first })
+    }
+
+    @Test fun sizeSerialisationRoundTrips() {
+        assertEquals(8 to 17, WidgetGrid.parseSize(WidgetGrid.formatSize(8 to 17)))
+        assertEquals("8x17", WidgetGrid.formatSize(8 to 17))
+    }
+
+    @Test fun parseSizeRejectsMalformedInput() {
+        assertNull(WidgetGrid.parseSize(null))
+        assertNull(WidgetGrid.parseSize(""))
+        assertNull(WidgetGrid.parseSize("8"))
+        assertNull(WidgetGrid.parseSize("8x"))
+        assertNull(WidgetGrid.parseSize("x17"))
+        assertNull(WidgetGrid.parseSize("8x17x2"))
+        assertNull(WidgetGrid.parseSize("0x5"))
+        assertNull(WidgetGrid.parseSize("-1x5"))
+        assertNull(WidgetGrid.parseSize("axb"))
+    }
+
     // ---- stable-density anchor ---------------------------------------------
 
     /**

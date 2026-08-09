@@ -111,33 +111,33 @@ class CustomiseModeUi(
 				}
 			})
 
-		// Desktop Grid Size // The user picks how many cells span the short screen
-		// edge; the rows derive from that (see WidgetGrid). Unlike the dash, the
-		// desktop persists absolute positions against the grid, so the change is
-		// committed on release and applied by relaunching home (like the edge
-		// spinners): the stored layout reloads against the new grid //
-		val desktopRange = WidgetGrid.columnsRange(this.activity)
+		// Desktop Grid Size // Five presets snapshotted on first launch (the
+		// middle is the device default); the slider picks among them. Unlike the
+		// dash, the desktop persists absolute positions against the grid, so the
+		// change is committed on release and applied by relaunching home (like
+		// the edge segments): the stored layout reloads against the new grid //
+		val desktopPresets = WidgetGrid.presets(this.activity)
 		val desktopGridHint = this.viewFinder.get<TextView>(R.id.tvCustomiseDesktopGridHint)
 		val sbCustomiseDesktopColumns = this.viewFinder.get<SeekBar>(R.id.sbCustomiseDesktopColumns)
-		sbCustomiseDesktopColumns.min = desktopRange.first
-		sbCustomiseDesktopColumns.max = desktopRange.last
-		sbCustomiseDesktopColumns.progress = WidgetGrid.columns(this.activity)
-		this.updateDesktopGridHint(desktopGridHint, sbCustomiseDesktopColumns.progress)
+		sbCustomiseDesktopColumns.min = 0
+		sbCustomiseDesktopColumns.max = WidgetGrid.PRESET_COUNT - 1
+		sbCustomiseDesktopColumns.progress = WidgetGrid.selectedPreset(this.activity)
+		this.updateDesktopGridHint(desktopGridHint, desktopPresets, sbCustomiseDesktopColumns.progress)
 		sbCustomiseDesktopColumns.setOnSeekBarChangeListener(
 			object : SeekBar.OnSeekBarChangeListener {
 				override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-					this@CustomiseModeUi.updateDesktopGridHint(desktopGridHint, i)
+					this@CustomiseModeUi.updateDesktopGridHint(desktopGridHint, desktopPresets, i)
 				}
 
 				override fun onStartTrackingTouch(seekBar: SeekBar) {}
 
 				override fun onStopTrackingTouch(seekBar: SeekBar) {
-					if (seekBar.progress == WidgetGrid.columns(this@CustomiseModeUi.activity)) {
+					val chosen = desktopPresets[seekBar.progress]
+					if (chosen == WidgetGrid.size(this@CustomiseModeUi.activity)) {
 						return
 					}
 
-					prefsEdit.putInt(Preference.DESKTOP_GRID_COLUMNS.getName(), seekBar.progress)
-					prefsEdit.commit()
+					WidgetGrid.setSize(this@CustomiseModeUi.activity, chosen)
 					this@CustomiseModeUi.relaunchInCustomiseMode.run()
 				}
 			})
@@ -281,8 +281,8 @@ class CustomiseModeUi(
 	}
 
 	/** Updates the desktop grid "cols × rows" hint for a candidate column count. */
-	private fun updateDesktopGridHint(hint: TextView, cols: Int) {
-		val (c, r) = WidgetGrid.dimensionsFor(this.activity, cols)
+	private fun updateDesktopGridHint(hint: TextView, presets: List<Pair<Int, Int>>, index: Int) {
+		val (c, r) = presets[index.coerceIn(0, presets.size - 1)]
 		hint.text = this.activity.getString(R.string.dash_grid_hint, c, r)
 	}
 
