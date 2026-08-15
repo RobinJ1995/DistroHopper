@@ -31,4 +31,32 @@
 		android:title="@string/option_enable_notification_gestures"
 		android:summary="@string/hint_enable_notification_gestures" />
 
+	<!-- The floating launcher (LauncherService). Switching it on asks for the
+	     draw-over-other-apps permission; the two settings below it are the
+	     gesture's reach-versus-accidental-triggering trade-off. The zone's
+	     entries are populated in code, since what "start" and "end" mean depends
+	     on which edge the launcher is docked on. -->
+	<SwitchPreferenceCompat
+		android:key="launcherservice_enabled"
+		android:title="@string/option_launcherservice_enabled"
+		android:summary="@string/hint_launcherservice_enabled"
+		android:defaultValue="false" />
+
+	<ListPreference
+		android:key="launcherservice_zone"
+		android:dependency="launcherservice_enabled"
+		android:title="@string/option_launcherservice_zone"
+		android:dialogTitle="@string/option_launcherservice_zone"
+		android:entryValues="@array/launcherservice_zone_values"
+		android:defaultValue="full" />
+
+	<ListPreference
+		android:key="launcherservice_sensitivity"
+		android:dependency="launcherservice_enabled"
+		android:title="@string/option_launcherservice_sensitivity"
+		android:dialogTitle="@string/option_launcherservice_sensitivity"
+		android:entries="@array/launcherservice_sensitivity_entries"
+		android:entryValues="@array/launcherservice_sensitivity_values"
+		android:defaultValue="medium" />
+
 </PreferenceScreen>

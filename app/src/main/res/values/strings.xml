@@ -167,6 +167,22 @@
     <string name="option_enable_notification_gestures">Enable open notifications tray gestures</string>
     <string name="hint_enable_notification_gestures">A system accessibility service needs to be enabled in order for this to work.</string>
 
+    <!-- Floating launcher -->
+    <string name="option_launcherservice_enabled">Floating launcher</string>
+    <string name="hint_launcherservice_enabled">Pull the launcher out from the screen edge while you\'re in another app. Needs permission to draw over other apps.</string>
+    <string name="option_launcherservice_zone">Pull out from</string>
+    <string name="option_launcherservice_sensitivity">Gesture sensitivity</string>
+    <string name="launcherservice_zone_full">Anywhere along the edge</string>
+    <string name="launcherservice_zone_top">The top of the edge</string>
+    <string name="launcherservice_zone_middle">The middle of the edge</string>
+    <string name="launcherservice_zone_bottom">The bottom of the edge</string>
+    <string name="launcherservice_zone_left">The left of the edge</string>
+    <string name="launcherservice_zone_right">The right of the edge</string>
+    <string name="launcherservice_sensitivity_low">Low — a deliberate pull</string>
+    <string name="launcherservice_sensitivity_medium">Medium</string>
+    <string name="launcherservice_sensitivity_high">High — a short swipe is enough</string>
+    <string name="toast_launcherservice_permission">DistroHopper needs permission to draw over other apps for this.</string>
+
     <!-- Accessibility gesture setup wizard -->
     <string name="title_activity_gesture_setup">Notification gestures</string>
     <string name="gesture_setup_explain_title">Notification tray gesture setup</string>

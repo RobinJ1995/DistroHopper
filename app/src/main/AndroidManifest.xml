@@ -94,7 +94,13 @@
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="be.robinj.distrohopper.HomeActivity" />
 		</activity>
-		<service android:name="be.robinj.distrohopper.desktop.launcher.service.LauncherService" />
+		<!-- The floating launcher: the dock, pulled out from the screen edge over
+		     other apps. Started by the home screen; holds an overlay window only
+		     while the home screen is not in front. Opt-in via the Gestures setting
+		     plus the user granting the draw-over-other-apps permission. -->
+		<service
+			android:name="be.robinj.distrohopper.desktop.launcher.service.LauncherService"
+			android:exported="false" />
 
 		<!-- Experimental: opens the notification tray on a home-screen swipe-down.
 		     Opt-in via the developer setting + the user enabling it in system

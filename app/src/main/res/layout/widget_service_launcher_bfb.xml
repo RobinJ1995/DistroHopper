@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    The floating launcher's menu button. It exists as a layout purely because
+    "special" (the BFB's chrome-less tile) is an inflation-time attribute of
+    AppLauncher: the app tiles beside it are built in code, this one cannot be.
+-->
+<be.robinj.distrohopper.desktop.launcher.AppLauncher
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lalServiceBfb"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    custom:applauncher_special="true" />

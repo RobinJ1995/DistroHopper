@@ -317,6 +317,9 @@ licenses/                                   — full licence texts of everything
     commit is decided on release; it is offered only once that service is
     enabled, and a no-lockout rule (`GestureAction.reconcileOther`) keeps at
     least one of the two gestures opening the dash.
+    The Gestures preferences section also carries the **floating launcher**'s
+    settings, which are not this controller's — that gesture happens outside the
+    home screen entirely (see `desktop/launcher/service/`).
     Touch routing gotcha: the widget pager is clickable (tap = exit widget
     edit mode), so empty-desktop touches are consumed by it and never reach
     `Activity#onTouchEvent` — HomeActivity therefore feeds the pager's
@@ -494,8 +497,60 @@ licenses/                                   — full licence texts of everything
     pinned/running app icons) and its click/drag listeners. Note there are
     several distinct `AppLauncher` classes in different packages — they are
     per-context icon views, not the same class.
-  - **`desktop/launcher/service/`** — `LauncherService`: a foreground-service
-    variant of the launcher bar that floats over other apps.
+  - **`desktop/launcher/service/`** — the **floating launcher**: the dock,
+    pulled out from the screen edge with a swipe while another app is in front.
+    `LauncherService` is the lifecycle shell (started, fed and stopped by
+    HomeActivity's `syncLauncherService`, which pushes the current desktop's pins
+    as `FloatingLauncherItem`s on resume, on pause and whenever pins change);
+    `FloatingLauncherWindow` owns the overlay window, builds the bar and handles
+    the gesture; `FloatingLauncherGeometry` is the pure maths behind the pull
+    (which way "out" is per edge, how much is revealed, what a release settles to),
+    so the gesture's feel is unit-tested.
+    It is **opt-in twice over**: `Preference.LAUNCHER_SERVICE_ENABLED` (a Gestures
+    setting) *and* the draw-over-other-apps permission, which the preference switch
+    asks for and which `LauncherService.isAvailable` re-checks — a withdrawn grant
+    stops the service and unticks the option. Two more settings tune the gesture:
+    `LAUNCHER_SERVICE_ZONE` (`preferences/LauncherServiceZone` — which stretch of
+    the edge is grabbable, as fractions of its length, so the pull can be kept
+    clear of whatever the app underneath uses its edges for) and
+    `LAUNCHER_SERVICE_SENSITIVITY` (`preferences/LauncherServiceSensitivity` — the
+    hot zone's width and the pull distance that commits). The zone options are
+    named after the edge in use (top/middle/bottom for a side launcher,
+    left/middle/right for a top/bottom one), which is why `PreferencesActivity`
+    populates that list in code.
+    **It is only ever on screen off the home screen**: HomeActivity reports itself
+    in front on resume and gone on pause, and the overlay is added and removed
+    with that — DistroHopper's own home screen already shows the dock. (Where
+    DistroHopper is not the default home, someone else's home screen is just
+    another app, so it is available there.)
+    **One window, two shapes.** Hidden, it is a thin strip along the docked edge —
+    the sensitivity's hot-zone width, the zone's stretch of the edge — so it takes
+    as little as possible from the app underneath. On ACTION_DOWN it grows to fill
+    the screen so the bar can be drawn sliding in and a tap outside can dismiss it,
+    and it shrinks back on settling closed. Growing it at DOWN (rather than adding
+    a second window later) is what makes the gesture work at all: the input
+    dispatcher hands the whole gesture to whichever window took the DOWN, so the
+    finger keeps being tracked far outside the strip. Coordinates are taken **raw**
+    throughout, since resizing the window moves the local origin mid-gesture. The
+    reveal tracks the finger and settles with an animation (instant in battery
+    saver, like the rest of the app).
+    The bar follows the active theme and the launcher edge like the home dock does
+    (same background, tile colour via `home/LauncherTileColour`, icon size via
+    `LauncherIconGrid`, reoriented per edge, wrapping or spanning per the theme's
+    `launcher_expand`). Its menu button is always shown even where the theme or the
+    user hides the home screen's, since it is the floating launcher's only route to
+    the dash; tapping it goes **home** (the HOME intent, so the dash opens over the
+    home screen it belongs to) when DistroHopper holds the HOME role, and opens
+    DistroHopper directly when it does not — with the usual `openDash` extra.
+    `FloatingLauncherItem` exists because `App` cannot make the trip: it is
+    Parcelable only by name, and an unparcelled one has neither the Context nor the
+    AppManager it needs to load an icon or launch (which is what the old,
+    never-exposed launcher service tried to do). Items resolve icons from the
+    shared `AppIconCache` (so they match what the home screen renders), launch by
+    plain intent — LauncherApps for another profile — and record the launch in
+    `AppUsageStats` like any other. Launcher folders are flattened to their
+    members here, and running-app indicators are gone: the APIs that once listed
+    running apps no longer tell a launcher anything useful.
   - **`desktop/dash/`** — the full-screen dash (app grid + search), with
     `GridAdapter` and `SearchTextWatcher`. `SwipeToCloseLayout` is the dash's
     container view (`llDash`): it recognises a downward swipe — only once

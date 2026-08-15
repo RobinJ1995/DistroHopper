@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.widget.Toast;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +25,8 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
 
 import be.robinj.distrohopper.desktop.FrostedGlass;
+import be.robinj.distrohopper.desktop.launcher.LauncherIconGrid;
+import be.robinj.distrohopper.desktop.launcher.service.FloatingLauncherGeometry;
 import be.robinj.distrohopper.home.PinnedAppsMigration;
 
 import java.util.ArrayList;
@@ -130,6 +134,15 @@ public class PreferencesActivity extends AppCompatActivity
 				new ActivityResultContracts.StartActivityForResult (),
 				result -> { /* onResume re-checks the option's visibility */ });
 
+		// The draw-over-other-apps screen never reports a result, so the grant is
+		// re-checked in onResume; this flag carries the pending "switch it on" //
+		private boolean launcherServiceRequested = false;
+
+		private final ActivityResultLauncher<Intent> overlayPermissionRequest =
+			this.registerForActivityResult (
+				new ActivityResultContracts.StartActivityForResult (),
+				result -> { /* onResume completes it once the grant is in */ });
+
 		@Override
 		public void onCreatePreferences (Bundle savedInstanceState, String rootKey)
 		{
@@ -151,6 +164,7 @@ public class PreferencesActivity extends AppCompatActivity
 			this.initLauncherPinModePreference ();
 			this.initDevPreference ();
 			this.initGesturePreferences ();
+			this.initLauncherServicePreferences ();
 
 			this.findPreference ("dummy_wallpaper").setOnPreferenceClickListener (
 				new Preference.OnPreferenceClickListener ()
@@ -306,6 +320,10 @@ public class PreferencesActivity extends AppCompatActivity
 			// Re-evaluate the notification-tray option in case the user just
 			// enabled (or disabled) the accessibility service. //
 			this.applyGesturePreferences ();
+
+			// Likewise for the overlay permission the floating launcher needs, and
+			// for what its zone options are called on the current launcher edge. //
+			this.applyLauncherServicePreferences ();
 		}
 
 		// The icon-pack and app-sort-order pickers are framework-created ListPreference
@@ -441,6 +459,83 @@ public class PreferencesActivity extends AppCompatActivity
 					return true;
 				});
 			}
+		}
+
+		// The floating launcher's settings. The switch is the one place the
+		// draw-over-other-apps permission is asked for: without it the service
+		// cannot put its window up at all, so the option stays off until it is
+		// granted (and switches itself back off if it is later withdrawn). //
+		private void initLauncherServicePreferences ()
+		{
+			final SwitchPreferenceCompat pref = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.LAUNCHER_SERVICE_ENABLED.getName ());
+			if (pref == null)
+				return;
+
+			pref.setOnPreferenceChangeListener ((preference, newValue) ->
+			{
+				if (! Boolean.TRUE.equals (newValue))
+					return true;
+
+				if (Settings.canDrawOverlays (this.requireContext ()))
+					return true;
+
+				// Remember the intent to switch it on, so returning from the system
+				// permission screen with it granted completes the request //
+				this.launcherServiceRequested = true;
+				Toast.makeText (this.requireContext (),
+					R.string.toast_launcherservice_permission, Toast.LENGTH_LONG).show ();
+				this.overlayPermissionRequest.launch (new Intent (
+					Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+					Uri.parse ("package:" + this.requireContext ().getPackageName ())));
+
+				return false;
+			});
+
+			this.applyLauncherServicePreferences ();
+		}
+
+		private void applyLauncherServicePreferences ()
+		{
+			final SwitchPreferenceCompat pref = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.LAUNCHER_SERVICE_ENABLED.getName ());
+			if (pref == null)
+				return;
+
+			final boolean permitted = Settings.canDrawOverlays (this.requireContext ());
+
+			if (this.launcherServiceRequested && permitted)
+			{
+				this.launcherServiceRequested = false;
+				pref.setChecked (true);
+			}
+			else if (pref.isChecked () && ! permitted)
+			{
+				// The permission was withdrawn in system settings; the option would
+				// silently do nothing, so let it show what is actually the case //
+				pref.setChecked (false);
+			}
+
+			final ListPreference zone = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.LAUNCHER_SERVICE_ZONE.getName ());
+			if (zone != null)
+			{
+				// "The start of the edge" is the top of a side launcher and the left
+				// of a top/bottom one — name the positions after the edge in use //
+				final boolean vertical = FloatingLauncherGeometry.isVertical (
+					FloatingLauncherGeometry.edgeOrDefault (
+						LauncherIconGrid.launcherEdge (this.requireContext ())));
+
+				zone.setEntries (this.getResources ().getTextArray (vertical
+					? R.array.launcherservice_zone_entries_vertical
+					: R.array.launcherservice_zone_entries_horizontal));
+				zone.setSummaryProvider (ListPreference.SimpleSummaryProvider.getInstance ());
+			}
+
+			final ListPreference sensitivity = this.findPreference (
+				be.robinj.distrohopper.preferences.Preference.LAUNCHER_SERVICE_SENSITIVITY.getName ());
+			if (sensitivity != null)
+				sensitivity.setSummaryProvider (ListPreference.SimpleSummaryProvider.getInstance ());
 		}
 
 		private void populateGestureList (final ListPreference pref, final boolean withNotifications)

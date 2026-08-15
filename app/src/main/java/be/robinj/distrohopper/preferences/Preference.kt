@@ -31,8 +31,16 @@ enum class Preference(
 	 * `launchericon_width` raw-dp value is intentionally not migrated).
 	 */
 	LAUNCHER_ICON_PRESET("launcher_icon_preset", LauncherIconGrid.DEFAULT_PRESET),
-	/** Whether the accessibility-based launcher service is enabled. */
-	LAUNCHERSERVICE_ENABLED("launcherservice_enabled"),
+	/**
+	 * Whether the floating launcher — the dock pulled out from the screen edge
+	 * over other apps — is enabled. Needs the overlay permission on top of this;
+	 * see [be.robinj.distrohopper.desktop.launcher.service.LauncherService].
+	 */
+	LAUNCHER_SERVICE_ENABLED("launcherservice_enabled", false),
+	/** Which stretch of the launcher's edge the floating launcher is pulled from. */
+	LAUNCHER_SERVICE_ZONE("launcherservice_zone", "full"),
+	/** How readily the floating launcher's pull-out gesture triggers. */
+	LAUNCHER_SERVICE_SENSITIVITY("launcherservice_sensitivity", "medium"),
 	/** Whether dash search also queries the (slower) full set of lenses. */
 	DASH_SEARCH_FULL("dashsearch_full"),
 	/** Whether opening the dash focuses the search field (raising the keyboard). */

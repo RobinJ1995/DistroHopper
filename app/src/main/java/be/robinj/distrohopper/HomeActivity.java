@@ -86,6 +86,7 @@ import be.robinj.distrohopper.desktop.launcher.DashEdgeDragListener;
 import be.robinj.distrohopper.desktop.launcher.LauncherDragListener;
 import be.robinj.distrohopper.desktop.launcher.LauncherIconGrid;
 import be.robinj.distrohopper.desktop.launcher.TrashDragListener;
+import be.robinj.distrohopper.desktop.launcher.service.FloatingLauncherItem;
 import be.robinj.distrohopper.desktop.launcher.service.LauncherService;
 import be.robinj.distrohopper.widgets.DesktopAppHost;
 import be.robinj.distrohopper.widgets.DesktopFolderHost;
@@ -298,10 +299,6 @@ public class HomeActivity extends AppCompatActivity
 
 				return windowInsets;
 			});
-
-			// Load the launcher service //
-			Intent launcherServiceIntent = new Intent (this, LauncherService.class);
-			this.stopService (launcherServiceIntent);
 
 			// Initialise the core launcher items //
 			lalBfb.init ();
@@ -760,7 +757,10 @@ public class HomeActivity extends AppCompatActivity
 				// the just-launched app moves (no-op for the alphabetical order) //
 				this.apps.refreshDashSortOrder ();
 
-			this.showLauncherService (false);
+			// We are in front, so the floating launcher stays off screen (the dock
+			// is right there); this is also the moment its pins are refreshed and
+			// where a service start is guaranteed to be allowed //
+			this.syncLauncherService (true);
 
 			if (this.apps != null)
 			{
@@ -786,7 +786,10 @@ public class HomeActivity extends AppCompatActivity
 		{
 			this.overridePendingTransition (R.anim.home_to_app_in, R.anim.home_to_app_out);
 
-			this.showLauncherService (true);
+			// Whatever is in front now, it isn't our home screen: the floating
+			// launcher may show itself, with the pins of the desktop we are
+			// leaving on //
+			this.syncLauncherService (false);
 		}
 		catch (Exception ex)
 		{
@@ -865,48 +868,26 @@ public class HomeActivity extends AppCompatActivity
 	}
 
 
-	private void startLauncherService (boolean show)
+	/**
+	 * Hands the floating launcher the pins of the desktop currently shown and
+	 * tells it whether we are in front (where it must stay hidden — the dock is
+	 * already on screen). Also what stops the service when the setting is off or
+	 * the overlay permission has been withdrawn.
+	 */
+	private void syncLauncherService (boolean homeForeground)
 	{
-		SharedPreferences prefs = this.getSharedPreferences ();
+		final ArrayList<FloatingLauncherItem> items = new ArrayList<> ();
 
-		if (prefs.getBoolean (Preference.LAUNCHERSERVICE_ENABLED.getName(), false) && prefs.getBoolean (Preference.DEV.getName(), false))
+		if (this.apps != null)
 		{
-			AppLauncher lalbfb = this.viewFinder.get(R.id.lalBfb);
-
-			Intent intent = new Intent (this, LauncherService.class);
-			intent.putParcelableArrayListExtra ("pinned", (ArrayList<App>) this.apps.getPinned ());
-			intent.putExtra ("bgColour", this.dash.getChameleonicBgColour ());
-			intent.putExtra ("colour", lalbfb.getColour ());
-			intent.putExtra ("start", true);
-			intent.putExtra ("show", show);
-			intent.putExtra ("visible", false);
-
-			this.startService (intent);
+			for (final App app : this.apps.getPinned ())
+				items.add (FloatingLauncherItem.of (this, app));
 		}
-		else
-		{
-			Intent intent = new Intent (this, LauncherService.class);
 
-			this.stopService (intent);
-		}
+		LauncherService.sync (this, items, homeForeground);
 	}
 
-	private void showLauncherService (boolean show)
-	{
-		SharedPreferences prefs = this.getSharedPreferences ();
 
-		if (prefs.getBoolean (Preference.LAUNCHERSERVICE_ENABLED.getName(), false) && prefs.getBoolean (Preference.DEV.getName(), false))
-		{
-			Intent intent = new Intent (this, LauncherService.class);
-			intent.putExtra ("show", show);
-			intent.putExtra ("visible", false);
-			if (show && this.apps != null && prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false))
-				intent.putParcelableArrayListExtra ("running", (ArrayList<App>) this.apps.getRunningApps ());
-
-			this.startService (intent);
-		}
-	}
-	
 	@SuppressLint ("ResourceType")
 
 
@@ -990,7 +971,7 @@ public class HomeActivity extends AppCompatActivity
 			});
 			llLauncher.setOnDragListener (new LauncherDragListener (this.apps));
 
-			this.startLauncherService (false);
+			this.syncLauncherService (true);
 
 			SharedPreferences prefs = this.getSharedPreferences ();
 
@@ -1052,7 +1033,7 @@ public class HomeActivity extends AppCompatActivity
 
 	public void pinnedAppsChanged ()
 	{
-		this.startLauncherService (false);
+		this.syncLauncherService (true);
 
 		// Pins can keep a desktop alive (and pinning on the trailing empty one
 		// spawns a new desktop), so re-derive the desktop row //

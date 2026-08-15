@@ -18,4 +18,44 @@
         <item>oxygen</item>
     </string-array>
 
+    <!-- Floating launcher (Gestures settings). Which stretch of the launcher's
+         screen edge it can be pulled out from. The two entry lists say the same
+         thing in the terms of the edge the launcher is actually docked on;
+         PreferencesActivity picks between them, and both stay in lockstep with
+         the values, which are persisted and mapped in LauncherServiceZone.kt. -->
+    <string-array name="launcherservice_zone_values" translatable="false">
+        <item>full</item>
+        <item>start</item>
+        <item>centre</item>
+        <item>end</item>
+    </string-array>
+
+    <string-array name="launcherservice_zone_entries_vertical">
+        <item>@string/launcherservice_zone_full</item>
+        <item>@string/launcherservice_zone_top</item>
+        <item>@string/launcherservice_zone_middle</item>
+        <item>@string/launcherservice_zone_bottom</item>
+    </string-array>
+
+    <string-array name="launcherservice_zone_entries_horizontal">
+        <item>@string/launcherservice_zone_full</item>
+        <item>@string/launcherservice_zone_left</item>
+        <item>@string/launcherservice_zone_middle</item>
+        <item>@string/launcherservice_zone_right</item>
+    </string-array>
+
+    <!-- How readily the pull-out gesture triggers; values map in
+         LauncherServiceSensitivity.kt. -->
+    <string-array name="launcherservice_sensitivity_entries">
+        <item>@string/launcherservice_sensitivity_low</item>
+        <item>@string/launcherservice_sensitivity_medium</item>
+        <item>@string/launcherservice_sensitivity_high</item>
+    </string-array>
+
+    <string-array name="launcherservice_sensitivity_values" translatable="false">
+        <item>low</item>
+        <item>medium</item>
+        <item>high</item>
+    </string-array>
+
 </resources>
