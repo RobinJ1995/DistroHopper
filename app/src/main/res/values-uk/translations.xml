@@ -1,21 +1,58 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <string name="unsupported_android_version">DistroHopper не підтримує цю версію Андроїд</string>
   <string name="action_settings">Налаштування</string>
   <string name="dash_search_hint">Пошук</string>
   <string name="dash_lens_apps_title">Додатки</string>
   <string name="dash_lens_other_title">Інші</string>
+  <string name="profile_personal">Особисте</string>
+  <string name="profile_work">Робота</string>
+  <string name="profile_private">Приватний</string>
+  <string name="profile_clone">Клонувати</string>
+  <string name="profile_other">Профіль</string>
   <!--Section title of a lens's results for one profile: lens name, profile name-->
+  <string name="lens_profile_section">%1$s (%2$s)</string>
   <string name="title_activity_preferences">Уподобання</string>
+  <string name="shortcut_label_distrohopper_settings">Налаштування DistroHopper</string>
   <string name="title_activity_about">Про нас</string>
   <string name="title_activity_lens_preferences">Джерела пошуку</string>
+  <string name="title_activity_local_files_folders">Теки для пошуку</string>
   <string name="title_activity_theme_preferences">Теми</string>
   <string name="title_activity_dev_logs">Логи</string>
+  <string name="lens_preferences_settings">Налаштування джерела пошуку</string>
+  <string name="local_files_folders_add">Додати теку</string>
+  <string name="local_files_folders_empty">Додайте теку, щоб мати змогу шукати в її вмісті.</string>
+  <string name="local_files_folders_remove">Видалити теку</string>
   <string name="developed_by">Розробник: Робін Джейкобс</string>
+  <string name="about_description">Я започаткував DistroHopper ще в старшій школі, будучи (надто) юним ентузіастом Лінукс, який хотів би бачити щось схоже на робочий стіл в вигляді Лінукс на своєму першому смартфоні. Сподіваюся, що й через понад 15 років епізодичної розробки вам досі подобається те, що я тоді розпочав :)</string>
+  <string name="about_get_involved">Долучайтеся</string>
+  <string name="about_github_title">Зробіть внесок на GitHub</string>
+  <string name="about_github_subtitle">Переглядайте код, повідомляйте про проблеми та співпрацюйте</string>
+  <string name="about_transifex_title">Допомогти перекладати</string>
+  <string name="about_transifex_subtitle">Допомогти перекладати DistroHopper на твою мову</string>
+  <string name="about_legal">Юридична інформація</string>
+  <string name="about_licenses_title">Ліцензії з відкритим вихідним кодом</string>
+  <string name="about_licenses_subtitle">Ліцензії шрифтів та коду, на яких побудовано DistroHopper</string>
+  <string name="about_privacy_title">Політика конфіденційності</string>
+  <string name="about_privacy_subtitle">Інформація яку DistroHopper збирає і яку ні</string>
   <!--Shown at the bottom of the About screen. %1$s is the current year.-->
+  <string name="about_copyright">Авторське право © 2012 — %1$s Робін Джейкобс</string>
+  <string name="about_gpl_notice">DistroHopper — це вільне програмне забезпечення: ви можете розповсюджувати та/або змінювати його на умовах Стандартної громадської ліцензії GNU (GNU General Public License), опублікованої Фондом вільного програмного забезпечення (Free Software Foundation), — версії 3 цієї ліцензії або (на ваш розсуд) будь-якої пізнішої версії. Воно надається БЕЗ ЖОДНИХ ГАРАНТІЙ. Вихідний код доступний на GitHub.</string>
+  <string name="title_activity_licenses">Ліцензії з відкритим вихідним кодом</string>
+  <string name="licenses_intro">Сам по собі DistroHopper розповсюджується на умовах ліцензії GNU General Public License версії 3. До його складу також входять наведені нижче шрифти та програмний код, кожен із яких має власну ліцензію. Торкніться запису, щоб переглянути повний текст ліцензії.</string>
   <!--Accompanies a licence entry: which licence the component is under-->
+  <string name="licenses_entry_license">Ліцензовано на умовах %1$s</string>
+  <string name="licenses_read_error">Не вдалося завантажити текст ліцензії. Ви також можете переглянути його в репозиторії вихідного коду на GitHub.</string>
   <string name="button_back">Назад</string>
   <string name="button_about">Про нас</string>
   <string name="button_apply">Застосувати</string>
+  <string-array name="edges">
+    <item>Сховати</item>
+    <item>Верх</item>
+    <item>Право</item>
+    <item>Низ</item>
+    <item>Ліво</item>
+  </string-array>
   <string name="title_preferences">Уподобання</string>
   <string name="pref_header_general">Загальні</string>
   <string name="pref_header_launcher">Лаунчер</string>
@@ -24,20 +61,145 @@
   <string name="pref_header_advanced">Розширені</string>
   <string name="pref_header_dev">Опції для розробників</string>
   <string name="pref_header_functionality">Функціональність</string>
+  <string name="pref_header_gestures">Жести</string>
   <string name="pref_header_appearance">Вигляд</string>
   <string name="option_launchericon_size">Встановлений розмір іконки</string>
+  <string name="customise_hint_launcher_icon_size">Через більші іконки їх менше вміщується без прокручування.</string>
+  <string name="launcher_icon_hint">%1$s · %2$d іконки підходять</string>
+  <string-array name="launcher_icon_presets">
+    <item>Крихітний</item>
+    <item>Малий</item>
+    <item>Звичайне</item>
+    <item>Велике</item>
+    <item>Здоровецьке</item>
+  </string-array>
+  <string name="customise_option_dash_grid_size">Розмір сітки</string>
+  <string name="customise_hint_dash_grid_size">Більша сітка означає що іконки будуть менші</string>
+  <string name="dash_grid_hint">%1$d × %2$d</string>
+  <string name="pref_header_desktop">Робочий стіл</string>
+  <string name="customise_option_desktop_grid_size">Розмір сітки</string>
+  <string name="customise_hint_desktop_grid_size">Більша сітка означає менші комірки. Зміна налаштувань призводить до перегрупування елементів, які більше не вміщуються.</string>
   <!--Which screen edge the launcher or panel is attached to; the group it
          sits under names the one it applies to.-->
+  <string name="customise_option_screen_edge">Край екрана</string>
+  <string name="option_launcher_menu_button">Кнопка меню</string>
+  <string name="customise_menu_button_hide">Сховати</string>
   <!--The menu button's position: the launcher's leading and trailing end.-->
+  <string name="customise_menu_button_start">Почати</string>
+  <string name="customise_menu_button_end">Закінчити</string>
+  <string name="widget_picker_title">Додати віджет</string>
+  <string name="widget_no_room">На головному екрані немає місця для цього віджету</string>
+  <string name="desktop_menu_widgets">Віджет</string>
+  <string name="desktop_menu_settings">Налаштування</string>
+  <string name="option_dashsearch_focus_on_open">Починати шукати коли меню вибору програми відкрите</string>
+  <string name="hint_dashsearch_focus_on_open">Фокусувати поле пошуку та показувати клавіатуру коли меню вибору програми відкрите.</string>
+  <string name="option_dev_log_toaster">Toast-логи</string>
+  <string name="hint_dev_log_toaster">Відображати пункти журналу у спливаючих повідомленнях</string>
+  <string name="option_customise">Налаштувати вигляд</string>
+  <string name="hint_customise">Налаштувати зовнішній вигляд.</string>
+  <string name="customise_done">Готово</string>
   <string name="option_wallpaper">Шпалери</string>
   <string name="hint_wallpaper">Змінити шпалери</string>
   <string name="option_lenses">Джерела пошуку</string>
   <string name="hint_lenses">Виберіть, які джерела пошуку ви хочете використовувати, і в якому порядку їх результати будуть з\'являтися у Панелі. Коли ви використовуєте Панель для пошуку, ваш запит відправляється до усіх включених джерел і відображаються їхні результати.</string>
   <string name="option_theme">Тема</string>
   <string name="hint_theme">Виберіть дистрибутив Linux-а, на який повинен бути схожим DistroHopper.</string>
+  <string name="option_icon_pack">Набір іконок</string>
+  <string name="hint_icon_pack">Виберіть сторонній набір іконок, щоб застосувати його до значків програм.</string>
+  <string name="option_icon_pack_none">Жодного</string>
+  <string name="option_icon_shape">Форма іконок</string>
+  <string name="hint_icon_shape">Надайте адаптивним значкам єдину форму.</string>
+  <string name="icon_shape_system">Системні за замовчуванням</string>
+  <string name="icon_shape_circle">Круглі</string>
+  <string name="icon_shape_squircle">Квадратне коло</string>
+  <string name="icon_shape_rounded_square">Заокруглено квадратні</string>
+  <string name="icon_shape_square">Квадратні</string>
+  <string name="option_tinted_icons">Одно-кольорні іконки</string>
+  <string name="hint_tinted_icons">Перефарбуйте в один колір піктограми програм, що мають одно-кольорову версію.</string>
+  <string name="option_icon_tint">Колір</string>
+  <string name="tint_wallpaper">Шпалери</string>
+  <string name="tint_accent">Акцент</string>
+  <string name="tint_theme">Тема</string>
+  <string name="option_icons">Іконка</string>
+  <string name="hint_icons">Форма, набір іконок і відтінок.</string>
+  <string name="title_activity_icon_preferences">Іконка</string>
+  <string name="pref_section_adaptive_icons">Адаптивні іконки</string>
+  <string name="hint_adaptive_icons">Ці налаштування стосуються лише тих програм, що мають адаптивну піктограму; інші піктограми залишаються без змін.</string>
+  <string name="pref_section_icon_packs">Набір Іконок</string>
+  <string name="option_font">Шрифт</string>
+  <string name="hint_font">Виберіть шрифт для тексту в лаунчері DistroHopper.</string>
+  <string name="font_system">Системне за замовчуванням</string>
+  <string name="option_crash_reports">Надіслати звіт про збій</string>
+  <string name="hint_crash_reports">Автоматично надсилайте анонімні звіти про збої, щоб допомогти усунути помилки. Звіти надходять на захищений сервер і ніколи не передаються третім особам.</string>
   <string name="option_dev">Режим розробника</string>
+  <string name="hint_dev">Отримайте доступ до журналів налагодження та іншої технічної інформації, а також до функцій, які ще не готові для широкого загалу. Увімкнення цієї опції негативно вплине на продуктивність і стабільність.</string>
   <string name="option_dev_logs">Логи</string>
+  <string name="dev_logs_empty">Ще немає звітів.</string>
+  <string name="option_clear_cache">Очистити кеш</string>
+  <string name="toast_cache_cleared">Кеш очищено</string>
+  <string name="option_full_restart">Повний перезапуск</string>
+  <string name="hint_full_restart">Повністю закрийте та знову запустіть програму, щоб виконати її повну повторну ініціалізацію.</string>
+  <string name="option_widget_resize_any">Дозволити непідтримувані розміри віджетів</string>
+  <string name="hint_widget_resize_any">Дозволити змінювати розмір віджетів за межі підтримуваних обмежень розміру.</string>
+  <string name="option_desktop_show_grid_on_drag">Показувати сітку робочого столу під час перетягування</string>
+  <string name="hint_desktop_show_grid_on_drag">Відображати крапку в кожному місці перетину сітки під час перетягування або зміни розміру віджетів і програм.</string>
+  <string name="accessibility_service_notification_tray_description">Дозволяє DistroHopper відкривати панель сповіщень, коли ви проводите пальцем униз по головному екрану. Використовується лише для виконання цієї дії; вміст екрана не зчитується.</string>
   <!--Gestures preferences-->
+  <string name="option_gesture_swipe_sides">Прогорнути вліво чи вправо</string>
+  <string name="hint_gesture_swipe_sides">Перемикає між робочими столами.</string>
+  <string name="option_gesture_swipe_up">Прогортування вверх</string>
+  <string name="option_gesture_swipe_down">Прогортування вниз</string>
+  <string name="gesture_action_none">Нічого не робить</string>
+  <string name="gesture_action_open_dash">Відкрити меню вибору програми</string>
+  <string name="gesture_action_open_dash_search">Відкрити панель вибору програми і почати шукати</string>
+  <string name="gesture_action_notifications_tray">Відкрити панель сповіщень</string>
+  <string name="option_enable_notification_gestures">Увімкнути жести для відкриття панелі сповіщень</string>
+  <string name="hint_enable_notification_gestures">Щоб це працювало, необхідно ввімкнути системну службу спеціальних можливостей.</string>
   <!--Accessibility gesture setup wizard-->
+  <string name="title_activity_gesture_setup">Жести для сповіщень</string>
+  <string name="gesture_setup_explain_title">Налаштування жестів для панелі сповіщень</string>
+  <string name="gesture_setup_explain_body">Андроїд не надає звичайним програмам можливості відкривати панель сповіщень. Для такого головного екрана, як DistroHopper, єдиним доступним механізмом є служба спеціальних можливостей.
+
+Саме з цієї причини необхідно ввімкнути службу спеціальних можливостей для DistroHopper. Вона лише відкриває панель сповіщень. Вона не зчитує вміст екрана, не збирає жодних даних і не виконує жодних інших дій.</string>
+  <string name="gesture_setup_guide_title">Увімкніть послугу</string>
+  <string name="gesture_setup_guide_body">Знайдіть DistroHopper у списку налаштувань спеціальних можливостей і ввімкніть його, а потім поверніться сюди.</string>
+  <string name="gesture_setup_cancel">Відмінити</string>
+  <string name="gesture_setup_proceed">Я розумію,продовжити</string>
+  <string name="gesture_setup_open_settings">Відкрити налаштування доступності</string>
+  <string name="toast_gesture_setup_enabled">Жести в області сповіщень увімкнено</string>
+  <string name="option_rerun_onboarding">Запустіть майстер налаштування ще раз</string>
+  <string name="hint_rerun_onboarding">Майстер початкового налаштування з’явиться під час наступного запуску DistroHopper.</string>
+  <string name="toast_rerun_onboarding">Майстер налаштування запуститься під час наступного запуску.</string>
+  <string name="option_launcher_pin_default_apps">Прикріпити програми за замовчуванням</string>
+  <string name="hint_launcher_pin_default_apps">Повторно запустіть закріплення програми (для першого використання) під час наступного запуску.</string>
+  <string name="toast_pin_default_apps">Програми за замовчуванням буде закріплено під час наступного запуску.</string>
+  <string name="option_set_default_launcher">Встановити як основний лаунчер</string>
+  <string name="hint_set_default_launcher">Зробіть DistroHopper своїм лаунчером за замовчуванням, щоб він з’являвся щоразу, коли ви натискаєте кнопку «Додому».</string>
+  <string name="option_dash_app_sort_order">Порядок сортування програм</string>
+  <string name="hint_dash_app_sort_order">Виберіть порядок додатків в меню вибору програми.\nCurrent: %s</string>
+  <string name="option_dash_app_sort_order_alphabetic">За Алфавітом</string>
+  <string name="option_dash_app_sort_order_recent">Нещодавно використані</string>
+  <string name="option_dash_app_sort_order_most_used">Найчастіше використовувані </string>
+  <string name="option_dash_app_sort_order_custom">Власний (перетягніть, щоб змінити порядок)</string>
+  <string name="folder_full">Тека повна</string>
+  <string name="option_pin_per_desktop">Закріплені програми для кожного робочого столу</string>
+  <string name="hint_pin_per_desktop">Призначте для кожного робочого столу власні закріплені програми в панелі запуску, замість того щоб використовувати одні й ті самі програми на всіх робочих столах.</string>
   <string name="theme_elementary_res_panel_bfb_text">Додатки</string>
+  <string name="theme_gnome_res_panel_bfb_text"></string>
+  <string name="toast_sending_crash_report">Надсилаємо звіт про збій...</string>
+  <string name="title_activity_onboarding">Вітаємо</string>
+  <string name="onboarding_welcome_title">Вітаємо в DistroHopper</string>
+  <string name="onboarding_welcome_body">Ваш лаунчер Андроїд із виглядом і відчуттям вашого улюбленого робочого столу Лінукс.</string>
+  <string name="onboarding_theme_title">Виберіть середовище вашого робочого столу</string>
+  <string name="onboarding_theme_body">На яке середовище робочого столу Лінукс ви хочете, щоб був схожий DistroHopper? Ви можете змінити це в будь-який момент у налаштуваннях.</string>
+  <string name="onboarding_default_launcher_title">Зробити основним лаунчером</string>
+  <string name="onboarding_default_launcher_body">Встановіть DistroHopper як головний лаунчер, щоб він з’являвся щоразу, коли ви натискаєте кнопку «Додому».</string>
+  <string name="onboarding_default_launcher_already">✓ DistroHopper твій основний лаунчер</string>
+  <string name="onboarding_button_set_default">Зробити основним лаунчером</string>
+  <string name="onboarding_button_next">Далі</string>
+  <string name="onboarding_button_done">Закінчити</string>
+  <string name="bfb_widget_label">Кнопка меню</string>
+  <string name="bfb_widget_description">Кнопка меню у вашій поточній темі. Натисніть, щоб відкрити панель керування.</string>
+  <string name="bfb_search_widget_label">Шукати</string>
+  <string name="bfb_search_widget_description">Кнопка меню у вашій поточній темі. Натисніть, щоб відкрити панель вибору програми і почати пошук.</string>
 </resources>
