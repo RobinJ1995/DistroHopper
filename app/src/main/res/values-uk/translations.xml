@@ -185,7 +185,7 @@
   <string name="option_pin_per_desktop">Закріплені програми для кожного робочого столу</string>
   <string name="hint_pin_per_desktop">Призначте для кожного робочого столу власні закріплені програми в панелі запуску, замість того щоб використовувати одні й ті самі програми на всіх робочих столах.</string>
   <string name="theme_elementary_res_panel_bfb_text">Додатки</string>
-  <string name="theme_gnome_res_panel_bfb_text"></string>
+  <string name="theme_gnome_res_panel_bfb_text">Активності</string>
   <string name="toast_sending_crash_report">Надсилаємо звіт про збій...</string>
   <string name="title_activity_onboarding">Вітаємо</string>
   <string name="onboarding_welcome_title">Вітаємо в DistroHopper</string>
