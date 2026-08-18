@@ -2,7 +2,6 @@ package be.robinj.distrohopper.home
 
 import android.app.Activity
 import android.app.Dialog
-import android.os.PowerManager
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.desktop.FrostedGlass
+import be.robinj.distrohopper.preferences.AnimationMode
 
 /**
  * The long-press-on-empty-desktop menu: the desktop zooms out and darkens while a
@@ -212,10 +212,9 @@ class DesktopMenuOverlay(private val activity: Activity) {
 		}
 	}
 
-	/** Transitions settle immediately in battery saver, like the dash's. */
+	/** Transitions settle immediately when animations are off, like the dash's. */
 	private fun duration(): Long =
-		if (this.activity.getSystemService(PowerManager::class.java)?.isPowerSaveMode == true) 0L
-		else DURATION
+		if (AnimationMode.animationsEnabled(this.activity)) DURATION else 0L
 
 	private fun dp(value: Int): Int =
 		(value * this.activity.resources.displayMetrics.density).toInt()

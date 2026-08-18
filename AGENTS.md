@@ -324,7 +324,8 @@ licenses/                                   — full licence texts of everything
     is recognised, keeping taps/long-presses working), with
     `Activity#onTouchEvent` as the fallback for genuinely unclaimed touches.
     Hit-testing uses raw coordinates since the two streams' local spaces
-    differ; the panel and launcher are excluded. In battery saver there is
+    differ; the panel and launcher are excluded. With animations off (in
+    battery saver, by default — see the Animations setting below) there is
     nothing to track, so the dash opens/closes instantly at the trigger
     distance; swipe-to-close is disabled in customise mode (closing there
     relaunches the activity).
@@ -412,8 +413,8 @@ licenses/                                   — full licence texts of everything
     outside taps are the Dialog's own; the static active-slot pattern
     (`isShowingIn`/`dismissActive`/`clearFor`) remains so Home dismisses it
     through HomeActivity, and `clearFor` must actually close the window or it
-    outlives the activity as a leak. All transitions settle immediately in
-    battery saver.
+    outlives the activity as a leak. All transitions settle immediately when
+    animations are off (see the Animations setting below).
     The zoom-out stays in the activity and scales only `vgWidgets` +
     `llLauncherAndDashContainer` (`DesktopMenuOverlay.zoomTargets`), **not**
     the whole activity content: the panel and status bar shrinking away from
@@ -461,7 +462,7 @@ licenses/                                   — full licence texts of everything
     reused (no rebuild → no LayoutTransition "appear" flash; the binder also
     suppresses that transition around any bar rebuild). The morph is skipped in
     global mode (identical bars on every desktop — the bar is never even rebuilt
-    on a swipe) and battery saver (swap on settle).
+    on a swipe) and with animations off (swap on settle).
   - `Desktops` — the single authority over the home screen's desktops (which
     span both widgets and per-desktop pins). It derives how many desktops
     exist (`highestOccupiedDesktop` = max of `WidgetHost.highestWidgetDesktop`
@@ -604,6 +605,21 @@ licenses/                                   — full licence texts of everything
   `PreferencesRepository` provides typed and observable (`valueFlow`, a
   Kotlin `Flow`) access to the main "prefs" file keyed by the `Preference`
   enum — prefer it over raw `SharedPreferences` in new code.
+  - **Animations**: `preferences/AnimationMode` (`ANIMATIONS` =
+    `always`|`unless_power_saving`|`off`, default `unless_power_saving`;
+    unknown → the default) decides whether the launcher's transitions run.
+    `AnimationMode.animationsEnabled(context)` is the single gate every
+    animated surface asks — the dash open/close and swipe
+    (`home/DashAnimator`), the launcher bar morph (`home/LauncherBarBinder`),
+    the desktop pager swipe (`widgets/WidgetsPager`) and the desktop menu
+    sheet (`home/DesktopMenuOverlay`) — resolving the stored mode against
+    `PowerManager.isPowerSaveMode`: `always` animates even in battery saver,
+    `unless_power_saving` is the historical behaviour (battery saver bypasses
+    every transition and applies its final state immediately), and `off`
+    applies that battery-saver behaviour permanently. It is read fresh on
+    every call, so both a settings change and battery saver toggling take
+    effect without the launcher being recreated. New animated surfaces should
+    go through the same gate rather than reading `PowerManager` directly.
 - **`theme/`** — one class per supported desktop look (`Default`, `Gnome`,
   `Elementary`, `Cinnamon`, `Plasma`, `Mate`, `Cosmic`, `Budgie`), each
   extending the abstract `Theme` (which lists every themeable field and maps

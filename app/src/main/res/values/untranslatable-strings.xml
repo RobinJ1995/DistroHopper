@@ -20,4 +20,20 @@
         <item>custom</item>
     </string-array>
 
+    <!-- Not translatable: the items are references; the strings they point
+         at carry the translations. -->
+    <string-array name="animations_entries" translatable="false">
+        <item>@string/option_animations_always</item>
+        <item>@string/option_animations_unless_power_saving</item>
+        <item>@string/option_animations_off</item>
+    </string-array>
+
+    <!-- Must mirror the AnimationMode enum values, in the same order as
+         animations_entries. Not translatable: persisted preference keys. -->
+    <string-array name="animations_values" translatable="false">
+        <item>always</item>
+        <item>unless_power_saving</item>
+        <item>off</item>
+    </string-array>
+
 </resources>

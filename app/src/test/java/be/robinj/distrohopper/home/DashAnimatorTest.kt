@@ -12,6 +12,7 @@ import be.robinj.distrohopper.ActivityTestSupport
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.preferences.AnimationMode
 import be.robinj.distrohopper.preferences.Preference
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -36,9 +37,45 @@ class DashAnimatorTest {
 
 	@After fun tearDown() { this.scenario.close() }
 
-	private fun launch(theme: String) {
-		this.scenario = ActivityTestSupport.launchHome(
-			configurePrefs = { it.putString(Preference.THEME.getName(), theme) })
+	private fun launch(theme: String, animations: AnimationMode? = null) {
+		this.scenario = ActivityTestSupport.launchHome(configurePrefs = {
+			it.putString(Preference.THEME.getName(), theme)
+			if (animations != null) {
+				it.putString(Preference.ANIMATIONS.getName(), animations.value)
+			}
+		})
+	}
+
+	private fun setPowerSaveMode(activity: HomeActivity, enabled: Boolean) {
+		val powerManager = activity.getSystemService(Context.POWER_SERVICE) as PowerManager
+		Shadow.extract<ShadowPowerManager>(powerManager).setIsPowerSaveMode(enabled)
+	}
+
+	private fun panelOverlayAlpha(activity: HomeActivity): Int =
+		(activity.findViewById<LinearLayout>(R.id.llPanel).background as LayerDrawable)
+			.getDrawable(1).alpha
+
+	/*
+	 * The instant path settles everything inside open()/close() itself — no
+	 * pre-draw, no animator — so asserting the settled state without driving
+	 * either is what tells it apart from the animated one.
+	 */
+	private fun assertOpenAndCloseAreInstant(activity: HomeActivity) {
+		val dash = this.controller(activity)
+		val panelBackground = activity.resources.getDrawable(
+			DependencyContainer.of(activity).themeManager.current.panel_background)
+
+		dash.open()
+
+		assertTrue(dash.isOpen)
+		this.assertSettledOpen(activity)
+		assertEquals(0, this.panelOverlayAlpha(activity))
+
+		dash.close()
+
+		assertFalse(dash.isOpen)
+		this.assertSettledClosed(activity)
+		assertEquals(panelBackground.alpha, this.panelOverlayAlpha(activity))
 	}
 
 	private fun controller(activity: HomeActivity): DashController {
@@ -130,26 +167,40 @@ class DashAnimatorTest {
 	@Test fun powerSaverDisablesOpenAndCloseAnimations() {
 		this.launch("gnome")
 		this.scenario.onActivity { activity ->
-			val powerManager = activity.getSystemService(Context.POWER_SERVICE) as PowerManager
-			Shadow.extract<ShadowPowerManager>(powerManager).setIsPowerSaveMode(true)
+			this.setPowerSaveMode(activity, true)
+
+			this.assertOpenAndCloseAreInstant(activity)
+		}
+	}
+
+	@Test fun animationsOffDisablesOpenAndCloseAnimationsWithoutPowerSaver() {
+		this.launch("gnome", AnimationMode.OFF)
+		this.scenario.onActivity { activity ->
+			this.setPowerSaveMode(activity, false)
+
+			this.assertOpenAndCloseAreInstant(activity)
+		}
+	}
+
+	@Test fun animationsAlwaysKeepsTheOpenAnimationInPowerSaver() {
+		this.launch("gnome", AnimationMode.ALWAYS)
+		this.scenario.onActivity { activity ->
+			this.setPowerSaveMode(activity, true)
 			val dash = this.controller(activity)
 			val panelBackground = activity.resources.getDrawable(
 				DependencyContainer.of(activity).themeManager.current.panel_background)
 
 			dash.open()
 
+			// Still resting: the fade is animated, not applied by open() itself //
+			assertEquals(panelBackground.alpha, this.panelOverlayAlpha(activity))
+
+			this.startPendingAnimation(activity)
+			ActivityTestSupport.drainTasks()
+
 			assertTrue(dash.isOpen)
 			this.assertSettledOpen(activity)
-			assertEquals(0, (activity.findViewById<LinearLayout>(R.id.llPanel).background
-				as LayerDrawable).getDrawable(1).alpha)
-
-			dash.close()
-
-			assertFalse(dash.isOpen)
-			this.assertSettledClosed(activity)
-			assertEquals(panelBackground.alpha,
-				(activity.findViewById<LinearLayout>(R.id.llPanel).background
-					as LayerDrawable).getDrawable(1).alpha)
+			assertEquals(0, this.panelOverlayAlpha(activity))
 		}
 	}
 

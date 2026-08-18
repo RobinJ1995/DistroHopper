@@ -11,7 +11,6 @@ import android.app.Activity
 import android.graphics.PointF
 import android.graphics.RenderEffect
 import android.graphics.Shader
-import android.os.PowerManager
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
@@ -48,8 +47,10 @@ import kotlin.math.min
  *  - UNITY: the dash fades in.
  *  - MATE: the whole dash fades and zooms out of the BFB.
  *  - COSMIC: the dash fades in with a slight zoom.
- * Everything is reversed on close. Battery saver bypasses all transitions
- * and applies the final state immediately.
+ * Everything is reversed on close. The Animations setting decides whether the
+ * transitions run at all (see [be.robinj.distrohopper.preferences.AnimationMode]);
+ * when they are off — by default, while battery saver is on — the final state
+ * is applied immediately.
  *
  * Swipe gestures run the same theme presets, but finger-tracked rather than
  * clock-driven: swipeBegin() captures the theme's open-animation geometry and
@@ -86,7 +87,7 @@ class DashAnimator(
 		get() = DashAnimation.of(this.activity.resources.getInteger(this.theme.dash_animation))
 
 	internal val animationsEnabled: Boolean
-		get() = !this.activity.getSystemService(PowerManager::class.java).isPowerSaveMode
+		get() = this.prefs.animationMode().enabled(this.activity)
 
 	/** Records where an opening swipe began (screen coords); see [swipeOrigin]. */
 	fun setSwipeOrigin(x: Float, y: Float) {

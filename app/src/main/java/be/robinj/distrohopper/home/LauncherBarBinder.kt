@@ -1,7 +1,6 @@
 package be.robinj.distrohopper.home
 
 import android.animation.LayoutTransition
-import android.os.PowerManager
 import android.os.UserHandle
 import android.view.View
 import android.widget.LinearLayout
@@ -12,6 +11,7 @@ import be.robinj.distrohopper.AppManager
 import be.robinj.distrohopper.DependencyContainer
 import be.robinj.distrohopper.HomeActivity
 import be.robinj.distrohopper.R
+import be.robinj.distrohopper.preferences.AnimationMode
 import be.robinj.distrohopper.preferences.Preferences
 import be.robinj.distrohopper.desktop.dash.FolderPopup
 import be.robinj.distrohopper.desktop.dash.ProfilePagerAdapter
@@ -235,7 +235,7 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	}
 
 	private fun animationsEnabled(): Boolean =
-		this.activity.getSystemService(PowerManager::class.java)?.isPowerSaveMode != true
+		AnimationMode.animationsEnabled(this.activity)
 
 	/* Mutating the bar's children fires its LayoutTransition (appear animations); suppress it. */
 	private fun withPinnedLayoutTransitionSuppressed(block: () -> Unit) {

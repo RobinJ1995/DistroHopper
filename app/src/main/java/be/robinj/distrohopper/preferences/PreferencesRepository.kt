@@ -38,6 +38,10 @@ class PreferencesRepository(context: Context) {
 		this.prefs.edit().apply(block).apply()
 	}
 
+	/** When transition animations play; see [AnimationMode]. */
+	fun animationMode(): AnimationMode =
+		AnimationMode.of(this.getString(Preference.ANIMATIONS, Preference.ANIMATIONS.getDefault()))
+
 	/** The selected icon-mask shape preference value (e.g. "system", "circle"). */
 	fun iconShape(): String =
 		this.getString(Preference.ICON_SHAPE, Preference.ICON_SHAPE.getDefault())

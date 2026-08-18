@@ -139,6 +139,11 @@
     <string name="font_opendyslexic" translatable="false">OpenDyslexic</string>
     <string name="font_ubuntu" translatable="false">Ubuntu</string>
     <string name="font_oxygen" translatable="false">Oxygen</string>
+    <string name="option_animations">Animations</string>
+    <string name="hint_animations">Choose when DistroHopper plays its transition animations.\nCurrent: %s</string>
+    <string name="option_animations_always">Always</string>
+    <string name="option_animations_unless_power_saving">Unless battery saver is on</string>
+    <string name="option_animations_off">Never</string>
     <string name="option_crash_reports">Send crash reports</string>
     <string name="hint_crash_reports">Automatically send anonymous crash reports to help fix bugs. Reports go to a private server and are never shared with third parties.</string>
     <string name="option_dev">Developer mode</string>

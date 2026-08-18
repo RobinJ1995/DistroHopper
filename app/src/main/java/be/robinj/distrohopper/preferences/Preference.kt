@@ -58,6 +58,8 @@ enum class Preference(
 	DESKTOP_GRID_SIZE("desktop_grid_size"),
 	/** How dash apps are ordered (alphabetical, usage, custom, …). */
 	APP_SORT_ORDER("app_sort_order", "alphabetical"),
+	/** When transition animations play (always, unless power saving, off). */
+	ANIMATIONS("animations", "unless_power_saving"),
 	/** Whether opt-in crash reporting is enabled. */
 	CRASH_REPORTING_ENABLED("crash_reporting_enabled"),
 	/** The selected distro theme (its lowercase class name). */

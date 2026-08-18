@@ -30,6 +30,15 @@
         android:entryValues="@array/font_values"
         android:defaultValue="system"/>
 
+    <ListPreference
+        android:key="animations"
+        android:title="@string/option_animations"
+        android:dialogTitle="@string/option_animations"
+        android:summary="@string/hint_animations"
+        android:entries="@array/animations_entries"
+        android:entryValues="@array/animations_values"
+        android:defaultValue="unless_power_saving" />
+
     <Preference
         android:key="dummy_customise"
         android:title="@string/option_customise"

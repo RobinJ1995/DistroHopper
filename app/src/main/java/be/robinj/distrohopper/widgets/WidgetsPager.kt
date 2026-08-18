@@ -7,7 +7,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.os.PowerManager
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.MotionEvent
@@ -16,6 +15,7 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
+import be.robinj.distrohopper.preferences.AnimationMode
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -403,8 +403,7 @@ class WidgetsPager @JvmOverloads constructor(
 	}
 
 	private val animationsEnabled: Boolean
-		get() = this.context.getSystemService(PowerManager::class.java)
-			?.isPowerSaveMode != true
+		get() = AnimationMode.animationsEnabled(this.context)
 
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
 		this.setMeasuredDimension(
