@@ -2,6 +2,7 @@ package be.robinj.distrohopper
 
 import android.content.Context
 import android.content.pm.LauncherApps
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.ColorMatrix
@@ -13,6 +14,7 @@ import android.os.Build
 import android.os.Process
 import android.os.UserHandle
 import android.os.UserManager
+import be.robinj.distrohopper.dev.Log
 
 /**
  * Helpers around Android user profiles, surfaced in the UI as "profiles":
@@ -79,7 +81,8 @@ object Profiles {
 	 * private-space lock, …) in the bottom-right corner. The badge is composited
 	 * ourselves rather than via [getUserBadgedDrawableForDensity], whose badge
 	 * rect the platform ignores for some drawables (leaving a tiny default badge
-	 * that is barely visible on the big dash icons).
+	 * that is barely visible on the big dash icons). Returns [drawable] itself
+	 * when the system has no badge for the profile (see [profileGlyph]).
 	 */
 	@JvmStatic
 	fun badgedIcon(context: Context, drawable: Drawable, user: UserHandle): Drawable {
@@ -87,13 +90,14 @@ object Profiles {
 		val size = if (intrinsic > 0) intrinsic
 			else (96 * context.resources.displayMetrics.density).toInt()
 
+		val badgeSize = Math.max((size * BADGE_FRACTION).toInt(), 1)
+		val badge = this.profileGlyph(context, user, badgeSize) ?: return drawable
+
 		val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
 		val canvas = Canvas(bitmap)
 		drawable.setBounds(0, 0, size, size)
 		drawable.draw(canvas)
 
-		val badgeSize = (size * BADGE_FRACTION).toInt()
-		val badge = this.profileGlyph(context, user, badgeSize)
 		badge.setBounds(size - badgeSize, size - badgeSize, size, size)
 		badge.draw(canvas)
 
@@ -107,16 +111,33 @@ object Profiles {
 	 * keep in sync. Used as the profile's tab glyph in indicators. [desaturate]
 	 * greyscales it (keeping its shape, unlike a flat tint) to sit better beside a
 	 * monochrome glyph set.
+	 *
+	 * Null when the system has no badge for the profile: not every profile a
+	 * launcher can see is badged, and while AOSP then hands back the drawable it
+	 * was given, some vendor builds instead look up badge resource 0 and throw
+	 * ([Resources.NotFoundException], seen crashing icon loading on Funtouch OS).
+	 * Callers own the un-badged fallback.
 	 */
 	@JvmStatic
 	@JvmOverloads
 	fun profileGlyph(
-		context: Context, user: UserHandle, sizePx: Int, desaturate: Boolean = false): Drawable {
+		context: Context, user: UserHandle, sizePx: Int, desaturate: Boolean = false): Drawable? {
 		// A transparent square base, with the badge filling its whole bounds.
 		val blank = BitmapDrawable(context.resources,
-			Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888))
-		val badge = context.packageManager
-			.getUserBadgedDrawableForDensity(blank, user, Rect(0, 0, sizePx, sizePx), 0)
+			Bitmap.createBitmap(Math.max(sizePx, 1), Math.max(sizePx, 1), Bitmap.Config.ARGB_8888))
+		val badge = try {
+			context.packageManager
+				.getUserBadgedDrawableForDensity(blank, user, Rect(0, 0, sizePx, sizePx), 0)
+		} catch (ex: Resources.NotFoundException) {
+			Log.getInstance().w("Profiles", "No profile badge for user $user: $ex")
+
+			null
+		} ?: return null
+
+		// AOSP returns the drawable unchanged when the profile has no badge. //
+		if (badge === blank) {
+			return null
+		}
 
 		if (desaturate) {
 			badge.mutate()
