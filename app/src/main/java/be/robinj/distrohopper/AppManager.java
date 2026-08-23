@@ -1,7 +1,6 @@
 package be.robinj.distrohopper;
 
 import android.content.pm.LauncherActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.UserHandle;
 
@@ -270,9 +269,56 @@ public class AppManager implements Iterable<App>
 		return this.repository.getInstalledLive ().iterator ();
 	}
 
-	public void loadIconPack (String name) throws IOException, XmlPullParserException, PackageManager.NameNotFoundException
+	public IconPackHelper.LoadResult loadIconPack (String name) throws IOException, XmlPullParserException
 	{
-		this.iconPack.loadIconPack (name);
+		return this.iconPack.loadIconPack (name);
+	}
+
+	/**
+	 * Applies the {@code icon_pack} preference. A pack that has vanished since it was
+	 * picked drops the selection and clears the icon cache (the pack is not part of
+	 * {@code IconConfig.signature()}), so it isn't retried and re-reported every start.
+	 */
+	public void loadConfiguredIconPack ()
+	{
+		final android.content.SharedPreferences prefs =
+			Preferences.getSharedPreferences (this.parent.getApplicationContext ());
+		final String packageName = prefs.getString (Preference.ICON_PACK.getName (), "");
+
+		if (packageName == null || packageName.isEmpty ())
+			return;
+
+		final IconPackHelper.LoadResult result;
+
+		try
+		{
+			result = this.iconPack.loadIconPack (packageName);
+		}
+		catch (final Exception ex)
+		{
+			new ExceptionHandler (ex).logAndTrack ();
+
+			return;
+		}
+
+		if (result != IconPackHelper.LoadResult.NOT_INSTALLED)
+			return;
+
+		be.robinj.distrohopper.dev.Log.getInstance ().w (this.getClass ().getSimpleName (),
+			"Icon pack " + packageName + " is gone; falling back to system icons.");
+
+		prefs.edit ()
+			.remove (Preference.ICON_PACK.getName ())
+			.apply ();
+
+		try
+		{
+			AppIconCache.clearAll (this.parent.getApplicationContext ());
+		}
+		catch (final Exception ex)
+		{
+			new ExceptionHandler (ex).logAndTrack ();
+		}
 	}
 
 	public void movePinnedApp (int oldIndex, int newIndex)

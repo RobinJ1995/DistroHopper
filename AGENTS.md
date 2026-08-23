@@ -762,6 +762,13 @@ licenses/                                   — full licence texts of everything
   active theme, or a preset). `IconShapePreference`/`IconTintPreference` are
   the settings strips, both previewing on the penguin sample
   `res/drawable/ic_icon_sample_foreground.xml`.
+  Third-party **icon packs** are `IconPackHelper`'s: `getIconPacks` finds them by
+  the five theme intents (declared in the manifest's `<queries>`, so a pack that
+  hides its launcher entry stays visible), `loadIconPack` parses their
+  `appfilter.xml`. `AppManager.loadConfiguredIconPack` applies the `icon_pack`
+  preference for both callers; a pack that has vanished drops the selection and
+  clears the icon cache (the pack is not in `IconConfig.signature()`), so it
+  isn't retried — and silently re-reported — on every start.
   DistroHopper's **own** launcher icon carries a monochrome layer too, so it
   tints along with everything else: `res/drawable/ic_launcher_monochrome.xml`,
   referenced from both `mipmap-anydpi-v26` adaptive icons. It is generated —

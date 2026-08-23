@@ -995,14 +995,7 @@ public class HomeActivity extends AppCompatActivity
 			SharedPreferences prefs = this.getSharedPreferences ();
 
 			// Load selected icon pack before caching icons
-			try {
-				final String iconPack = prefs.getString(be.robinj.distrohopper.preferences.Preference.ICON_PACK.getName(), "");
-				if (!iconPack.isEmpty()) {
-					installedApps.loadIconPack(iconPack);
-				}
-			} catch (Exception ex) {
-				new ExceptionHandler(ex).logAndTrack();
-			}
+			installedApps.loadConfiguredIconPack ();
 
 			if (prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false))
 				this.apps.addRunningApps (this.dash.getChameleonicBgColour ());

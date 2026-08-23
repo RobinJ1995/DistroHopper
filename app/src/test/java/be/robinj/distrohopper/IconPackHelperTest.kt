@@ -23,8 +23,22 @@ class IconPackHelperTest {
     @Test fun startsWithoutLoadedIconPack() = assertFalse(helper.isIconPackLoaded)
 
     @Test fun loadingEmptyPackageKeepsIconPackUnloaded() {
-        helper.loadIconPack("")
+        assertEquals(IconPackHelper.LoadResult.NONE, helper.loadIconPack(""))
         assertFalse(helper.isIconPackLoaded)
+    }
+
+    @Test fun loadingUninstalledPackReportsNotInstalledInsteadOfThrowing() {
+        assertEquals(
+            IconPackHelper.LoadResult.NOT_INSTALLED,
+            helper.loadIconPack("ddt.free.icon.packs"),
+        )
+        assertFalse(helper.isIconPackLoaded)
+    }
+
+    @Test fun uninstalledPackResolvesNoIcons() {
+        helper.loadIconPack("ddt.free.icon.packs")
+
+        assertNull(helper.getIcon("anything"))
     }
 
     @Test fun unloadedPackCannotResolveNamedIcon() = assertNull(helper.getIcon("missing"))
