@@ -696,9 +696,12 @@ licenses/                                   — full licence texts of everything
   coarse grid keeps a real resize range instead of collapsing to one span.
   Placement and restore defer until the page has been measured (cell size > 0)
   so a widget can never land at 1×1, and `WidgetHost.restoreWidgets` re-clamps
-  saved spans to the current provider limits once measured. New widgets land on
-  the desktop currently shown; drops and moves stay within it. Long-pressing a
-  widget puts its `WidgetContainer` into
+  saved spans to the current provider limits once measured. That re-clamp always
+  brings a span back inside the grid — a smaller preset can leave a saved widget
+  wider or taller than the grid it now sits on, and the snap maths work out "grid
+  minus span" — even when the desktop is too full to re-pack the widget or its
+  provider has gone away. New widgets land on the desktop currently shown; drops
+  and moves stay within it. Long-pressing a widget puts its `WidgetContainer` into
   edit mode: edge handles resize by touch (clamped to the provider's
   `min`/`maxResize*` limits and `resizeMode`, unless the developer-only
   unrestricted widget resizing preference `DEV_WIDGET_RESIZE_ANY` is enabled,
