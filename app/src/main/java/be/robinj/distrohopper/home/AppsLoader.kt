@@ -36,6 +36,9 @@ object AppsLoader {
 	): AppManager {
 		val appManager = AppManager(parent)
 
+		// Set before any app loads an icon; App.getIcon reads it back.
+		appManager.iconCache = appIconCache
+
 		// The pack is part of the icon config, so load it first; touching iconRenderer
 		// then reconciles the cache against it, purging icons the last config drew.
 		appManager.loadConfiguredIconPack()
