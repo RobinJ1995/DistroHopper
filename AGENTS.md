@@ -283,6 +283,13 @@ licenses/                                   — full licence texts of everything
     `ThemeApplier` keeps it visible while the spinner is, and
     `StartupLoader` collapses it (instead of revealing the BFB) once loading
     finishes.
+  - `IconMemoryTrimmer` — drops cached app icons on
+    `HomeActivity.onTrimMemory`; nothing released them before.
+    `TRIM_MEMORY_UI_HIDDEN` spares the pinned apps, `TRIM_MEMORY_BACKGROUND`
+    and deeper drop those too; the legacy `TRIM_MEMORY_RUNNING_*` levels are
+    ignored because Android 14 stopped delivering them. `App.releaseIcon` only
+    drops the reference — `App.getIcon` restores it from `AppManager.iconCache`
+    (set by `AppsLoader`), re-rendering on a miss.
   - `LauncherEdgeController` — repositions/reorients the launcher bar per
     edge, panel edge handling, and widget-area insets; owns the current
     `launcherEdge` and navigation insets.
