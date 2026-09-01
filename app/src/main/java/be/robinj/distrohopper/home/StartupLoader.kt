@@ -105,6 +105,10 @@ class StartupLoader(
 				throw ex
 			} catch (ex: Exception) {
 				ExceptionHandler(ex).show(this@StartupLoader.activity)
+			} finally {
+				// HomeActivity started the spin and only our progress callbacks
+				// stop it, so a load that throws or is cancelled must not skip this //
+				lalSpinner.progressWheel.stopSpinning()
 			}
 		}
 	}
