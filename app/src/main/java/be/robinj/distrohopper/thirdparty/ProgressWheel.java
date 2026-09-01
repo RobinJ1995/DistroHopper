@@ -325,6 +325,14 @@ public class ProgressWheel extends View {
 		setText("0%");
 		invalidate();
 	}
+	@Override
+	protected void onDetachedFromWindow() {
+		// Off screen invalidate() short-circuits, so nothing paces the spin and the
+		// queued frame keeps this view's activity alive //
+		this.stopSpinning();
+
+		super.onDetachedFromWindow();
+	}
 	/**
 	 * Turn off spin mode
 	 */
