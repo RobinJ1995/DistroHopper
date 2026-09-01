@@ -64,6 +64,7 @@ import be.robinj.distrohopper.home.StartupLoader;
 import be.robinj.distrohopper.home.ThemeApplier;
 import be.robinj.distrohopper.home.WallpaperColourApplier;
 import be.robinj.distrohopper.dev.LogToaster;
+import be.robinj.distrohopper.dev.LooperProfiler;
 import be.robinj.distrohopper.folder.FolderOverlay;
 import be.robinj.distrohopper.onboarding.OnboardingActivity;
 import be.robinj.distrohopper.onboarding.OnboardingGate;
@@ -188,6 +189,10 @@ public class HomeActivity extends AppCompatActivity
 					log.attachObserver(this.logToaster);
 				}
 			}
+
+			// Costs a string per message, so it stays off until switched on //
+			LooperProfiler.setEnabled (prefs.getBoolean (Preference.DEV.getName(), false)
+				&& prefs.getBoolean (Preference.DEV_LOOPER_PROFILE.getName(), false));
 
 			// Initialise caches //
 			this.appLabelCache = new AppLabelCache(this.getBaseContext());
