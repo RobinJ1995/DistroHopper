@@ -331,29 +331,81 @@ public class App implements Parcelable
 
 	public AppIcon getIcon (boolean useCached)
 	{
-		if (this.icon == null || (!this.iconLoaded && !useCached)) {
-			AppIcon icon = null;
-			if (this.appManager.isIconPackLoaded ()) {
-				icon = this.appManager.getIconPack().getIconForApp(this);
-			}
-			if (icon == null) {
-				// Shape the system icon to the chosen mask (no-op for legacy icons); //
-				// icon-pack icons above are deliberately left as the pack designed them. //
-				final Drawable rendered =
-					this.appManager.getIconRenderer().render(this.loadFallbackIcon());
-				icon = this.appManager.getIconPack().getFallbackIcon(rendered);
-			}
+		// Read once and return that, not the field: releaseIcon() can null it
+		// mid-call from the main thread. Losing the race re-derives the icon. //
+		AppIcon icon = this.icon;
 
-			if (this.user != null && icon != null) {
-				// Work-profile badge on whichever icon won (icon pack or fallback) //
-				icon = new AppIcon (Profiles.badgedIcon (this.context, icon.getDrawable (), this.user));
+		if (icon == null || (!this.iconLoaded && !useCached)) {
+			// A cached icon is already icon-packed, shaped and badged. Misses fall
+			// through to the render path below. //
+			icon = useCached ? this.iconFromCache () : null;
+
+			if (icon == null) {
+				if (this.appManager.isIconPackLoaded ()) {
+					icon = this.appManager.getIconPack().getIconForApp(this);
+				}
+				if (icon == null) {
+					// Shape the system icon to the chosen mask (no-op for legacy icons); //
+					// icon-pack icons above are deliberately left as the pack designed them. //
+					final Drawable rendered =
+						this.appManager.getIconRenderer().render(this.loadFallbackIcon());
+					icon = this.appManager.getIconPack().getFallbackIcon(rendered);
+				}
+
+				if (this.user != null && icon != null) {
+					// Work-profile badge on whichever icon won. Not reached for a
+					// cached icon, which was badged before it was cached. //
+					icon = new AppIcon (Profiles.badgedIcon (this.context, icon.getDrawable (), this.user));
+				}
 			}
 
 			this.icon = icon;
 			this.iconLoaded = true;
 		}
 
-		return this.icon;
+		return icon;
+	}
+
+	/** This app's icon from the on-disk cache; null when absent or unreadable. */
+	private AppIcon iconFromCache ()
+	{
+		final ICache<Drawable> iconCache = this.appManager == null
+			? null
+			: this.appManager.getIconCache ();
+
+		if (iconCache == null) {
+			return null;
+		}
+
+		try {
+			final Drawable cached = iconCache.get (this.getProfileScopedKey ());
+
+			return cached == null ? null : new AppIcon (cached);
+		} catch (final Exception ex) {
+			// A failed cache read must never keep an icon off the screen. //
+			new ExceptionHandler (ex).logAndTrack ();
+
+			return null;
+		}
+	}
+
+	/**
+	 * Drops the in-memory icon; the next {@link #getIcon()} restores it. A view
+	 * showing the icon holds its own reference, so it keeps working and the
+	 * bitmap is not reclaimed until that view lets go.
+	 *
+	 * @return whether an icon was held, and has now been dropped.
+	 */
+	public boolean releaseIcon ()
+	{
+		if (this.icon == null) {
+			return false;
+		}
+
+		this.icon = null;
+		this.iconLoaded = false;
+
+		return true;
 	}
 
 	private Drawable loadFallbackIcon ()

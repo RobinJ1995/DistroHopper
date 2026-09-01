@@ -3,6 +3,7 @@ package be.robinj.distrohopper;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -11,8 +12,10 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import be.robinj.distrohopper.cache.AppIconCache;
+import be.robinj.distrohopper.cache.ICache;
 import be.robinj.distrohopper.icons.IconConfig;
 import be.robinj.distrohopper.icons.IconRenderer;
 import be.robinj.distrohopper.preferences.Preference;
@@ -37,6 +40,8 @@ public class AppManager implements Iterable<App>
 	private final IconPackHelper iconPack;
 
 	private IconRenderer iconRenderer;
+
+	private ICache<Drawable> iconCache;
 
 	private final HomeActivity parent;
 
@@ -182,6 +187,17 @@ public class AppManager implements Iterable<App>
 		return this.iconPack;
 	}
 
+	/** The loader's on-disk icon cache; null until the loader has run. */
+	public ICache<Drawable> getIconCache ()
+	{
+		return this.iconCache;
+	}
+
+	public void setIconCache (final ICache<Drawable> iconCache)
+	{
+		this.iconCache = iconCache;
+	}
+
 	/**
 	 * The renderer that shapes adaptive icons to the current {@link IconConfig}.
 	 * Rebuilt whenever the icon-shape/themed preferences change (in-process or
@@ -243,6 +259,12 @@ public class AppManager implements Iterable<App>
 	public List<App> getPinned ()
 	{
 		return this.repository.getPinnedLive ();
+	}
+
+	/** Every pinned app, across all desktops - not just the one on screen. */
+	public Set<App> getAllPinned ()
+	{
+		return this.repository.allPinned ();
 	}
 
 	public List<App> getRunningApps ()
