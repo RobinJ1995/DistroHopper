@@ -101,6 +101,8 @@
     <string name="hint_dashsearch_focus_on_open">Focus the search box and show the keyboard when the dash is opened.</string>
     <string name="option_dev_log_toaster">Log toasts</string>
     <string name="hint_dev_log_toaster">Show log items in toast messages.</string>
+    <string name="option_dev_looper_profile">Profile main looper</string>
+    <string name="hint_dev_looper_profile">Log every message the main thread handles. Slows the app down; takes effect after a restart.</string>
     <string name="option_customise">Customise</string>
     <string name="hint_customise">Customise the look and feel.</string>
     <string name="customise_done">Done</string>

@@ -137,10 +137,31 @@ public class Log extends Observed
 
 	private void appendToDevLog (LogLevel level, String tag, String message)
 	{
+		if (this.append (level, tag, message))
+		{
+			// Outside the lock: observers touch the UI, and holding the log lock across
+			// that would let a logging background thread block on the main thread. //
+			this.nudgeObservers ();
+		}
+	}
+
+	/**
+	 * Appends without waking the observers, for sources that fire per main-looper
+	 * message ({@link LooperProfiler}): a nudge posts to that looper, and the post
+	 * would itself be logged and nudge again. //
+	 */
+	void appendQuietly (LogLevel level, String tag, String message)
+	{
+		this.append (level, tag, message);
+	}
+
+	/** Records the entry, answering whether it was kept (logging can be off). */
+	private boolean append (LogLevel level, String tag, String message)
+	{
 		synchronized (this.lock)
 		{
 			if (!this.enabled)
-				return;
+				return false;
 
 			if (this.entries.size () >= Log.CAPACITY)
 				this.entries.removeFirst ();
@@ -149,8 +170,6 @@ public class Log extends Observed
 				System.currentTimeMillis (), Thread.currentThread ().getName ()));
 		}
 
-		// Outside the lock: observers touch the UI, and holding the log lock across that
-		// would let a logging background thread block on the main thread. //
-		this.nudgeObservers ();
+		return true;
 	}
 }
