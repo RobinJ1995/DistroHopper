@@ -68,7 +68,18 @@ public class IconPackHelper
 		return result;
 	}
 
-	public void loadIconPack (String packageName) throws PackageManager.NameNotFoundException, IOException, XmlPullParserException
+	/** The outcome of {@link #loadIconPack(String)}. */
+	public enum LoadResult
+	{
+		NONE,
+		LOADED,
+		/** Installed, but with no usable appfilter mappings. */
+		EMPTY,
+		/** Unresolvable: uninstalled, disabled, or not visible to us. */
+		NOT_INSTALLED
+	}
+
+	public LoadResult loadIconPack (String packageName) throws IOException, XmlPullParserException
 	{
 		this.name = packageName;
 		this.iconPackLoaded = false;
@@ -77,11 +88,18 @@ public class IconPackHelper
 
 		if (TextUtils.isEmpty(packageName)) {
 			this.iconPackRes = null;
-			return;
+			return LoadResult.NONE;
 		}
 
 		final PackageManager pm = this.context.getPackageManager();
-		this.iconPackRes = pm.getResourcesForApplication(packageName);
+		try {
+			this.iconPackRes = pm.getResourcesForApplication(packageName);
+		} catch (PackageManager.NameNotFoundException ex) {
+			// A picked pack can vanish at any time; expected, not a fault //
+			this.iconPackRes = null;
+			this.name = null;
+			return LoadResult.NOT_INSTALLED;
+		}
 
 		// Try res/xml/appfilter.xml first
 		int xmlId = this.iconPackRes.getIdentifier("appfilter", "xml", packageName);
@@ -107,6 +125,8 @@ public class IconPackHelper
 		}
 
 		this.iconPackLoaded = this.iconPackRes != null && (!this.componentToDrawable.isEmpty() || !this.packageToDrawable.isEmpty());
+
+		return this.iconPackLoaded ? LoadResult.LOADED : LoadResult.EMPTY;
 	}
 
 	private void parseAppFilter(XmlPullParser xpp) throws IOException, XmlPullParserException {

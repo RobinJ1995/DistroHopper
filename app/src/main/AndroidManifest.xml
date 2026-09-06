@@ -19,6 +19,22 @@
 		<intent>
 			<action android:name="android.intent.action.SET_WALLPAPER" />
 		</intent>
+		<!-- Icon packs; one that hides its launcher entry isn't covered above -->
+		<intent>
+			<action android:name="org.adw.launcher.THEMES" />
+		</intent>
+		<intent>
+			<action android:name="com.gau.go.launcherex.theme" />
+		</intent>
+		<intent>
+			<action android:name="com.novalauncher.THEME" />
+		</intent>
+		<intent>
+			<action android:name="com.teslacoilsw.launcher.THEME" />
+		</intent>
+		<intent>
+			<action android:name="com.anddoes.launcher.THEME" />
+		</intent>
 	</queries>
 
 	<application

@@ -42,15 +42,7 @@ object AppsLoader {
 		appManager.iconRenderer
 
 		// Load selected icon pack before any icons are requested
-		try {
-			val iconPack = Preferences.getSharedPreferences(context)
-				.getString(Preference.ICON_PACK.getName(), "")!!
-			if (iconPack.isNotEmpty()) {
-				appManager.loadIconPack(iconPack)
-			}
-		} catch (ex: Exception) {
-			ExceptionHandler(ex).logAndTrack()
-		}
+		appManager.loadConfiguredIconPack()
 
 		val tStart = System.currentTimeMillis()
 

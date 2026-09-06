@@ -63,6 +63,32 @@ class AppManagerTest {
         assertTrue(cacheContains(key))
     }
 
+    @Test fun aVanishedIconPackSelectionIsForgotten() = withManager { manager ->
+        val prefs = Preferences.getSharedPreferences(manager.context)
+        prefs.edit().putString(Preference.ICON_PACK.getName(), "ddt.free.icon.packs").commit()
+
+        val key = "pack-icon"
+        assertTrue(cacheAnIcon(key).containsKey(key))
+
+        manager.loadConfiguredIconPack()
+
+        assertEquals("", prefs.getString(Preference.ICON_PACK.getName(), ""))
+        assertFalse(manager.isIconPackLoaded)
+        assertFalse(cacheContains(key))
+    }
+
+    @Test fun noIconPackSelectedLeavesTheIconCacheAlone() = withManager { manager ->
+        Preferences.getSharedPreferences(manager.context).edit()
+            .remove(Preference.ICON_PACK.getName()).commit()
+
+        val key = "untouched"
+        assertTrue(cacheAnIcon(key).containsKey(key))
+
+        manager.loadConfiguredIconPack()
+
+        assertTrue(cacheContains(key))
+    }
+
     @Test fun everyAppHasNonEmptyPackageName() = withManager { manager ->
         manager.forEach { assertTrue(it.packageName.isNotEmpty()) }
     }
