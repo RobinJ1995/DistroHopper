@@ -326,10 +326,21 @@ public class ProgressWheel extends View {
 		invalidate();
 	}
 	@Override
+	protected void onAttachedToWindow() {
+		super.onAttachedToWindow();
+
+		if (isSpinning) {
+			spinHandler.removeMessages(0);
+			spinHandler.sendEmptyMessage(0);
+		}
+	}
+	@Override
 	protected void onDetachedFromWindow() {
-		// Off screen invalidate() short-circuits, so nothing paces the spin and the
-		// queued frame keeps this view's activity alive //
-		this.stopSpinning();
+		// Drop the queued frame -- off screen invalidate() short-circuits, so
+		// nothing paces the loop and the message keeps this view's activity alive.
+		// isSpinning is left set, so re-attaching resumes: the launcher re-parents
+		// the spinner's wrapper, and stopping outright left it blank. //
+		spinHandler.removeMessages(0);
 
 		super.onDetachedFromWindow();
 	}
