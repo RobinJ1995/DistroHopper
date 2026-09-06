@@ -90,15 +90,21 @@ class WidgetHost(
 
 		for (i in 0 until container.childCount) {
 			val child = container.getChildAt(i) as? WidgetContainer ?: continue
-			val info = this.widgetManager.getAppWidgetInfo(child.appWidgetId) ?: continue
 			val lp = child.layoutParams as WidgetsContainer.LayoutParams
+			// The px limits of a provider that has gone away (uninstalled, or
+			// mid-update) are unknown, but its widget still gets held to the grid //
+			val limits = if (unrestricted) {
+				null
+			} else {
+				this.widgetManager.getAppWidgetInfo(child.appWidgetId)
+			}
 
 			val colSpan = WidgetGrid.clampSpan(lp.colSpan,
-				if (unrestricted) 0 else minResizeWidthPx(info),
-				if (unrestricted) 0 else info.maxResizeWidth, cellW, WidgetGrid.COLS)
+				limits?.let { minResizeWidthPx(it) } ?: 0,
+				limits?.maxResizeWidth ?: 0, cellW, WidgetGrid.COLS)
 			val rowSpan = WidgetGrid.clampSpan(lp.rowSpan,
-				if (unrestricted) 0 else minResizeHeightPx(info),
-				if (unrestricted) 0 else info.maxResizeHeight, cellH, WidgetGrid.ROWS)
+				limits?.let { minResizeHeightPx(it) } ?: 0,
+				limits?.maxResizeHeight ?: 0, cellH, WidgetGrid.ROWS)
 
 			// Always validate against the widgets already placed this pass, not
 			// just when the span changed: growing one widget can collide with a
@@ -110,14 +116,14 @@ class WidgetHost(
 			} else {
 				WidgetGrid.findFreeRect(kept, colSpan, rowSpan)
 					?.also { it.appWidgetId = child.appWidgetId }
-			}
-
-			if (placed == null) {
-				// No room for the re-clamped size; leave the widget untouched but
-				// still record it so the others avoid its cells //
-				kept.add(WidgetLayout(child.appWidgetId, lp.col, lp.row, lp.colSpan, lp.rowSpan))
-
-				continue
+					// The grid is full: keep the saved position (overlapping, as
+					// before) but never the saved SIZE — a span left larger than the
+					// grid, after the user picked a smaller grid preset, underflows
+					// the "cols minus span" bound in the drag snap and crashes //
+					?: WidgetLayout(child.appWidgetId,
+						lp.col.coerceIn(0, WidgetGrid.COLS - colSpan),
+						lp.row.coerceIn(0, WidgetGrid.ROWS - rowSpan),
+						colSpan, rowSpan)
 			}
 
 			if (placed.col != lp.col || placed.row != lp.row ||

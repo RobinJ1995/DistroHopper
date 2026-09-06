@@ -242,6 +242,13 @@ class WidgetGridTest {
         assertEquals(0, WidgetGrid.snapToCell(123, 0, 7))
     }
 
+    @Test fun snapToCellHandlesAnItemBiggerThanTheGrid() {
+        // Callers pass "grid size minus span", which underflows for a widget
+        // saved bigger than the grid it is now on; cell 0 is all that is left //
+        assertEquals(0, WidgetGrid.snapToCell(5000, 100, -1))
+        assertEquals(0, WidgetGrid.snapToCell(0, 100, -3))
+    }
+
     @Test fun initialSpanPrefersTargetCells() {
         // Provider's preferred cell count is used directly when within limits //
         assertEquals(3, WidgetGrid.initialSpan(3, 0, 0, 100, 8))

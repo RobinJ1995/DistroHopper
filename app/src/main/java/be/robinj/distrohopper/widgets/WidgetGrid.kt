@@ -342,6 +342,10 @@ object WidgetGrid {
 
 	/**
 	 * Snap a pixel offset to the nearest cell boundary.
+	 *
+	 * A negative [maxCell] means the caller's item is bigger than the grid it is
+	 * being snapped into ("cols minus span" underflows): cell 0 is then the only
+	 * placement there is, and clamping to it beats throwing out of a drag.
 	 */
 	@JvmStatic
 	fun snapToCell(px: Int, cellSizePx: Int, maxCell: Int): Int {
@@ -349,7 +353,7 @@ object WidgetGrid {
 			return 0
 		}
 
-		return (px.toFloat() / cellSizePx.toFloat()).roundToInt().coerceIn(0, maxCell)
+		return (px.toFloat() / cellSizePx.toFloat()).roundToInt().coerceIn(0, max(0, maxCell))
 	}
 
 	/**
