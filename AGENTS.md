@@ -122,7 +122,14 @@ licenses/                                   — full licence texts of everything
     which load via `AppRepository.queryOtherProfileApps()`
     (LauncherApps), launch via `LauncherApps.startMainActivity`, get the
     profile badge on their icon, and participate in `App.equals` (the same
-    package can exist in both profiles). Persistence/cache keys use
+    package can exist in both profiles). Not every profile a launcher sees
+    has a system badge, and the platform is inconsistent about saying so:
+    AOSP hands `getUserBadgedDrawableForDensity` the drawable back
+    unbadged, while some vendor builds look up badge resource 0 and throw
+    (a Funtouch OS crash on the icon-loading path). `Profiles.profileGlyph`
+    turns both into a null glyph, and its callers — `Profiles.badgedIcon`
+    and the glyph indicators — fall back to the un-badged icon / our own
+    `ic_profile` glyph. Persistence/cache keys use
     `App.getProfileScopedKey()` — identical to the old
     package+activity key for personal apps, with the profile serial
     appended otherwise (so old pinned-app prefs keep matching). The
@@ -214,9 +221,10 @@ licenses/                                   — full licence texts of everything
     `GNOME_PANEL` (Gnome) draws a profile pill at the panel's top-left,
     shown only while the dash is open (`GnomeProfilePillIndicator` +
     the custom-drawn `ProfilePillView`); other themes are `NONE` for now.
-    Glyph indicators badge the generic `ic_profile` glyph with the system
-    profile badge via `getUserBadgedIcon` (correct for work/private/clone
-    profiles); the personal profile uses the theme's
+    Glyph indicators use the system profile badge *as* the whole glyph
+    (`Profiles.profileGlyph` badges a transparent square, so it is correct
+    for work/private/clone profiles by itself), desaturated to sit beside
+    the monochrome glyph set; the personal profile uses the theme's
     `profile_indicator_personal_glyph` (the house glyph for Unity).
     Indicators implement `desktop/dash/profile/ProfileIndicator` and are
     driven by the pager's page-scroll callback so the highlight/pill animates
@@ -703,9 +711,12 @@ licenses/                                   — full licence texts of everything
   coarse grid keeps a real resize range instead of collapsing to one span.
   Placement and restore defer until the page has been measured (cell size > 0)
   so a widget can never land at 1×1, and `WidgetHost.restoreWidgets` re-clamps
-  saved spans to the current provider limits once measured. New widgets land on
-  the desktop currently shown; drops and moves stay within it. Long-pressing a
-  widget puts its `WidgetContainer` into
+  saved spans to the current provider limits once measured. That re-clamp always
+  brings a span back inside the grid — a smaller preset can leave a saved widget
+  wider or taller than the grid it now sits on, and the snap maths work out "grid
+  minus span" — even when the desktop is too full to re-pack the widget or its
+  provider has gone away. New widgets land on the desktop currently shown; drops
+  and moves stay within it. Long-pressing a widget puts its `WidgetContainer` into
   edit mode: edge handles resize by touch (clamped to the provider's
   `min`/`maxResize*` limits and `resizeMode`, unless the developer-only
   unrestricted widget resizing preference `DEV_WIDGET_RESIZE_ANY` is enabled,
@@ -806,6 +817,8 @@ licenses/                                   — full licence texts of everything
 - New code is generally written in Kotlin; much of the existing code is
   older Java. Match the style of the file you're editing rather than
   refactoring wholesale.
+- Keep comments, commit messages and PR descriptions concise: say what the
+  code cannot, then stop. Length is cognitive load, not thoroughness.
 - Listener classes are typically separate top-level classes named
   `<View><Event>Listener` (e.g. `AppLauncherLongClickListener`) rather than
   anonymous/inner classes — follow that pattern where it's already in use.

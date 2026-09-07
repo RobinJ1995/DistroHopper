@@ -104,6 +104,23 @@ class WidgetsContainerDragListenerTest {
 		}
 	}
 
+	@Test fun draggingAWidgetBiggerThanTheGridSnapsToTheOriginInsteadOfCrashing() {
+		scenario.onActivity { activity ->
+			val fixture = fixture(activity)
+			// A size saved against a bigger grid, before the user picked a smaller
+			// preset: the snap bound ("cols minus span") goes negative //
+			lp(fixture.container).colSpan = WidgetGrid.COLS + 1
+			lp(fixture.container).rowSpan = WidgetGrid.ROWS + 1
+			val (x, y) = receiverPositionForCell(5, 4)
+
+			assertTrue(fixture.listener.onDrag(fixture.receiver,
+				DragEvents.obtain(DragEvent.ACTION_DRAG_LOCATION, x, y, fixture.container)))
+
+			assertEquals(0, fixture.grid.moveTargetCol)
+			assertEquals(0, fixture.grid.moveTargetRow)
+		}
+	}
+
 	@Test fun leavingTheDesktopHidesTheLandingTarget() {
 		scenario.onActivity { activity ->
 			val fixture = fixture(activity)

@@ -42,6 +42,39 @@ class WidgetHostTest {
 		}
 	}
 
+	@Test fun restoreShrinksAWidgetLeftBiggerThanTheGridEvenWithNowhereToRepackIt() {
+		scenario.onActivity { activity ->
+			val grid = WidgetTestSupport.standaloneGrid(activity)
+			WidgetTestSupport.layoutGrid(grid)
+			val host = WidgetTestSupport.host(activity, grid)
+			val widgetManager = AppWidgetManager.getInstance(activity)
+			Shadows.shadowOf(widgetManager)
+				.addBoundWidget(1, WidgetTestSupport.providerInfo())
+			Shadows.shadowOf(widgetManager)
+				.addBoundWidget(2, WidgetTestSupport.providerInfo())
+
+			// Widget 1 fills the desktop, so the oversized widget 2 — a size saved
+			// against a bigger grid, before the user picked a smaller preset — has
+			// nowhere to be re-packed. Its span must still come back inside the
+			// grid: the drag snap works out "cols minus span" and underflows //
+			DesktopLayoutTestStore.saveWidgets(activity.applicationContext, listOf(
+				WidgetLayout(1, 0, 0, WidgetGrid.COLS, WidgetGrid.ROWS, 0),
+				WidgetLayout(2, 0, 0, WidgetGrid.COLS + 2, WidgetGrid.ROWS + 2, 0),
+			))
+
+			host.restoreWidgets()
+
+			val oversized = (0 until grid.childCount)
+				.map { grid.getChildAt(it) as WidgetContainer }
+				.single { it.appWidgetId == 2 }
+			val lp = oversized.layoutParams as WidgetsContainer.LayoutParams
+			assertEquals(WidgetGrid.COLS, lp.colSpan)
+			assertEquals(WidgetGrid.ROWS, lp.rowSpan)
+			assertEquals(0, lp.col)
+			assertEquals(0, lp.row)
+		}
+	}
+
 	@Test fun configureResultWithoutPendingStateOrResultIntentDoesNothing() {
 		scenario.onActivity { activity ->
 			val grid = WidgetTestSupport.standaloneGrid(activity)
