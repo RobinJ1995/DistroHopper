@@ -189,7 +189,8 @@ public class AppManager implements Iterable<App>
 	 */
 	public synchronized IconRenderer getIconRenderer ()
 	{
-		final IconConfig config = IconConfig.fromPrefs (this.parent.getApplicationContext ());
+		final IconConfig config = IconConfig.fromPrefs (
+			this.parent.getApplicationContext (), this.getAppliedIconPack ());
 
 		if (this.iconRenderer == null
 			|| ! this.iconRenderer.getConfig ().signature ().equals (config.signature ()))
@@ -272,6 +273,27 @@ public class AppManager implements Iterable<App>
 	public void loadIconPack (String name) throws IOException, XmlPullParserException
 	{
 		this.iconPack.loadIconPack (name);
+	}
+
+	/** Applies the configured icon pack. Load it before any icon is rendered or cached. */
+	public void loadConfiguredIconPack ()
+	{
+		try
+		{
+			this.iconPack.loadIconPack (Preferences.getSharedPreferences (
+				this.parent.getApplicationContext ())
+				.getString (Preference.ICON_PACK.getName (), ""));
+		}
+		catch (final Exception ex)
+		{
+			new ExceptionHandler (ex).logAndTrack ();
+		}
+	}
+
+	/** The pack the icons are actually drawn with, or "" when none is in effect. */
+	public String getAppliedIconPack ()
+	{
+		return this.iconPack.getAppliedPackageName ();
 	}
 
 	public void movePinnedApp (int oldIndex, int newIndex)

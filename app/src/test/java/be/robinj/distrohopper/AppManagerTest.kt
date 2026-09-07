@@ -63,6 +63,58 @@ class AppManagerTest {
         assertTrue(cacheContains(key))
     }
 
+    private fun setIconPack(packageName: String) =
+        Preferences.getSharedPreferences(ApplicationProvider.getApplicationContext())
+            .edit().putString(Preference.ICON_PACK.getName(), packageName).commit()
+
+    private fun storedSignature(manager: AppManager) =
+        Preferences.getSharedPreferences(manager.context)
+            .getString(Preference.ICON_CONFIG_SIGNATURE.getName(), null)
+
+    @Test fun theIconPackInEffectIsPartOfTheIconConfig() = withManager { manager ->
+        setIconPack("ddt.free.icon.packs")
+        manager.loadConfiguredIconPack()
+
+        // The pack does not resolve, so nothing is in effect and the icons are the system's.
+        assertEquals("", manager.appliedIconPack)
+        assertTrue(manager.iconRenderer.config.signature().endsWith("|pack="))
+    }
+
+    @Test fun losingTheIconPackPurgesTheIconCache() {
+        // The signature the cache would have been written with while the pack applied.
+        val withPack = scenario.let { s ->
+            var sig = ""
+            s.onActivity { sig = it.appManager.iconRenderer.config.signature() }
+            sig
+        } + "ddt.free.icon.packs"
+        scenario.close()
+
+        val key = "pack-icon"
+        assertTrue(cacheAnIcon(key).containsKey(key))
+
+        // A fresh start with the pack no longer resolving: config differs, cache goes.
+        scenario = ActivityTestSupport.launchHome(configurePrefs = {
+            it.putString(Preference.ICON_PACK.getName(), "ddt.free.icon.packs")
+            it.putString(Preference.ICON_CONFIG_SIGNATURE.getName(), withPack)
+        })
+
+        assertFalse(cacheContains(key))
+    }
+
+    @Test fun anUnchangedIconPackStateKeepsTheIconCache() = withManager { manager ->
+        setIconPack("ddt.free.icon.packs")
+        manager.loadConfiguredIconPack()
+        manager.iconRenderer
+
+        val key = "keep-me"
+        assertTrue(cacheAnIcon(key).containsKey(key))
+        manager.loadConfiguredIconPack()
+        manager.iconRenderer
+
+        assertTrue(cacheContains(key))
+        assertEquals(manager.iconRenderer.config.signature(), storedSignature(manager))
+    }
+
     @Test fun everyAppHasNonEmptyPackageName() = withManager { manager ->
         manager.forEach { assertTrue(it.packageName.isNotEmpty()) }
     }

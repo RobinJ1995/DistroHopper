@@ -205,6 +205,12 @@ public class IconPackHelper
 		}
 	}
 
+	/** The pack whose icons are actually being drawn, or "" when none is. */
+	public String getAppliedPackageName ()
+	{
+		return this.iconPackLoaded && this.name != null ? this.name : "";
+	}
+
 	public boolean isIconPackLoaded ()
 	{
 		return this.iconPackLoaded;

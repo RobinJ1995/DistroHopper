@@ -81,7 +81,7 @@ public class IconTintPreference extends IconStripPreference {
 	private Drawable renderTinted(final Context context, final AdaptiveIconDrawable sample,
 								  final int colour, final boolean night, final int size) {
 		final IconConfig config = new IconConfig(IconShape.CIRCLE, true, size, colour,
-			IconConfig.tintBackground(colour, night), IconConfig.tintForeground(colour, night));
+			IconConfig.tintBackground(colour, night), IconConfig.tintForeground(colour, night), "");
 		return new IconRenderer(context, config).render(sample);
 	}
 
