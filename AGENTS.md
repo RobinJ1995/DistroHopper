@@ -122,7 +122,14 @@ licenses/                                   — full licence texts of everything
     which load via `AppRepository.queryOtherProfileApps()`
     (LauncherApps), launch via `LauncherApps.startMainActivity`, get the
     profile badge on their icon, and participate in `App.equals` (the same
-    package can exist in both profiles). Persistence/cache keys use
+    package can exist in both profiles). Not every profile a launcher sees
+    has a system badge, and the platform is inconsistent about saying so:
+    AOSP hands `getUserBadgedDrawableForDensity` the drawable back
+    unbadged, while some vendor builds look up badge resource 0 and throw
+    (a Funtouch OS crash on the icon-loading path). `Profiles.profileGlyph`
+    turns both into a null glyph, and its callers — `Profiles.badgedIcon`
+    and the glyph indicators — fall back to the un-badged icon / our own
+    `ic_profile` glyph. Persistence/cache keys use
     `App.getProfileScopedKey()` — identical to the old
     package+activity key for personal apps, with the profile serial
     appended otherwise (so old pinned-app prefs keep matching). The
@@ -214,9 +221,10 @@ licenses/                                   — full licence texts of everything
     `GNOME_PANEL` (Gnome) draws a profile pill at the panel's top-left,
     shown only while the dash is open (`GnomeProfilePillIndicator` +
     the custom-drawn `ProfilePillView`); other themes are `NONE` for now.
-    Glyph indicators badge the generic `ic_profile` glyph with the system
-    profile badge via `getUserBadgedIcon` (correct for work/private/clone
-    profiles); the personal profile uses the theme's
+    Glyph indicators use the system profile badge *as* the whole glyph
+    (`Profiles.profileGlyph` badges a transparent square, so it is correct
+    for work/private/clone profiles by itself), desaturated to sit beside
+    the monochrome glyph set; the personal profile uses the theme's
     `profile_indicator_personal_glyph` (the house glyph for Unity).
     Indicators implement `desktop/dash/profile/ProfileIndicator` and are
     driven by the pager's page-scroll callback so the highlight/pill animates

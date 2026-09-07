@@ -74,9 +74,11 @@ class UnityRibbonIndicator(
 		} else {
 			// The system badge is the whole glyph, so it stays correct for the
 			// profile type (work briefcase, private-space lock, …) by itself;
-			// desaturated so it sits beside the monochrome personal glyph.
+			// desaturated so it sits beside the monochrome personal glyph. Not
+			// every profile has a system badge, so fall back to our own glyph.
 			val px = (36 * this.context.resources.displayMetrics.density).toInt()
 			Profiles.profileGlyph(this.context, profile, px, desaturate = true)
+				?: ContextCompat.getDrawable(this.context, R.drawable.ic_profile)
 		}
 
 	override fun onPageScrolled(position: Int, positionOffset: Float) {
