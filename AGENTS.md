@@ -802,6 +802,8 @@ licenses/                                   — full licence texts of everything
 - New code is generally written in Kotlin; much of the existing code is
   older Java. Match the style of the file you're editing rather than
   refactoring wholesale.
+- Keep comments, commit messages and PR descriptions concise: say what the
+  code cannot, then stop. Length is cognitive load, not thoroughness.
 - Listener classes are typically separate top-level classes named
   `<View><Event>Listener` (e.g. `AppLauncherLongClickListener`) rather than
   anonymous/inner classes — follow that pattern where it's already in use.
