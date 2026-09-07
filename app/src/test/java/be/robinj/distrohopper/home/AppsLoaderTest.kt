@@ -16,6 +16,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
@@ -53,6 +54,30 @@ class AppsLoaderTest {
 			Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER),
 			resolveInfo,
 		)
+	}
+
+	/**
+	 * The selection must outlive a load that couldn't resolve the pack -- it may well
+	 * resolve on the next start -- so nothing here may "tidy away" the stale-looking
+	 * preference, and the apps still load against their own system icons.
+	 */
+	@Test fun anUnresolvableIconPackDoesNotCostTheUserTheirSelection() {
+		this.scenario.close()
+		this.scenario = ActivityTestSupport.launchHome(configurePrefs = {
+			it.putString(Preference.ICON_PACK.getName(), "ddt.free.icon.packs")
+		})
+
+		this.scenario.onActivity { activity ->
+			val appManager = activity.appManager
+
+			assertFalse(appManager.isIconPackLoaded)
+			// The apps still loaded, each falling back to its own system icon //
+			assertTrue(appManager.installedApps.isNotEmpty())
+			appManager.installedApps.forEach { assertNotNull(it.icon.drawable) }
+		}
+
+		assertEquals("ddt.free.icon.packs", Preferences.getSharedPreferences(this.application)
+			.getString(Preference.ICON_PACK.getName(), ""))
 	}
 
 	@Test fun aBrokenPackageIsSkippedInsteadOfAbortingTheLoad() {
