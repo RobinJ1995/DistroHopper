@@ -3,6 +3,8 @@ package be.robinj.distrohopper.dev
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +22,7 @@ class DevLogsActivity : AppCompatActivity(), IObserver {
 
 	private lateinit var rvLogs: RecyclerView
 	private lateinit var tvLogsEmpty: TextView
+	private var memoryDialog: DevMemoryDialog? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -40,6 +43,22 @@ class DevLogsActivity : AppCompatActivity(), IObserver {
 		this.refresh()
 	}
 
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+		this.menuInflater.inflate(R.menu.dev_logs, menu)
+
+		return true
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		if (item.itemId != R.id.miDevLogsMemory) {
+			return super.onOptionsItemSelected(item)
+		}
+
+		this.memoryDialog = DevMemoryDialog(this).also { it.show() }
+
+		return true
+	}
+
 	override fun onStart() {
 		super.onStart()
 
@@ -50,6 +69,11 @@ class DevLogsActivity : AppCompatActivity(), IObserver {
 	}
 
 	override fun onStop() {
+		// A dialog left showing retains this activity, which would corrupt the very
+		// count it exists to report. //
+		this.memoryDialog?.dismiss()
+		this.memoryDialog = null
+
 		this.log.detachObserver(this)
 		this.handler.removeCallbacks(this.refreshRunnable)
 
