@@ -28,18 +28,21 @@ public final class IconConfig {
 	private final int tintColor;
 	private final int tintBackground;
 	private final int tintForeground;
+	private final String iconPack;
 
 	public IconConfig(final IconShape shape, final boolean tintedIcons, final int sizePx,
-					  final int tintColor, final int tintBackground, final int tintForeground) {
+					  final int tintColor, final int tintBackground, final int tintForeground,
+					  final String iconPack) {
 		this.shape = shape;
 		this.tintedIcons = tintedIcons;
 		this.sizePx = sizePx;
 		this.tintColor = tintColor;
 		this.tintBackground = tintBackground;
 		this.tintForeground = tintForeground;
+		this.iconPack = iconPack;
 	}
 
-	public static IconConfig fromPrefs(final Context context) {
+	public static IconConfig fromPrefs(final Context context, final String iconPack) {
 		final PreferencesRepository prefs = new PreferencesRepository(context);
 
 		final IconShape shape = IconShape.fromPreferenceValue(
@@ -54,7 +57,7 @@ public final class IconConfig {
 		final boolean night = isNightMode(context);
 
 		return new IconConfig(shape, tinted, sizePx, tint,
-			tintBackground(tint, night), tintForeground(tint, night));
+			tintBackground(tint, night), tintForeground(tint, night), iconPack);
 	}
 
 	public static boolean isNightMode(final Context context) {
@@ -120,7 +123,8 @@ public final class IconConfig {
 	public String signature() {
 		final String base = this.shape.getPreferenceValue()
 			+ "|tinted=" + this.tintedIcons
-			+ "|sz=" + this.sizePx;
+			+ "|sz=" + this.sizePx
+			+ "|pack=" + this.iconPack;
 
 		if (!this.tintedIcons) {
 			return base;

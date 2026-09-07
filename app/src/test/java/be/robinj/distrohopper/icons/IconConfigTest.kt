@@ -18,7 +18,7 @@ class IconConfigTest {
     private val context: Context = ApplicationProvider.getApplicationContext()
 
     private fun config(shape: IconShape, tinted: Boolean) =
-        IconConfig(shape, tinted, 108, Color.BLUE, Color.DKGRAY, Color.WHITE)
+        IconConfig(shape, tinted, 108, Color.BLUE, Color.DKGRAY, Color.WHITE, "")
 
     @Test fun signatureDiffersAcrossShapes() {
         assertNotEquals(
@@ -34,20 +34,28 @@ class IconConfigTest {
 
     @Test fun signatureDiffersAcrossTheResolvedTintColour() {
         assertNotEquals(
-            IconConfig(IconShape.CIRCLE, true, 108, Color.BLUE, Color.DKGRAY, Color.WHITE).signature(),
-            IconConfig(IconShape.CIRCLE, true, 108, Color.RED, Color.DKGRAY, Color.WHITE).signature())
+            IconConfig(IconShape.CIRCLE, true, 108, Color.BLUE, Color.DKGRAY, Color.WHITE, "").signature(),
+            IconConfig(IconShape.CIRCLE, true, 108, Color.RED, Color.DKGRAY, Color.WHITE, "").signature())
     }
 
     @Test fun signatureIgnoresTintColourWhenTintingIsOff() {
         // With tinting off the resolved colour is irrelevant, so a theme/wallpaper
         // change must not invalidate the cache.
         assertEquals(
-            IconConfig(IconShape.CIRCLE, false, 108, Color.BLUE, Color.DKGRAY, Color.WHITE).signature(),
-            IconConfig(IconShape.CIRCLE, false, 108, Color.RED, Color.GREEN, Color.YELLOW).signature())
+            IconConfig(IconShape.CIRCLE, false, 108, Color.BLUE, Color.DKGRAY, Color.WHITE, "").signature(),
+            IconConfig(IconShape.CIRCLE, false, 108, Color.RED, Color.GREEN, Color.YELLOW, "").signature())
+    }
+
+    @Test fun signatureDiffersAcrossTheIconPackInEffect() {
+        assertNotEquals(
+            IconConfig(IconShape.CIRCLE, false, 108, Color.BLUE, Color.DKGRAY, Color.WHITE, "")
+                .signature(),
+            IconConfig(IconShape.CIRCLE, false, 108, Color.BLUE, Color.DKGRAY, Color.WHITE,
+                "ddt.free.icon.packs").signature())
     }
 
     @Test fun fromPrefsDefaultsToSystemShapeAndTintOff() {
-        val config = IconConfig.fromPrefs(this.context)
+        val config = IconConfig.fromPrefs(this.context, "")
         assertEquals(IconShape.SYSTEM, config.getShape())
         assertFalse(config.isTintedIcons())
         assertTrue(config.getSizePx() > 0)

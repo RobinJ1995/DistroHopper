@@ -55,7 +55,7 @@ public class IconShapePreference extends IconStripPreference {
 	private Drawable renderPreview(final Context context, final AdaptiveIconDrawable sample,
 								   final IconShape shape, final int size) {
 		// Shape previews are never tinted: they show the silhouette, not the colour. //
-		final IconConfig config = new IconConfig(shape, false, size, Color.WHITE, Color.WHITE, Color.WHITE);
+		final IconConfig config = new IconConfig(shape, false, size, Color.WHITE, Color.WHITE, Color.WHITE, "");
 		return new IconRenderer(context, config).render(sample);
 	}
 

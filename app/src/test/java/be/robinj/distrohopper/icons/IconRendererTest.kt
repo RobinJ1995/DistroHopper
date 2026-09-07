@@ -27,7 +27,7 @@ class IconRendererTest {
     private val tintBackground = Color.DKGRAY
 
     private fun config(shape: IconShape, tinted: Boolean = false) =
-        IconConfig(shape, tinted, this.size, this.tintForeground, this.tintBackground, this.tintForeground)
+        IconConfig(shape, tinted, this.size, this.tintForeground, this.tintBackground, this.tintForeground, "")
 
     private fun renderer(shape: IconShape, tinted: Boolean = false) =
         IconRenderer(this.context, this.config(shape, tinted))
