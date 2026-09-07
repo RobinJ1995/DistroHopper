@@ -353,8 +353,7 @@ public class App implements Parcelable
 				}
 
 				if (this.user != null && icon != null) {
-					// Work-profile badge on whichever icon won. Not reached for a
-					// cached icon, which was badged before it was cached. //
+					// Not reached for a cached icon: it came through here already. //
 					icon = new AppIcon (Profiles.badgedIcon (this.context, icon.getDrawable (), this.user));
 				}
 			}
