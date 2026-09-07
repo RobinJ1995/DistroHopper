@@ -36,6 +36,9 @@ object AppsLoader {
 	): AppManager {
 		val appManager = AppManager(parent)
 
+		// Set before any app loads an icon; App.getIcon reads it back.
+		appManager.iconCache = appIconCache
+
 		// Reconcile the icon cache against the current icon config *before* any app
 		// loads its icon from cache, so a changed shape/theme/wallpaper tint purges
 		// the now-stale cached icons instead of serving them.

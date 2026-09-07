@@ -57,6 +57,7 @@ import be.robinj.distrohopper.home.GestureAction;
 import be.robinj.distrohopper.home.HomeGestureController;
 import be.robinj.distrohopper.home.HomeStateBinder;
 import be.robinj.distrohopper.home.HomeViewModel;
+import be.robinj.distrohopper.home.IconMemoryTrimmer;
 import be.robinj.distrohopper.home.LauncherEdgeController;
 import be.robinj.distrohopper.home.LayoutTransitionConfigurer;
 import be.robinj.distrohopper.home.SearchLoader;
@@ -100,6 +101,7 @@ public class HomeActivity extends AppCompatActivity
 {
 	private LensManager lenses;
 	private AppManager apps;
+	private IconMemoryTrimmer iconMemoryTrimmer;
 	private AppWidgetManager widgetManager;
 	private WidgetHost widgetHost;
 	private DesktopAppHost desktopAppHost;
@@ -816,6 +818,23 @@ public class HomeActivity extends AppCompatActivity
 	}
 
 	@Override
+	public void onTrimMemory (final int level)
+	{
+		super.onTrimMemory (level);
+
+		try
+		{
+			if (this.iconMemoryTrimmer != null)
+				this.iconMemoryTrimmer.onTrimMemory (level);
+		}
+		catch (final Exception ex)
+		{
+			// Reclaiming memory must never crash the launcher //
+			new ExceptionHandler (ex).logAndTrack ();
+		}
+	}
+
+	@Override
 	public void onDestroy ()
 	{
 		FolderOverlay.clearFor (this);
@@ -941,6 +960,7 @@ public class HomeActivity extends AppCompatActivity
 			ProgressWheel pwDashSearchProgress = this.viewFinder.get(R.id.pwDashSearchProgress);
 
 			this.apps = installedApps;
+			this.iconMemoryTrimmer = new IconMemoryTrimmer (installedApps);
 			this.lenses = new LensManager (this.getApplicationContext (), llDashHomeAppsContainer, llDashHomeLensesContainer, pwDashSearchProgress, installedApps);
 			// Runs searches on the activity's lifecycleScope + dispatchers, like StartupLoader //
 			this.lenses.setSearchLoader (new SearchLoader (this, DependencyContainer.of (this).getDispatchers ()));
