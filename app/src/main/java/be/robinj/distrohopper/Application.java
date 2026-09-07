@@ -17,6 +17,7 @@ import org.acra.config.ToastConfigurationBuilder;
 import org.acra.data.StringFormat;
 import org.acra.sender.HttpSender;
 
+import be.robinj.distrohopper.dev.HeapProbe;
 import be.robinj.distrohopper.preferences.FontPreference;
 import be.robinj.distrohopper.preferences.Preferences;
 
@@ -38,6 +39,11 @@ public class Application extends android.app.Application
 	@Override
 	public void onCreate() {
 		super.onCreate();
+
+		// Unconditional: the activity counters only mean anything from process
+		// start, and gating them on a preference read here would miss whatever was
+		// created before it. The readout that uses them is dev-only. //
+		HeapProbe.INSTANCE.register(this);
 
 		// Apply the chosen font to every activity. onActivityPreCreated runs
 		// before the activity inflates its layout (and before AppCompat installs

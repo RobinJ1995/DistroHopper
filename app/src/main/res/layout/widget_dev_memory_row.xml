@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One figure: label, then the value and its delta pushed to the end. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:baselineAligned="true"
+              android:paddingTop="9dp"
+              android:paddingBottom="9dp">
+
+    <TextView
+        android:id="@+id/tvMemoryLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="14sp"
+        android:textColor="@color/dialog_on_surface_variant" />
+
+    <TextView
+        android:id="@+id/tvMemoryValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textSize="14sp"
+        android:textColor="@color/dialog_on_surface" />
+
+    <TextView
+        android:id="@+id/tvMemoryDelta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textSize="12sp"
+        android:textColor="@color/dialog_on_surface_dim"
+        android:visibility="gone" />
+
+</LinearLayout>
