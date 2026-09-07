@@ -33,9 +33,7 @@ class IconMemoryTrimmer(private val apps: AppManager) {
 		for (app in this.apps.installedApps.toList()) {
 			if (app in spared) {
 				continue
-			}
-
-			if (app.releaseIcon()) {
+			} else if (app.releaseIcon()) {
 				released++
 			}
 		}

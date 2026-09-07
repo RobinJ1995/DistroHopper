@@ -820,8 +820,9 @@ public class HomeActivity extends AppCompatActivity
 
 		try
 		{
-			if (this.iconMemoryTrimmer != null)
+			if (this.iconMemoryTrimmer != null) {
 				this.iconMemoryTrimmer.onTrimMemory (level);
+			}
 		}
 		catch (final Exception ex)
 		{
