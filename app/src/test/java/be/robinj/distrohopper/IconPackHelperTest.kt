@@ -29,6 +29,14 @@ class IconPackHelperTest {
 
     @Test fun unloadedPackCannotResolveNamedIcon() = assertNull(helper.getIcon("missing"))
 
+    /** An unresolvable pack is an expected condition, not an error to throw or report. */
+    @Test fun loadingUnresolvablePackLeavesTheIconPackUnloaded() {
+        helper.loadIconPack("ddt.free.icon.packs")
+
+        assertFalse(helper.isIconPackLoaded)
+        assertNull(helper.getIcon("anything"))
+    }
+
     @Test fun fallbackWrapsOriginalDrawable() {
         val drawable = ColorDrawable(Color.RED)
         assertSame(drawable, helper.getFallbackIcon(drawable).drawable)

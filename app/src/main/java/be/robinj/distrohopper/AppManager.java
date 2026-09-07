@@ -1,7 +1,6 @@
 package be.robinj.distrohopper;
 
 import android.content.pm.LauncherActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.UserHandle;
 
@@ -270,7 +269,7 @@ public class AppManager implements Iterable<App>
 		return this.repository.getInstalledLive ().iterator ();
 	}
 
-	public void loadIconPack (String name) throws IOException, XmlPullParserException, PackageManager.NameNotFoundException
+	public void loadIconPack (String name) throws IOException, XmlPullParserException
 	{
 		this.iconPack.loadIconPack (name);
 	}

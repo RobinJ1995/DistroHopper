@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import be.robinj.distrohopper.desktop.AppIcon;
+import be.robinj.distrohopper.dev.Log;
 
 /**
  * Created by robin on 06/09/14.
@@ -68,7 +69,7 @@ public class IconPackHelper
 		return result;
 	}
 
-	public void loadIconPack (String packageName) throws PackageManager.NameNotFoundException, IOException, XmlPullParserException
+	public void loadIconPack (String packageName) throws IOException, XmlPullParserException
 	{
 		this.name = packageName;
 		this.iconPackLoaded = false;
@@ -81,7 +82,19 @@ public class IconPackHelper
 		}
 
 		final PackageManager pm = this.context.getPackageManager();
-		this.iconPackRes = pm.getResourcesForApplication(packageName);
+		try {
+			this.iconPackRes = pm.getResourcesForApplication(packageName);
+		} catch (PackageManager.NameNotFoundException ex) {
+			// The pack can be unresolvable for all sorts of passing reasons -- mid-update,
+			// on storage that isn't mounted yet -- so this says nothing about whether it is
+			// still installed. Sit this load out and fall back to the system icons; the
+			// selection stays put and takes effect again once the pack resolves //
+			Log.getInstance().w(this.getClass().getSimpleName(),
+				"Icon pack " + packageName + " could not be resolved; using system icons.");
+			this.iconPackRes = null;
+			this.name = null;
+			return;
+		}
 
 		// Try res/xml/appfilter.xml first
 		int xmlId = this.iconPackRes.getIdentifier("appfilter", "xml", packageName);
