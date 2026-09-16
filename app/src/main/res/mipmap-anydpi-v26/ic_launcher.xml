@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- The two colour layers keep their mdpi art in the unqualified res/drawable/
+     rather than in drawable-mdpi, so that both always resolve: density-qualified
+     resources are split out of the app bundle into config APKs, and an install
+     that ends up without its density split (a device-to-device transfer, an APK
+     pulled off another device, an interrupted Play update) then cannot resolve
+     them at all. Inflating this icon throws Resources$NotFoundException in that
+     case, which takes down everything that shows it — DistroHopper's own entry
+     in the app list, the About screen, and the onboarding welcome page, which
+     crashes the app on first run. The unqualified copy ships in the base APK,
+     so the icon always inflates; a complete install still prefers the
+     density-matched art and never sees it. -->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@drawable/ic_launcher_background"/>
     <foreground android:drawable="@drawable/ic_launcher_foreground"/>

@@ -797,6 +797,16 @@ licenses/                                   — full licence texts of everything
   out). A monochrome layer can only usefully vary **alpha**, never colour:
   `setTint` is a SRC_IN filter, so it replaces the hue but passes per-pixel
   alpha through. The colour icon itself is unchanged by any of this.
+  Its two colour layers keep their mdpi art in the unqualified
+  `res/drawable/` rather than in `drawable-mdpi`: density-qualified
+  resources are split out of the app bundle into config APKs, and an
+  install that ends up without its density split (device-to-device
+  transfer, an APK pulled off another device, an interrupted Play update)
+  cannot resolve them at all, so inflating `@mipmap/ic_launcher` throws
+  `Resources$NotFoundException` and takes down everything that shows it —
+  the app list entry, the About screen, and the onboarding welcome page,
+  which crashes the app on first run. The unqualified copy ships in the
+  base APK; a complete install still prefers the density-matched art.
 - **`cache/`** — `AppIconCache`.
 - **`dev/`** — in-app debug logging. `Log` is a singleton that mirrors every
   call to `android.util.Log` and, while dev mode has it enabled, also keeps it
