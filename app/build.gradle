@@ -84,9 +84,7 @@ android {
     }
     lint {
         disable 'MissingTranslation', 'ExtraTranslation'
-        // Lint was retrofitted onto a codebase that predates it; the baseline holds
-        // what was already there so CI only fails on newly introduced issues. Shrink
-        // it by fixing things, never by regenerating it to absorb a new failure.
+        // Pre-existing issues, so only new ones fail. Shrink it, don't regenerate it.
         baseline = file('lint-baseline.xml')
     }
     bundle {
