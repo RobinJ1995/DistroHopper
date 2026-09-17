@@ -162,8 +162,7 @@ object LauncherIconGrid {
 		// loses the two horizontal ends (indices 1 and 3, matching LauncherEdgeController's
 		// convention). Every theme uses symmetric margins, but sum both ends regardless.
 		val margins = res.obtainTypedArray(theme.launcher_margin)
-		// launcher_margin is a plain resource array, so its indices are positions,
-		// not the @StyleableRes lint assumes for a TypedArray.
+		// Plain resource array: the indices are positions, not @StyleableRes.
 		@Suppress("ResourceType")
 		val marginPx = margins.getDimensionPixelSize(1, 0) + margins.getDimensionPixelSize(3, 0)
 		margins.recycle()
