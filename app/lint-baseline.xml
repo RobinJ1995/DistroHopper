@@ -2,39 +2,6 @@
 <issues format="6" by="lint 9.3.1" type="baseline" client="gradle" dependencies="false" name="AGP (9.3.1)" variant="all" version="9.3.1">
 
     <issue
-        id="ResourceType"
-        message="Expected resource of type styleable"
-        errorLine1="  val marginPx = margins.getDimensionPixelSize(1, 0) + margins.getDimensionPixelSize(3, 0)"
-        errorLine2="                                               ~">
-        <location
-            file="src/main/java/be/robinj/distrohopper/desktop/launcher/LauncherIconGrid.kt"
-            line="165"
-            column="48"/>
-    </issue>
-
-    <issue
-        id="ResourceType"
-        message="Expected resource of type styleable"
-        errorLine1="  val marginPx = margins.getDimensionPixelSize(1, 0) + margins.getDimensionPixelSize(3, 0)"
-        errorLine2="                                                                                     ~">
-        <location
-            file="src/main/java/be/robinj/distrohopper/desktop/launcher/LauncherIconGrid.kt"
-            line="165"
-            column="86"/>
-    </issue>
-
-    <issue
-        id="ResourceType"
-        message="Expected resource of type styleable"
-        errorLine1="  val marginPx = margins.getDimensionPixelSize(0, 0) + margins.getDimensionPixelSize(2, 0)"
-        errorLine2="                                                                                     ~">
-        <location
-            file="src/main/java/be/robinj/distrohopper/desktop/launcher/LauncherIconGrid.kt"
-            line="224"
-            column="86"/>
-    </issue>
-
-    <issue
         id="ApplySharedPref"
         message="Consider using `apply()` instead; `commit` writes its data to persistent storage immediately, whereas `apply` will handle it in the background"
         errorLine1="     prefsEdit.commit()"
