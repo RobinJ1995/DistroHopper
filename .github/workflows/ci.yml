@@ -380,9 +380,9 @@ jobs:
             echo
             echo "| File | What it is |"
             echo "| --- | --- |"
-            echo "| \`DistroHopper-$RELEASE_VERSION.apk\` | The normal app. Download this one to install DistroHopper by hand (sideloading). |"
-            echo "| \`DistroHopper-$RELEASE_VERSION.aab\` | Android App Bundle — the format Google Play takes. It is published here for completeness; you cannot install a \`.aab\` on a phone. |"
-            echo "| \`DistroHopper-$RELEASE_VERSION-paranoia.apk\` | Same app, built with crash reporting compiled out and dependency metadata stripped from the APK. Install this instead of the normal APK if you would rather nothing was ever sent anywhere — at the cost of me not seeing your crashes. |"
+            echo "| \`DistroHopper-$RELEASE_VERSION.apk\` | The standard supported release of the app. This is the one you want to download as a regular user. |"
+            echo "| \`DistroHopper-$RELEASE_VERSION.aab\` | Bundle for Google Play Store publishing. Not directly installable on a device. |"
+            echo "| \`DistroHopper-$RELEASE_VERSION-paranoia.apk\` | Separate release with crash reporting and dependency metadata compiled out, for privacy-focused reproducible builds. Only published and maintained on a best-effort basis; as an average user, this is *not* the one you want. |"
             echo "RELEASE_BODY"
           } >> "$GITHUB_OUTPUT"
 
