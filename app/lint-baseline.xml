@@ -152,17 +152,6 @@
     </issue>
 
     <issue
-        id="NewApi"
-        message="Call requires API level 33 (current min is 31): `new android.graphics.drawable.AdaptiveIconDrawable`"
-        errorLine1="  return new AdaptiveIconDrawable(new ColorDrawable(IconTint.theme(context)), foreground, monochrome);"
-        errorLine2="         ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/be/robinj/distrohopper/icons/IconTintPreference.java"
-            line="78"
-            column="10"/>
-    </issue>
-
-    <issue
         id="UnusedAttribute"
         message="Attribute `localeConfig` is only used in API level 33 and higher (current min is 31)"
         errorLine1="  android:localeConfig=&quot;@xml/locales_config&quot;"

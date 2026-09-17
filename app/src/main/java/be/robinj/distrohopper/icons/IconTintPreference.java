@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -73,9 +74,16 @@ public class IconTintPreference extends IconStripPreference {
 
 	/** The penguin sample with a monochrome layer so it can be recoloured when tinted. */
 	private AdaptiveIconDrawable sampleIcon(final Context context) {
+		final Drawable background = new ColorDrawable(IconTint.theme(context));
 		final Drawable foreground = AppCompatResources.getDrawable(context, R.drawable.ic_icon_sample_foreground);
+		// The monochrome layer, and the constructor taking one, are API 33+.
+		// IconRenderer already falls back to standard compositing without it.
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+			return new AdaptiveIconDrawable(background, foreground);
+		}
+
 		final Drawable monochrome = AppCompatResources.getDrawable(context, R.drawable.ic_icon_sample_foreground);
-		return new AdaptiveIconDrawable(new ColorDrawable(IconTint.theme(context)), foreground, monochrome);
+		return new AdaptiveIconDrawable(background, foreground, monochrome);
 	}
 
 	private Drawable renderTinted(final Context context, final AdaptiveIconDrawable sample,
