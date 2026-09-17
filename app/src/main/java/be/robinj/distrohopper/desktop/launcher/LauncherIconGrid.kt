@@ -1,5 +1,6 @@
 package be.robinj.distrohopper.desktop.launcher
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
@@ -163,7 +164,7 @@ object LauncherIconGrid {
 		// convention). Every theme uses symmetric margins, but sum both ends regardless.
 		val margins = res.obtainTypedArray(theme.launcher_margin)
 		// Plain resource array: the indices are positions, not @StyleableRes.
-		@Suppress("ResourceType")
+		@SuppressLint("ResourceType")
 		val marginPx = margins.getDimensionPixelSize(1, 0) + margins.getDimensionPixelSize(3, 0)
 		margins.recycle()
 
@@ -223,7 +224,7 @@ object LauncherIconGrid {
 		// A vertical bar loses the two vertical ends of launcher_margin
 		// ([top, right, bottom, left]) instead of the horizontal pair.
 		val margins = res.obtainTypedArray(theme.launcher_margin)
-		@Suppress("ResourceType")
+		@SuppressLint("ResourceType")
 		val marginPx = margins.getDimensionPixelSize(0, 0) + margins.getDimensionPixelSize(2, 0)
 		margins.recycle()
 
