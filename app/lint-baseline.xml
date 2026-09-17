@@ -163,28 +163,6 @@
     </issue>
 
     <issue
-        id="NewApi"
-        message="Call requires API level 35 (current min is 34): `android.content.pm.LauncherApps#getLauncherUserInfo`"
-        errorLine1="   context.getSystemService(LauncherApps::class.java)?.getLauncherUserInfo(user)?.userType"
-        errorLine2="                                                       ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/be/robinj/distrohopper/Profiles.kt"
-            line="51"
-            column="56"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Call requires API level 35 (current min is 34): `android.content.pm.LauncherUserInfo#getUserType`"
-        errorLine1="   context.getSystemService(LauncherApps::class.java)?.getLauncherUserInfo(user)?.userType"
-        errorLine2="                                                                                  ~~~~~~~~">
-        <location
-            file="src/main/java/be/robinj/distrohopper/Profiles.kt"
-            line="51"
-            column="83"/>
-    </issue>
-
-    <issue
         id="UnusedAttribute"
         message="Attribute `localeConfig` is only used in API level 33 and higher (current min is 31)"
         errorLine1="  android:localeConfig=&quot;@xml/locales_config&quot;"
