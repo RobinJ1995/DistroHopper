@@ -61,7 +61,7 @@ public class IconTintPreference extends IconStripPreference {
 		final String current = this.getPersistedString(IconTint.WALLPAPER);
 		final int size = this.dp(SWATCH_SIZE_DP);
 		final boolean night = IconConfig.isNightMode(context);
-		final AdaptiveIconDrawable sample = this.sampleIcon(context);
+		final AdaptiveIconDrawable sample = sampleIcon(context);
 
 		for (final Swatch swatch : this.swatches(context)) {
 			final ImageView preview = new ImageView(context);
@@ -73,11 +73,10 @@ public class IconTintPreference extends IconStripPreference {
 	}
 
 	/** The penguin sample with a monochrome layer so it can be recoloured when tinted. */
-	private AdaptiveIconDrawable sampleIcon(final Context context) {
+	static AdaptiveIconDrawable sampleIcon(final Context context) {
 		final Drawable background = new ColorDrawable(IconTint.theme(context));
 		final Drawable foreground = AppCompatResources.getDrawable(context, R.drawable.ic_icon_sample_foreground);
-		// The monochrome layer, and the constructor taking one, are API 33+.
-		// IconRenderer already falls back to standard compositing without it.
+		// The monochrome layer and the constructor taking one are API 33+.
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
 			return new AdaptiveIconDrawable(background, foreground);
 		}
