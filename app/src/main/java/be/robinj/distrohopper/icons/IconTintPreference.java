@@ -10,7 +10,6 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import java.util.ArrayList;
@@ -62,7 +61,7 @@ public class IconTintPreference extends IconStripPreference {
 		final String current = this.getPersistedString(IconTint.WALLPAPER);
 		final int size = this.dp(SWATCH_SIZE_DP);
 		final boolean night = IconConfig.isNightMode(context);
-		final AdaptiveIconDrawable sample = sampleIcon(context);
+		final AdaptiveIconDrawable sample = this.sampleIcon(context);
 
 		for (final Swatch swatch : this.swatches(context)) {
 			final ImageView preview = new ImageView(context);
@@ -74,8 +73,7 @@ public class IconTintPreference extends IconStripPreference {
 	}
 
 	/** The penguin sample, with a monochrome layer where the platform has one (API 33+). */
-	@VisibleForTesting
-	static AdaptiveIconDrawable sampleIcon(final Context context) {
+	private AdaptiveIconDrawable sampleIcon(final Context context) {
 		final Drawable background = new ColorDrawable(IconTint.theme(context));
 		final Drawable foreground = AppCompatResources.getDrawable(context, R.drawable.ic_icon_sample_foreground);
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
