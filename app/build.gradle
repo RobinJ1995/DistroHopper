@@ -84,6 +84,8 @@ android {
     }
     lint {
         disable 'MissingTranslation', 'ExtraTranslation'
+        // Pre-existing issues, so only new ones fail. Shrink it, don't regenerate it.
+        baseline = file('lint-baseline.xml')
     }
     bundle {
         language {
