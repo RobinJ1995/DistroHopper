@@ -5,7 +5,10 @@ DistroHopper is a home screen replacement for Android that can resemble a number
 
 ## Where can I get it?
 
-The latest stable build can be downloaded from [Github](https://github.com/RobinJ1995/DistroHopper/releases) or from [the Google Play Store](https://play.google.com/store/apps/details?id=be.robinj.distrohopper).
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=be.robinj.distrohopper)
+[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="80">](https://apt.izzysoft.de/fdroid/index/apk/be.robinj.distrohopper)
+
+The latest stable build can be downloaded from [the Google Play Store](https://play.google.com/store/apps/details?id=be.robinj.distrohopper), from [the IzzyOnDroid F-Droid repository](https://apt.izzysoft.de/fdroid/index/apk/be.robinj.distrohopper), or straight from [the Github releases page](https://github.com/RobinJ1995/DistroHopper/releases).
 
 ## How can I help?
 
