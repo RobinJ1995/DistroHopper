@@ -361,17 +361,27 @@ jobs:
         id: release_metadata
         run: |
           if [[ "$RELEASE_VERSION" =~ [[:alpha:]]$ ]]; then
-            echo "prerelease=true" >> "$GITHUB_OUTPUT"
-            {
-              echo "body<<RELEASE_BODY"
+            prerelease=true
+          else
+            prerelease=false
+          fi
+          echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
+          {
+            echo "body<<RELEASE_BODY"
+            if [ "$prerelease" = true ]; then
               echo "> [!WARNING]"
               echo "> Test version, not a stable release"
-              echo "RELEASE_BODY"
-            } >> "$GITHUB_OUTPUT"
-          else
-            echo "prerelease=false" >> "$GITHUB_OUTPUT"
-            echo "body=" >> "$GITHUB_OUTPUT"
-          fi
+              echo
+            fi
+            echo "### Downloads"
+            echo
+            echo "| File | What it is |"
+            echo "| --- | --- |"
+            echo "| \`DistroHopper-$RELEASE_VERSION.apk\` | The standard supported release of the app. This is the one you want to download as a regular user. |"
+            echo "| \`DistroHopper-$RELEASE_VERSION.aab\` | Bundle for Google Play Store publishing. Not directly installable on a device. |"
+            echo "| \`DistroHopper-$RELEASE_VERSION-paranoia.apk\` | Separate release with crash reporting and dependency metadata compiled out, for privacy-focused reproducible builds. Only published and maintained on a best-effort basis; as an average user, this is *not* the one you want. |"
+            echo "RELEASE_BODY"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Attach to GitHub Release
         uses: softprops/action-gh-release@v2
