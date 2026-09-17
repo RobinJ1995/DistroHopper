@@ -360,9 +360,6 @@ jobs:
       - name: Detect release type
         id: release_metadata
         run: |
-          # Appended to the release notes: the pre-release warning, if any, plus
-          # a short note on each attached file, so nobody has to guess which of
-          # the three downloads they want.
           if [[ "$RELEASE_VERSION" =~ [[:alpha:]]$ ]]; then
             prerelease=true
           else
