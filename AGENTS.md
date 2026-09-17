@@ -25,6 +25,18 @@ codebase — older Java alongside newer Kotlin.
   activities/views without a device).
 - Instrumented tests live under `app/src/androidTest/` (require a
   device/emulator; rarely the right place for new tests — prefer Robolectric).
+- Lint: `./gradlew lintDebug`. CI runs it on every push and pull request
+  alongside the unit tests, and a release is gated on both. `MissingTranslation`
+  and `ExtraTranslation` are disabled in `app/build.gradle` — translations lag
+  behind `strings.xml` by design, so those would be permanently red.
+- `app/lint-baseline.xml` holds the issues that already existed when lint was
+  added to CI (10 errors, 312 warnings), so only newly introduced ones fail the
+  build. Fix issues out of it; never regenerate it (`./gradlew
+  updateLintBaseline`) to make a new failure go away. Among the baselined errors
+  are two real API-level bugs worth fixing:
+  `IconTintPreference.sampleIcon` calls the API 33 three-argument
+  `AdaptiveIconDrawable` constructor on `minSdk` 31, and `Profiles.label` guards
+  `LauncherApps.getLauncherUserInfo` with API 34 when it landed in API 35.
 - Release workflow: pushing a `v*` tag builds signed release artifacts and
   attaches them to a GitHub Release. Tags whose version ends in a letter (for
   example `v3.0.0d`) are marked as GitHub pre-releases and are not promoted to
@@ -816,6 +828,12 @@ licenses/                                   — full licence texts of everything
   refactoring wholesale.
 - Keep comments, commit messages and PR descriptions concise: say what the
   code cannot, then stop. Length is cognitive load, not thoroughness.
+- PR descriptions say what changed and why, and nothing else. No summaries of
+  the diff, no checklists of files touched, no test-plan theatre.
+- Docstrings aside, add a comment only where it genuinely reduces the reader's
+  cognitive load — a non-obvious reason, a constraint, a trap. If the code
+  already says it, the comment is noise. When a comment does earn its place,
+  keep it short and to the point.
 - Listener classes are typically separate top-level classes named
   `<View><Event>Listener` (e.g. `AppLauncherLongClickListener`) rather than
   anonymous/inner classes — follow that pattern where it's already in use.
