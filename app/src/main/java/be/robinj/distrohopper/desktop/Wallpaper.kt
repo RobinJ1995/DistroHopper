@@ -5,7 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.Window
-import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.graphics.ColorUtils
 import be.robinj.distrohopper.ExceptionHandler
 import be.robinj.distrohopper.R
@@ -14,7 +14,7 @@ import be.robinj.distrohopper.dev.Log
 /**
  * Created by robin on 8/21/14.
  */
-class Wallpaper : ImageView {
+class Wallpaper : AppCompatImageView {
     private val context: Context
     private val frostedFallback by lazy {
         FrostedFallbackDrawable(this.frostedFallbackColour())
