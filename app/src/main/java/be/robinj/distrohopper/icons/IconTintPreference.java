@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import java.util.ArrayList;
@@ -72,11 +73,11 @@ public class IconTintPreference extends IconStripPreference {
 		}
 	}
 
-	/** The penguin sample with a monochrome layer so it can be recoloured when tinted. */
+	/** The penguin sample, with a monochrome layer where the platform has one (API 33+). */
+	@VisibleForTesting
 	static AdaptiveIconDrawable sampleIcon(final Context context) {
 		final Drawable background = new ColorDrawable(IconTint.theme(context));
 		final Drawable foreground = AppCompatResources.getDrawable(context, R.drawable.ic_icon_sample_foreground);
-		// The monochrome layer and the constructor taking one are API 33+.
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
 			return new AdaptiveIconDrawable(background, foreground);
 		}

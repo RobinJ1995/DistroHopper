@@ -30,8 +30,6 @@ codebase — older Java alongside newer Kotlin.
   translations lag `strings.xml` by design.
 - `app/lint-baseline.xml` holds the issues that predate the CI job, so only new
   ones fail. Fix issues out of it; never regenerate it to absorb a new failure.
-  One baselined error is a real API-level bug: `IconTintPreference.sampleIcon`
-  uses the API 33 three-arg `AdaptiveIconDrawable` constructor on `minSdk` 31.
 - Release workflow: pushing a `v*` tag builds signed release artifacts and
   attaches them to a GitHub Release. Tags whose version ends in a letter (for
   example `v3.0.0d`) are marked as GitHub pre-releases and are not promoted to
