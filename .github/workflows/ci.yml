@@ -360,18 +360,31 @@ jobs:
       - name: Detect release type
         id: release_metadata
         run: |
+          # Appended to the release notes: the pre-release warning, if any, plus
+          # a short note on each attached file, so nobody has to guess which of
+          # the three downloads they want.
           if [[ "$RELEASE_VERSION" =~ [[:alpha:]]$ ]]; then
-            echo "prerelease=true" >> "$GITHUB_OUTPUT"
-            {
-              echo "body<<RELEASE_BODY"
+            prerelease=true
+          else
+            prerelease=false
+          fi
+          echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
+          {
+            echo "body<<RELEASE_BODY"
+            if [ "$prerelease" = true ]; then
               echo "> [!WARNING]"
               echo "> Test version, not a stable release"
-              echo "RELEASE_BODY"
-            } >> "$GITHUB_OUTPUT"
-          else
-            echo "prerelease=false" >> "$GITHUB_OUTPUT"
-            echo "body=" >> "$GITHUB_OUTPUT"
-          fi
+              echo
+            fi
+            echo "### Downloads"
+            echo
+            echo "| File | What it is |"
+            echo "| --- | --- |"
+            echo "| \`DistroHopper-$RELEASE_VERSION.apk\` | The normal app. Download this one to install DistroHopper by hand (sideloading). |"
+            echo "| \`DistroHopper-$RELEASE_VERSION.aab\` | Android App Bundle — the format Google Play takes. It is published here for completeness; you cannot install a \`.aab\` on a phone. |"
+            echo "| \`DistroHopper-$RELEASE_VERSION-paranoia.apk\` | Same app, built with crash reporting compiled out and dependency metadata stripped from the APK. Install this instead of the normal APK if you would rather nothing was ever sent anywhere — at the cost of me not seeing your crashes. |"
+            echo "RELEASE_BODY"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Attach to GitHub Release
         uses: softprops/action-gh-release@v2
