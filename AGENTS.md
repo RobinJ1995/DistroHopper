@@ -22,7 +22,22 @@ codebase — older Java alongside newer Kotlin.
 - Build: `./gradlew assembleDebug`
 - Unit tests: `./gradlew testDebugUnitTest` — JVM tests under
   `app/src/test/`, written in Kotlin using Robolectric (they exercise real
-  activities/views without a device).
+  activities/views without a device). Defaults to API 36;
+  `-ProbolectricSdk=<level>` runs the suite at another one. CI runs every level
+  from `minSdk` to `compileSdk` as a matrix, one job each, so the branch below a
+  version guard is exercised rather than assumed.
+- The level must be one listed in `app/src/test/resources/robolectric.properties`,
+  which the matrix in `.github/workflows/ci.yml` has to be kept in step with by
+  hand. `robolectric.enabledSdks`, which Gradle sets from `-ProbolectricSdk`,
+  *intersects* with that list rather than selecting from it, so a level missing
+  from either side leaves the Robolectric tests with nothing to run — and that is
+  a pass, not a failure. It does not even look empty, since the plain-JUnit tests
+  have no runner to opt out of and still report. Hence CI's "Check the whole
+  suite ran" step, which compares against a floor rather than zero.
+- For the same reason a `@Config(sdk = [n])` test runs on the matching level and
+  nowhere else, a plain local run included, where it is absent from the results
+  rather than marked skipped. Reproducing one needs `-ProbolectricSdk=n`;
+  without it the test is not failing, it is not running.
 - Instrumented tests live under `app/src/androidTest/` (require a
   device/emulator; rarely the right place for new tests — prefer Robolectric).
 - Lint: `./gradlew lintDebug`, run in CI next to the unit tests; releases are

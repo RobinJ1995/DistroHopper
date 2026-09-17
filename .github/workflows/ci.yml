@@ -173,15 +173,29 @@ jobs:
             printf 'release=false\ntag=\nrun_tests=true\n' >> "$GITHUB_OUTPUT"
           fi
 
+  # One leg per supported API level. The suite otherwise only ever ran at
+  # compileSdk, leaving every lower SDK_INT branch untested — which is how the
+  # API 35 getLauncherUserInfo guard shipped as 34 and crashed every Android 14
+  # device with a work profile (#151). Keep in step with robolectric.properties.
   unit-tests:
     needs: release-context
     if: needs.release-context.outputs.run_tests == 'true'
     runs-on: ubuntu-latest
+    env:
+      # The one leg that also produces coverage. Named once so it cannot fall off
+      # the matrix below and leave no leg running jacocoTestReport at all.
+      COVERAGE_API: 36
+    strategy:
+      # One level failing says nothing about the others; see all of them in one run.
+      fail-fast: false
+      matrix:
+        api: [ 31, 32, 33, 34, 35, 36 ]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
+      # 21 satisfies every level in the matrix; API 36 requires it.
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
@@ -189,23 +203,60 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      # Robolectric fetches its android-all jar at *test* time into ~/.m2, which
+      # setup-java's Gradle cache does not cover; uncached, six legs pull about a
+      # gigabyte from Maven Central at once and draw 429s. Keyed on build.gradle
+      # so a Robolectric upgrade gets a fresh entry rather than restoring the old
+      # jar forever on an exact hit that also suppresses the save.
+      - name: Cache the Robolectric android-all jar
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository/org/robolectric
+          key: robolectric-${{ hashFiles('app/build.gradle') }}-api${{ matrix.api }}
+
       - name: Create secret.properties
         run: |
           echo "acra_username=" > secret.properties
           echo "acra_password=" >> secret.properties
 
+      - name: Run unit tests
+        if: matrix.api != env.COVERAGE_API
+        run: ./gradlew testDebugUnitTest -ProbolectricSdk=${{ matrix.api }}
+
+      # Coverage off one level only: six near-identical partial reports are noise.
       - name: Run unit tests and coverage
-        run: ./gradlew jacocoTestReport
+        if: matrix.api == env.COVERAGE_API
+        run: ./gradlew jacocoTestReport -ProbolectricSdk=${{ matrix.api }}
+
+      # A level robolectric.properties does not list leaves the Robolectric tests
+      # with nothing to run, and that is a pass. A floor rather than a zero check
+      # because such a run does not look empty — the plain-JUnit tests have no
+      # runner to opt out of and still report.
+      - name: Check the whole suite ran
+        run: |
+          set -euo pipefail
+          results=app/build/test-results/testDebugUnitTest
+          # pipefail off for the count alone: no results at all is one of the
+          # things being diagnosed, and it must reach the message below rather
+          # than kill the step on cat's exit status.
+          total="$(set +o pipefail; cat "$results"/TEST-*.xml 2>/dev/null \
+            | grep -oP '<testsuite\b[^>]*\btests="\K[0-9]+' \
+            | awk '{ n += $1 } END { print n + 0 }')"
+          if [ "$total" -lt 900 ]; then
+            echo "::error::Only $total tests ran at API ${{ matrix.api }}, expected upwards of 1000. The Robolectric tests were skipped — is ${{ matrix.api }} listed in app/src/test/resources/robolectric.properties?"
+            exit 1
+          fi
+          echo "$total tests ran at API ${{ matrix.api }}."
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: unit-test-results
+          name: unit-test-results-${{ matrix.api }}
           path: app/build/reports/tests/testDebugUnitTest/
 
       - name: Upload coverage report
-        if: always()
+        if: always() && matrix.api == env.COVERAGE_API
         uses: actions/upload-artifact@v5
         with:
           name: unit-test-coverage

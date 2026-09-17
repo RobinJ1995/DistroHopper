@@ -75,6 +75,13 @@ android {
             all {
                 jacoco.includeNoLocationClasses = true
                 jacoco.excludes = ['jdk.internal.*']
+
+                // Narrows robolectric.properties' list of levels to the one this
+                // run uses, so a plain run behaves as before and CI passes a
+                // level per leg. Must be a level that file lists: enabledSdks
+                // intersects rather than selects.
+                systemProperty 'robolectric.enabledSdks',
+                        providers.gradleProperty('robolectricSdk').getOrElse('36')
             }
         }
     }
