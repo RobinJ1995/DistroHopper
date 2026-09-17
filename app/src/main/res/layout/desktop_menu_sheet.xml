@@ -5,6 +5,7 @@
      (DesktopMenuSheetTheme), not a background here — that is what clips the
      window's blur-behind to the sheet's shape. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/desktopMenuSheet"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
@@ -45,13 +46,13 @@
 				android:layout_height="48dp"
 				android:background="@drawable/desktop_menu_icon_background">
 
-				<ImageView
+				<androidx.appcompat.widget.AppCompatImageView
 					android:layout_width="24dp"
 					android:layout_height="24dp"
 					android:layout_gravity="center"
 					android:importantForAccessibility="no"
 					android:src="@drawable/ic_desktop_menu_widgets"
-					android:tint="@color/dialog_on_surface" />
+					app:tint="@color/dialog_on_surface" />
 			</FrameLayout>
 
 			<TextView
@@ -83,13 +84,13 @@
 				android:layout_height="48dp"
 				android:background="@drawable/desktop_menu_icon_background">
 
-				<ImageView
+				<androidx.appcompat.widget.AppCompatImageView
 					android:layout_width="24dp"
 					android:layout_height="24dp"
 					android:layout_gravity="center"
 					android:importantForAccessibility="no"
 					android:src="@drawable/ic_desktop_menu_customise"
-					android:tint="@color/dialog_on_surface" />
+					app:tint="@color/dialog_on_surface" />
 			</FrameLayout>
 
 			<TextView
@@ -121,13 +122,13 @@
 				android:layout_height="48dp"
 				android:background="@drawable/desktop_menu_icon_background">
 
-				<ImageView
+				<androidx.appcompat.widget.AppCompatImageView
 					android:layout_width="24dp"
 					android:layout_height="24dp"
 					android:layout_gravity="center"
 					android:importantForAccessibility="no"
 					android:src="@drawable/ic_desktop_menu_settings"
-					android:tint="@color/dialog_on_surface" />
+					app:tint="@color/dialog_on_surface" />
 			</FrameLayout>
 
 			<TextView
