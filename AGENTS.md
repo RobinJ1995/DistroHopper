@@ -821,8 +821,7 @@ licenses/                                   — full licence texts of everything
   refactoring wholesale.
 - Keep comments, commit messages and PR descriptions concise: say what the
   code cannot, then stop. Length is cognitive load, not thoroughness.
-- PR descriptions say what changed and why, and nothing else — no diff
-  summaries, file checklists or test-plan theatre.
+- PR titles and descriptions follow `.claude/rules/pull-requests.md`.
 - Docstrings aside, add a comment only where it genuinely reduces cognitive
   load: a non-obvious reason, a constraint, a trap. Keep those short too.
 - Listener classes are typically separate top-level classes named
