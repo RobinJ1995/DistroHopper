@@ -5,6 +5,7 @@
      (DesktopMenuSheetTheme), not a background here — that is what clips the
      window's blur-behind to the sheet's shape. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/desktopMenuSheet"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
@@ -51,7 +52,7 @@
 					android:layout_gravity="center"
 					android:importantForAccessibility="no"
 					android:src="@drawable/ic_desktop_menu_widgets"
-					android:tint="@color/dialog_on_surface" />
+					app:tint="@color/dialog_on_surface" />
 			</FrameLayout>
 
 			<TextView
@@ -89,7 +90,7 @@
 					android:layout_gravity="center"
 					android:importantForAccessibility="no"
 					android:src="@drawable/ic_desktop_menu_customise"
-					android:tint="@color/dialog_on_surface" />
+					app:tint="@color/dialog_on_surface" />
 			</FrameLayout>
 
 			<TextView
@@ -127,7 +128,7 @@
 					android:layout_gravity="center"
 					android:importantForAccessibility="no"
 					android:src="@drawable/ic_desktop_menu_settings"
-					android:tint="@color/dialog_on_surface" />
+					app:tint="@color/dialog_on_surface" />
 			</FrameLayout>
 
 			<TextView
