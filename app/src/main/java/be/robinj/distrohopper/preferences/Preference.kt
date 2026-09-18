@@ -86,6 +86,8 @@ enum class Preference(
 	DEV("dev"),
 	/** Dev: surface internal log messages as on-screen toasts. */
 	DEV_LOG_TOASTER("dev_log_toaster", null, DEV),
+	/** Dev: log every message dispatched on the main looper into the in-app log. */
+	DEV_LOOPER_PROFILE("dev_looper_profile", false, DEV),
 	/** Dev: allow freely resizing any widget, ignoring its declared limits. */
 	DEV_WIDGET_RESIZE_ANY("dev_widget_resize_any", false, DEV),
 	/** Dev: show a dot at every grid intersection while dragging or resizing. */

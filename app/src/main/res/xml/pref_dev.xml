@@ -16,6 +16,13 @@
 		android:defaultValue="false" />
 
 	<SwitchPreferenceCompat
+		android:key="dev_looper_profile"
+		android:dependency="dev"
+		android:title="@string/option_dev_looper_profile"
+		android:summary="@string/hint_dev_looper_profile"
+		android:defaultValue="false" />
+
+	<SwitchPreferenceCompat
 		android:key="dev_widget_resize_any"
 		android:dependency="dev"
 		android:title="@string/option_widget_resize_any"
