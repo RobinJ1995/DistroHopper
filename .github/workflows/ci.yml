@@ -21,6 +21,16 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  wrapper-validation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
+
   # Single source of truth for "is this a release, and which version is it".
   #
   # On workflow_dispatch this also bumps app/build.gradle, commits it to master
@@ -30,6 +40,9 @@ jobs:
   # tag-triggered run to fall back on. Manually pushing a v* tag still works
   # exactly as before, tests and all.
   release-context:
+    # Every job hangs off this one, so gating here gates all of them — including
+    # the bump-and-tag push below, which runs before any ./gradlew does.
+    needs: wrapper-validation
     runs-on: ubuntu-latest
     permissions:
       contents: write        # push the version bump commit and the release tag
