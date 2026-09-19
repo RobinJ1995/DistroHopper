@@ -31,7 +31,7 @@ class DesktopFolderOverlay(
 	private val overlay = FolderOverlay(this.activity)
 
 	fun show(anchor: View) {
-		val cell = this.dp(88)
+		val cell = this.dp(CELL_DP)
 		val pad = this.dp(14)
 
 		val grid = FrameLayout(this.activity).apply {
@@ -110,4 +110,9 @@ class DesktopFolderOverlay(
 
 	private fun dp(value: Int): Int =
 		(value * this.activity.resources.displayMetrics.density).toInt()
+
+	companion object {
+		/** Cell size (dp) of the opened folder's grid; IconRenderSize sizes icons for it. */
+		const val CELL_DP = 88
+	}
 }

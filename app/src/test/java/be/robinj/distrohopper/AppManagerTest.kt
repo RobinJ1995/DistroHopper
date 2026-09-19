@@ -6,6 +6,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.cache.AppIconCache
+import be.robinj.distrohopper.desktop.dash.DashGrid
 import be.robinj.distrohopper.preferences.Preference
 import be.robinj.distrohopper.preferences.PreferencesActivity
 import be.robinj.distrohopper.preferences.Preferences
@@ -50,6 +51,21 @@ class AppManagerTest {
         Preferences.getSharedPreferences(manager.context).edit()
             .putString(Preference.ICON_SHAPE.getName(), "circle").commit()
         manager.iconRenderer // rebuilds the renderer, which reconciles the cache
+
+        assertFalse(cacheContains(key))
+    }
+
+    @Test fun growingTheDashIconsPurgesTheIconCache() = withManager { manager ->
+        val key = "purge-me-too"
+        assertTrue(cacheAnIcon(key).containsKey(key))
+
+        // Fewest columns = biggest dash cells: the render size grows, so the
+        // cached icons (rendered smaller) no longer match the signature. //
+        val sw = manager.context.resources.configuration.smallestScreenWidthDp
+        assertNotEquals(DashGrid.minColumns(sw), DashGrid.columns(manager.context))
+        Preferences.getSharedPreferences(manager.context).edit()
+            .putInt(Preference.DASH_GRID_COLUMNS.getName(), DashGrid.minColumns(sw)).commit()
+        manager.iconRenderer
 
         assertFalse(cacheContains(key))
     }

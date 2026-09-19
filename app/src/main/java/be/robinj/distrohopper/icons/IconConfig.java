@@ -11,17 +11,14 @@ import be.robinj.distrohopper.preferences.PreferencesRepository;
 /**
  * An immutable snapshot of everything that affects how {@link IconRenderer}
  * rasterises an adaptive icon: the mask {@link IconShape}, whether monochrome
- * icons are recoloured ("tinted"), the canonical render size, and the tonal
- * background/foreground used for tinted icons.
+ * icons are recoloured ("tinted"), the render size (see {@link IconRenderSize})
+ * and the tonal background/foreground used for tinted icons.
  *
  * <p>{@link #signature()} folds all of these into a single string so a change to
  * any of them — including the resolved tint colour following the wallpaper or
  * theme — can be detected and used to invalidate the (shape-unaware) icon cache.
  */
 public final class IconConfig {
-	/** Adaptive icons are authored on a 108dp canvas; render at that size for crisp masking. */
-	private static final int CANVAS_DP = 108;
-
 	private final IconShape shape;
 	private final boolean tintedIcons;
 	private final int sizePx;
@@ -50,7 +47,9 @@ public final class IconConfig {
 		final boolean tinted = prefs.getBoolean(Preference.TINTED_ICONS,
 			Boolean.TRUE.equals(Preference.TINTED_ICONS.<Boolean>getDefault()));
 
-		final int sizePx = Math.round(CANVAS_DP * context.getResources().getDisplayMetrics().density);
+		// The largest size any surface draws under the current settings, capped
+		// at the 108dp adaptive canvas (see IconRenderSize) //
+		final int sizePx = IconRenderSize.px(context);
 
 		final int tint = IconTint.resolve(context,
 			prefs.getString(Preference.ICON_TINT, Preference.ICON_TINT.getDefault()));

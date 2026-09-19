@@ -40,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/imgIcon"
-                android:layout_margin="4dp"/>
+                android:layout_margin="@dimen/launcher_applauncher_icon_margin"/>
         </LinearLayout>
     </LinearLayout>
 

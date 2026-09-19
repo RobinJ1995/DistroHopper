@@ -775,7 +775,17 @@ licenses/                                   — full licence texts of everything
   for icons that have no monochrome layer. `IconConfig` carries the settings
   (shape, size, tint) and owns the light/dark tonal pair derived from the tint
   colour; `IconTint` resolves the colour itself (wallpaper, system accent,
-  active theme, or a preset). `IconShapePreference`/`IconTintPreference` are
+  active theme, or a preset). The render size is `IconRenderSize`: the largest
+  an icon is drawn on any surface (dash cell, launcher slot, desktop app, the
+  two folder pop-overs) under the current grid preferences, capped at the 108dp
+  adaptive canvas — a rendered icon is held for every installed app, so its size
+  is the app's memory footprint (the fixed 108dp canvas it replaced cost several
+  times what was drawn). Each term is a deliberate upper bound off the stable
+  short screen edge and the density only — the launcher term ignores the theme's
+  margins — so a theme switch does not move it; a dash-columns, launcher-preset
+  or desktop-grid change does, which through the `sz=` field of
+  `IconConfig.signature()` purges the disk cache and re-renders on the relaunch
+  those settings already trigger. `IconShapePreference`/`IconTintPreference` are
   the settings strips, both previewing on the penguin sample
   `res/drawable/ic_icon_sample_foreground.xml`.
   `IconPackHelper` applies third-party **icon packs**. A pack that will not resolve

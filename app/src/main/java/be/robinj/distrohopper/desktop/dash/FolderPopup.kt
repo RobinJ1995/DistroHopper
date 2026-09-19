@@ -53,7 +53,7 @@ class FolderPopup @JvmOverloads constructor(
 			}
 		}
 
-		val cell = dp(76)
+		val cell = dp(CELL_DP)
 		grid.adapter = GridAdapter(this.activity, apps.map { DashItem.AppItem(it) as DashItem }.toMutableList())
 		grid.onItemClickListener = AdapterLaunch()
 		grid.onItemLongClickListener = AdapterExtract()
@@ -97,6 +97,9 @@ class FolderPopup @JvmOverloads constructor(
 		(value * this.activity.resources.displayMetrics.density).toInt()
 
 	companion object {
+		/** Cell size (dp) of the pop-over's grid; IconRenderSize sizes icons for it. */
+		const val CELL_DP = 76
+
 		/** Whether in-folder reordering is currently allowed (custom sort order). */
 		@JvmStatic
 		fun customOrderingEnabled(activity: HomeActivity): Boolean =
