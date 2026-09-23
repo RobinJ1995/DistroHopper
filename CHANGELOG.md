@@ -1,6 +1,6 @@
 # Changelog
 
-User-facing changes in each DistroHopper release, newest first. Test builds (versions ending in a letter, such as 3.0.0c) are folded into the release that followed them. Releases before 1.0 were published as "Ubuntu Launcher". The history begins at 0.4.0b, the last version developed on Launchpad; nothing earlier is recorded here.
+User-facing changes in each DistroHopper release, newest first. Test builds (versions ending in a letter, such as 3.0.0c) are folded into the release that followed them. Releases before 1.0 were published as "Ubuntu Launcher".
 
 ## [Unreleased]
 - Fixed Settings → Icons crashing on Android 12 and 12L when tinted icons are on.
@@ -15,7 +15,7 @@ User-facing changes in each DistroHopper release, newest first. Test builds (ver
 - Fixed the loading spinner on the menu button showing blank at startup (a 3.0.1 regression).
 
 ## [3.0.1] - 2026-09-01
-- Fixed heavy battery and CPU drain when startup was interrupted: the loading spinner could keep animating in the background forever and hold old copies of the home screen in memory.
+- Fixed heavy battery drain and memory use when the home screen was closed or restarted while it was still loading.
 - DistroHopper now appears in Android's per-app language settings, and every language ships in the Play Store download.
 - English devices set to a non-US variant (UK, Ireland, Australia, India, …) now get British English instead of American English.
 
@@ -71,7 +71,7 @@ Includes the 3.0.0a–3.0.0h test builds.
 - **Per-theme dash animations**, for example GNOME's icons zooming out of the menu button, or Cinnamon's dash sliding in from the launcher's edge. Animations are skipped in battery saver.
 - **Crash-report switch** in Advanced settings.
 - **Privacy policy and open source licences** in a new Legal section of the About screen, and "Get involved" links to GitHub and Transifex.
-- **App icon:** DistroHopper's own icon is now adaptive, with a monochrome layer for themed icons on Android 13+.
+- **App icon:** DistroHopper's own icon now follows your device's icon shape, and themed icons on Android 13+.
 - **American English translation.** The default English is British English.
 - **Crash-reporting-free APK:** each GitHub release also has a `-paranoia` APK with crash reporting permanently off, for sideloading.
 
@@ -79,7 +79,7 @@ Includes the 3.0.0a–3.0.0h test builds.
 - **Requires Android 12 or newer** (was Android 10).
 - **Real blur behind the dash.**
   - Opening the dash genuinely blurs the wallpaper and the widgets.
-  - On devices without window blur (e.g. many Samsung phones) it falls back to a frosted, wallpaper-tinted layer.
+  - On devices that don't support blur (e.g. many Samsung phones) it uses a frosted, wallpaper-tinted look instead.
   - Chameleonic themes get their colour from Android's wallpaper colours, which works on Android 13+ and **needs no storage permission**.
 - **Themes:**
   - **GNOME** is updated to the GNOME 45+ look:
@@ -118,13 +118,13 @@ Includes the 3.0.0a–3.0.0h test builds.
 
 ### Fixed
 - On Android 15 and newer, settings screens no longer draw under the status bar, and the launcher and dash no longer sit under the 3-button navigation bar.
-- Adaptive icons (most modern apps) were drawn small and blurry.
+- Most modern apps' icons were drawn small and blurry.
 - Apps occasionally showed another app's icon.
 - Entering customise mode, or changing the launcher or panel edge, sometimes dropped you back on the normal home screen.
 - Tapping "Wallpaper" in settings crashed when no wallpaper picker was installed.
 - Search results were drawn about 50% larger than dash icons until the icon size had been changed once.
 - Dragging a launcher icon made the trash icon flicker.
-- The whole home screen leaked in memory every time it was recreated (for example on a theme change).
+- Memory use grew every time the theme was changed.
 - Errors during background loading were silently swallowed instead of shown.
 - The debug log kept growing without limit even with developer mode off.
 
@@ -135,25 +135,25 @@ Includes the 3.0.0a–3.0.0h test builds.
 - The storage, media and wake-lock permissions.
 
 ## [2.7.0] - 2025-10-18
-- Added icon pack support. A new "Icon pack" setting under Appearance lists installed icon packs (ADW, Nova, Apex, GO Launcher and similar formats) plus "None". Choosing one clears the icon cache so the new icons apply.
+- Added icon pack support. A new "Icon pack" setting under Appearance lists installed icon packs (ADW, Nova, Apex, GO Launcher and similar formats) plus "None".
 
 ## [2.6.5] - 2025-10-14
 - Fixed a crash on launch when the wallpaper could not be read or blurred. The wallpaper is now simply left unblurred.
-- Fixed a crash while caching app icons when an app's icon has no size ("width and height must be > 0", #31).
+- Fixed a crash caused by apps with an empty icon (#31).
 
 ## [2.6.4] - 2025-10-14
 - Android 10 or newer is now required (previously Android 6.0).
-- Fixed crashes (ConcurrentModificationException) when the app list or pinned apps changed while being read, e.g. during app installs or removals.
+- Fixed occasional crashes when apps were installed, removed, pinned or unpinned.
 
 ## [2.6.3] - 2023-03-27
-- On Android 13 and newer, the Unity theme's wallpaper-based colour now comes from Android's own wallpaper colours (Android 8.1+), because the app can no longer read the wallpaper image there. If that fails, it falls back to Ubuntu orange instead of using the bundled default wallpaper.
-- Fixed a crash when working out the colour of an image that is not a plain bitmap.
+- Fixed the Unity theme's wallpaper-based colour on Android 13 and newer. If no colour can be found, it falls back to Ubuntu orange.
+- Fixed a crash when working out the colour of some icons and wallpapers.
 - An app that fails to launch now shows a "Failed to launch …" message instead of crashing DistroHopper.
 - Fixed a possible crash when leaving the home screen while widgets are enabled.
 
 ## [2.6.2] - 2023-03-27
 - Android 6.0 or newer is now required (previously Android 4.4).
-- Removed the donations section (and the in-app billing permission) from the Contribute screen.
+- Removed donations from the Contribute screen.
 - Updated Dutch translation.
 
 ## [2.6.1] - 2020-06-19
@@ -164,13 +164,13 @@ Includes the 3.0.0a–3.0.0h test builds.
 - The Panel now uses the height defined by the current theme. It used to use the elementary OS panel height on every theme.
 
 ## [2.5.0] - 2020-06-05
-- Removed Google Analytics. Crash reports are now sent through ACRA to the developer's own server, and a "Sending crash report..." message appears when this happens.
+- Removed Google Analytics. Crash reports now go to the developer's own server, and a "Sending crash report..." message appears when one is sent.
 - Android 4.4 or newer is now required (previously Android 4.1).
 
 ## [2.4.0] - 2019-06-02
 - Cinnamon theme: the launcher can now be placed on any screen edge (top, bottom, left or right), with matching backgrounds.
 - Sharper Cinnamon search bar graphics.
-- Faster lens searches: each lens now stops once it has as many results as it will show.
+- Faster Dash searches.
 - Removed theme screenshots from the theme picker.
 - Updated Russian translation.
 
@@ -179,22 +179,21 @@ Includes the 3.0.0a–3.0.0h test builds.
 - Fixed the app-loading progress spinner on the Dash button, which never showed any progress.
 
 ## [2.2.0] - 2019-03-31
-- Cached app icons now expire after a week, so updated app icons are picked up.
-- Faster, more reliable saving of the app icon cache.
+- Icons that change when an app is updated are now picked up (within a week).
 - Removed the outdated American English translation, which some devices showed instead of the up-to-date default English strings.
 - Updated translations.
 
 ## [2.1.0] - 2018-12-03
-- Removed the Google+ lens, as Google+ was shutting down.
+- Removed the Google+ search source, as Google+ was shutting down.
 - The Dash now closes when you start dragging a pinned app in the launcher.
-- Fixed a crash when opening a Local Files lens search result.
+- Fixed a crash when opening a Local files search result.
 - Fixed the trash icon being replaced by the settings icon when an app was dragged onto it.
 - The search progress wheel only appears after a short delay, so the search box no longer jumps while you type.
-- The "Customise" settings entry can now be translated.
+- The "Customise" settings entry is now translated.
 - Updated Russian translation.
 
 ## [2.0.1] - 2018-10-13
-- Fixed a crash when long-pressing a Local Files lens search result.
+- Fixed a crash when long-pressing a Local files search result.
 - GNOME theme: the Dash button is hidden while dragging apps.
 - Fixed the settings icon appearing in the launcher of the GNOME and elementary OS themes after dragging apps.
 
@@ -204,27 +203,27 @@ Includes the 3.0.0a–3.0.0h test builds.
 - The Panel can be hidden again on the Ubuntu Unity theme, via Panel location "Hide".
 - The pinned icon size slider moved from Settings into Customise mode.
 - The theme "Ubuntu" is now named "Ubuntu Unity", and elementary OS moved below GNOME in the theme list.
-- Much faster startup: app labels and icons are cached and loaded in the background.
-- On Android 6.0+, the app now asks for storage permission at startup, which it needs to read the wallpaper. Without it, colour calculations use a bundled wallpaper.
+- Much faster startup.
+- On Android 6.0+, the app now asks for storage permission at startup so it can colour the theme from your wallpaper. Without it, the colour comes from the default wallpaper.
 - Removed the "Take more samples" and "Use HSV" colour calculation settings.
 - Fixed a crash when pinning apps that use adaptive icons (Android 8.0).
-- Fixed dominant-colour calculation for adaptive icons, and for the wallpaper on OnePlus phones.
+- Fixed the icon background colour of adaptive icons, and the wallpaper-based colour on OnePlus phones.
 - GNOME theme: fixed the launcher not appearing on the right edge when the Dash is closed.
 - Fixed DistroHopper listing itself in its own app drawer.
-- Fixed a possible freeze (deadlock) and errors from background tasks not being cancelled properly.
-- Settings now use the Material theme on Android 5.0+. Fixed text colours in the lens settings and in Customise mode on the elementary OS theme.
+- Fixed a possible freeze.
+- Settings have a new look on Android 5.0+. Fixed text colours in the Search sources settings and in Customise mode on the elementary OS theme.
 - Experimental widget support can be enabled from developer options. Developer mode also gains a "Log toasts" option.
 - Android 4.1 or newer is now required (previously Android 4.0).
 - Added Serbian translation, and updated many others.
 
 ## [1.0.1] - 2017-03-31
 - Fixed a crash that some users hit after changing the theme.
-- Fixed features that the 1.0 release build broke by shrinking the app's code.
+- Fixed some features that were broken in 1.0.
 - Removed the experimental "Launcher overlay service" and "Widgets" options from Developer options.
 
 ## [1.0] - 2017-03-29
 ### Added
-- **Ubuntu Launcher is now DistroHopper.** The app has a new name, a new logo that isn't tied to Ubuntu, and a new package name (`be.robinj.distrohopper`). Because the package name changed, it installs as a separate app, and pinned apps and settings from Ubuntu Launcher are not carried over.
+- **Ubuntu Launcher is now DistroHopper.** The app has a new name and a new logo that isn't tied to Ubuntu. It installs as a separate app from Ubuntu Launcher, so pinned apps and settings are not carried over.
 - **Themes.** A new Themes screen (Settings → Appearance → Theme) shows each theme with screenshots and an Apply button. There are three themes:
   - **Ubuntu**: Unity, the existing look.
   - **elementary OS**: Pantheon. The dock sits at the bottom, centred. The top panel is transparent, with an "Applications" button on the left and a settings cog on the right. The Dash is light with dark text.
@@ -240,7 +239,7 @@ Includes the 3.0.0a–3.0.0h test builds.
 - **Android 4.0 (Ice Cream Sandwich) or newer is now required.** Android 2.2 was the previous minimum.
 - The Dash now fades in and out when it opens and closes.
 - Dash app icons are larger.
-- The home screen, About, Contribute, Themes and Search sources screens now use a Material/AppCompat style. Touching items in the Dash shows the Material touch animation.
+- New look for the About, Contribute, Themes and Search sources screens. Touching items in the Dash shows a ripple.
 - Settings are reorganised into Appearance, Functionality, Advanced and Developer options:
   - "Launcher width" is renamed "Pinned icon size".
   - Several options were removed because the theme now controls them:
@@ -282,10 +281,9 @@ Includes the 3.0.0a–3.0.0h test builds.
 - Fixed Preferences crashing on large-screen devices (tablets). Preferences now always use the single-column layout.
 
 ## [0.5.9] - 2014-10-15
-- Rebuilt the Preferences screen as a standard Android settings screen with sections (General, Unity, Launcher, Dash, Panel, Advanced), plus About in the menu. Sliders and the colour picker now open as settings entries.
+- Redesigned Preferences, now split into sections (General, Unity, Launcher, Dash, Panel, Advanced), with About in the menu.
 - The About screen now credits translators.
-- The Dash app grid is now a regular scrolling grid, no longer stretched to full height inside a scroll view.
-- New and updated translations: German, Spanish, Italian, Portuguese and Turkish added; Dutch, Japanese, Polish and Russian updated. Translations now come from Transifex.
+- New and updated translations: German, Spanish, Italian, Portuguese and Turkish added; Dutch, Japanese, Polish and Russian updated.
 
 ## [0.5.8] - 2014-09-05
 - Dash search now also matches text anywhere in an app's name, not only at the start (e.g. "Store" finds "Play Store"). Prefix matches are listed first (GitHub issue #3).
@@ -314,22 +312,22 @@ Includes the 3.0.0a–3.0.0h test builds.
 - Added animations when apps appear in the Dash and the Launcher (Android 3.0+).
 - Added Russian and Dutch translations.
 - Fixed the "Panel opacity" option showing in Preferences when "Show Panel" was off.
-- Fixed a crash (out of memory) while blurring large wallpapers; the wallpaper is now darkened instead of blurred when this happens.
+- Fixed a crash with large wallpapers; if one is too big to blur, it is darkened instead.
 
 ## [0.5.3] - 2014-08-24
 - Pressing Back on the home screen no longer closes the launcher when it is the default home app.
 - Fixed the Dash close button being out of place after the Launcher width had been changed.
 - Lowered the default Launcher width.
 - Fixed the icon background colour of greyscale icons ignoring the transparency setting.
-- The larger layout for wide screens now starts at 480dp width instead of 400dp.
+- Large phones no longer get the tablet layout.
 
 ## [0.5.2] - 2014-08-24
 - Live wallpapers are now supported. The launcher draws over the system wallpaper, and with a live wallpaper the Dash darkens the background instead of blurring it. The dynamic colour falls back to a translucent dark grey.
 - New Preferences: "Launcher width" (the size of the Launcher and its icons), "Show Panel" and "Panel opacity". The Panel becomes fully opaque while the Dash is open.
 
 ## [0.5.1] - 2014-08-23
-- The whole app was rewritten as a native Android app, replacing the old HTML/web-view interface. It is faster and looks and behaves differently.
-- Apps load in the background, with a progress indicator in the Launcher; the Dash button appears when loading finishes.
+- Much faster, with a redesigned home screen.
+- A progress indicator shows in the Launcher while apps load; the Dash button appears when loading finishes.
 - Long-press an app in the Dash to pin it to the Launcher; long-press a Launcher icon to unpin it. A short message confirms each change. The old app info page in the Dash is gone.
 - The Dash shows all installed apps alphabetically and filters them as you type in the search box. The wallpaper is blurred while the Dash is open, and Back closes the Dash.
 - New Preferences screen, opened from the Launcher's Preferences icon or the Panel's cog:
@@ -344,20 +342,10 @@ Includes the 3.0.0a–3.0.0h test builds.
 - Fixed long-pressing elsewhere on the screen opening the app info page for the last app you touched.
 
 ## [0.4.0] - 2014-08-05
-- The list of installed apps now loads in the background. A loading screen shows first, and a spinner stays in the Launcher until the Dash button is ready.
+- A loading screen shows while apps load, and a spinner stays in the Launcher until the Dash button is ready.
 - Wallpaper is blurred, and Launcher icons are greyed out, while the Dash is open.
 - Fixed Dash search on Android 4.4, including deleting characters with backspace.
 - Tapping pinned apps in the Launcher now launches them, and the app info page's Launch button works for pinned apps.
 - The layout now scales up on larger screens (e.g. tablets): bigger Launcher and icons, and a centred search box.
-- Fixed app icons going missing when their cached image file was empty.
+- Fixed app icons sometimes going missing.
 - Updated the Dash button, icon background and window-close artwork, and the fallback wallpaper.
-
-## [0.4.0b] - 2014-03-30
-
-The starting point: the version imported from Launchpad, before any of the changes above.
-
-- An Ubuntu Unity-style home screen, "Ubuntu Launcher", built as an HTML page inside a web view. It shows the Unity panel at the top and the launcher on the left, over the current wallpaper.
-- The launcher and dash take a "chameleonic" tint from the wallpaper's average colour.
-- The dash lists installed apps and has a Home/Applications lens ribbon and a search box.
-- Long-pressing an app opens an app info page in the dash, with Pin to Launcher/Remove from Launcher and Launch buttons.
-- The panel cog and the launcher's Preferences icon open a menu with a shortcut to Android Settings. There were no preferences yet.
