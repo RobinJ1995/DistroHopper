@@ -832,7 +832,8 @@ public class HomeActivity extends AppCompatActivity
 
 		if (this.workProfileAppsCallback != null)
 		{
-			((LauncherApps) this.getSystemService (Context.LAUNCHER_APPS_SERVICE))
+			((LauncherApps) this.getApplicationContext ()
+					.getSystemService (Context.LAUNCHER_APPS_SERVICE))
 					.unregisterCallback (this.workProfileAppsCallback);
 			this.workProfileAppsCallback = null;
 		}
@@ -1020,7 +1021,9 @@ public class HomeActivity extends AppCompatActivity
 			// Package broadcasts only cover the personal profile; work-profile
 			// installs/removals arrive through LauncherApps callbacks instead //
 			this.workProfileAppsCallback = new WorkProfileAppsCallback (this);
-			((LauncherApps) this.getSystemService (Context.LAUNCHER_APPS_SERVICE))
+			// Not this activity's LauncherApps: its binder outlives unregistering and would leak the activity //
+			((LauncherApps) this.getApplicationContext ()
+					.getSystemService (Context.LAUNCHER_APPS_SERVICE))
 					.registerCallback (this.workProfileAppsCallback,
 							new Handler (Looper.getMainLooper ()));
 		}
