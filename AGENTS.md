@@ -780,10 +780,15 @@ licenses/                                   — full licence texts of everything
   two folder pop-overs) under the current grid preferences, capped at the 108dp
   adaptive canvas — a rendered icon is held for every installed app, so its size
   is the app's memory footprint (the fixed 108dp canvas it replaced cost several
-  times what was drawn). Each term is a deliberate upper bound off the stable
-  short screen edge and the density only — the launcher term ignores the theme's
-  margins — so a theme switch does not move it; a dash-columns, launcher-preset
-  or desktop-grid change does, which through the `sz=` field of
+  times what was drawn). Each term is a deliberate upper bound over **both
+  orientations**, off the two screen edges and the density only: landscape cells
+  can be the bigger ones (the dash caps its landscape columns at 2× and rounds,
+  so a screen taller than 2:1 gets larger landscape cells; the desktop grid is
+  transposed), and rendering below what is drawn visibly blurs icons. The home
+  task is full-screen, so rotating swaps the edges without changing them, and
+  the launcher term ignores the theme's margins — neither a rotation nor a theme
+  switch moves the size. A dash-columns, launcher-preset or desktop-grid change
+  does, which through the `sz=` field of
   `IconConfig.signature()` purges the disk cache and re-renders on the relaunch
   those settings already trigger. `IconShapePreference`/`IconTintPreference` are
   the settings strips, both previewing on the penguin sample

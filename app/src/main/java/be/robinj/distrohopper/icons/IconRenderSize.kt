@@ -19,13 +19,14 @@ import kotlin.math.max
  * memory footprint; rendering at the canvas size regardless of what is drawn
  * cost several times the pixels the screen ever showed.
  *
- * Every term is an upper bound on what its surface draws (a cell's padding and
- * a single line of label text are subtracted, nothing more), so an icon is
- * never rendered smaller than it is shown, only very slightly larger. The terms
- * deliberately depend on nothing but the stable screen edge, the density and the
- * grid preferences: a theme's launcher margins are ignored, for instance, so a
- * theme switch alone leaves the size — and with it the icon cache, which
- * [IconConfig.signature] keys on this size — untouched.
+ * Every term is an upper bound on what its surface draws in EITHER orientation
+ * (a cell's padding and a single line of label text are subtracted, nothing
+ * more), so an icon is never rendered smaller than it is shown. The terms depend
+ * on nothing but the two screen edges, the density and the grid preferences: the
+ * home activity is always full-screen, so rotating swaps the edges without
+ * changing them, and a theme's launcher margins are ignored. Neither a rotation
+ * nor a theme switch therefore moves the size — and with it the icon cache,
+ * which [IconConfig.signature] keys on this size.
  */
 object IconRenderSize {
 	/** Adaptive icons are authored on a 108dp canvas; rendering larger adds nothing. */
@@ -48,6 +49,28 @@ object IconRenderSize {
 	fun labelledCellIconPx(cellPx: Int, paddingPx: Int, labelPx: Int): Int =
 		(cellPx - 2 * paddingPx - labelPx).coerceAtLeast(0)
 
+	/**
+	 * The largest dash cell in either orientation. Portrait shows [n] columns
+	 * across the short edge; landscape shows [DashGrid.dashColumns] across the
+	 * long one, which is capped at 2×[n] and rounded, so on a screen taller than
+	 * 2:1 (or after rounding down) a landscape cell is the bigger of the two.
+	 */
+	@JvmStatic
+	fun dashCellPx(shortEdgePx: Int, longEdgePx: Int, n: Int): Int {
+		val landscapeColumns = DashGrid.dashColumns(shortEdgePx, longEdgePx, false, n)
+
+		return max(DashGrid.cellSizePx(shortEdgePx, n), longEdgePx / max(1, landscapeColumns))
+	}
+
+	/**
+	 * The largest block a desktop app occupies ([DesktopAppLayout.SPAN] cells
+	 * square) in either orientation. The grid is transposed in landscape, so a
+	 * cell is at most the larger of short/[cols] and long/[rows] on both axes.
+	 */
+	@JvmStatic
+	fun desktopBlockPx(shortEdgePx: Int, longEdgePx: Int, cols: Int, rows: Int): Int =
+		max(shortEdgePx / max(1, cols), longEdgePx / max(1, rows)) * DesktopAppLayout.SPAN
+
 	/** The icon drawn in a launcher-bar slot of [slotPx], inset by [marginPx] on each side. */
 	@JvmStatic
 	fun launcherIconPx(slotPx: Int, marginPx: Int): Int =
@@ -62,35 +85,39 @@ object IconRenderSize {
 	}
 
 	/**
-	 * The largest icon each surface draws, in px: the dash grid, the launcher
-	 * bar, a desktop app, and the two folder pop-overs. The dash and launcher
-	 * terms follow their grid preferences, the desktop term the persisted widget
-	 * grid.
+	 * The largest icon each surface draws, in px: the dash grid (and the lens
+	 * result grids, which share its columns), the launcher bar, a desktop app,
+	 * and the two folder pop-overs. The dash and launcher terms follow their grid
+	 * preferences, the desktop term the persisted widget grid.
 	 */
 	@JvmStatic
 	fun surfacesPx(context: Context): List<Int> {
 		val res = context.resources
 		val density = res.displayMetrics.density
-		// The same stable anchor the dash and launcher grids size themselves from,
-		// rather than raw display metrics, which drift in multi-window //
-		val shortEdgePx = (res.configuration.smallestScreenWidthDp * density).toInt()
+		// The same Configuration values the dash and launcher grids size themselves
+		// from. The home task is full-screen, so these are the display's edges and
+		// the same in both orientations //
+		val config = res.configuration
+		val shortEdgePx = (config.smallestScreenWidthDp * density).toInt()
+		val longEdgePx = (max(config.screenWidthDp, config.screenHeightDp) * density).toInt()
 
 		val cellPadding = res.getDimensionPixelSize(R.dimen.dash_applauncher_padding)
 		val labelPx = res.getDimensionPixelSize(R.dimen.dash_applauncher_textsize)
 		val launcherMargin = res.getDimensionPixelSize(R.dimen.launcher_applauncher_icon_margin)
 
-		val dashCell = DashGrid.cellSizePx(shortEdgePx, DashGrid.columns(context))
+		val dashCell = dashCellPx(shortEdgePx, longEdgePx, DashGrid.columns(context))
 		// The bare screen edge, not the theme's launcher interior: an upper bound
 		// that keeps the size independent of the theme (see the class doc) //
 		val launcherSlot = LauncherIconGrid.iconSizePx(shortEdgePx, LauncherIconGrid.count(context))
 		// The persisted grid rather than WidgetGrid.COLS, so the size does not
 		// depend on HomeActivity having initialised the grid in this process //
-		val desktopCell = shortEdgePx / WidgetGrid.size(context).first * DesktopAppLayout.SPAN
+		val (cols, rows) = WidgetGrid.size(context)
+		val desktopBlock = desktopBlockPx(shortEdgePx, longEdgePx, cols, rows)
 
 		return listOf(
 			labelledCellIconPx(dashCell, cellPadding, labelPx),
 			launcherIconPx(launcherSlot, launcherMargin),
-			labelledCellIconPx(desktopCell, cellPadding, labelPx),
+			labelledCellIconPx(desktopBlock, cellPadding, labelPx),
 			labelledCellIconPx((DesktopFolderOverlay.CELL_DP * density).toInt(), cellPadding, labelPx),
 			labelledCellIconPx((FolderPopup.CELL_DP * density).toInt(), cellPadding, labelPx),
 		)
