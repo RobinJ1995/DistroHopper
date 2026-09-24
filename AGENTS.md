@@ -220,6 +220,11 @@ Each owns one concern and is constructed in `HomeActivity.onCreate` with the
   default pins (`DefaultPinnedApps`). `SearchLoader` runs dash searches the
   same way. Tests make these deterministic with
   `ActivityTestSupport.installTestDispatchers()`.
+- `IconMemoryTrimmer` — releases the icons the apps hold, on
+  `HomeActivity.onTrimMemory`. `TRIM_MEMORY_UI_HIDDEN` spares the pinned apps,
+  `TRIM_MEMORY_BACKGROUND` and deeper drop those too; the legacy
+  `TRIM_MEMORY_RUNNING_*` levels are not delivered since Android 14.
+  `App.getIcon` restores a dropped icon from `AppManager.iconCache`.
 - `ThemeApplier` — applies the theme's resources. The BFB and the startup
   spinner share one wrapper, so a hidden BFB must not collapse it while the
   spinner is up.
