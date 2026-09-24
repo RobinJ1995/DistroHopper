@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Body of the developer memory dialog: a label/value row per figure, with a
+     dim delta beside the ones that moved since the last reading. Weight is set
+     with textStyle rather than fontFamily — FontInflaterFactory swaps the family
+     on every TextView, so a fontFamily here would silently vanish. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/llDevMemory"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:paddingStart="24dp"
+              android:paddingEnd="24dp"
+              android:paddingTop="8dp"
+              android:paddingBottom="8dp" />

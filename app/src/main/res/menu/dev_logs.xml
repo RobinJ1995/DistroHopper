@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/miDevLogsMemory"
+        android:icon="@drawable/ic_dev_memory"
+        android:title="@string/option_dev_memory"
+        app:showAsAction="ifRoom|withText" />
+
+</menu>
