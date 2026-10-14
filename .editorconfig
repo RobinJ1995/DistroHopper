@@ -7,7 +7,6 @@ indent_style = tab
 [{*.bat,app/src/main/res/xml/analytics.xml,etc/dialog-error.svg}]
 end_of_line = crlf
 
-# YAML does not allow tabs.
 [*.{yml,yaml}]
 indent_style = space
 
