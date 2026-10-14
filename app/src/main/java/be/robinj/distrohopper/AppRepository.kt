@@ -310,9 +310,7 @@ class AppRepository(private val context: Context) {
 	fun removePinnedDesktop(desktop: Int) {
 		if (! this.perDesktop) {
 			return
-		}
-
-		if (desktop in this.pinnedByPage.indices) {
+		} else if (desktop in this.pinnedByPage.indices) {
 			this.pinnedByPage.removeAt(desktop)
 			this.pinnedChanged()
 		}

@@ -33,8 +33,7 @@ public class ThemePreferencesActivity extends AppCompatActivity
 
 		SharedPreferences prefs = Preferences.getSharedPreferences(this, Preferences.PREFERENCES);
 
-		if (! prefs.getBoolean (Preference.DEV.getName(), false))
-		{
+		if (! prefs.getBoolean (Preference.DEV.getName(), false)) {
 			// removeIf, not an index loop: removing by index while advancing skips
 			// the element that shifts into the freed slot, so consecutive dev-only
 			// themes would leak through //

@@ -15,47 +15,47 @@ import org.robolectric.shadows.ShadowLooper
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.LEGACY)
 class ExceptionHandlerTest {
-    private lateinit var context: Context
+	private lateinit var context: Context
 
-    @Before fun setUp() {
-        context = ApplicationProvider.getApplicationContext()
-        ShadowAlertDialog.reset()
-    }
+	@Before fun setUp() {
+		context = ApplicationProvider.getApplicationContext()
+		ShadowAlertDialog.reset()
+	}
 
-    @Test fun showFromMainThreadDisplaysDialog() {
-        ExceptionHandler(IllegalStateException("boom")).show(context)
+	@Test fun showFromMainThreadDisplaysDialog() {
+		ExceptionHandler(IllegalStateException("boom")).show(context)
 
-        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+		ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
 
-        val dialog = ShadowAlertDialog.getLatestAlertDialog()
-        assertNotNull(dialog)
-        assertTrue(dialog.isShowing)
-    }
+		val dialog = ShadowAlertDialog.getLatestAlertDialog()
+		assertNotNull(dialog)
+		assertTrue(dialog.isShowing)
+	}
 
-    @Test fun showFromBackgroundThreadDisplaysDialog() {
-        val background = Thread { ExceptionHandler(IllegalStateException("boom")).show(context) }
-        background.start()
-        background.join(5000)
+	@Test fun showFromBackgroundThreadDisplaysDialog() {
+		val background = Thread { ExceptionHandler(IllegalStateException("boom")).show(context) }
+		background.start()
+		background.join(5000)
 
-        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+		ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
 
-        assertNotNull(
-            "the error dialog must also be shown when show() is called from a background thread",
-            ShadowAlertDialog.getLatestAlertDialog(),
-        )
-    }
+		assertNotNull(
+			"the error dialog must also be shown when show() is called from a background thread",
+			ShadowAlertDialog.getLatestAlertDialog(),
+		)
+	}
 
-    @Test fun dialogMessageDescribesTheException() {
-        ExceptionHandler(IllegalStateException("something exploded")).show(context)
+	@Test fun dialogMessageDescribesTheException() {
+		ExceptionHandler(IllegalStateException("something exploded")).show(context)
 
-        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+		ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
 
-        val message = Shadows.shadowOf(ShadowAlertDialog.getLatestAlertDialog()).message.toString()
-        assertTrue(message.contains("IllegalStateException"))
-        assertTrue(message.contains("something exploded"))
-    }
+		val message = Shadows.shadowOf(ShadowAlertDialog.getLatestAlertDialog()).message.toString()
+		assertTrue(message.contains("IllegalStateException"))
+		assertTrue(message.contains("something exploded"))
+	}
 
-    @Test fun showWithNullContextDoesNotThrow() {
-        ExceptionHandler(IllegalStateException("boom")).show(null)
-    }
+	@Test fun showWithNullContextDoesNotThrow() {
+		ExceptionHandler(IllegalStateException("boom")).show(null)
+	}
 }

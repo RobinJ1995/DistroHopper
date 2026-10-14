@@ -44,15 +44,17 @@ public class LensManager
 		this.enabled = new ArrayList<Lens> ();
 		this.llDashHomeAppsContainer = llDashHomeAppsContainer;
 		this.llDashHomeLensesContainer = llDashHomeLensesContainer;
-		if (llDashHomeLensesContainer != null)
+		if (llDashHomeLensesContainer != null) {
 			this.lvDashHomeLensResults = (ListView) llDashHomeLensesContainer.findViewById (R.id.lvDashHomeLensResults);
+		}
 		this.pwDashSearchProgress = pwDashSearchProgress;
 
 		final SharedPreferences prefs = Preferences.getSharedPreferences(this.context, Preferences.PREFERENCES);
 		final SharedPreferences prefsLenses = this.getPrefsLenses();
 
-		if (apps != null)
+		if (apps != null) {
 			context = apps.getContext ();
+		}
 
 		this.register (new DuckDuckGo (context));
 		this.register (new FDroid (context));
@@ -67,24 +69,22 @@ public class LensManager
 		defaultLenses.add ("InstalledApps");
 
 		List<String> enabledLenses = new ArrayList<>();
-		if (prefsLenses.getAll().size() > 0)
-		{
+		if (prefsLenses.getAll().size() > 0) {
 			int i = 0;
 			String lensName = null;
 			while ((lensName = prefsLenses.getString(Integer.toString(i), null)) != null) {
 				enabledLenses.add(lensName);
 				i++;
 			}
-		}
-		else
-		{
+		} else {
 			// Default lenses whose permissions haven't been granted start out
 			// disabled; enabling them in the preferences re-requests them //
 			for (String lensName : defaultLenses)
 			{
 				final Lens lens = this.lenses.get (lensName);
-				if (lens != null && Permission.missingPermissions (this.context, lens.requiredPermissions ()).length == 0)
+				if (lens != null && Permission.missingPermissions (this.context, lens.requiredPermissions ()).length == 0) {
 					enabledLenses.add (lensName);
+				}
 			}
 		}
 
@@ -92,8 +92,9 @@ public class LensManager
 		{
 			Lens lens = this.lenses.get (lensName);
 
-			if (lens != null && (! this.isLensEnabled (lens)))
+			if (lens != null && (! this.isLensEnabled (lens))) {
 				this.enabled.add (lens);
+			}
 		}
 
 		this.maxResultsPerLens = Integer.valueOf (prefs.getString (Preference.DASH_SEARCH_LENSES_MAX_RESULTS.getName(), "10"));
@@ -132,8 +133,9 @@ public class LensManager
 	public void enableLens (String name)
 	{
 		final Lens lens = this.lenses.get(name);
-		if (lens != null && ! this.enabled.contains(lens))
+		if (lens != null && ! this.enabled.contains(lens)) {
 			this.enabled.add (lens);
+		}
 
 		this.saveEnabledLenses ();
 	}
@@ -210,8 +212,9 @@ public class LensManager
 
 		for (Lens lens : reference)
 		{
-			if (oldEnabled.contains (lens))
+			if (oldEnabled.contains (lens)) {
 				this.enabled.add (lens);
+			}
 		}
 	}
 
@@ -239,8 +242,7 @@ public class LensManager
 		for (LensSearchResultCollection coll : this.results)
 		{
 			List<LensSearchResult> res = coll.getResults ();
-			if (res != null && ! res.isEmpty ())
-			{
+			if (res != null && ! res.isEmpty ()) {
 				LensSearchResult result = res.get (0);
 				coll.getLens ().onClick (result.getUrl (), result.getObj ());
 				return true;
@@ -252,11 +254,11 @@ public class LensManager
 
 	public void startSearch (String pattern)
 	{
-		if (this.searchLoader != null)
+		if (this.searchLoader != null) {
 			this.searchLoader.cancel ();
+		}
 
-		if (! pattern.equals (""))
-		{
+		if (! pattern.equals ("")) {
 			this.showLensesContainer ();
 
 			// Fresh adapter + backing list per query; the loader appends collections
@@ -265,12 +267,11 @@ public class LensManager
 			this.adapter = new CollectionGridAdapter (this.getContext (), this.results);
 			this.lvDashHomeLensResults.setAdapter (this.adapter);
 
-			if (this.searchLoader != null)
+			if (this.searchLoader != null) {
 				this.searchLoader.start (pattern, this.enabled, this.maxResultsPerLens,
 						this.adapter, this.results, this.pwDashSearchProgress);
-		}
-		else
-		{
+			}
+		} else {
 			this.showAppsContainer ();
 		}
 	}

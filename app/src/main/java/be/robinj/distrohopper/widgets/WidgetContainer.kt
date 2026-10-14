@@ -178,9 +178,7 @@ class WidgetContainer internal constructor(
 				if (!this.dragging) {
 					if (abs(dx) < this.touchSlop && abs(dy) < this.touchSlop) {
 						return true
-					}
-
-					if (view.id == R.id.widgetOverlayCenter) {
+					} else if (view.id == R.id.widgetOverlayCenter) {
 						// The system drag shadow moves freely across the screen and can be
 						// dropped on the launcher's trash icon //
 						this.systemDragStarted = true

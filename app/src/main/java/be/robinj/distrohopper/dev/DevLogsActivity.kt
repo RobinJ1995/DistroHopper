@@ -78,8 +78,9 @@ class DevLogsActivity : AppCompatActivity(), IObserver {
 		this.tvLogsEmpty.visibility = if (entries.isEmpty()) View.VISIBLE else View.GONE
 		this.rvLogs.visibility = if (entries.isEmpty()) View.GONE else View.VISIBLE
 
-		if (following && entries.isNotEmpty())
+		if (following && entries.isNotEmpty()) {
 			this.rvLogs.scrollToPosition(entries.size - 1)
+		}
 	}
 
 	companion object {

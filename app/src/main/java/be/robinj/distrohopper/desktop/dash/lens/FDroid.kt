@@ -22,90 +22,88 @@ import java.util.regex.Pattern
  * the browser.
  */
 open class FDroid(context: Context) : AppStoreLens(context) {
-    private val api = "https://search.f-droid.org/api/search_apps?q={:QUERY:}&lang=en"
+	private val api = "https://search.f-droid.org/api/search_apps?q={:QUERY:}&lang=en"
 
-    private val lensIcon: Drawable = context.resources.getDrawable(R.drawable.dash_search_lens_fdroid, null)
+	private val lensIcon: Drawable = context.resources.getDrawable(R.drawable.dash_search_lens_fdroid, null)
 
-    override val key = "FDroid"
+	override val key = "FDroid"
 
-    override fun getIcon(): Drawable = lensIcon
+	override fun getIcon(): Drawable = lensIcon
 
-    override fun getName(): String = "F-Droid"
+	override fun getName(): String = "F-Droid"
 
-    override fun getDescription(): String = "F-Droid open source app search results"
+	override fun getDescription(): String = "F-Droid open source app search results"
 
-    @Throws(IOException::class, JSONException::class)
-    override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {
-        val apiResults = fetchSearch(api.replace("{:QUERY:}", URLEncoder.encode(query, "UTF-8")))
+	@Throws(IOException::class, JSONException::class)
+	override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {
+		val apiResults = fetchSearch(api.replace("{:QUERY:}", URLEncoder.encode(query, "UTF-8")))
 
-        val apps = JSONObject(apiResults).getJSONArray("apps")
-        var emitted = 0
+		val apps = JSONObject(apiResults).getJSONArray("apps")
+		var emitted = 0
 
-        for (i in 0 until apps.length()) {
-            val app = apps.getJSONObject(i)
+		for (i in 0 until apps.length()) {
+			val app = apps.getJSONObject(i)
 
-            if (!app.has("name") || !app.has("url")) {
-                continue
-            }
+			if (!app.has("name") || !app.has("url")) {
+				continue
+			}
 
-            val pkg = PACKAGE_PATTERN.matcher(app.getString("url"))
-            if (!pkg.find()) {
-                continue
-            }
+			val pkg = PACKAGE_PATTERN.matcher(app.getString("url"))
+			if (!pkg.find()) {
+				continue
+			} else if (isInstalled(pkg.group(1)!!)) {
+				continue
+			}
 
-            if (isInstalled(pkg.group(1)!!)) {
-                continue
-            }
+			val resultIcon = if (app.has("icon")) iconFor(app.getString("icon")) else lensIcon
 
-            val resultIcon = if (app.has("icon")) iconFor(app.getString("icon")) else lensIcon
+			// Normalise to the language-neutral package page so the F-Droid
+			// client's deep link recognises it.
+			emitter.emit(
+				LensSearchResult(context, app.getString("name"), "https://f-droid.org/packages/${pkg.group(1)}/", resultIcon)
+			)
 
-            // Normalise to the language-neutral package page so the F-Droid
-            // client's deep link recognises it.
-            emitter.emit(
-                LensSearchResult(context, app.getString("name"), "https://f-droid.org/packages/${pkg.group(1)}/", resultIcon)
-            )
+			if (++emitted >= maxResults) {
+				break
+			}
+		}
+	}
 
-            if (++emitted >= maxResults) {
-                break
-            }
-        }
-    }
-
-    /**
+	/**
      * Downloads an app's icon, falling back to the lens icon if it fails so that
      * one bad image never drops the whole result list.
      */
-    private fun iconFor(iconUrl: String): Drawable =
-        try {
-            downloadImage(iconUrl)
-        } catch (ex: IOException) {
-            lensIcon
-        }
+	private fun iconFor(iconUrl: String): Drawable =
+		try {
+			downloadImage(iconUrl)
+		} catch (ex: IOException) {
+			lensIcon
+		}
 
-    /**
+	/**
      * Seam for tests: fetches the raw search API response. Overridable so tests
      * can feed a canned fixture without hitting the network.
      */
-    @Throws(IOException::class)
-    protected open fun fetchSearch(url: String): String = downloadStr(url)
+	@Throws(IOException::class)
+	protected open fun fetchSearch(url: String): String = downloadStr(url)
 
-    override fun onClick(url: String) {
-        // Open in the F-Droid client if it is installed, otherwise the browser.
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        intent.setPackage(FDROID_PACKAGE)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+	override fun onClick(url: String) {
+		// Open in the F-Droid client if it is installed, otherwise the browser.
+		val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+		intent.setPackage(FDROID_PACKAGE)
+		intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
-        try {
-            context.startActivity(intent)
-        } catch (ex: ActivityNotFoundException) {
-            openInBrowser(url) // Fall back to the browser if F-Droid isn't installed.
-        }
-    }
+		try {
+			context.startActivity(intent)
+		} catch (ex: ActivityNotFoundException) {
+			openInBrowser(url) // Fall back to the browser if F-Droid isn't installed.
+		}
+	}
 
-    companion object {
-        private const val FDROID_PACKAGE = "org.fdroid.fdroid"
+	companion object {
+		private const val FDROID_PACKAGE = "org.fdroid.fdroid"
 
-        // The package name lives in the result url, e.g. ".../packages/com.wire".
-        private val PACKAGE_PATTERN: Pattern = Pattern.compile("packages/([^/?]+)")
-    }
+		// The package name lives in the result url, e.g. ".../packages/com.wire".
+		private val PACKAGE_PATTERN: Pattern = Pattern.compile("packages/([^/?]+)")
+	}
 }

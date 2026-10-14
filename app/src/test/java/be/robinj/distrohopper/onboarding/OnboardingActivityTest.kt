@@ -29,118 +29,118 @@ import org.robolectric.shadows.ShadowLooper
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.LEGACY)
 class OnboardingActivityTest {
-    private lateinit var application: Application
+	private lateinit var application: Application
 
-    @Before fun setUp() {
-        application = ApplicationProvider.getApplicationContext()
-        application.getSharedPreferences(Preferences.PREFERENCES, 0).edit().clear().commit()
-    }
+	@Before fun setUp() {
+		application = ApplicationProvider.getApplicationContext()
+		application.getSharedPreferences(Preferences.PREFERENCES, 0).edit().clear().commit()
+	}
 
-    private fun launch(): ActivityScenario<OnboardingActivity> =
-        ActivityScenario.launch(OnboardingActivity::class.java)
-            .also { ShadowLooper.runUiThreadTasksIncludingDelayedTasks() }
+	private fun launch(): ActivityScenario<OnboardingActivity> =
+		ActivityScenario.launch(OnboardingActivity::class.java)
+			.also { ShadowLooper.runUiThreadTasksIncludingDelayedTasks() }
 
-    @Test fun nextAdvancesThroughThePagesAndBackStepsBack() {
-        launch().use { scenario ->
-            scenario.onActivity { activity ->
-                // Smooth scrolls never settle under the legacy looper (the clock
-                // doesn't advance); queue them instead — currentItem updates synchronously //
-                Robolectric.getForegroundThreadScheduler().pause()
+	@Test fun nextAdvancesThroughThePagesAndBackStepsBack() {
+		launch().use { scenario ->
+			scenario.onActivity { activity ->
+				// Smooth scrolls never settle under the legacy looper (the clock
+				// doesn't advance); queue them instead — currentItem updates synchronously //
+				Robolectric.getForegroundThreadScheduler().pause()
 
-                val pager = activity.findViewById<ViewPager2>(R.id.vpOnboarding)
-                val next = activity.findViewById<Button>(R.id.btnOnboardingNext)
+				val pager = activity.findViewById<ViewPager2>(R.id.vpOnboarding)
+				val next = activity.findViewById<Button>(R.id.btnOnboardingNext)
 
-                assertEquals(0, pager.currentItem)
-                next.performClick()
-                assertEquals(1, pager.currentItem)
+				assertEquals(0, pager.currentItem)
+				next.performClick()
+				assertEquals(1, pager.currentItem)
 
-                activity.onBackPressedDispatcher.onBackPressed()
-                assertEquals(0, pager.currentItem)
+				activity.onBackPressedDispatcher.onBackPressed()
+				assertEquals(0, pager.currentItem)
 
-                // Back on the first page must not finish the wizard //
-                activity.onBackPressedDispatcher.onBackPressed()
-                assertEquals(0, pager.currentItem)
-                assertFalse(activity.isFinishing)
-            }
-        }
-    }
+				// Back on the first page must not finish the wizard //
+				activity.onBackPressedDispatcher.onBackPressed()
+				assertEquals(0, pager.currentItem)
+				assertFalse(activity.isFinishing)
+			}
+		}
+	}
 
-    @Test fun tappingAThemeCardPersistsTheThemeAndItsEdges() {
-        launch().use { scenario ->
-            scenario.onActivity { activity ->
-                val pager = activity.findViewById<ViewPager2>(R.id.vpOnboarding)
-                pager.setCurrentItem(OnboardingPage.THEME.ordinal, false)
-                ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+	@Test fun tappingAThemeCardPersistsTheThemeAndItsEdges() {
+		launch().use { scenario ->
+			scenario.onActivity { activity ->
+				val pager = activity.findViewById<ViewPager2>(R.id.vpOnboarding)
+				pager.setCurrentItem(OnboardingPage.THEME.ordinal, false)
+				ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
 
-                val cards = activity.findViewById<LinearLayout>(R.id.llOnboardingThemeCards)
-                assertNotNull("theme page should be bound", cards)
-                // Locate GNOME by its card's theme tag; the picker's order can change //
-                val gnome = (0 until cards.childCount).map { cards.getChildAt(it) }
-                    .first { (it.tag as Theme).getName() == "gnome" }
-                gnome.performClick()
+				val cards = activity.findViewById<LinearLayout>(R.id.llOnboardingThemeCards)
+				assertNotNull("theme page should be bound", cards)
+				// Locate GNOME by its card's theme tag; the picker's order can change //
+				val gnome = (0 until cards.childCount).map { cards.getChildAt(it) }
+					.first { (it.tag as Theme).getName() == "gnome" }
+				gnome.performClick()
 
-                val prefs = application.getSharedPreferences(Preferences.PREFERENCES, 0)
-                assertEquals("gnome", prefs.getString(Preference.THEME.getName(), null))
-                assertTrue(prefs.contains(Preference.LAUNCHER_EDGE.getName()))
-                assertTrue(prefs.contains(Preference.PANEL_EDGE.getName()))
-            }
-        }
-    }
+				val prefs = application.getSharedPreferences(Preferences.PREFERENCES, 0)
+				assertEquals("gnome", prefs.getString(Preference.THEME.getName(), null))
+				assertTrue(prefs.contains(Preference.LAUNCHER_EDGE.getName()))
+				assertTrue(prefs.contains(Preference.PANEL_EDGE.getName()))
+			}
+		}
+	}
 
-    @Test fun doneMarksSetupCompleteAndRelaunchesHome() {
-        launch().use { scenario ->
-            scenario.onActivity { activity ->
-                val pager = activity.findViewById<ViewPager2>(R.id.vpOnboarding)
-                val next = activity.findViewById<Button>(R.id.btnOnboardingNext)
-                pager.setCurrentItem(pager.adapter!!.itemCount - 1, false)
-                ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+	@Test fun doneMarksSetupCompleteAndRelaunchesHome() {
+		launch().use { scenario ->
+			scenario.onActivity { activity ->
+				val pager = activity.findViewById<ViewPager2>(R.id.vpOnboarding)
+				val next = activity.findViewById<Button>(R.id.btnOnboardingNext)
+				pager.setCurrentItem(pager.adapter!!.itemCount - 1, false)
+				ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
 
-                assertEquals(activity.getString(R.string.onboarding_button_done), next.text)
-                next.performClick()
+				assertEquals(activity.getString(R.string.onboarding_button_done), next.text)
+				next.performClick()
 
-                assertTrue(
-                    application.getSharedPreferences(Preferences.PREFERENCES, 0)
-                        .getBoolean(Preference.SETUP_COMPLETED.getName(), false)
-                )
-                assertEquals(
-                    HomeActivity::class.java.name,
-                    Shadows.shadowOf(activity).nextStartedActivity.component?.className,
-                )
-                assertTrue(activity.isFinishing)
-            }
-        }
-    }
+				assertTrue(
+					application.getSharedPreferences(Preferences.PREFERENCES, 0)
+						.getBoolean(Preference.SETUP_COMPLETED.getName(), false)
+				)
+				assertEquals(
+					HomeActivity::class.java.name,
+					Shadows.shadowOf(activity).nextStartedActivity.component?.className,
+				)
+				assertTrue(activity.isFinishing)
+			}
+		}
+	}
 
-    @Test fun everyPageIsShown() {
-        launch().use { scenario ->
-            scenario.onActivity { activity ->
-                val pager = activity.findViewById<ViewPager2>(R.id.vpOnboarding)
+	@Test fun everyPageIsShown() {
+		launch().use { scenario ->
+			scenario.onActivity { activity ->
+				val pager = activity.findViewById<ViewPager2>(R.id.vpOnboarding)
 
-                assertEquals(OnboardingPage.entries.size, pager.adapter!!.itemCount)
-            }
-        }
-    }
+				assertEquals(OnboardingPage.entries.size, pager.adapter!!.itemCount)
+			}
+		}
+	}
 
-    @Test fun launchingTheWizardRecordsThatItStarted() {
-        launch().use {
-            assertTrue(
-                application.getSharedPreferences(Preferences.PREFERENCES, 0)
-                    .getBoolean(Preference.SETUP_STARTED.getName(), false)
-            )
-            assertTrue(
-                application.getSharedPreferences(Preferences.PREFERENCES, 0)
-                    .getBoolean(Preference.DEFAULT_PINS_PENDING.getName(), false)
-            )
-        }
-    }
+	@Test fun launchingTheWizardRecordsThatItStarted() {
+		launch().use {
+			assertTrue(
+				application.getSharedPreferences(Preferences.PREFERENCES, 0)
+					.getBoolean(Preference.SETUP_STARTED.getName(), false)
+			)
+			assertTrue(
+				application.getSharedPreferences(Preferences.PREFERENCES, 0)
+					.getBoolean(Preference.DEFAULT_PINS_PENDING.getName(), false)
+			)
+		}
+	}
 
-    @Test fun upgradedInstallRunsOnboardingWithoutQueuingDefaultPins() {
-        AppUpgradeReceiver().onReceive(application, Intent(Intent.ACTION_MY_PACKAGE_REPLACED))
+	@Test fun upgradedInstallRunsOnboardingWithoutQueuingDefaultPins() {
+		AppUpgradeReceiver().onReceive(application, Intent(Intent.ACTION_MY_PACKAGE_REPLACED))
 
-        launch().use {
-            val prefs = application.getSharedPreferences(Preferences.PREFERENCES, 0)
-            assertTrue(prefs.getBoolean(Preference.SETUP_STARTED.getName(), false))
-            assertFalse(prefs.getBoolean(Preference.DEFAULT_PINS_PENDING.getName(), false))
-        }
-    }
+		launch().use {
+			val prefs = application.getSharedPreferences(Preferences.PREFERENCES, 0)
+			assertTrue(prefs.getBoolean(Preference.SETUP_STARTED.getName(), false))
+			assertFalse(prefs.getBoolean(Preference.DEFAULT_PINS_PENDING.getName(), false))
+		}
+	}
 }

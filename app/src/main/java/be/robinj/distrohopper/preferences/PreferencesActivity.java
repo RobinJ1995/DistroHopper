@@ -61,8 +61,7 @@ public class PreferencesActivity extends AppCompatActivity
 		setContentView (R.layout.activity_preferences);
 		InsetsHelper.applySystemBarsPadding (this);
 
-		if (savedInstanceState == null)
-		{
+		if (savedInstanceState == null) {
 			this.getSupportFragmentManager ()
 				.beginTransaction ()
 				.replace (R.id.preferences_container, new PreferencesFragment ())
@@ -87,13 +86,10 @@ public class PreferencesActivity extends AppCompatActivity
 		{
 			int id = item.getItemId ();
 
-			if (id == android.R.id.home)
-			{
+			if (id == android.R.id.home) {
 				NavUtils.navigateUpFromSameTask (this);
 				return true;
-			}
-			else if (id == R.id.menuAbout)
-			{
+			} else if (id == R.id.menuAbout) {
 				Intent intent = new Intent (this, AboutActivity.class);
 				this.startActivity (intent);
 			}
@@ -121,8 +117,9 @@ public class PreferencesActivity extends AppCompatActivity
 				new ActivityResultContracts.StartActivityForResult (),
 				result ->
 				{
-					if (! HomeRole.isHeld (this.requireContext ()))
+					if (! HomeRole.isHeld (this.requireContext ())) {
 						this.homeSettingsRequest.launch (HomeRole.homeSettingsIntent ());
+					}
 				});
 
 		private final ActivityResultLauncher<Intent> homeSettingsRequest =
@@ -189,8 +186,7 @@ public class PreferencesActivity extends AppCompatActivity
 			);
 
 			final Preference clearCache = this.findPreference ("dummy_clear_cache");
-			if (clearCache != null)
-			{
+			if (clearCache != null) {
 				clearCache.setOnPreferenceClickListener (new Preference.OnPreferenceClickListener ()
 				{
 					@Override
@@ -254,10 +250,11 @@ public class PreferencesActivity extends AppCompatActivity
 						{
 							final Intent roleIntent =
 								HomeRole.roleRequestIntent (requireContext ());
-							if (roleIntent != null)
+							if (roleIntent != null) {
 								roleRequest.launch (roleIntent);
-							else
+							} else {
 								homeSettingsRequest.launch (HomeRole.homeSettingsIntent ());
+							}
 						}
 						catch (Exception ex)
 						{
@@ -298,8 +295,7 @@ public class PreferencesActivity extends AppCompatActivity
 			// Only offer to set DistroHopper as the home screen while it isn't;
 			// re-checked here in case the user just made it so //
 			final Preference setDefaultLauncher = this.findPreference ("dummy_set_default_launcher");
-			if (setDefaultLauncher != null)
-			{
+			if (setDefaultLauncher != null) {
 				setDefaultLauncher.setVisible (! HomeRole.isHeld (this.requireContext ()));
 			}
 
@@ -318,18 +314,14 @@ public class PreferencesActivity extends AppCompatActivity
 		@Override
 		public void onDisplayPreferenceDialog (final Preference preference)
 		{
-			if (this.getParentFragmentManager ().findFragmentByTag (DIALOG_FRAGMENT_TAG) != null)
+			if (this.getParentFragmentManager ().findFragmentByTag (DIALOG_FRAGMENT_TAG) != null) {
 				return;
-
-			if (preference instanceof ListPreference)
-			{
+			} else if (preference instanceof ListPreference) {
 				final DialogFragment fragment =
 					FrostedListPreferenceDialogFragment.newInstance (preference.getKey ());
 				fragment.setTargetFragment (this, 0);
 				fragment.show (this.getParentFragmentManager (), DIALOG_FRAGMENT_TAG);
-			}
-			else
-			{
+			} else {
 				super.onDisplayPreferenceDialog (preference);
 			}
 		}
@@ -362,8 +354,7 @@ public class PreferencesActivity extends AppCompatActivity
 		{
 			final SwitchPreferenceCompat pref = this.findPreference (
 				be.robinj.distrohopper.preferences.Preference.DEV.getName ());
-			if (pref == null)
-			{
+			if (pref == null) {
 				this.applyDeveloperModeVisibility (false);
 				return;
 			}
@@ -399,8 +390,9 @@ public class PreferencesActivity extends AppCompatActivity
 				be.robinj.distrohopper.preferences.Preference.GESTURE_SWIPE_UP.getName ());
 			final ListPreference down = this.findPreference (
 				be.robinj.distrohopper.preferences.Preference.GESTURE_SWIPE_DOWN.getName ());
-			if (up == null || down == null)
+			if (up == null || down == null) {
 				return;
+			}
 
 			final boolean serviceEnabled =
 				NotificationAccessibilityService.isEnabled (this.requireContext ());
@@ -410,8 +402,7 @@ public class PreferencesActivity extends AppCompatActivity
 
 			// A stored notifications choice can't work with the service off: fall
 			// back to opening the dash. //
-			if (! serviceEnabled)
-			{
+			if (! serviceEnabled) {
 				resetIfNotifications (up);
 				resetIfNotifications (down);
 			}
@@ -431,8 +422,7 @@ public class PreferencesActivity extends AppCompatActivity
 			});
 
 			final Preference enableRow = this.findPreference ("dummy_enable_notification_gestures");
-			if (enableRow != null)
-			{
+			if (enableRow != null) {
 				enableRow.setVisible (! serviceEnabled);
 				enableRow.setOnPreferenceClickListener (preference ->
 				{
@@ -454,8 +444,7 @@ public class PreferencesActivity extends AppCompatActivity
 			values.add (GestureAction.OPEN_DASH.getValue ());
 			entries.add (this.getString (R.string.gesture_action_open_dash_search));
 			values.add (GestureAction.OPEN_DASH_SEARCH.getValue ());
-			if (withNotifications)
-			{
+			if (withNotifications) {
 				entries.add (this.getString (R.string.gesture_action_notifications_tray));
 				values.add (GestureAction.NOTIFICATIONS.getValue ());
 			}
@@ -466,8 +455,9 @@ public class PreferencesActivity extends AppCompatActivity
 
 		private static void resetIfNotifications (final ListPreference pref)
 		{
-			if (GestureAction.fromValue (pref.getValue ()) == GestureAction.NOTIFICATIONS)
+			if (GestureAction.fromValue (pref.getValue ()) == GestureAction.NOTIFICATIONS) {
 				pref.setValue (GestureAction.OPEN_DASH.getValue ());
+			}
 		}
 
 		// Enforce the no-lockout rule: once one gesture is set to [changedValue],
@@ -478,19 +468,22 @@ public class PreferencesActivity extends AppCompatActivity
 			final GestureAction fix = GestureAction.reconcileOther (
 				GestureAction.fromValue (changedValue),
 				GestureAction.fromValue (other.getValue ()));
-			if (fix != null)
+			if (fix != null) {
 				other.setValue (fix.getValue ());
+			}
 		}
 
 		// Only surface the developer options section while developer mode is on;
 		// turning it off also clears any toggles that were left enabled. //
 		private void applyDeveloperModeVisibility (final boolean enabled)
 		{
-			if (this.devCategory != null)
+			if (this.devCategory != null) {
 				this.devCategory.setVisible (enabled);
+			}
 
-			if (! enabled)
+			if (! enabled) {
 				this.clearChildPreferences (be.robinj.distrohopper.preferences.Preference.DEV);
+			}
 
 			this.applyAppSortOrderChoices (enabled);
 		}
@@ -503,16 +496,16 @@ public class PreferencesActivity extends AppCompatActivity
 		{
 			final ListPreference sortPref = this.findPreference (
 				be.robinj.distrohopper.preferences.Preference.APP_SORT_ORDER.getName ());
-			if (sortPref == null)
+			if (sortPref == null) {
 				return;
+			}
 
 			final CharSequence[] entries =
 				this.getResources ().getTextArray (R.array.dash_app_sort_order_entries);
 			final CharSequence[] values =
 				this.getResources ().getTextArray (R.array.dash_app_sort_order_values);
 
-			if (devEnabled)
-			{
+			if (devEnabled) {
 				sortPref.setEntries (entries);
 				sortPref.setEntryValues (values);
 
@@ -523,8 +516,9 @@ public class PreferencesActivity extends AppCompatActivity
 			final List<CharSequence> filteredValues = new ArrayList<> ();
 			for (int i = 0; i < values.length; i++)
 			{
-				if (AppSortOrder.CUSTOM.getValue ().contentEquals (values[i]))
+				if (AppSortOrder.CUSTOM.getValue ().contentEquals (values[i])) {
 					continue;
+				}
 
 				filteredEntries.add (entries[i]);
 				filteredValues.add (values[i]);
@@ -533,8 +527,9 @@ public class PreferencesActivity extends AppCompatActivity
 			sortPref.setEntries (filteredEntries.toArray (new CharSequence[0]));
 			sortPref.setEntryValues (filteredValues.toArray (new CharSequence[0]));
 
-			if (AppSortOrder.CUSTOM.getValue ().equals (sortPref.getValue ()))
+			if (AppSortOrder.CUSTOM.getValue ().equals (sortPref.getValue ())) {
 				sortPref.setValue (AppSortOrder.ALPHABETICAL.getValue ());
+			}
 		}
 
 		private void clearChildPreferences (final be.robinj.distrohopper.preferences.Preference parent)
@@ -546,12 +541,14 @@ public class PreferencesActivity extends AppCompatActivity
 			for (final be.robinj.distrohopper.preferences.Preference child
 				: be.robinj.distrohopper.preferences.Preference.values ())
 			{
-				if (child.getParent () != parent)
+				if (child.getParent () != parent) {
 					continue;
+				}
 
 				final Preference toggle = this.findPreference (child.getName ());
-				if (toggle instanceof SwitchPreferenceCompat)
+				if (toggle instanceof SwitchPreferenceCompat) {
 					((SwitchPreferenceCompat) toggle).setChecked (false);
+				}
 
 				editor.remove (child.getName ());
 			}
@@ -568,8 +565,9 @@ public class PreferencesActivity extends AppCompatActivity
 		private void initLauncherPinModePreference ()
 		{
 			final SwitchPreferenceCompat pref = this.findPreference ("dummy_launcher_pin_per_desktop");
-			if (pref == null)
+			if (pref == null) {
 				return;
+			}
 
 			final SharedPreferences prefs = Preferences.getSharedPreferences (this.requireContext ());
 			pref.setChecked (LauncherPinMode.current (prefs) == LauncherPinMode.DESKTOP);
@@ -606,14 +604,14 @@ public class PreferencesActivity extends AppCompatActivity
 		{
 			final Preference crashPref = this.findPreference (
 				be.robinj.distrohopper.preferences.Preference.CRASH_REPORTING_ENABLED.getName ());
-			if (crashPref == null) return;
-
-			if (! acraConfigured)
-			{
+			if (crashPref == null) {
+				return;
+			} else if (! acraConfigured) {
 				// No crash-report credentials were provided at build time, so the
 				// option can never do anything: hide it entirely. //
-				if (crashPref.getParent () != null)
+				if (crashPref.getParent () != null) {
 					crashPref.getParent ().removePreference (crashPref);
+				}
 				return;
 			}
 
@@ -640,13 +638,12 @@ public class PreferencesActivity extends AppCompatActivity
 		{
 			final ListPreference fontPref = this.findPreference (
 				be.robinj.distrohopper.preferences.Preference.FONT.getName ());
-			if (fontPref == null)
+			if (fontPref == null) {
 				return;
-
+			}
 			// Draw every option's label in the font it names, so the picker (and
 			// the summary showing the current choice) previews each font. //
-			if (fontPref.getEntries () != null && fontPref.getEntryValues () != null)
-			{
+			else if (fontPref.getEntries () != null && fontPref.getEntryValues () != null) {
 				fontPref.setEntries (FontPreference.INSTANCE.styledEntries (
 					this.requireContext (), fontPref.getEntries (), fontPref.getEntryValues ()));
 			}
@@ -692,8 +689,9 @@ public class PreferencesActivity extends AppCompatActivity
 			super.onStart ();
 
 			final Dialog dialog = this.getDialog ();
-			if (dialog != null && dialog.getWindow () != null)
+			if (dialog != null && dialog.getWindow () != null) {
 				FrostedGlass.INSTANCE.applyDialogFallback (dialog.getWindow ());
+			}
 		}
 	}
 }

@@ -34,175 +34,175 @@ import org.robolectric.shadows.ShadowContentResolver
 
 @RunWith(RobolectricTestRunner::class)
 class LocalFilesFoldersActivityTest {
-    private lateinit var application: Application
+	private lateinit var application: Application
 
-    @Before fun setUp() {
-        application = ApplicationProvider.getApplicationContext()
-        SearchFolderStore.preferences(application).edit()
-            .putStringSet(SearchFolderStore.KEY_FOLDERS, emptySet()).commit()
-        ShadowContentResolver.registerProviderInternal(AUTHORITY, NamingProvider())
-        // Names resolve off the main thread in production; run that inline here //
-        LocalFilesFoldersActivity.ioDispatcher = Dispatchers.Unconfined
-    }
+	@Before fun setUp() {
+		application = ApplicationProvider.getApplicationContext()
+		SearchFolderStore.preferences(application).edit()
+			.putStringSet(SearchFolderStore.KEY_FOLDERS, emptySet()).commit()
+		ShadowContentResolver.registerProviderInternal(AUTHORITY, NamingProvider())
+		// Names resolve off the main thread in production; run that inline here //
+		LocalFilesFoldersActivity.ioDispatcher = Dispatchers.Unconfined
+	}
 
-    @After fun tearDown() {
-        LocalFilesFoldersActivity.ioDispatcher = Dispatchers.IO
-    }
+	@After fun tearDown() {
+		LocalFilesFoldersActivity.ioDispatcher = Dispatchers.IO
+	}
 
-    private fun treeUri(documentId: String): Uri =
-        DocumentsContract.buildTreeDocumentUri(AUTHORITY, documentId)
+	private fun treeUri(documentId: String): Uri =
+		DocumentsContract.buildTreeDocumentUri(AUTHORITY, documentId)
 
-    private fun list(activity: Activity) = activity.findViewById<ListView>(R.id.lvFolders)
+	private fun list(activity: Activity) = activity.findViewById<ListView>(R.id.lvFolders)
 
-    @Test fun startsWithNoFoldersAndShowsTheEmptyState() {
-        ActivityScenario.launch(LocalFilesFoldersActivity::class.java).use { scenario ->
-            scenario.onActivity { activity ->
-                assertEquals(0, list(activity).adapter.count)
-                assertEquals(
-                    View.VISIBLE,
-                    activity.findViewById<TextView>(R.id.tvEmpty).visibility,
-                )
-            }
-        }
-    }
+	@Test fun startsWithNoFoldersAndShowsTheEmptyState() {
+		ActivityScenario.launch(LocalFilesFoldersActivity::class.java).use { scenario ->
+			scenario.onActivity { activity ->
+				assertEquals(0, list(activity).adapter.count)
+				assertEquals(
+					View.VISIBLE,
+					activity.findViewById<TextView>(R.id.tvEmpty).visibility,
+				)
+			}
+		}
+	}
 
-    @Test fun alreadyGrantedFoldersAreListedByName() {
-        SearchFolderStore(application).add(treeUri("documents"))
+	@Test fun alreadyGrantedFoldersAreListedByName() {
+		SearchFolderStore(application).add(treeUri("documents"))
 
-        ActivityScenario.launch(LocalFilesFoldersActivity::class.java).use { scenario ->
-            scenario.onActivity { activity ->
-                val adapter = list(activity).adapter
+		ActivityScenario.launch(LocalFilesFoldersActivity::class.java).use { scenario ->
+			scenario.onActivity { activity ->
+				val adapter = list(activity).adapter
 
-                assertEquals(1, adapter.count)
-                assertEquals(
-                    "Documents",
-                    adapter.getView(0, null, list(activity))
-                        .findViewById<TextView>(R.id.tvFolderName).text,
-                )
-            }
-        }
-    }
+				assertEquals(1, adapter.count)
+				assertEquals(
+					"Documents",
+					adapter.getView(0, null, list(activity))
+						.findViewById<TextView>(R.id.tvFolderName).text,
+				)
+			}
+		}
+	}
 
-    /**
+	/**
      * getView must never query the provider — a slow cloud one would freeze the
      * screen on every layout and scroll. It shows a placeholder until the name
      * has been resolved off the main thread.
      */
-    @Test fun rowsRenderWithoutQueryingTheProvider() {
-        SearchFolderStore(application).add(treeUri("documents"))
-        NamingProvider.queries = 0
-        // A dispatcher that never runs anything, so no name can arrive and the
-        // placeholder path is the only one under test //
-        LocalFilesFoldersActivity.ioDispatcher = object : CoroutineDispatcher() {
-            override fun dispatch(context: CoroutineContext, block: Runnable) = Unit
-        }
+	@Test fun rowsRenderWithoutQueryingTheProvider() {
+		SearchFolderStore(application).add(treeUri("documents"))
+		NamingProvider.queries = 0
+		// A dispatcher that never runs anything, so no name can arrive and the
+		// placeholder path is the only one under test //
+		LocalFilesFoldersActivity.ioDispatcher = object : CoroutineDispatcher() {
+			override fun dispatch(context: CoroutineContext, block: Runnable) = Unit
+		}
 
-        ActivityScenario.launch(LocalFilesFoldersActivity::class.java).use { scenario ->
-            scenario.onActivity { activity ->
-                val listView = list(activity)
+		ActivityScenario.launch(LocalFilesFoldersActivity::class.java).use { scenario ->
+			scenario.onActivity { activity ->
+				val listView = list(activity)
 
-                val label = listView.adapter.getView(0, null, listView)
-                    .findViewById<TextView>(R.id.tvFolderName).text.toString()
+				val label = listView.adapter.getView(0, null, listView)
+					.findViewById<TextView>(R.id.tvFolderName).text.toString()
 
-                assertEquals(0, NamingProvider.queries)
-                assertTrue(label.isNotEmpty())
-            }
-        }
-    }
+				assertEquals(0, NamingProvider.queries)
+				assertTrue(label.isNotEmpty())
+			}
+		}
+	}
 
-    @Test fun addFolderLaunchesTheSystemDirectoryPicker() {
-        ActivityScenario.launch(LocalFilesFoldersActivity::class.java).use { scenario ->
-            scenario.onActivity { activity ->
-                activity.findViewById<Button>(R.id.btnAddFolder).performClick()
+	@Test fun addFolderLaunchesTheSystemDirectoryPicker() {
+		ActivityScenario.launch(LocalFilesFoldersActivity::class.java).use { scenario ->
+			scenario.onActivity { activity ->
+				activity.findViewById<Button>(R.id.btnAddFolder).performClick()
 
-                val started = Shadows.shadowOf(activity).nextStartedActivityForResult
+				val started = Shadows.shadowOf(activity).nextStartedActivityForResult
 
-                assertNotNull(started)
-                assertEquals(Intent.ACTION_OPEN_DOCUMENT_TREE, started.intent.action)
-            }
-        }
-    }
+				assertNotNull(started)
+				assertEquals(Intent.ACTION_OPEN_DOCUMENT_TREE, started.intent.action)
+			}
+		}
+	}
 
-    @Test fun aPickedFolderIsGrantedAndListed() {
-        ActivityScenario.launch(LocalFilesFoldersActivity::class.java).use { scenario ->
-            scenario.onActivity { activity ->
-                pickFolder(activity, treeUri("documents"))
+	@Test fun aPickedFolderIsGrantedAndListed() {
+		ActivityScenario.launch(LocalFilesFoldersActivity::class.java).use { scenario ->
+			scenario.onActivity { activity ->
+				pickFolder(activity, treeUri("documents"))
 
-                assertEquals(1, list(activity).adapter.count)
-                assertEquals(
-                    listOf(treeUri("documents")),
-                    SearchFolderStore(application).folders(),
-                )
-            }
-        }
-    }
+				assertEquals(1, list(activity).adapter.count)
+				assertEquals(
+					listOf(treeUri("documents")),
+					SearchFolderStore(application).folders(),
+				)
+			}
+		}
+	}
 
-    @Test fun backingOutOfThePickerAddsNothing() {
-        ActivityScenario.launch(LocalFilesFoldersActivity::class.java).use { scenario ->
-            scenario.onActivity { activity ->
-                activity.findViewById<Button>(R.id.btnAddFolder).performClick()
-                val started = Shadows.shadowOf(activity).nextStartedActivityForResult
+	@Test fun backingOutOfThePickerAddsNothing() {
+		ActivityScenario.launch(LocalFilesFoldersActivity::class.java).use { scenario ->
+			scenario.onActivity { activity ->
+				activity.findViewById<Button>(R.id.btnAddFolder).performClick()
+				val started = Shadows.shadowOf(activity).nextStartedActivityForResult
 
-                Shadows.shadowOf(activity)
-                    .receiveResult(started.intent, Activity.RESULT_CANCELED, null)
+				Shadows.shadowOf(activity)
+					.receiveResult(started.intent, Activity.RESULT_CANCELED, null)
 
-                assertEquals(0, list(activity).adapter.count)
-                assertTrue(SearchFolderStore(application).folders().isEmpty())
-            }
-        }
-    }
+				assertEquals(0, list(activity).adapter.count)
+				assertTrue(SearchFolderStore(application).folders().isEmpty())
+			}
+		}
+	}
 
-    @Test fun removingAFolderDropsItAndReleasesTheGrant() {
-        SearchFolderStore(application).add(treeUri("documents"))
+	@Test fun removingAFolderDropsItAndReleasesTheGrant() {
+		SearchFolderStore(application).add(treeUri("documents"))
 
-        ActivityScenario.launch(LocalFilesFoldersActivity::class.java).use { scenario ->
-            scenario.onActivity { activity ->
-                val listView = list(activity)
-                listView.adapter.getView(0, null, listView)
-                    .findViewById<ImageView>(R.id.ivRemoveFolder)
-                    .performClick()
+		ActivityScenario.launch(LocalFilesFoldersActivity::class.java).use { scenario ->
+			scenario.onActivity { activity ->
+				val listView = list(activity)
+				listView.adapter.getView(0, null, listView)
+					.findViewById<ImageView>(R.id.ivRemoveFolder)
+					.performClick()
 
-                assertEquals(0, listView.adapter.count)
-                assertTrue(SearchFolderStore(application).folders().isEmpty())
-                assertTrue(application.contentResolver.persistedUriPermissions.isEmpty())
-            }
-        }
-    }
+				assertEquals(0, listView.adapter.count)
+				assertTrue(SearchFolderStore(application).folders().isEmpty())
+				assertTrue(application.contentResolver.persistedUriPermissions.isEmpty())
+			}
+		}
+	}
 
-    /** Drives the picker end to end, as the user would. */
-    private fun pickFolder(activity: Activity, treeUri: Uri) {
-        activity.findViewById<Button>(R.id.btnAddFolder).performClick()
+	/** Drives the picker end to end, as the user would. */
+	private fun pickFolder(activity: Activity, treeUri: Uri) {
+		activity.findViewById<Button>(R.id.btnAddFolder).performClick()
 
-        val started = Shadows.shadowOf(activity).nextStartedActivityForResult
+		val started = Shadows.shadowOf(activity).nextStartedActivityForResult
 
-        Shadows.shadowOf(activity).receiveResult(
-            started.intent,
-            Activity.RESULT_OK,
-            Intent().setData(treeUri),
-        )
-    }
+		Shadows.shadowOf(activity).receiveResult(
+			started.intent,
+			Activity.RESULT_OK,
+			Intent().setData(treeUri),
+		)
+	}
 
-    private class NamingProvider : ContentProvider() {
-        companion object { var queries = 0 }
+	private class NamingProvider : ContentProvider() {
+		companion object { var queries = 0 }
 
-        override fun onCreate() = true
+		override fun onCreate() = true
 
-        override fun query(uri: Uri, projection: Array<out String>?, selection: String?,
-                           selectionArgs: Array<out String>?, sortOrder: String?): Cursor {
-            queries++
+		override fun query(uri: Uri, projection: Array<out String>?, selection: String?,
+						   selectionArgs: Array<out String>?, sortOrder: String?): Cursor {
+			queries++
 
-            return MatrixCursor(arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME))
-                .apply { addRow(arrayOf(DocumentsContract.getDocumentId(uri).replaceFirstChar { it.uppercase() })) }
-        }
+			return MatrixCursor(arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME))
+				.apply { addRow(arrayOf(DocumentsContract.getDocumentId(uri).replaceFirstChar { it.uppercase() })) }
+		}
 
-        override fun getType(uri: Uri): String? = null
-        override fun insert(uri: Uri, values: ContentValues?) = null
-        override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?) = 0
-        override fun update(uri: Uri, values: ContentValues?, selection: String?,
-                            selectionArgs: Array<out String>?) = 0
-    }
+		override fun getType(uri: Uri): String? = null
+		override fun insert(uri: Uri, values: ContentValues?) = null
+		override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?) = 0
+		override fun update(uri: Uri, values: ContentValues?, selection: String?,
+							selectionArgs: Array<out String>?) = 0
+	}
 
-    private companion object {
-        const val AUTHORITY = "be.robinj.distrohopper.test.pickerfolders"
-    }
+	private companion object {
+		const val AUTHORITY = "be.robinj.distrohopper.test.pickerfolders"
+	}
 }

@@ -28,8 +28,9 @@ object LauncherTileColour {
 	fun resolve(context: Context, theme: Theme): Int {
 		val res = context.resources
 
-		if (!res.getBoolean(theme.launcher_applauncher_backgroundcolour_dynamic))
+		if (!res.getBoolean(theme.launcher_applauncher_backgroundcolour_dynamic)) {
 			return res.getColor(theme.launcher_applauncher_backgroundcolour, null)
+		}
 
 		val wallpaper = Wallpaper(context).also { it.init() }
 		val opacity = res.getInteger(theme.launcher_applauncher_backgroundcolour_opacity)

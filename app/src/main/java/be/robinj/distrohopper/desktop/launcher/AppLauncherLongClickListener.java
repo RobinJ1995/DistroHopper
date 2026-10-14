@@ -37,8 +37,9 @@ public class AppLauncherLongClickListener implements View.OnLongClickListener
 			// Only enter drag mode if the drag really started: doing so without
 			// an active drag would leave the bar stuck, as no ACTION_DRAG_ENDED
 			// will ever restore it //
-			if (view.startDragAndDrop (data, dragShadowBuilder, item, 0))
+			if (view.startDragAndDrop (data, dragShadowBuilder, item, 0)) {
 				appManager.startedDraggingPinnedApp (app);
+			}
 		}
 		catch (Exception ex)
 		{
@@ -63,7 +64,8 @@ public class AppLauncherLongClickListener implements View.OnLongClickListener
 		LauncherDragPayload payload = new LauncherDragPayload.FolderDrag (folderId);
 		ClipData data = ClipData.newPlainText ("launcherFolder", folderId);
 
-		if (source.startDragAndDrop (data, new View.DragShadowBuilder (view), payload, 0))
+		if (source.startDragAndDrop (data, new View.DragShadowBuilder (view), payload, 0)) {
 			appManager.startedDraggingFolder (folderId);
+		}
 	}
 }

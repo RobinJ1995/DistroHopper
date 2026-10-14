@@ -71,14 +71,14 @@ public class AppLauncher extends be.robinj.distrohopper.desktop.AppLauncher
 		ViewGroup llGradient = (ViewGroup) this.findViewById (R.id.llGradient);
 		llGradient.setBackgroundResource (theme.launcher_applauncher_gradient);
 
-		if (this.getId () != R.id.lalSpinner)
-		{
+		if (this.getId () != R.id.lalSpinner) {
 			ImageView imgRunning = (ImageView) this.findViewById (R.id.imgRunning);
 			imgRunning.setImageResource (theme.launcher_applauncher_running);
 		}
 
-		if (! this.getResources ().getBoolean (theme.launcher_applauncher_backgroundcolour_dynamic))
+		if (! this.getResources ().getBoolean (theme.launcher_applauncher_backgroundcolour_dynamic)) {
 			this.setColour (ContextCompat.getColor (this.getContext (), theme.launcher_applauncher_backgroundcolour));
+		}
 	}
 
 	public int getColour ()

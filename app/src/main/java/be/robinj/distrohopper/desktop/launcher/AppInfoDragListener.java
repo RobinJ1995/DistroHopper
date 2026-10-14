@@ -32,8 +32,9 @@ public class AppInfoDragListener implements ViewGroup.OnDragListener
 		try
 		{
 			AppLauncher lalAppInfo = (AppLauncher) view;
-			if (this.colour == -1)
+			if (this.colour == -1) {
 				this.colour = lalAppInfo.getColour ();
+			}
 
 			switch (event.getAction ())
 			{
@@ -42,8 +43,9 @@ public class AppInfoDragListener implements ViewGroup.OnDragListener
 					break;
 				case DragEvent.ACTION_DROP: // Falls through //
 					final App app = draggedApp (event);
-					if (app != null)
+					if (app != null) {
 						app.openAppInfo ();
+					}
 
 					LauncherBarBinder.stoppedDragging (this.activity);
 				case DragEvent.ACTION_DRAG_EXITED:
@@ -68,10 +70,11 @@ public class AppInfoDragListener implements ViewGroup.OnDragListener
 	private static App draggedApp (final DragEvent event)
 	{
 		final Object localState = event.getLocalState ();
-		if (localState instanceof App)
+		if (localState instanceof App) {
 			return (App) localState;
-		else if (localState instanceof LauncherDragPayload.PinnedAppDrag)
+		} else if (localState instanceof LauncherDragPayload.PinnedAppDrag) {
 			return ((LauncherDragPayload.PinnedAppDrag) localState).getApp ();
+		}
 
 		return null;
 	}

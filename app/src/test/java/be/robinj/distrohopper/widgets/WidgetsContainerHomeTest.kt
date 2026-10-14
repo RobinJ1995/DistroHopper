@@ -12,11 +12,11 @@ import org.robolectric.annotation.LooperMode
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.LEGACY)
 class WidgetsContainerHomeTest {
-    @Test fun widgetAreaIsAlwaysVisible() {
-        ActivityTestSupport.launchHome().use { scenario ->
-            scenario.onActivity { activity ->
-                assertEquals(View.VISIBLE, activity.findViewById<View>(R.id.vgWidgets).visibility)
-            }
-        }
-    }
+	@Test fun widgetAreaIsAlwaysVisible() {
+		ActivityTestSupport.launchHome().use { scenario ->
+			scenario.onActivity { activity ->
+				assertEquals(View.VISIBLE, activity.findViewById<View>(R.id.vgWidgets).visibility)
+			}
+		}
+	}
 }

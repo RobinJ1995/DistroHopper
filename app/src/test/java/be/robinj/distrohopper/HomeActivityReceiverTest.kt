@@ -17,27 +17,27 @@ import org.robolectric.annotation.LooperMode
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.LEGACY)
 class HomeActivityReceiverTest {
-    private lateinit var scenario: ActivityScenario<HomeActivity>
+	private lateinit var scenario: ActivityScenario<HomeActivity>
 
-    @Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
-    @After fun tearDown() { scenario.close() }
+	@Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
+	@After fun tearDown() { scenario.close() }
 
-    private fun packageManagerReceiverRegistrations(): List<Any> {
-        val application = ApplicationProvider.getApplicationContext<Application>()
-        return Shadows.shadowOf(application).registeredReceivers
-            .filter { it.broadcastReceiver is PackageManagerBroadcastReceiver }
-    }
+	private fun packageManagerReceiverRegistrations(): List<Any> {
+		val application = ApplicationProvider.getApplicationContext<Application>()
+		return Shadows.shadowOf(application).registeredReceivers
+			.filter { it.broadcastReceiver is PackageManagerBroadcastReceiver }
+	}
 
-    @Test fun packageManagerReceiverIsRegisteredWhileActive() {
-        assertTrue(packageManagerReceiverRegistrations().isNotEmpty())
-    }
+	@Test fun packageManagerReceiverIsRegisteredWhileActive() {
+		assertTrue(packageManagerReceiverRegistrations().isNotEmpty())
+	}
 
-    @Test fun packageManagerReceiverIsUnregisteredWhenDestroyed() {
-        scenario.moveToState(Lifecycle.State.DESTROYED)
-        ActivityTestSupport.drainTasks()
-        assertTrue(
-            "PackageManagerBroadcastReceiver must not stay registered after the activity is destroyed",
-            packageManagerReceiverRegistrations().isEmpty(),
-        )
-    }
+	@Test fun packageManagerReceiverIsUnregisteredWhenDestroyed() {
+		scenario.moveToState(Lifecycle.State.DESTROYED)
+		ActivityTestSupport.drainTasks()
+		assertTrue(
+			"PackageManagerBroadcastReceiver must not stay registered after the activity is destroyed",
+			packageManagerReceiverRegistrations().isEmpty(),
+		)
+	}
 }

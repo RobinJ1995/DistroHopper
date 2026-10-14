@@ -55,7 +55,9 @@ public class IconPackHelper
 		for (final String action : actions) {
 			final Intent intent = new Intent(action);
 			final List<ResolveInfo> infos = pm.queryIntentActivities(intent, 0);
-			if (infos == null) continue;
+			if (infos == null) {
+				continue;
+			}
 			for (final ResolveInfo ri : infos) {
 				final String pkg = ri.activityInfo != null && ri.activityInfo.packageName != null
 						? ri.activityInfo.packageName
@@ -116,7 +118,9 @@ public class IconPackHelper
 				parseAppFilter(xpp);
 			}
 		} finally {
-			if (assetStream != null) try { assetStream.close(); } catch (IOException ignore) {}
+			if (assetStream != null) {
+				try { assetStream.close(); } catch (IOException ignore) {}
+			}
 		}
 
 		this.iconPackLoaded = this.iconPackRes != null && (!this.componentToDrawable.isEmpty() || !this.packageToDrawable.isEmpty());
@@ -148,7 +152,9 @@ public class IconPackHelper
 
 	public AppIcon getIconForApp (App app)
 	{
-		if (!this.iconPackLoaded || this.iconPackRes == null) return null;
+		if (!this.iconPackLoaded || this.iconPackRes == null) {
+			return null;
+		}
 
 		// First try full ComponentInfo key as used by most icon packs
 		final String pkg = app.getPackageName();
@@ -162,7 +168,9 @@ public class IconPackHelper
 			String shortAct = act;
 			if (shortAct.startsWith(pkg)) {
 				shortAct = shortAct.substring(pkg.length());
-				if (!shortAct.startsWith(".")) shortAct = "." + shortAct;
+				if (!shortAct.startsWith(".")) {
+					shortAct = "." + shortAct;
+				}
 			}
 			final String compShort = "ComponentInfo{" + pkg + "/" + shortAct + "}";
 			drawableName = componentToDrawable.get(compShort);
@@ -178,7 +186,9 @@ public class IconPackHelper
 		}
 
 		final Drawable d = getIcon(drawableName);
-		if (d == null) return null;
+		if (d == null) {
+			return null;
+		}
 
 		return new AppIcon(d);
 	}
@@ -191,12 +201,18 @@ public class IconPackHelper
 
 	public Drawable getIcon (String iconName)
 	{
-		if (this.iconPackRes == null || TextUtils.isEmpty(iconName)) return null;
+		if (this.iconPackRes == null || TextUtils.isEmpty(iconName)) {
+			return null;
+		}
 
 		// Try drawable then mipmap
 		int id = this.iconPackRes.getIdentifier(iconName, "drawable", this.name);
-		if (id == 0) id = this.iconPackRes.getIdentifier(iconName, "mipmap", this.name);
-		if (id == 0) return null;
+		if (id == 0) {
+			id = this.iconPackRes.getIdentifier(iconName, "mipmap", this.name);
+		}
+		if (id == 0) {
+			return null;
+		}
 
 		try {
 			return this.iconPackRes.getDrawable(id, null);

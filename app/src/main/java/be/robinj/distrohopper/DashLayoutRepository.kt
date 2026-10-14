@@ -217,8 +217,7 @@ class DashLayoutRepository(
 		val current = state.folders.first { it.id == folderId }
 		if (current.appKeys.contains(app.profileScopedKey)) {
 			return true
-		}
-		if (current.appKeys.size >= MAX_FOLDER_APPS) {
+		} else if (current.appKeys.size >= MAX_FOLDER_APPS) {
 			return false
 		}
 
@@ -335,9 +334,8 @@ class DashLayoutRepository(
 					state.folders.removeAt(i)
 					this.spliceFolderOut(state, folder.id, keptApps.map { it.key })
 					continue
-				} else {
-					state.folders[i] = folder.copy(members = kept)
 				}
+				state.folders[i] = folder.copy(members = kept)
 			}
 			i++
 		}

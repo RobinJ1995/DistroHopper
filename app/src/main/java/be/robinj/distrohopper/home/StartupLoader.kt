@@ -81,8 +81,9 @@ class StartupLoader(
 						this@StartupLoader.activity.resources,
 						Preferences.getSharedPreferences(this@StartupLoader.activity))
 				lalBfb.visibility = if (bfbVisible) View.VISIBLE else View.GONE
-				if (!bfbVisible)
+				if (!bfbVisible) {
 					(lalBfb.parent as? View)?.visibility = View.GONE
+				}
 
 				appManager.refreshPinnedView()
 

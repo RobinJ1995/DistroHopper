@@ -314,9 +314,7 @@ class WidgetHost(
 
 		if (appWidgetId == -1) {
 			return
-		}
-
-		if (info == null) {
+		} else if (info == null) {
 			// Allocated but unusable (e.g. recovered after process death with the
 			// provider gone): don't leak the binding //
 			this.deleteAppWidgetId(appWidgetId)

@@ -121,9 +121,7 @@ internal class WidgetsContainer_DragListener(
 		if (this.parent.dashIsOpen()) {
 			this.dropIntoDash(kind)
 			return
-		}
-
-		if (foldTarget != null && this.fold(kind, foldTarget)) {
+		} else if (foldTarget != null && this.fold(kind, foldTarget)) {
 			return
 		}
 
@@ -218,10 +216,9 @@ internal class WidgetsContainer_DragListener(
 			is Drag.IncomingApp -> {
 				if (target !is DesktopFolderView) {
 					return false
-				}
-				// Consume the drop either way (a full folder just toasts); on success
-				// clear the app's origin surface like the loose-drop path in commit() //
-				if (folderHost.addApp(target.folderId, kind.app)) {
+				} else if (folderHost.addApp(target.folderId, kind.app)) {
+					// Consume the drop either way (a full folder just toasts); on success
+					// clear the app's origin surface like the loose-drop path in commit() //
 					when (kind) {
 						is Drag.LauncherPin -> this.parent.appManager?.unpin(kind.app)
 						is Drag.LauncherFolderMember -> this.parent.appManager?.let {

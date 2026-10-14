@@ -2,120 +2,120 @@ apply plugin: 'com.android.application'
 apply plugin: 'jacoco'
 
 jacoco {
-    toolVersion = '0.8.13'
+	toolVersion = '0.8.13'
 }
 
 def properties = new Properties()
 def secretFile = rootProject.file("secret.properties")
 if (secretFile.exists()) {
-    properties.load(new FileInputStream(secretFile))
+	properties.load(new FileInputStream(secretFile))
 }
 
 def keystorePropertiesFile = rootProject.file("key.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+	keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
 def paranoiaBuild = providers.gradleProperty("paranoiaBuild")
-        .map { it.toBoolean() }
-        .orElse(false)
-        .get()
+		.map { it.toBoolean() }
+		.orElse(false)
+		.get()
 def appVersionCode = 116
 def baseVersionName = "3.0.4"
 
 android {
-    namespace "be.robinj.distrohopper"
-    compileSdk 36
-    defaultConfig {
-        applicationId "be.robinj.distrohopper"
-        minSdk 31
-        targetSdk 36
-        versionCode appVersionCode
-        versionName paranoiaBuild ? "${baseVersionName}-paranoia" : baseVersionName
-        buildConfigField "String", "ACRA_USERNAME", "\"" + (properties['acra_username'] ?: "") + "\""
-        buildConfigField "String", "ACRA_PASSWORD", "\"" + (properties['acra_password'] ?: "") + "\""
-        def acraConfigured = !paranoiaBuild && ((properties['acra_username'] ?: "") != "") && ((properties['acra_password'] ?: "") != "")
-        buildConfigField "boolean", "ACRA_CONFIGURED", acraConfigured.toString()
-        buildConfigField "boolean", "PARANOIA_BUILD", paranoiaBuild.toString()
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-    signingConfigs {
-        release {
-            if (keystorePropertiesFile.exists()) {
-                storeFile file(keystoreProperties['storeFile'])
-                storePassword keystoreProperties['storePassword']
-                keyAlias keystoreProperties['keyAlias']
-                keyPassword keystoreProperties['keyPassword']
-            }
-        }
-    }
-    buildTypes {
-        release {
-            // Sign release builds only when a keystore is provided, so local
-            // and CI test builds without one still succeed.
-            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : null
-            minifyEnabled false
-            shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    buildFeatures {
-        buildConfig true
-    }
-    dependenciesInfo {
-        includeInApk = !paranoiaBuild
-        includeInBundle = true
-    }
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-            returnDefaultValues = true
+	namespace "be.robinj.distrohopper"
+	compileSdk 36
+	defaultConfig {
+		applicationId "be.robinj.distrohopper"
+		minSdk 31
+		targetSdk 36
+		versionCode appVersionCode
+		versionName paranoiaBuild ? "${baseVersionName}-paranoia" : baseVersionName
+		buildConfigField "String", "ACRA_USERNAME", "\"" + (properties['acra_username'] ?: "") + "\""
+		buildConfigField "String", "ACRA_PASSWORD", "\"" + (properties['acra_password'] ?: "") + "\""
+		def acraConfigured = !paranoiaBuild && ((properties['acra_username'] ?: "") != "") && ((properties['acra_password'] ?: "") != "")
+		buildConfigField "boolean", "ACRA_CONFIGURED", acraConfigured.toString()
+		buildConfigField "boolean", "PARANOIA_BUILD", paranoiaBuild.toString()
+		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+	}
+	signingConfigs {
+		release {
+			if (keystorePropertiesFile.exists()) {
+				storeFile file(keystoreProperties['storeFile'])
+				storePassword keystoreProperties['storePassword']
+				keyAlias keystoreProperties['keyAlias']
+				keyPassword keystoreProperties['keyPassword']
+			}
+		}
+	}
+	buildTypes {
+		release {
+			// Sign release builds only when a keystore is provided, so local
+			// and CI test builds without one still succeed.
+			signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : null
+			minifyEnabled false
+			shrinkResources false
+			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+		}
+	}
+	buildFeatures {
+		buildConfig true
+	}
+	dependenciesInfo {
+		includeInApk = !paranoiaBuild
+		includeInBundle = true
+	}
+	testOptions {
+		unitTests {
+			includeAndroidResources = true
+			returnDefaultValues = true
 
-            all {
-                jacoco.includeNoLocationClasses = true
-                jacoco.excludes = ['jdk.internal.*']
-            }
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-    lint {
-        disable 'MissingTranslation', 'ExtraTranslation'
-        // Pre-existing issues, so only new ones fail. Shrink it, don't regenerate it.
-        baseline = file('lint-baseline.xml')
-    }
-    bundle {
-        language {
-            // Keep every language in the base APK instead of splitting them out.
-            //
-            // Play normally delivers only the splits matching the device's own
-            // languages, which is fine when the app follows the system language
-            // but breaks the per-app language picker that
-            // res/xml/locales_config.xml exposes: picking a language whose split
-            // was never installed silently falls back to English. It also matters
-            // for the generated values-b+en+001 resources, which have to be
-            // present for an en-IE/en-GB device to resolve British English rather
-            // than the American values-en-rUS.
-            //
-            // The cost is small — the translations are a few dozen short strings
-            // per locale, several of which are only partly translated anyway.
-            enableSplit = false
-        }
-    }
-    sourceSets {
-        main {
-            // The licence texts are shipped inside the APK, not just kept in the
-            // repository: the SIL OFL and the Ubuntu Font Licence both require the
-            // licence to travel with the fonts, and whoever installs a build from
-            // the Play Store never sees the repository. Staged into a generated
-            // folder by copyLicenseAssets below so there is exactly one copy of
-            // each text under version control.
-            assets.srcDirs += "$buildDir/generated/licenseAssets"
-        }
-    }
+			all {
+				jacoco.includeNoLocationClasses = true
+				jacoco.excludes = ['jdk.internal.*']
+			}
+		}
+	}
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_17
+		targetCompatibility JavaVersion.VERSION_17
+	}
+	lint {
+		disable 'MissingTranslation', 'ExtraTranslation'
+		// Pre-existing issues, so only new ones fail. Shrink it, don't regenerate it.
+		baseline = file('lint-baseline.xml')
+	}
+	bundle {
+		language {
+			// Keep every language in the base APK instead of splitting them out.
+			//
+			// Play normally delivers only the splits matching the device's own
+			// languages, which is fine when the app follows the system language
+			// but breaks the per-app language picker that
+			// res/xml/locales_config.xml exposes: picking a language whose split
+			// was never installed silently falls back to English. It also matters
+			// for the generated values-b+en+001 resources, which have to be
+			// present for an en-IE/en-GB device to resolve British English rather
+			// than the American values-en-rUS.
+			//
+			// The cost is small — the translations are a few dozen short strings
+			// per locale, several of which are only partly translated anyway.
+			enableSplit = false
+		}
+	}
+	sourceSets {
+		main {
+			// The licence texts are shipped inside the APK, not just kept in the
+			// repository: the SIL OFL and the Ubuntu Font Licence both require the
+			// licence to travel with the fonts, and whoever installs a build from
+			// the Play Store never sees the repository. Staged into a generated
+			// folder by copyLicenseAssets below so there is exactly one copy of
+			// each text under version control.
+			assets.srcDirs += "$buildDir/generated/licenseAssets"
+		}
+	}
 }
 
 // Stages the repository's licence texts (plus the app's own GPLv3) where the
@@ -128,12 +128,12 @@ android {
 // someone happens to run a clean build. Its own generated directory, so
 // there is nothing else there to delete.
 def copyLicenseAssets = tasks.register('copyLicenseAssets', Sync) {
-    into "$buildDir/generated/licenseAssets/licenses"
+	into "$buildDir/generated/licenseAssets/licenses"
 
-    from(rootProject.file('licenses'))
-    from(rootProject.file('LICENSE')) {
-        rename '.*', 'gpl-3.0.txt'
-    }
+	from(rootProject.file('licenses'))
+	from(rootProject.file('LICENSE')) {
+		rename '.*', 'gpl-3.0.txt'
+	}
 }
 
 // preBuild rather than the merge*Assets tasks: it is a stable, public task name
@@ -141,67 +141,67 @@ def copyLicenseAssets = tasks.register('copyLicenseAssets', Sync) {
 tasks.named('preBuild') { dependsOn copyLicenseAssets }
 
 repositories {
-    maven {
-        url "http://repo.commonsware.com.s3.amazonaws.com"
-        allowInsecureProtocol = true
-    }
+	maven {
+		url "http://repo.commonsware.com.s3.amazonaws.com"
+		allowInsecureProtocol = true
+	}
 }
 
 dependencies {
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'androidx.gridlayout:gridlayout:1.0.0'
-    implementation 'asia.ivity.android:drag-sort-listview:1.0'
-    implementation 'androidx.core:core-ktx:1.17.0'
-    implementation 'androidx.preference:preference:1.2.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.9.4'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4'
-    implementation 'androidx.viewpager2:viewpager2:1.1.0'
+	implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+	implementation 'androidx.appcompat:appcompat:1.7.1'
+	implementation 'androidx.gridlayout:gridlayout:1.0.0'
+	implementation 'asia.ivity.android:drag-sort-listview:1.0'
+	implementation 'androidx.core:core-ktx:1.17.0'
+	implementation 'androidx.preference:preference:1.2.1'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
+	implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.9.4'
+	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4'
+	implementation 'androidx.viewpager2:viewpager2:1.1.0'
 
-    // ACRA
-    def acraVersion = '5.13.1'
-    implementation "ch.acra:acra-http:$acraVersion"
-    implementation "ch.acra:acra-toast:$acraVersion"
+	// ACRA
+	def acraVersion = '5.13.1'
+	implementation "ch.acra:acra-http:$acraVersion"
+	implementation "ch.acra:acra-toast:$acraVersion"
 
-    // Robolectric – runs on the JVM, no emulator needed
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.robolectric:robolectric:4.16.1'
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2'
-    testImplementation 'androidx.test:core:1.7.0'
-    testImplementation 'androidx.test.ext:junit:1.3.0'
-    testImplementation 'androidx.test.espresso:espresso-core:3.7.0'
-    testImplementation 'androidx.test.espresso:espresso-intents:3.7.0'
+	// Robolectric – runs on the JVM, no emulator needed
+	testImplementation 'junit:junit:4.13.2'
+	testImplementation 'org.robolectric:robolectric:4.16.1'
+	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2'
+	testImplementation 'androidx.test:core:1.7.0'
+	testImplementation 'androidx.test.ext:junit:1.3.0'
+	testImplementation 'androidx.test.espresso:espresso-core:3.7.0'
+	testImplementation 'androidx.test.espresso:espresso-intents:3.7.0'
 
-    // Minimal androidTest runner kept for any future on-device tests
-    androidTestImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.3.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
+	// Minimal androidTest runner kept for any future on-device tests
+	androidTestImplementation 'junit:junit:4.13.2'
+	androidTestImplementation 'androidx.test.ext:junit:1.3.0'
+	androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
 }
 
 tasks.register('jacocoTestReport', JacocoReport) {
-    dependsOn 'testDebugUnitTest'
+	dependsOn 'testDebugUnitTest'
 
-    reports {
-        xml.required = true
-        html.required = true
-    }
+	reports {
+		xml.required = true
+		html.required = true
+	}
 
-    def exclusions = [
-        '**/R.class',
-        '**/R$*.class',
-        '**/BuildConfig.*',
-        '**/Manifest*.*',
-        '**/thirdparty/**'
-    ]
+	def exclusions = [
+		'**/R.class',
+		'**/R$*.class',
+		'**/BuildConfig.*',
+		'**/Manifest*.*',
+		'**/thirdparty/**'
+	]
 
-    classDirectories.setFrom(files(
-        fileTree(dir: "$buildDir/intermediates/javac/debug/compileDebugJavaWithJavac/classes", excludes: exclusions),
-        fileTree(dir: "$buildDir/intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes", excludes: exclusions)
-    ))
-    sourceDirectories.setFrom(files('src/main/java'))
-    executionData.setFrom(fileTree(buildDir) {
-        include 'jacoco/testDebugUnitTest.exec'
-        include 'outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec'
-    })
+	classDirectories.setFrom(files(
+		fileTree(dir: "$buildDir/intermediates/javac/debug/compileDebugJavaWithJavac/classes", excludes: exclusions),
+		fileTree(dir: "$buildDir/intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes", excludes: exclusions)
+	))
+	sourceDirectories.setFrom(files('src/main/java'))
+	executionData.setFrom(fileTree(buildDir) {
+		include 'jacoco/testDebugUnitTest.exec'
+		include 'outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec'
+	})
 }

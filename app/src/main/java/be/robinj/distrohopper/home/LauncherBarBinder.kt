@@ -171,9 +171,7 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	fun onPageScroll(fromPage: Int, toPage: Int, fraction: Float) {
 		if (! this.appManager.isPerDesktopPins || fraction <= 0F || ! this.animationsEnabled()) {
 			return
-		}
-
-		if (fromPage != this.morphFrom || toPage != this.morphTo) {
+		} else if (fromPage != this.morphFrom || toPage != this.morphTo) {
 			this.buildMorph(fromPage, toPage)
 		}
 		this.applyMorph(fraction)
@@ -263,8 +261,9 @@ class LauncherBarBinder(private val appManager: AppManager) {
 				appLauncher?.setRunning(true)
 			} else {
 				val theme = DependencyContainer.of(this.activity).themeManager.current
-				if (! this.activity.resources.getBoolean(theme.launcher_applauncher_backgroundcolour_dynamic))
+				if (! this.activity.resources.getBoolean(theme.launcher_applauncher_backgroundcolour_dynamic)) {
 					colour = this.activity.resources.getColor(theme.launcher_applauncher_backgroundcolour, null)
+				}
 
 				val appLauncher = RunningAppLauncher(this.activity, app)
 				appLauncher.setOnClickListener(AppLauncherClickListener(this.activity))
@@ -463,12 +462,14 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	 */
 	fun draggedPinnedItemOver(targetView: View) {
 		val dragged = this.draggedPinnedApp ?: return
-		if (targetView == dragged)
+		if (targetView == dragged) {
 			return
+		}
 
 		val targetIndex = this.llLauncherPinnedApps.indexOfChild(targetView)
-		if (targetIndex < 0)
+		if (targetIndex < 0) {
 			return
+		}
 
 		this.llLauncherPinnedApps.removeView(dragged)
 		this.llLauncherPinnedApps.addView(dragged, targetIndex)
@@ -587,8 +588,9 @@ class LauncherBarBinder(private val appManager: AppManager) {
 			return // a dwell-fold already committed this drop //
 		}
 		val dragged = this.draggedPinnedApp ?: return
-		if (this.llLauncherPinnedApps.indexOfChild(dragged) < 0)
+		if (this.llLauncherPinnedApps.indexOfChild(dragged) < 0) {
 			return
+		}
 		this.draggedPinnedAppDropped = true
 
 		val desktop = this.appManager.currentDesktop
@@ -608,9 +610,7 @@ class LauncherBarBinder(private val appManager: AppManager) {
 			this.appManager.savePinnedApps()
 			this.refreshPinnedView()
 			return
-		}
-
-		if (this.draggedPinnedAppOldIndex == NOT_YET_PINNED &&
+		} else if (this.draggedPinnedAppOldIndex == NOT_YET_PINNED &&
 			!this.appManager.pin(dragged.tag as App, false, false)) {
 			this.draggedPinnedAppDropped = false // pinned meanwhile: let ended rebuild //
 			return
@@ -647,7 +647,9 @@ class LauncherBarBinder(private val appManager: AppManager) {
 			when (val child = this.llLauncherPinnedApps.getChildAt(i)) {
 				placeholder -> (child.tag as? App)?.let { keys.add(it.profileScopedKey) }
 				is LauncherFolderView -> child.apps.forEach {
-					if (it.profileScopedKey != extractedKey) keys.add(it.profileScopedKey)
+					if (it.profileScopedKey != extractedKey) {
+						keys.add(it.profileScopedKey)
+					}
 				}
 				else -> (child.tag as? App)?.let { keys.add(it.profileScopedKey) }
 			}
@@ -664,8 +666,9 @@ class LauncherBarBinder(private val appManager: AppManager) {
 	fun foldDraggedOnto(targetView: View): Boolean {
 		val dragged = this.draggedPinnedApp ?: return false
 		val draggedApp = dragged.tag as? App ?: return false // a folder can't go into a folder
-		if (targetView == dragged)
+		if (targetView == dragged) {
 			return false
+		}
 		val desktop = this.appManager.currentDesktop
 		val layout = this.appManager.launcherLayout
 
@@ -719,8 +722,9 @@ class LauncherBarBinder(private val appManager: AppManager) {
 		this.extractFromFolderId = null
 
 		dragged.visibility = View.VISIBLE
-		if (!this.draggedPinnedAppDropped)
+		if (!this.draggedPinnedAppDropped) {
 			this.refreshPinnedView() // Cancelled, or unpinned via the trash: snap back to the model's order //
+		}
 	}
 
 	fun stoppedDraggingPinnedApp() = stoppedDragging(this.activity)

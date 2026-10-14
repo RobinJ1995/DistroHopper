@@ -205,9 +205,7 @@ class HomeGestureController(
 			this.downX = ev.x // Track from where the swipe was recognised //
 
 			return
-		}
-
-		if (abs(dy) <= this.touchSlop || abs(dy) <= abs(dx) * 2F) {
+		} else if (abs(dy) <= this.touchSlop || abs(dy) <= abs(dx) * 2F) {
 			return // Not (yet) locked to either axis //
 		}
 

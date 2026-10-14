@@ -1,21 +1,21 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+	<!-- Default screen margins, per the Android Design guidelines. -->
+	<dimen name="activity_horizontal_margin">16dp</dimen>
+	<dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="dash_applauncher_width">84dp</dimen>
-    <dimen name="dash_applauncher_height">96dp</dimen>
-    <dimen name="dash_applauncher_textsize">14dp</dimen>
-    <dimen name="dash_applauncher_padding">4dp</dimen>
-    <dimen name="launcher_applauncher_icon_margin">4dp</dimen>
+	<dimen name="dash_applauncher_width">84dp</dimen>
+	<dimen name="dash_applauncher_height">96dp</dimen>
+	<dimen name="dash_applauncher_textsize">14dp</dimen>
+	<dimen name="dash_applauncher_padding">4dp</dimen>
+	<dimen name="launcher_applauncher_icon_margin">4dp</dimen>
 
-    <dimen name="dash_lenssearchresult_width">84dp</dimen>
-    <dimen name="dash_lenssearchresult_height">96dp</dimen>
+	<dimen name="dash_lenssearchresult_width">84dp</dimen>
+	<dimen name="dash_lenssearchresult_height">96dp</dimen>
 
-    <dimen name="onboarding_blur_radius">20dp</dimen>
-    <dimen name="dialog_blur_radius">20dp</dimen>
+	<dimen name="onboarding_blur_radius">20dp</dimen>
+	<dimen name="dialog_blur_radius">20dp</dimen>
 
-    <!-- Modern dialog metrics. -->
-    <dimen name="dialog_corner_radius">28dp</dimen>
-    <dimen name="dialog_item_corner_radius">16dp</dimen>
+	<!-- Modern dialog metrics. -->
+	<dimen name="dialog_corner_radius">28dp</dimen>
+	<dimen name="dialog_item_corner_radius">16dp</dimen>
 </resources>

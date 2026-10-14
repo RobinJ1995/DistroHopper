@@ -252,7 +252,11 @@ class WidgetsPager @JvmOverloads constructor(
 		 */
 		val base = fraction.toInt() // fraction is never negative (scrollX is clamped >= 0) //
 		val target = if (abs(velocityX) > this.flingVelocityPx) {
-			if (velocityX < 0F) base + 1 else base
+			if (velocityX < 0F) {
+				base + 1
+			} else {
+				base
+			}
 		} else {
 			fraction.roundToInt()
 		}
@@ -279,21 +283,17 @@ class WidgetsPager @JvmOverloads constructor(
 				if (this.hasEditModeChild()) {
 					// A widget is being resized/moved: leave its handles the touches //
 					return false
-				}
-
-				if (abs(dx) > this.touchSlop && abs(dx) > abs(dy) * 2F) {
+				} else if (abs(dx) > this.touchSlop && abs(dx) > abs(dy) * 2F) {
 					this.panning = true
 					this.panOriginX = ev.x
 					this.panBegin()
 
 					return true
-				}
-
-				// Vertical swipe (up or down) that started on a widget: hand the
-				// stream to the home gestures (priming them with the original DOWN
-				// they never saw, since the widget consumed it) so the configured
-				// swipe-up/down gesture runs just like on empty desktop space //
-				if (abs(dy) > this.touchSlop && abs(dy) > abs(dx) * 2F) {
+				} else if (abs(dy) > this.touchSlop && abs(dy) > abs(dx) * 2F) {
+					// Vertical swipe (up or down) that started on a widget: hand the
+					// stream to the home gestures (priming them with the original DOWN
+					// they never saw, since the widget consumed it) so the configured
+					// swipe-up/down gesture runs just like on empty desktop space //
 					this.downEvent?.let { this.swipeGestureForwarder?.invoke(it) }
 					this.recycleDownEvent()
 

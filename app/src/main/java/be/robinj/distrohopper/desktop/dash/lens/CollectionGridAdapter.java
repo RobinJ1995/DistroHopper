@@ -36,8 +36,9 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 		LensSearchResultCollection coll = this.getItem (position);
 		boolean show = true;
 
-		if (view == null)
+		if (view == null) {
 			view = LayoutInflater.from (parent.getContext ()).inflate (R.layout.widget_dash_lens_result_collection, parent, false);
+		}
 
 		TextView tvLabel = (TextView) view.findViewById (R.id.tvLabel);
 		GridView gvResults = (GridView) view.findViewById (R.id.gvResults);
@@ -49,19 +50,17 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 
 		final Exception ex = coll.getResults () == null ? coll.getException () : null;
 		List<LensSearchResult> results = coll.getResults ();
-		if (results == null)
-		{
+		if (results == null) {
 			results = new ArrayList<LensSearchResult> ();
 
-			if (ex != null)
-			{
-				if (ex instanceof UnknownHostException || ex instanceof SocketException)
-				{
+			if (ex != null) {
+				if (ex instanceof UnknownHostException || ex instanceof SocketException) {
 					ConnectivityManager connectivityManager = (ConnectivityManager) this.getContext ().getSystemService (Context.CONNECTIVITY_SERVICE);
 					NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo ();
 
-					if (! (networkInfo != null && networkInfo.isConnected ()))
+					if (! (networkInfo != null && networkInfo.isConnected ())) {
 						show = false;
+					}
 				}
 
 				LensSearchResult error = new LensSearchResult (this.getContext (), ex.getClass ().getSimpleName (), "", ContextCompat.getDrawable (this.getContext (), R.drawable.dash_search_lens_error));
@@ -70,28 +69,22 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 			}
 		}
 
-		if (show)
-		{
+		if (show) {
 			gvResults.setAdapter (new GridAdapter (this.getContext (), results));
 			// Same unified column count as the dash apps grid (see DashGrid) //
 			DashGridSizer.apply (gvResults);
 
-			if (ex != null)
-			{
+			if (ex != null) {
 				// The synthetic error tile shows the failure dialog when tapped //
 				final Lens lens = coll.getLens ();
 				gvResults.setOnItemClickListener ((parent2, view2, position2, id2) -> lens.showError (ex.getMessage ()));
-			}
-			else
-			{
+			} else {
 				gvResults.setOnItemClickListener (new LensSearchResultClickListener (coll.getLens ()));
 				gvResults.setOnItemLongClickListener (new LensSearchResultLongClickListener (coll.getLens ()));
 			}
 
 			view.setVisibility (View.VISIBLE);
-		}
-		else
-		{
+		} else {
 			view.setVisibility (View.GONE);
 		}
 

@@ -1,83 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/widgetContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp">
-    </FrameLayout>
+	<FrameLayout
+		android:id="@+id/widgetContainer"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:padding="8dp">
+	</FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/widgetOverlayCenter"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/widget_edit_overlay"
-        android:visibility="gone" />
+	<FrameLayout
+		android:id="@+id/widgetOverlayCenter"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="@drawable/widget_edit_overlay"
+		android:visibility="gone" />
 
-    <FrameLayout
-        android:id="@+id/llEdgeTop"
-        android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:layout_gravity="top"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:visibility="gone">
+	<FrameLayout
+		android:id="@+id/llEdgeTop"
+		android:layout_width="match_parent"
+		android:layout_height="24dp"
+		android:layout_gravity="top"
+		android:layout_marginLeft="24dp"
+		android:layout_marginRight="24dp"
+		android:visibility="gone">
 
-        <View
-            android:layout_width="32dp"
-            android:layout_height="4dp"
-            android:layout_gravity="center_horizontal|top"
-            android:background="@drawable/widget_resize_handle_pill" />
-    </FrameLayout>
+		<View
+			android:layout_width="32dp"
+			android:layout_height="4dp"
+			android:layout_gravity="center_horizontal|top"
+			android:background="@drawable/widget_resize_handle_pill" />
+	</FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/llEdgeBottom"
-        android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:layout_gravity="bottom"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:visibility="gone">
+	<FrameLayout
+		android:id="@+id/llEdgeBottom"
+		android:layout_width="match_parent"
+		android:layout_height="24dp"
+		android:layout_gravity="bottom"
+		android:layout_marginLeft="24dp"
+		android:layout_marginRight="24dp"
+		android:visibility="gone">
 
-        <View
-            android:layout_width="32dp"
-            android:layout_height="4dp"
-            android:layout_gravity="center_horizontal|bottom"
-            android:background="@drawable/widget_resize_handle_pill" />
-    </FrameLayout>
+		<View
+			android:layout_width="32dp"
+			android:layout_height="4dp"
+			android:layout_gravity="center_horizontal|bottom"
+			android:background="@drawable/widget_resize_handle_pill" />
+	</FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/llEdgeLeft"
-        android:layout_width="24dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="left"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:visibility="gone">
+	<FrameLayout
+		android:id="@+id/llEdgeLeft"
+		android:layout_width="24dp"
+		android:layout_height="match_parent"
+		android:layout_gravity="left"
+		android:layout_marginTop="24dp"
+		android:layout_marginBottom="24dp"
+		android:visibility="gone">
 
-        <View
-            android:layout_width="4dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center_vertical|left"
-            android:background="@drawable/widget_resize_handle_pill" />
-    </FrameLayout>
+		<View
+			android:layout_width="4dp"
+			android:layout_height="32dp"
+			android:layout_gravity="center_vertical|left"
+			android:background="@drawable/widget_resize_handle_pill" />
+	</FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/llEdgeRight"
-        android:layout_width="24dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="right"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:visibility="gone">
+	<FrameLayout
+		android:id="@+id/llEdgeRight"
+		android:layout_width="24dp"
+		android:layout_height="match_parent"
+		android:layout_gravity="right"
+		android:layout_marginTop="24dp"
+		android:layout_marginBottom="24dp"
+		android:visibility="gone">
 
-        <View
-            android:layout_width="4dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center_vertical|right"
-            android:background="@drawable/widget_resize_handle_pill" />
-    </FrameLayout>
+		<View
+			android:layout_width="4dp"
+			android:layout_height="32dp"
+			android:layout_gravity="center_vertical|right"
+			android:background="@drawable/widget_resize_handle_pill" />
+	</FrameLayout>
 </FrameLayout>

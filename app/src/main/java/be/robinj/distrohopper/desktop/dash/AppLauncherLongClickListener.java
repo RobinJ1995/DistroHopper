@@ -32,12 +32,9 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 		{
 			Object tag = view.getTag ();
 
-			if (tag instanceof DashItem.AppItem)
-			{
+			if (tag instanceof DashItem.AppItem) {
 				startAppDrag (view, ((DashItem.AppItem) tag).getApp ());
-			}
-			else if (tag instanceof DashItem.FolderItem)
-			{
+			} else if (tag instanceof DashItem.FolderItem) {
 				startFolderDrag (view, ((DashItem.FolderItem) tag).getFolder ().getId ());
 			}
 		}
@@ -68,8 +65,9 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 		DashDragPayload payload = new DashDragPayload.FolderDrag (folderId);
 		ClipData data = ClipData.newPlainText ("dashFolder", folderId);
 
-		if (source.startDragAndDrop (data, new View.DragShadowBuilder (view), payload, 0))
+		if (source.startDragAndDrop (data, new View.DragShadowBuilder (view), payload, 0)) {
 			LauncherBarBinder.startedDragging (this.parent);
+		}
 	}
 
 	/**
@@ -94,8 +92,7 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 			? view
 			: appManager.getContext ().getWindow ().getDecorView ();
 
-		if (appManager.isPinned (app))
-		{
+		if (appManager.isPinned (app)) {
 			// Already on the launcher, but the dash is its own surface: carry a
 			// PinnedAppDrag (a dash pin-by-drop), NOT the pinned index. So dropping
 			// on the desktop pins a *separate* desktop copy and leaves the launcher
@@ -112,24 +109,20 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 			// Only enter drag mode if the drag really started: doing so
 			// without an active drag would leave the bar stuck, as no
 			// ACTION_DRAG_ENDED will ever restore it //
-			if (source.startDragAndDrop (data, new View.DragShadowBuilder (view), payload, 0))
-			{
+			if (source.startDragAndDrop (data, new View.DragShadowBuilder (view), payload, 0)) {
 				// A dash app icon: the bar shows the "app info" drop target in
 				// the trash's place (there is nothing to delete — the dash
 				// always shows every installed app) //
 				LauncherBarBinder.dragStartedFromDashApp ();
 				appManager.startedDraggingPinnedApp (app);
 			}
-		}
-		else
-		{
+		} else {
 			// Not pinned yet: drag it onto the launcher to pin it at the
 			// position it is dropped on. The App local state tells the
 			// trash's listener this is a pin-by-drop, not a reorder //
 			ClipData data = ClipData.newPlainText ("dash", "dash");
 
-			if (source.startDragAndDrop (data, new View.DragShadowBuilder (view), app, 0))
-			{
+			if (source.startDragAndDrop (data, new View.DragShadowBuilder (view), app, 0)) {
 				LauncherBarBinder.dragStartedFromDashApp ();
 				appManager.startedDraggingDashApp (app);
 			}
@@ -141,8 +134,9 @@ public class AppLauncherLongClickListener implements AdapterView.OnItemLongClick
 	{
 		final InputMethodManager imm =
 			(InputMethodManager) activity.getSystemService (Context.INPUT_METHOD_SERVICE);
-		if (imm != null)
+		if (imm != null) {
 			imm.hideSoftInputFromWindow (
 				activity.getWindow ().getDecorView ().getWindowToken (), 0);
+		}
 	}
 }

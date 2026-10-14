@@ -24,59 +24,59 @@ import java.net.URLConnection
  */
 @RunWith(RobolectricTestRunner::class)
 class DuckDuckGoTest {
-    private lateinit var application: Application
+		private lateinit var application: Application
 
-    @Before fun setUp() {
-        application = ApplicationProvider.getApplicationContext()
-    }
+		@Before fun setUp() {
+				application = ApplicationProvider.getApplicationContext()
+		}
 
-    @Test fun searchEmitsEachResultWithItsDownloadedIcon() {
-        val json = """
+		@Test fun searchEmitsEachResultWithItsDownloadedIcon() {
+				val json = """
             {"RelatedTopics":[
               {"Text":"Result A","FirstURL":"https://a.example","Icon":{"URL":"/a.png"}},
               {"Text":"Result B","FirstURL":"https://b.example","Icon":{"URL":"/b.png"}}
             ]}
         """.trimIndent()
-        val lens = FakeDuckDuckGo(application, json)
+				val lens = FakeDuckDuckGo(application, json)
 
-        val emitted = lens.collect("query", 10).results
+				val emitted = lens.collect("query", 10).results
 
-        assertEquals(listOf("Result A", "Result B"), emitted.map { it.name })
-        // Each emitted result already carries its own downloaded icon (the 4x4
-        // test bitmap), not the lens fallback placeholder //
-        emitted.forEach {
-            val drawable = it.icon
-            assertTrue("expected a downloaded BitmapDrawable", drawable is BitmapDrawable)
-            assertEquals(4, (drawable as BitmapDrawable).bitmap.width)
-        }
-    }
+				assertEquals(listOf("Result A", "Result B"), emitted.map { it.name })
+				// Each emitted result already carries its own downloaded icon (the 4x4
+				// test bitmap), not the lens fallback placeholder //
+				emitted.forEach {
+						val drawable = it.icon
+						assertTrue("expected a downloaded BitmapDrawable", drawable is BitmapDrawable)
+						assertEquals(4, (drawable as BitmapDrawable).bitmap.width)
+				}
+		}
 
-    @Test fun searchStopsAtMaxResults() {
-        val json = """
+		@Test fun searchStopsAtMaxResults() {
+				val json = """
             {"RelatedTopics":[
               {"Text":"A","FirstURL":"https://a","Icon":{"URL":"/a.png"}},
               {"Text":"B","FirstURL":"https://b","Icon":{"URL":"/b.png"}},
               {"Text":"C","FirstURL":"https://c","Icon":{"URL":"/c.png"}}
             ]}
         """.trimIndent()
-        val lens = FakeDuckDuckGo(application, json)
+				val lens = FakeDuckDuckGo(application, json)
 
-        assertEquals(2, lens.collect("query", 2).results.size)
-    }
+				assertEquals(2, lens.collect("query", 2).results.size)
+		}
 
-    /** Serves the canned API JSON for the api.duckduckgo.com call and a 4x4 PNG for icon URLs. */
-    private class FakeDuckDuckGo(context: Context, private val json: String) : DuckDuckGo(context) {
-        private val pngBytes = ByteArrayOutputStream().also {
-            Bitmap.createBitmap(4, 4, Bitmap.Config.ARGB_8888)
-                .compress(Bitmap.CompressFormat.PNG, 100, it)
-        }.toByteArray()
+		/** Serves the canned API JSON for the api.duckduckgo.com call and a 4x4 PNG for icon URLs. */
+		private class FakeDuckDuckGo(context: Context, private val json: String) : DuckDuckGo(context) {
+				private val pngBytes = ByteArrayOutputStream().also {
+						Bitmap.createBitmap(4, 4, Bitmap.Config.ARGB_8888)
+								.compress(Bitmap.CompressFormat.PNG, 100, it)
+				}.toByteArray()
 
-        override fun openConnection(url: String): URLConnection =
-            object : URLConnection(URL(url)) {
-                override fun connect() {}
-                override fun getInputStream(): InputStream =
-                    if (url.contains("api.duckduckgo.com")) ByteArrayInputStream(json.toByteArray())
-                    else ByteArrayInputStream(pngBytes)
-            }
-    }
+				override fun openConnection(url: String): URLConnection =
+						object : URLConnection(URL(url)) {
+								override fun connect() {}
+								override fun getInputStream(): InputStream =
+										if (url.contains("api.duckduckgo.com")) ByteArrayInputStream(json.toByteArray())
+										else ByteArrayInputStream(pngBytes)
+						}
+		}
 }

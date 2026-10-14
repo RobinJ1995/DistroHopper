@@ -10,41 +10,41 @@ import java.net.URLEncoder
  */
 class GitHub(context: Context) : Lens(context) {
 
-    init {
-        this.icon = context.resources.getDrawable(R.drawable.dash_search_lens_github, null)
-    }
+	init {
+		this.icon = context.resources.getDrawable(R.drawable.dash_search_lens_github, null)
+	}
 
-    override val key = "GitHub"
+	override val key = "GitHub"
 
-    override val type = LensType.NETWORK
+	override val type = LensType.NETWORK
 
-    override fun getName() = "GitHub"
+	override fun getName() = "GitHub"
 
-    override fun getDescription() = "GitHub repository search results"
+	override fun getDescription() = "GitHub repository search results"
 
-    override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {
-        val apiResults = this.downloadStr(API.replace("{:QUERY:}", URLEncoder.encode(query, "UTF-8")))
+	override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {
+		val apiResults = this.downloadStr(API.replace("{:QUERY:}", URLEncoder.encode(query, "UTF-8")))
 
-        val items = JSONObject(apiResults).getJSONArray("items")
-        var nResults = 0
+		val items = JSONObject(apiResults).getJSONArray("items")
+		var nResults = 0
 
-        for (i in 0 until items.length()) {
-            val item = items.getJSONObject(i)
+		for (i in 0 until items.length()) {
+			val item = items.getJSONObject(i)
 
-            if (item.has("full_name") && item.has("html_url")) {
-                emitter.emit(LensSearchResult(
-                    this.context, item.getString("full_name"), item.getString("html_url"), this.icon))
+			if (item.has("full_name") && item.has("html_url")) {
+				emitter.emit(LensSearchResult(
+					this.context, item.getString("full_name"), item.getString("html_url"), this.icon))
 
-                if (++nResults >= maxResults) {
-                    break
-                }
-            }
-        }
-    }
+				if (++nResults >= maxResults) {
+					break
+				}
+			}
+		}
+	}
 
-    override fun onClick(url: String) = this.openInBrowser(url)
+	override fun onClick(url: String) = this.openInBrowser(url)
 
-    companion object {
-        private const val API = "https://api.github.com/search/repositories?q={:QUERY:}"
-    }
+	companion object {
+		private const val API = "https://api.github.com/search/repositories?q={:QUERY:}"
+	}
 }

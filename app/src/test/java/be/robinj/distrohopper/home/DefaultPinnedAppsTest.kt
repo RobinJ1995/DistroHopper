@@ -30,7 +30,9 @@ class DefaultPinnedAppsTest {
 	private fun install(packageName: String, system: Boolean = false) {
 		val applicationInfo = ApplicationInfo().apply {
 			this.packageName = packageName
-			if (system) flags = flags or ApplicationInfo.FLAG_SYSTEM
+			if (system) {
+				flags = flags or ApplicationInfo.FLAG_SYSTEM
+			}
 		}
 		Shadows.shadowOf(this.application.packageManager).installPackage(
 			PackageInfo().apply {

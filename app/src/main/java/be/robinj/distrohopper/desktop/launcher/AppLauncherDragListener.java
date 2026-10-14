@@ -41,8 +41,9 @@ public class AppLauncherDragListener implements ViewGroup.OnDragListener
 		{
 			// Widget drags are handled by WidgetsContainer_DragListener and the trash's
 			// own listener //
-			if (event.getLocalState () instanceof WidgetContainer)
+			if (event.getLocalState () instanceof WidgetContainer) {
 				return false;
+			}
 
 			switch (event.getAction ())
 			{
@@ -55,12 +56,14 @@ public class AppLauncherDragListener implements ViewGroup.OnDragListener
 					// commits the previewed reorder. A desktop app dragged here rode
 					// in on a dash-style placeholder, so it is pinned by the commit
 					// then removed from the desktop to complete the move //
-					if (! this.appManager.dropPinnedFold ())
+					if (! this.appManager.dropPinnedFold ()) {
 						this.appManager.droppedPinnedApp ();
+					}
 					if (event.getLocalState () instanceof DesktopAppView
-							&& this.appManager.getParent ().getDesktopAppHost () != null)
+							&& this.appManager.getParent ().getDesktopAppHost () != null) {
 						this.appManager.getParent ().getDesktopAppHost ()
 							.remove ((DesktopAppView) event.getLocalState ());
+					}
 					this.appManager.stoppedDraggingPinnedApp ();
 					break;
 				case DragEvent.ACTION_DRAG_ENDED:

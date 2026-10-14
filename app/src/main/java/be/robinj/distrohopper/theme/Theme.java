@@ -148,34 +148,29 @@ public abstract class Theme
 		int panelEdge = prefs.getInt (Preference.PANEL_EDGE.getName (),
 				res.getInteger (this.panel_location));
 
-		if (panelEdge != Location.NONE.n)
-		{
+		if (panelEdge != Location.NONE.n) {
 			boolean supportsBottom = false;
 			for (final int supported : res.getIntArray (this.panel_location_supported))
 				supportsBottom |= supported == Location.BOTTOM.n;
 
-			if (supportsBottom)
-			{
+			if (supportsBottom) {
 				final int launcherEdge = prefs.getInt (Preference.LAUNCHER_EDGE.getName (),
 						res.getInteger (this.launcher_location));
 				panelEdge = launcherEdge == Location.TOP.n ? Location.BOTTOM.n : Location.TOP.n;
 			}
-		}
-		else if (res.getBoolean (this.statusbar_follows_launcher_edge))
-		{
+		} else if (res.getBoolean (this.statusbar_follows_launcher_edge)) {
 			final int launcherEdge = prefs.getInt (Preference.LAUNCHER_EDGE.getName (),
 					res.getInteger (this.launcher_location));
 			return launcherEdge == Location.TOP.n
 					? this.statusbar_background : this.statusbar_background_when_panel_not_top;
-		}
-		else
-		{
+		} else {
 			// Panel hidden on a panelled theme: its own panel-hidden background.
 			return this.statusbar_colour_when_panel_hidden;
 		}
 
-		if (panelEdge != Location.TOP.n)
+		if (panelEdge != Location.TOP.n) {
 			return this.statusbar_background_when_panel_not_top;
+		}
 
 		return this.statusbar_background;
 	}
@@ -190,16 +185,18 @@ public abstract class Theme
 	public Location launcherBfbLocationResolved(final Resources res, final SharedPreferences prefs) {
 		final Location nativeLocation = Location.of(res.getInteger(this.launcher_bfb_location));
 
-		if (! this.launcherBfbToggleable(res))
+		if (! this.launcherBfbToggleable(res)) {
 			return nativeLocation;
+		}
 
 		final BfbLocation choice;
 		final String stored = prefs.getString(Preference.LAUNCHER_BFB_LOCATION.getName(), null);
-		if (stored == null)
+		if (stored == null) {
 			choice = res.getBoolean(this.launcher_bfb_visible_by_default)
 					? this.bfbSide(nativeLocation) : BfbLocation.NONE;
-		else
+		} else {
 			choice = BfbLocation.of(stored);
+		}
 
 		switch (choice) {
 			case START:
@@ -214,8 +211,9 @@ public abstract class Theme
 
 	/** The user-facing default side for this (toggleable) theme: none, or its native side. */
 	public BfbLocation launcherBfbDefaultChoice(final Resources res) {
-		if (! res.getBoolean(this.launcher_bfb_visible_by_default))
+		if (! res.getBoolean(this.launcher_bfb_visible_by_default)) {
 			return BfbLocation.NONE;
+		}
 
 		return this.bfbSide(Location.of(res.getInteger(this.launcher_bfb_location)));
 	}
@@ -241,8 +239,9 @@ public abstract class Theme
 
 	/** The BFB side (none/start/end) a position_* location maps to. */
 	public BfbLocation bfbSide(final Location location) {
-		if (location == Location.NONE)
+		if (location == Location.NONE) {
 			return BfbLocation.NONE;
+		}
 
 		return this.isStartSide(location) ? BfbLocation.START : BfbLocation.END;
 	}

@@ -38,8 +38,9 @@ public class LensPreferencesListViewAdapter extends ArrayAdapter<Lens>
 	{
 		Lens lens = this.getItem (position);
 
-		if (view == null)
+		if (view == null) {
 			view = LayoutInflater.from (this.getContext ()).inflate (R.layout.widget_lens_preferences_list_item, parent, false);
+		}
 
 		TextView tvName = view.findViewById (R.id.tvName);
 		TextView tvDescription = view.findViewById (R.id.tvDescription);

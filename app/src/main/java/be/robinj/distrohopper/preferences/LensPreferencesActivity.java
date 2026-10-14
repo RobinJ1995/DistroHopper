@@ -41,8 +41,9 @@ public class LensPreferencesActivity extends AppCompatActivity
 
 			for (Lens lens : this.lensManager.getAvailableLenses ().values ())
 			{
-				if (!this.lenses.contains (lens))
+				if (!this.lenses.contains (lens)) {
 					this.lenses.add (lens);
+				}
 			}
 
 			DragSortListView lvList = this.findViewById (R.id.lvList);
@@ -98,8 +99,7 @@ public class LensPreferencesActivity extends AppCompatActivity
 	{
 		try
 		{
-			if (this.lensManager == null) // onCreate failed; nothing to save //
-			{
+			if (this.lensManager == null) { // onCreate failed; nothing to save //
 				super.onPause ();
 				return;
 			}

@@ -27,14 +27,14 @@ public class RunningAppLauncher extends AppLauncher
 	@Override
 	protected void iconChanged ()
 	{
-		if (! this.isInEditMode ())
-		{
+		if (! this.isInEditMode ()) {
 			ImageView imgIcon = (ImageView) this.findViewById (R.id.imgIcon);
 			imgIcon.setImageDrawable (this.getIcon ().getDrawable ());
 
 			LinearLayout llBackground = (LinearLayout) this.findViewById (R.id.llBackground);
-			if (llBackground != null && (! this.isSpecial ()))
+			if (llBackground != null && (! this.isSpecial ())) {
 				this.colourChanged ();
+			}
 
 			imgIcon.setAlpha (0.9F);
 		}

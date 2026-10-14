@@ -102,8 +102,9 @@ public class WidgetsContainer extends ViewGroup
 	 */
 	public void showGridOverlay ()
 	{
-		if (this.gridOverlayVisible || ! this.isGridOverlayEnabled ())
+		if (this.gridOverlayVisible || ! this.isGridOverlayEnabled ()) {
 			return;
+		}
 
 		this.gridOverlayVisible = true;
 		this.invalidate ();
@@ -111,8 +112,9 @@ public class WidgetsContainer extends ViewGroup
 
 	public void hideGridOverlay ()
 	{
-		if (! this.gridOverlayVisible)
+		if (! this.gridOverlayVisible) {
 			return;
+		}
 
 		this.gridOverlayVisible = false;
 		this.invalidate ();
@@ -149,8 +151,9 @@ public class WidgetsContainer extends ViewGroup
 
 	public void hideMoveTarget ()
 	{
-		if (! this.moveTargetVisible)
+		if (! this.moveTargetVisible) {
 			return;
+		}
 
 		this.moveTargetVisible = false;
 		this.invalidate ();
@@ -184,8 +187,9 @@ public class WidgetsContainer extends ViewGroup
 
 	public void hideSnapLine ()
 	{
-		if (! this.snapLineVisible)
+		if (! this.snapLineVisible) {
 			return;
+		}
 
 		this.snapLineVisible = false;
 
@@ -197,8 +201,7 @@ public class WidgetsContainer extends ViewGroup
 	{
 		super.dispatchDraw (canvas);
 
-		if (this.gridOverlayVisible)
-		{
+		if (this.gridOverlayVisible) {
 			final int cellWidth = this.getCellWidth ();
 			final int cellHeight = this.getCellHeight ();
 			final int dCols = this.displayCols ();
@@ -216,8 +219,7 @@ public class WidgetsContainer extends ViewGroup
 			}
 		}
 
-		if (this.moveTargetVisible)
-		{
+		if (this.moveTargetVisible) {
 			final int cellWidth = this.getCellWidth ();
 			final int cellHeight = this.getCellHeight ();
 			final float radius = TypedValue.applyDimension (
@@ -239,13 +241,13 @@ public class WidgetsContainer extends ViewGroup
 		}
 
 		// On top of the children, so the line stays visible over the dragged widget //
-		if (! this.snapLineVisible)
+		if (! this.snapLineVisible) {
 			return;
-
-		if (this.snapLineVertical)
+		} else if (this.snapLineVertical) {
 			canvas.drawLine (this.snapLinePos, this.snapLineFrom, this.snapLinePos, this.snapLineTo, this.snapLinePaint);
-		else
+		} else {
 			canvas.drawLine (this.snapLineFrom, this.snapLinePos, this.snapLineTo, this.snapLinePos, this.snapLinePaint);
+		}
 	}
 
 	public int getCellWidth ()
@@ -272,8 +274,9 @@ public class WidgetsContainer extends ViewGroup
 		{
 			final View child = this.getChildAt (i);
 
-			if (child.getVisibility () == GONE)
+			if (child.getVisibility () == GONE) {
 				continue;
+			}
 
 			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
 
@@ -299,8 +302,9 @@ public class WidgetsContainer extends ViewGroup
 		{
 			final View child = this.getChildAt (i);
 
-			if (child.getVisibility () == GONE)
+			if (child.getVisibility () == GONE) {
 				continue;
+			}
 
 			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
 
@@ -327,8 +331,9 @@ public class WidgetsContainer extends ViewGroup
 		{
 			final View child = this.getChildAt (i);
 
-			if (child == exclude || ! (child instanceof WidgetContainer))
+			if (child == exclude || ! (child instanceof WidgetContainer)) {
 				continue;
+			}
 
 			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
 
@@ -354,8 +359,9 @@ public class WidgetsContainer extends ViewGroup
 		{
 			final View child = this.getChildAt (i);
 
-			if (child == exclude || ! (child instanceof DesktopAppView))
+			if (child == exclude || ! (child instanceof DesktopAppView)) {
 				continue;
+			}
 
 			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
 
@@ -379,8 +385,9 @@ public class WidgetsContainer extends ViewGroup
 		{
 			final View child = this.getChildAt (i);
 
-			if (child == exclude || ! (child instanceof DesktopFolderView))
+			if (child == exclude || ! (child instanceof DesktopFolderView)) {
 				continue;
+			}
 
 			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
 
@@ -399,13 +406,15 @@ public class WidgetsContainer extends ViewGroup
 			final View child = this.getChildAt (i);
 
 			if (! (child instanceof WidgetContainer || child instanceof DesktopAppView
-					|| child instanceof DesktopFolderView))
+					|| child instanceof DesktopFolderView)) {
 				continue;
+			}
 
 			final LayoutParams lp = (LayoutParams) child.getLayoutParams ();
 			if (col >= lp.col && col < lp.col + lp.colSpan
-					&& row >= lp.row && row < lp.row + lp.rowSpan)
+					&& row >= lp.row && row < lp.row + lp.rowSpan) {
 				return child;
+			}
 		}
 
 		return null;
@@ -432,8 +441,9 @@ public class WidgetsContainer extends ViewGroup
 		{
 			final View child = this.getChildAt (i);
 
-			if (child instanceof WidgetContainer && ((WidgetContainer) child).getEditMode ())
+			if (child instanceof WidgetContainer && ((WidgetContainer) child).getEditMode ()) {
 				((WidgetContainer) child).setEditMode (false);
+			}
 		}
 	}
 
@@ -443,8 +453,9 @@ public class WidgetsContainer extends ViewGroup
 		{
 			final View child = this.getChildAt (i);
 
-			if (child instanceof WidgetContainer && ((WidgetContainer) child).getEditMode ())
+			if (child instanceof WidgetContainer && ((WidgetContainer) child).getEditMode ()) {
 				return true;
+			}
 		}
 
 		return false;

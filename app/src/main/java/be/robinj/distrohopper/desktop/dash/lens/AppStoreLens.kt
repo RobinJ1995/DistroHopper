@@ -8,14 +8,14 @@ import android.content.pm.PackageManager
  * F-Droid, …).
  */
 abstract class AppStoreLens(context: Context) : Lens(context) {
-    override val type = LensType.NETWORK
+	override val type = LensType.NETWORK
 
-    /** Whether an app with the given package name is installed on this device. */
-    protected fun isInstalled(packageName: String): Boolean =
-        try {
-            context.packageManager.getPackageInfo(packageName, 0)
-            true
-        } catch (ex: PackageManager.NameNotFoundException) {
-            false
-        }
+	/** Whether an app with the given package name is installed on this device. */
+	protected fun isInstalled(packageName: String): Boolean =
+		try {
+			context.packageManager.getPackageInfo(packageName, 0)
+			true
+		} catch (ex: PackageManager.NameNotFoundException) {
+			false
+		}
 }

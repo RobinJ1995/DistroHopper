@@ -48,8 +48,7 @@ public class Image {
 	public boolean equals(Object image) {
 		if (this == image) {
 			return true;
-		}
-		if (!(image instanceof Image)) {
+		} else if (!(image instanceof Image)) {
 			return false;
 		}
 
@@ -141,8 +140,7 @@ public class Image {
 			for (int i = 0; i < colours.length; i++)
 				colours[i] = lColours.get (i);
 			
-			if (useHsv)
-			{
+			if (useHsv) {
 				float[] perHue = new float[360];
 				
 				int samplesPassed = 0;
@@ -161,17 +159,13 @@ public class Image {
 					float saturation = hsv[1];
 					float value = hsv[2];
 					
-					if (saturation < 0.2F || (saturation < 0.4F && value < 0.4F))
-					{
+					if (saturation < 0.2F || (saturation < 0.4F && value < 0.4F)) {
 						samplesDroppedSaturation++;
-					} else if (value < 0.3F) // || (value < 0.4F && saturation < 0.4F)) // But that's already in the previous statement //
-					{
+					} else if (value < 0.3F) { // || (value < 0.4F && saturation < 0.4F)) // But that's already in the previous statement //
 						samplesDroppedValue++;
-					} else if (cAlpha <= 40)
-					{
+					} else if (cAlpha <= 40) {
 						samplesDroppedAlpha++;
-					} else
-					{
+					} else {
 						perHue[(int) Math.floor ((double) hue)]++;
 						samplesPassed++;
 					}
@@ -179,10 +173,8 @@ public class Image {
 				
 				samplesDropped += (samplesDroppedSaturation + samplesDroppedValue + samplesDroppedAlpha);
 				
-				if (samplesPassed == 0)
-				{
-					if (samplesDroppedSaturation >= (samplesDropped - 1)) // Black-and-white //
-					{
+				if (samplesPassed == 0) {
+					if (samplesDroppedSaturation >= (samplesDropped - 1)) { // Black-and-white //
 						int white = 0;
 						int grey = 0;
 						int black = 0;
@@ -195,23 +187,24 @@ public class Image {
 							
 							float value = hsv[2];
 							
-							if (cAlpha > 40)
-							{
-								if (value > 0.8F)
+							if (cAlpha > 40) {
+								if (value > 0.8F) {
 									white++;
-								else if (value < 0.2F)
+								} else if (value < 0.2F) {
 									black++;
-								else
+								} else {
 									grey++;
+								}
 							}
 						}
-						
-						if ((grey > white && grey > black) || white == black)
+
+						if ((grey > white && grey > black) || white == black) {
 							return Color.argb (alpha, 150, 150, 150);
-						else if (white >= grey && white >= black)
+						} else if (white >= grey && white >= black) {
 							return Color.argb (alpha, 240, 240, 240);
-						else
-							return Color.argb (alpha, 50, 50, 50);
+						}
+
+						return Color.argb (alpha, 50, 50, 50);
 					}
 				}
 				
@@ -225,8 +218,9 @@ public class Image {
 					
 					for (int j = 0; j < hueGroupSize; j++)
 					{
-						if (perHue[start2 + j] > 0)
+						if (perHue[start2 + j] > 0) {
 							hueGroups[i]++;
+						}
 						
 						start++;
 					}
@@ -236,8 +230,7 @@ public class Image {
 				int mostUsedHue = -1;
 				for (int i = 0; i < hueGroups.length; i++)
 				{
-					if (hueGroups[i] > mostUses)
-					{
+					if (hueGroups[i] > mostUses) {
 						mostUses = hueGroups[i];
 						mostUsedHue = (i * hueGroupSize) - (hueGroupSize / 2);
 					}
@@ -259,8 +252,7 @@ public class Image {
 						Color.alpha (colours[i])
 					};
 
-				if (rgb[3] > 40) // Don't care about pixels which are more than ~85% transparent //
-				{
+				if (rgb[3] > 40) { // Don't care about pixels which are more than ~85% transparent //
 					total++;
 
 					average[0] += rgb[0];
@@ -269,8 +261,9 @@ public class Image {
 				}
 			}
 
-			if (total <= 0)
+			if (total <= 0) {
 				return Color.argb (alpha, 40, 40, 40);
+			}
 
 			average[0] /= total;
 			average[1] /= total;

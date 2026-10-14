@@ -66,7 +66,9 @@ class CustomiseModeUi(
 			object : SeekBar.OnSeekBarChangeListener {
 				override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
 					this@CustomiseModeUi.updateLauncherIconHint(launcherIconHint, launcherIconLabels, i)
-					if (b) this.update(i)  // see onStopTrackingTouch: ignore non-user (state-restore) changes
+					if (b) {
+						this.update(i)  // see onStopTrackingTouch: ignore non-user (state-restore) changes
+					}
 				}
 
 				override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -95,7 +97,9 @@ class CustomiseModeUi(
 		sbCustomiseDashColumns.setOnSeekBarChangeListener(
 			object : SeekBar.OnSeekBarChangeListener {
 				override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-					if (b) this.update(i)  // see onStopTrackingTouch: ignore non-user (state-restore) changes
+					if (b) {
+						this.update(i)  // see onStopTrackingTouch: ignore non-user (state-restore) changes
+					}
 				}
 
 				override fun onStartTrackingTouch(seekBar: SeekBar) {}

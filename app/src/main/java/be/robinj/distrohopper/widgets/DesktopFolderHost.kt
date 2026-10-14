@@ -49,8 +49,7 @@ class DesktopFolderHost(
 				changed = true // Dissolved: too few members left; return them loose //
 				this.returnMembersLoose(layout, appMap)
 				continue
-			}
-			if (keptCells.size != saved.cells.size) {
+			} else if (keptCells.size != saved.cells.size) {
 				changed = true
 			}
 

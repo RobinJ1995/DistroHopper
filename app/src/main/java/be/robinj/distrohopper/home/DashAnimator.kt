@@ -102,9 +102,7 @@ class DashAnimator(
 			this.withLayoutTransitionsSuppressed { this.openInstantly() }
 			this.applyBlurRadius(blurRadiusPx.toFloat(), blurRadiusPx)
 			return
-		}
-
-		if (this.animation == DashAnimation.NONE) {
+		} else if (this.animation == DashAnimation.NONE) {
 			this.openInstantly()
 			this.start(opening = true, freshOpen = false, blurRadiusPx)
 			return
@@ -151,9 +149,7 @@ class DashAnimator(
 			this.dashGrid()?.let { this.resetIconTransforms(it) }
 			this.finishBlur()
 			return
-		}
-
-		if (this.animation == DashAnimation.NONE) {
+		} else if (this.animation == DashAnimation.NONE) {
 			teardown()
 			this.viewFinder.get<LinearLayout>(R.id.llPanel).alpha = this.panelRestingAlpha()
 			this.start(opening = false, freshOpen = false, blurRadiusPx)
@@ -262,9 +258,7 @@ class DashAnimator(
 					}
 					if (this.cancelled) { // The taking-over call owns the views now //
 						return
-					}
-
-					if (open) {
+					} else if (open) {
 						resetDashTransforms(viewFinder.get(R.id.llDash))
 						dashGrid()?.let { resetIconTransforms(it) }
 					} else {
@@ -426,9 +420,7 @@ class DashAnimator(
 					}
 					if (this.cancelled) { // The reversing call owns the views now //
 						return
-					}
-
-					if (opening) {
+					} else if (opening) {
 						gvDashHomeApps?.let { resetIconTransforms(it) }
 					} else {
 						withLayoutTransitionsSuppressed { teardown?.invoke() }
@@ -493,9 +485,7 @@ class DashAnimator(
 		val (offscreenX, offscreenY) = this.cinnamonOffscreen(llDash)
 		if (offscreenX == 0F && offscreenY == 0F) { // No launcher edge to slide in from //
 			return this.buildUnityAnimators(opening, freshOpen, llDash, duration)
-		}
-
-		if (freshOpen) {
+		} else if (freshOpen) {
 			llDash.translationX = offscreenX
 			llDash.translationY = offscreenY
 		}

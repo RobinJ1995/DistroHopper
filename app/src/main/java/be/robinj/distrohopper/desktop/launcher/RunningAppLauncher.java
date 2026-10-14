@@ -36,8 +36,9 @@ public class RunningAppLauncher extends AppLauncher
 		super.applyTheme ();
 
 		final Theme theme = DependencyContainer.of (this.getContext ()).getThemeManager ().getCurrent ();
-		if (! this.getResources ().getBoolean (theme.launcher_applauncher_backgroundcolour_dynamic))
+		if (! this.getResources ().getBoolean (theme.launcher_applauncher_backgroundcolour_dynamic)) {
 			this.setColour (ContextCompat.getColor (this.getContext (), theme.launcher_applauncher_backgroundcolour));
+		}
 	}
 
 	@Override
@@ -51,14 +52,14 @@ public class RunningAppLauncher extends AppLauncher
 	@Override
 	protected void iconChanged ()
 	{
-		if (! this.isInEditMode ())
-		{
+		if (! this.isInEditMode ()) {
 			ImageView imgIcon = (ImageView) this.findViewById (R.id.imgIcon);
 			imgIcon.setImageDrawable (this.getIcon ().getDrawable ());
 
 			LinearLayout llBackground = (LinearLayout) this.findViewById (R.id.llBackground);
-			if (llBackground != null && (! this.isSpecial ()))
+			if (llBackground != null && (! this.isSpecial ())) {
 				this.colourChanged ();
+			}
 			
 			imgIcon.setAlpha (0.9F);
 		}

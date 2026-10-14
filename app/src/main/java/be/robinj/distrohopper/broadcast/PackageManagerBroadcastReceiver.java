@@ -32,46 +32,37 @@ public class PackageManagerBroadcastReceiver extends BroadcastReceiver
 		try
 		{
 			AppManager appManager = this.parent.getAppManager ();
-			if (appManager != null) // If AsyncLoadApps isn't finished then there is no AppManager yet. In theory this class should only be instantiated once AsyncLoadApps is finished, but it doesn't hurt to make sure. //
-			{
+			if (appManager != null) { // If AsyncLoadApps isn't finished then there is no AppManager yet. In theory this class should only be instantiated once AsyncLoadApps is finished, but it doesn't hurt to make sure. //
 				String action = intent.getAction ();
 				String friendlyAction = null;
 				String packageName = intent.getData ().getEncodedSchemeSpecificPart ();
 				boolean replacing = intent.getBooleanExtra (Intent.EXTRA_REPLACING, false);
 				Resources res = context.getResources ();
 
-				if (! replacing)
-				{
-					if (action.equals (res.getString (R.string.intent_action_package_added_legacy)) || action.equals (res.getString (R.string.intent_action_package_added)))
-					{
+				if (! replacing) {
+					if (action.equals (res.getString (R.string.intent_action_package_added_legacy)) || action.equals (res.getString (R.string.intent_action_package_added))) {
 						friendlyAction = "added";
 
 						// DistroHopper's own package is represented by the internal Settings
 						// shortcut, not by its public HomeActivity launcher entry.
-						if (! packageName.equals (context.getPackageName ()))
-						{
+						if (! packageName.equals (context.getPackageName ())) {
 							for (ResolveInfo resInf : appManager.queryInstalledApps (packageName))
 							{
 								final App app = new App(context, appManager, resInf);
 								appManager.add (app, true, true);
 							}
 						}
-					}
-					else if (action.equals (res.getString (R.string.intent_action_package_removed)))
-					{
+					} else if (action.equals (res.getString (R.string.intent_action_package_removed))) {
 						friendlyAction = "removed";
 
 						// Our own package is represented by the internal Settings shortcut;
 						// never remove it via the package-removed broadcast.
-						if (! packageName.equals (context.getPackageName ()))
-						{
+						if (! packageName.equals (context.getPackageName ())) {
 							for (App app : appManager.findAppsByPackageName (packageName))
 								appManager.remove (app);
 						}
 					}
-				}
-				else
-				{
+				} else {
 					friendlyAction = "being replaced";
 				}
 

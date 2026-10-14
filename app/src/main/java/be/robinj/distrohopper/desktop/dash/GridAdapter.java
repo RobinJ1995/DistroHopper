@@ -47,8 +47,9 @@ public class GridAdapter extends ArrayAdapter<DashItem> {
 	/** Marks (or, with null, unmarks) the dragged item's cell as an empty gap. */
 	public void setHiddenKey (final String key)
 	{
-		if ((this.hiddenKey == null) ? (key == null) : this.hiddenKey.equals (key))
+		if ((this.hiddenKey == null) ? (key == null) : this.hiddenKey.equals (key)) {
 			return;
+		}
 
 		this.hiddenKey = key;
 		this.notifyDataSetChanged ();
@@ -68,8 +69,9 @@ public class GridAdapter extends ArrayAdapter<DashItem> {
 	{
 		DashItem item = this.getItem (position);
 
-		if (view == null)
+		if (view == null) {
 			view = LayoutInflater.from (parent.getContext ()).inflate (R.layout.widget_dash_applauncher, parent, false);
+		}
 
 		TextView tvLabel = (TextView) view.findViewById (R.id.tvLabel);
 		ImageView imgIcon = (ImageView) view.findViewById (R.id.imgIcon);
@@ -95,8 +97,9 @@ public class GridAdapter extends ArrayAdapter<DashItem> {
 		// width is set by DashGridSizer for the unified column count. Fall back
 		// to the screen-derived cell size before the grid has been laid out //
 		int size = (parent instanceof GridView) ? ((GridView) parent).getColumnWidth() : 0;
-		if (size <= 0)
+		if (size <= 0) {
 			size = DashGrid.cellSizePx(parent.getContext());
+		}
 		view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, size));
 
 		// A recycled view may keep transforms from an interrupted dash animation //

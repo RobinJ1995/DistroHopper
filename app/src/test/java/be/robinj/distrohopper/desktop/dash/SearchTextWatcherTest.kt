@@ -24,75 +24,75 @@ import org.robolectric.shadows.ShadowLooper
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.LEGACY)
 class SearchTextWatcherTest {
-    private lateinit var scenario: ActivityScenario<HomeActivity>
+	private lateinit var scenario: ActivityScenario<HomeActivity>
 
-    @Before fun setUp() {
-        ShadowAlertDialog.reset()
-        scenario = ActivityTestSupport.launchHome()
-    }
+	@Before fun setUp() {
+		ShadowAlertDialog.reset()
+		scenario = ActivityTestSupport.launchHome()
+	}
 
-    @After fun tearDown() { scenario.close() }
+	@After fun tearDown() { scenario.close() }
 
-    private class RecordingLensManager(context: Context) : LensManager(context, null, null, null, null) {
-        var lastQuery: String? = null
-        var calls = 0
-        override fun startSearch(pattern: String?) { this.calls++; this.lastQuery = pattern }
-    }
+	private class RecordingLensManager(context: Context) : LensManager(context, null, null, null, null) {
+		var lastQuery: String? = null
+		var calls = 0
+		override fun startSearch(pattern: String?) { this.calls++; this.lastQuery = pattern }
+	}
 
-    private class ThrowingLensManager(context: Context) : LensManager(context, null, null, null, null) {
-        override fun startSearch(pattern: String?) { throw RuntimeException("boom") }
-    }
+	private class ThrowingLensManager(context: Context) : LensManager(context, null, null, null, null) {
+		override fun startSearch(pattern: String?) { throw RuntimeException("boom") }
+	}
 
-    @Test fun onTextChangedForwardsTypedTextToStartSearch() {
-        scenario.onActivity { activity ->
-            val lenses = RecordingLensManager(activity)
-            val watcher = SearchTextWatcher(activity.appManager, lenses)
+	@Test fun onTextChangedForwardsTypedTextToStartSearch() {
+		scenario.onActivity { activity ->
+			val lenses = RecordingLensManager(activity)
+			val watcher = SearchTextWatcher(activity.appManager, lenses)
 
-            watcher.onTextChanged("fire", 0, 0, 4)
+			watcher.onTextChanged("fire", 0, 0, 4)
 
-            assertEquals("fire", lenses.lastQuery)
-            assertEquals(1, lenses.calls)
-        }
-    }
+			assertEquals("fire", lenses.lastQuery)
+			assertEquals(1, lenses.calls)
+		}
+	}
 
-    @Test fun emptyTextIsStillForwarded() {
-        scenario.onActivity { activity ->
-            val lenses = RecordingLensManager(activity)
-            val watcher = SearchTextWatcher(activity.appManager, lenses)
+	@Test fun emptyTextIsStillForwarded() {
+		scenario.onActivity { activity ->
+			val lenses = RecordingLensManager(activity)
+			val watcher = SearchTextWatcher(activity.appManager, lenses)
 
-            // The watcher does not pre-filter; clearing the box must reach the
-            // lens manager so it can drop the previous results.
-            watcher.onTextChanged("", 0, 4, 0)
+			// The watcher does not pre-filter; clearing the box must reach the
+			// lens manager so it can drop the previous results.
+			watcher.onTextChanged("", 0, 4, 0)
 
-            assertEquals("", lenses.lastQuery)
-            assertEquals(1, lenses.calls)
-        }
-    }
+			assertEquals("", lenses.lastQuery)
+			assertEquals(1, lenses.calls)
+		}
+	}
 
-    @Test fun beforeAndAfterTextChangedDoNotSearch() {
-        scenario.onActivity { activity ->
-            val lenses = RecordingLensManager(activity)
-            val watcher = SearchTextWatcher(activity.appManager, lenses)
+	@Test fun beforeAndAfterTextChangedDoNotSearch() {
+		scenario.onActivity { activity ->
+			val lenses = RecordingLensManager(activity)
+			val watcher = SearchTextWatcher(activity.appManager, lenses)
 
-            watcher.beforeTextChanged("fire", 0, 0, 4)
-            watcher.afterTextChanged(android.text.SpannableStringBuilder("fire"))
+			watcher.beforeTextChanged("fire", 0, 0, 4)
+			watcher.afterTextChanged(android.text.SpannableStringBuilder("fire"))
 
-            assertEquals(0, lenses.calls)
-        }
-    }
+			assertEquals(0, lenses.calls)
+		}
+	}
 
-    @Test fun exceptionInStartSearchIsCaughtAndSurfaced() {
-        scenario.onActivity { activity ->
-            val watcher = SearchTextWatcher(activity.appManager, ThrowingLensManager(activity))
+	@Test fun exceptionInStartSearchIsCaughtAndSurfaced() {
+		scenario.onActivity { activity ->
+			val watcher = SearchTextWatcher(activity.appManager, ThrowingLensManager(activity))
 
-            // Must not propagate — typing keeps working even if a lens blows up.
-            watcher.onTextChanged("x", 0, 0, 1)
+			// Must not propagate — typing keeps working even if a lens blows up.
+			watcher.onTextChanged("x", 0, 0, 1)
 
-            ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
-            assertNotNull(
-                "the failure should be surfaced to the user via ExceptionHandler",
-                ShadowAlertDialog.getLatestAlertDialog(),
-            )
-        }
-    }
+			ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+			assertNotNull(
+				"the failure should be surfaced to the user via ExceptionHandler",
+				ShadowAlertDialog.getLatestAlertDialog(),
+			)
+		}
+	}
 }
