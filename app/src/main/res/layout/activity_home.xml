@@ -359,14 +359,21 @@
 								    android:id="@+id/llDashHomeApps">
 								</LinearLayout>-->
 
-								<ListView
-									android:id="@+id/lvDashHomeLensResults"
+								<!-- The container is what LensManager shows and hides; the
+								     ScrollView needs a single child to hold the sections -->
+								<ScrollView
+									android:id="@+id/svDashHomeLensResults"
 									android:layout_width="match_parent"
 									android:layout_height="wrap_content"
 									android:layout_gravity="center"
-									android:divider="@null"
 									android:focusableInTouchMode="false"
-									android:orientation="vertical" />
+									tools:ignore="UselessParent,TooDeepLayout">
+
+									<be.robinj.distrohopper.desktop.dash.lens.LensResultsList
+										android:id="@+id/llDashHomeLensResults"
+										android:layout_width="match_parent"
+										android:layout_height="wrap_content" />
+								</ScrollView>
 							</LinearLayout>
 						</LinearLayout>
 					</RelativeLayout>

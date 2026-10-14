@@ -289,6 +289,8 @@ per-surface icon views, not one class.
   - declares a `LensType`: `LOCAL` lenses run on every keystroke, `IO` and
     `NETWORK` lenses after a debounce; lenses run one after another.
   - handles its own clicks (`Lens.onClick`) and may offer a settings screen.
+  Results show in `LensResultsList` (in a ScrollView), one view per section
+  built by `CollectionGridAdapter`; each section's grid shows a single row.
   `LocalFiles` searches only folders granted through the system folder picker
   (`localfiles/SearchFolderStore`, in the lens's own prefs file) and needs no
   storage permission; Android refuses to grant `Download` and storage roots.

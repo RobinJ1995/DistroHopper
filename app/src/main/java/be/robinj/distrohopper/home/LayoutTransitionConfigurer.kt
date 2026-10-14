@@ -4,7 +4,6 @@ import android.animation.LayoutTransition
 import android.content.res.Resources
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.ListView
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.ViewFinder
 
@@ -19,10 +18,10 @@ object LayoutTransitionConfigurer {
 		// The dash app grid's transition is set per pager page in
 		// ProfilePagerAdapter — the pages don't exist yet at this point.
 
-		val lvDashHomeLensResults_transition = LayoutTransition()
-		lvDashHomeLensResults_transition.setDuration(180L)
-		lvDashHomeLensResults_transition.setStartDelay(LayoutTransition.APPEARING, 0)
-		viewFinder.get<ListView>(R.id.lvDashHomeLensResults).layoutTransition = lvDashHomeLensResults_transition
+		val llDashHomeLensResults_transition = LayoutTransition()
+		llDashHomeLensResults_transition.setDuration(180L)
+		llDashHomeLensResults_transition.setStartDelay(LayoutTransition.APPEARING, 0)
+		viewFinder.get<LinearLayout>(R.id.llDashHomeLensResults).layoutTransition = llDashHomeLensResults_transition
 
 		// Zero delays and a short duration so that, while reordering icons by
 		// drag, the siblings slide over immediately as the empty slot moves.

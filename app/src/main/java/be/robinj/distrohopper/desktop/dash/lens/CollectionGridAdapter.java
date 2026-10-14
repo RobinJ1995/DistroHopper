@@ -3,6 +3,7 @@ package be.robinj.distrohopper.desktop.dash.lens;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,9 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 		TextView tvLabel = (TextView) view.findViewById (R.id.tvLabel);
 		GridView gvResults = (GridView) view.findViewById (R.id.gvResults);
 
-		tvLabel.setText (coll.getName ());
+		if (! TextUtils.equals (tvLabel.getText (), coll.getName ())) {
+			tvLabel.setText(coll.getName()); // see GridAdapter //
+		}
 		final Theme theme = DependencyContainer.of (view.getContext ()).getThemeManager ().getCurrent ();
 		tvLabel.setTextColor (ContextCompat.getColor (view.getContext (), theme.dash_applauncher_text_colour));
 		tvLabel.setShadowLayer (5, 2, 2, ContextCompat.getColor (view.getContext (), theme.dash_applauncher_text_shadow_colour));
@@ -72,7 +75,13 @@ public class CollectionGridAdapter extends ArrayAdapter<LensSearchResultCollecti
 
 		if (show)
 		{
-			gvResults.setAdapter (new GridAdapter (this.getContext (), results));
+			// A section's result list is live: rebinding the same section only
+			// notifies its adapter (below), as a new one would re-inflate its cells //
+			if (gvResults.getTag () != coll)
+			{
+				gvResults.setAdapter (new GridAdapter (this.getContext (), results));
+				gvResults.setTag (coll);
+			}
 			// Same unified column count as the dash apps grid (see DashGrid) //
 			DashGridSizer.apply (gvResults);
 
