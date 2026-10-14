@@ -1,0 +1,19 @@
+root = true
+
+[*]
+end_of_line = lf
+indent_style = tab
+
+[{*.bat,app/src/main/res/xml/analytics.xml,etc/dialog-error.svg}]
+end_of_line = crlf
+
+# YAML does not allow tabs.
+[*.{yml,yaml}]
+indent_style = space
+
+[*.md]
+indent_style = unset
+
+# Verbatim licence texts, and translations Transifex overwrites.
+[{LICENSE,licenses/**,app/src/main/res/values-*/translations.xml}]
+indent_style = unset

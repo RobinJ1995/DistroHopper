@@ -17,32 +17,32 @@ import org.robolectric.shadows.ShadowRoleManager
 
 @RunWith(RobolectricTestRunner::class)
 class HomeRoleTest {
-    private val context: Application = ApplicationProvider.getApplicationContext()
+	private val context: Application = ApplicationProvider.getApplicationContext()
 
-    private fun roleManagerShadow(): ShadowRoleManager =
-        Shadow.extract(context.getSystemService(RoleManager::class.java))
+	private fun roleManagerShadow(): ShadowRoleManager =
+		Shadow.extract(context.getSystemService(RoleManager::class.java))
 
-    @Test fun roleRequestIntentIsGivenWhenTheHomeRoleIsAvailable() {
-        this.roleManagerShadow().addAvailableRole(RoleManager.ROLE_HOME)
+	@Test fun roleRequestIntentIsGivenWhenTheHomeRoleIsAvailable() {
+		this.roleManagerShadow().addAvailableRole(RoleManager.ROLE_HOME)
 
-        assertNotNull(HomeRole.roleRequestIntent(this.context))
-    }
+		assertNotNull(HomeRole.roleRequestIntent(this.context))
+	}
 
-    @Test fun roleRequestIntentIsNullWhenTheHomeRoleIsUnavailable() {
-        // Nothing is made available, so the broken-on-some-OEMs role dialog is
-        // skipped and callers fall back to the home-settings screen //
-        assertNull(HomeRole.roleRequestIntent(this.context))
-    }
+	@Test fun roleRequestIntentIsNullWhenTheHomeRoleIsUnavailable() {
+		// Nothing is made available, so the broken-on-some-OEMs role dialog is
+		// skipped and callers fall back to the home-settings screen //
+		assertNull(HomeRole.roleRequestIntent(this.context))
+	}
 
-    @Test fun homeSettingsIntentOpensTheDefaultHomeAppPicker() {
-        assertEquals(Settings.ACTION_HOME_SETTINGS, HomeRole.homeSettingsIntent().action)
-    }
+	@Test fun homeSettingsIntentOpensTheDefaultHomeAppPicker() {
+		assertEquals(Settings.ACTION_HOME_SETTINGS, HomeRole.homeSettingsIntent().action)
+	}
 
-    @Test fun isHeldReflectsWhetherTheHomeRoleIsHeld() {
-        assertFalse(HomeRole.isHeld(this.context))
+	@Test fun isHeldReflectsWhetherTheHomeRoleIsHeld() {
+		assertFalse(HomeRole.isHeld(this.context))
 
-        this.roleManagerShadow().addHeldRole(RoleManager.ROLE_HOME)
+		this.roleManagerShadow().addHeldRole(RoleManager.ROLE_HOME)
 
-        assertTrue(HomeRole.isHeld(this.context))
-    }
+		assertTrue(HomeRole.isHeld(this.context))
+	}
 }

@@ -53,8 +53,9 @@ public class AppManager implements Iterable<App>
 	/** Lazy so that AppManager can be constructed on a background thread. */
 	private LauncherBarBinder getBinder ()
 	{
-		if (this.binder == null)
+		if (this.binder == null) {
 			this.binder = new LauncherBarBinder (this);
+		}
 
 		return this.binder;
 	}
@@ -105,8 +106,7 @@ public class AppManager implements Iterable<App>
 
 	public void add (App app, boolean checkDuplicate, boolean sortAndNotifyAdapter)
 	{
-		if (this.repository.add (app, checkDuplicate) && sortAndNotifyAdapter)
-		{
+		if (this.repository.add (app, checkDuplicate) && sortAndNotifyAdapter) {
 			this.repository.sort ();
 			this.getBinder ().notifyDashAdapterChanged ();
 		}
@@ -193,8 +193,7 @@ public class AppManager implements Iterable<App>
 			this.parent.getApplicationContext (), this.getAppliedIconPack ());
 
 		if (this.iconRenderer == null
-			|| ! this.iconRenderer.getConfig ().signature ().equals (config.signature ()))
-		{
+			|| ! this.iconRenderer.getConfig ().signature ().equals (config.signature ())) {
 			this.reconcileIconCache (config);
 			this.iconRenderer = new IconRenderer (this.parent.getApplicationContext (), config);
 		}
@@ -209,8 +208,7 @@ public class AppManager implements Iterable<App>
 			Preferences.getSharedPreferences (this.parent.getApplicationContext ());
 		final String stored = prefs.getString (Preference.ICON_CONFIG_SIGNATURE.getName (), null);
 
-		if (! config.signature ().equals (stored))
-		{
+		if (! config.signature ().equals (stored)) {
 			try
 			{
 				AppIconCache.clearAll (this.parent.getApplicationContext ());
@@ -308,20 +306,19 @@ public class AppManager implements Iterable<App>
 
 	public boolean pin (App app, boolean save, boolean addView)
 	{
-		if (this.repository.pin (app))
-		{
-			if (addView)
+		if (this.repository.pin (app)) {
+			if (addView) {
 				this.getBinder ().addPinnedAppView (app);
+			}
 
-			if (save)
+			if (save) {
 				this.savePinnedApps ();
+			}
 
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 
 	public List<ResolveInfo> queryInstalledApps ()
@@ -348,12 +345,14 @@ public class AppManager implements Iterable<App>
 		this.savePinnedApps ();
 
 		// And remove its desktop pin, if any //
-		if (this.parent.getDesktopAppHost () != null)
+		if (this.parent.getDesktopAppHost () != null) {
 			this.parent.getDesktopAppHost ().unpinFromAllDesktops (app);
+		}
 
 		// And drop it from any desktop folder it lived in //
-		if (this.parent.getDesktopFolderHost () != null)
+		if (this.parent.getDesktopFolderHost () != null) {
 			this.parent.getDesktopFolderHost ().unpinFromAllDesktops (app);
+		}
 
 		// Drop it from any dash / launcher folder / order slot it lived in //
 		this.dashLayout.reconcile ();
@@ -469,8 +468,7 @@ public class AppManager implements Iterable<App>
 	 */
 	public void refreshDashSortOrder ()
 	{
-		if (this.repository.isUsageBasedSortOrder ())
-		{
+		if (this.repository.isUsageBasedSortOrder ()) {
 			this.repository.sort ();
 			this.getBinder ().notifyDashAdapterChanged ();
 		}

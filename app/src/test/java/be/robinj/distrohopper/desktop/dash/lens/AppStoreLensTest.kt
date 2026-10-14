@@ -19,30 +19,30 @@ import org.robolectric.Shadows
  */
 @RunWith(RobolectricTestRunner::class)
 class AppStoreLensTest {
-    private lateinit var application: Application
+	private lateinit var application: Application
 
-    @Before fun setUp() {
-        application = ApplicationProvider.getApplicationContext()
-    }
+	@Before fun setUp() {
+		application = ApplicationProvider.getApplicationContext()
+	}
 
-    /** Minimal concrete store lens exposing the protected install check. */
-    private class ProbeStore(context: Context) : AppStoreLens(context) {
-        override val key = "ProbeStore"
+	/** Minimal concrete store lens exposing the protected install check. */
+	private class ProbeStore(context: Context) : AppStoreLens(context) {
+		override val key = "ProbeStore"
 
-        fun probe(packageName: String) = isInstalled(packageName)
-        override fun getName() = "ProbeStore"
-        override fun getDescription() = "Test store lens"
-        override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {}
-    }
+		fun probe(packageName: String) = isInstalled(packageName)
+		override fun getName() = "ProbeStore"
+		override fun getDescription() = "Test store lens"
+		override suspend fun search(query: String, maxResults: Int, emitter: LensResultEmitter) {}
+	}
 
-    @Test fun reportsInstalledPackageAsInstalled() {
-        val packageInfo = PackageInfo().apply { packageName = "com.example.installed" }
-        Shadows.shadowOf(application.packageManager).installPackage(packageInfo)
+	@Test fun reportsInstalledPackageAsInstalled() {
+		val packageInfo = PackageInfo().apply { packageName = "com.example.installed" }
+		Shadows.shadowOf(application.packageManager).installPackage(packageInfo)
 
-        assertTrue(ProbeStore(application).probe("com.example.installed"))
-    }
+		assertTrue(ProbeStore(application).probe("com.example.installed"))
+	}
 
-    @Test fun reportsAbsentPackageAsNotInstalled() {
-        assertFalse(ProbeStore(application).probe("com.example.absent"))
-    }
+	@Test fun reportsAbsentPackageAsNotInstalled() {
+		assertFalse(ProbeStore(application).probe("com.example.absent"))
+	}
 }

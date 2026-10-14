@@ -114,23 +114,17 @@ class LocalFiles(context: Context) : Lens(context) {
 				// is searching for //
 				if (name.startsWith(".")) {
 					continue
-				}
-
-				// The same document can be reached twice: when a folder and one of
-				// its own ancestors are both granted, or when a provider lists a
-				// directory under more than one parent. Emitting it twice would
-				// also spend the result allowance on a duplicate //
-				if (!seen.add(branch.identityOf(documentId))) {
+				} else if (!seen.add(branch.identityOf(documentId))) {
+					// The same document can be reached twice: when a folder and one of
+					// its own ancestors are both granted, or when a provider lists a
+					// directory under more than one parent. Emitting it twice would
+					// also spend the result allowance on a duplicate //
 					continue
-				}
-
-				if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
+				} else if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
 					// Traversed, never offered as a result //
 					queue.add(Branch(branch.treeUri, documentId))
 					continue
-				}
-
-				if (!name.lowercase().contains(needle)) {
+				} else if (!name.lowercase().contains(needle)) {
 					continue
 				}
 

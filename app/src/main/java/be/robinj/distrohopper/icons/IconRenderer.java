@@ -60,9 +60,7 @@ public final class IconRenderer {
 		if (this.config.tintedRenderingSupported() && this.drawTinted(canvas, adaptive, size)) {
 			this.applyMask(canvas, adaptive, size);
 			return bitmap;
-		}
-
-		if (this.config.getShape() == IconShape.SYSTEM) {
+		} else if (this.config.getShape() == IconShape.SYSTEM) {
 			// Let the platform mask it exactly like the OS does, so "System default" //
 			// always matches the device's real adaptive-icon shape. //
 			adaptive.setBounds(0, 0, size, size);

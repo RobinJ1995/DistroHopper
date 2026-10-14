@@ -264,10 +264,11 @@ public class App implements Parcelable
 	@Override
 	public boolean equals (Object obj)
 	{
-		if (! (obj instanceof App))
+		if (! (obj instanceof App)) {
 			return false;
-		else if (obj == this)
+		} else if (obj == this) {
 			return true;
+		}
 
 		App app = (App) obj;
 
@@ -360,9 +361,7 @@ public class App implements Parcelable
 	{
 		if (this.resInf != null) {
 			return this.resInf.loadIcon(this.getPackageManager());
-		}
-
-		if (this.launcherActivityInfo != null) {
+		} else if (this.launcherActivityInfo != null) {
 			// Unbadged: getIcon() applies the profile badge after icon-pack resolution //
 			return this.launcherActivityInfo.getIcon (0);
 		}

@@ -37,8 +37,7 @@ public class IconPreferencesActivity extends AppCompatActivity
 		this.setContentView (R.layout.activity_preferences);
 		InsetsHelper.applySystemBarsPadding (this);
 
-		if (savedInstanceState == null)
-		{
+		if (savedInstanceState == null) {
 			this.getSupportFragmentManager ()
 				.beginTransaction ()
 				.replace (R.id.preferences_container, new IconPreferencesFragment ())
@@ -51,8 +50,7 @@ public class IconPreferencesActivity extends AppCompatActivity
 	@Override
 	public boolean onOptionsItemSelected (final MenuItem item)
 	{
-		if (item.getItemId () == android.R.id.home)
-		{
+		if (item.getItemId () == android.R.id.home) {
 			NavUtils.navigateUpFromSameTask (this);
 			return true;
 		}
@@ -79,16 +77,16 @@ public class IconPreferencesActivity extends AppCompatActivity
 				be.robinj.distrohopper.preferences.Preference.TINTED_ICONS.getName ());
 			final Preference tintColour = this.findPreference (
 				be.robinj.distrohopper.preferences.Preference.ICON_TINT.getName ());
-			if (tintedSwitch == null || tintColour == null)
+			if (tintedSwitch == null || tintColour == null) {
 				return;
-
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
-			{
+			} else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
 				// Remove from their category, since they're nested under it. //
-				if (tintedSwitch.getParent () != null)
+				if (tintedSwitch.getParent () != null) {
 					tintedSwitch.getParent ().removePreference (tintedSwitch);
-				if (tintColour.getParent () != null)
+				}
+				if (tintColour.getParent () != null) {
 					tintColour.getParent ().removePreference (tintColour);
+				}
 				return;
 			}
 
@@ -109,7 +107,9 @@ public class IconPreferencesActivity extends AppCompatActivity
 			{
 				final ListPreference lpIconPack = this.findPreference (
 					be.robinj.distrohopper.preferences.Preference.ICON_PACK.getName ());
-				if (lpIconPack == null) return;
+				if (lpIconPack == null) {
+					return;
+				}
 
 				final IconPackHelper helper =
 					new IconPackHelper (this.requireContext ().getApplicationContext ());
@@ -152,15 +152,16 @@ public class IconPreferencesActivity extends AppCompatActivity
 		private CharSequence summaryForPack (final String value,
 											 final Map<String, ResolveInfo> packs, final PackageManager pm)
 		{
-			if (value == null || value.isEmpty ())
+			if (value == null || value.isEmpty ()) {
 				return this.getString (R.string.option_icon_pack_none);
+			}
 
 			final ResolveInfo resInf = packs.get (value);
-			if (resInf != null)
-			{
+			if (resInf != null) {
 				final CharSequence label = resInf.loadLabel (pm);
-				if (label != null)
+				if (label != null) {
 					return label;
+				}
 			}
 
 			return value;

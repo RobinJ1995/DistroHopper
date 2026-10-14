@@ -176,8 +176,7 @@ object WidgetGrid {
 		val stored = raw?.split(',')?.mapNotNull { parseSize(it) }
 		if (stored != null && stored.size == PRESET_COUNT) {
 			return stored
-		}
-		if (raw != null) {
+		} else if (raw != null) {
 			Log.getInstance().w(TAG, "Discarding unreadable desktop grid presets: $raw")
 		}
 
@@ -208,8 +207,7 @@ object WidgetGrid {
 		val stored = parseSize(raw)
 		if (stored != null) {
 			return stored
-		}
-		if (raw != null) {
+		} else if (raw != null) {
 			Log.getInstance().w(TAG, "Discarding unreadable desktop grid size: $raw")
 		}
 

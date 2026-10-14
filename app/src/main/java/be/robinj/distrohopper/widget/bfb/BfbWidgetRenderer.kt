@@ -41,8 +41,9 @@ object BfbWidgetRenderer {
 		// other drawable is drawn as-is rather than risk a bad cast.
 		context.getDrawable(theme.launcher_applauncher_background)?.let { background ->
 			val tile = background.mutate()
-			if (tile is GradientDrawable)
+			if (tile is GradientDrawable) {
 				tile.setColor(colour)
+			}
 			this.drawFilling(tile, canvas, size)
 		}
 

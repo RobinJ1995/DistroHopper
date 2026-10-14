@@ -13,7 +13,7 @@ import be.robinj.distrohopper.preferences.Preference
  * is forced off regardless of the (hidden) preference.
  */
 object CrashReporting {
-    @JvmStatic
-    fun isEnabled(acraConfigured: Boolean, prefs: SharedPreferences): Boolean =
-        acraConfigured && prefs.getBoolean(Preference.CRASH_REPORTING_ENABLED.getName(), true)
+	@JvmStatic
+	fun isEnabled(acraConfigured: Boolean, prefs: SharedPreferences): Boolean =
+		acraConfigured && prefs.getBoolean(Preference.CRASH_REPORTING_ENABLED.getName(), true)
 }

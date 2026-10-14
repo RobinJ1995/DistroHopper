@@ -76,8 +76,7 @@ public class LauncherService extends Service
 		boolean right = prefs.getInt(Preference.LAUNCHER_EDGE.getName(), Location.LEFT.n) == Location.RIGHT.n;
 
 		this.touchListener = new TouchListener (this, right);
-		if (right)
-		{
+		if (right) {
 			params.gravity = Gravity.TOP | Gravity.RIGHT;
 
 			this.layout.removeView (this.llLauncher);
@@ -108,12 +107,10 @@ public class LauncherService extends Service
 	@Override
 	public int onStartCommand (Intent intent, int flags, int id)
 	{
-		if (intent != null) // http://stackoverflow.com/a/20686768/521361 //
-		{
+		if (intent != null) { // http://stackoverflow.com/a/20686768/521361 //
 			LinearLayout llLauncherPinnedApps = (LinearLayout) this.llLauncher.findViewById (R.id.llLauncherPinnedApps);
 
-			if (intent.getBooleanExtra ("start", false))
-			{
+			if (intent.getBooleanExtra ("start", false)) {
 				be.robinj.distrohopper.desktop.launcher.AppLauncher lalBfb = (be.robinj.distrohopper.desktop.launcher.AppLauncher) this.llLauncher.findViewById (R.id.lalBfb);
 				lalBfb.init ();
 
@@ -139,27 +136,24 @@ public class LauncherService extends Service
 			}
 
 			this.layout.setVisibility (intent.getBooleanExtra ("show", true) ? View.VISIBLE : View.GONE);
-			if (! intent.getBooleanExtra ("visible", false))
+			if (! intent.getBooleanExtra ("visible", false)) {
 				this.swipeLeft ();
+			}
 
 			for (int i = 0; i < llLauncherPinnedApps.getChildCount (); i++)
 				((AppLauncher) llLauncherPinnedApps.getChildAt (i)).setRunning (false);
 
 			List<App> running = intent.getParcelableArrayListExtra ("running");
-			if (running != null)
-			{
+			if (running != null) {
 				LinearLayout llLauncherRunningApps = (LinearLayout) this.llLauncher.findViewById (R.id.llLauncherRunningApps);
 				llLauncherRunningApps.removeAllViews ();
 
 				for (App app : running)
 				{
-					if (this.isPinned (app))
-					{
+					if (this.isPinned (app)) {
 						AppLauncher appLauncher = (AppLauncher) llLauncherPinnedApps.findViewWithTag (app.getPackageName () + "\n" + app.getActivityName ());
 						appLauncher.setRunning (true);
-					}
-					else
-					{
+					} else {
 						RunningAppLauncher appLauncher = new RunningAppLauncher (this, app);
 
 						appLauncher.setOnClickListener (new AppLauncherClickListener ());
@@ -178,8 +172,9 @@ public class LauncherService extends Service
 	{
 		for (App pinnedApp : this.pinned)
 		{
-			if (app.getPackageName ().equals (pinnedApp.getPackageName ()) && app.getActivityName ().equals (pinnedApp.getActivityName ()))
+			if (app.getPackageName ().equals (pinnedApp.getPackageName ()) && app.getActivityName ().equals (pinnedApp.getActivityName ())) {
 				return true;
+			}
 		}
 
 		return false;

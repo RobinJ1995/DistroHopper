@@ -19,11 +19,14 @@ class ClippingHorizontalScrollView @JvmOverloads constructor(
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
 		val content = this.getChildAt(0)?.measuredWidth ?: 0
-		if (content <= this.measuredWidth) return
+		if (content <= this.measuredWidth) {
+			return
+		}
 
 		val clipped = LauncherIconGrid.viewportClipPx(
 			this.measuredWidth, LauncherIconGrid.iconSizePx(this.context))
-		if (clipped != this.measuredWidth)
+		if (clipped != this.measuredWidth) {
 			this.setMeasuredDimension(clipped, this.measuredHeight)
+		}
 	}
 }

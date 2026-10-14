@@ -12,7 +12,7 @@ package be.robinj.distrohopper.desktop.dash.lens
  *             default for any lens that doesn't say otherwise.
  */
 enum class LensType {
-    LOCAL,
-    IO,
-    NETWORK,
+	LOCAL,
+	IO,
+	NETWORK,
 }

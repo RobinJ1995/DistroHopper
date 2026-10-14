@@ -22,29 +22,29 @@ import org.robolectric.annotation.LooperMode
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.LEGACY)
 class PreferencesNavigationTest {
-    private lateinit var scenario: ActivityScenario<HomeActivity>
+	private lateinit var scenario: ActivityScenario<HomeActivity>
 
-    @Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
-    @After fun tearDown() { scenario.close() }
+	@Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
+	@After fun tearDown() { scenario.close() }
 
-    @Test fun clickingCogButtonLaunchesPreferencesActivity() {
-        onView(withId(R.id.ibPanelCog)).perform(click())
-        scenario.onActivity {
-            val started = Shadows.shadowOf(it).nextStartedActivityForResult
-            assertNotNull(started)
-            assertEquals(PreferencesActivity::class.java.name, started.intent.component?.className)
-        }
-    }
+	@Test fun clickingCogButtonLaunchesPreferencesActivity() {
+		onView(withId(R.id.ibPanelCog)).perform(click())
+		scenario.onActivity {
+			val started = Shadows.shadowOf(it).nextStartedActivityForResult
+			assertNotNull(started)
+			assertEquals(PreferencesActivity::class.java.name, started.intent.component?.className)
+		}
+	}
 
-    @Test fun homeContainerIsDisplayed() {
-        onView(withId(R.id.llLauncherAndDashContainer)).check(matches(isDisplayed()))
-    }
+	@Test fun homeContainerIsDisplayed() {
+		onView(withId(R.id.llLauncherAndDashContainer)).check(matches(isDisplayed()))
+	}
 
-    @Test fun panelIsVisibleOnHomeScreen() {
-        onView(withId(R.id.llPanel)).check(matches(isDisplayed()))
-    }
+	@Test fun panelIsVisibleOnHomeScreen() {
+		onView(withId(R.id.llPanel)).check(matches(isDisplayed()))
+	}
 
-    @Test fun dashIsClosedInitially() {
-        onView(withId(R.id.llDash)).check(matches(withEffectiveVisibility(GONE)))
-    }
+	@Test fun dashIsClosedInitially() {
+		onView(withId(R.id.llDash)).check(matches(withEffectiveVisibility(GONE)))
+	}
 }

@@ -28,20 +28,17 @@ public class TouchListener implements View.OnTouchListener
 		int id = view.getId ();
 		//String tag = (String) view.getTag ();
 
-		if (id == R.id.llListener)
-		{
-			if (this.llListener_x == -1)
+		if (id == R.id.llListener) {
+			if (this.llListener_x == -1) {
 				this.llListener_x = (this.right ? -1 : 1) * event.getX (0);
+			}
 			float x = (this.right ? -1 : 1) * event.getX (event.getPointerCount () - 1);
 
-			if (x > this.llListener_x)
-			{
+			if (x > this.llListener_x) {
 				this.parent.swipeRight ();
 
 				this.llListener_x = -1;
-			}
-			else if (x < this.llListener_x || event.getAction () == MotionEvent.ACTION_CANCEL || event.getAction () == MotionEvent.ACTION_UP)
-			{
+			} else if (x < this.llListener_x || event.getAction () == MotionEvent.ACTION_CANCEL || event.getAction () == MotionEvent.ACTION_UP) {
 				this.llListener_x = -1;
 			}
 
@@ -78,8 +75,7 @@ public class TouchListener implements View.OnTouchListener
 					return true;
 			}
 		}*/
-		else if (id == R.id.llShadow)
-		{
+		else if (id == R.id.llShadow) {
 			this.parent.swipeLeft ();
 
 			return true;

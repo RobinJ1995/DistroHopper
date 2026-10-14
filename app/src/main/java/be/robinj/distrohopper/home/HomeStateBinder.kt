@@ -32,7 +32,11 @@ object HomeStateBinder {
 			activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
 				this.launch {
 					viewModel.dashOpen.collect { open ->
-						if (open) dash.open() else dash.close()
+						if (open) {
+							dash.open()
+						} else {
+							dash.close()
+						}
 						// Back must close the dash (and not flash the home) whenever
 						// it's open, regardless of how it was opened.
 						activity.updateBackCallback()

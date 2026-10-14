@@ -245,6 +245,11 @@ jobs:
           echo "acra_username=" > secret.properties
           echo "acra_password=" >> secret.properties
 
+      - uses: RobinJ1995/robinlint@master
+        with:
+          exclude: |
+            app/src/main/java/be/robinj/distrohopper/thirdparty/
+
       - name: Run Android Lint
         run: ./gradlew lintDebug
 

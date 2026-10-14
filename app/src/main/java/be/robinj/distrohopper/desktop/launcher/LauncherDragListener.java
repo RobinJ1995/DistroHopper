@@ -57,13 +57,14 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 		{
 			// Widget drags are handled by WidgetsContainer_DragListener and the trash's
 			// own listener; reacting here would hide the trash mid-drag //
-			if (event.getLocalState () instanceof WidgetContainer)
+			if (event.getLocalState () instanceof WidgetContainer) {
 				return false;
-
+			}
 			// Dash folders / folder members never pin to the launcher (a folder
 			// can't leave the dash); let the dash grid listener handle them //
-			if (event.getLocalState () instanceof DashDragPayload)
+			else if (event.getLocalState () instanceof DashDragPayload) {
 				return false;
+			}
 
 			switch (event.getAction ())
 			{
@@ -71,15 +72,14 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 					// An app dragged out of a launcher folder opens a placeholder in
 					// the bar (once) the first time it is brought over the dock, so it
 					// then reorders/folds exactly like dragging the pin itself //
-					if (event.getLocalState () instanceof LauncherDragPayload.FolderMemberDrag)
-					{
+					if (event.getLocalState () instanceof LauncherDragPayload.FolderMemberDrag) {
 						LauncherDragPayload.FolderMemberDrag member =
 							(LauncherDragPayload.FolderMemberDrag) event.getLocalState ();
 						this.appManager.startedDraggingLauncherFolderMember (
 							member.getFolderId (), member.getApp ());
-					}
-					else
+					} else {
 						this.appManager.startedDraggingPinnedApp ();
+					}
 					// Cross-surface drag: hovering the launcher asks for the dash to
 					// close (resolved with BFB-open precedence by the controller), so
 					// the app can continue onto the desktop; dropping here still pins //
@@ -98,12 +98,14 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 					// previewed order. A desktop app rode in on a dash-style
 					// placeholder, so the same commit pins it to the bar; then remove
 					// it from the desktop to complete the move //
-					if (! this.appManager.dropPinnedFold ())
+					if (! this.appManager.dropPinnedFold ()) {
 						this.appManager.droppedPinnedApp ();
+					}
 					if (event.getLocalState () instanceof DesktopAppView
-							&& this.appManager.getParent ().getDesktopAppHost () != null)
+							&& this.appManager.getParent ().getDesktopAppHost () != null) {
 						this.appManager.getParent ().getDesktopAppHost ()
 							.remove ((DesktopAppView) event.getLocalState ());
+					}
 					this.appManager.stoppedDraggingPinnedApp ();
 					break;
 				// No ACTION_DRAG_EXITED case: spurious exits fire while the icons
@@ -153,8 +155,9 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 	private void resolvePinnedDrag (View launcher, DragEvent event)
 	{
 		final PinnedAppsBar bar = launcher.findViewById (R.id.llLauncherPinnedApps);
-		if (bar == null)
+		if (bar == null) {
 			return;
+		}
 
 		final boolean vertical = bar.getOrientation () == LinearLayout.VERTICAL;
 		final int[] launcherLoc = new int[2];
@@ -173,28 +176,29 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 		for (int i = 0; i < bar.getChildCount (); i++)
 		{
 			final View child = bar.getChildAt (i);
-			if (child.getVisibility () != View.VISIBLE)
+			if (child.getVisibility () != View.VISIBLE) {
 				continue; // the dragged item's own placeholder //
+			}
 
 			child.getLocationOnScreen (childLoc);
 			final int start = vertical ? childLoc[1] : childLoc[0];
 			final int size = vertical ? child.getHeight () : child.getWidth ();
-			if (size <= 0)
+			if (size <= 0) {
 				continue;
+			}
 
 			icons.add (child);
-			if (coord >= start + size / 2)
+			if (coord >= start + size / 2) {
 				insertIndex++; // the drag has passed this icon's centre //
-			if (coord >= start && coord < start + size)
-			{
+			}
+			if (coord >= start && coord < start + size) {
 				over = child;
 				frac = (float) (coord - start) / size;
 			}
 		}
 
 		if (over != null && frac >= FOLD_ZONE_LO && frac <= FOLD_ZONE_HI
-				&& this.appManager.canFoldOnto (over))
-		{
+				&& this.appManager.canFoldOnto (over)) {
 			this.previewFold (over);
 			return;
 		}
@@ -206,8 +210,9 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 
 	private void previewFold (View target)
 	{
-		if (target == this.lastFoldTarget)
+		if (target == this.lastFoldTarget) {
 			return;
+		}
 		this.lastFoldTarget = target;
 		this.lastWasInsert = false;
 		this.lastInsertTarget = null;
@@ -216,8 +221,9 @@ public class LauncherDragListener implements ViewGroup.OnDragListener
 
 	private void previewInsert (View before)
 	{
-		if (this.lastWasInsert && before == this.lastInsertTarget)
+		if (this.lastWasInsert && before == this.lastInsertTarget) {
 			return; // already showing the gap at this slot //
+		}
 
 		this.lastInsertTarget = before;
 		this.lastWasInsert = true;

@@ -27,95 +27,95 @@ import org.robolectric.shadows.ShadowLooper
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.LEGACY)
 class DashEdgeDragListenerTest {
-    private lateinit var scenario: ActivityScenario<HomeActivity>
+	private lateinit var scenario: ActivityScenario<HomeActivity>
 
-    // A BFB is an open-target; the launcher/panel are close-targets. The ids only
-    // need to be distinct so the controller can track the two as separate sets.
-    private val bfbId = 4001
-    private val panelId = 4002
+	// A BFB is an open-target; the launcher/panel are close-targets. The ids only
+	// need to be distinct so the controller can track the two as separate sets.
+	private val bfbId = 4001
+	private val panelId = 4002
 
-    @Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
-    @After fun tearDown() { scenario.close() }
+	@Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
+	@After fun tearDown() { scenario.close() }
 
-    /** The controller tracks hovered view ids in two private sets, keyed by [open]. */
-    private fun targets(controller: DashCrossSurfaceController, open: Boolean): Set<Int> {
-        val field = DashCrossSurfaceController::class.java
-            .getDeclaredField(if (open) "openTargets" else "closeTargets")
-        field.isAccessible = true
-        @Suppress("UNCHECKED_CAST")
-        return (field.get(controller) as Set<Int>).toSet()
-    }
+	/** The controller tracks hovered view ids in two private sets, keyed by [open]. */
+	private fun targets(controller: DashCrossSurfaceController, open: Boolean): Set<Int> {
+		val field = DashCrossSurfaceController::class.java
+			.getDeclaredField(if (open) "openTargets" else "closeTargets")
+		field.isAccessible = true
+		@Suppress("UNCHECKED_CAST")
+		return (field.get(controller) as Set<Int>).toSet()
+	}
 
-    @Test fun dragStartedReturnsTrueToClaimTheView() {
-        scenario.onActivity { activity ->
-            val view = View(activity)
-            assertTrue(DashEdgeDragListener(activity, open = true)
-                .onDrag(view, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED)))
-            assertTrue(DashEdgeDragListener(activity, open = false)
-                .onDrag(view, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED)))
-        }
-    }
+	@Test fun dragStartedReturnsTrueToClaimTheView() {
+		scenario.onActivity { activity ->
+			val view = View(activity)
+			assertTrue(DashEdgeDragListener(activity, open = true)
+				.onDrag(view, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED)))
+			assertTrue(DashEdgeDragListener(activity, open = false)
+				.onDrag(view, DragEvents.obtain(DragEvent.ACTION_DRAG_STARTED)))
+		}
+	}
 
-    @Test fun enteringRegistersTheViewAsTheRightKindOfTarget() {
-        scenario.onActivity { activity ->
-            val controller = activity.dashCrossSurface
-            val bfb = View(activity).apply { id = bfbId }
-            val panel = View(activity).apply { id = panelId }
+	@Test fun enteringRegistersTheViewAsTheRightKindOfTarget() {
+		scenario.onActivity { activity ->
+			val controller = activity.dashCrossSurface
+			val bfb = View(activity).apply { id = bfbId }
+			val panel = View(activity).apply { id = panelId }
 
-            DashEdgeDragListener(activity, open = true)
-                .onDrag(bfb, DragEvents.obtain(DragEvent.ACTION_DRAG_ENTERED))
-            DashEdgeDragListener(activity, open = false)
-                .onDrag(panel, DragEvents.obtain(DragEvent.ACTION_DRAG_ENTERED))
+			DashEdgeDragListener(activity, open = true)
+				.onDrag(bfb, DragEvents.obtain(DragEvent.ACTION_DRAG_ENTERED))
+			DashEdgeDragListener(activity, open = false)
+				.onDrag(panel, DragEvents.obtain(DragEvent.ACTION_DRAG_ENTERED))
 
-            assertTrue("BFB hover is an open-target", bfbId in targets(controller, open = true))
-            assertTrue("panel hover is a close-target", panelId in targets(controller, open = false))
-            assertFalse("a BFB is never a close-target", bfbId in targets(controller, open = false))
-            controller.reset() // cancel the pending debounced apply before teardown
-        }
-    }
+			assertTrue("BFB hover is an open-target", bfbId in targets(controller, open = true))
+			assertTrue("panel hover is a close-target", panelId in targets(controller, open = false))
+			assertFalse("a BFB is never a close-target", bfbId in targets(controller, open = false))
+			controller.reset() // cancel the pending debounced apply before teardown
+		}
+	}
 
-    @Test fun exitedRemovesTheTargetFromTheController() {
-        scenario.onActivity { activity ->
-            val controller = activity.dashCrossSurface
-            val bfb = View(activity).apply { id = bfbId }
-            val listener = DashEdgeDragListener(activity, open = true)
+	@Test fun exitedRemovesTheTargetFromTheController() {
+		scenario.onActivity { activity ->
+			val controller = activity.dashCrossSurface
+			val bfb = View(activity).apply { id = bfbId }
+			val listener = DashEdgeDragListener(activity, open = true)
 
-            listener.onDrag(bfb, DragEvents.obtain(DragEvent.ACTION_DRAG_ENTERED))
-            assertTrue(bfbId in targets(controller, open = true))
+			listener.onDrag(bfb, DragEvents.obtain(DragEvent.ACTION_DRAG_ENTERED))
+			assertTrue(bfbId in targets(controller, open = true))
 
-            listener.onDrag(bfb, DragEvents.obtain(DragEvent.ACTION_DRAG_EXITED))
-            assertFalse(bfbId in targets(controller, open = true))
-            controller.reset()
-        }
-    }
+			listener.onDrag(bfb, DragEvents.obtain(DragEvent.ACTION_DRAG_EXITED))
+			assertFalse(bfbId in targets(controller, open = true))
+			controller.reset()
+		}
+	}
 
-    @Test fun dragEndedAlsoReportsExitToTheController() {
-        scenario.onActivity { activity ->
-            val controller = activity.dashCrossSurface
-            val bfb = View(activity).apply { id = bfbId }
-            val listener = DashEdgeDragListener(activity, open = true)
+	@Test fun dragEndedAlsoReportsExitToTheController() {
+		scenario.onActivity { activity ->
+			val controller = activity.dashCrossSurface
+			val bfb = View(activity).apply { id = bfbId }
+			val listener = DashEdgeDragListener(activity, open = true)
 
-            listener.onDrag(bfb, DragEvents.obtain(DragEvent.ACTION_DRAG_ENTERED))
-            // ENDED maps to the same exit as EXITED, so the target is dropped.
-            listener.onDrag(bfb, DragEvents.obtain(DragEvent.ACTION_DRAG_ENDED))
+			listener.onDrag(bfb, DragEvents.obtain(DragEvent.ACTION_DRAG_ENTERED))
+			// ENDED maps to the same exit as EXITED, so the target is dropped.
+			listener.onDrag(bfb, DragEvents.obtain(DragEvent.ACTION_DRAG_ENDED))
 
-            assertFalse(bfbId in targets(controller, open = true))
-            controller.reset()
-        }
-    }
+			assertFalse(bfbId in targets(controller, open = true))
+			controller.reset()
+		}
+	}
 
-    @Test fun enteringACloseTargetWhileOpenClosesTheDash() {
-        scenario.onActivity { activity ->
-            activity.openDash()
-            ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
-            assertTrue(activity.dashIsOpen())
-            val panel = View(activity).apply { id = panelId }
+	@Test fun enteringACloseTargetWhileOpenClosesTheDash() {
+		scenario.onActivity { activity ->
+			activity.openDash()
+			ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+			assertTrue(activity.dashIsOpen())
+			val panel = View(activity).apply { id = panelId }
 
-            DashEdgeDragListener(activity, open = false)
-                .onDrag(panel, DragEvents.obtain(DragEvent.ACTION_DRAG_ENTERED))
-            ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+			DashEdgeDragListener(activity, open = false)
+				.onDrag(panel, DragEvents.obtain(DragEvent.ACTION_DRAG_ENTERED))
+			ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
 
-            assertFalse(activity.dashIsOpen())
-        }
-    }
+			assertFalse(activity.dashIsOpen())
+		}
+	}
 }

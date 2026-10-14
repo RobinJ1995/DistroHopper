@@ -20,10 +20,11 @@ public class WidgetsPager_LongClickListener implements View.OnLongClickListener
 	@Override
 	public boolean onLongClick (final View view)
 	{
-		if (view instanceof WidgetsPager && ((WidgetsPager) view).hasEditModeChild ())
+		if (view instanceof WidgetsPager && ((WidgetsPager) view).hasEditModeChild ()) {
 			((WidgetsPager) view).exitEditMode ();
-		else
+		} else {
 			this.activity.showDesktopMenu ();
+		}
 
 		return true;
 	}

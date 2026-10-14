@@ -55,22 +55,23 @@ public class AppLauncher extends LinearLayout
 		this.context = context;
 
 		TypedArray styleAttrs = context.getTheme ().obtainStyledAttributes (attrs, R.styleable.AppLauncher, 0, 0);
-		if (styleAttrs != null)
-		{
+		if (styleAttrs != null) {
 			this.label = styleAttrs.getString (R.styleable.AppLauncher_applauncher_label);
 			this.description = styleAttrs.getString (R.styleable.AppLauncher_applauncher_description);
 			this.special = styleAttrs.getBoolean (R.styleable.AppLauncher_applauncher_special, false);
 			Drawable icon = styleAttrs.getDrawable (R.styleable.AppLauncher_applauncher_icon);
 
-			if (icon != null)
+			if (icon != null) {
 				this.icon = new AppIcon (icon);
+			}
 		}
 
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService (Service.LAYOUT_INFLATER_SERVICE);
 		inflater.inflate (this.special ? layoutSpecial : layout, this, true);
 
-		if (styleAttrs != null)
+		if (styleAttrs != null) {
 			styleAttrs.recycle ();
+		}
 
 		if (! this.isInEditMode()) { // Don't run init method when rendering preview in IDE //
 			this.init();
@@ -106,12 +107,12 @@ public class AppLauncher extends LinearLayout
 
 	private void labelChanged ()
 	{
-		if (this.label != null)
-		{
+		if (this.label != null) {
 			TextView tvLabel = (TextView) this.findViewById (R.id.tvLabel);
 
-			if (tvLabel != null)
+			if (tvLabel != null) {
 				tvLabel.setText (this.label);
+			}
 		}
 	}
 
@@ -145,8 +146,9 @@ public class AppLauncher extends LinearLayout
 
 	private void specialChanged ()
 	{
-		if (! this.special)
+		if (! this.special) {
 			this.iconChanged ();
+		}
 	}
 
 	public AppIcon getIcon ()
@@ -170,15 +172,13 @@ public class AppLauncher extends LinearLayout
 
 	protected void iconChanged ()
 	{
-		if (! this.isInEditMode () && (this.icon != null))
-		{
+		if (! this.isInEditMode () && (this.icon != null)) {
 			ImageView imgIcon = (ImageView) this.findViewById (R.id.imgIcon);
 			imgIcon.setImageDrawable (this.icon.getDrawable ());
 
 			LinearLayout llBackground = (LinearLayout) this.findViewById (R.id.llBackground);
 			final Theme theme = DependencyContainer.of (this.getContext ()).getThemeManager ().getCurrent ();
-			if (llBackground != null && (! this.special) && this.getResources ().getBoolean (theme.launcher_applauncher_backgroundcolour_dynamic))
-			{
+			if (llBackground != null && (! this.special) && this.getResources ().getBoolean (theme.launcher_applauncher_backgroundcolour_dynamic)) {
 				final int avgColour = this.icon.getAverageColour(this.getResources ().getInteger (
 						theme.launcher_applauncher_backgroundcolour_opacity));
 

@@ -31,8 +31,9 @@ public class Log extends Observed
 	// observer attached to the losing one never hears anything again. //
 	public static synchronized Log getInstance ()
 	{
-		if (Log.instance == null)
+		if (Log.instance == null) {
 			Log.instance = new Log ();
+		}
 
 		return Log.instance;
 	}
@@ -139,11 +140,11 @@ public class Log extends Observed
 	{
 		synchronized (this.lock)
 		{
-			if (!this.enabled)
+			if (!this.enabled) {
 				return;
-
-			if (this.entries.size () >= Log.CAPACITY)
+			} else if (this.entries.size () >= Log.CAPACITY) {
 				this.entries.removeFirst ();
+			}
 
 			this.entries.addLast (new LogEntry (level, tag, message,
 				System.currentTimeMillis (), Thread.currentThread ().getName ()));

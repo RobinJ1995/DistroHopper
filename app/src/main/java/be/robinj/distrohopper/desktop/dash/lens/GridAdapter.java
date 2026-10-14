@@ -32,8 +32,9 @@ public class GridAdapter extends ArrayAdapter<LensSearchResult> {
 	{
 		LensSearchResult result = this.getItem (position);
 
-		if (view == null)
+		if (view == null) {
 			view = LayoutInflater.from (parent.getContext ()).inflate (R.layout.widget_dash_lens_result, parent, false);
+		}
 
 		TextView tvLabel = (TextView) view.findViewById (R.id.tvLabel);
 		ImageView imgIcon = (ImageView) view.findViewById (R.id.imgIcon);
@@ -47,8 +48,9 @@ public class GridAdapter extends ArrayAdapter<LensSearchResult> {
 		// Square cells that stretch to fill their column (see DashGrid); the
 		// column width is set by DashGridSizer for the unified column count //
 		int size = (parent instanceof GridView) ? ((GridView) parent).getColumnWidth() : 0;
-		if (size <= 0)
+		if (size <= 0) {
 			size = DashGrid.cellSizePx(parent.getContext());
+		}
 		view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, size));
 
 		view.setTag (result);

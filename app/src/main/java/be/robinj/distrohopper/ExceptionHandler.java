@@ -42,19 +42,13 @@ public class ExceptionHandler {
 			.append ("Stack trace:\n")
 			.append (stackTrace);
 
-		if (context != null)
-		{
-			if (Looper.myLooper () == Looper.getMainLooper ())
-			{
+		if (context != null) {
+			if (Looper.myLooper () == Looper.getMainLooper ()) {
 				this.showDialog (context, message.toString ());
-			}
-			else
-			{
+			} else {
 				Utils.runOnUiThread (() -> this.showDialog (context, message.toString ()));
 			}
-		}
-		else
-		{
+		} else {
 			Log.getInstance ().w (this.getClass ().getSimpleName (), "User wasn't notified that there was a problem because context == NULL");
 		}
 	}

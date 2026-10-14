@@ -38,8 +38,9 @@ public class TrashDragListener implements ViewGroup.OnDragListener
 		try
 		{
 			AppLauncher lalTrash = (AppLauncher) view;
-			if (this.colour == -1)
+			if (this.colour == -1) {
 				this.colour = lalTrash.getColour ();
+			}
 
 			switch (event.getAction ())
 			{
@@ -48,79 +49,68 @@ public class TrashDragListener implements ViewGroup.OnDragListener
 					lalTrash.setColour (Color.rgb (255, 40, 40));
 					break;
 				case DragEvent.ACTION_DROP: // Falls through //
-					if (event.getLocalState () instanceof WidgetContainer)
-					{
+					if (event.getLocalState () instanceof WidgetContainer) {
 						((WidgetContainer) event.getLocalState ()).removeWidget ();
-					}
-					else if (event.getLocalState () instanceof DesktopAppView)
-					{
+					} else if (event.getLocalState () instanceof DesktopAppView) {
 						final DesktopAppHost host = this.activity.getDesktopAppHost ();
-						if (host != null)
+						if (host != null) {
 							host.remove ((DesktopAppView) event.getLocalState ());
-					}
-					else if (event.getLocalState () instanceof be.robinj.distrohopper.widgets.DesktopFolderView)
-					{
+						}
+					} else if (event.getLocalState () instanceof be.robinj.distrohopper.widgets.DesktopFolderView) {
 						// Deletes the desktop folder and its members (apps gone, widgets unbound) //
-						if (this.activity.getDesktopFolderHost () != null)
+						if (this.activity.getDesktopFolderHost () != null) {
 							this.activity.getDesktopFolderHost ().deleteFolder (
 								((be.robinj.distrohopper.widgets.DesktopFolderView) event.getLocalState ()).getFolderId ());
-					}
-					else if (event.getLocalState () instanceof be.robinj.distrohopper.widgets.DesktopFolderMemberDrag)
-					{
+						}
+					} else if (event.getLocalState () instanceof be.robinj.distrohopper.widgets.DesktopFolderMemberDrag) {
 						// A member pulled out of a desktop folder, dropped on the trash: delete it //
 						final be.robinj.distrohopper.widgets.DesktopFolderMemberDrag m =
 							(be.robinj.distrohopper.widgets.DesktopFolderMemberDrag) event.getLocalState ();
-						if (this.activity.getDesktopFolderHost () != null)
+						if (this.activity.getDesktopFolderHost () != null) {
 							this.activity.getDesktopFolderHost ().deleteMember (m.getFolderId (), m.getMember ());
-					}
-					else if (event.getLocalState () instanceof DashDragPayload)
-					{
+						}
+					} else if (event.getLocalState () instanceof DashDragPayload) {
 						// Dropping a dash folder on the trash deletes it (members return
 						// to the dash); a folder member dropped here leaves its folder //
 						final AppManager appManager = this.activity.getAppManager ();
-						if (appManager != null)
-						{
+						if (appManager != null) {
 							DashDragPayload payload = (DashDragPayload) event.getLocalState ();
-							if (payload instanceof DashDragPayload.FolderDrag)
+							if (payload instanceof DashDragPayload.FolderDrag) {
 								appManager.getDashLayout ().deleteFolder (
 									((DashDragPayload.FolderDrag) payload).getFolderId ());
-							else if (payload instanceof DashDragPayload.FolderMemberDrag)
+							} else if (payload instanceof DashDragPayload.FolderMemberDrag) {
 								appManager.getDashLayout ().removeFromFolder (
 									((DashDragPayload.FolderMemberDrag) payload).getFolderId (),
 									((DashDragPayload.FolderMemberDrag) payload).getApp ().getProfileScopedKey ());
+							}
 
 							appManager.dashLayoutChanged ();
 						}
-					}
-					else if (event.getLocalState () instanceof LauncherDragPayload)
-					{
+					} else if (event.getLocalState () instanceof LauncherDragPayload) {
 						// Dropping a launcher folder on the trash deletes it and unpins
 						// its members; a folder member dropped here leaves its folder //
 						final AppManager appManager = this.activity.getAppManager ();
-						if (appManager != null)
-						{
+						if (appManager != null) {
 							LauncherDragPayload payload = (LauncherDragPayload) event.getLocalState ();
-							if (payload instanceof LauncherDragPayload.FolderDrag)
+							if (payload instanceof LauncherDragPayload.FolderDrag) {
 								appManager.getLauncherLayout ().deleteFolder (
 									((LauncherDragPayload.FolderDrag) payload).getFolderId ());
-							else if (payload instanceof LauncherDragPayload.FolderMemberDrag)
+							} else if (payload instanceof LauncherDragPayload.FolderMemberDrag) {
 								appManager.getLauncherLayout ().removeFromFolder (
 									((LauncherDragPayload.FolderMemberDrag) payload).getFolderId (),
 									((LauncherDragPayload.FolderMemberDrag) payload).getApp ().getProfileScopedKey ());
+							}
 
 							appManager.launcherLayoutChanged ();
 						}
-					}
-					else if (event.getLocalState () instanceof App)
-					{
+					} else if (event.getLocalState () instanceof App) {
 						// A not-yet-pinned app dragged from the dash: nothing to unpin //
-					}
-					else
-					{
+					} else {
 						int index = Integer.parseInt (event.getClipData ().getDescription ().getLabel ().toString ());
 						final AppManager appManager = this.activity.getAppManager ();
-						if (appManager != null)
+						if (appManager != null) {
 							appManager.unpin (index);
+						}
 					}
 
 					LauncherBarBinder.stoppedDragging (this.activity);

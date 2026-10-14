@@ -40,8 +40,7 @@ public class WidgetHostView extends AppWidgetHostView
 	@Override
 	public boolean onInterceptTouchEvent (MotionEvent e)
 	{
-		if (this.performedLongPress || (this.widgetContainer != null && this.widgetContainer.getEditMode ()))
-		{
+		if (this.performedLongPress || (this.widgetContainer != null && this.widgetContainer.getEditMode ())) {
 			this.performedLongPress = false;
 
 			return true;
@@ -59,8 +58,7 @@ public class WidgetHostView extends AppWidgetHostView
 				// desktops), not long-pressing: abort the pending edit-mode trigger
 				// just as a stock long-press would, so swipes never enter edit mode //
 				if (Math.abs (e.getX () - this.downX) > this.touchSlop
-					|| Math.abs (e.getY () - this.downY) > this.touchSlop)
-				{
+					|| Math.abs (e.getY () - this.downY) > this.touchSlop) {
 					this.cancelPendingLongPress ();
 				}
 
@@ -87,16 +85,18 @@ public class WidgetHostView extends AppWidgetHostView
 	{
 		this.performedLongPress = false;
 
-		if (this.longPressCheck != null)
+		if (this.longPressCheck != null) {
 			this.removeCallbacks (this.longPressCheck);
+		}
 	}
 
 	private void postLongPressCheck ()
 	{
 		this.performedLongPress = false;
 
-		if (this.longPressCheck == null)
+		if (this.longPressCheck == null) {
 			this.longPressCheck = new LongPressCheck ();
+		}
 
 		this.longPressCheck.setNWindowsAttached (this.getWindowAttachCount ());
 		this.postDelayed (this.longPressCheck, this.longPressTimeout);
@@ -107,8 +107,9 @@ public class WidgetHostView extends AppWidgetHostView
 	{
 		super.onSizeChanged (w, h, oldw, oldh);
 
-		if (w <= 0 || h <= 0)
+		if (w <= 0 || h <= 0) {
 			return;
+		}
 
 		// Tell the provider its actual size so it re-renders for the new bounds
 		// (this fires after every committed resize, since the commit relayouts).
@@ -140,10 +141,8 @@ public class WidgetHostView extends AppWidgetHostView
 				&& hasWindowFocus ()
 				&& this.nWindowsAttached == getWindowAttachCount ()
 				&& ! performedLongPress
-			)
-			{
-				if (performLongClick ())
-				{
+			) {
+				if (performLongClick ()) {
 					performedLongPress = true;
 				}
 			}

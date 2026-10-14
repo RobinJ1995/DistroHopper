@@ -146,14 +146,18 @@ object FontPreference {
 	 * activities), leaving the system font untouched.
 	 */
 	fun applyTo(activity: Activity) {
-		if (activity !is AppCompatActivity) return
+		if (activity !is AppCompatActivity) {
+			return
+		}
 		val fontStyle = this.fontStyle(activity) ?: return
 
 		// We run before AppCompat installs its own factory, so the inflater
 		// should be untouched; guard like AppCompat does to never clobber an
 		// existing factory (and to avoid setFactory2's "already set" crash).
 		val inflater = activity.layoutInflater
-		if (inflater.factory2 != null) return
+		if (inflater.factory2 != null) {
+			return
+		}
 
 		LayoutInflaterCompat.setFactory2(
 			inflater,
@@ -245,7 +249,9 @@ class FontStyle(
 
 		// Never touch metrics when there is no correction to make, so fonts that
 		// need none leave every view exactly as its layout/style declared it.
-		if (this.metricsAreNeutral) return
+		if (this.metricsAreNeutral) {
+			return
+		}
 
 		val baseline = this.baselineOf(view)
 		// The baseline is in px, so set px back: the SP unit the setter defaults

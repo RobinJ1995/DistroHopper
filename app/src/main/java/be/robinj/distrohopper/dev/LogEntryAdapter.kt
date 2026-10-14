@@ -76,8 +76,9 @@ class LogEntryAdapter : RecyclerView.Adapter<LogEntryAdapter.EntryViewHolder>() 
 		// so the common case doesn't repeat "main" down the whole list. Asking the
 		// looper rather than comparing to "main": the name isn't the same everywhere,
 		// and under Robolectric it isn't "main" at all. //
-		if (entry.threadName != Looper.getMainLooper().thread.name)
+		if (entry.threadName != Looper.getMainLooper().thread.name) {
 			meta.append("  ·  ").append(entry.threadName)
+		}
 
 		return meta
 	}

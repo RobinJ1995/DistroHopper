@@ -49,9 +49,7 @@ class DesktopAppHost(
 					"Pruned stale desktop app at ${layout.page}:${layout.col},${layout.row}")
 
 				continue
-			}
-
-			if (! seen.add(layout.key)) {
+			} else if (! seen.add(layout.key)) {
 				changed = true // De-duplicated: this key is already placed //
 
 				continue

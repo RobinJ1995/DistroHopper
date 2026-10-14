@@ -13,13 +13,11 @@ object OnboardingGate {
 	fun shouldShow(prefs: PreferencesRepository): Boolean {
 		if (prefs.getBoolean(Preference.SETUP_COMPLETED, false)) {
 			return false
-		}
-
-		// A theme preference can only identify a pre-wizard install if the
-		// wizard never ran: the wizard's own theme page writes it too, and a
-		// user killed mid-wizard must still get the remaining pages. //
-		if (prefs.getString(Preference.THEME, null) != null
+		} else if (prefs.getString(Preference.THEME, null) != null
 			&& !prefs.getBoolean(Preference.SETUP_STARTED, false)) {
+			// A theme preference can only identify a pre-wizard install if the
+			// wizard never ran: the wizard's own theme page writes it too, and a
+			// user killed mid-wizard must still get the remaining pages. //
 			markCompleted(prefs)
 
 			return false

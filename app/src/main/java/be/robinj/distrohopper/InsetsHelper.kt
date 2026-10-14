@@ -39,15 +39,17 @@ object InsetsHelper {
 		// Window#setStatusBarColor is a no-op under the enforced edge-to-edge of recent
 		// Android versions, so paint our own scrim behind the status bar to stop the
 		// translucent window background from bleeding through above the action bar.
-		if (activity is AppCompatActivity)
+		if (activity is AppCompatActivity) {
 			addStatusBarScrim(activity)
+		}
 	}
 
 	/** Fills the status bar inset region with the action bar's colour, matching the header bar. */
 	private fun addStatusBarScrim(activity: Activity) {
 		val colorPrimary = TypedValue()
-		if (!activity.theme.resolveAttribute(androidx.appcompat.R.attr.colorPrimary, colorPrimary, true))
+		if (!activity.theme.resolveAttribute(androidx.appcompat.R.attr.colorPrimary, colorPrimary, true)) {
 			return
+		}
 
 		val decor = activity.window.decorView as ViewGroup
 		val scrim = View(activity)

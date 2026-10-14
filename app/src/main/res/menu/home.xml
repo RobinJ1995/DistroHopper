@@ -1,7 +1,7 @@
 <menu
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="be.robinj.distrohopper.HomeActivity">
-    <!--<item android:id="@+id/action_settings"
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:context="be.robinj.distrohopper.HomeActivity">
+	<!--<item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
         android:showAsAction="never" />-->

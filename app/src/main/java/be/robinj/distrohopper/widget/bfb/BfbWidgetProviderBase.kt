@@ -107,7 +107,11 @@ abstract class BfbWidgetProviderBase : AppWidgetProvider() {
 		fun openDashIntent(context: Context, focusSearch: Boolean): Intent =
 			Intent(context, HomeActivity::class.java)
 				.putExtra("openDash", true)
-				.apply { if (focusSearch) putExtra("focusSearch", true) }
+				.apply {
+					if (focusSearch) {
+						putExtra("focusSearch", true)
+					}
+				}
 				.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
 		/** Re-render every placed BFB widget of either type; no-op when none are placed. */

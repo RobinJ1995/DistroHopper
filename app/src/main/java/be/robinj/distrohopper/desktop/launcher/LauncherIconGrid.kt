@@ -176,8 +176,9 @@ object LauncherIconGrid {
 			backgrounds.recycle()
 			if (drawableRes != 0) {
 				val rect = Rect()
-				if (ContextCompat.getDrawable(context, drawableRes)?.getPadding(rect) == true)
+				if (ContextCompat.getDrawable(context, drawableRes)?.getPadding(rect) == true) {
 					paddingPx = rect.left + rect.right
+				}
 			}
 		}
 
@@ -235,8 +236,9 @@ object LauncherIconGrid {
 			backgrounds.recycle()
 			if (drawableRes != 0) {
 				val rect = Rect()
-				if (ContextCompat.getDrawable(context, drawableRes)?.getPadding(rect) == true)
+				if (ContextCompat.getDrawable(context, drawableRes)?.getPadding(rect) == true) {
 					paddingPx = rect.top + rect.bottom
+				}
 			}
 		}
 
@@ -261,7 +263,9 @@ object LauncherIconGrid {
 	 * without one — only the customise hint calls this, always with the activity.
 	 */
 	private fun verticalSystemBarPx(context: Context): Int {
-		if (context !is Activity) return 0
+		if (context !is Activity) {
+			return 0
+		}
 
 		val insets = context.getSystemService(WindowManager::class.java)
 			?.currentWindowMetrics?.windowInsets ?: return 0

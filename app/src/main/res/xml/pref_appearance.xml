@@ -1,39 +1,39 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference
-        android:title="@string/option_theme"
-        android:summary="@string/hint_theme">
-        <intent
-            android:targetPackage="be.robinj.distrohopper"
-            android:targetClass="be.robinj.distrohopper.preferences.ThemePreferencesActivity" />
-    </Preference>
+	<Preference
+		android:title="@string/option_theme"
+		android:summary="@string/hint_theme">
+		<intent
+			android:targetPackage="be.robinj.distrohopper"
+			android:targetClass="be.robinj.distrohopper.preferences.ThemePreferencesActivity" />
+	</Preference>
 
-    <Preference
-        android:key="dummy_wallpaper"
-        android:title="@string/option_wallpaper"
-        android:summary="@string/hint_wallpaper">
-    </Preference>
+	<Preference
+		android:key="dummy_wallpaper"
+		android:title="@string/option_wallpaper"
+		android:summary="@string/hint_wallpaper">
+	</Preference>
 
-    <Preference
-        android:title="@string/option_icons"
-        android:summary="@string/hint_icons">
-        <intent
-            android:targetPackage="be.robinj.distrohopper"
-            android:targetClass="be.robinj.distrohopper.preferences.IconPreferencesActivity" />
-    </Preference>
+	<Preference
+		android:title="@string/option_icons"
+		android:summary="@string/hint_icons">
+		<intent
+			android:targetPackage="be.robinj.distrohopper"
+			android:targetClass="be.robinj.distrohopper.preferences.IconPreferencesActivity" />
+	</Preference>
 
-    <ListPreference
-        android:key="font"
-        android:title="@string/option_font"
-        android:summary="@string/hint_font"
-        android:entries="@array/font_entries"
-        android:entryValues="@array/font_values"
-        android:defaultValue="system"/>
+	<ListPreference
+		android:key="font"
+		android:title="@string/option_font"
+		android:summary="@string/hint_font"
+		android:entries="@array/font_entries"
+		android:entryValues="@array/font_values"
+		android:defaultValue="system"/>
 
-    <Preference
-        android:key="dummy_customise"
-        android:title="@string/option_customise"
-        android:summary="@string/hint_customise">
-    </Preference>
+	<Preference
+		android:key="dummy_customise"
+		android:title="@string/option_customise"
+		android:summary="@string/hint_customise">
+	</Preference>
 
 </PreferenceScreen>

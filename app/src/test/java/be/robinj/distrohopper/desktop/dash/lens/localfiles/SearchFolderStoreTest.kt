@@ -18,157 +18,157 @@ import org.robolectric.shadows.ShadowContentResolver
 
 @RunWith(RobolectricTestRunner::class)
 class SearchFolderStoreTest {
-    private lateinit var application: Application
-    private lateinit var prefs: android.content.SharedPreferences
-    private lateinit var store: SearchFolderStore
+	private lateinit var application: Application
+	private lateinit var prefs: android.content.SharedPreferences
+	private lateinit var store: SearchFolderStore
 
-    @Before fun setUp() {
-        application = ApplicationProvider.getApplicationContext()
-        prefs = SearchFolderStore.preferences(application)
-        put(emptySet())
+	@Before fun setUp() {
+		application = ApplicationProvider.getApplicationContext()
+		prefs = SearchFolderStore.preferences(application)
+		put(emptySet())
 
-        ShadowContentResolver.registerProviderInternal(AUTHORITY, NamingProvider())
+		ShadowContentResolver.registerProviderInternal(AUTHORITY, NamingProvider())
 
-        store = SearchFolderStore(application)
-    }
+		store = SearchFolderStore(application)
+	}
 
-    private fun treeUri(documentId: String): Uri =
-        DocumentsContract.buildTreeDocumentUri(AUTHORITY, documentId)
+	private fun treeUri(documentId: String): Uri =
+		DocumentsContract.buildTreeDocumentUri(AUTHORITY, documentId)
 
-    private fun stored(): Set<String> =
-        prefs.getStringSet(SearchFolderStore.KEY_FOLDERS, emptySet())!!.toSet()
+	private fun stored(): Set<String> =
+		prefs.getStringSet(SearchFolderStore.KEY_FOLDERS, emptySet())!!.toSet()
 
-    private fun put(values: Set<String>) {
-        prefs.edit().putStringSet(SearchFolderStore.KEY_FOLDERS, values).commit()
-    }
+	private fun put(values: Set<String>) {
+		prefs.edit().putStringSet(SearchFolderStore.KEY_FOLDERS, values).commit()
+	}
 
-    @Test fun startsEmpty() {
-        assertTrue(store.folders().isEmpty())
-    }
+	@Test fun startsEmpty() {
+		assertTrue(store.folders().isEmpty())
+	}
 
-    @Test fun addingAFolderRecordsIt() {
-        val uri = treeUri("documents")
+	@Test fun addingAFolderRecordsIt() {
+		val uri = treeUri("documents")
 
-        store.add(uri)
+		store.add(uri)
 
-        assertEquals(listOf(uri), store.folders())
-    }
+		assertEquals(listOf(uri), store.folders())
+	}
 
-    @Test fun addingAFolderTakesAPersistableReadGrant() {
-        val uri = treeUri("documents")
+	@Test fun addingAFolderTakesAPersistableReadGrant() {
+		val uri = treeUri("documents")
 
-        store.add(uri)
+		store.add(uri)
 
-        assertEquals(
-            listOf(uri),
-            application.contentResolver.persistedUriPermissions
-                .filter { it.isReadPermission }
-                .map { it.uri },
-        )
-    }
+		assertEquals(
+			listOf(uri),
+			application.contentResolver.persistedUriPermissions
+				.filter { it.isReadPermission }
+				.map { it.uri },
+		)
+	}
 
-    @Test fun addingTheSameFolderTwiceKeepsOneEntry() {
-        val uri = treeUri("documents")
+	@Test fun addingTheSameFolderTwiceKeepsOneEntry() {
+		val uri = treeUri("documents")
 
-        store.add(uri)
-        store.add(uri)
+		store.add(uri)
+		store.add(uri)
 
-        assertEquals(listOf(uri), store.folders())
-    }
+		assertEquals(listOf(uri), store.folders())
+	}
 
-    @Test fun foldersSurviveANewStoreInstance() {
-        store.add(treeUri("documents"))
+	@Test fun foldersSurviveANewStoreInstance() {
+		store.add(treeUri("documents"))
 
-        assertEquals(listOf(treeUri("documents")), SearchFolderStore(application).folders())
-    }
+		assertEquals(listOf(treeUri("documents")), SearchFolderStore(application).folders())
+	}
 
-    @Test fun removingAFolderForgetsIt() {
-        store.add(treeUri("documents"))
-        store.add(treeUri("pictures"))
+	@Test fun removingAFolderForgetsIt() {
+		store.add(treeUri("documents"))
+		store.add(treeUri("pictures"))
 
-        store.remove(treeUri("documents"))
+		store.remove(treeUri("documents"))
 
-        assertEquals(listOf(treeUri("pictures")), store.folders())
-    }
+		assertEquals(listOf(treeUri("pictures")), store.folders())
+	}
 
-    @Test fun removingAFolderReleasesItsGrant() {
-        store.add(treeUri("documents"))
+	@Test fun removingAFolderReleasesItsGrant() {
+		store.add(treeUri("documents"))
 
-        store.remove(treeUri("documents"))
+		store.remove(treeUri("documents"))
 
-        assertTrue(application.contentResolver.persistedUriPermissions.isEmpty())
-    }
+		assertTrue(application.contentResolver.persistedUriPermissions.isEmpty())
+	}
 
-    @Test fun removingAFolderThatWasNeverGrantedDoesNotThrow() {
-        store.remove(treeUri("never-added"))
+	@Test fun removingAFolderThatWasNeverGrantedDoesNotThrow() {
+		store.remove(treeUri("never-added"))
 
-        assertTrue(store.folders().isEmpty())
-    }
+		assertTrue(store.folders().isEmpty())
+	}
 
-    /** A grant can vanish while the app is away: the folder must not linger. */
-    @Test fun aFolderWhoseGrantIsGoneIsDropped() {
-        store.add(treeUri("documents"))
-        put(stored() + treeUri("unmounted-sd-card").toString())
+	/** A grant can vanish while the app is away: the folder must not linger. */
+	@Test fun aFolderWhoseGrantIsGoneIsDropped() {
+		store.add(treeUri("documents"))
+		put(stored() + treeUri("unmounted-sd-card").toString())
 
-        assertEquals(listOf(treeUri("documents")), store.folders())
-    }
+		assertEquals(listOf(treeUri("documents")), store.folders())
+	}
 
-    @Test fun droppedFoldersArePrunedFromStorageNotJustHidden() {
-        put(setOf(treeUri("gone").toString()))
+	@Test fun droppedFoldersArePrunedFromStorageNotJustHidden() {
+		put(setOf(treeUri("gone").toString()))
 
-        store.folders()
+		store.folders()
 
-        assertTrue(stored().isEmpty())
-    }
+		assertTrue(stored().isEmpty())
+	}
 
-    @Test fun foldersAreReturnedInAStableOrder() {
-        store.add(treeUri("pictures"))
-        store.add(treeUri("documents"))
-        store.add(treeUri("music"))
+	@Test fun foldersAreReturnedInAStableOrder() {
+		store.add(treeUri("pictures"))
+		store.add(treeUri("documents"))
+		store.add(treeUri("music"))
 
-        assertEquals(SearchFolderStore(application).folders(), store.folders())
-    }
+		assertEquals(SearchFolderStore(application).folders(), store.folders())
+	}
 
-    // ── Display names ──────────────────────────────────────────────────────────
+	// ── Display names ──────────────────────────────────────────────────────────
 
-    @Test fun displayNameComesFromTheProvider() {
-        assertEquals("Documents", store.displayName(treeUri("documents")))
-    }
+	@Test fun displayNameComesFromTheProvider() {
+		assertEquals("Documents", store.displayName(treeUri("documents")))
+	}
 
-    @Test fun displayNameFallsBackWhenTheProviderSaysNothing() {
-        assertEquals("unknown", store.displayName(treeUri("unknown")))
-    }
+	@Test fun displayNameFallsBackWhenTheProviderSaysNothing() {
+		assertEquals("unknown", store.displayName(treeUri("unknown")))
+	}
 
-    @Test fun displayNameFallsBackForAUriThatIsNotATree() {
-        val notATree = Uri.parse("content://$AUTHORITY/nonsense")
+	@Test fun displayNameFallsBackForAUriThatIsNotATree() {
+		val notATree = Uri.parse("content://$AUTHORITY/nonsense")
 
-        assertEquals("nonsense", store.displayName(notATree))
-    }
+		assertEquals("nonsense", store.displayName(notATree))
+	}
 
-    /** Names only the picker knows; the store must not fail if it can't get one. */
-    private class NamingProvider : ContentProvider() {
-        override fun onCreate() = true
+	/** Names only the picker knows; the store must not fail if it can't get one. */
+	private class NamingProvider : ContentProvider() {
+		override fun onCreate() = true
 
-        override fun query(uri: Uri, projection: Array<out String>?, selection: String?,
-                           selectionArgs: Array<out String>?, sortOrder: String?): Cursor? {
-            val documentId = DocumentsContract.getDocumentId(uri)
+		override fun query(uri: Uri, projection: Array<out String>?, selection: String?,
+						   selectionArgs: Array<out String>?, sortOrder: String?): Cursor? {
+			val documentId = DocumentsContract.getDocumentId(uri)
 
-            if (documentId != "documents") {
-                return null
-            }
+			if (documentId != "documents") {
+				return null
+			}
 
-            return MatrixCursor(arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME))
-                .apply { addRow(arrayOf("Documents")) }
-        }
+			return MatrixCursor(arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME))
+				.apply { addRow(arrayOf("Documents")) }
+		}
 
-        override fun getType(uri: Uri): String? = null
-        override fun insert(uri: Uri, values: ContentValues?) = null
-        override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?) = 0
-        override fun update(uri: Uri, values: ContentValues?, selection: String?,
-                            selectionArgs: Array<out String>?) = 0
-    }
+		override fun getType(uri: Uri): String? = null
+		override fun insert(uri: Uri, values: ContentValues?) = null
+		override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?) = 0
+		override fun update(uri: Uri, values: ContentValues?, selection: String?,
+							selectionArgs: Array<out String>?) = 0
+	}
 
-    private companion object {
-        const val AUTHORITY = "be.robinj.distrohopper.test.folders"
-    }
+	private companion object {
+		const val AUTHORITY = "be.robinj.distrohopper.test.folders"
+	}
 }

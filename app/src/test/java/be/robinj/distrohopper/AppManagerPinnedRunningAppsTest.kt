@@ -18,54 +18,54 @@ import org.robolectric.annotation.LooperMode
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.LEGACY)
 class AppManagerPinnedRunningAppsTest {
-    private lateinit var scenario: ActivityScenario<HomeActivity>
+	private lateinit var scenario: ActivityScenario<HomeActivity>
 
-    @Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
-    @After fun tearDown() { scenario.close() }
+	@Before fun setUp() { scenario = ActivityTestSupport.launchHome() }
+	@After fun tearDown() { scenario.close() }
 
-    private fun setRunningProcess(activity: HomeActivity, packageName: String) {
-        val activityManager = activity.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val process = ActivityManager.RunningAppProcessInfo(packageName, 1234, arrayOf(packageName))
-            .apply { importance = ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND }
-        Shadows.shadowOf(activityManager).setProcesses(listOf(process))
-    }
+	private fun setRunningProcess(activity: HomeActivity, packageName: String) {
+		val activityManager = activity.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+		val process = ActivityManager.RunningAppProcessInfo(packageName, 1234, arrayOf(packageName))
+			.apply { importance = ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND }
+		Shadows.shadowOf(activityManager).setProcesses(listOf(process))
+	}
 
-    @Test fun addRunningAppsToleratesPinnedAppWithoutLauncherView() {
-        scenario.onActivity { activity ->
-            val manager = activity.appManager
-            val app = manager.findAppsByPackageName("com.example.alpha").first()
-            manager.pin(app, false, false) // pinned, but no view in llLauncherPinnedApps
-            setRunningProcess(activity, "com.example.alpha")
+	@Test fun addRunningAppsToleratesPinnedAppWithoutLauncherView() {
+		scenario.onActivity { activity ->
+			val manager = activity.appManager
+			val app = manager.findAppsByPackageName("com.example.alpha").first()
+			manager.pin(app, false, false) // pinned, but no view in llLauncherPinnedApps
+			setRunningProcess(activity, "com.example.alpha")
 
-            manager.addRunningApps(Color.BLACK)
-        }
-    }
+			manager.addRunningApps(Color.BLACK)
+		}
+	}
 
-    @Test fun addRunningAppsMarksPinnedAppViewAsRunning() {
-        scenario.onActivity { activity ->
-            val manager = activity.appManager
-            val app = manager.findAppsByPackageName("com.example.alpha").first()
-            manager.pin(app, false, true)
-            setRunningProcess(activity, "com.example.alpha")
+	@Test fun addRunningAppsMarksPinnedAppViewAsRunning() {
+		scenario.onActivity { activity ->
+			val manager = activity.appManager
+			val app = manager.findAppsByPackageName("com.example.alpha").first()
+			manager.pin(app, false, true)
+			setRunningProcess(activity, "com.example.alpha")
 
-            manager.addRunningApps(Color.BLACK)
+			manager.addRunningApps(Color.BLACK)
 
-            val pinnedContainer = activity.findViewById<LinearLayout>(R.id.llLauncherPinnedApps)
-            val launcher = pinnedContainer.findViewWithTag<AppLauncher>(app)
-            assertNotNull(launcher)
-            assertTrue(launcher.isRunning)
-        }
-    }
+			val pinnedContainer = activity.findViewById<LinearLayout>(R.id.llLauncherPinnedApps)
+			val launcher = pinnedContainer.findViewWithTag<AppLauncher>(app)
+			assertNotNull(launcher)
+			assertTrue(launcher.isRunning)
+		}
+	}
 
-    @Test fun addRunningAppsAddsLauncherForUnpinnedRunningApp() {
-        scenario.onActivity { activity ->
-            val manager = activity.appManager
-            setRunningProcess(activity, "com.example.beta")
+	@Test fun addRunningAppsAddsLauncherForUnpinnedRunningApp() {
+		scenario.onActivity { activity ->
+			val manager = activity.appManager
+			setRunningProcess(activity, "com.example.beta")
 
-            manager.addRunningApps(Color.BLACK)
+			manager.addRunningApps(Color.BLACK)
 
-            val runningContainer = activity.findViewById<LinearLayout>(R.id.llLauncherRunningApps)
-            assertEquals(1, runningContainer.childCount)
-        }
-    }
+			val runningContainer = activity.findViewById<LinearLayout>(R.id.llLauncherRunningApps)
+			assertEquals(1, runningContainer.childCount)
+		}
+	}
 }

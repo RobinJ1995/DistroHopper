@@ -22,11 +22,14 @@ class ClippingScrollView @JvmOverloads constructor(
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
 		val content = this.getChildAt(0)?.measuredHeight ?: 0
-		if (content <= this.measuredHeight) return
+		if (content <= this.measuredHeight) {
+			return
+		}
 
 		val clipped = LauncherIconGrid.viewportClipPx(
 			this.measuredHeight, LauncherIconGrid.iconHeightPx(this.context))
-		if (clipped != this.measuredHeight)
+		if (clipped != this.measuredHeight) {
 			this.setMeasuredDimension(this.measuredWidth, clipped)
+		}
 	}
 }

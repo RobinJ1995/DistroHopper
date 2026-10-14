@@ -157,8 +157,7 @@ class LauncherLayoutRepository(
 		val current = folders.first { it.id == folderId }
 		if (current.appKeys.contains(app.profileScopedKey)) {
 			return true
-		}
-		if (current.appKeys.size >= MAX_FOLDER_APPS) {
+		} else if (current.appKeys.size >= MAX_FOLDER_APPS) {
 			return false
 		}
 
@@ -247,9 +246,8 @@ class LauncherLayoutRepository(
 				if (kept.filterIsInstance<FolderMember.AppMember>().size <= 1) {
 					folders.removeAt(i)
 					continue
-				} else {
-					folders[i] = folder.copy(members = kept)
 				}
+				folders[i] = folder.copy(members = kept)
 			}
 			i++
 		}

@@ -123,7 +123,9 @@ class DashController(
 			// The dash may already be open because viewModel.openDash() drove the
 			// state binder's flagless open() before this flag-carrying call ran
 			// (e.g. a BFB search-widget tap). Still honour the search focus.
-			if (forceSearchFocus) this.focusSearchField()
+			if (forceSearchFocus) {
+				this.focusSearchField()
+			}
 			return
 		}
 
@@ -189,9 +191,7 @@ class DashController(
 	fun swipeOpenEnd(commit: Boolean, forceSearchFocus: Boolean = false) {
 		if (this.isOpen || ! this.animator.swipeInProgress) {
 			return
-		}
-
-		if (commit) {
+		} else if (commit) {
 			this.animator.swipeSettle(open = true)
 			this.applyOpenedChrome(forceSearchFocus)
 			this.isOpen = true
@@ -204,9 +204,7 @@ class DashController(
 	fun swipeCloseEnd(commit: Boolean) {
 		if (! this.isOpen || ! this.animator.swipeInProgress) {
 			return
-		}
-
-		if (commit) {
+		} else if (commit) {
 			this.animator.swipeSettle(open = false) { this.teardownDashViews() }
 			this.applyClosedChrome()
 			this.isOpen = false
@@ -222,11 +220,13 @@ class DashController(
 	private fun applyOpenedChrome(forceSearchFocus: Boolean = false) {
 		val llPanel = this.viewFinder.get<LinearLayout>(R.id.llPanel)
 
-		if (forceSearchFocus || this.prefs.getBoolean(Preference.DASH_SEARCH_FOCUS_ON_OPEN, false))
+		if (forceSearchFocus || this.prefs.getBoolean(Preference.DASH_SEARCH_FOCUS_ON_OPEN, false)) {
 			this.focusSearchField()
+		}
 
-		if (this.activity.resources.getInteger(this.theme.panel_close_location) != -1)
+		if (this.activity.resources.getInteger(this.theme.panel_close_location) != -1) {
 			this.viewFinder.get<ImageButton>(llPanel, R.id.ibPanelDashClose).visibility = View.VISIBLE
+		}
 
 		if (this.activity.resources.getBoolean(this.theme.panel_background_dynamic_when_dash_opened)) {
 			llPanel.setBackgroundColor(this.chameleonicBgColour)
@@ -276,8 +276,9 @@ class DashController(
 		etDashSearch.setText("")
 		etDashSearch.clearFocus()
 
-		if (this.activity.resources.getInteger(this.theme.panel_close_location) != -1)
+		if (this.activity.resources.getInteger(this.theme.panel_close_location) != -1) {
 			this.viewFinder.get<ImageButton>(llPanel, R.id.ibPanelDashClose).visibility = View.INVISIBLE
+		}
 
 		if (this.activity.resources.getBoolean(this.theme.panel_background_dynamic_when_dash_opened)) {
 			llPanel.setBackgroundResource(this.theme.panel_background)

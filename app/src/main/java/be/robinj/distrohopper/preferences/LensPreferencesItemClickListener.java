@@ -36,19 +36,17 @@ public class LensPreferencesItemClickListener implements View.OnClickListener //
 		{
 			boolean checked = this.cbEnabled.isChecked ();
 
-			if (!(view instanceof CompoundButton))
+			if (!(view instanceof CompoundButton)) {
 				this.cbEnabled.setChecked (!checked);
+			}
 
-			if (this.cbEnabled.isChecked ())
-			{
+			if (this.cbEnabled.isChecked ()) {
 				this.lensManager.enableLens (this.lens);
 
 				// The lens may have been disabled because its permissions were
 				// never granted; enabling it is the moment to ask again //
 				Permission.requestMultiple (this.parent, this.lens.requiredPermissions ());
-			}
-			else
-			{
+			} else {
 				this.lensManager.disableLens (this.lens);
 			}
 		}

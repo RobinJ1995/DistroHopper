@@ -52,8 +52,9 @@ object AppsLoader {
 			// Skip the legacy package and our own package; our own public launcher
 			// entry is replaced by the internal Settings shortcut added below.
 			if (IGNORE.contains(resInf.activityInfo.packageName) ||
-					resInf.activityInfo.packageName == context.packageName)
+					resInf.activityInfo.packageName == context.packageName) {
 				continue
+			}
 
 			// One broken package (corrupt icon, vanished mid-query, ...) must not
 			// abort the load: the launcher used to come up with a partial list //

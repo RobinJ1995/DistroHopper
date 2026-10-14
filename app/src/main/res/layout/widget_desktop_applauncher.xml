@@ -6,30 +6,30 @@
     label. Fills a DesktopAppLayout.SPAN-square block of WidgetsContainer cells.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-      android:id="@+id/llDesktopAppLauncher"
-      android:orientation="vertical"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:gravity="center"
-      android:padding="@dimen/dash_applauncher_padding">
+			android:id="@+id/llDesktopAppLauncher"
+			android:orientation="vertical"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:gravity="center"
+			android:padding="@dimen/dash_applauncher_padding">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/imgIcon"
-        android:layout_weight="1"/>
+		<ImageView
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:id="@+id/imgIcon"
+				android:layout_weight="1"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="[Label]"
-        android:id="@+id/tvLabel"
-        android:textColor="@android:color/white"
-        android:layout_weight="0"
-        android:gravity="center"
-        android:textSize="@dimen/dash_applauncher_textsize"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:textAppearance="@style/textshadow_2px_black" />
+		<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="[Label]"
+				android:id="@+id/tvLabel"
+				android:textColor="@android:color/white"
+				android:layout_weight="0"
+				android:gravity="center"
+				android:textSize="@dimen/dash_applauncher_textsize"
+				android:maxLines="2"
+				android:ellipsize="end"
+				android:textAppearance="@style/textshadow_2px_black" />
 
 </LinearLayout>

@@ -145,17 +145,14 @@ public class HomeActivity extends AppCompatActivity
 
 		// An install can be forced past minSdk. Nothing here runs on a framework
 		// that old, so say so and get out rather than crash on a missing API //
-		if (Build.VERSION.SDK_INT < this.getApplicationInfo ().minSdkVersion)
-		{
+		if (Build.VERSION.SDK_INT < this.getApplicationInfo ().minSdkVersion) {
 			Toast.makeText (this, R.string.unsupported_android_version, Toast.LENGTH_LONG).show ();
 			this.finish ();
 
 			return;
 		}
-
 		// First run: hand over to the setup wizard before initialising anything //
-		if (OnboardingGate.shouldShow (DependencyContainer.of (this).getPrefs ()))
-		{
+		else if (OnboardingGate.shouldShow (DependencyContainer.of (this).getPrefs ())) {
 			this.startActivity (new Intent (this, OnboardingActivity.class));
 			this.finish ();
 
@@ -251,20 +248,13 @@ public class HomeActivity extends AppCompatActivity
 						// The overlays float above everything else, so Back closes
 						// just the overlay — the dash it may have been opened from (or
 						// the widget edit mode behind it) stays as it was. //
-						if (DesktopMenuOverlay.isShowingIn (HomeActivity.this))
-						{
+						if (DesktopMenuOverlay.isShowingIn (HomeActivity.this)) {
 							DesktopMenuOverlay.dismissActive (HomeActivity.this);
-						}
-						else if (FolderOverlay.isShowingIn (HomeActivity.this))
-						{
+						} else if (FolderOverlay.isShowingIn (HomeActivity.this)) {
 							FolderOverlay.dismissActive (HomeActivity.this);
-						}
-						else if (vgWidgets.hasEditModeChild ())
-						{
+						} else if (vgWidgets.hasEditModeChild ()) {
 							vgWidgets.exitEditMode ();
-						}
-						else if (HomeActivity.this.dash.isOpen ())
-						{
+						} else if (HomeActivity.this.dash.isOpen ()) {
 							HomeActivity.this.closeDash ();
 						}
 						// Default launcher, nothing open: swallow Back so the home screen
@@ -347,8 +337,7 @@ public class HomeActivity extends AppCompatActivity
 				});
 
 			Intent intent = this.getIntent ();
-			if (intent != null)
-			{
+			if (intent != null) {
 				container.getCustomiseMode ().setValue (
 						intent.getBooleanExtra ("customise", container.getCustomiseMode ().getValue ()));
 				this.openDashWhenReady = intent.getBooleanExtra ("openDash", this.openDashWhenReady)
@@ -362,8 +351,9 @@ public class HomeActivity extends AppCompatActivity
 			int llStatusBar_height = llStatusBar.getHeight ();
 			int statusBarHeight_resource = res.getIdentifier ("status_bar_height", "dimen", "android");
 
-			if (statusBarHeight_resource > 0)
+			if (statusBarHeight_resource > 0) {
 				llStatusBar_height = res.getDimensionPixelSize (statusBarHeight_resource);
+			}
 
 			RelativeLayout.LayoutParams llStatusBar_layoutParams = new RelativeLayout.LayoutParams (ViewGroup.LayoutParams.MATCH_PARENT, llStatusBar_height);
 			llStatusBar.setLayoutParams (llStatusBar_layoutParams);
@@ -415,8 +405,9 @@ public class HomeActivity extends AppCompatActivity
 			{
 				final boolean handled = this.gestures != null && this.gestures.onHomeTouchEvent (event);
 
-				if (handled)
+				if (handled) {
 					view.cancelLongPress (); // A recognised swipe is not a long-press //
+				}
 
 				return handled;
 			});
@@ -432,13 +423,15 @@ public class HomeActivity extends AppCompatActivity
 			// Desktops coordinator, wired once the app model has loaded //
 			vgWidgets.setOnPageScroll ((fromPage, toPage, fraction) ->
 			{
-				if (this.apps != null)
+				if (this.apps != null) {
 					this.apps.onLauncherPageScroll (fromPage, toPage, fraction);
+				}
 			});
 			vgWidgets.setOnPageSettled (page ->
 			{
-				if (this.apps != null)
+				if (this.apps != null) {
 					this.apps.onLauncherPageSettled (page);
+				}
 			});
 
 			// Keep the widget area clear of the launcher, even when the launcher resizes //
@@ -472,8 +465,7 @@ public class HomeActivity extends AppCompatActivity
 				final boolean changingLayout = containerTransition != null
 					&& containerTransition.isChangingLayout ();
 				if (!changingLayout && (width != lastLauncherSize[0]
-						|| height != lastLauncherSize[1]))
-				{
+						|| height != lastLauncherSize[1])) {
 					lastLauncherSize[0] = width;
 					lastLauncherSize[1] = height;
 					HomeActivity.this.edgeController.updateWidgetAreaInsets (vgWidgets, llLauncher);
@@ -484,9 +476,8 @@ public class HomeActivity extends AppCompatActivity
 
 			this.widgetHost.restoreWidgets ();
 
-			if (container.getCustomiseMode ().getValue ())
-			{
-				this.customiseModeUi = new CustomiseModeUi (this, this.viewFinder, this.theme, () ->
+			if (container.getCustomiseMode ().getValue ()) {
+				this.customiseModeUi =new CustomiseModeUi (this, this.viewFinder, this.theme, () ->
 				{
 					final Intent relaunchIntent = this.getIntent ();
 					relaunchIntent.putExtra ("customise", true);
@@ -601,8 +592,9 @@ public class HomeActivity extends AppCompatActivity
 
 	public void returnToFirstDesktop ()
 	{
-		if (this.viewFinder != null)
+		if (this.viewFinder != null) {
 			this.viewFinder.<WidgetsPager>get(R.id.vgWidgets).setCurrentPage(0, true);
+		}
 	}
 
 	@Override
@@ -622,8 +614,9 @@ public class HomeActivity extends AppCompatActivity
 	{
 		try
 		{
-			if (this.gestures != null && this.gestures.onHomeTouchEvent (event))
+			if (this.gestures != null && this.gestures.onHomeTouchEvent (event)) {
 				return true;
+			}
 		}
 		catch (Exception ex)
 		{
@@ -645,8 +638,9 @@ public class HomeActivity extends AppCompatActivity
 	 */
 	public void updateBackCallback ()
 	{
-		if (this.backCallback == null)
+		if (this.backCallback == null) {
 			return;
+		}
 
 		final boolean editMode = this.viewFinder != null
 				&& this.viewFinder.<WidgetsPager>get (R.id.vgWidgets).hasEditModeChild ();
@@ -687,8 +681,9 @@ public class HomeActivity extends AppCompatActivity
 
 		try
 		{
-			if (this.widgetHost != null)
+			if (this.widgetHost != null) {
 				this.widgetHost.startListening ();
+			}
 		}
 		catch (Exception ex)
 		{
@@ -733,8 +728,7 @@ public class HomeActivity extends AppCompatActivity
 			// A wallpaper change (e.g. via the wallpaper picker) only resumes us, it
 			// doesn't recreate us; if the icon tint follows the wallpaper, the cached
 			// icons are now stale. Rebuild so the reload purges them and re-renders. //
-			if (this.apps != null && this.iconConfigOutOfDate ())
-			{
+			if (this.apps != null && this.iconConfigOutOfDate ()) {
 				this.recreate ();
 				return;
 			}
@@ -746,28 +740,28 @@ public class HomeActivity extends AppCompatActivity
 			// Consume the flags so they can't re-open the dash on a later resume; it
 			// is a one-shot request (e.g. from a BFB widget's PendingIntent), and the
 			// activity's intent persists across resumes once setIntent() adopts it //
-			if (openDash)
-			{
+			if (openDash) {
 				intent.removeExtra ("openDash");
 				intent.removeExtra ("focusSearch");
 			}
 
-			if (openDash)
+			if (openDash) {
 				this.openDash (focusSearch);
-			else if (this.apps != null && this.dash.isOpen ())
+			} else if (this.apps != null && this.dash.isOpen ()) {
 				// Launching from an already-open dash leaves it open, so openDash()
 				// won't run on the way back; refresh the usage-based order here too so
 				// the just-launched app moves (no-op for the alphabetical order) //
 				this.apps.refreshDashSortOrder ();
+			}
 
 			this.showLauncherService (false);
 
-			if (this.apps != null)
-			{
+			if (this.apps != null) {
 				SharedPreferences prefs = this.getSharedPreferences ();
 
-				if (prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false))
+				if (prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false)) {
 					this.apps.addRunningApps (this.dash.getChameleonicBgColour ());
+				}
 			}
 		}
 		catch (Exception ex)
@@ -807,12 +801,14 @@ public class HomeActivity extends AppCompatActivity
 		vgWidgets.setDisplayRotation (this.getWindowManager ().getDefaultDisplay ().getRotation ());
 
 		// Re-apply the dash grid's column count for the new orientation. //
-		if (this.apps != null)
+		if (this.apps != null) {
 			this.apps.applyDashColumns ();
+		}
 
 		// Keep the customise-mode grid-size hint in step with the new orientation //
-		if (this.customiseModeUi != null)
+		if (this.customiseModeUi != null) {
 			this.customiseModeUi.refreshDashGridHint ();
+		}
 	}
 
 	@Override
@@ -821,17 +817,16 @@ public class HomeActivity extends AppCompatActivity
 		FolderOverlay.clearFor (this);
 		DesktopMenuOverlay.clearFor (this);
 
-		if (this.dash != null)
+		if (this.dash != null) {
 			this.getWindowManager ().removeCrossWindowBlurEnabledListener (this.dash.getCrossWindowBlurListener ());
+		}
 
-		if (this.broadcastPackageManager != null)
-		{
+		if (this.broadcastPackageManager != null) {
 			this.unregisterReceiver (this.broadcastPackageManager);
 			this.broadcastPackageManager = null;
 		}
 
-		if (this.workProfileAppsCallback != null)
-		{
+		if (this.workProfileAppsCallback != null) {
 			((LauncherApps) this.getApplicationContext ()
 					.getSystemService (Context.LAUNCHER_APPS_SERVICE))
 					.unregisterCallback (this.workProfileAppsCallback);
@@ -857,8 +852,9 @@ public class HomeActivity extends AppCompatActivity
 
 		final String tint = prefs.getString (
 			Preference.ICON_TINT.getName (), Preference.ICON_TINT.getDefault ());
-		if (IconTint.WALLPAPER.equals (tint) && IconTint.wallpaper (this) == null)
+		if (IconTint.WALLPAPER.equals (tint) && IconTint.wallpaper (this) == null) {
 			return false;
+		}
 
 		final String stored = prefs.getString (Preference.ICON_CONFIG_SIGNATURE.getName (), null);
 
@@ -871,8 +867,7 @@ public class HomeActivity extends AppCompatActivity
 	{
 		SharedPreferences prefs = this.getSharedPreferences ();
 
-		if (prefs.getBoolean (Preference.LAUNCHERSERVICE_ENABLED.getName(), false) && prefs.getBoolean (Preference.DEV.getName(), false))
-		{
+		if (prefs.getBoolean (Preference.LAUNCHERSERVICE_ENABLED.getName(), false) && prefs.getBoolean (Preference.DEV.getName(), false)) {
 			AppLauncher lalbfb = this.viewFinder.get(R.id.lalBfb);
 
 			Intent intent = new Intent (this, LauncherService.class);
@@ -884,9 +879,7 @@ public class HomeActivity extends AppCompatActivity
 			intent.putExtra ("visible", false);
 
 			this.startService (intent);
-		}
-		else
-		{
+		} else {
 			Intent intent = new Intent (this, LauncherService.class);
 
 			this.stopService (intent);
@@ -897,13 +890,13 @@ public class HomeActivity extends AppCompatActivity
 	{
 		SharedPreferences prefs = this.getSharedPreferences ();
 
-		if (prefs.getBoolean (Preference.LAUNCHERSERVICE_ENABLED.getName(), false) && prefs.getBoolean (Preference.DEV.getName(), false))
-		{
+		if (prefs.getBoolean (Preference.LAUNCHERSERVICE_ENABLED.getName(), false) && prefs.getBoolean (Preference.DEV.getName(), false)) {
 			Intent intent = new Intent (this, LauncherService.class);
 			intent.putExtra ("show", show);
 			intent.putExtra ("visible", false);
-			if (show && this.apps != null && prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false))
+			if (show && this.apps != null && prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false)) {
 				intent.putParcelableArrayListExtra ("running", (ArrayList<App>) this.apps.getRunningApps ());
+			}
 
 			this.startService (intent);
 		}
@@ -985,8 +978,9 @@ public class HomeActivity extends AppCompatActivity
 			// singleLine means this fires for both the soft-keyboard action and a hardware Enter //
 			etDashSearch.setOnEditorActionListener ((v, actionId, event) -> {
 				// Fire once on key-down only (hardware Enter also delivers an ACTION_UP) //
-				if (event != null && event.getAction () != KeyEvent.ACTION_DOWN)
+				if (event != null && event.getAction () != KeyEvent.ACTION_DOWN) {
 					return false;
+				}
 
 				return this.lenses.activateFirstResult ();
 			});
@@ -999,11 +993,13 @@ public class HomeActivity extends AppCompatActivity
 			// Load selected icon pack before caching icons
 			installedApps.loadConfiguredIconPack ();
 
-			if (prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false))
+			if (prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false)) {
 				this.apps.addRunningApps (this.dash.getChameleonicBgColour ());
+			}
 
-			if (this.openDashWhenReady)
+			if (this.openDashWhenReady) {
 				this.openDash (this.focusSearchWhenReady);
+			}
 
 			// Broadcast receiver //
 			this.broadcastPackageManager = new PackageManagerBroadcastReceiver (this);
@@ -1057,8 +1053,9 @@ public class HomeActivity extends AppCompatActivity
 
 		SharedPreferences prefs = this.getSharedPreferences ();
 
-		if (prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false))
+		if (prefs.getBoolean (Preference.LAUNCHER_SHOW_RUNNING_APPS.getName(), false)) {
 			this.apps.addRunningApps (this.dash.getChameleonicBgColour ());
+		}
 	}
 
 	//# Event handlers #//
@@ -1106,8 +1103,9 @@ public class HomeActivity extends AppCompatActivity
 	{
 		try
 		{
-			if (this.startupLoader != null)
+			if (this.startupLoader != null) {
 				this.startupLoader.cancel ();
+			}
 
 			Intent intent = new Intent (this, PreferencesActivity.class);
 			this.startActivityForResult (intent, RequestCode.ACTIVITY_PREFERENCES);
@@ -1200,13 +1198,14 @@ public class HomeActivity extends AppCompatActivity
 	/** Shared resolver for the cross-surface drag's open/close-the-dash-on-hover. */
 	public DashCrossSurfaceController getDashCrossSurface ()
 	{
-		if (this.dashCrossSurface == null)
+		if (this.dashCrossSurface == null) {
 			this.dashCrossSurface = new DashCrossSurfaceController (new DashCrossSurfaceController.Dash ()
 			{
 				@Override public boolean isOpen () { return HomeActivity.this.dashIsOpen (); }
 				@Override public void open () { HomeActivity.this.openDash (); }
 				@Override public void close () { HomeActivity.this.closeDash (); }
 			});
+		}
 
 		return this.dashCrossSurface;
 	}
@@ -1215,10 +1214,7 @@ public class HomeActivity extends AppCompatActivity
 	{
 		if (! this.dash.isOpen ()) {
 			return;
-		}
-
-		if (DependencyContainer.of (this).getCustomiseMode ().getValue ())
-		{
+		} else if (DependencyContainer.of (this).getCustomiseMode ().getValue ()) {
 			Intent intent = this.getIntent ();
 			intent.putExtra ("customise", false);
 			intent.removeExtra ("openDash"); // leaving the dash: don't re-open on rebuild //
@@ -1243,8 +1239,9 @@ public class HomeActivity extends AppCompatActivity
 	{
 		// Pick up launches since the dash was last built, so the usage-based sort
 		// orders ("most recently used"/"most used") aren't stale on open //
-		if (this.apps != null)
+		if (this.apps != null) {
 			this.apps.refreshDashSortOrder ();
+		}
 
 		this.viewModel.openDash ();
 		this.dash.open (forceSearchFocus);
@@ -1267,8 +1264,9 @@ public class HomeActivity extends AppCompatActivity
 
 		for (ComponentName activity : activities)
 		{
-			if (packageName.equals (activity.getPackageName ()))
+			if (packageName.equals (activity.getPackageName ())) {
 				return true;
+			}
 		}
 
 		return false;

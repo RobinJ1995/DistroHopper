@@ -26,12 +26,9 @@ public class AppLauncherClickListener implements AdapterView.OnItemClickListener
 		{
 			Object tag = view.getTag ();
 
-			if (tag instanceof DashItem.AppItem)
-			{
+			if (tag instanceof DashItem.AppItem) {
 				((DashItem.AppItem) tag).getApp ().launch ();
-			}
-			else if (tag instanceof DashItem.FolderItem)
-			{
+			} else if (tag instanceof DashItem.FolderItem) {
 				DashItem.FolderItem folder = (DashItem.FolderItem) tag;
 				new FolderPopup (this.parent, folder.getFolder ().getId (), folder.getApps ())
 					.showAt (view);

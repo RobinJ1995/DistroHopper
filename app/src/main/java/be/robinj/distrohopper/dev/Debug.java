@@ -7,8 +7,7 @@ public class Debug
 {
 	public static void assertCondition (boolean condition)
 	{
-		if (! condition)
-		{
+		if (! condition) {
 			String message = null;
 			try
 			{
@@ -16,13 +15,11 @@ public class Debug
 
 				for (StackTraceElement ste : Thread.currentThread ().getStackTrace ())
 				{
-					if (! nextLineIsTheChosenOne)
-					{
-						if (ste.toString ().contains ("Debug.assertCondition"))
+					if (! nextLineIsTheChosenOne) {
+						if (ste.toString ().contains ("Debug.assertCondition")) {
 							nextLineIsTheChosenOne = true;
-					}
-					else
-					{
+						}
+					} else {
 						message = ste.toString ();
 						break;
 					}

@@ -10,19 +10,19 @@ import org.junit.Test
  * values documented in profile_indicator.xml.
  */
 class ProfileIndicatorStyleTest {
-    @Test fun numbersMapToEnumValues() {
-        ProfileIndicatorStyle.entries.forEach { assertEquals(it, ProfileIndicatorStyle.of(it.n)) }
-    }
+	@Test fun numbersMapToEnumValues() {
+		ProfileIndicatorStyle.entries.forEach { assertEquals(it, ProfileIndicatorStyle.of(it.n)) }
+	}
 
-    @Test fun ofUsesOrdinalIndexing() {
-        assertEquals(ProfileIndicatorStyle.NONE, ProfileIndicatorStyle.of(0))
-        assertEquals(ProfileIndicatorStyle.UNITY_RIBBON, ProfileIndicatorStyle.of(1))
-        assertEquals(ProfileIndicatorStyle.GNOME_PANEL, ProfileIndicatorStyle.of(2))
-    }
+	@Test fun ofUsesOrdinalIndexing() {
+		assertEquals(ProfileIndicatorStyle.NONE, ProfileIndicatorStyle.of(0))
+		assertEquals(ProfileIndicatorStyle.UNITY_RIBBON, ProfileIndicatorStyle.of(1))
+		assertEquals(ProfileIndicatorStyle.GNOME_PANEL, ProfileIndicatorStyle.of(2))
+	}
 
-    @Test fun ofRejectsOutOfRangeValues() {
-        // of(n) is values()[n] with no validation, so an unknown integer throws —
-        // documented here so a theme shipping a bad value fails loudly, not silently.
-        assertThrows(ArrayIndexOutOfBoundsException::class.java) { ProfileIndicatorStyle.of(3) }
-    }
+	@Test fun ofRejectsOutOfRangeValues() {
+		// of(n) is values()[n] with no validation, so an unknown integer throws —
+		// documented here so a theme shipping a bad value fails loudly, not silently.
+		assertThrows(ArrayIndexOutOfBoundsException::class.java) { ProfileIndicatorStyle.of(3) }
+	}
 }

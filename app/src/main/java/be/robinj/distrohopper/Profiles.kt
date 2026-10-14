@@ -153,9 +153,7 @@ object Profiles {
 		// AOSP returns the drawable unchanged when the profile has no badge. //
 		if (badge === blank) {
 			return null
-		}
-
-		if (desaturate) {
+		} else if (desaturate) {
 			badge.mutate()
 			badge.colorFilter = ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(0F) })
 		}

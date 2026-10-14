@@ -48,11 +48,12 @@ class WallpaperColourApplier(
 		}
 
 		val launcherBackgroundResources = res.obtainTypedArray(this.theme.launcher_background)
-		if (res.getBoolean(this.theme.launcher_background_dynamic))
+		if (res.getBoolean(this.theme.launcher_background_dynamic)) {
 			llLauncher.setBackgroundColor(bgColour)
-		else
+		} else {
 			llLauncher.setBackgroundResource(launcherBackgroundResources.getResourceId(
 				this.edgeController.launcherEdge.n, R.color.transparent))
+		}
 
 		if (res.getBoolean(this.theme.dash_background_dynamic)) {
 			llDash.setBackgroundColor(bgColour)
