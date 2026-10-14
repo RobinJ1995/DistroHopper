@@ -3,6 +3,8 @@ package be.robinj.distrohopper.desktop.dash.lens
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.SystemClock
+import android.view.MotionEvent
 import android.view.View
 import android.widget.GridView
 import android.widget.ScrollView
@@ -102,16 +104,16 @@ class LensResultsListTest {
 			// A slow upward drag starting on the grid's first row //
 			val x = 540F
 			val y = grid.bottom - 10F
-			val t = android.os.SystemClock.uptimeMillis()
-			fun send(action: Int, dy: Float, dt: Long) = android.view.MotionEvent.obtain(t, t + dt, action, x, y + dy, 0).also {
+			val t = SystemClock.uptimeMillis()
+			fun send(action: Int, dy: Float, dt: Long) = MotionEvent.obtain(t, t + dt, action, x, y + dy, 0).also {
 				list.dispatchTouchEvent(it)
 				it.recycle()
 			}
-			send(android.view.MotionEvent.ACTION_DOWN, 0F, 0)
-			for (i in 1..20) send(android.view.MotionEvent.ACTION_MOVE, -15F * i, 16L * i)
+			send(MotionEvent.ACTION_DOWN, 0F, 0)
+			for (i in 1..20) send(MotionEvent.ACTION_MOVE, -15F * i, 16L * i)
 			// Held still before release, so an unfixed grid scrolls without flinging //
-			send(android.view.MotionEvent.ACTION_MOVE, -300F, 1400)
-			send(android.view.MotionEvent.ACTION_UP, -300F, 1500)
+			send(MotionEvent.ACTION_MOVE, -300F, 1400)
+			send(MotionEvent.ACTION_UP, -300F, 1500)
 			grid.layout(grid.left, grid.top, grid.right, grid.bottom)
 
 			assertEquals(0, grid.firstVisiblePosition)

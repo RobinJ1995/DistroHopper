@@ -1,5 +1,6 @@
 package be.robinj.distrohopper.desktop.dash.lens
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.database.DataSetObserver
@@ -19,9 +20,7 @@ import kotlin.math.abs
  * inside a ScrollView, each built by [CollectionGridAdapter].
  *
  * A section keeps its own view for as long as it is listed, so a streamed
- * result only rebinds the views already there. (A ListView re-measured every
- * section on each change and recycled one section's view for another, making
- * each grid re-inflate its cells for every streamed result.)
+ * result only rebinds the views already there, never re-inflating them.
  */
 class LensResultsList @JvmOverloads constructor(
 	context: Context,
@@ -81,8 +80,7 @@ class LensResultsList @JvmOverloads constructor(
 	}
 
 	// Each section's grid shows one row and must never scroll through the rest
-	// itself. Claim vertical drags, as the ListView this replaced did, so the
-	// grid is cancelled instead. The ScrollView above still intercepts first
+	// itself. Claim vertical drags so the grid is cancelled instead. The ScrollView above still intercepts first
 	// whenever it has something to scroll //
 	override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
 		when (ev.actionMasked) {
@@ -93,7 +91,9 @@ class LensResultsList @JvmOverloads constructor(
 		return false
 	}
 
-	@android.annotation.SuppressLint("ClickableViewAccessibility") // consumes drags, no click
+	// Only receives the drags claimed above, which it swallows. A touch that
+	// merely lands between sections is declined, so it reaches the ScrollView //
+	@SuppressLint("ClickableViewAccessibility") // no click to perform
 	override fun onTouchEvent(ev: MotionEvent): Boolean = ev.actionMasked != MotionEvent.ACTION_DOWN
 
 	// Rotation doesn't recreate the activity; rebinding re-applies the grids'
