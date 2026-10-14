@@ -1,6 +1,7 @@
 package be.robinj.distrohopper.desktop.dash.lens;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,10 @@ public class GridAdapter extends ArrayAdapter<LensSearchResult> {
 		TextView tvLabel = (TextView) view.findViewById (R.id.tvLabel);
 		ImageView imgIcon = (ImageView) view.findViewById (R.id.imgIcon);
 
-		tvLabel.setText (result.getName ());
+		// Every streamed result rebinds every cell; setText would discard the
+		// label's measured layout even when the text is unchanged //
+		if (! TextUtils.equals (tvLabel.getText (), result.getName ()))
+			tvLabel.setText (result.getName ());
 		final Theme theme = DependencyContainer.of (view.getContext ()).getThemeManager ().getCurrent ();
 		tvLabel.setTextColor (ContextCompat.getColor (view.getContext (), theme.dash_applauncher_text_colour));
 		tvLabel.setShadowLayer (5, 2, 2, ContextCompat.getColor (view.getContext (), theme.dash_applauncher_text_shadow_colour));

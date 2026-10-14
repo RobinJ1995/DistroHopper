@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +34,7 @@ public class LensManager
 
 	private LinearLayout llDashHomeAppsContainer;
 	private LinearLayout llDashHomeLensesContainer;
-	private ListView lvDashHomeLensResults;
+	private LensResultsList llDashHomeLensResults;
 	private ProgressWheel pwDashSearchProgress;
 
 	public LensManager (Context context, LinearLayout llDashHomeAppsContainer, LinearLayout llDashHomeLensesContainer, ProgressWheel pwDashSearchProgress, AppManager apps)
@@ -45,7 +44,7 @@ public class LensManager
 		this.llDashHomeAppsContainer = llDashHomeAppsContainer;
 		this.llDashHomeLensesContainer = llDashHomeLensesContainer;
 		if (llDashHomeLensesContainer != null)
-			this.lvDashHomeLensResults = (ListView) llDashHomeLensesContainer.findViewById (R.id.lvDashHomeLensResults);
+			this.llDashHomeLensResults = (LensResultsList) llDashHomeLensesContainer.findViewById (R.id.llDashHomeLensResults);
 		this.pwDashSearchProgress = pwDashSearchProgress;
 
 		final SharedPreferences prefs = Preferences.getSharedPreferences(this.context, Preferences.PREFERENCES);
@@ -263,7 +262,7 @@ public class LensManager
 			// to this.results and notifies the adapter as lenses complete //
 			this.results.clear ();
 			this.adapter = new CollectionGridAdapter (this.getContext (), this.results);
-			this.lvDashHomeLensResults.setAdapter (this.adapter);
+			this.llDashHomeLensResults.setAdapter (this.adapter);
 
 			if (this.searchLoader != null)
 				this.searchLoader.start (pattern, this.enabled, this.maxResultsPerLens,

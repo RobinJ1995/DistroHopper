@@ -43,7 +43,7 @@ class CollectionGridAdapterTest {
 	private fun getView(activity: HomeActivity, collection: LensSearchResultCollection): View {
 		val adapter = CollectionGridAdapter(activity, listOf(collection))
 		return adapter.getView(0,
-			null, activity.findViewById(R.id.lvDashHomeLensResults))
+			null, activity.findViewById(R.id.llDashHomeLensResults))
 	}
 
 	@Test fun resultsArePopulatedIntoTheInnerGridUnderTheLensName() {
@@ -99,6 +99,43 @@ class CollectionGridAdapterTest {
 			assertEquals("RuntimeException", error.name)
 			// Tapping it shows the failure dialog rather than navigating //
 			assertNotNull(gvResults.onItemClickListener)
+		}
+	}
+
+	@Test fun rebindingTheSameSectionKeepsItsGridAdapterAndShowsNewResults() {
+		scenario.onActivity { activity ->
+			val live = mutableListOf(LensSearchResult(activity, "One", "", ColorDrawable(Color.RED)))
+			val adapter = CollectionGridAdapter(activity, listOf(LensSearchResultCollection(StubLens(activity), live)))
+			val parent = activity.findViewById<android.view.ViewGroup>(R.id.llDashHomeLensResults)
+			val view = adapter.getView(0, null, parent)
+			val grid = view.findViewById<GridView>(R.id.gvResults)
+			val first = grid.adapter
+
+			live.add(LensSearchResult(activity, "Two", "", ColorDrawable(Color.BLUE)))
+			adapter.getView(0, view, parent)
+
+			// A new adapter would re-inflate the grid's cells //
+			assertTrue(first === grid.adapter)
+			assertEquals(2, grid.adapter.count)
+		}
+	}
+
+	@Test fun aViewReboundToAnotherSectionShowsThatSectionsResults() {
+		scenario.onActivity { activity ->
+			val lens = StubLens(activity)
+			val a = LensSearchResultCollection(lens, listOf(LensSearchResult(activity, "A", "", ColorDrawable(Color.RED))))
+			val b = LensSearchResultCollection(lens, "Other", listOf(
+				LensSearchResult(activity, "B1", "", ColorDrawable(Color.RED)),
+				LensSearchResult(activity, "B2", "", ColorDrawable(Color.RED))))
+			val adapter = CollectionGridAdapter(activity, listOf(a, b))
+			val parent = activity.findViewById<android.view.ViewGroup>(R.id.llDashHomeLensResults)
+
+			val view = adapter.getView(0, null, parent)
+			adapter.getView(1, view, parent)
+
+			val grid = view.findViewById<GridView>(R.id.gvResults)
+			assertEquals(2, grid.adapter.count)
+			assertEquals("B1", (grid.adapter.getItem(0) as LensSearchResult).name)
 		}
 	}
 

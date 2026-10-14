@@ -2,7 +2,6 @@ package be.robinj.distrohopper.desktop.dash.lens
 
 import android.content.Context
 import android.widget.LinearLayout
-import android.widget.ListView
 import androidx.test.core.app.ApplicationProvider
 import be.robinj.distrohopper.R
 import be.robinj.distrohopper.preferences.Preference
@@ -149,12 +148,12 @@ class LensManagerTest {
 
     @Test fun lensResultsViewIsResolvedFromTheLensesContainer() {
         val lensesContainer = LinearLayout(context)
-        val lensResults = ListView(context).apply { id = R.id.lvDashHomeLensResults }
+        val lensResults = LensResultsList(context).apply { id = R.id.llDashHomeLensResults }
         lensesContainer.addView(lensResults)
 
         val manager = LensManager(context, null, lensesContainer, null, null)
 
-        val field = LensManager::class.java.getDeclaredField("lvDashHomeLensResults")
+        val field = LensManager::class.java.getDeclaredField("llDashHomeLensResults")
         field.isAccessible = true
         assertSame(lensResults, field.get(manager))
     }

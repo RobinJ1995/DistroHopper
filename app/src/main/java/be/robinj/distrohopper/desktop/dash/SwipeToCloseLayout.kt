@@ -134,7 +134,7 @@ class SwipeToCloseLayout @JvmOverloads constructor(
 	}
 
 	private fun contentCanScrollUp(): Boolean =
-		listOf(R.id.gvDashHomeApps, R.id.lvDashHomeLensResults).any {
+		listOf(R.id.gvDashHomeApps, R.id.svDashHomeLensResults).any {
 			val view = this.findViewById<android.view.View>(it)
 			view != null && view.isShown && view.canScrollVertically(-1)
 		}
