@@ -272,6 +272,9 @@ class AppRepository(private val context: Context) {
 		this.pinnedChanged()
 	}
 
+	/** Every pinned app across all desktops, including ones not on screen. */
+	fun allPinned(): Set<App> = this.pinnedByPage.flatMapTo(mutableSetOf()) { it }
+
 	/** Removes [app] from every desktop (e.g. when it is uninstalled). */
 	fun unpinFromAllDesktops(app: App): Boolean {
 		var modified = false
