@@ -100,10 +100,10 @@ class WidgetHost(
 			}
 
 			val colSpan = WidgetGrid.clampSpan(lp.colSpan,
-				limits?.let { minResizeWidthPx(it) } ?: 0,
+				limits?.let(::minResizeWidthPx) ?: 0,
 				limits?.maxResizeWidth ?: 0, cellW, WidgetGrid.COLS)
 			val rowSpan = WidgetGrid.clampSpan(lp.rowSpan,
-				limits?.let { minResizeHeightPx(it) } ?: 0,
+				limits?.let(::minResizeHeightPx) ?: 0,
 				limits?.maxResizeHeight ?: 0, cellH, WidgetGrid.ROWS)
 
 			// Always validate against the widgets already placed this pass, not
