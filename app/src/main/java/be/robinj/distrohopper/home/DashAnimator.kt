@@ -260,11 +260,11 @@ class DashAnimator(
 						return
 					} else if (open) {
 						resetDashTransforms(viewFinder.get(R.id.llDash))
-						dashGrid()?.let { resetIconTransforms(it) }
+						dashGrid()?.let(::resetIconTransforms)
 					} else {
 						withLayoutTransitionsSuppressed { teardown?.invoke() }
 						resetDashTransforms(viewFinder.get(R.id.llDash))
-						dashGrid()?.let { resetIconTransforms(it) }
+						dashGrid()?.let(::resetIconTransforms)
 						viewFinder.get<FrameLayout>(R.id.flWallpaperOverlayWhenDashOpened)
 							.alpha = 1F
 						viewFinder.get<LinearLayout>(R.id.llPanel).alpha = panelRestingAlpha()
@@ -421,12 +421,12 @@ class DashAnimator(
 					if (this.cancelled) { // The reversing call owns the views now //
 						return
 					} else if (opening) {
-						gvDashHomeApps?.let { resetIconTransforms(it) }
+						gvDashHomeApps?.let(::resetIconTransforms)
 					} else {
 						withLayoutTransitionsSuppressed { teardown?.invoke() }
 						resetDashTransforms(llDash)
 						flOverlayWhenOpened.alpha = 1F
-						gvDashHomeApps?.let { resetIconTransforms(it) }
+						gvDashHomeApps?.let(::resetIconTransforms)
 						finishBlur()
 					}
 				}
