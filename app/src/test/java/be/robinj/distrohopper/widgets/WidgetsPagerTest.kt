@@ -34,7 +34,7 @@ class WidgetsPagerTest {
 	@After fun tearDown() { this.scenario.close() }
 
 	private fun onActivity(block: (HomeActivity) -> Unit) {
-		this.scenario.onActivity { block(it) }
+		this.scenario.onActivity(block)
 	}
 
 	private fun layoutPager(pager: WidgetsPager, pages: Int = pager.pageCount) {

@@ -173,7 +173,7 @@ object WidgetGrid {
 	fun presets(context: Context): List<Pair<Int, Int>> {
 		val prefs = Preferences.getSharedPreferences(context)
 		val raw = prefs.getString(Preference.DESKTOP_GRID_PRESETS.getName(), null)
-		val stored = raw?.split(',')?.mapNotNull { parseSize(it) }
+		val stored = raw?.split(',')?.mapNotNull(::parseSize)
 		if (stored != null && stored.size == PRESET_COUNT) {
 			return stored
 		} else if (raw != null) {
@@ -184,12 +184,12 @@ object WidgetGrid {
 		val generated = generatePresets(shortEdgeDp, longEdgeDp)
 		prefs.edit()
 			.putString(Preference.DESKTOP_GRID_PRESETS.getName(),
-				generated.joinToString(",") { formatSize(it) })
+				generated.joinToString(",", transform = ::formatSize))
 			.apply()
 		// One-time and layout-defining: worth a line, since every stored desktop
 		// coordinate is written against whichever grid this picks. //
 		Log.getInstance().i(TAG, "Snapshotted desktop grid presets for " +
-			"${shortEdgeDp}x${longEdgeDp}dp: " + generated.joinToString(", ") { formatSize(it) })
+			"${shortEdgeDp}x${longEdgeDp}dp: " + generated.joinToString(", ", transform = ::formatSize))
 
 		return generated
 	}
