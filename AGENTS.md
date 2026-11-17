@@ -40,10 +40,8 @@ alongside newer Kotlin.
   GitHub Release for the tag must be deleted before retrying. The guard
   conditions are commented in the workflow. If `master` ever gets branch
   protection, `github-actions[bot]` needs a bypass or the bump cannot be pushed.
-- Release builds run R8 (`minifyEnabled`), because Play requires at least 25%
-  obfuscation. `app/proguard-rules.pro` keeps every name in our own package, so
-  only library code is renamed. The paranoia build is exempt and ships
-  unminified. The tests run against debug and do not cover the minified build.
+- Release builds run R8, keeping our own names (`app/proguard-rules.pro`); the
+  paranoia build does not.
 - The `-paranoia` APK (`-PparanoiaBuild=true`) forces crash reporting off and
   omits dependency metadata. It is a courtesy sideload build, not a separate
   product line, and deliberately removes no code.
