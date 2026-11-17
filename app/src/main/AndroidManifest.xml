@@ -57,6 +57,10 @@
 			android:theme="@style/OnboardingTheme"
 			android:exported="false" />
 		<activity
+			android:name="be.robinj.distrohopper.IncompleteInstallActivity"
+			android:theme="@style/AboutTheme"
+			android:exported="false" />
+		<activity
 			android:name="be.robinj.distrohopper.AboutActivity"
 			android:label="@string/title_activity_about"
 			android:parentActivityName="be.robinj.distrohopper.preferences.PreferencesActivity"
