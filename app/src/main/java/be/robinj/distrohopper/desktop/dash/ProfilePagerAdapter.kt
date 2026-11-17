@@ -30,7 +30,7 @@ class ProfilePagerAdapter(
 ) : RecyclerView.Adapter<ProfilePagerAdapter.PageViewHolder>() {
 
 	private val gridAdapters: List<GridAdapter> = this.profiles.map { profile ->
-		GridAdapter(this.activity.applicationContext,
+		GridAdapter(this.activity.applicationContext, this.activity,
 			ArrayList(this.appManager.dashLayout.dashItems(profile)))
 	}
 

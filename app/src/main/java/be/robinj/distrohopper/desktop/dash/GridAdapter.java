@@ -1,6 +1,8 @@
 package be.robinj.distrohopper.desktop.dash;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LifecycleOwner;
 
 import be.robinj.distrohopper.App;
 import be.robinj.distrohopper.DependencyContainer;
+import be.robinj.distrohopper.desktop.AppIcon;
 import be.robinj.distrohopper.folder.FolderIconDrawable;
 import be.robinj.distrohopper.theme.Theme;
 import be.robinj.distrohopper.R;
@@ -40,8 +44,30 @@ public class GridAdapter extends ArrayAdapter<DashItem> {
 	 */
 	private String hiddenKey = null;
 
-	public GridAdapter(final Context context, final List<DashItem> items) {
+	private final DashIconLoader iconLoader;
+
+	/** @param owner scopes the background icon loads; they stop when it is destroyed */
+	public GridAdapter(final Context context, final LifecycleOwner owner, final List<DashItem> items) {
 		super (context, R.layout.widget_dash_applauncher, items);
+
+		this.iconLoader = new DashIconLoader (owner,
+			DependencyContainer.of (context).getDispatchers (), this::notifyDataSetChanged);
+	}
+
+	/**
+	 * The app's icon if it is in memory; otherwise null, with a background load
+	 * queued that rebinds the grid once the icon is there.
+	 */
+	private Drawable iconOrRequest (final App app)
+	{
+		final AppIcon icon = app.peekIcon ();
+		if (icon == null) {
+			this.iconLoader.request (app);
+
+			return null;
+		}
+
+		return icon.getDrawable ();
 	}
 
 	/** Marks (or, with null, unmarks) the dragged item's cell as an empty gap. */
@@ -83,13 +109,16 @@ public class GridAdapter extends ArrayAdapter<DashItem> {
 		if (item instanceof DashItem.AppItem) {
 			App app = ((DashItem.AppItem) item).getApp ();
 			tvLabel.setText (app.getLabel ());
-			imgIcon.setImageDrawable (app.getIcon ().getDrawable ());
+			imgIcon.setImageDrawable (this.iconOrRequest (app));
 		} else if (item instanceof DashItem.FolderItem) {
 			// Folders are unnamed: a blank label keeps the cell the same height. //
 			tvLabel.setText ("");
 			List<Drawable> memberIcons = new ArrayList<> ();
-			for (App app : ((DashItem.FolderItem) item).getApps ())
-				memberIcons.add (app.getIcon ().getDrawable ());
+			for (App app : ((DashItem.FolderItem) item).getApps ()) {
+				final Drawable icon = this.iconOrRequest (app);
+				// An empty slot keeps the loaded members in their own cells //
+				memberIcons.add (icon != null ? icon : new ColorDrawable (Color.TRANSPARENT));
+			}
 			imgIcon.setImageDrawable (new FolderIconDrawable (memberIcons));
 		}
 

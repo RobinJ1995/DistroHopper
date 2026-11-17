@@ -31,7 +31,8 @@ import static java.lang.String.format;
 public class App implements Parcelable
 {
 	private String label;
-	private transient AppIcon icon;
+	// Loaded on a background thread, read on the main thread //
+	private transient volatile AppIcon icon;
 	private String description;
 	private String packageName;
 	private String activityName;
@@ -328,6 +329,14 @@ public class App implements Parcelable
 
 	public AppIcon getIcon() {
 		return this.getIcon(true);
+	}
+
+	/**
+	 * The icon if it is already in memory, else null. Unlike getIcon() this never
+	 * loads it, which reads the app's APK: use it wherever views are bound.
+	 */
+	public AppIcon peekIcon() {
+		return this.icon;
 	}
 
 	public AppIcon getIcon (boolean useCached)

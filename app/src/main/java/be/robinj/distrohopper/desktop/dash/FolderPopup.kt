@@ -54,7 +54,7 @@ class FolderPopup @JvmOverloads constructor(
 		}
 
 		val cell = dp(CELL_DP)
-		grid.adapter = GridAdapter(this.activity, apps.map { DashItem.AppItem(it) as DashItem }.toMutableList())
+		grid.adapter = GridAdapter(this.activity, this.activity, apps.map { DashItem.AppItem(it) as DashItem }.toMutableList())
 		grid.onItemClickListener = AdapterLaunch()
 		grid.onItemLongClickListener = AdapterExtract()
 
