@@ -55,7 +55,8 @@ android {
 			// Sign release builds only when a keystore is provided, so local
 			// and CI test builds without one still succeed.
 			signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : null
-			minifyEnabled false
+			// R8 is only there for Play, which never sees the paranoia build.
+			minifyEnabled !paranoiaBuild
 			shrinkResources false
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 		}
