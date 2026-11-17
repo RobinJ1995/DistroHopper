@@ -55,7 +55,9 @@ android {
 			// Sign release builds only when a keystore is provided, so local
 			// and CI test builds without one still succeed.
 			signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : null
-			minifyEnabled false
+			// R8 only to meet Play's obfuscation threshold; the paranoia build
+			// never goes to Play, so it ships unminified.
+			minifyEnabled !paranoiaBuild
 			shrinkResources false
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 		}
