@@ -400,9 +400,6 @@ per-surface icon views, not one class.
 ## Note for Claude
 
 - Never stop on a red `lint` job, and never change its rules.
-- Commit as `Robin Jacobs <RobinJ1995@users.noreply.github.com>`; lint rejects
-  tool-authored commits.
-- No tool attribution in commits or PR text.
 
 If you are Claude: Your "present plan" and "ask question" tools are often
 broken. Anything that is not explicit plan approval or a bundle of answers
