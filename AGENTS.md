@@ -128,6 +128,8 @@ by drag and drop.
 - **`HomeRole`** — HOME-role checks and requests. The system role dialog is
   unreliable on some OEM builds, so callers fall back to the home-settings
   screen when the role still isn't held.
+- **`IncompleteInstallActivity`** — what `HomeActivity` shows instead when the
+  APK was installed without its density split.
 - **`AboutActivity`**, **`LicensesActivity`/`LicenseTextActivity`** — licence
   texts are **assets**, not strings, because the bundled fonts' licences must
   ship with them. `copyLicenseAssets` stages `licenses/` and `LICENSE`.
@@ -396,6 +398,8 @@ per-surface icon views, not one class.
 - Do not commit `local.properties` or `secret.properties`.
 
 ## Note for Claude
+
+- Never stop on a red `lint` job, and never change its rules unprompted. This is non-negotiable.
 
 If you are Claude: Your "present plan" and "ask question" tools are often
 broken. Anything that is not explicit plan approval or a bundle of answers

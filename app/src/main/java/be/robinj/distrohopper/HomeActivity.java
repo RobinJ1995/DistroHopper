@@ -151,6 +151,12 @@ public class HomeActivity extends AppCompatActivity
 
 			return;
 		}
+		else if (IncompleteInstallActivity.isNeeded (this.getResources ())) {
+			this.startActivity (new Intent (this, IncompleteInstallActivity.class));
+			this.finish ();
+
+			return;
+		}
 		// First run: hand over to the setup wizard before initialising anything //
 		else if (OnboardingGate.shouldShow (DependencyContainer.of (this).getPrefs ())) {
 			this.startActivity (new Intent (this, OnboardingActivity.class));
