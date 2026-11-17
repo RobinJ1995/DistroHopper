@@ -56,8 +56,8 @@ class DashGridDragListenerTest {
      * children are stubbed on demand (positioned from the adapter's current order)
      * since Robolectric doesn't lay a GridView out.
      */
-	private class GeoGrid(context: Context, items: List<DashItem>) : GridView(context) {
-		init { adapter = GridAdapter(context, ArrayList(items)) }
+	private class GeoGrid(context: HomeActivity, items: List<DashItem>) : GridView(context) {
+		init { adapter = GridAdapter(context, context, ArrayList(items)) }
 
 		// Read through getAdapter() (null-safe): the GridView super-constructor
 		// calls the overrides below before any field of this subclass is set.

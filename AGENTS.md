@@ -279,7 +279,10 @@ per-surface icon views, not one class.
   proportionally more, capped at twice that, the same count for every grid
   including lens results (`DashGridSizer` applies it). A per-theme
   `ProfileIndicator` (`profile/`, chosen by the `profile_indicator` theme
-  integer) shows which profile page is current.
+  integer) shows which profile page is current. Cells never load an icon while
+  binding (`App.getIcon()` reads the app's APK): `GridAdapter` shows what
+  `App.peekIcon()` has and queues the rest on `DashIconLoader`, which rebinds
+  the grid as they arrive.
 - **`desktop/dash/lens/`** — search providers ("lenses") coordinated by
   `LensManager`. Each lens:
   - declares a **`key`, frozen once shipped** — it is what enabled lenses are
